@@ -1,0 +1,188 @@
+~~ Demoiselle Framework
+~~ Copyright (C) 2010 SERPRO
+~~ ============================================================================
+~~ This file is part of Demoiselle Framework.
+~~ 
+~~ Demoiselle Framework is free software; you can redistribute it and/or
+~~ modify it under the terms of the GNU Lesser General Public License version 3
+~~ as published by the Free Software Foundation.
+~~ 
+~~ This program is distributed in the hope that it will be useful,
+~~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+~~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+~~ GNU General Public License for more details.
+~~ 
+~~ You should have received a copy of the GNU Lesser General Public License version 3
+~~ along with this program; if not,  see <http://www.gnu.org/licenses/>
+~~ or write to the Free Software Foundation, Inc., 51 Franklin Street,
+~~ Fifth Floor, Boston, MA  02110-1301, USA.
+~~ ============================================================================
+~~ Este arquivo é parte do Framework Demoiselle.
+~~ 
+~~ O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
+~~ modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
+~~ do Software Livre (FSF).
+~~ 
+~~ Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA
+~~ GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou
+~~ APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português
+~~ para maiores detalhes.
+~~ 
+~~ Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
+~~ "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses/>
+~~ ou escreva para a Fundação do Software Livre (FSF) Inc.,
+~~ 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
+
+                                    ------
+                                    Notas de Versão
+
+Notas de Versão
+
+* v2.2.0
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=711}0000711}} [Bug] FileRenderer implementando Serializable.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=697}0000697}} [Bug] Correção do Nullpointer ao executar Beans.getReference(Logger.class).
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=693}0000693}} [Bug] SecurityContext criava várias instâncias de Authenticator e Authorizer.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=721}0000721}} [Improvement] Criação de casos de teste unitário no arquétipo jsf-jpa.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=673}0000673}} [Improvement] SecurityContext.isLoggedIn() verifica se authenticator.getUser() está nulo.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=680}0000680}} [Improvement] As extensões JUnit, Vaadin, Shiro viraram componentes.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=681}0000681}} [Improvement] Arquétipo Vaadin migrado para componente.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=682}0000682}} [Improvement] Parent POM Vaadin migrado para componente.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=683}0000683}} [Improvement] Remoção do código depreciado na versão 2.1.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=706}0000706}} [Improvement] Atualização da versão do hibernate-validator.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=703}0000703}} [Improvement] Atualização do repositório do primefaces.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=696}0000696}} [Improvement] Correção da mensagem de sessão invalidada anteriormente.
+  
+
+* {{{../2.1.2/}v2.1.2}}
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=667}0000667}} [Bug] Correção na renderização de tabelas JSF do arquétipo demoiselle-jsf-jpa.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=654}0000654}} [Bug] Erro no arquétipo jsf-jpa: Property 'label.confirm.delete' not found.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=663}0000663}} [Bug] Comandos JPA em ambientes JTA não se uniam à transação antes de executar o comando.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=666}0000666}} [Bug] Correção do erro "You cannot set autocommit during a managed transaction!".
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=661}0000661}} [Improvement] Depreciação do pacote "br.gov.frameworkdemoiselle.event".
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=664}0000664}} [Improvement] Depreciação do estereótipo @Presenter da extensão Vaadin.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=662}0000662}} [Improvement] Depreciação das exceções do pacote "br.gov.frameworkdemoiselle.exception".
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=660}0000660}} [Task] Organização do código interno.
+
+* {{{../2.1.1/}v2.1.1}}
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=621}0000621}} [Bug] Erro em Classe que usa @Configuration.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=623}0000623}} [Bug] Telas de edição com Id do tipo String.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=624}0000624}} [Bug] Erros em arquivos do Arquétipo JPA-JSF.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=625}0000625}} [Bug] Correção do erro ao executar Maven Test no demoiselle-junit.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=638}0000638}} [Bug] Ambiguidade em classes de configuração.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=643}0000643}} [Bug] Mudança de URL no repositório JBoss.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=651}0000651}} [Bug] Correção do nome da interface Authorizator para Authorizer.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=636}0000636}} [Improvement] Possibilidade de desabilitar o redirecionamento no login e logout.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=637}0000637}} [Improvement] Mudança no redirecionamento ao realizar logout.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=641}0000641}} [Improvement] Substituição da propriedade frameworkdemoiselle.security.welcome.page.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=646}0000646}} [Improvement] Melhorias de Testes e Código.
+
+* {{{../2.1.0/}v2.1.0}}
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=601}0000601}} [Bug] Falha ao realizar operações no banco de dados com JPATransaction.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=598}0000598}} [Bug] ClassNotFoundException: br.gov.frameworkdemoiselle.transaction.JTATransaction.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=597}0000597}} [Bug] Unsatisfied dependencies for type UserTransaction.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=584}0000584}} [Bug] Falha no tratamento de exceção no MB quando em método com retorno String.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=582}0000582}} [Bug] Erro "No active contexts" ao reiniciar uma aplicação contendo @Shutdown.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=596}0000596}} [Improvement] Mudança no nome dos eventos LoginSuccessful e LogoutSuccessful.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=595}0000595}} [Improvement] Fechamento automático dos EntityManager e EntityManagerFactory.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=594}0000594}} [Improvement] Flush automático do EntityManager no commit da transação JTA.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=593}0000593}} [Improvement] Criação da extensão JTA.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=592}0000592}} [Improvement] Renomear Classes de Eventos da extensão Vaadin.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=591}0000591}} [Improvement] Mudança na Estrutura de Pacotes  da extensão Vaadin.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=577}0000577}} [Improvement] Novo arquétipo demoiselle-minimal.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=579}0000579}} [Improvement] Inclusão do demoiselle-junit no arquétipo jsf-jpa.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=578}0000578}} [Improvement] Classe utilitária para redirecionamento JSF2 no demoiselle-jsf.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=573}0000573}} [Improvement] Fábrica para obter Response.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=457}0000457}} [New Feature] Especificação Demoiselle 2.0 - Segurança.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=583}0000583}} [New Feature] Extensão para controle de acesso com o Apache Shiro.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=524}0000524}} [New Feature] Extensão para camada de apresentação com Vaadin
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=580}0000580}} [Task] Parent POM demoiselle-app-parent renomeado para demoiselle-minimal-parent.
+
+* {{{../2.0.2/}v2.0.2}}
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=558}0000558}} [Bug] Abafando Exception do JPA ConfigurationException("??????????????????????").
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=557}0000557}} [Bug] NullPointerException ao executar Beans.getReference(EntityManager.class).
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=566}0000566}} [Bug] Erro ao utilizar o demoiselle-junit com o demoiselle-jsf.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=563}0000563}} [Bug] Não é possível trabalhar com duas persistence-unit.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=562}0000562}} [Improvement] Alterar o arquétipo para suportar o Tomcat.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=560}0000560}} [Task] Criar Testes Unitários para a fábrica de EntityManager.
+
+* {{{../2.0.1/}v2.0.1}}
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=538}0000538}} [Bug] Possível loop infinito em ResourceBundleFactory.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=521}0000521}} [Bug] Dependencia indevida do componente demoiselle-validation-1.0.0-SNAPSHOT.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=517}0000517}} [Bug] Tratamento de exceções não funciona com o Weld 1.1.0-CR4.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=523}0000523}} [Improvement] Possibilitar injeção com jUnit.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=522}0000522}} [Improvement] Renomear a extensão Swing para SE.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=518}0000518}} [Improvement] Possibilitar o deploy de aplicações JSF em servidores Tomcat 6 e 7.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=534}0000534}} [Task] Disponibilizar o site do framework.
+
+* v2.0.0
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=456}0000456}} [New Feature] Especificação Demoiselle 2.0.
+
+* {{{../latest1x.php}v1.x.x}}
+
+  * Para versões anteriores {{{../latest1x.php}clique aqui}}.
+  
+  

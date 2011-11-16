@@ -1,0 +1,142 @@
+<!--
+ Demoiselle Framework
+ Copyright (C) 2010 SERPRO
+ ============================================================================
+ This file is part of Demoiselle Framework.
+ 
+ Demoiselle Framework is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License version 3
+ as published by the Free Software Foundation.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License version 3
+ along with this program; if not,  see <http://www.gnu.org/licenses />
+ or write to the Free Software Foundation, Inc., 51 Franklin Street,
+ Fifth Floor, Boston, MA  02110-1301, USA.
+ ============================================================================
+ Este arquivo é parte do Framework Demoiselle.
+ 
+ O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
+ modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
+ do Software Livre (FSF).
+ 
+ Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA
+ GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou
+ APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português
+ para maiores detalhes.
+ 
+ Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
+ "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses />
+ ou escreva para a Fundação do Software Livre (FSF) Inc.,
+ 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>demoiselle</artifactId>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>br.gov.frameworkdemoiselle</groupId>
+		<artifactId>demoiselle-parent</artifactId>
+		<version>2.2.1-SNAPSHOT</version>
+		<relativePath>parent/root/pom.xml</relativePath>
+	</parent>
+
+	<name>Demoiselle Framework</name>
+	<description>
+		A liberação de versões do framework deve ser feita a partir deste build, que fará automaticamente o build
+		de todos os artefatos com versionamento sincronizado. Jamais gere uma versão do framework sem utilizar este build.
+	</description>
+
+	<modules>
+		<module>parent</module>
+		<module>core</module>
+		<module>extension</module>
+		<module>archetype</module>
+	</modules>
+
+	<scm>
+		<connection>scm:svn:http://demoiselle.svn.sourceforge.net/svnroot/demoiselle/framework/tags/demoiselle-2.1.2</connection>
+		<developerConnection>scm:svn:https://demoiselle.svn.sourceforge.net/svnroot/demoiselle/framework/tags/demoiselle-2.1.2</developerConnection>
+		<url>scm:svn:http://demoiselle.svn.sourceforge.net/viewvc/demoiselle/demoiselle/framework/tags/demoiselle-2.1.2</url>
+	</scm>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<finalName>demoiselle-${project.version}</finalName>
+					<outputDirectory>${project.build.directory}/assembly</outputDirectory>
+					<descriptors>
+						<descriptor>src/assembly/src.xml</descriptor>
+						<descriptor>src/assembly/bin.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>assembly</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>wagon-maven-plugin</artifactId>
+				<configuration>
+					<serverId>demoiselle.sourceforge.net</serverId>
+					<url>${upload.url}</url>
+					<fromDir>${project.build.directory}/assembly</fromDir>
+					<toDir>framework/${project.version}</toDir>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<preparationGoals>clean install</preparationGoals>
+					<goals>deploy wagon:upload site site:deploy</goals>
+					<developmentVersion>${project.nextVersion}</developmentVersion>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<distributionManagement>
+		<site>
+			<id>demoiselle.sourceforge.net</id>
+			<url>${htdocs.url}/framework/${project.version}</url>
+		</site>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>demoiselle.sourceforge.net</id>
+			<name>Demoiselle Maven Repository</name>
+			<url>http://demoiselle.sourceforge.net/repository/release</url>
+		</repository>
+	</repositories>
+
+	<properties>
+		<upload.url>sftp://web.sourceforge.net/home/frs/project/d/de/demoiselle</upload.url>
+		<project.nextVersion>2.2.1-SNAPSHOT</project.nextVersion>
+	</properties>
+</project>

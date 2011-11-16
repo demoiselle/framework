@@ -1,0 +1,132 @@
+<class-diagram version="1.0.3" icons="true" automaticImage="PNG" always-add-relationships="false" 
+  generalizations="false" realizations="false" associations="false" dependencies="false" nesting-relationships="false">  
+  <interface id="3" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.template.EditPageBean" 
+    project="demoiselle-jsf" file="/demoiselle-jsf/src/main/java/br/gov/frameworkdemoiselle/template/EditPageBean.java" 
+    binary="false">    
+    <position x="268" y="-37" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <interface id="4" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.template.PageBean" 
+    project="demoiselle-jsf" file="/demoiselle-jsf/src/main/java/br/gov/frameworkdemoiselle/template/PageBean.java" 
+    binary="false">    
+    <position x="66" y="-37" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <class id="6" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.template.AbstractListPageBean" 
+    project="demoiselle-jsf" 
+    file="/demoiselle-jsf/src/main/java/br/gov/frameworkdemoiselle/template/AbstractListPageBean.java" binary="false">    
+    <position x="-148" y="94" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="7" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.template.AbstractEditPageBean" 
+    project="demoiselle-jsf" 
+    file="/demoiselle-jsf/src/main/java/br/gov/frameworkdemoiselle/template/AbstractEditPageBean.java" binary="false">    
+    <position x="268" y="94" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="8" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.template.AbstractPageBean" 
+    project="demoiselle-jsf" 
+    file="/demoiselle-jsf/src/main/java/br/gov/frameworkdemoiselle/template/AbstractPageBean.java" binary="false">    
+    <position x="66" y="94" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <interface id="9" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.template.ListPageBean" 
+    project="demoiselle-jsf" file="/demoiselle-jsf/src/main/java/br/gov/frameworkdemoiselle/template/ListPageBean.java" 
+    binary="false">    
+    <position x="-147" y="-37" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <annotation id="10" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.annotation.NextView" 
+    project="demoiselle-jsf" file="/demoiselle-jsf/src/main/java/br/gov/frameworkdemoiselle/annotation/NextView.java" 
+    binary="false">    
+    <position x="267" y="183" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </annotation>  
+  <annotation id="11" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.annotation.PreviousView" 
+    project="demoiselle-jsf" 
+    file="/demoiselle-jsf/src/main/java/br/gov/frameworkdemoiselle/annotation/PreviousView.java" binary="false">    
+    <position x="-148" y="183" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="true" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </annotation>  
+  <class id="12" corner="BOTTOM_RIGHT" language="java" name="javax.faces.context.FacesContext" project="demoiselle-jsf" 
+    file="/opt/demoiselle/tool/maven2-local-repo/com/sun/faces/jsf-api/2.0.3/jsf-api-2.0.3.jar" binary="true">    
+    <position x="65" y="183" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <association>    
+    <end type="SOURCE" nodeId="8" navigable="false">      
+      <attribute name="facesContext"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" nodeId="12" navigable="true"/>    
+    <display labels="false" multiplicity="false"/>  
+  </association>  
+  <dependency>    
+    <end type="SOURCE" nodeId="8"/>    
+    <end type="TARGET" nodeId="10"/>  
+  </dependency>  
+  <realization>    
+    <end type="SOURCE" nodeId="8"/>    
+    <end type="TARGET" nodeId="4"/>  
+  </realization>  
+  <generalization>    
+    <end type="SOURCE" nodeId="3"/>    
+    <end type="TARGET" nodeId="4"/>  
+  </generalization>  
+  <realization>    
+    <end type="SOURCE" nodeId="6"/>    
+    <end type="TARGET" nodeId="9"/>  
+  </realization>  
+  <realization>    
+    <end type="SOURCE" nodeId="7"/>    
+    <end type="TARGET" nodeId="3"/>  
+  </realization>  
+  <dependency>    
+    <end type="SOURCE" nodeId="8"/>    
+    <end type="TARGET" nodeId="11"/>  
+  </dependency>  
+  <generalization>    
+    <end type="SOURCE" nodeId="7"/>    
+    <end type="TARGET" nodeId="8"/>  
+  </generalization>  
+  <generalization>    
+    <end type="SOURCE" nodeId="9"/>    
+    <end type="TARGET" nodeId="4"/>  
+  </generalization>  
+  <generalization>    
+    <end type="SOURCE" nodeId="6"/>    
+    <end type="TARGET" nodeId="8"/>  
+  </generalization>  
+  <classifier-display autosize="true" package="true" initial-value="true" signature="true" visibility="true">    
+    <attributes public="false" package="false" protected="false" private="false"/>    
+    <operations public="false" package="false" protected="false" private="false"/>  
+  </classifier-display>  
+  <association-display labels="false" multiplicity="false"/>
+</class-diagram>

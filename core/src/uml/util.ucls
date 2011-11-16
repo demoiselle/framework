@@ -1,0 +1,92 @@
+<class-diagram version="1.0.3" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
+  realizations="true" associations="false" dependencies="true" nesting-relationships="true">  
+  <class id="1" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.util.ResourceBundle" 
+    project="demoiselle-core" file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/util/ResourceBundle.java" 
+    binary="false">    
+    <position x="647" y="281" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="2" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.util.Reflections" 
+    project="demoiselle-core" file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/util/Reflections.java" 
+    binary="false">    
+    <position x="324" y="257" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="3" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.util.Strings" 
+    project="demoiselle-core" file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/util/Strings.java" 
+    binary="false">    
+    <position x="331" y="47" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="4" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.util.Beans" 
+    project="demoiselle-core" file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/util/Beans.java" 
+    binary="false">    
+    <position x="41" y="23" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="5" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.util.Exceptions" 
+    project="demoiselle-core" file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/util/Exceptions.java" 
+    binary="false">    
+    <position x="637" y="-1" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <interface id="6" corner="BOTTOM_RIGHT" language="java" name="javax.enterprise.inject.spi.BeanManager" 
+    project="demoiselle-core" 
+    file="/Users/cleverson/.m2/repository/javax/enterprise/cdi-api/1.0-SP4/cdi-api-1.0-SP4.jar" binary="true">    
+    <position x="40" y="145" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <class id="7" corner="BOTTOM_RIGHT" language="java" name="java.util.ResourceBundle" project="demoiselle-core" 
+    file="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar" binary="true">    
+    <position x="644" y="163" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <generalization>    
+    <end type="SOURCE" nodeId="1"/>    
+    <end type="TARGET" nodeId="7"/>  
+  </generalization>  
+  <association>    
+    <bendpoint x="511" y="281"/>    
+    <bendpoint x="511" y="163"/>    
+    <end type="SOURCE" nodeId="1" navigable="false">      
+      <attribute name="delegate"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" nodeId="7" navigable="true"/>    
+    <display labels="true" multiplicity="false"/>  
+  </association>  
+  <association>    
+    <end type="SOURCE" nodeId="4" navigable="false">      
+      <attribute name="manager"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" nodeId="6" navigable="true"/>    
+    <display labels="false" multiplicity="false"/>  
+  </association>  
+  <classifier-display autosize="true" package="true" initial-value="false" signature="true" visibility="true">    
+    <attributes public="true" package="false" protected="false" private="false"/>    
+    <operations public="true" package="false" protected="false" private="false"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

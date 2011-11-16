@@ -1,0 +1,140 @@
+<class-diagram version="1.0.3" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
+  <class id="1" corner="BOTTOM_RIGHT" language="java" 
+    name="br.gov.frameworkdemoiselle.internal.bootstrap.ConfigurationBootstrap" project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/internal/bootstrap/ConfigurationBootstrap.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="72" y="-11"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="2" corner="BOTTOM_RIGHT" language="java" 
+    name="br.gov.frameworkdemoiselle.internal.processor.ConfigurationProcessor" project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/internal/processor/ConfigurationProcessor.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="73" y="201"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <annotation id="3" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.configuration.Configuration" 
+    project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/configuration/Configuration.java" binary="false">    
+    <position height="-1" width="-1" x="394" y="188"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </annotation>  
+  <enumeration id="4" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.configuration.ConfigType" 
+    project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/configuration/ConfigType.java" binary="false">    
+    <position height="-1" width="-1" x="394" y="295"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </enumeration>  
+  <class id="5" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.exception.DemoiselleException" 
+    project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/exception/DemoiselleException.java" binary="false">    
+    <position height="-1" width="-1" x="-24" y="99"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <interface id="6" corner="BOTTOM_RIGHT" language="java" name="javax.enterprise.inject.spi.ProcessAnnotatedType" 
+    project="demoiselle-core" 
+    file="/opt/demoiselle/tool/maven2-local-repo/javax/enterprise/cdi-api/1.0-SP4/cdi-api-1.0-SP4.jar" binary="true">    
+    <position height="-1" width="-1" x="388" y="-45"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <interface id="7" corner="BOTTOM_RIGHT" language="java" name="javax.enterprise.inject.spi.AfterBeanDiscovery" 
+    project="demoiselle-core" 
+    file="/opt/demoiselle/tool/maven2-local-repo/javax/enterprise/cdi-api/1.0-SP4/cdi-api-1.0-SP4.jar" binary="true">    
+    <position height="-1" width="-1" x="413" y="18"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <interface id="8" corner="BOTTOM_RIGHT" language="java" name="javax.enterprise.inject.spi.AfterDeploymentValidation" 
+    project="demoiselle-core" 
+    file="/opt/demoiselle/tool/maven2-local-repo/javax/enterprise/cdi-api/1.0-SP4/cdi-api-1.0-SP4.jar" binary="true">    
+    <position height="-1" width="-1" x="389" y="82"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <annotation id="9" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.annotation.Ignore" 
+    project="demoiselle-core" file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/annotation/Ignore.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="-23" y="321"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </annotation>  
+  <annotation id="10" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.annotation.Name" 
+    project="demoiselle-core" file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/annotation/Name.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="183" y="311"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </annotation>  
+  <dependency>    
+    <end type="SOURCE" nodeId="1"/>    
+    <end type="TARGET" nodeId="3"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="1"/>    
+    <end type="TARGET" nodeId="7"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="2"/>    
+    <end type="TARGET" nodeId="3"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="2"/>    
+    <end type="TARGET" nodeId="5"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="1"/>    
+    <end type="TARGET" nodeId="2"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="1"/>    
+    <end type="TARGET" nodeId="8"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="1"/>    
+    <end type="TARGET" nodeId="6"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="2"/>    
+    <end type="TARGET" nodeId="4"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="2"/>    
+    <end type="TARGET" nodeId="9"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="2"/>    
+    <end type="TARGET" nodeId="10"/>  
+  </dependency>  
+  <classifier-display autosize="true" package="true" initial-value="false" signature="true" visibility="true">    
+    <attributes public="true" package="false" protected="false" private="false"/>    
+    <operations public="true" package="false" protected="false" private="false"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>
