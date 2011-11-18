@@ -38,7 +38,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>demoiselle-impl-build-aggregator</artifactId>
+	<artifactId>demoiselle-framework-impl-build</artifactId>
 	<packaging>pom</packaging>
 
 	<parent>
