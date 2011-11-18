@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<chapter id="inicializacao">
+
+	<title>Inicialização</title>
+
+	<section>
+		<title>Introdução ao mecanismo</title>
+		<para>
+			Uma aplicação qualquer, seja do tipo Web ou desktop, geralmente necessita efetuar determinadas tarefas durante a sua
+			inicialização e ou finalização. Eis alguns exemplos: abertura de conexão a um servidor de banco de dados, carregamento de
+			parâmetros de configuração a partir de arquivos externos e execução de scripts específicos. Ou seja, normalmente essas ações
+			são definidas como funções estruturais da aplicação.
+		</para>
+		<para>
+			Para que a execução dessas ações ocorra de forma concisa, faz-se necessário o uso de um mecanismo padronizado para inicialização
+			do ambiente. O <emphasis>Demoiselle Framework</emphasis> fornece esse mecanismo através da especificação CDI introduzindo duas
+			anotações: <literal>@Startup</literal> e <literal>@Shutdown</literal>.
+		</para>
+	</section>
+
+	<section>
+		<title>Implementação na aplicação</title>
+		<para>
+			A fim de utilizar o mecanismo inerente do <emphasis>Demoiselle Framework</emphasis>, é preciso simplesmente anotar os métodos
+			contendo as instruções desejadas com <literal>@Startup</literal>, para a <emphasis>inicialização</emphasis>, ou
+			<literal>@Shutdown</literal>, para a <emphasis>finalização</emphasis>.
+		</para>
+		<tip>
+			<para>
+				O mecanismo de inicialização do <emphasis>Demoiselle Framework</emphasis> é independente da natureza da aplicação Java, isto é,
+				visa tanto aplicações do tipo Web quanto do tipo desktop (ex: Swing).
+			</para>
+		</tip>
+		<para>
+			As instruções contidas em um método anotado com <literal>@Startup</literal> serão executadas automaticamente quando a aplicação
+			Java for inicializada, seja ela hospedada em um contêiner Web ou executada através de um método <literal>main()</literal>.
+			Nenhum outro arquivo ou classe precisa ser definido. A anotação <literal>@Startup</literal> permite a indicação do argumento
+			<literal>priority</literal>, um número inteiro que serve para definir a prioridade de execução do respectivo método na existência
+			de mais de um inicializador para a aplicação.
+		</para>
+		<para>
+			De maneira análoga, um método anotado com <literal>@Shutdown</literal> será executado no momento de finalização de uma aplicação,
+			obedecendo também à ordem de prioridade definida com o argumento <literal>priority</literal>.
+		</para>
+		<para>
+			Eis um exemplo de implementação de inicializador em uma aplicação:
+		</para>
+		<programlisting role="JAVA"><![CDATA[public class BookmarkInitializer {
+	
+	@Startup(priority = 1)
+	public void initialize() {	
+		...
+	}
+
+	@Shutdown(priority = 5)
+	public void finalize() {
+		...
+	}
+
+}]]></programlisting>
+		<tip>
+			<para>
+				Para a definição de prioridade de execução de um método na inicialização ou finalização, podem ser
+				utilizadas as constantes <literal>MIN_PRIORITY</literal> ou <literal>MAX_PRIORITY</literal> presentes em
+				<literal>br.gov.frameworkdemoiselle.annotation.Startup</literal>.
+			</para>
+		</tip>
+	</section>
+	
+	<section>
+		<title>Um exemplo prático</title>
+		<para>
+			Eis um interessante caso de uso de inicialização e finalização: rodar um servidor de modo standalone em paralelo à
+			execução da aplicação principal. Eis o código referente à essa implementação:
+		</para>
+		<programlisting role="JAVA"><![CDATA[import br.gov.frameworkdemoiselle.annotation.Shutdown;
+import br.gov.frameworkdemoiselle.annotation.Startup;
+
+import static br.gov.frameworkdemoiselle.annotation.Startup.MAX_PRIORITY;
+import static br.gov.frameworkdemoiselle.annotation.Startup.MIN_PRIORITY;
+
+public class DatabaseServer {
+
+	private final org.hsqldb.Server server;
+
+	public DatabaseServer() {
+		server = new Server();
+		server.setDatabaseName(0, "db");
+		server.setDatabasePath(0, "database/db");
+		server.setPort(9001);
+		server.setSilent(true);
+	}
+
+	@Startup(priority = MAX_PRIORITY)
+	public void startup() {
+		server.start();
+	}
+
+	@Shutdown(priority = MIN_PRIORITY)
+	public void shutdown() {
+		server.stop();
+	}
+
+}]]></programlisting>
+	</section>
+
+</chapter>

@@ -44,8 +44,9 @@
 		<moduleSet>
 			<excludes>
 				<exclude>*parent*</exclude>
-				<exclude>*aggregator*</exclude>
+				<exclude>*build*</exclude>
 				<exclude>*archetype*</exclude>
+				<exclude>*doc*</exclude>
 			</excludes>
 			<sources>
 				<fileSets>

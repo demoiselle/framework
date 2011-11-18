@@ -1,0 +1,317 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<chapter id="configuracao">
+
+	<title>Configuração</title>
+
+	<section>
+		<title>Configurações em uma aplicação</title>
+		<para>
+			Em aplicações no modelo Java EE, as quais são executadas hospedadas em um servidor de aplicações ou contêiner Web,
+			existem diversos papéis além do desenvolvedor, tais como assembler e deployer. É comum nestas aplicações que informações
+			de configuração de ambiente, especialmente por questões de segurança, sejam de conhecimento restrito. Por exemplo,
+			o usuário e senha de um banco de dados ou o nome de uma fila de mensagens são informações que o desenvolvedor não deve
+			possuir, pelo menos para o ambiente de produção. Além disso, o profissional responsável pelo deploy (i.e., a implantação)
+			da aplicação geralmente não pode ser encarregado de recompilar os códigos fontes para efetivar a alteração desses dados.
+		</para>
+		<para>
+			Para resolver essas questões, faz-se necessário um <emphasis>mecanismo de configuração</emphasis> para as aplicações.
+			O desenvolvedor e o assembler constroem inteiramente uma aplicação e entregam o respectivo arquivo para o deployer
+			colocá-la em produção. Paralelamente a isso, o deployer configura arquivos externos e variáveis de sistema com as
+			informações sigilosas e protegidas que serão posteriormente lidas pela aplicação. A aplicação não precisará ser
+			reconstruída caso um dado de configuração precise ser modificado.
+		</para>
+		<para>
+			Frequentemente em Java utilizamos as seguintes abordagens para armazenar as configurações:
+			<itemizedlist>
+				<listitem>
+					<emphasis>arquivo de propriedades</emphasis>: tratam-se de simples arquivos de texto nomeados com a extensão
+					<filename>.properties</filename> e que internamente são escritos com a sintaxe <literal>chave = valor</literal>,
+					armazenando uma única chave por linha;
+				</listitem>
+				<listitem>
+					<emphasis>arquivo XML</emphasis>: são arquivos de texto altamente estruturados com a sintaxe de tags e que
+					permitem uma maior validação de seus valores, sendo geralmente nomeados com a extensão <filename>.xml</filename>;
+				</listitem>
+				<listitem>
+					<emphasis>variáveis de ambiente</emphasis>: valores definidos a nível de sistema operacional, independente de
+					plataforma (Windows, Linux, etc) e que podem ser recuperados durante a execução da aplicação.
+				</listitem>
+			</itemizedlist>
+		</para>
+		<para>
+			Na seção a seguir veremos como o <emphasis>Demoiselle Framework</emphasis> apoia o desenvolvimento de aplicações nas tarefas
+			de carregamento de configurações. Tal mecanismo é comumente utilizado internamente em diversos componentes do framework.
+		</para>
+	</section>
+	
+	<section>
+		<title>As classes de configuração</title>
+		<para>
+			A primeira etapa para a utilização do mecanismo de configuração em uma aplicação consiste em criar uma classe específica
+			para armazenar os parâmetros desejados e anotá-la com <literal>@Configuration</literal>. Eis um exemplo: 
+		</para>
+		<programlisting role="JAVA"><![CDATA[@Configuration(resource = "bookmark")
+public class BookmarkConfig {
+
+	private String applicationTitle;
+
+	private boolean loadInitialData;
+
+	public String getApplicationTitle() {
+		return applicationTitle;
+	}
+
+	public boolean isLoadInitialData() {
+		return loadInitialData;
+	}
+
+}]]></programlisting>
+		<para>
+			Na classe os atributos devem ser tratados como sendo somente de leitura, possuindo apenas seus respectivos métodos
+			<emphasis>getter</emphasis>. Valores default podem ser especificados com literais na própria declaração do atributo
+			(ex: <literal>boolean loadInitialData = true</literal>).
+		</para>
+		<note>
+			<para>
+				As classes anotadas com <literal>@Configuration</literal> são tratadas de forma diferenciada pelo contêiner. Elas
+				são instanciadas uma única vez (seguindo o padrão de projeto <emphasis>singleton</emphasis>) e podem ser utilizadas
+				em qualquer ponto da aplicação. Seu ciclo de vida é gerenciado automaticamente pela implementação CDI. O arquivo de
+				recursos especificado é lido apenas na inicialização da aplicação e os atributos da classe são preenchidos
+				automaticamente nessa etapa.
+			</para>
+		</note>
+		<para>
+			No exemplo em questão, será buscado um arquivo de propriedades com o nome <filename>bookmark.properties</filename>
+			contendo as seguintes chaves:
+		</para>
+		<programlisting><![CDATA[application.title = Título da Aplicação
+load.initial.data = true
+]]></programlisting>
+		<note>
+			<para>
+				Recomenda-se usar o sufixo <quote>Config</quote> em uma classe de configuração para indicá-la como tal.
+			</para>
+		</note>
+		<para>
+			O nome do recurso (<literal>resource</literal>) e o tipo de configuração (<literal>type</literal>) são argumentos
+			opcionais na anotação <literal>@Configuration</literal>. Caso não sejam especificados, será considerado o arquivo
+			de propriedades padrão do <emphasis>Demoiselle Framework</emphasis>, o <filename>demoiselle.properties</filename>.
+		</para>
+	</section>
+
+	<section>
+		<title>Especificando os parâmetros</title>
+		<para>
+			Por padrão todos os atributos existentes em uma classe anotada com <literal>@Configuration</literal> são tratados
+			como parâmetros de configuração e serão automaticamente preenchidos durante a leitura do arquivo de recursos.
+		</para>
+		<tip>
+			<para>
+				Para indicar que um determinado atributo da classe não corresponde a um parâmetro, utilize a anotação
+				<literal>@Ignore</literal> nele. Desta forma ele será desconsiderado no momento de leitura da configuração.
+			</para>
+		</tip>
+		<tip>
+			<para>
+				Para forçar a existência de um parâmetro de configuração, utilize a anotação <literal>@NotNull</literal> no
+				respectivo atributo. Caso ele não seja encontrado no recurso, uma exceção será lançada na inicialização da
+				aplicação.
+			</para>
+		</tip>
+		<para>
+			No arquivo de recursos será buscada a chave correspondente ao atributo seguindo convenções pré-determinadas.
+			Por exemplo, no caso do atributo <literal>loadInitialData</literal>, serão buscadas as seguintes versões de chaves
+			no arquivo de recursos:
+			<itemizedlist>
+				<listitem><literal>loadInitialData</literal></listitem>
+				<listitem><literal>load.initial.data</literal></listitem>
+				<listitem><literal>load_initial_data</literal></listitem>
+				<listitem><literal>loadinitialdata</literal></listitem>
+			</itemizedlist>
+		</para>
+		<tip>
+			<para>
+				A fim de utilizar uma nomenclatura de chave diferente dos formatos convencionados, utilize a anotação
+				<literal>@Name</literal> no atributo.
+			</para>
+		</tip>
+		<para>
+			Em determinadas situações é utilizado um prefixo de chave comum a todos os parâmetros de uma classe de
+			configuração. Neste caso, é possível especificar tal prefixo na anotação <literal>@Configuration</literal>.
+			Isso permite, por exemplo, que um mesmo arquivo de recursos (ex: <filename>demoiselle.properties</filename>)
+			seja compartilhado por diversas classes de configuração.
+		</para>
+		<para>
+			Veja na listagem abaixo um código fonte que ilustra a utilização das anotações descritas nesta seção:
+		</para>
+		<programlistingco>
+			<areaspec>
+				<area id="resource-prefix" coords="1"/>
+				<area id="param-name" coords="4"/>
+				<area id="param-notnull" coords="7"/>
+				<area id="param-ignore" coords="10"/>
+			</areaspec>
+			<programlisting role="JAVA"><![CDATA[@Configuration(resource = "bookmark", prefix = "general")
+public class BookmarkConfig {
+
+	@Name("app.title")
+	private String applicationTitle;
+
+	@NotNull
+	private boolean loadInitialData;
+
+	@Ignore
+	private int dummy;
+
+	public String getApplicationTitle() {
+		return applicationTitle;
+	}
+
+	public boolean isLoadInitialData() {
+		return loadInitialData;
+	}
+
+}]]></programlisting>
+			<calloutlist>
+				<callout arearefs="resource-prefix">
+					<para>
+						Na anotação <literal>@Configuration</literal> são especificados o arquivo de recursos
+						<filename>bookmark.properties</filename> e o prefixo <literal>general</literal> a ser
+						considerado em cada uma das chaves.
+					</para>
+				</callout>
+				<callout arearefs="param-name">
+					<para>
+						Ao invés de adotar o padrão convencionado, com a anotação <literal>@Name</literal> será
+						considerada a chave <literal>app.title</literal> após o prefixo.
+					</para>
+				</callout>
+				<callout arearefs="param-notnull">
+					<para>
+						Como o atributo é anotado com <literal>@NotNull</literal>, presume-se que ele sempre
+						estará presente no arquivo de recursos. Caso contrário, uma exceção ocorrerá na
+						inicialização da aplicação.
+					</para>
+				</callout>
+				<callout arearefs="param-ignore">
+					<para>
+						Este atributo, por estar anotado com <literal>@Ignore</literal>, não será considerado
+						pelo mecanismo de configurações.
+					</para>
+				</callout>
+			</calloutlist>
+		</programlistingco>
+		<para>
+			Neste caso, será buscado um arquivo de propriedades com o nome <filename>bookmark.properties</filename>
+			contendo as seguintes chaves:
+		</para>
+		<programlisting><![CDATA[general.app.title = Título da Aplicação
+general.load.initial.data = true
+]]></programlisting>
+		<tip>
+			<para>
+				Além de <literal>String</literal> e <literal>boolean</literal>, existe a possibilidade de se recuperar valores de qualquer 
+				tipo primitivo do Java (i.e., <literal>int, byte, short, char, long, float, double</literal> e <literal>boolean</literal>)
+				e também arrays desses tipos.
+			</para>
+		</tip>
+	</section>
+
+	<section>
+		<title>Usando a configuração na aplicação</title>
+		<para>
+			A fim de utilizar o objeto de configuração previamente instanciado e preenchido pelo contêiner, basta criar uma variável numa
+			classe qualquer da aplicação e anotá-la com <literal>@Inject</literal>. Tal variável será injetada automaticamente e pode ser
+			usada dentro de um método. Veja na listagem a seguir um exemplo de injeção e uso de uma classe de configuração:
+		</para>
+<programlisting role="JAVA"><![CDATA[public class BookmarkBC {
+
+	@Inject
+	private BookmarkConfig config;
+
+	public void startup() {
+		if (config.isLoadInitialData()) {
+			...
+		}
+	}
+
+}]]></programlisting>
+		<note>
+			<para>
+				O <emphasis>Demoiselle Framework</emphasis> utiliza internamente o mecanismo de configurações na leitura do arquivo
+				<filename>demoiselle.properties</filename> para outras funcionalidades, tais como transação, persistência e paginação.
+			</para>
+		</note>
+	</section>
+
+	<section>
+		<title>Lendo arquivos XML</title>
+		<para>
+			Agora veja como ficaria a abordagem de configuração usando arquivos XML. Eis um arquivo de exemplo, o
+			<filename>escola.xml</filename>, possuindo um valor numérico e um conjunto de strings:
+		</para>
+		<programlisting role="XML"><![CDATA[<configuration> 
+	<qtdeInicial>125</qtdeInicial> 
+	<papeis> 
+		<papel>Aluno</papel> 
+		<papel>Professor</papel> 
+		<papel>Administrador</papel> 
+	</papeis>
+</configuration>]]></programlisting>
+		<para>
+			Neste caso, na classe de configuração <literal>EscolaConfig</literal> a anotação <literal>@Configuration</literal>
+			precisa apontar para o tipo de recursos XML e usar o respectivo arquivo <filename>escola.xml</filename>. Eis a
+			implementação necessária para que o referido arquivo XML seja lido e os seus valores carregados automaticamente:
+		</para>
+		<programlisting role="JAVA"><![CDATA[@Configuration(resource = "escola", type = ConfigType.XML)
+public class EscolaConfig {
+
+	private Integer qtdeInicial = 50;
+
+	@Name("papeis.papel")
+	private List<String> papeis;
+
+	private Integer getQtdeInicial() {
+		return qtdeInicial;
+	}
+
+	public List<String> getPapeis() {
+		return papeis;
+	}
+
+}]]></programlisting>
+	</section>
+
+	<section>
+		<title>Lendo variáveis de ambiente</title>
+		<para>
+			A terceira abordagem na configuração consiste em utilizar as variáveis de ambiente do sistema operacional.
+			Estas variáveis geralmente são carregadas na inicialização do sistema ou após a criação da sessão do usuário
+			(i.e., após o login), mas também podem ser modificadas manualmente através de comandos como <literal>set</literal>
+			ou <literal>export</literal>.
+		</para>
+		<para>
+			O mecanismo de configurações no <emphasis>Demoiselle Framework</emphasis> faz uso da classe
+			<ulink url="http://download.oracle.com/javase/6/docs/api/java/lang/System.html">
+			<literal>java.lang.System</literal></ulink> fornecida pela API do Java para carregar os valores nas
+			propriedades a partir de variáveis de ambiente independente do sistema operacional.
+		</para>
+		<para>
+			Veja na listagem abaixo o código necessário para a leitura de uma variável de ambiente:
+		</para>
+		<programlisting role="JAVA"><![CDATA[@Configuration(type = ConfigType.SYSTEM)
+public class EscolaConfig {
+
+	@Name("java.home")
+	private String javaDirectory;
+
+	public String getJavaDirectory() {
+		return javaDirectory;
+	}
+
+}]]></programlisting>
+	</section>
+
+</chapter>

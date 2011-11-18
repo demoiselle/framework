@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<chapter id="logger">
+
+	<title>Logger</title>
+
+	<para>
+		Uma API de logging é um recurso interessante para informar o usuário e o desenvolvedor sobre os erros, alertas,
+		resultados de operações, os recursos acessados e outras informações a respeito do sistema. Por esse motivo foi
+		implementada na versão 2.X do <emphasis>Demoiselle Framework</emphasis> uma fábrica de logger que fica no core
+		e visa permitir a injeção desse recurso baseado na classe <literal>org.slf4j.Logger</literal>. Veja abaixo como 
+		usar o logger no <emphasis>Demoiselle</emphasis>:
+	</para>
+	
+	<programlisting role="JAVA"><![CDATA[public class MinhaClasse {
+
+	@Inject
+	private Logger logger;
+	
+	public void meuMetodo() {
+		logger.debug("logando meu metodo");
+		logger.warn("mensagem de alerta do meu metodo");
+	}
+		
+}]]></programlisting>
+
+</chapter>
