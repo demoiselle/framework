@@ -38,44 +38,25 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>demoiselle-extension-build-aggregator</artifactId>
-	<packaging>pom</packaging>
+	<artifactId>demoiselle-jta</artifactId>
+	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-parent</artifactId>
+		<artifactId>demoiselle-extension-parent</artifactId>
 		<version>2.2.1-SNAPSHOT</version>
-		<relativePath>../parent/root/pom.xml</relativePath>
+		<relativePath>../../../parent/extension/pom.xml</relativePath>
 	</parent>
 
-	<name>Extensions Build Aggregator</name>
-	<description>Demoiselle Extensions Build Aggregator (JPA, JSF, Swing)</description>
+	<name>JTA Extension</name>
+	<description />
 
-	<modules>
-		<module>jta</module>
-		<module>jsf</module>
-		<module>se</module>
-		<module>jpa</module>
-	</modules>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>wagon-maven-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	<dependencies>
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+		</dependency>
+	</dependencies>
 
 	<repositories>
 		<repository>

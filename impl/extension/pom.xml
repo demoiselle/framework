@@ -38,30 +38,44 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>demoiselle-jpa</artifactId>
-	<packaging>jar</packaging>
+	<artifactId>demoiselle-extension-build-aggregator</artifactId>
+	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-extension-parent</artifactId>
+		<artifactId>demoiselle-parent</artifactId>
 		<version>2.2.1-SNAPSHOT</version>
-		<relativePath>../../parent/extension/pom.xml</relativePath>
+		<relativePath>../../parent/root/pom.xml</relativePath>
 	</parent>
 
-	<name>JPA Extension</name>
-	<description />
+	<name>Extensions Build Aggregator</name>
+	<description>Demoiselle Extensions Build Aggregator (JPA, JSF, Swing)</description>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>javax.persistence</artifactId>
-		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>br.gov.frameworkdemoiselle</groupId>-->
-<!--			<artifactId>demoiselle-jta</artifactId>-->
-<!--			<scope>test</scope>-->
-<!--		</dependency>-->
-	</dependencies>
+	<modules>
+		<module>jta</module>
+		<module>jsf</module>
+		<module>se</module>
+		<module>jpa</module>
+	</modules>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>wagon-maven-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<repositories>
 		<repository>
