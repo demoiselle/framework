@@ -1,0 +1,14 @@
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<chapter id="instala">
+
+   <title>Instalação</title>
+  
+   <para>
+   TODO: Instalação, mostrando como preparar o ambiente Demoiselle e como baixar a aplicação de exemplo (contactlist), fazendo uma breve explicação da aplicação.
+   </para>
+   
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
+</chapter>

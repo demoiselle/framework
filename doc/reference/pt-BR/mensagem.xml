@@ -1,0 +1,440 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<chapter id="mensagem">
+
+	<title>Tratamento de Mensagens</title>
+
+	<section>
+		<title>Mensagens em uma aplicação</title>
+		<para>
+			Uma aplicação bem estruturada, seja na plataforma Web ou desktop, deve exibir mensagens informativas,
+			de aviso ou de erro ao usuário após efetuar determinadas tarefas. Por exemplo, após gravar um registro
+			no banco de dados, é aconselhável que a aplicação exiba uma mensagem informativa. Se alguma exceção
+			ocorreu, é preciso exibir uma mensagem de erro. Ou seja, a severidade da mensagem deve ser escolhida de
+			acordo com o resultado da execução.
+		</para>
+		<para>
+			Veja na tabela a seguir a definição de cada um dos níveis de severidade da mensagem em uma aplicação e
+			um exemplo de texto associado:
+		</para>
+		<table>
+			<title>Níveis de severidade em mensagens</title>
+			<tgroup cols="3">
+				<colspec colwidth="15*"/>
+				<colspec colwidth="45*"/>
+				<colspec colwidth="40*"/>
+				<thead>
+					<row>
+						<entry><emphasis role="bold">Severidade</emphasis></entry>
+						<entry><emphasis role="bold">Utilização</emphasis></entry>
+						<entry><emphasis role="bold">Exemplo de texto</emphasis></entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>Informação</entry>
+						<entry>
+							<para>
+								Usada quando da ocorrência normal ou esperada no fluxo, com o objetivo de confirmar ao
+								usuário uma situação de sucesso.
+							</para>
+						</entry>
+						<entry><quote>Aluno incluído com sucesso.</quote></entry>
+					</row>
+					<row>
+						<entry>Aviso</entry>
+						<entry>
+							<para>
+								Usada quando uma regra de negócio ou validação qualquer da aplicação tenha desviado o
+								fluxo normal de execução.
+							</para>
+						</entry>
+						<entry><quote>A turma selecionada já está lotada. Matrícula do aluno não efetuada.</quote></entry>
+					</row>
+					<row>
+						<entry>Erro</entry>
+						<entry>
+							<para>
+								Reservado para o caso de uma situação anormal, tal como exceções provenientes de
+								ambiente (falha de conexão na rede, queda de um servidor de banco de dados, etc)
+								tenha impedido a execução.
+							</para>
+						</entry>
+						<entry><quote>Não foi possível efetuar a modificação do aluno.</quote></entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		<para>
+			Em uma aplicação construída usando-se arquitetura em camadas, as mensagens geralmente são originadas em
+			uma determinada camada e precisam ser transmitidas às demais até chegar ao usuário. Por exemplo, se ocorre
+			um erro de gravação no banco de dados, isto é, na camada de persistência, tal informação precisa ser
+			repassada às camadas subsequentes, ou seja, as camadas de negócio e posteriormente de controle e visão.
+			Este conceito é justamente chamado de <emphasis>tratamento de mensagens</emphasis>, o qual, ao lado do
+			tratamento de exceções, auxilia o fluxo de execuções em uma aplicação bem arquiteturada. Em resumo, é 
+			preciso programar a troca de mensagens entre as diversas camadas de uma aplicação orientada a objetos.
+		</para>
+		<para>
+			Veremos na seção a seguir como o <emphasis>Demoiselle Framework</emphasis> pode ajudar o
+			desenvolvedor na tarefa de troca de mensagens em uma aplicação.
+		</para>
+	</section>
+	
+	<section>
+		<title>Introdução ao mecanismo</title>
+		<para>
+			Ortogonalmente às camadas verticais da aplicação (i.e., apresentação, negócio e persistência), a arquitetura
+			proposta pelo <emphasis>Demoiselle Framework</emphasis> fornece os contextos de transação, segurança e mensagem.
+			Este último é justamente responsável pela troca de mensagens entre as camadas.
+		</para>
+		<para>
+			Tecnicamente falando, o contexto de mensagens no <emphasis>Demoiselle Framework</emphasis> é representado pela
+			interface <literal>MessageContext</literal>. Esta interface contém métodos destinados a inclusão, recuperação e
+			limpeza de mensagens no contexto.
+		</para>
+		<para>
+			Para obter uma instância do contexto de mensagens, basta injetá-lo na classe:
+		</para>
+		<programlisting role="JAVA"><![CDATA[@Inject
+private MessageContext messageContext;]]></programlisting>
+		<para>
+			A maneira mais simples de se inserir uma mensagem no contexto é invocando o método <function>add()</function> de
+			<literal>MessageContext</literal> passando como argumento o texto literal da mensagem:
+		</para>
+		<programlisting role="JAVA"><![CDATA[messageContext.add("Aluno inserido com sucesso.");]]></programlisting>
+		<para>
+			Opcionalmente, pode-se indicar a severidade da mensagem:
+		</para>
+		<programlisting role="JAVA"><![CDATA[messageContext.add("Deseja realmente excluir o aluno?", SeverityType.WARN);]]></programlisting>
+		<tip>
+			<para>
+				Quando a severidade não é informada (argumento de tipo <literal>SeverityType</literal>), será considerado
+				o nível informativo, isto é, <literal>INFO</literal>.
+			</para>
+		</tip>
+		<para>
+			Para a transmissão das mensagens no contexto é também fornecida a interface <literal>Message</literal>, a qual
+			permite com que os textos sejam obtidos de catálogos especializados, tais como arquivos de propriedades ou banco
+			de dados. Essa interface precisa ser implementada em uma classe customizada pelo desenvolvedor.
+			Sua estrutura é bem simples:
+		</para>
+		<programlisting role="JAVA"><![CDATA[public interface Message {
+
+	String getText();
+	
+	SeverityType getSeverity();
+
+}]]></programlisting>
+		<para>
+			A classe <literal>DefaultMessage</literal> fornecida pelo <emphasis>Demoiselle Framework</emphasis>
+			é uma implementação da interface <literal>Message</literal> que faz uso dos arquivos de recurso da aplicação
+			para obtenção das descrições das mensagens. Especificamente utiliza o arquivo <filename>messages.properties</filename>.
+		</para>
+		<note>
+			<para>
+				A unidade básica de manipulação de mensagens no <emphasis>Demoiselle Framework</emphasis>
+				é a interface <literal>Message</literal>. Basta que ela seja implementada na aplicação para que o
+				contexto de mensagens possa manipulá-la. A classe <literal>DefaultMessage</literal> é oferecida
+				como implementação padrão dessa interface.
+			</para>
+		</note>
+		<para>
+			Para incluir uma mensagem no contexto usando o tipo <literal>Message</literal> é preciso invocar o método
+			<function>add()</function> de <literal>MessageContext</literal> passando o objeto como argumento. Eis um
+			exemplo disso utilizando a classe <literal>DefaultMessage</literal>:
+		</para>
+		<programlisting role="JAVA"><![CDATA[Message message = new DefaultMessage("Ocorreu um erro ao excluir o aluno!", SeverityType.ERROR);
+		
+messageContext.add(message);]]></programlisting>
+		<para>
+			Uma vez inseridas no contexto em determinada camada da aplicação, as mensagens podem ser posteriormente
+			recuperadas. Para tal, é preciso invocar o método <function>getMessages()</function> da interface
+			<literal>MessageContext</literal>, o qual retornará uma coleção de objetos do tipo <literal>Message</literal>.
+		</para>
+		<note>
+			<para>
+				A extensão para <emphasis>JavaServer Faces</emphasis> no <emphasis>Demoiselle Framework</emphasis>
+				transfere automaticamente as mensagens incluídas no <literal>MessageContext</literal> para a apresentação
+				durante a renderização da página pelo <emphasis>JSF</emphasis>.
+			</para>
+		</note>
+		<para>
+			Para remover todas as mensagens existentes no contexto, basta invocar o método <function>clear()</function> da
+			interface <literal>MessageContext</literal>.
+		</para>
+		<note>
+			<para>
+				Especificamente para aplicações Java Web, o contexto de mensagens é automaticamente reinicializado a cada
+				requisição HTTP. Ou seja, as mensagens incluídas no contexto por uma determinada sessão de usuário não
+				interferem nas demais sessões existentes no servidor de aplicações. Além disso, ao final da requisição as
+				mensagens existentes são automaticamente excluídas do contexto.
+			</para>
+		</note>
+		<para>
+			O contexto de mensagens <literal>MessageContext</literal> tem o seu ciclo de vida gerenciado pelo CDI e pertence
+			ao escopo de sessão (i.e., <literal>@SessionScoped</literal>). Ou seja, mensagens incluídas na requisição de um
+			determinado usuário não serão exibidas para um outro usuário, pois cada um possuirá a sua sessão.
+		</para>
+		<note>
+			<para>
+				O contexto de mensagens, representado pela interface <literal>MessageContext</literal>, é capaz de
+				armazenar diversas mensagens em uma mesma requisição. Ele não é restrito à aplicações do tipo Web,
+				isto é, pode ser usado também para aplicações do tipo desktop (i.e., Swing).
+			</para>
+		</note>
+	</section>
+	
+	<section>
+		<title>Parametrização das mensagens</title>
+		<para>
+			Um recurso importante no tratamento de mensagens de uma aplicação consiste na parametrização dos textos que
+			elas carregam. Isso é extremamente útil para indicar com detalhes uma situação específica, com o objetivo de
+			melhor informar o usuário. Por exemplo, ao invés de simplesmente exibir
+			<quote>Exclusão de disciplina não permitida</quote> é preferível mostrar o seguinte texto mais explicativo
+			<quote>Exclusão não permitida: disciplina está sendo usada pela turma 301</quote>.
+			Para efetuar essa parametrização, é preciso usar a formatação de textos padronizada pela classe
+			<ulink url="http://download.oracle.com/javase/6/docs/api/java/text/MessageFormat.html">
+			<literal>java.text.MessageFormat</literal></ulink> da API do Java, que basicamente considera a notação de
+			chaves para os argumentos.
+		</para>
+		<para>
+			O <emphasis>Demoiselle Framework</emphasis> usa a <literal>MessageFormat</literal> para efetuar a
+			parametrização e formatação dos valores. Para usar essa funcionalidade, basta incluir as chaves na string
+			da mensagem e ao inseri-la no contexto especificar os parâmetros:
+		</para>
+		<programlisting role="JAVA"><![CDATA[Message message = new DefaultMessage("Aluno {0} inserido com sucesso");
+		
+messageContext.add(message, aluno.getNome());]]></programlisting>
+		<para>
+			Eis um exemplo mais avançado do uso de parametrizações em mensagens:
+		</para>
+		<programlisting role="JAVA"><![CDATA[Message message = new DefaultMessage(
+	"As {1,time} do dia {1,date,short} houve {2} na turma {0}");
+	
+messageContext.add(message, new Integer(502), new Date(), "falta de professor");]]></programlisting>
+		<para>
+			O resultado da execução deste código seria um texto como:
+			<quote>Às 13:45:05 do dia 03/01/11 houve falta do professor na turma 502</quote>.
+			Ou seja, os argumentos <literal>{0}</literal>, <literal>{1}</literal> e <literal>{2}</literal>
+			são substituídos por seus respectivos elementos na ordem em que são passados no método
+			<function>add()</function>, sendo que ainda podemos formatar esses valores.
+		</para>
+		<tip>
+			<para>
+				É possível passar mais de um parâmetro nas mensagens adicionadas no contexto, usando para isso a
+				sintaxe de formatação da classe <literal>java.text.MessageFormat</literal>. A ordem dos argumentos
+				passados no método <function>add()</function> reflete nos elementos substituídos na string.
+			</para>
+		</tip>
+	</section>
+	
+	<section>
+		<title>Internacionalização das mensagens</title>
+		<para>
+			A <literal>DefaultMessage</literal> oferece a funcionalidade de internacionalização da aplicação, ou seja,
+			a disponibilização dos textos em diversos idiomas. Numa aplicação do tipo Web, o mecanismo de internacionalização
+			faz com que as mensagens e textos sejam exibidos de acordo com o idioma selecionado pelo usuário na configuração
+			do navegador.
+		</para>
+		<para>
+			Como já foi citado anteriormente, a implementação <literal>DefaultMessage</literal> busca os textos das mensagens
+			no arquivo de recursos <filename>messages.properties</filename>, o qual possui entradas no conhecido formato
+			<literal>chave = valor</literal>. Todavia, para fazer uso desses textos, é preciso passar a chave da mensagem
+			desejada como argumento na invocação do construtor da classe. Este identificador precisa estar entre sinais de
+			chaves, tal como no exemplo a seguir:
+		</para>
+		<programlisting role="JAVA"><![CDATA[Message message = new DefaultMessage("{ALUNO_INSERIR_OK}");
+		
+messageContext.add(message, aluno.getNome());]]></programlisting>
+		<para>
+			Ou seja, ao invés de usar a string literal, passamos o identificador da chave presente no arquivo de propriedades.
+		</para>
+		<note>
+			<para>
+				O símbolo de chaves <literal>{}</literal> na string do construtor da classe <literal>DefaultMessage</literal>
+				indica se o texto da mensagem será recuperado de um arquivo de recursos ou considerado o texto literal.
+			</para>
+		</note>
+		<para>
+			Eis um exemplo de conteúdo do arquivo <filename>messages.properties</filename> destinado a manter por padrão os
+			textos no idioma português brasileiro (i.e., <literal>pt-BR</literal>). Veja que ele contém a chave
+			<literal>ALUNO_INSERIR_OK</literal> usada no exemplo anterior:
+		</para>
+		<programlisting><![CDATA[ALUNO_INSERIR_OK = Aluno {0} inserido com sucesso
+ALUNO_ALTERAR_OK = Aluno {0} alterado com sucesso
+ALUNO_EXCLUIR_OK = Aluno {0} excluído com sucesso]]></programlisting>
+		<para>
+			A fim de prover internacionalização para o idioma inglês americano (i.e., <literal>en-US</literal>) no exemplo
+			em questão, eis o conteúdo do arquivo <filename>messages_en_US.properties</filename>:
+		</para>
+		<programlisting><![CDATA[ALUNO_INSERIR_OK = Student {0} was successfully added
+ALUNO_ALTERAR_OK = Student {0} was successfully modified
+ALUNO_EXCLUIR_OK = Student {0} was successfully removed]]></programlisting>
+		<para>
+			Similarmente, o arquivo <filename>messages_fr.properties</filename> se destina a prover as mensagens no idioma
+			francês (independente do país), contendo as linhas a seguir:
+		</para>
+		<programlisting><![CDATA[ALUNO_INSERIR_OK = L'étudiant {0} a été ajouté avec succès
+ALUNO_ALTERAR_OK = L'étudiant {0} a été modifié avec succès
+ALUNO_EXCLUIR_OK = L'étudiant {0} a été supprimé avec succès]]></programlisting>
+		<note>
+			<para>
+				As chaves das mensagens (ex: <literal>ALUNO_INSERIR_OK</literal>) devem ser as mesmas em todos os arquivos de
+				propriedades. São elas que identificam unicamente uma mensagem, que ao final do processo tem o seu texto
+				automaticamente traduzido para o idioma preferido do usuário.
+			</para>
+		</note>
+		<tip>
+			<para>
+				É possível ainda configurar de modo genérico o idioma, especificando apenas a língua. Por exemplo, ao invés de
+				inglês britânico (<literal>en_GB</literal>) e inglês americano (<literal>en_US</literal>), podemos simplesmente
+				definir o idioma inglês (<literal>en</literal>). Neste caso, o arquivo deverá ser o
+				<filename>messages_en.properties</filename>.
+			</para>
+		</tip>
+		<note>
+			<para>
+				Internamente o <emphasis>Demoiselle Framework</emphasis> usa a classe
+				<ulink url="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html">java.util.Locale</ulink>
+				presente na API do Java para manipular os textos das mensages durante a internacionalização.
+			</para>
+		</note>
+		<note>
+			<para>
+				A seleção de idioma na internacionalização de uma aplicação consiste na definição de:
+				<itemizedlist>
+					<listitem>língua: códigos formados por duas letras em minúsculo listados na ISO-639 (ISO Language Code) - exemplos: pt, en, fr, es, de;</listitem>
+					<listitem>país: códigos formados por duas letras em maiúsculo listados na ISO-3166 (ISO Country Code) - exemplos: BR, PT, US, GB.</listitem>
+				</itemizedlist>
+			</para>
+		</note>
+	</section>
+
+	<section>
+		<title>Exemplos de implementação</title>
+		<para>
+			A fim de auxiliar a manutenção das descrições das mensagens em uma aplicação diversas soluções podem ser escolhidas
+			pelos arquitetos e empregadas pelos desenvolvedores. Nesta seção serão mostradas duas sugestões para essa questão,
+			usando interfaces e enumeradores.
+		</para>
+		<para>
+			A vantagem em se utilizar ambas as soluções é que diversas mensagens relacionadas podem ser agrupadas, reduzindo assim
+			a quantidade de arquivos a serem mantidos e centralizando a configuração das mensagens.
+		</para>
+		<para>
+			Sendo assim, uma possível solução é criar uma interface destinada a armazenar todos os modelos de mensagens de
+			uma determinada severidade a ser usada na aplicação. Nesta interface são declarados campos do tipo <literal>Message</literal>
+			com o modificador <literal>final</literal> (implicitamente também será <literal>public</literal> e <literal>static</literal>).
+			Veja o exemplo de código para a interface <literal>InfoMessages</literal>:
+		</para>
+		<programlisting role="JAVA"><![CDATA[public interface InfoMessages {
+
+	final Message BOOKMARK_DELETE_OK = new DefaultMessage("{BOOKMARK_DELETE_OK}");
+	final Message BOOKMARK_INSERT_OK = new DefaultMessage("{BOOKMARK_INSERT_OK}");
+	final Message BOOKMARK_UPDATE_OK = new DefaultMessage("{BOOKMARK_UPDATE_OK}");
+
+}]]></programlisting>
+		<para>
+			No exemplo em questão, o texto das mensagens será recuperado do arquivo de recursos <filename>messages.properties</filename>
+			presente no diretório <filename>/src/main/resources/</filename>. Eis o conteúdo desse arquivo:
+		</para>
+		<programlisting><![CDATA[BOOKMARK_DELETE_OK = Bookmark exclu\u00EDdo\: {0}
+BOOKMARK_INSERT_OK = Bookmark inserido: {0}
+BOOKMARK_UPDATE_OK = Bookmark atualizado: {0}]]></programlisting>
+		<tip>
+			<para>
+				Recomenda-se criar uma interface para cada tipo de severidade (ex: <literal>InfoMessages</literal>,
+				<literal>WarningMessages</literal>, <literal>ErrorMessages</literal> e <literal>FatalMessages</literal>),
+				agrupando nestas as mensagens usadas exclusivamente para o mesmo fim.
+			</para>
+		</tip>
+		<para>
+			Já a segunda abordagem consiste no uso de enumerações para centralizar os modelos de mensagem.
+			É utilizado o mesmo arquivo de recursos <filename>messages.properties</filename> ilustrado na abordagem anterior.
+			Porém, neste caso cada enumerador da enumeração corresponderá a uma chave no arquivo de propriedades.
+		</para>
+		<programlisting role="JAVA"><![CDATA[public enum InfoMessages implements Message {
+
+	BOOKMARK_DELETE_OK,
+	BOOKMARK_INSERT_OK,
+	BOOKMARK_UPDATE_OK;
+
+	private final DefaultMessage msg;
+
+	private InfoMessages() {
+		msg = new DefaultMessage("{" + this.name() + "}");
+	}
+
+	@Override
+	public String getText() {
+		return msg.getText();
+	}
+
+	@Override
+	public SeverityType getSeverity() {
+		return msg.getSeverity();
+	}
+
+}]]></programlisting>
+		<para>
+			A fim de adicionar mensagens ao contexto, eis um exemplo de código que faz uso do artefato <literal>InfoMessages</literal>,
+			que funciona não importa qual abordagem escolhida (interface ou enumeração):
+		</para>
+		<programlistingco>
+			<areaspec>
+				<area id="inject-context" coords="5"/>
+				<areaset id="add-msg-context" coords="">
+					<area id="" coords="9"/>
+					<area id="" coords="15"/>
+					<area id="" coords="21"/>
+				</areaset>
+			</areaspec>
+			<programlisting role="JAVA"><![CDATA[@BusinessController
+public class BookmarkBC {
+
+	@Inject
+	private MessageContext messageContext;
+
+	public void insert(Bookmark bookmark) {
+		...
+		messageContext.add(InfoMessages.BOOKMARK_INSERT_OK,
+			bookmark.getDescription());
+	}
+
+	public void update(Bookmark bookmark) {
+		...
+		messageContext.add(InfoMessages.BOOKMARK_UPDATE_OK,
+			bookmark.getDescription());
+	}
+
+	public void delete(Bookmark bookmark) {
+		...
+		messageContext.add(InfoMessages.BOOKMARK_DELETE_OK,
+			bookmark.getDescription());
+	}
+
+}]]></programlisting>
+			<calloutlist>
+				<callout arearefs="inject-context">
+					<para>
+						No ponto contendo <literal>@Inject</literal> será injetado via CDI o contexto de mensagens
+						presente na aplicação, ou seja, uma instância da interface <literal>MessageContext</literal>
+						que poderá ser utilizada em qualquer método nessa classe.
+					</para>
+				</callout>
+				<callout arearefs="add-msg-context">
+					<para>
+						Aqui os métodos <function>insert()</function>, <function>update()</function> e
+						<function>delete()</function> na classe <literal>BookmarkBC</literal> manipulam o
+						contexto de mensagens em cada invocação destes.
+						O método <function>add()</function> de <literal>MessageContext</literal> faz com que a
+						mensagem passada como parâmetro seja adicionada ao contexto, que ao final é exibida
+						para o usuário na camada de apresentação.
+					</para>
+				</callout>
+			</calloutlist>
+		</programlistingco>
+	</section>
+
+</chapter>

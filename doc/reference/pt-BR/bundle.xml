@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<chapter id="bundle">
+
+	<title>Resource Bundle</title>
+
+	<para>
+		Um dos requisitos para se construir uma aplicação nos dias de hoje, é o de que seja utilizada por pessoas
+		em vários lugares no mundo e em diferentes línguas. Portanto, é preciso que as aplicações sejam facilmente 
+		internacionalizáveis. Para isso, existe um recurso no java chamado de <emphasis>Resource Bundle</emphasis>,
+		que nada mais é do que um esquema de arquivos <filename>properties</filename>, onde cada arquivo representa
+		uma língua e cada um desses arquivos possui um conjunto de chaves e valores, sendo que os valores são os textos
+		que serão exibidos na aplicação e estão na língua correspondente à língua que o arquivo representa. 
+	</para>
+	<para>
+		O arquivo <filename>properties</filename> que será utilizado para montar a aplicação é escolhido pelo próprio
+		usuário, seja através da língua definida no browser ou no próprio sistema operacional. Caso o usuário escolha
+		uma língua que não está disponível na aplicação, uma língua default será utilizada. Por exemplo: vamos imaginar
+		que em uma aplicação existem dois arquivos <filename>properties</filename>, um em português e outro em inglês, e
+		que o arquivo default é o inglês. Vamos imaginar também que a aplicação é Web, portanto a língua escolhida está
+		definida no próprio browser. Caso esteja configurado no browser do usuário a língua alemã e como não existe nenhum
+		arquivo de properties para alemão, a aplicação será exibida na língua inglesa, que é a língua configurada como
+		default. 
+	</para>
+	<para>
+		Todos os arquivos são criados praticamente com o mesmo nome. O que diferencia um arquivo do outro é o acréscimo
+		da sigla que representa a língua daquele arquivo. O arquivo que representa a língua default não tem essa sigla
+		ao fim do nome. Seguindo o exemplo citado acima e imaginando que o nome dos nossos arquivos é messages, ficaria 
+		da seguinte forma: <filename>messages.properties</filename> seria o arquivo default que representaria a língua
+		inglesa e <filename>messages_pt.properties</filename> seria o arquivo da língua portuguesa. Veja abaixo um
+		exemplo com esses dois arquivos.  
+	</para>
+	<para>
+		<filename>messages.properties</filename>:
+	</para>
+	<programlisting><![CDATA[button.edit=Edit
+button.new=New
+button.save=Save]]></programlisting>
+	<para>
+		<filename>messages_pt.properties</filename>:
+	</para>
+	<programlisting><![CDATA[button.edit=Editar
+button.new=Novo
+button.save=Salvar]]></programlisting>
+
+	<section>
+		<title>Utilizando Resource Bundle no Demoiselle</title>
+		<para>
+			Na versão 2.X do <emphasis>Demoiselle Framework</emphasis>, existe uma fábrica de Resource Bundle que fica no
+			Core e permite seu uso através da injeção ou através de uma instanciação normal. O grande detalhe é que nessa
+			fábrica é injetado um objeto do tipo <literal>Locale</literal>, isso quer dizer que é necessário criar também
+			uma fabrica de <literal>Locale</literal>. Como a definição de <literal>Locale</literal> varia de acordo com a
+			camada de apresentação, essas fábricas foram criadas nas extensões de apresentação:
+			<literal>demoiselle-jsf</literal>, <literal>demoiselle-se</literal> e <literal>demoiselle-vaadin</literal>.
+			Na extensão <literal>demoiselle-se</literal> a definição do <literal>Locale</literal> é dada através do
+			<literal>Locale</literal> definido na máquina do usuário, enquanto que nas extensões
+			<literal>demoiselle-jsf</literal> e <literal>demoiselle-vaadin</literal> essa definição
+			acontece através do <literal>Locale</literal> do browser do usuário, por se tratarem de extensões para camada
+			de apresentação Web. Por default, a fábrica de Resource Bundle vai injetar um bundle apontando para o arquivo
+			<filename>messages</filename>, mas isso pode ser facilmente alterado através da anotação
+			<literal>@Name</literal>. Veja abaixo como utilizar o Resource Bundle no Demoiselle.    
+		</para>
+		<para>
+			Utilizando Resource Bundle através da injeção:
+		</para>
+		<programlisting role="JAVA"><![CDATA[@Inject
+@Name("messages-core")
+private ResourceBundle bundle;
+	
+public String metodoQueRetornaOValorDaChavebuttonedit() {
+	return bundle.getString("button.edit");
+}]]></programlisting>
+        <para>
+        	Utilizando Resource Bundle sem uso de injeção:
+        </para>
+		<programlisting role="JAVA"><![CDATA[private ResourceBundleFactory bundleFactory = new ResourceBundleFactory(Locale.getDefault());
+
+private ResourceBundle bundle;
+	            
+public String metodoQueRetornaOValorDaChavebuttonedit() {
+	bundle = bundleFactory.create("messages-core");
+	return bundle.getString("button.edit");
+}]]></programlisting>
+	</section>
+
+</chapter>

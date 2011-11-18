@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<chapter id="parametro">
+
+	<title>Parâmetro</title>
+
+		<para>
+			É muito comum em uma aplicação web haver a necessidade de passar parâmetros através da URL. A passagem de
+			parâmetros até que é algo fácil e tranquilo de fazer. O chato é a captura do parâmetro dentro do Page Bean,
+			pois toda vez que quisermos fazê-lo, temos que acessar o <literal>FacesContext</literal>, para a partir daí
+			pegar o <literal>HttpServletRequest</literal> e depois recuperar o valor passado.
+			Veja abaixo como ficaria o código.
+		</para>
+		<para>
+			Passagem do parâmetro:
+		</para>
+		<programlisting><![CDATA[http://localhost:8080/aplicacao/pagina.jsf?parametro=valorParametro]]></programlisting>
+        <para>
+        	Captura do parâmetro pelo Page Bean
+        </para>
+		<programlisting role="JAVA"><![CDATA[public class Classe {
+		
+	public void metodo() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();
+		String param = req.getParameter("parametro");
+	}
+	
+}]]></programlisting>
+
+    <section>
+        <title>
+        	Como passar parâmetro no Demoiselle 2.
+        </title>
+		<para>
+			Visando facilitar essa recuperação do parâmetro passado através da URL, foi disponibilizada na versão 2.X do
+			<emphasis>Demoiselle Framework</emphasis> uma funcionalidade através da interface <literal>Parameter</literal>
+			e de sua implementação <literal>ParameterImpl</literal>, que permite capturar esse valor através do uso de
+			injeção. Para isso, basta criar no seu Page Bean um objeto do tipo
+			<literal>br.gov.frameworkdemoiselle.util.Parameter</literal> e anotá-lo com <literal>@Inject</literal>.
+			O nome desse objeto é o nome que será usado para buscar o valor do parâmetro. Caso o usuário queira dar um 
+			nome diferente ao objeto, ele pode anotá-lo com <literal>@Name</literal> e no valor dessa anotação, colocar o
+			nome do parâmetro. Por default o objeto criado tem o escopo de request, mas é possível usar o escopo de sessão
+			ou de visão, bastando anotar o objeto com <literal>@SessionScoped</literal> ou <literal>@ViewScoped</literal>,
+			respectivamente. Veja abaixo como ficaria essa passagem de parãmetros na versão 2.X do Demoiselle.
+		</para>
+		<para>
+			Passagem do parâmetro
+		</para>
+		<programlisting><![CDATA[http://localhost:8080/aplicacao/pagina.jsf?parametro=1
+http://localhost:8080/aplicacao/pagina.jsf?parametroString=valorParametroString]]></programlisting>
+        <para>
+        	Captura do parâmetro pelo Page Bean
+        </para>
+		<programlisting role="JAVA"><![CDATA[public class Classe {
+	
+	@ViewScoped
+	@Inject
+	private Parameter<Long> parametro;
+	
+	@Name("parametroString")
+	@SessionScoped
+	@Inject
+	private Parameter<String> objetoComNomeDiferenteDoParametro;
+	
+}]]></programlisting>
+    </section>
+    
+    <section>
+        <title>As classes de parâmetro</title>
+		<para>
+			A interface <literal>Parameter</literal> e sua implementação <literal>ParameterImpl</literal> disponibilizam
+			alguns métodos, como <function>setValue(T value)</function>, <function>getKey()</function>,
+			<function>getValue()</function> e <function>getConverter()</function>, que servem respectivamente para atribuir o
+			valor do objeto, capturar o nome do parâmetro passado na URL, recuperar o valor passado para aquele parâmetro
+			e capturar o conversor de tipo utilizado. Logo, para usar o valor daquele objeto, basta utilizar o método
+			<function>getValue()</function>, tal como mostrado a seguir:
+		</para>
+		<programlisting role="JAVA"><![CDATA[public class Classe {
+	
+	@ViewScoped
+	@Inject
+	private Parameter<Long> parametro;
+		
+	public void metodo() {
+		System.out.println("Valor do parâmetro: " + parametro.getValue());
+	}
+	
+}]]></programlisting>
+    </section>
+    
+</chapter>

@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<chapter id="excecao">
+
+	<title>Exceções</title>
+
+	<para>
+		Esta funcionalidade foi feita para você que acha muito verboso encher o código de <literal>try/catch</literal>.
+		E o que dizer de repetir o tratamento de exceções em vários métodos da mesma classe na base do copiar/colar?
+		Oferecemos à você uma alternativa para resolver estes problemas, mas você estará livre para usá-la: isoladamente,
+		misturando com a forma verbosa ou até mesmo não usá-la.
+	</para>
+
+	<section>
+		<title>Tratadores de exceção</title>
+		<para>
+			Para definir um tratador de exceção, basta anotar o método com <literal>@ExceptionHandler</literal>.
+			O tratamento de exceções só é possível em classes anotadas com <literal>@Controller</literal> ou os derivados
+			desta anotação. Para ver mais detalhes sobre controladores no Demoiselle, leia o capítulo <link linkend="controlador">Controladores</link>.
+		</para>
+		<programlisting role="JAVA"><![CDATA[@Controller
+public class Simples {
+
+	@ExceptionHandler
+	public void tratador(NullPointerException cause) { }
+	
+	public void inserir() { }
+	
+	public void alterar() { }
+	
+	public void excluir() { }
+	
+}]]></programlisting>
+		<para>
+			Neste exemplo, qualquer exceção do tipo <literal>NullPointerException</literal> que ocorrer nos métodos
+			da classe <literal>Simples</literal> terá o tratamento delegado para o método <literal>tratador()</literal>.
+			Para as exceções não tratadas, o comportamento seguirá o padrão da linguagem.
+		</para>
+	</section>
+
+	<section>
+		<title>Múltiplos tratadores</title>
+		<para>
+			Não se limite a apenas um tratador por classe, você pode ter vários.
+		</para>
+		<programlisting role="JAVA"><![CDATA[@Controller
+public class Simples {
+
+	@ExceptionHandler
+	public void tratador(NullPointerException cause) { }
+	
+	@ExceptionHandler
+	public void tratador(AbacaxiException cause) { }
+	
+	public void inserir() { }
+	
+	public void alterar() { }
+	
+	public void excluir() { }
+	
+}]]></programlisting>
+		<para>
+			Caso as exceções <literal>NullPointerException</literal> ou <literal>AbacaxiException</literal> ocorram
+			nos métodos da classe <literal>Simples</literal>, o tratamento será delegado para o seu tratador.
+		</para>
+	</section>
+
+	<section>
+		<title>Misturando os dois mundos</title>
+		<para>
+			É possível que, em determindas situações no seu projeto, você precise misturar o tratamento sofisticado com a
+			tradicional forma verbosa. Como fazer isso?
+		</para>
+		<para>
+			Suponha que no método <literal>inserir()</literal> você precise dar um tratamento exclusivo para uma exceção.
+			Para isso, misture as duas abordagens para atingir o seu objetivo.
+		</para>
+		<programlisting role="JAVA"><![CDATA[@Controller
+public class Simples {
+
+	@ExceptionHandler
+	public void tratador(NullPointerException cause) { }
+	
+	public void inserir() {
+		try {
+			// tenta algo
+		} catch (AbacaxiException cause ) {
+			// trata o problema
+		}
+	}
+	
+	public void alterar() { }
+	
+	public void excluir() { }
+	
+}]]></programlisting>
+		<para>
+			Neste caso a exceção <literal>AbacaxiException</literal> só será tratada no método <literal>inserir()</literal>.
+		</para>
+	</section>
+
+	<section>
+		<title>Exceção de Aplicação</title>
+		<para>
+			Imagine que você precise informar que caso um determinado tipo de exceção seja lançado através do seu método, a transação atual sofrerá um <emphasis>rollback</emphasis>.
+			Ou, então, que haja necessidade de informar o grau de severidade da exceção, de forma que uma camada de apresentação específica a trate de forma
+			diferenciada. Estas duas opções são possíveis através do uso da anotação <literal>@ApplicationException</literal>. Utilize-a em suas exceções e informe
+			os atributos <literal>rollback</literal> e <literal>severity</literal> para alcançar os objetivos acima. 
+		</para>
+		<programlisting role="JAVA"><![CDATA[@ApplicationException(rollback=true, severity=SeverityType.INFO)
+public class MinhaException extends Exception {
+}]]></programlisting>
+		<para>
+			No exemplo citado acima, estamos informando que caso esta exceção seja lançada por um método anotado com <literal>@Transactional</literal>, este
+			método sofrerá um rollback. Ao mesmo tempo, sua camada de exibição apresentará uma mensagem automática para o usuário, conforme o nível de severidade.
+			O comportamento padrão para o <literal>rollback</literal> é realizar o rollback sempre que a exceção for lançada. 
+			O grau de severidade padrão é informativo (<literal>INFO</literal>).
+		</para>
+	</section>
+
+	<section>
+		<title>Tratamento Padrão</title>
+		<para>
+			As exceções lançadas a partir da camada de negócio, ou de persistência, não causam a interrupção de sua aplicação. Muito menos, apresentam a tela padrão de erro do JSF ou 
+			de outra tecnologia de visão. Qualquer exceção lançada, e que chega até a camada de apresentação, recebe um tratamento especial. Inicialmente, ela é encapsulada de forma
+			que possa ser exibida de forma elegante para o usuário. No caso do JSF, é utilizado o mecanismo de Messages próprio desta tecnologia.
+		</para>
+		<para>
+			No caso do Vaadin, o tratamento é bem semelhante, contudo, a exceção é tratada de forma que possa ser exibida adotando os mecanismos próprios da tecnologia. No caso de
+			exceções que não usam a anotação <literal>@ApplicationException</literal>, um <emphasis>rollback</emphasis> é realizado de forma automática. Por último, sem o uso desta
+			anotação, toda exceção é vista como tendo nível de gravidade igual a <literal>ERROR</literal>.
+		</para>
+	</section>
+	
+</chapter>

@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<chapter id="controlador">
+
+	<title>Controlador</title>
+	
+	<para>
+		No <emphasis>Demoiselle Framework</emphasis> os controladores ou controllers servem para identificar as camadas da
+		arquitetura de sua aplicação. É comum que as aplicações utilizem apenas três camadas: visão, negócio e persistência.
+		Existem aplicações que utilizam fachadas. Por esse motivo, foram implementados nessa versão do framework quatro controllers:
+		<itemizedlist>
+			<listitem><para><literal>ViewController</literal></para></listitem>
+			<listitem><para><literal>FacadeController</literal></para></listitem>
+			<listitem><para><literal>BusinessController</literal></para></listitem>
+			<listitem><para><literal>PersistenceController</literal></para></listitem>
+		</itemizedlist>
+	</para>
+	<!-- TODO: incluir exemplos de códigos usando os controladores citados acima -->
+	
+	<para>
+		Além de identificar as camadas, os controllers são pré-requisitos para utilização da funcionalidade de tratamento de exceções,
+		através do uso da anotação <literal>@ExceptionHandler</literal>. Isso quer dizer que para utilizar essa funcionalidade, a classe
+		precisa usar um dos controllers citados acima ou a própria anotação <literal>@Controller</literal> ou ainda um controller criado
+		exclusivamente para sua aplicação. Todos os controllers criados no framework são estereótipos e podem ser usados também para
+		definição de características como, por exemplo, o escopo. Isso quer dizer que se um controller tem um determinado escopo, todas
+		as classes desse controller, também terão o mesmo escopo. Foi falado que é possível criar um controller para uso exclusivo em sua
+		aplicação, mas como fazer isso? Veja na seção abaixo.  
+	</para>
+	<!-- TODO: explicar o que é um "estereótipo" e qual o seu uso na aplicação -->
+
+	<section>
+		<title>Como criar seu controlador</title>
+		<para>
+			É comum nos depararmos com situações onde precisamos criar controllers exclusivos com determinadas características ou
+			que sirvam apenas para determinar algum tipo de funcionalidade. Para criar um novo controller no Demoiselle, basta que ele
+			esteja anotado com <literal>@Controller</literal>, como no exemplo abaixo.   
+		</para>
+		<programlisting role="JAVA"><![CDATA[@Controller
+@Stereotype
+@ViewScoped
+public @interface SeuController {
+}]]></programlisting>
+		<para>
+			Neste exemplo foi criado um controlador chamado <literal>SeuController</literal> quem tem a característica de ter um escopo de
+			View. Isto quer dizer que toda classe que seja desse tipo de controlador, também terá o escopo de View.
+		</para>
+		<!-- TODO: qual a vantagem em se criar um controlador customizado? incluir um exemplo possível e prático de utilização disso -->
+	</section>
+	
+</chapter>
