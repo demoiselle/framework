@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<chapter id="templates">
+
+	<title>Templates</title>
+
+	<para>
+		O <emphasis>Demoiselle Framework</emphasis>
+		provê abstrações de classes para as camadas de apresentação, negócio e
+		persistência. Tais classes podem ser encontradas no pacote
+		<literal>br.gov.frameworkdemoiselle.template</literal>
+		e auxiliam o desenvolvedor ao disponibilizar métodos comuns à maioria das
+		aplicações. À seguir iremos exemplificar o uso de cada uma delas.
+	</para>
+
+	<section>
+		<title>Camada de persistência</title>
+		<para>
+			A classe abstrata <literal>JPACrud</literal> implementa as operações básicas de inclusão,
+			remoção, atualização e recuperação de registros no banco de dados.
+			Sendo assim, possibilita que o desenvolvedor concentre-se na criação de
+			métodos específicos para atender as regras de negócio da sua aplicação.
+			Esta classe recebe dois parâmetros em notação de genéricos:
+			<itemizedlist>
+				<listitem><para><literal>T</literal> representa a entidade que será tratada</para></listitem>
+				<listitem><para><literal>I</literal> representa o tipo do identificador da entidade</para></listitem>
+			</itemizedlist>
+		</para>
+		<para>
+			No exemplo abaixo demonstra-se a utilização da <literal>JPACrud</literal>, onde o
+			desenvolvedor precisou implementar apenas um método específico.  
+		</para>
+		<programlisting role="JAVA"><![CDATA[@PersistenceController
+public class SuaEntidadeDAO extends JPACrud<SuaEntidade, Long> {
+
+	public List<SuaEntidade> findByAlgumCriterioEspecifico(final String criterio) {
+		Query query = getEntityManager().createQuery("select se from SuaEntidade se where se.criterio = :criterio ");
+		query.setParameter("criterio", criterio);
+		return query.getResultList();
+	}
+	
+}]]></programlisting>
+	</section>
+
+	<section>
+		<title>Camada de negócio</title>
+		<para>
+			De forma semelhante à classe <literal>JPACrud</literal>, a classe <emphasis>DelegateCrud</emphasis> foi criada
+			com o intuito de dispensar o desenvolvedor de implementar métodos que
+			serão comuns à maioria das entidades. Além disso, esta classe
+			implementa a injeção de dependência entre as camadas de negócio e
+			persistência. Para utilizá-la, três parâmetros devem ser passados em notação de genéricos:
+			<itemizedlist>
+				<listitem><para><literal>T</literal> representa a entidade</para></listitem>
+				<listitem><para><literal>I</literal> representa o tipo do identificador da entidade</para></listitem>
+				<listitem><para><literal>C</literal> representa uma classe que implemente a interface <literal>CRUD</literal></para></listitem>
+			</itemizedlist>
+		</para>
+		<para>
+			Segue abaixo um exemplo da utilização do <emphasis>DelegateCrud</emphasis>.
+			Neste caso, foi implementado um método para validar a entidade antes
+			de proceder com a inclusão no banco de dados. Para isso, o método
+			<function>insert()</function> fornecido pela classe foi sobreescrito.
+		</para>
+		<programlisting role="JAVA"><![CDATA[@BusinessController
+public class SuaEntidadeBC extends DelegateCrud<SuaEntidade, Long, SuaEntidadeDAO> {
+			
+	private void validateInsert(SuaEntidade se) {
+		// valida os atributos da entidade
+	}
+
+	@Override
+	@Transactional
+	public void insert(SuaEntidade se) {
+		validateInsert(se);
+		super.insert(se);
+	}
+					
+}]]></programlisting>
+	</section>
+
+	<section>
+		<title>Camada de apresentação</title>
+		<para>
+			Para a camada de apresentação, existem duas classes que implementam os
+			comportamentos básicos de navegação para páginas de listagem e edição.
+			Estas classes são <literal>AbstractListPageBean</literal> e <literal>AbstractEditPageBean</literal>,
+			respectivamente. De forma semelhante à <literal>DelegateCrud</literal>, estas classes realizam a
+			injeção de dependência da camada de negócio dentro do artefato da
+			camada de apresentação. Ambas recebem dois parâmetros em notação de genéricos:
+			<itemizedlist>
+				<listitem><para><literal>T</literal> representa a entidade que será tratada</para></listitem>
+				<listitem><para><literal>I</literal> representa o tipo do identificador da entidade</para></listitem>
+			</itemizedlist>
+		</para>
+		<para>
+			Estendendo o <literal>AbstractListPageBean</literal>:
+		</para>
+		<programlisting role="JAVA"><![CDATA[@ViewController
+public class SuaEntidadeListMB extends AbstractListPageBean<SuaEntidade, Long> {
+	
+}]]></programlisting>
+		<para>
+			Estendendo o <literal>AbstractEditPageBean</literal>:
+		</para>
+		<programlisting role="JAVA"><![CDATA[@ViewController
+public class SuaEntidadeEditMB extends AbstractEditPageBean<SuaEntidade, Long> {
+					
+}]]></programlisting>
+	</section>
+
+</chapter>

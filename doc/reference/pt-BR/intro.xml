@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<chapter id="intro">
+
+	<title>Introdução</title>
+
+	<section>
+		<title>O que é o Demoiselle?</title>
+		<para>
+			O framework Demoiselle implementa o conceito de
+			<emphasis>framework integrador</emphasis>. 
+			Seu objetivo é facilitar a construção de aplicações minimizando tempo dedicado à escolha e integração de frameworks
+			especialistas, o que resulta no aumento da produtividade e garante a manutenibilidade dos sistemas. Disponibiliza
+			mecanismos reusáveis voltados as funcionalidades mais comuns de uma aplicação (arquitetura, segurança, transação,
+			mensagem, configuração, tratamento de exceções, etc).
+		</para>
+		<para>
+			O nome <emphasis>Demoiselle</emphasis>
+			é uma homenagem à série de aeroplanos construídos por Santos Dummont entre 1907 e 1909. Também conhecido como
+			<emphasis>Libellule</emphasis>, as Demoiselles foram os melhores, 
+			menores e mais baratos aviões da sua época. Como sua intenção era popularizar a
+			aviação com fabricação em larga escala, o inventor disponibilizou os planos em revistas técnicas para qualquer pessoa
+			que se interessasse.
+		</para>
+		<para>
+			O <emphasis>framework Demoiselle</emphasis>
+			usa a mesma filosofia do <quote>Pai da Aviação</quote>,
+			tendo sido disponibilizado como software livre em abril de 2009, sob a
+			licença livre LGPL version 3. Mais informações no portal
+			<ulink url="http://www.frameworkdemoiselle.gov.br">"www.frameworkdemoiselle.gov.br</ulink>
+		</para>
+	</section>
+
+	<section>
+		<title>Sobre a versão 2</title>
+		<para>
+			O principal objetivo da versão 2 do
+			<emphasis>framework Demoiselle</emphasis>
+			é a completa aderência à especificação
+			<ulink url="http://jcp.org/en/jsr/detail?id=316">JSR 316: Java Platform, Enterprise Edition 6</ulink>, ou simplesmente
+			<emphasis>Java EE 6</emphasis>. Para saber mais, recomendamos os links
+			<ulink url="http://www.oracle.com/technetwork/articles/javaee/javaee6overview-141808.html">Introducing the Java EE 6 Platform</ulink>
+			e
+			<ulink url="http://cleversonsacramento.wordpress.com/2010/08/15/as-novidades-da-jee-6/">As novidades da JEE 6</ulink>.
+		</para>
+		<para>
+			Esta documentação é referente às especificações da versão 2 cadastradas no
+			<ulink url="https://sourceforge.net/apps/mantisbt/demoiselle/changelog_page.php">tracker</ulink>
+			do Demoiselle, as quais foram publicamente discutidas no fórum
+			<ulink url="https://sourceforge.net/apps/phpbb/demoiselle/viewtopic.php?f=35&amp;t=63&amp;start=0">demoiselle-proposal</ulink>.
+		</para>
+		<para>
+			Os capítulos a seguir entram em detalhes sobre cada uma das principais funcionalidades do framework. Tenha uma
+			boa leitura! 
+		</para>
+	</section>
+
+</chapter>
