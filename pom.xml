@@ -44,9 +44,9 @@
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-parent</artifactId>
-		<version>2.2.1-SNAPSHOT</version>
-		<relativePath>parent/root/pom.xml</relativePath>
+		<artifactId>demoiselle-build-parent</artifactId>
+		<version>1-SNAPSHOT</version>
+		<relativePath>../build/parent/build/pom.xml</relativePath>
 	</parent>
 
 	<name>Demoiselle Framework</name>
@@ -62,54 +62,11 @@
 		<module>doc</module>
 	</modules>
 
-	<scm>
-		<connection>scm:git:git@github.com:demoiselle/framework.git</connection>
-		<url>scm:git:git@github.com:demoiselle/framework.git</url>
-		<developerConnection>scm:git:git@github.com:demoiselle/framework.git</developerConnection>
-	</scm>
-
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<finalName>demoiselle-framework-${project.version}</finalName>
-					<outputDirectory>${project.build.directory}/assembly</outputDirectory>
-					<descriptors>
-						<descriptor>assembly/src.xml</descriptor>
-						<descriptor>assembly/bin.xml</descriptor>
-					</descriptors>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>assembly</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>wagon-maven-plugin</artifactId>
-				<configuration>
-					<serverId>demoiselle.sourceforge.net</serverId>
-					<url>${upload.url}</url>
-					<fromDir>${project.build.directory}/assembly</fromDir>
-					<toDir>framework/${project.version}</toDir>
-					<skip>false</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<autoVersionSubmodules>true</autoVersionSubmodules>
-					<preparationGoals>clean install</preparationGoals>
-					<goals>deploy wagon:upload site site:deploy</goals>
-					<developmentVersion>${project.nextVersion}</developmentVersion>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -121,13 +78,6 @@
 		</plugins>
 	</build>
 
-	<distributionManagement>
-		<site>
-			<id>demoiselle.sourceforge.net</id>
-			<url>${htdocs.url}/framework/${project.version}</url>
-		</site>
-	</distributionManagement>
-
 	<repositories>
 		<repository>
 			<id>demoiselle.sourceforge.net</id>
@@ -137,7 +87,7 @@
 	</repositories>
 
 	<properties>
-		<upload.url>sftp://web.sourceforge.net/home/frs/project/d/de/demoiselle</upload.url>
+		<project.id>framework</project.id>
 		<project.nextVersion>2.2.2-SNAPSHOT</project.nextVersion>
 	</properties>
 </project>
