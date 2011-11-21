@@ -59,7 +59,7 @@
 		<module>impl</module>
 		<module>parent</module>
 		<module>archetype</module>
-		<module>doc</module>
+		<module>documentation</module>
 	</modules>
 
 	<build>

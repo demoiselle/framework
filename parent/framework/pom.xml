@@ -7,16 +7,16 @@
 	<version>2.2.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Demoiselle Parent</name>
-	<description>
-		Contém as informações de build comum a todos os projetos do Framework Demoiselle.
-		Se você é usuário do framework, certamente este POM não servirá para você.
-	</description>
-
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-root-parent</artifactId>
 		<version>1-SNAPSHOT</version>
 		<relativePath>../../../build/parent/root/pom.xml</relativePath>
 	</parent>
+
+	<name>Demoiselle Parent</name>
+	<description>
+		Contém as informações de build comum a todos os projetos do Framework Demoiselle.
+		Se você é usuário do framework, certamente este POM não servirá para você.
+	</description>
 </project>
