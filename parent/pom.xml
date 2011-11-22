@@ -52,7 +52,7 @@
 	</description>
 
 	<modules>
-		<module>root</module>
+		<module>framework</module>
 		<module>archetype</module>
 		<module>minimal</module>
 		<module>extension</module>
