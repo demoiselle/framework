@@ -70,6 +70,7 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<configuration>
 					<skip>false</skip>
+					<skipDeploy>false</skipDeploy>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -94,6 +95,13 @@
 		</plugins>
 	</build>
 
+	<distributionManagement>
+		<site>
+			<id>demoiselle.sourceforge.net</id>
+			<url>${site.url}</url>
+		</site>
+	</distributionManagement>
+
 	<repositories>
 		<repository>
 			<id>demoiselle.sourceforge.net</id>
@@ -103,7 +111,7 @@
 	</repositories>
 
 	<properties>
-		<project.id>framework</project.id>
+		<project.alias>framework</project.alias>
 		<project.nextVersion>2.2.2-SNAPSHOT</project.nextVersion>
 	</properties>
 </project>
