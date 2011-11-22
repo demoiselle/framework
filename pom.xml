@@ -50,7 +50,7 @@
 		<relativePath>../build/parent/build/pom.xml</relativePath>
 	</parent>
 
-	<name>Demoiselle Framework Build</name>
+	<name>Demoiselle Framework Build Aggregator</name>
 	<description>
 		A liberação de versões do framework deve ser feita a partir deste build, que fará automaticamente o build
 		de todos os artefatos com versionamento sincronizado. Jamais gere uma versão do framework sem utilizar este build.
@@ -60,11 +60,18 @@
 		<module>impl</module>
 		<module>parent</module>
 		<module>archetype</module>
-		<module>documentation</module>
+<!-- 		<module>documentation</module> -->
 	</modules>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
