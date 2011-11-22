@@ -48,7 +48,7 @@
 		<relativePath>../parent/framework/pom.xml</relativePath>
 	</parent>
 
-	<name>Documentation Build Aggregator</name>
+	<name>Demoiselle Framework Documentation Build Aggregator</name>
 	<description>
 	</description>
 
