@@ -46,7 +46,8 @@
 				<exclude>*parent*</exclude>
 				<exclude>*build*</exclude>
 				<exclude>*archetype*</exclude>
-				<exclude>*doc*</exclude>
+				<exclude>*reference*</exclude>
+				<exclude>*quickstart*</exclude>
 			</excludes>
 			<sources>
 				<fileSets>

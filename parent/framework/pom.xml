@@ -14,7 +14,7 @@
 		<relativePath>../../../internal/parent/demoiselle/pom.xml</relativePath>
 	</parent>
 
-	<name>Demoiselle Framework Parent</name>
+	<name>Framework Parent</name>
 	<description>
 		Contém as informações de build comum a todos os projetos do Framework Demoiselle.
 		Se você é usuário do framework, certamente este POM não servirá para você.
