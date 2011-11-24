@@ -1,0 +1,321 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE authorgroup PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<chapter id="configuracao">
+
+   <title>Configuração</title>
+  
+   <!-- TODO: Configuração, falando sobre o arquivo de configuração do demoiselle, apresentado as suas seções e finalidades;
+   		a existência deste tópico não impede que os demais já possam ter exemplificado o uso específico do arquivo de configuração. -->
+   
+   <para>
+      No presente capítulo serão abordados os seguintes assuntos:
+      <itemizedlist>
+         <listitem>importância do <emphasis>uso de configurações</emphasis> em uma aplicação;</listitem>
+         <listitem>mecanismo de configuração provido pelo <emphasis>Demoiselle Framework</emphasis>;</listitem>
+         <listitem>estereótipo <literal>@Configuration</literal>, anotação <literal>@Key</literal> e classe <literal>ConfigurationLoader</literal>;</listitem>
+         <listitem>leitura de arquivos XML, arquivos de propriedades e variáveis de sistema.</listitem>
+      </itemizedlist>
+   </para>
+   
+   <section>
+      <title>Configurações em uma aplicação</title>
+      <para>
+         Em aplicações no modelo Java EE, as quais são executadas hospedadas em um servidor de aplicações ou contêiner Web, 
+         existem diversos papéis além do desenvolvedor, tais como assembler e deployer. É comum nestas aplicações que informações 
+         de configuração de ambiente, especialmente por questões de segurança, sejam de conhecimento restrito. Por exemplo, 
+         o usuário e senha de um banco de dados ou o nome de uma fila de mensagens são informações que o desenvolvedor não deve 
+         possuir, pelo menos para o ambiente de produção. Além disso, o profissional responsável pelo deploy (i.e., a implantação)
+         da aplicação geralmente não pode ser encarregado de recompilar os códigos fontes para efetivar a alteração desses dados.
+      </para>
+      <para>
+         Para resolver essas questões, faz-se necessário um <emphasis>mecanismo de configuração</emphasis> para as aplicações. 
+         O desenvolvedor e o assembler constroem inteiramente uma aplicação e entregam o respectivo arquivo para o deployer 
+         colocá-la em produção. Paralelamente a isso, o deployer configura arquivos externos e variáveis de sistema com as 
+         informações sigilosas e protegidas que serão posteriormente lidas pela aplicação. A aplicação não precisará ser 
+         reconstruída caso um dado de configuração precise ser modificado.
+      </para>
+      <para>
+         Frequentemente em Java utilizamos as seguintes abordagens para armazenar as configurações:
+         <itemizedlist>
+            <listitem>
+               <emphasis>arquivo de propriedades</emphasis>: tratam-se de simples arquivos de texto nomeados
+               com a extensão <literal>.properties</literal> e que internamente são escritos com a sintaxe
+               <literal>"chave = valor"</literal>, armazenando uma única chave por linha;
+            </listitem>
+            <listitem>
+               <emphasis>arquivo XML</emphasis>: são arquivos de texto altamente estruturados com a sintaxe de 
+               tags e que permitem uma maior validação de seus valores, sendo geralmente nomeados com a extensão
+               <literal>.xml</literal>;
+            </listitem>
+            <listitem>
+               <emphasis>variáveis de ambiente</emphasis>: valores definidos a nível de sistema operacional,
+               independente de plataforma (Windows, Linux, etc) e que podem ser recuperados durante a execução da 
+               aplicação.
+            </listitem>
+         </itemizedlist>
+      </para>
+      <para>
+         Na seção a seguir veremos como o <emphasis>Demoiselle Framework</emphasis> apoia o desenvolvimento de
+         aplicações nas tarefas de carregamento de configurações. Tal mecanismo é comumente utilizado internamente
+         em diversos componentes do framework.
+      </para>
+   </section>
+
+   <section>
+      <title>Códigos de suporte</title>
+      <para>
+         Em diversos módulos e componentes do <emphasis>Demoiselle Framework</emphasis> existe a necessidade de se
+         carregar, em tempo de execução, as mais variadas configurações. E para estas situações foi desenvolvido um 
+         mecanismo para o carregamento das configurações. Eis alguns exemplos utilizados: regra para a fábrica padrão de DAOs, 
+         nome da unidade de persistência padrão, inicializadores a serem carregados automaticamente e estilo CSS default
+         para a camada de apresentação.
+      </para>
+      <para>
+         Esse mesmo mecanismo de configurações do <emphasis>Demoiselle Framework</emphasis> também é fornecido ao 
+         desenvolvedor de aplicações na forma de uma biblioteca Java. Nesta biblioteca, fazem parte do código de 
+         suporte de configurações:
+         <itemizedlist>
+            <listitem>
+               o estereótipo <literal>@Configuration</literal>: destinado a identificar as classes customizadas com o papel de 
+               efetuar o carregamento e armazenamento das configurações de um determinado grupo;
+            </listitem>
+            <listitem>
+               a anotação <literal>@Key</literal>: usada para sinalizar uma única configuração seguindo um mecanismo
+               automático de carregamento;
+            </listitem>
+            <listitem>
+               a classe <literal>ConfigurationLoader</literal>: classe utilitária responsável por efetuar a leitura 
+               de um arquivo especificado e armazenar os valores em uma classe anotada com <literal>@Configuration</literal>.
+            </listitem>
+         </itemizedlist>
+      </para>
+      <para>
+         Nesse código interno é utilizada a especificação <emphasis>CDI (Common Dependency Injection)</emphasis>, a qual visa
+         o gerenciamento do ciclo de vida das classes de configuração e por isso possui grande importância na questão de
+         desempenho da aplicação.
+      </para>
+      <note>
+         <para>
+            O ciclo de vida de uma classe estereotipada com <literal>@Configuration</literal> é gerenciado automaticamente através
+            de uma implementação da especificação CDI, tal como o Weld. Tal ciclo segue o padrão de projeto <emphasis>singleton</emphasis>.  
+         </para>
+      </note>
+      <note>
+         <para>
+            O <emphasis>Demoiselle Framework</emphasis> utiliza internamente seu próprio mecanismo de configurações.
+         </para>
+      </note>
+      <para>
+         Veremos na próxima seção como implementar o <emphasis>mecanismo de configuração</emphasis> em uma aplicação qualquer.
+      </para>
+   </section>
+
+   <section>
+      <title>Implementação da configuração</title>
+      <para>
+         A primeira etapa para utilizar o mecanismo de configuração em uma aplicação consiste na criação de uma 
+         classe estereotipada com a anotação <literal>@Configuration</literal>. Nela devem ser especificados como parâmetros
+         o tipo e o nome do arquivo de recursos a ser utilizado para esta configuração. Veja no trecho de código abaixo um exemplo:
+      </para>
+      <programlisting role="JAVA"><![CDATA[@Configuration(resource = "escola.properties", type = ConfigType.PROPERTIES)
+public class EscolaConfig { 
+
+	...
+
+}]]></programlisting>
+      <tip>
+         <para>
+            Recomenda-se agrupar as configurações carregadas de um determinado arquivo de recursos (ex: XML) em uma mesma classe
+            anotada com <literal>@Configuration</literal>.
+         </para>
+      </tip>
+      <para>
+         A fim de fazer uso desta classe na aplicação, basta declarar uma variável e anotá-la com <literal>@Inject</literal>,
+         tal como ilustrado: 
+      </para>
+      <programlisting role="JAVA"><![CDATA[@Inject EscolaConfig config;]]></programlisting>
+   </section>
+
+   <section>
+      <title>Arquivo de propriedades</title>
+      <para>
+         Eis um exemplo de conteúdo para um arquivo de propriedades, chamado <literal>escola.properties</literal>:
+      </para>
+      <programlisting><![CDATA[# Definição da fábrica de DAO: [hibernate] ou [jdbc]
+escola.fabrica.dao = jdbc]]></programlisting>      
+      <para>
+         Nesta abordagem, para que o valor da chave <literal>escola.dao.factory</literal> seja recuperado, é preciso 
+         incluir os trechos de código indicados a seguir na classe <literal>EscolaConfig</literal>:
+      </para>
+      <programlisting role="JAVA"><![CDATA[@Configuration(resource = "escola.properties", type = ConfigType.PROPERTIES)
+public class EscolaConfig {
+
+	@Key(name = "escola.fabrica.dao")
+	private String fabricaDao;
+
+	public String getFabricaDao() {
+		return fabricaDao;
+	} 
+	
+}]]></programlisting>
+      <para>
+         Desta forma, quando houver necessidade de recuperar o valor configurado no arquivo de propriedades, basta 
+         executar o código Java abaixo (supondo que o campo <literal>EscolaConfig config</literal> esteja previamente
+         declarado e anotado com <literal>@Inject</literal>):
+      </para>
+      <programlisting role="JAVA"><![CDATA[String fabrica = config.getFabricaDao();]]></programlisting>
+      <para>
+         Além de <literal>String</literal>, note que existe a possibilidade de se recuperar valores de qualquer tipo 
+         primitivo do Java (<literal>int, byte, short, char, long, float, double</literal> e <literal>boolean</literal>)
+         e também arrays desses tipos.
+      </para>
+      <tip>
+         <para>
+            É possível recuperar valores de configurações para variáveis individuais ou arrays.
+         </para>
+      </tip>
+   </section>
+
+   <section>
+      <title>Arquivo XML</title>
+      <para>
+         Agora veja como ficaria a abordagem usando arquivos XML. Eis um arquivo de exemplo, o
+         <literal>escola.xml</literal>, possuindo um valor numérico e um conjunto de strings:
+      </para>
+      <programlisting role="XML"><![CDATA[<configuration> 
+	<qtdeInicial>125</qtdeInicial> 
+	<papeis> 
+		<papel>Aluno</papel> 
+		<papel>Professor</papel> 
+		<papel>Administrador</papel> 
+	</papeis>
+</configuration>]]></programlisting>
+      <para>
+         Neste caso, na classe <literal>EscolaConfig</literal> a anotação <literal>@Configuration</literal> precisa
+         apontar para o tipo de recursos XML e usar o respectivo arquivo <literal>escola.xml</literal>. Eis a
+         implementação necessária para que o referido arquivo XML seja lido e as suas configurações carregadas:
+      </para>
+      <programlisting role="JAVA"><![CDATA[@Configuration(resource = "escola.xml", type = ConfigType.XML)
+public class EscolaConfig { 
+
+	@Key(name = "qtdeInicial") 
+	private Integer qtdeInicial = 50; 
+
+	@Key(name = "papeis.papel") 
+	private List<String> papeis; 
+
+	private Integer getQtdeInicial() { 
+		return qtdeInicial; 
+	} 
+
+	public List<String> getPapeis() { 
+		return papeis; 
+	} 
+
+}]]></programlisting>
+      <para>
+         De maneira similar, quando necessário na aplicação, o trecho de código a seguir será suficiente para 
+         carregar as configurações do arquivo XML:
+      </para>
+      <programlisting role="JAVA"><![CDATA[@Inject EscolaConfig cfg;
+      
+...
+      
+Integer qtd = cfg.getQtdeInicial();
+
+List<String> papeis = cfg.getPapeis();]]></programlisting>
+      <para>
+         Note que a propriedade <literal>qtdeInicial</literal> foi inicializada com o valor default 50. É possível 
+         fazer isso com qualquer outro campo com o objetivo de, no caso de a chave não ser encontrada no arquivo, 
+         este valor padrão ser atribuído.
+      </para>
+   </section>
+
+   <section>
+      <title>Variáveis de ambiente</title>
+      <para>
+         A terceira e última abordagem na configuração consiste em utilizar as variáveis de ambiente do sistema 
+         operacional. Estas variáveis geralmente são carregadas na inicialização do sistema ou após a criação da 
+         sessão do usuário (após o login), mas também podem ser modificadas manualmente através de comandos como 
+         <literal>set</literal> ou <literal>export</literal>.
+      </para>
+      <para>
+         Como a linguagem Java é multi-plataforma, as variáveis de ambiente podem ser carregadas independente do 
+         sistema operacional. Para esta tarefa, na API do Java é fornecida a classe <literal>java.lang.System</literal>, 
+         a qual possui métodos como <literal>getenv()</literal> para recuperar os valores das variáveis. O código abaixo 
+         varre a lista de variáveis exportadas no sistema e exibe o resultado na console:
+      </para>
+      <programlisting role="JAVA"><![CDATA[Map<String, String> vars = System.getenv();
+       
+for (String chave : vars.keySet()) { 
+
+	String valor = vars.get(chave); 
+	System.out.println(chave + " = " + valor); 
+	
+}]]></programlisting>
+      <para>
+         O mecanismo de configurações no <emphasis>Demoiselle Framework</emphasis> faz uso desta classe
+         <literal>System</literal> para carregar automaticamente os valores nas propriedades. Veja na listagem abaixo 
+         o código necessário para a leitura de uma variável de ambiente:
+      </para>
+      <programlisting role="JAVA"><![CDATA[@Configuration(type = ConfigType.SYSTEM)
+public class EscolaConfig {
+
+	@Key(name = "java.home") 
+	private String javaHome; 
+
+	public String getJavaHome() { 
+		return javaHome; 
+	}
+	
+}]]></programlisting>
+   </section>
+   
+   <section>
+      <title>Opções avançadas</title>
+      <para>
+         É possível ainda fazer com que diversas abordagens de leitura de configuração coexistam em uma classe anotada
+         com <literal>@Configuration</literal> ou mesmo utilizar múltiplos arquivos de recursos. Para isso, é preciso
+         indicar individualmente nos campos usando parâmetros da anotação <literal>@Key</literal>, tal como exemplificado: 
+      </para>
+      <programlisting role="JAVA"><![CDATA[@Configuration
+public class EscolaConfig {
+
+	@Key(name = "escola.fabrica.dao",
+			type = ConfigType.PROPERTIES, resourceName = "escola.properties")
+	private String fabricaDao;
+
+	@Key(name = "escola.fabrica.facade",
+			type = ConfigType.PROPERTIES, resourceName = "escola2.properties")
+	private String fabricaFacade;
+
+	@Key(name = "qtdeInicial", type = ConfigType.XML, resourceName = "escola.xml")
+	private Integer qtdeInicial = 50; 
+
+	@Key(name = "java.home", type = ConfigType.SYSTEM) 
+	private String javaHome; 
+
+	public String getFabricaDao() {
+		return fabricaDao;
+	} 
+
+	public String getFabricaFacade() {
+		return fabricaFacade;
+	} 
+
+	private Integer getQtdeInicial() { 
+		return qtdeInicial; 
+	} 
+
+	public String getJavaHome() { 
+		return javaHome; 
+	}
+	
+}]]></programlisting>
+   </section>
+   
+<!--
+vim:et:ts=3:sw=3:tw=120
+-->
+</chapter>

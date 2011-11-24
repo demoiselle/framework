@@ -54,6 +54,7 @@
 
 	<modules>
 		<module>reference</module>
+		<module>quickstart</module>
 	</modules>
 
 	<build>

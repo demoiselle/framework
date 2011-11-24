@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE authorgroup PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<authorgroup>
+	<author>
+		<firstname>Emerson</firstname>
+		<surname>Saito</surname>
+	</author>
+	<author>
+		<firstname>Marlon</firstname>
+		<surname>Carvalho</surname>
+	</author>
+	<author>
+		<firstname>Rodrigo</firstname>
+		<surname>Hjort</surname>
+	</author>
+	<author>
+		<firstname>Serge</firstname>
+		<surname>Rehem</surname>
+	</author>
+</authorgroup>

@@ -1,0 +1,528 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<chapter id="melhoria">
+
+	<title>Melhorando a aplicação</title>
+
+	<section>
+		<title>Implementando funcionalidade de edição</title>
+		<para>
+			Agora que a aplicação inicial já está rodando, iremos aumentar sua complexidade adicionando a
+			funcionalidade de edição dos registros de bookmark.
+		</para>
+		<para>
+			Dentro do pacote <literal>br.gov.frameworkdemoiselle.sample.view</literal> crie a classe
+			<literal>BookmarkEditMB</literal>, a qual será responsável por controlar as modificações sobre
+			os bookmarks efetuadas pelo usuário:
+		</para>
+		<programlisting role="JAVA"><![CDATA[@ViewController
+@PreviousView("/bookmark_list.xhtml")
+public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
+
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	private BookmarkBC bc;
+
+	@Override
+	@Transactional
+	public String delete() {
+		bc.delete(getId());
+		return getPreviousView();
+	}
+
+	@Override
+	@Transactional
+	public String insert() {
+		bc.insert(getBean());
+		return getPreviousView();
+	}
+
+	@Override
+	@Transactional
+	public String update() {
+		bc.update(getBean());
+		return getPreviousView();
+	}
+
+	@Override
+	protected void handleLoad() {
+		setBean(bc.load(getId()));
+	}
+
+}]]></programlisting>
+		<tip>
+			<para>
+				A anotação <literal>@Transactional</literal> trata-se de uma anotação fornecida pelo
+				<emphasis>Demoiselle Framework</emphasis> para indicar que o método em questão
+				será incluído na sessão transacional. Caso essa anotação esteja vinculada na classe,
+				todos os seus métodos serão considerados transacionais.
+			</para>
+		</tip>
+		<para>
+			A classe <literal>AbstractEditPageBean</literal> faz parte do código de suporte fornecido pelo
+			<emphasis>Demoiselle Framework</emphasis> (especificamente na extensão JSF). Ao utilizá-la,
+			o desenvolvedor não precisará implementar métodos específicos de navegação para uma tela de
+			cadastro (i.e., do tipo <emphasis>CRUD</emphasis>).
+		</para>
+		<para>
+			Ainda no pacote <literal>br.gov.frameworkdemoiselle.sample.view</literal> altere a classe
+			<literal>BookmarkListMB</literal>:
+		</para>
+		<programlistingco>
+			<areaspec>
+				<area id="next-prev-view" coords="2"/>
+				<area id="delete-selection" coords="16"/>
+			</areaspec>
+			<programlisting role="JAVA"><![CDATA[@ViewController
+@NextView("/bookmark_edit.xhtml")
+@PreviousView("/bookmark_list.xhtml")
+public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> {
+
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	private BookmarkBC bc;
+
+	@Override
+	protected List<Bookmark> handleResultList() {
+		return bc.findAll();
+	}
+
+	@Transactional
+	public String deleteSelection() {
+		boolean delete = false;
+		Iterator<Long> iter = getSelection().keySet().iterator();
+		while (iter.hasNext()) {
+			Long id = iter.next();
+			delete = getSelection().get(id);
+			if (delete) {
+				bc.delete(id);
+				iter.remove();
+			}
+		}
+		return getPreviousView();
+	}
+
+}]]></programlisting>
+			<calloutlist>
+				<callout arearefs="next-prev-view">
+					<para>
+						A anotação <literal>@NextView</literal> serve para definir a próxima
+						visão a ser direcionado o fluxo de navegação JSF. De forma semelhante,
+						a anotação <literal>@PreviousView</literal> define a visão anterior
+						de um fluxo.
+					</para>
+				</callout>
+				<callout arearefs="delete-selection">
+					<para>
+						O novo método <function>deleteSelection()</function> servirá para
+						permitir a funcionalidade de exclusão de múltiplas linhas da tabela.
+						A anotação <literal>@Transactional</literal> nele faz com que o método
+						seja considerado como transacional, incluindo-o na respectiva sessão.
+					</para>
+				</callout>
+			</calloutlist>
+		</programlistingco>
+		<para>
+			No diretório <filename>/src/main/webapp/</filename>, crie o arquivo
+			<filename>bookmark_edit.xhtml</filename> com o conteúdo seguinte:
+		</para>
+		<programlisting role="XML"><![CDATA[<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.prime.com.tr/ui"	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:ui="http://java.sun.com/jsf/facelets" template="/template/main.xhtml">
+	<ui:define name="body">
+		<h:form prependId="false">
+			<p:toolbar>
+				<p:toolbarGroup align="left">
+					<p:commandButton value="#{messages['button.save']}"
+						action="#{bookmarkEditMB.insert}"
+						rendered="#{!bookmarkEditMB.updateMode}" ajax="false" />
+					<p:commandButton value="#{messages['button.save']}"
+						action="#{bookmarkEditMB.update}"
+						rendered="#{bookmarkEditMB.updateMode}" ajax="false" />
+					<p:commandButton value="#{messages['button.delete']}"
+						onclick="confirmation.show()" rendered="#{bookmarkEditMB.updateMode}"
+						type="button" immediate="true" ajax="false" />
+					<p:confirmDialog message="#{messages['label.confirm.delete']}"
+						showEffect="bounce" hideEffect="explode"
+						header="#{messages['label.dialog.delete']}"
+						severity="alert" widgetVar="confirmation">
+						<h:commandButton value="#{messages['button.dialog.yes']}"
+							action="#{bookmarkEditMB.delete}" immediate="true" ajax="false" />
+						<h:commandButton value="#{messages['button.dialog.no']}"
+							onclick="confirmation.hide()" type="button" />
+					</p:confirmDialog>
+				</p:toolbarGroup>
+			</p:toolbar>
+			<br />
+			<p:fieldset legend="#{messages['bookmark.label']}" toggleable="true"
+				toggleSpeed="500">
+				<h:panelGrid id="fields" columns="3">
+					<h:outputLabel value="#{messages['bookmark.label.id']}: "
+						for="id" styleClass="text-input" />
+					<h:outputText id="id" value="#{bookmarkEditMB.bean.id}" />
+					<p:message for="id" />
+					<h:outputLabel value="#{messages['bookmark.label.description']}: "
+						for="description" styleClass="text-input" />
+					<h:inputText id="description" value="#{bookmarkEditMB.bean.description}"
+						title="#{messages['bookmark.alt.description']}" />
+					<p:message for="description" />
+					<h:outputLabel value="#{messages['bookmark.label.link']}: "
+						for="link" styleClass="text-input" />
+					<h:inputText id="link" value="#{bookmarkEditMB.bean.link}"
+						title="#{messages['bookmark.alt.link']}" />
+					<p:message for="link" />
+				</h:panelGrid>
+			</p:fieldset>
+		</h:form>
+	</ui:define>
+</ui:composition>]]></programlisting>
+		<para>
+			Ainda no diretório <filename>/src/main/webapp/</filename>, modifique o arquivo
+			<filename>bookmark_list.xhtml</filename> com o conteúdo seguinte:
+		</para>
+		<programlisting role="XML"><![CDATA[<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" template="/template/main.xhtml">
+	<ui:define name="body">
+		<h:form>
+			<p:toolbar>
+				<p:toolbarGroup align="left">
+					<p:commandButton title="#{messages['button.new']}"
+						image="ui-icon-document" action="#{bookmarkListMB.getNextView}"
+						actionListener="#{bookmarkListMB.clear}" ajax="false" />
+					<p:commandButton title="#{messages['button.delete']}"
+						image="ui-icon-trash" onclick="confirmation.show()" type="button"
+						immediate="true" ajax="false" />
+					<p:confirmDialog message="#{messages['label.confirm.delete']}"
+						showEffect="bounce" hideEffect="explode"
+						header="#{messages['label.dialog.alert']}!"
+						severity="alert" widgetVar="confirmation">
+						<h:commandButton value="#{messages['button.dialog.yes']}"
+							action="#{bookmarkListMB.deleteSelection}"
+							actionListener="#{bookmarkListMB.clear}" />
+						<h:commandButton value="#{messages['button.dialog.no']}"
+							onclick="confirmation.hide()" type="button" />
+					</p:confirmDialog>
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:dataTable id="list" var="bean" value="#{bookmarkListMB.resultList}">
+				<f:facet name="header">#{messages['bookmark.list.table.title']}</f:facet>
+				<p:column style="width:1%;">
+					<h:selectBooleanCheckbox value="#{bookmarkListMB.selection[bean.id]}" />
+				</p:column>
+				<p:column style="width:5%;" sortBy="#{bean.id}">
+					<f:facet name="header">#{messages['bookmark.label.id']}</f:facet>
+					<h:outputText value="#{bean.id}" />
+				</p:column>
+				<p:column sortBy="#{bean.description}">
+					<f:facet name="header">#{messages['bookmark.label.description']}</f:facet>
+					<h:commandLink action="#{bookmarkListMB.getNextView}"
+						actionListener="#{bookmarkListMB.clear}">
+						<h:outputText value="#{bean.description}" />
+						<f:param name="id" value="#{bean.id}" />
+					</h:commandLink>
+				</p:column>
+				<p:column sortBy="#{bean.link}">
+					<f:facet name="header">#{messages['bookmark.label.link']}</f:facet>
+					<h:commandLink action="#{bookmarkListMB.getNextView}"
+						actionListener="#{bookmarkListMB.clear}">
+						<h:outputText value="#{bean.link}" />
+						<f:param name="id" value="#{bean.id}" />
+					</h:commandLink>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>]]></programlisting>
+		<para>
+			No diretório <filename>/src/main/webapp/</filename>, altere o arquivo
+			<filename>menu.xhtml</filename> conforme o conteúdo seguinte:
+		</para>
+		<programlisting role="XML"><![CDATA[<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:form>
+		<p:menubar>
+			<p:submenu label="#{messages['menu.bookmark']}">
+				<p:menuitem value="#{messages['menu.menuitem.new']}"
+					url="/bookmark_edit.jsf" />
+				<p:menuitem value="#{messages['menu.menuitem.list']}"
+					url="/bookmark_list.jsf" />
+			</p:submenu>
+			<p:submenu>
+				<f:facet name="label">
+					<p:menuitem value="#{messages['menu.menuitem.quit']}"
+						url="http://www.frameworkdemoiselle.gov.br/" />
+				</f:facet>
+			</p:submenu>
+		</p:menubar>
+	</h:form>
+</ui:composition>]]></programlisting>
+		<para>
+			Tendo feito todas essas alterações, reconstrua o projeto Java e faça novo deploy no
+			servidor de aplicações. Ao acessar a aplicação <literal>bookmark</literal> pelo browser,
+			verá que agora existe uma opção nova no menu principal: <guimenu>Bookmarks</guimenu>,
+			<guimenu>Novo</guimenu>. Executando-a, será exibida a página a seguir:
+		</para>
+        <figure>
+			<title>Edição dos dados na aplicação Bookmark</title>
+			<mediaobject>
+	            <imageobject role="fo">
+	                <imagedata fileref="images/appedit.png" align="center" scalefit="1" />
+	            </imageobject>
+	            <imageobject role="html">
+	                <imagedata fileref="images/appedit.png" align="center" />
+	            </imageobject>
+				<textobject>
+					<phrase>Aplicação Bookmark em funcionamento</phrase>
+				</textobject>
+	        </mediaobject>
+		</figure>
+	</section>
+
+	<section>
+		<title>Exibindo mensagens para o usuário</title>
+		<para>
+			Uma vez que o objetivo principal da aplicação foi concluído (i.e., listagem e edição de bookmarks),
+			veremos algumas funcionalidades adicionais fornecidas pelo <emphasis>Demoiselle Framework</emphasis>,
+			iniciando pelo tratamento de mensagens.
+		</para>
+		<para>
+			Dentro do pacote <literal>br.gov.frameworkdemoiselle.sample.message</literal> crie a interface
+			<literal>InfoMessages</literal>, a qual servirá para armazenar mensagens informativas a serem
+			exibidas ao usuário:
+		</para>
+		<programlisting role="JAVA"><![CDATA[public interface InfoMessages {
+
+	final Message BOOKMARK_DELETE_OK = new DefaultMessage("{bookmark-delete-ok}");
+	final Message BOOKMARK_INSERT_OK = new DefaultMessage("{bookmark-insert-ok}");
+	final Message BOOKMARK_UPDATE_OK = new DefaultMessage("{bookmark-update-ok}");
+
+}]]></programlisting>
+		<note>
+			<para>
+				A unidade básica de manipulação de mensagens no <emphasis>Demoiselle Framework</emphasis>
+				é a interface <literal>Message</literal>. Ou seja, basta que esta última seja implementada na
+				aplicação para que o contexto de mensagens possa manipulá-la.
+				A classe <literal>DefaultMessage</literal> é oferecida como implementação padrão dessa interface.
+			</para>
+		</note>
+		<para>
+			No exemplo em questão, o texto das mensagens será recuperado do arquivo de recursos
+			<filename>messages.properties</filename> previamente criado no diretório
+			<filename>/src/main/resources/</filename>. Para isso, adicione as seguintes linhas nesse arquivo:
+		</para>
+<programlisting role="XML"><![CDATA[bookmark-delete-ok=Bookmark exclu\u00EDdo\: {0}
+bookmark-insert-ok=Bookmark inserido: {0}
+bookmark-update-ok=Bookmark atualizado: {0}]]></programlisting>
+		<para>
+			Dentro do pacote <literal>br.gov.frameworkdemoiselle.sample.business</literal> altere a classe
+			<literal>BookmarkBC</literal> incluindo os trechos de código indicados a seguir:
+		</para>
+		<programlistingco>
+			<areaspec>
+				<area id="inject-context" coords="5"/>
+				<areaset id="add-msg-context" coords="">
+					<area id="" coords="12"/>
+					<area id="" coords="19"/>
+					<area id="" coords="26"/>
+				</areaset>
+			</areaspec>
+			<programlisting role="JAVA"><![CDATA[@BusinessController
+public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
+
+	@Inject
+	private MessageContext messageContext;
+	
+	...
+
+	@Override
+	public void insert(Bookmark bookmark) {
+		super.insert(bookmark);
+		messageContext.add(InfoMessages.BOOKMARK_INSERT_OK,
+			bookmark.getDescription());
+	}
+
+	@Override
+	public void update(Bookmark bookmark) {
+		super.update(bookmark);
+		messageContext.add(InfoMessages.BOOKMARK_UPDATE_OK,
+			bookmark.getDescription());
+	}
+	
+	@Override
+	public void delete(Long id) {
+		super.delete(id);
+		messageContext.add(InfoMessages.BOOKMARK_DELETE_OK, id);
+	}
+	
+}]]></programlisting>
+			<calloutlist>
+				<callout arearefs="inject-context">
+					<para>
+						No ponto contendo <literal>@Inject</literal> será injetado via CDI o contexto de mensagens
+						presente na aplicação, ou seja, uma instância da interface <literal>MessageContext</literal>
+						que poderá ser utilizada em qualquer método nessa classe.
+					</para>
+				</callout>
+				<callout arearefs="add-msg-context">
+					<para>
+						Aqui os métodos <function>insert()</function>, <function>update()</function> e
+						<function>delete()</function> da classe <literal>DelegateCrud</literal> são sobrescritos
+						para permitir com que o contexto de mensagens seja manipulado em cada invocação destes.
+						O método <function>add()</function> de <literal>MessageContext</literal> faz com que a
+						mensagem passada como parâmetro seja adicionada ao contexto, que ao final será exibida
+						para o usuário na camada de apresentação.
+					</para>
+				</callout>
+			</calloutlist>
+		</programlistingco>
+		<note>
+			<para>
+				O contexto de mensagens, representado pela interface <literal>MessageContext</literal>, é capaz de
+				armazenar diversas mensagens em uma mesma requisição. Ele não é restrito à aplicações do tipo Web,
+				isto é, pode ser usado também para aplicações do tipo desktop (i.e., Swing).
+			</para>
+		</note>
+		<para>
+			Ao término das modificações propostas até aqui, reconstrua o projeto Java e faça novo deploy
+			no servidor de aplicações. Acesse a aplicação <literal>bookmark</literal> e efetue inclusões,
+			modificações e exclusões de bookmarks. As mensagens informativas devem aparecer em caixas de
+			mensagens na tela, tal como ilustrado a seguir:
+		</para>
+        <figure>
+			<title>Exibição de mensagens na aplicação Bookmark</title>
+			<mediaobject>
+	            <imageobject role="fo">
+	                <imagedata fileref="images/appmsg.png" align="center" scalefit="1" />
+	            </imageobject>
+	            <imageobject role="html">
+	                <imagedata fileref="images/appmsg.png" align="center" />
+	            </imageobject>
+				<textobject>
+					<phrase>Aplicação Bookmark em funcionamento</phrase>
+				</textobject>
+	        </mediaobject>
+		</figure>
+	</section>
+
+	<section>
+		<title>Criando regras de validação nos campos</title>
+		<para>
+			Sendo aderente à especificação Java EE 6, o <emphasis>Demoiselle Framework</emphasis>
+			recomenda e faz uso do mecanismo de validação provido pela especificação
+			<ulink url="http://jcp.org/en/jsr/detail?id=303">JSR-303 (Bean Validation)</ulink>.
+		</para>
+		<para>
+			A fim de testarmos mais essa funcionalidade, utilizaremos a implementação de validação
+			<emphasis>Hibernate Validator</emphasis>. Para tal, abra o arquivo <filename>pom.xml</filename>
+			do projeto <literal>bookmark</literal> e inclua nele a seguinte dependência:
+		</para>
+		<programlisting role="XML"><![CDATA[<dependencies>
+	...
+	<dependency>
+		<groupId>org.hibernate</groupId>
+		<artifactId>hibernate-validator</artifactId>
+		<version>4.1.0.Final</version>
+	</dependency>
+</dependencies>]]></programlisting>
+		<note>
+			<para>
+				O objetivo dessa abordagem de validação é auxiliar na criação de restrições diretamente nas
+				entidades de domínio. Tais restrições serão utilizadas de forma conjunta nas camadas de
+				persistência e apresentação da aplicação. A vantagem é que elas são facilmente configuráveis,
+				bastando apenas incluir certas anotações (ex: <literal>@NotNull</literal>, <literal>@Size</literal>)
+				nos campos da classe a ser validada.
+			</para>
+		</note>
+		<para>
+			No pacote <literal>br.gov.frameworkdemoiselle.sample.domain</literal> altere a entidade de domínio
+			<literal>Bookmark</literal> incluindo as anotações de validação nos campos <literal>description</literal>
+			e <literal>link</literal> conforme ilustrado a seguir:
+		</para>
+		<programlistingco>
+			<areaspec>
+				<area id="valid-desc" coords="9"/>
+				<area id="valid-link" coords="14"/>
+			</areaspec>
+			<programlisting role="JAVA"><![CDATA[@Entity
+public class Bookmark {
+
+	@Id
+	@GeneratedValue
+	private Long id;
+
+	@Column
+	@NotNull
+	@Size(min = 1, max = 20)
+	private String description;
+
+	@Column
+	@NotNull
+	@NotBlank
+	@Size(max = 255)
+	@URL
+	private String link;
+
+	...
+}]]></programlisting>
+			<calloutlist>
+				<callout arearefs="valid-desc">
+					<para>
+						No campo <literal>description</literal>, a anotação <literal>@NotNull</literal> serve
+						para impedir que o valor nulo seja atribuído a ele. Já a anotação <literal>@Size</literal>
+						restringe a quantidade mínima e máxima de caracteres no campo.
+					</para>
+				</callout>
+				<callout arearefs="valid-link">
+					<para>
+						No campo <literal>link</literal> mais restrições são aplicadas. Além de não permitir o valor
+						nulo (com <literal>@NotNull</literal>) e estipular o comprimento máximo de 255 caracteres
+						(com <literal>@Size</literal>), o campo não pode ficar vazio (com <literal>@NotBlank</literal>)
+						e seu conteúdo deve ser um endereço de Internet válido (com <literal>@URL</literal>).
+					</para>
+				</callout>
+			</calloutlist>
+		</programlistingco>
+		<tip>
+			<para>
+				Validações de campos específicos para a comunidade brasileira são oferecidos pelo componente
+				<emphasis>Demoiselle Validation</emphasis>. Com ele, as seguintes anotações podem ser aplicadas nas
+				classes de domínio: <literal>@Cep</literal>, <literal>@Cnpj</literal>, <literal>@Cpf</literal>,
+				<literal>@InscricaoEstadual</literal> e <literal>@PisPasep</literal>.
+			</para>
+		</tip>
+		<para>
+			Assim que você efetuar as modificações, reconstrua o projeto Java e faça novo deploy no servidor de
+			aplicações. Acesse a aplicação <literal>bookmark</literal> e, na tela de edição de bookmarks, deixe
+			vazios os campos no formulário e clique em <guibutton>Salvar</guibutton>. Tente também preencher um
+			endereço de Internet inválido no campo <literal>Link</literal>. Caixas de erro com as mensagens
+			referentes as validações devem aparecer ao lado de cada campo, tal como ilustrado:  
+		</para>
+        <figure>
+			<title>Validação de campos na aplicação Bookmark</title>
+			<mediaobject>
+	            <imageobject role="fo">
+	                <imagedata fileref="images/appvalid.png" align="center" scalefit="1" />
+	            </imageobject>
+	            <imageobject role="html">
+	                <imagedata fileref="images/appvalid.png" align="center" />
+	            </imageobject>
+				<textobject>
+					<phrase>Aplicação Bookmark em funcionamento</phrase>
+				</textobject>
+	        </mediaobject>
+		</figure>
+		<tip>
+			<para>
+				As mensagens exibidas na tela durante a validação estão contidas no arquivo de
+				recursos <filename>ValidationMessages.properties</filename> presente no diretório
+				<filename>/src/main/resources/</filename>.
+			</para>
+		</tip>
+	</section>
+
+</chapter>
