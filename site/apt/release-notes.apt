@@ -38,7 +38,11 @@
 
 Notas de Versão
 
-* v2.2.0
+* v2.2.1
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=715}0000715}} [Task] Migração do código-fonte para o GitHub.
+
+* {{{../2.2.0/}v2.2.0}}
 
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=711}0000711}} [Bug] FileRenderer implementando Serializable.
   
@@ -63,7 +67,6 @@ Notas de Versão
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=703}0000703}} [Improvement] Atualização do repositório do primefaces.
   
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=696}0000696}} [Improvement] Correção da mensagem de sessão invalidada anteriormente.
-  
 
 * {{{../2.1.2/}v2.1.2}}
 
