@@ -60,7 +60,7 @@
 		<module>impl</module>
 		<module>parent</module>
 		<module>archetype</module>
-<!-- 		<module>documentation</module> -->
+		<module>documentation</module>
 	</modules>
 
 	<build>
