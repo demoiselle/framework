@@ -74,13 +74,15 @@
 	<distributionManagement>
 		<repository>
 			<id />
-			<name />
 			<url />
 		</repository>
 		<snapshotRepository>
 			<id />
-			<name />
 			<url />
 		</snapshotRepository>
+		<site>
+			<id />
+			<url>file://${project.build.directory}/tmp</url>
+		</site>
 	</distributionManagement>
 </project>
