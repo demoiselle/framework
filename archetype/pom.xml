@@ -59,6 +59,7 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>wagon-maven-plugin</artifactId>
 				<configuration>
+					<url>.</url>
 					<skip>true</skip>
 				</configuration>
 			</plugin>
