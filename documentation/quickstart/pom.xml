@@ -39,7 +39,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>demoiselle-framework-quickstart</artifactId>
+	<artifactId>demoiselle-quickstart</artifactId>
 	<packaging>jdocbook</packaging>
 	<version>2.2.1-SNAPSHOT</version>
 
