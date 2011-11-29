@@ -79,6 +79,17 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>3.0.1</version>
+				<scope>provided</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<profiles>
 		<!-- Os profiles foram replicados do parent pois o Maven 2 não suporta herança de profile. Provavelmente isto estará corrigido no Maven 3 -->
 		<profile>
@@ -170,6 +181,22 @@
 					<artifactId>hsqldb</artifactId>
 					<scope>compile</scope>
 				</dependency>
+				<dependency>
+					<groupId>br.gov.frameworkdemoiselle</groupId>
+					<artifactId>demoiselle-jsf</artifactId>
+					<scope>compile</scope>
+					<exclusions>
+						<exclusion>
+							<artifactId>servlet-api</artifactId>
+							<groupId>javax.servlet</groupId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+				<dependency>
+					<groupId>javax.servlet</groupId>
+					<artifactId>javax.servlet-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
 			</dependencies>
 		</profile>
 		<profile>
@@ -237,6 +264,22 @@
 				<dependency>
 					<groupId>hsqldb</groupId>
 					<artifactId>hsqldb</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>br.gov.frameworkdemoiselle</groupId>
+					<artifactId>demoiselle-jsf</artifactId>
+					<scope>compile</scope>
+					<exclusions>
+						<exclusion>
+							<artifactId>servlet-api</artifactId>
+							<groupId>javax.servlet</groupId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+				<dependency>
+					<groupId>javax.servlet</groupId>
+					<artifactId>javax.servlet-api</artifactId>
 					<scope>provided</scope>
 				</dependency>
 
