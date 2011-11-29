@@ -56,6 +56,14 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 		this.getDelegate().delete(id);
 	}
 
+	@Transactional
+	public void delete(final List<I> idList) {
+		ListIterator<I> iter = idList.listIterator();
+		while (iter.hasNext()) {
+			this.delete(iter.next());
+		}
+	}
+
 	@Override
 	public List<T> findAll() {
 		return getDelegate().findAll();
@@ -91,5 +99,5 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	public void update(final T bean) {
 		getDelegate().update(bean);
 	}
-	
+
 }

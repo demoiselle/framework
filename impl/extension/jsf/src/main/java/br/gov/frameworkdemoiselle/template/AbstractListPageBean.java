@@ -111,6 +111,22 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 		this.selection = selection;
 	}
 
+	public void clearSelection() {
+		this.selection = new HashMap<I, Boolean>();
+	}
+
+	public List<I> getSelectedList() {
+		List<I> selectedList = new ArrayList<I>();
+		Iterator<I> iter = getSelection().keySet().iterator();
+		while (iter.hasNext()) {
+			I id = iter.next();
+			if (getSelection().get(id)) {
+				selectedList.add(id);
+			}
+		}
+		return selectedList;
+	}
+
 	public Pagination getPagination() {
 		return paginationContext.getPagination(getBeanClass(), true);
 	}
