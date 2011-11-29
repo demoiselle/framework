@@ -36,7 +36,9 @@
  */
 package br.gov.frameworkdemoiselle.template;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -109,6 +111,22 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 
 	public void setSelection(Map<I, Boolean> selection) {
 		this.selection = selection;
+	}
+
+	public void clearSelection() {
+		this.selection = new HashMap<I, Boolean>();
+	}
+
+	public List<I> getSelectedList() {
+		List<I> selectedList = new ArrayList<I>();
+		Iterator<I> iter = getSelection().keySet().iterator();
+		while (iter.hasNext()) {
+			I id = iter.next();
+			if (getSelection().get(id)) {
+				selectedList.add(id);
+			}
+		}
+		return selectedList;
 	}
 
 	public Pagination getPagination() {

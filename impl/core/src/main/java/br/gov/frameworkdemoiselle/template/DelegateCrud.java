@@ -37,6 +37,7 @@
 package br.gov.frameworkdemoiselle.template;
 
 import java.util.List;
+import java.util.ListIterator;
 
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -54,6 +55,14 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	@Transactional
 	public void delete(final I id) {
 		this.getDelegate().delete(id);
+	}
+
+	@Transactional
+	public void delete(final List<I> idList) {
+		ListIterator<I> iter = idList.listIterator();
+		while (iter.hasNext()) {
+			this.delete(iter.next());
+		}
 	}
 
 	@Override
@@ -91,5 +100,5 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	public void update(final T bean) {
 		getDelegate().update(bean);
 	}
-	
+
 }
