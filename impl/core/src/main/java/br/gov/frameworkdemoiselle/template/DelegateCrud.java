@@ -37,6 +37,7 @@
 package br.gov.frameworkdemoiselle.template;
 
 import java.util.List;
+import java.util.ListIterator;
 
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.Beans;
