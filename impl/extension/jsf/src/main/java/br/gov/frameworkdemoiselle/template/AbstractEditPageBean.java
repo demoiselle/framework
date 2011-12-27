@@ -43,10 +43,11 @@ import javax.inject.Inject;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.Parameter;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
+
+import com.sun.faces.util.Util;
 
 public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean implements EditPageBean<T> {
 
@@ -119,7 +120,7 @@ public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean implem
 	}
 
 	private Converter getIdConverter() {
-		return Faces.getConverter(getIdClass());
+		return Util.getConverterForClass(getIdClass(), facesContext);
 	}
 
 	protected abstract void handleLoad();

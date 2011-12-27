@@ -44,7 +44,6 @@ import static javax.faces.application.FacesMessage.SEVERITY_WARN;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.component.UIViewRoot;
@@ -54,6 +53,8 @@ import javax.faces.convert.Converter;
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.SeverityType;
+
+import com.sun.faces.util.Util;
 
 public class Faces {
 
@@ -146,19 +147,9 @@ public class Faces {
 	}
 
 	public static Converter getConverter(Class<?> clazz) {
-		FacesContext context = getFacesContext();
-		if (clazz == null) {
-			return null;
-		}
-		try {
-			Application application = context.getApplication();
-			Converter converter = (application.createConverter(clazz));
-			return converter;
-		} catch (Exception e) {
-			return (null);
-		}
+		return Util.getConverterForClass(clazz, getFacesContext());
 	}
-	
+
 	public static Map<String, Object> getViewMap() {
 		UIViewRoot viewRoot = getFacesContext().getViewRoot();
 		return viewRoot.getViewMap(true);
