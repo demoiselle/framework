@@ -145,19 +145,20 @@ public class Faces {
 		return result;
 	}
 
-	public static Converter getConverter(Class<?> clazz) {
-		FacesContext context = getFacesContext();
-		if (clazz == null) {
-			return null;
-		}
+	public static Converter getConverter(Class<?> targetClass) {
+		Converter result;
+
 		try {
-			Application application = context.getApplication();
-			return application.createConverter(clazz);
+			Application application = getFacesContext().getApplication();
+			result = application.createConverter(targetClass);
+
 		} catch (Exception e) {
-			return null;
+			result = null;
 		}
+
+		return result;
 	}
-	
+
 	public static Map<String, Object> getViewMap() {
 		UIViewRoot viewRoot = getFacesContext().getViewRoot();
 		return viewRoot.getViewMap(true);
