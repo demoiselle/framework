@@ -74,7 +74,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 	private final Map<Class<?>, Map<Class<?>, Method>> cache = new HashMap<Class<?>, Map<Class<?>, Method>>();
 
-	private final boolean handleException(final Exception cause, final InvocationContext ic) throws Throwable {
+	private final boolean handleException(final Exception cause, final InvocationContext ic) throws Exception {
 		logger.info(bundle.getString("handling-exception", cause.getClass().getCanonicalName()));
 
 		boolean handled = false;
@@ -164,21 +164,26 @@ public class ExceptionHandlerInterceptor implements Serializable {
 		return cache.containsKey(type);
 	}
 
-	private final void invoke(final Method method, final Object object, final Exception param) throws Throwable {
+	private final void invoke(final Method method, final Object object, final Exception param) throws Exception {
 		boolean accessible = method.isAccessible();
 		method.setAccessible(true);
 
 		try {
 			method.invoke(object, param);
 		} catch (InvocationTargetException cause) {
-			throw cause.getTargetException();
+			Throwable targetTrowable = cause.getTargetException();
+			if (targetTrowable instanceof Exception) {
+				throw (Exception) targetTrowable;
+			} else {
+				throw new Exception(targetTrowable);
+			}
 		}
 
 		method.setAccessible(accessible);
 	}
 
 	@AroundInvoke
-	public Object manage(final InvocationContext ic) throws Throwable {
+	public Object manage(final InvocationContext ic) throws Exception {
 		Object result = null;
 
 		try {

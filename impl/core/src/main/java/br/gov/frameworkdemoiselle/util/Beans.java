@@ -65,26 +65,24 @@ public class Beans {
 		return manager;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T getReference(final Class<T> beanClass, Annotation... qualifiers) {
 		Bean<?> bean = manager.getBeans(beanClass, qualifiers).iterator().next();
-		return (T) getReference(bean);
+		return (T) getReference(bean, beanClass);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T getReference(final Class<T> beanClass) {
 		Bean<?> bean = manager.getBeans(beanClass).iterator().next();
-		return (T) getReference(bean);
+		return (T) getReference(bean, beanClass);
 	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getReference(String beanName) {
 		Bean<?> bean = manager.getBeans(beanName).iterator().next();
-		return (T) getReference(bean);
+		return (T) getReference(bean, bean.getBeanClass());
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> T getReference(Bean<?> bean) {
-		return (T) manager.getReference(bean, bean.getBeanClass(), manager.createCreationalContext(bean));
+	private static <T> T getReference(Bean<?> bean, final Class<T> beanClass) {
+		return (T) manager.getReference(bean, beanClass, manager.createCreationalContext(bean));
 	}
 }
