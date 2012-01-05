@@ -46,7 +46,7 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-build-parent</artifactId>
-		<version>1-SNAPSHOT</version>
+		<version>1</version>
 		<relativePath>../internal/parent/build/demoiselle/pom.xml</relativePath>
 	</parent>
 

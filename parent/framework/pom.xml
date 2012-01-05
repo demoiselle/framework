@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-parent</artifactId>
-		<version>1-SNAPSHOT</version>
+		<version>1</version>
 		<relativePath>../../../internal/parent/demoiselle/pom.xml</relativePath>
 	</parent>
 
@@ -19,4 +19,12 @@
 		Contém as informações de build comum a todos os projetos do Framework Demoiselle.
 		Se você é usuário do framework, certamente este POM não servirá para você.
 	</description>
+
+	<repositories>
+		<repository>
+			<id>demoiselle.sourceforge.net</id>
+			<name>Demoiselle Maven Repository</name>
+			<url>http://demoiselle.sourceforge.net/repository/release</url>
+		</repository>
+	</repositories>
 </project>
