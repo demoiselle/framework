@@ -70,6 +70,7 @@ public class StringsTest {
 		testEqualsGetString("teste {0}", "teste 1", "1");
 		testEqualsGetString("{0} teste", "Um teste", "Um");
 		testEqualsGetString("{1} testando {0}", "Apenas testando novamente", "novamente", "Apenas");
+		testEqualsGetString("{0} testando {1}", "Apenas testando {1}", "Apenas", null);
 		testEqualsGetString("testando {1} novamente", "testando isto novamente", "aquilo", "isto");
 		testEqualsGetString("teste", "teste", "1", "2");
 		testEqualsGetString("teste {0}.", "teste \\.", "\\");
@@ -128,7 +129,12 @@ public class StringsTest {
 		assertEquals("Ab", Strings.firstToUpper("ab"));
 		assertEquals("AB", Strings.firstToUpper("aB"));
 	}
-
+	
+	@Test
+	public void testToStringWhenObjectIsNull() {
+		assertEquals("", Strings.toString(null));
+	}
+	
 	@Test
 	public void testToString() throws SecurityException, NoSuchFieldException {
 
@@ -138,24 +144,29 @@ public class StringsTest {
 			private String name = "myName";
 
 			private String lastname = "myLastname";
-			
+
+			private String nullField = null;
+
 			@Ignore
 			private String ignore = "ignoreMe";
+			
 		}
 
 		mockStatic(Reflections.class);
 		Test test = new Test();
 
 		expect(Reflections.getNonStaticDeclaredFields(test.getClass())).andReturn(Test.class.getDeclaredFields());
-		expect(Reflections.getFieldValue(EasyMock.anyObject(Field.class), EasyMock.anyObject())).andReturn("MyName");
+		expect(Reflections.getFieldValue(EasyMock.anyObject(Field.class), EasyMock.anyObject())).andReturn("myName");
 		expect(Reflections.getFieldValue(EasyMock.anyObject(Field.class), EasyMock.anyObject()))
-				.andReturn("MyLastname");
+				.andReturn("myLastname");
+		expect(Reflections.getFieldValue(EasyMock.anyObject(Field.class), EasyMock.anyObject())).andReturn(null);
 		expect(Reflections.getFieldValue(EasyMock.anyObject(Field.class), EasyMock.anyObject())).andReturn("Object");
 
 		replayAll(Reflections.class);
 
 		// FIXME Este this$0=Object não deveria aparecer!
-		assertEquals("Test [name=MyName, lastname=MyLastname, this$0=Object]", Strings.toString(new Test()));
+		assertEquals("Test [name=myName, lastname=myLastname, nullField=null, this$0=Object]",
+				Strings.toString(new Test()));
 
 		verifyAll();
 	}
@@ -192,4 +203,18 @@ public class StringsTest {
 		assertEquals("{*}", Strings.insertBraces("*"));
 		assertEquals("{?}", Strings.insertBraces("?"));
 	}
+	
+	@Test
+	public void testRemoveCharsWhenStringIsNull() {
+		assertEquals(null, Strings.removeChars(null, 'a'));
+	}
+	
+	@Test
+	public void testRemoveCharsWhenStringIsNotNull() {
+		String string = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus lobortis.";
+		string = Strings.removeChars(string, 'L', 'l');
+		assertEquals(-1, string.indexOf('L'));
+		assertEquals(-1, string.indexOf('l'));
+	}
+	
 }
