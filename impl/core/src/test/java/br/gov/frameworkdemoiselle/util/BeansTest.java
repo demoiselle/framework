@@ -71,7 +71,6 @@ public class BeansTest {
 
 		String object = "object";
 
-		expect(bean.getBeanClass()).andReturn(null);
 		expect(beanManager.createCreationalContext(EasyMock.anyObject(Contextual.class))).andReturn(null);
 		expect(beanManager.getBeans(EasyMock.anyObject(Class.class))).andReturn(collection);
 		expect(
@@ -80,7 +79,7 @@ public class BeansTest {
 
 		replayAll(beanManager, bean);
 
-		// We don't need to instantiate utility classes. But if we don't get in this way, we'll not get 100% cobertura.
+		// There is no need to instantiate utility classes. But it's the only way to get 100% cobertura.
 		Beans beans = new Beans();
 		beans.setBeanManager(beanManager);
 		String returned = beans.getReference(String.class);
@@ -111,7 +110,7 @@ public class BeansTest {
 
 		replayAll(beanManager, bean);
 
-		// We don't need to instantiate utility classes. But if we don't get in this way, we'll not get 100% cobertura.
+		// There is no need to instantiate utility classes. But it's the only way to get 100% cobertura.
 		Beans beans = new Beans();
 		beans.setBeanManager(beanManager);
 		String returned = beans.getReference("something");
@@ -121,5 +120,4 @@ public class BeansTest {
 
 		verifyAll();
 	}
-
 }
