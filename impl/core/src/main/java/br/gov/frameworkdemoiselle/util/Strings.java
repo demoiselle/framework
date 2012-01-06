@@ -60,7 +60,7 @@ public class Strings {
 
 	public static String insertZeros(String string, int howMuchZeros) {
 		StringBuffer result = new StringBuffer((string == null ? "" : string).trim());
-		int difference = howMuchZeros - string.length();
+		int difference = howMuchZeros - result.toString().length();
 
 		for (int j = 0; j < difference; j++) {
 			result.insert(0, '0');
