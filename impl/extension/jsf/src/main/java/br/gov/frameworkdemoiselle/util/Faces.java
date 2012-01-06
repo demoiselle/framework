@@ -47,6 +47,9 @@ import java.util.Map;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIForm;
+import javax.faces.component.UIInput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -164,4 +167,28 @@ public class Faces {
 		return viewRoot.getViewMap(true);
 	}
 
+	public static void validationFailed() {
+		getFacesContext().validationFailed();
+	}
+
+	public static void resetValidation() {
+		resetInputFields(getFacesContext().getViewRoot().getChildren());
+	}
+
+	public static void resetParentFormValidation(UIComponent uiComponent) {
+		if (uiComponent instanceof UIForm)
+			resetInputFields(uiComponent.getChildren());
+		else if (uiComponent.getParent() != null)
+			resetParentFormValidation(uiComponent.getParent());
+	}
+
+	private static void resetInputFields(List<UIComponent> componentList) {
+		for (UIComponent component : componentList) {
+			if (component instanceof UIInput) {
+				UIInput input = (UIInput) component;
+				input.resetValue();
+			}
+			resetInputFields(component.getChildren());
+		}
+	}
 }
