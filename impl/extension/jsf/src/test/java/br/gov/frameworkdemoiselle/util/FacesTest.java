@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
@@ -176,12 +177,14 @@ public class FacesTest {
 	@SuppressWarnings("static-access")
 	@Test
 	public void testGetConverter() {
+		Application application = PowerMock.createMock(Application.class);
 		Converter converter = PowerMock.createMock(Converter.class);
 		PowerMock.mockStatic(Util.class);
 
 		expect(Beans.getReference(FacesContext.class)).andReturn(facesContext);
-		expect(Util.getConverterForClass(getClass(), facesContext)).andReturn(converter);
-
+		expect(facesContext.getApplication()).andReturn(application);
+		expect(application.createConverter(getClass())).andReturn(converter);
+		
 		replayAll();
 		assertEquals(converter, faces.getConverter(getClass()));
 		verifyAll();

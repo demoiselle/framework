@@ -80,7 +80,6 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 
 	@Override
 	public DataModel<T> getDataModel() {
-		System.out.println("MODIFICADO!!!!!##@#@#@@");
 		if (this.dataModel == null) {
 			this.dataModel = new ListDataModel<T>(this.getResultList());
 		}

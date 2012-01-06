@@ -62,6 +62,7 @@ import org.powermock.reflect.Whitebox;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.Parameter;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
@@ -69,7 +70,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import com.sun.faces.util.Util;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Parameter.class, Beans.class, Reflections.class, Converter.class, FacesContext.class, Util.class })
+@PrepareForTest({ Parameter.class, Beans.class, Reflections.class, Converter.class, FacesContext.class, Util.class, Faces.class })
 public class AbstractEditPageBeanTest {
 
 	private AbstractEditPageBean<Contact, Object> pageBean;
@@ -231,7 +232,6 @@ public class AbstractEditPageBeanTest {
 
 		String value = "1";
 		expect(parameter.getValue()).andReturn(value);
-		expect(Util.getConverterForClass(String.class, facesContext)).andReturn(null);
 
 		replayAll();
 		assertEquals(value, pageBean.getId());
@@ -241,23 +241,24 @@ public class AbstractEditPageBeanTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testGetLongId() {
-		mockStatic(Util.class);
-
+		mockStatic(Faces.class);
+		
 		FacesContext facesContext = createMock(FacesContext.class);
-		UIViewRoot viewRoot = createMock(UIViewRoot.class);
 		Converter converter = createMock(Converter.class);
+		UIViewRoot viewRoot = createMock(UIViewRoot.class);
 		Parameter<String> parameter = createMock(Parameter.class);
-
+		
 		setInternalState(pageBean, "facesContext", facesContext);
 		setInternalState(pageBean, "id", parameter);
 		setInternalState(pageBean, "idClass", Long.class, AbstractEditPageBean.class);
-
+		
 		String value = "1";
+		
 		expect(parameter.getValue()).andReturn(value);
 		expect(facesContext.getViewRoot()).andReturn(viewRoot);
-		expect(Util.getConverterForClass(Long.class, facesContext)).andReturn(converter);
+		expect(Faces.getConverter(Long.class)).andReturn(converter);
 		expect(converter.getAsObject(facesContext, viewRoot, value)).andReturn(Long.valueOf(value));
-
+		
 		replayAll();
 		assertEquals(Long.valueOf(value), pageBean.getId());
 		verifyAll();
@@ -270,7 +271,6 @@ public class AbstractEditPageBeanTest {
 		setInternalState(pageBean, "facesContext", facesContext);
 		setInternalState(pageBean, "idClass", Contact.class, AbstractEditPageBean.class);
 		setInternalState(pageBean, "bundle", bundle);
-		expect(Util.getConverterForClass(Contact.class, facesContext)).andReturn(null);
 
 		replayAll();
 		try {
