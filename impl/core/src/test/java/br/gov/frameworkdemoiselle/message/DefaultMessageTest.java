@@ -93,7 +93,6 @@ public class DefaultMessageTest {
 
 	@Test
 	public void testDefaultSeverity() {
-
 		message = new DefaultMessage(null);
 		assertEquals(SeverityType.INFO, message.getSeverity());
 
@@ -253,7 +252,6 @@ public class DefaultMessageTest {
 
 	// @Test
 	public void testErrorMessagesEnum() {
-
 		message = ErrorMessages.FIRST_ERROR_KEY;
 		assertEquals(SeverityType.ERROR, message.getSeverity());
 		assertEquals("First error message text", message.getText());
@@ -283,7 +281,6 @@ public class DefaultMessageTest {
 
 	// @Test
 	public void testMessagesInterface() {
-
 		message = MessagesInterface.FIRST_KEY;
 		assertEquals(SeverityType.INFO, message.getSeverity());
 		assertEquals("First message text", message.getText());
