@@ -45,6 +45,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
+
 public class Reflections {
 
 	@SuppressWarnings("unchecked")
@@ -127,17 +129,100 @@ public class Reflections {
 
 		return fields.toArray(new Field[0]);
 	}
-	
+
 	public static <T> T instantiate(Class<T> clasz) {
 		T object = null;
 		try {
-			 object = clasz.newInstance();
+			object = clasz.newInstance();
 		} catch (InstantiationException e) {
 			Exceptions.handleToRuntimeException(e);
 		} catch (IllegalAccessException e) {
 			Exceptions.handleToRuntimeException(e);
 		}
 		return object;
+	}
+
+	/**
+	 * Build a super classes List<Class<? extends Object>>
+	 * 
+	 * @param entity
+	 * @param onlySuperClasses
+	 * @return List of Super Classes
+	 */
+	private static List<Class<? extends Object>> getSuperClasses(Object entity, boolean onlySuperClasses) {
+		List<Class<? extends Object>> lizt = null;
+		if (entity != null) {
+			lizt = new ArrayList<Class<? extends Object>>();
+			if (!onlySuperClasses)
+				lizt.add(entity.getClass());
+			Class<? extends Object> superClazz = entity.getClass().getSuperclass();
+			while (superClazz != null) {
+				lizt.add(superClazz);
+				superClazz = superClazz.getSuperclass();
+			}
+		}
+		return lizt;
+	}
+
+	/**
+	 * Build a super classes List<Class<? extends Object>>
+	 * 
+	 * @param entity
+	 * @return List of Super Classes
+	 */
+	public static List<Class<? extends Object>> getSuperClasses(Object entity) {
+		return getSuperClasses(entity, false);
+	}
+
+	/**
+	 * Build a super classes List<Class<? extends Object>>
+	 * 
+	 * @param entity
+	 * @return List of Super Classes
+	 */
+	public static List<Class<? extends Object>> getParentSuperClasses(Object entity) {
+		return getSuperClasses(entity, true);
+	}
+
+	/**
+	 * Build a array of super classes fields
+	 * 
+	 * @param entry
+	 * @param onlySuperClasses
+	 * @return Array of Super Classes Fields
+	 */
+	private static Field[] getSuperClassesFields(Object entity, boolean onlySuperClasses) {
+		Field[] fieldArray = null;
+		if (entity != null) {
+			if (!onlySuperClasses)
+				fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, entity.getClass().getDeclaredFields());
+			Class<? extends Object> superClazz = entity.getClass().getSuperclass();
+			while (superClazz != null && !"java.lang.Object".equals(superClazz.getName())) {
+				fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, superClazz.getDeclaredFields());
+				superClazz = superClazz.getSuperclass();
+			}
+		}
+		return fieldArray;
+	}
+
+	/**
+	 * Build a array of super classes fields. Include target object fields.
+	 * 
+	 * @param entity
+	 * @return Array of Fields
+	 */
+	public static Field[] getSuperClassesFields(Object entity) {
+		return getSuperClassesFields(entity, false);
+	}
+
+	/**
+	 * Build a array of super classes fields. Exclude target object fields.
+	 * 
+	 * @param entity
+	 * @return Array of Fields
+	 */
+	public static Field[] getParentSuperClassesFields(Object entity) {
+		return getSuperClassesFields(entity, true);
 	}
 
 }

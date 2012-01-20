@@ -154,7 +154,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	}
 
 	@Override
-	public T load(final Object id) {
+	public T load(final I id) {
 		return getEntityManager().find(getBeanClass(), id);
 	}
 
@@ -220,7 +220,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		final Root<T> entity = query.from(getBeanClass());
 
 		final List<Predicate> predicates = new ArrayList<Predicate>();
-		final Field[] fields = example.getClass().getDeclaredFields();
+		final Field[] fields = Reflections.getSuperClassesFields(example);
 
 		for (Field field : fields) {
 
