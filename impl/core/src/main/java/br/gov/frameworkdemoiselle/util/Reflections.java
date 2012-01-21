@@ -51,7 +51,6 @@ import org.apache.commons.lang.StringUtils;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.ldap.exception.EntryException;
 
 public class Reflections {
 
@@ -223,7 +222,6 @@ public class Reflections {
 			return field.getName();
 	}
 
-
 	/**
 	 * Get Field with annotation
 	 * 
@@ -252,7 +250,7 @@ public class Reflections {
 	}
 
 	/**
-	 * Get annotated value and when null throw EntryException
+	 * Get annotated value and when null throw DemoiselleException
 	 * 
 	 * @param object
 	 * @param clazz
@@ -265,5 +263,5 @@ public class Reflections {
 		}
 		throw new DemoiselleException("Class " + object.getClass().getSimpleName() + " doesn't have a valid value for @" + clazz.getSimpleName());
 	}
-	
+
 }
