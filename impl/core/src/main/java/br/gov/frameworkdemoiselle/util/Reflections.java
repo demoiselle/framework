@@ -47,8 +47,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.annotation.Name;
 
 public class Reflections {
 
@@ -193,7 +195,7 @@ public class Reflections {
 
 	/**
 	 * Verify if annotation is present on entry and when false throw
-	 * EntryException
+	 * DemoiselleException
 	 * 
 	 * @param entry
 	 * @param clazz
@@ -201,6 +203,23 @@ public class Reflections {
 	public static void requireAnnotation(Class<?> beanClass, Class<? extends Annotation> clazz) {
 		if (!isAnnotationPresent(beanClass, clazz))
 			throw new DemoiselleException("Class " + beanClass.getSimpleName() + " and yours superclasses doesn't have @" + clazz.getName());
+	}
+
+	/**
+	 * If @Name present returns field.getAnnotation(Name.class).value(),
+	 * otherwise field.getName();
+	 * 
+	 * @param field
+	 * @return @Name annotation value or object attribute name;
+	 */
+	public static String getFieldName(Field field) {
+		if (field.isAnnotationPresent(Name.class)) {
+			String name = field.getAnnotation(Name.class).value();
+			if (StringUtils.isBlank(name))
+				throw new DemoiselleException("Annotation @Name must have a value");
+			return name;
+		} else
+			return field.getName();
 	}
 
 }
