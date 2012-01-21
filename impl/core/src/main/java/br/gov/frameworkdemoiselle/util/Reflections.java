@@ -36,6 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.util;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -46,6 +47,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+
+import br.gov.frameworkdemoiselle.DemoiselleException;
 
 public class Reflections {
 
@@ -148,9 +151,9 @@ public class Reflections {
 	 * @param entry
 	 * @return List of Super Classes
 	 */
-	public static List<Class<?>> getSuperClasses(Class<?> entryClass) {
+	public static List<Class<?>> getSuperClasses(Class<?> beanClass) {
 		List<Class<?>> list = new ArrayList<Class<?>>();
-		Class<?> superClazz = entryClass.getSuperclass();
+		Class<?> superClazz = beanClass.getSuperclass();
 		while (superClazz != null) {
 			list.add(superClazz);
 			superClazz = superClazz.getSuperclass();
@@ -164,15 +167,40 @@ public class Reflections {
 	 * @param entry
 	 * @return Array of Super Classes Fields
 	 */
-	public static Field[] getSuperClassesFields(Class<?> entryClass) {
+	public static Field[] getSuperClassesFields(Class<?> beanClass) {
 		Field[] fieldArray = null;
-		fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, entryClass.getDeclaredFields());
-		Class<?> superClazz = entryClass.getSuperclass();
+		fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, beanClass.getDeclaredFields());
+		Class<?> superClazz = beanClass.getSuperclass();
 		while (superClazz != null && !"java.lang.Object".equals(superClazz.getName())) {
 			fieldArray = (Field[]) ArrayUtils.addAll(fieldArray, superClazz.getDeclaredFields());
 			superClazz = superClazz.getSuperclass();
 		}
 		return fieldArray;
+	}
+
+	/**
+	 * Verify if annotation is present
+	 * 
+	 * @param entry
+	 * @param clazz
+	 */
+	public static boolean isAnnotationPresent(Class<?> beanClass, Class<? extends Annotation> clazz) {
+		for (Class<?> claz : getSuperClasses(beanClass))
+			if (claz.isAnnotationPresent(clazz))
+				return true;
+		return false;
+	}
+
+	/**
+	 * Verify if annotation is present on entry and when false throw
+	 * EntryException
+	 * 
+	 * @param entry
+	 * @param clazz
+	 */
+	public static void requireAnnotation(Class<?> beanClass, Class<? extends Annotation> clazz) {
+		if (!isAnnotationPresent(beanClass, clazz))
+			throw new DemoiselleException("Class " + beanClass.getSimpleName() + " and yours superclasses doesn't have @" + clazz.getName());
 	}
 
 }
