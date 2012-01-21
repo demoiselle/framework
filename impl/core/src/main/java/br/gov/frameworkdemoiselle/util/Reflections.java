@@ -51,6 +51,7 @@ import org.apache.commons.lang.StringUtils;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.ldap.exception.EntryException;
 
 public class Reflections {
 
@@ -222,4 +223,47 @@ public class Reflections {
 			return field.getName();
 	}
 
+
+	/**
+	 * Get Field with annotation
+	 * 
+	 * @param claz
+	 * @param clazz
+	 */
+	public static Field getFieldAnnotatedAs(Class<?> claz, Class<? extends Annotation> clazz) {
+		Field[] fields = getSuperClassesFields(claz);
+		for (Field field : fields)
+			if (field.isAnnotationPresent(clazz))
+				return field;
+		return null;
+	}
+
+	/**
+	 * Get Field Value with annotation
+	 * 
+	 * @param object
+	 * @param clazz
+	 */
+	public static Object getAnnotatedValue(Object object, Class<? extends Annotation> clazz) {
+		Field field = getFieldAnnotatedAs(object.getClass(), clazz);
+		if (field != null)
+			return getFieldValue(field, object);
+		return null;
+	}
+
+	/**
+	 * Get annotated value and when null throw EntryException
+	 * 
+	 * @param object
+	 * @param clazz
+	 * @return
+	 */
+	public static Object getRequiredAnnotatedValue(Object object, Class<? extends Annotation> clazz) {
+		Object value = getAnnotatedValue(object, clazz);
+		if (value != null && !value.toString().trim().isEmpty()) {
+			return value;
+		}
+		throw new DemoiselleException("Class " + object.getClass().getSimpleName() + " doesn't have a valid value for @" + clazz.getSimpleName());
+	}
+	
 }
