@@ -226,13 +226,31 @@ public class Reflections {
 	 * Get Field with annotation
 	 * 
 	 * @param claz
+	 *            a object class with annotated fields
 	 * @param clazz
+	 *            a annotation class to match
 	 */
 	public static Field getFieldAnnotatedAs(Class<?> claz, Class<? extends Annotation> clazz) {
 		Field[] fields = getSuperClassesFields(claz);
 		for (Field field : fields)
 			if (field.isAnnotationPresent(clazz))
 				return field;
+		return null;
+	}
+
+	/**
+	 * Get Field with annotation and when not found throw DemoiselleException
+	 * 
+	 * @param claz
+	 *            a object class with annotated fields
+	 * @param clazz
+	 *            a annotation class to match
+	 * @return
+	 */
+	public static Field getRequiredFieldAnnotatedAs(Class<?> claz, Class<? extends Annotation> clazz) {
+		Field field = getFieldAnnotatedAs(claz, clazz);
+		if (field == null)
+			throw new DemoiselleException("Field with @" + clazz.getSimpleName() + " not found for class " + claz.getClass());
 		return null;
 	}
 
