@@ -251,7 +251,7 @@ public class Reflections {
 		Field field = getFieldAnnotatedAs(claz, clazz);
 		if (field == null)
 			throw new DemoiselleException("Field with @" + clazz.getSimpleName() + " not found for class " + claz.getClass());
-		return null;
+		return field;
 	}
 
 	/**
