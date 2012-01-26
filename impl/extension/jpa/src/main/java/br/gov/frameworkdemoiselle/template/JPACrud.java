@@ -154,7 +154,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	}
 
 	@Override
-	public T load(final Object id) {
+	public T load(final I id) {
 		return getEntityManager().find(getBeanClass(), id);
 	}
 
