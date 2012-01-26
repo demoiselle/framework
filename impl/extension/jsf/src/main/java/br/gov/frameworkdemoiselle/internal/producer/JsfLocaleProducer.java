@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import br.gov.frameworkdemoiselle.util.Beans;
 
-@SessionScoped
+@RequestScoped
 @Alternative
 public class JsfLocaleProducer implements Serializable {
 

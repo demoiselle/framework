@@ -40,7 +40,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -55,10 +55,7 @@ import br.gov.frameworkdemoiselle.message.SeverityType;
  * 
  * @see MessageContext
  */
-@SessionScoped
-//@ConversationScoped
-// FIXME colocar o escopo de conversação, para não ter que limpar o contexto manualmente. Ou seria melhor colocar no
-// escopo de request para não precisar se preocupar com isso?
+@RequestScoped
 public class MessageContextImpl implements Serializable, MessageContext {
 
 	private static final long serialVersionUID = 1L;
