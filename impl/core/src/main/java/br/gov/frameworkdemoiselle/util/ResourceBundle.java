@@ -42,6 +42,12 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.inject.Singleton;
+
+import br.gov.frameworkdemoiselle.message.DefaultMessage;
+import br.gov.frameworkdemoiselle.message.SeverityType;
+
+@Singleton
 public class ResourceBundle extends java.util.ResourceBundle implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -92,4 +98,21 @@ public class ResourceBundle extends java.util.ResourceBundle implements Serializ
 		}
 		return result;
 	}
+
+	public DefaultMessage getI18nMessage(String bundleKey) {
+		return new DefaultMessage(getString(bundleKey));
+	}
+
+	public DefaultMessage getI18nMessage(String bundleKey, Object... params) {
+		return new DefaultMessage(getString(bundleKey, params));
+	}
+
+	public DefaultMessage getI18nMessage(String bundleKey, SeverityType type) {
+		return new DefaultMessage(getString(bundleKey), type);
+	}
+
+	public DefaultMessage getI18nMessage(String bundleKey, SeverityType type, Object... params) {
+		return new DefaultMessage(getString(bundleKey, params), type);
+	}
+
 }

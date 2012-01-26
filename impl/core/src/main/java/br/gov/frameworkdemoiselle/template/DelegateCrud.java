@@ -39,9 +39,12 @@ package br.gov.frameworkdemoiselle.template;
 import java.util.List;
 import java.util.ListIterator;
 
+import javax.inject.Inject;
+
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 
@@ -50,6 +53,9 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	private Class<C> delegateClass;
 
 	private C delegate;
+
+	@Inject
+	private ResourceBundle bundle;
 
 	@Override
 	@Transactional
@@ -99,6 +105,10 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	@Transactional
 	public void update(final T bean) {
 		getDelegate().update(bean);
+	}
+
+	public ResourceBundle getBundle() {
+		return bundle;
 	}
 
 }
