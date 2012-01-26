@@ -82,11 +82,13 @@ public class DelegateCrudTest {
 		expect(Beans.getReference(EasyMock.anyObject(Class.class))).andReturn(mockCrud);
 
 		mockCrud.delete(1L);
-		replayAll(Reflections.class, Beans.class, mockCrud);
+		PowerMock.expectLastCall();
+		
+		PowerMock.replay(Reflections.class, Beans.class, mockCrud);
 
 		delegateCrud.delete(1L);
 
-		verifyAll();
+		PowerMock.verify();
 	}
 
 	@Test

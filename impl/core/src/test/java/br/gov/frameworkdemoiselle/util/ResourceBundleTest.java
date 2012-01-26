@@ -36,57 +36,107 @@
  */
 package br.gov.frameworkdemoiselle.util;
 
-import static org.easymock.EasyMock.expect;
-import static org.powermock.api.easymock.PowerMock.replay;
-import static org.powermock.api.easymock.PowerMock.verify;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Enumeration;
+import java.util.ListResourceBundle;
+
+import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
 public class ResourceBundleTest {
 
+	/**
+	 * This is a workaround to mock java.util.ResourceBundle. Since getString(key) method is defined as final, there is
+	 * no way to extend and override it. For that reason, setting expectations (i.e. expect(...)) won't work.
+	 */
+	class MockResourceBundle extends ListResourceBundle {
+
+		private Object[][] contents = new Object[][] { { "msgWithoutParams", "no params" },
+				{ "msgWithParams", "params: {0}, {1}" } };
+
+		protected Object[][] getContents() {
+			return contents;
+		}
+
+	};
+
 	private ResourceBundle resourceBundle;
-	private transient java.util.ResourceBundle resourceBundleMocked;
+
+	private java.util.ResourceBundle mockResourceBundle;
 
 	@Before
 	public void setUp() throws Exception {
-		this.resourceBundleMocked = PowerMock.createMock(java.util.ResourceBundle.class);
-		this.resourceBundle = new ResourceBundle(resourceBundleMocked);
+		mockResourceBundle = new MockResourceBundle();
+		resourceBundle = new ResourceBundle(mockResourceBundle);
 	}
-	
+
 	@Test
-	public void testContainsKey() {
-		expect(this.resourceBundleMocked.containsKey("")).andReturn(true);
-		replay(this.resourceBundleMocked);
-		this.resourceBundle.containsKey("");
-		verify(this.resourceBundleMocked);
+	public void containsKey() {
+		assertTrue(resourceBundle.containsKey("msgWithoutParams"));
+
+		assertFalse(resourceBundle.containsKey("inexistentKey"));
 	}
-	
+
 	@Test
-	public void testGetKeys() {
-		expect(this.resourceBundleMocked.getKeys()).andReturn(null);
-		replay(this.resourceBundleMocked);
-		this.resourceBundle.getKeys();
-		verify(this.resourceBundleMocked);
+	public void getKeys() {
+		int keyCount = 0;
+
+		Enumeration<String> e = resourceBundle.getKeys();
+
+		while (e.hasMoreElements()) {
+			keyCount++;
+			e.nextElement();
+		}
+
+		assertEquals(resourceBundle.keySet().size(), keyCount);
 	}
-	
+
 	@Test
 	public void testGetLocale() {
-		expect(this.resourceBundleMocked.getLocale()).andReturn(null);
-		replay(this.resourceBundleMocked);
-		this.resourceBundle.getLocale();
-		verify(this.resourceBundleMocked);
+		assertNull(resourceBundle.getLocale());
 	}
-	
+
 	@Test
 	public void testKeySet() {
-		expect(this.resourceBundleMocked.keySet()).andReturn(null);
-		replay(this.resourceBundleMocked);
-		this.resourceBundle.keySet();
-		verify(this.resourceBundleMocked);
+		assertEquals(2, resourceBundle.keySet().size());
 	}
+
+	@Test
+	public void getString() {
+		assertEquals("no params", resourceBundle.getString("msgWithoutParams"));
+
+		assertEquals("params: a, b", resourceBundle.getString("msgWithParams", "a", "b"));
+
+		assertEquals("params: {0}, {1}", resourceBundle.getString("msgWithParams"));
+	}
+
+	/**
+	 * For this test, java.util.ResourceBundle is mocked to force an exception. Since the getString method is called
+	 * from the actual ResourceBundle, not from the mock, it tries to find a handleGetObject method that doesn't exist.
+	 * 
+	 * @throws Exception
+	 */
+	@Test(expected = RuntimeException.class)
+	public void getStringWhenHandleGetObjectThrowsException() {
+		mockResourceBundle = createMock(java.util.ResourceBundle.class);
+		resourceBundle = new ResourceBundle(mockResourceBundle);
+
+		replay(mockResourceBundle);
+
+		resourceBundle.getString("msgWithParams");
+
+		verify(mockResourceBundle);
+
+		Assert.fail();
+	}
+
 }

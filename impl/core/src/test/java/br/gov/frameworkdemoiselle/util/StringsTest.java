@@ -36,31 +36,23 @@
  */
 package br.gov.frameworkdemoiselle.util;
 
-import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.powermock.api.easymock.PowerMock.mockStatic;
-import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
-import java.lang.reflect.Field;
-
-import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.gov.frameworkdemoiselle.annotation.Ignore;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Reflections.class })
 public class StringsTest {
 
 	@Test
-	public void testGetString() {
+	public void getString() {
 		testEqualsGetString("teste", "teste");
 		testEqualsGetString("", "");
 		testEqualsGetString(null, null);
@@ -77,7 +69,7 @@ public class StringsTest {
 	}
 
 	@Test
-	public void testIsEmpty() {
+	public void isEmpty() {
 		assertTrue(Strings.isEmpty(null));
 		assertTrue(Strings.isEmpty(""));
 		assertTrue(Strings.isEmpty(" "));
@@ -89,7 +81,7 @@ public class StringsTest {
 	}
 
 	@Test
-	public void testIsResourceBundleKeyFormat() {
+	public void isResourceBundleKeyFormat() {
 		assertTrue(Strings.isResourceBundleKeyFormat("{x}"));
 		assertTrue(Strings.isResourceBundleKeyFormat("{.}"));
 		assertTrue(Strings.isResourceBundleKeyFormat("{*}"));
@@ -107,7 +99,7 @@ public class StringsTest {
 	}
 
 	@Test
-	public void testCamelCaseToSymbolSeparated() {
+	public void camelCaseToSymbolSeparated() {
 		assertEquals(null, Strings.camelCaseToSymbolSeparated(null, null));
 		assertEquals(null, Strings.camelCaseToSymbolSeparated(null, "."));
 		assertEquals("myvar", Strings.camelCaseToSymbolSeparated("myVar", null));
@@ -119,7 +111,7 @@ public class StringsTest {
 	}
 
 	@Test
-	public void testFirstToUpper() {
+	public void firstToUpper() {
 		assertNull(Strings.firstToUpper(null));
 		assertEquals("", Strings.firstToUpper(""));
 		assertEquals("A", Strings.firstToUpper("a"));
@@ -129,15 +121,14 @@ public class StringsTest {
 		assertEquals("Ab", Strings.firstToUpper("ab"));
 		assertEquals("AB", Strings.firstToUpper("aB"));
 	}
-	
+
 	@Test
-	public void testToStringWhenObjectIsNull() {
+	public void toStringWhenObjectIsNull() {
 		assertEquals("", Strings.toString(null));
 	}
-	
-	@Test
-	public void testToString() throws SecurityException, NoSuchFieldException {
 
+	@Test
+	public void classToString() throws SecurityException, NoSuchFieldException {
 		@SuppressWarnings("unused")
 		class Test {
 
@@ -149,24 +140,12 @@ public class StringsTest {
 
 			@Ignore
 			private String ignore = "ignoreMe";
-			
+
 		}
 
-		mockStatic(Reflections.class);
-		Test test = new Test();
-
-		expect(Reflections.getNonStaticDeclaredFields(test.getClass())).andReturn(Test.class.getDeclaredFields());
-		expect(Reflections.getFieldValue(EasyMock.anyObject(Field.class), EasyMock.anyObject())).andReturn("myName");
-		expect(Reflections.getFieldValue(EasyMock.anyObject(Field.class), EasyMock.anyObject()))
-				.andReturn("myLastname");
-		expect(Reflections.getFieldValue(EasyMock.anyObject(Field.class), EasyMock.anyObject())).andReturn(null);
-		expect(Reflections.getFieldValue(EasyMock.anyObject(Field.class), EasyMock.anyObject())).andReturn("Object");
-
-		replayAll(Reflections.class);
-
-		// FIXME Este this$0=Object não deveria aparecer!
-		assertEquals("Test [name=myName, lastname=myLastname, nullField=null, this$0=Object]",
-				Strings.toString(new Test()));
+		String result = Strings.toString(new Test());
+		
+		assertTrue(result.contains("Test [name=myName, lastname=myLastname, nullField=null, this"));
 
 		verifyAll();
 	}
@@ -175,9 +154,9 @@ public class StringsTest {
 		String out = Strings.getString(in, params);
 		assertEquals(expected, out);
 	}
-	
+
 	@Test
-	public void testRemoveBraces() {
+	public void removeBraces() {
 		assertNull(Strings.removeBraces(null));
 		assertEquals("", Strings.removeBraces(""));
 		assertEquals(" ", Strings.removeBraces(" "));
@@ -191,9 +170,9 @@ public class StringsTest {
 		assertEquals("?", Strings.removeBraces("{?}"));
 		assertEquals("*", Strings.removeBraces("{*}"));
 	}
-	
+
 	@Test
-	public void testInsertBraces() {
+	public void insertBraces() {
 		assertNull(Strings.insertBraces(null));
 		assertEquals("", Strings.insertBraces(""));
 		assertEquals(" ", Strings.insertBraces(" "));
@@ -203,18 +182,28 @@ public class StringsTest {
 		assertEquals("{*}", Strings.insertBraces("*"));
 		assertEquals("{?}", Strings.insertBraces("?"));
 	}
-	
+
 	@Test
-	public void testRemoveCharsWhenStringIsNull() {
+	public void removeCharsWhenStringIsNull() {
 		assertEquals(null, Strings.removeChars(null, 'a'));
 	}
-	
+
 	@Test
-	public void testRemoveCharsWhenStringIsNotNull() {
+	public void removeCharsWhenStringIsNotNull() {
 		String string = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus lobortis.";
 		string = Strings.removeChars(string, 'L', 'l');
 		assertEquals(-1, string.indexOf('L'));
 		assertEquals(-1, string.indexOf('l'));
+	}
+	
+	@Test
+	public void insertZeros() {
+		String string = "Lorem ipsum";
+		assertEquals("00000", Strings.insertZeros(null, 5));
+		assertEquals(string, Strings.insertZeros(string, string.length()-1));
+		assertEquals(string, Strings.insertZeros(string, string.length()));
+		assertEquals("0"+string, Strings.insertZeros(string, string.length()+1));
+		assertEquals("00"+string, Strings.insertZeros(string, string.length()+2));
 	}
 	
 }

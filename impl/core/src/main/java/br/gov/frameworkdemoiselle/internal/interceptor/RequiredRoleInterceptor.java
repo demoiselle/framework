@@ -94,7 +94,6 @@ public class RequiredRoleInterceptor implements Serializable {
 	 */
 	@AroundInvoke
 	public Object manage(final InvocationContext ic) throws Exception {
-
 		List<String> roles = getRoles(ic);
 
 		if (securityContext.get().isLoggedIn()) {
@@ -120,7 +119,6 @@ public class RequiredRoleInterceptor implements Serializable {
 		logger.debug(bundle.getString("user-has-role", securityContext.get().getUser().getId(), userRoles));
 
 		return ic.proceed();
-
 	}
 
 	/**
@@ -131,22 +129,17 @@ public class RequiredRoleInterceptor implements Serializable {
 	 * @return the value defined in {@code @RequiredRole} annotation
 	 */
 	private List<String> getRoles(InvocationContext ic) {
-
 		String[] roles = {};
 
 		if (ic.getMethod().getAnnotation(RequiredRole.class) == null) {
-
 			if (ic.getTarget().getClass().getAnnotation(RequiredRole.class) != null) {
 				roles = ic.getTarget().getClass().getAnnotation(RequiredRole.class).value();
 			}
-
 		} else {
-
 			roles = ic.getMethod().getAnnotation(RequiredRole.class).value();
-
 		}
 
 		return Arrays.asList(roles);
-
 	}
+	
 }
