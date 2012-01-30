@@ -86,6 +86,12 @@
 		</site>
 	</distributionManagement>
 
+	<scm>
+		<connection>scm:git:git://github.com/demoiselle/${project.alias}.git</connection>
+		<developerConnection>scm:git:git://github.com/demoiselle/${project.alias}.git</developerConnection>
+		<url>scm:git:git://github.com/demoiselle/${project.alias}.git</url>
+	</scm>
+
 	<repositories>
 		<repository>
 			<id>demoiselle.sourceforge.net</id>
