@@ -171,12 +171,17 @@ public class ExceptionHandlerInterceptor implements Serializable {
 		try {
 			method.invoke(object, param);
 		} catch (InvocationTargetException cause) {
-			throw new DemoiselleException(cause.getTargetException());
+			Throwable targetTrowable = cause.getTargetException();
+			if (targetTrowable instanceof Exception) {
+				throw (Exception) targetTrowable;
+			} else {
+				throw new Exception(targetTrowable);
+			}
 		}
 
 		method.setAccessible(accessible);
 	}
-
+	
 	@AroundInvoke
 	public Object manage(final InvocationContext ic) throws Exception {
 		Object result = null;

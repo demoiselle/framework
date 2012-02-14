@@ -75,11 +75,11 @@ public class ExceptionHandlerInterceptorTest {
 
 	private ResourceBundle bundle;
 
-	class TesteException extends DemoiselleException {
+	class TestException extends DemoiselleException {
 
 		private static final long serialVersionUID = 1L;
 
-		public TesteException(String message) {
+		public TestException(String message) {
 			super(message);
 		}
 	}
@@ -97,7 +97,7 @@ public class ExceptionHandlerInterceptorTest {
 		public void methodWithExceptionHandlerAnotationAndGenericException(Exception cause) {
 			times++;
 		}
-		
+
 	}
 
 	class ClassWithoutMethodsAnnotatedWithExceptionHandler {
@@ -116,11 +116,23 @@ public class ExceptionHandlerInterceptorTest {
 			throw new RuntimeException();
 		}
 	}
-	
+
 	class ClassWithMethodWithoutParameterAnnotatedWithExceptionHandler {
 
 		@ExceptionHandler
 		public void methodWithExceptionHandlerAnotation() {
+		}
+
+	}
+
+	class ClassWithExceptionHandlerMethodThatRethrowException {
+
+		int times = 0;
+
+		@ExceptionHandler
+		public void methodThatRethrowException(TestException cause) {
+			times++;
+			throw cause;
 		}
 
 	}
@@ -138,7 +150,7 @@ public class ExceptionHandlerInterceptorTest {
 	}
 
 	@Test
-	public void testManageSucessyfull() throws Throwable {
+	public void manageSuccessfully() throws Throwable {
 		expect(this.context.proceed()).andReturn(null);
 		replay();
 		assertEquals(null, this.interceptor.manage(this.context));
@@ -146,7 +158,7 @@ public class ExceptionHandlerInterceptorTest {
 	}
 
 	@Test
-	public void testManageWithClassThatDoNotContainMethodAnnotatedWithHandleException() throws Throwable {
+	public void manageWithClassThatDoesNotContainHandleMethod() throws Exception {
 		ClassWithoutMethodsAnnotatedWithExceptionHandler classWithoutException = new ClassWithoutMethodsAnnotatedWithExceptionHandler();
 		expect(this.context.getTarget()).andReturn(classWithoutException);
 		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
@@ -164,7 +176,7 @@ public class ExceptionHandlerInterceptorTest {
 	}
 
 	@Test
-	public void testManageWithClassThatContainMethodAnnotatedWithHandleException() throws Throwable {
+	public void manageWithClassThatContainsHandleMethod() throws Exception {
 		ClassWithMethodsAnnotatedWithExceptionHandler classWithException = new ClassWithMethodsAnnotatedWithExceptionHandler();
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
 		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
@@ -177,8 +189,7 @@ public class ExceptionHandlerInterceptorTest {
 	}
 
 	@Test
-	public void testManageWithClassThatContainTwoMethodsAnnotatedWithHandleExceptionButOnlyOneIsCalled()
-			throws Throwable {
+	public void manageWithClassThatContainsParentExceptionHandleMethod() throws Exception {
 		ClassWithMethodsAnnotatedWithExceptionHandler classWithException = new ClassWithMethodsAnnotatedWithExceptionHandler();
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
 		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
@@ -191,44 +202,26 @@ public class ExceptionHandlerInterceptorTest {
 	}
 
 	@Test
-	public void testManageWithClassThatContainMethodAnnotatedWithHandleParentException() throws Throwable {
+	public void manageWithClassThatContainsHandleMethodWithDiferentException() throws Exception {
 		ClassWithMethodsAnnotatedWithExceptionHandler classWithException = new ClassWithMethodsAnnotatedWithExceptionHandler();
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
-		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
-		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
-		replayAll(this.context, CoreBootstrap.class);
-
-		assertNull(this.interceptor.manage(this.context));
-		assertEquals(1, classWithException.times);
-		verifyAll();
-	}
-
-	@Test
-	public void testManageWithClassThatContainMethodAnnotatedWithHandleExceptionButCauseIsDiferent() throws Throwable {
-		ClassWithMethodsAnnotatedWithExceptionHandler classWithException = new ClassWithMethodsAnnotatedWithExceptionHandler();
-		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
-		expect(this.context.proceed()).andThrow(new TesteException(""));
+		expect(this.context.proceed()).andThrow(new TestException(""));
 		replay(this.context);
-		this.logger = PowerMock.createMock(Logger.class);
-		this.logger.info(EasyMock.anyObject(String.class));
-		this.logger.debug(EasyMock.anyObject(String.class));
-		replay(this.logger);
-
-		this.interceptor = new ExceptionHandlerInterceptor(this.logger, this.bundle);
+		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
+		replayAll(this.context, CoreBootstrap.class);
 
 		try {
 			this.interceptor.manage(this.context);
 			fail();
-		} catch (TesteException e) {
-			assertTrue(true);
+		} catch (TestException e) {
 			assertEquals(0, classWithException.times);
 		}
+
 		verify();
 	}
 
 	@Test
-	public void testManageWithClassThatContainMethodAnnotatedWithHandleExceptionButMethodCouldNotBeCalled()
-			throws Throwable {
+	public void manageWithClassThatContainsHandleMethodThatThrowsAnotherException() throws Exception {
 		ClassWithMethodsAnnotatedWithExceptionHandlerAndThrowException classWithException = new ClassWithMethodsAnnotatedWithExceptionHandlerAndThrowException();
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
 		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
@@ -239,25 +232,25 @@ public class ExceptionHandlerInterceptorTest {
 		try {
 			this.interceptor.manage(this.context);
 			fail();
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			assertEquals(1, classWithException.times);
-			assertTrue(true);
 		}
 
 		verifyAll();
 	}
-	
+
 	@Test
-	public void testManageWithClassThatContainMethodsAnnotatedWithHandleExceptionAndIsInvokedTwice() throws Throwable {
+	public void manageWithClassThatContainsHandleMethodsAndIsInvokedTwice() throws Exception {
 		ClassWithMethodsAnnotatedWithExceptionHandler classWithException = new ClassWithMethodsAnnotatedWithExceptionHandler();
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
 		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
-		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true).anyTimes();
+		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true)
+				.anyTimes();
 		replayAll(this.context, CoreBootstrap.class);
 
 		assertNull(this.interceptor.manage(this.context));
 		assertEquals(1, classWithException.times);
-		
+
 		this.context = PowerMock.createMock(InvocationContext.class);
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
 		expect(this.context.proceed()).andThrow(new Exception(""));
@@ -266,15 +259,16 @@ public class ExceptionHandlerInterceptorTest {
 		assertNull(this.interceptor.manage(this.context));
 		assertEquals(2, classWithException.times);
 		verifyAll();
-		
+
 	}
-	
+
 	@Test
-	public void testManageWithClassThatContainMethodAnnotatedWithHandleExceptionWithoutParameter() throws Throwable {
+	public void manageWithClassThatContainsHandleMethodWithoutParameter() throws Exception {
 		ClassWithMethodWithoutParameterAnnotatedWithExceptionHandler classWithException = new ClassWithMethodWithoutParameterAnnotatedWithExceptionHandler();
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
 		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
-		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodWithoutParameterAnnotatedWithExceptionHandler.class)).andReturn(true);
+		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodWithoutParameterAnnotatedWithExceptionHandler.class))
+				.andReturn(true);
 		replayAll(this.context, CoreBootstrap.class);
 
 		try {
@@ -283,8 +277,58 @@ public class ExceptionHandlerInterceptorTest {
 		} catch (DemoiselleException e) {
 			assertTrue(true);
 		}
-		
+
 		verifyAll();
+	}
+
+	@Test
+	public void manageHandlerMethodThatRethrowExpectedException() throws Exception {
+		ClassWithExceptionHandlerMethodThatRethrowException testClass = new ClassWithExceptionHandlerMethodThatRethrowException();
+		expect(this.context.getTarget()).andReturn(testClass).anyTimes();
+		expect(this.context.proceed()).andThrow(new TestException(""));
+		expect(CoreBootstrap.isAnnotatedType(ClassWithExceptionHandlerMethodThatRethrowException.class))
+				.andReturn(true);
+		replayAll(this.context, CoreBootstrap.class);
+
+		try {
+			this.interceptor.manage(this.context);
+			fail();
+		} catch (TestException e) {
+			assertEquals(1, testClass.times);
+		}
+
+		verifyAll();
+	}
+
+	/**
+	 * Tests an exception handler when the class that contains the method is a proxy. This is the case when using
+	 * injection.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void manageHandlerMethodInsideProxyClass() throws Exception {
+		// creates a proxy class
+		ClassWithExceptionHandlerMethodThatRethrowException testClass = PowerMock
+				.createNicePartialMockForAllMethodsExcept(ClassWithExceptionHandlerMethodThatRethrowException.class,
+						"methodThatRethrowException");
+		expect(this.context.getTarget()).andReturn(testClass).anyTimes();
+		expect(this.context.proceed()).andThrow(new TestException(""));
+		expect(CoreBootstrap.isAnnotatedType(testClass.getClass())).andReturn(false);
+
+		this.logger = PowerMock.createMock(Logger.class);
+		this.logger.info(EasyMock.anyObject(String.class));
+		this.logger.debug(EasyMock.anyObject(String.class));
+		replayAll(testClass, this.context, CoreBootstrap.class, logger);
+
+		this.interceptor = new ExceptionHandlerInterceptor(this.logger, this.bundle);
+
+		try {
+			this.interceptor.manage(this.context);
+			fail();
+		} catch (TestException e) {
+			assertEquals(1, testClass.times);
+		}
 	}
 
 }
