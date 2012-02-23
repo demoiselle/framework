@@ -82,8 +82,12 @@ public class Faces {
 		addMessage(null, throwable);
 	}
 
-	private static FacesContext getFacesContext() {
+	public static FacesContext getFacesContext() {
 		return Beans.getReference(FacesContext.class);
+	}
+
+	public static void validationFailed() {
+		getFacesContext().validationFailed();
 	}
 
 	public static Severity parse(final SeverityType severityType) {
