@@ -52,6 +52,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
+import br.gov.frameworkdemoiselle.message.DefaultMessage;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 
@@ -89,17 +90,17 @@ public class Faces {
 		Severity result = null;
 
 		switch (severityType) {
-			case INFO:
-				result = SEVERITY_INFO;
-				break;
-			case WARN:
-				result = SEVERITY_WARN;
-				break;
-			case ERROR:
-				result = SEVERITY_ERROR;
-				break;
-			case FATAL:
-				result = SEVERITY_FATAL;
+		case INFO:
+			result = SEVERITY_INFO;
+			break;
+		case WARN:
+			result = SEVERITY_WARN;
+			break;
+		case ERROR:
+			result = SEVERITY_ERROR;
+			break;
+		case FATAL:
+			result = SEVERITY_FATAL;
 		}
 
 		return result;
@@ -162,6 +163,22 @@ public class Faces {
 	public static Map<String, Object> getViewMap() {
 		UIViewRoot viewRoot = getFacesContext().getViewRoot();
 		return viewRoot.getViewMap(true);
+	}
+
+	public static void addI18nMessage(String bundleKey) {
+		addMessage(new DefaultMessage(Beans.getReference(ResourceBundle.class).getString(bundleKey)));
+	}
+
+	public static void addI18nMessage(String bundleKey, Object... params) {
+		addMessage(new DefaultMessage(Beans.getReference(ResourceBundle.class).getString(bundleKey, params)));
+	}
+
+	public static void addI18nMessage(String bundleKey, SeverityType type) {
+		addMessage(new DefaultMessage(Beans.getReference(ResourceBundle.class).getString(bundleKey), type));
+	}
+
+	public static void addI18nMessage(String bundleKey, SeverityType type, Object... params) {
+		addMessage(new DefaultMessage(Beans.getReference(ResourceBundle.class).getString(bundleKey, params), type));
 	}
 
 }
