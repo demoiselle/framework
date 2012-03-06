@@ -185,4 +185,8 @@ public class Faces {
 		addMessage(new DefaultMessage(Beans.getReference(ResourceBundle.class).getString(bundleKey, params), type));
 	}
 
+	public static <T> T getManagedProperty(String expression, Class<T> expectedType) {
+		FacesContext context = getFacesContext();
+		return (T) context.getApplication().evaluateExpressionGet(context, expression, expectedType);
+	}
 }
