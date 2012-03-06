@@ -94,17 +94,17 @@ public class Faces {
 		Severity result = null;
 
 		switch (severityType) {
-		case INFO:
-			result = SEVERITY_INFO;
-			break;
-		case WARN:
-			result = SEVERITY_WARN;
-			break;
-		case ERROR:
-			result = SEVERITY_ERROR;
-			break;
-		case FATAL:
-			result = SEVERITY_FATAL;
+			case INFO:
+				result = SEVERITY_INFO;
+				break;
+			case WARN:
+				result = SEVERITY_WARN;
+				break;
+			case ERROR:
+				result = SEVERITY_ERROR;
+				break;
+			case FATAL:
+				result = SEVERITY_FATAL;
 		}
 
 		return result;
