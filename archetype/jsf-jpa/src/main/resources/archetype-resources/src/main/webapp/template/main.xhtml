@@ -1,4 +1,4 @@
-<html xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.prime.com.tr/ui"
+<html xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
 	xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <f:view contentType="text/html" locale="#{currentLocale}" />
@@ -11,17 +11,16 @@
 <h:body style="background-color:#f1f1f1">
 	<table style="width: 100%">
 		<tr>
-			<td height="70" width="5%" align="left"><a href="index.jsf"><img src="images/logo.png" border="0" /></a></td>
-			<td height="70" width="95%" align="left"><p:themeSwitcher initialText="Change Skin" buttonPreText="Skin: " /></td>
+			<td height="70" align="left"><a href="index.jsf"><img src="images/logo.png" border="0" /></a></td>
 		</tr>
 		<tr>
-			<td height="20" colspan="2"><ui:include src="/menu.xhtml" /></td>
+			<td height="20"><ui:include src="/menu.xhtml" /></td>
 		</tr>
 		<tr valign="top">
-			<td height="400" colspan="2"><ui:insert name="body" /></td>
+			<td height="400"><ui:insert name="body" /></td>
 		</tr>
 		<tr align="center">
-			<td height="20" colspan="2" align="center" class="text-input">#{messages['main.footer.text']}</td>
+			<td height="20" align="center" class="text-input">#{messages['main.footer.text']}</td>
 		</tr>
 	</table>
 
