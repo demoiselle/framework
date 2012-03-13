@@ -102,5 +102,8 @@
 	<properties>
 		<project.alias>framework</project.alias>
 		<project.nextVersion>2.2.2-SNAPSHOT</project.nextVersion>
+		
+		I was here!
+		
 	</properties>
 </project>
