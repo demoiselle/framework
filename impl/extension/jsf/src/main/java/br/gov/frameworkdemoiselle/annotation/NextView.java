@@ -47,8 +47,6 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.inject.Qualifier;
-
 
 // TODO Este qualifier é realmente necessário? Verificar também na anotação PreviousView.
 @Inherited

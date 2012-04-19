@@ -54,8 +54,8 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.annotation.Shutdown;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
-import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.internal.context.CustomContext;
+import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.internal.processor.ShutdownProcessor;
 
 /**
