@@ -38,26 +38,33 @@
 
 Notas de Versão
 
+* v2.2.2
 
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=752}0000752}} [Bug] Correção da exceção retornada pelo interceptador de ExceptionHandler.
 
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=753}0000753}} [Improvement] Atualização do novo Namespace do PrimeFaces no arquétipo JSF-JPA.
 
-* v2.2.1
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=766}0000766}} [Improvement] Atualização para o PrimeFaces 3.2.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=768}0000768}} [Task] Preparação para geração de build do Demoiselle utilizando Maven 3.
+
+* {{{../2.2.1/}v2.2.1}}
   
-  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=749}0000749}} [Bug] Correção da assinatura do método load na abstração JPACrud
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=749}0000749}} [Bug] Correção da assinatura do método load na abstração JPACrud.
 
-  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=745}0000745}} [Bug] Correção no Beans.getReference() para beans construídos por Producers
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=745}0000745}} [Bug] Correção no Beans.getReference() para beans construídos por Producers.
 
-  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=744}0000744}} [Bug] Ajuste na aderência à especificação CDI (AroundInvoke)
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=744}0000744}} [Bug] Ajuste na aderência à especificação CDI (AroundInvoke).
 
-  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=740}0000740}} [Bug] Inclusão da dependência para o Servlet 3
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=740}0000740}} [Bug] Inclusão da dependência para o Servlet 3.
 
-  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=748}0000748}} [Improvement] Compatibilidade com o WebSphere 8
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=748}0000748}} [Improvement] Compatibilidade com o WebSphere 8.
 
-  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=743}0000743}} [Improvement] Ajuste na aderência à especificação JSF 2
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=743}0000743}} [Improvement] Ajuste na aderência à especificação JSF 2.
 
-  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=738}0000738}} [Improvement] O demoiselle-parent foi renomeado para demoiselle-framework-parent
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=738}0000738}} [Improvement] O demoiselle-parent foi renomeado para demoiselle-framework-parent.
 
-  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=739}0000739}} [Improvement] Novos métodos para exclusão de múltiplos registros no AbstractListPageBean e DelegateCrud
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=739}0000739}} [Improvement] Novos métodos para exclusão de múltiplos registros no AbstractListPageBean e DelegateCrud.
 
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=715}0000715}} [Task] Migração do código-fonte para o GitHub.
 
