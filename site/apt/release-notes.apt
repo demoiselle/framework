@@ -47,6 +47,8 @@ Notas de Versão
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=766}0000766}} [Improvement] Atualização para o PrimeFaces 3.2.
 
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=768}0000768}} [Task] Preparação para geração de build do Demoiselle utilizando Maven 3.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=769}0000769}} [Task] Nova versão dos artefatos internos: demoiselle-parent v2 e demoiselle-document-parent v3.
 
 * {{{../2.2.1/}v2.2.1}}
   
