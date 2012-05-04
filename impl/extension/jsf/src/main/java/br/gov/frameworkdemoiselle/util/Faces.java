@@ -52,6 +52,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
+import br.gov.frameworkdemoiselle.message.DefaultMessage;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 
@@ -81,8 +82,12 @@ public class Faces {
 		addMessage(null, throwable);
 	}
 
-	private static FacesContext getFacesContext() {
+	public static FacesContext getFacesContext() {
 		return Beans.getReference(FacesContext.class);
+	}
+
+	public static void validationFailed() {
+		getFacesContext().validationFailed();
 	}
 
 	public static Severity parse(final SeverityType severityType) {
@@ -164,4 +169,24 @@ public class Faces {
 		return viewRoot.getViewMap(true);
 	}
 
+	public static void addI18nMessage(String bundleKey) {
+		addMessage(new DefaultMessage(Beans.getReference(ResourceBundle.class).getString(bundleKey)));
+	}
+
+	public static void addI18nMessage(String bundleKey, Object... params) {
+		addMessage(new DefaultMessage(Beans.getReference(ResourceBundle.class).getString(bundleKey, params)));
+	}
+
+	public static void addI18nMessage(String bundleKey, SeverityType type) {
+		addMessage(new DefaultMessage(Beans.getReference(ResourceBundle.class).getString(bundleKey), type));
+	}
+
+	public static void addI18nMessage(String bundleKey, SeverityType type, Object... params) {
+		addMessage(new DefaultMessage(Beans.getReference(ResourceBundle.class).getString(bundleKey, params), type));
+	}
+
+	public static <T> T getManagedProperty(String expression, Class<T> expectedType) {
+		FacesContext context = getFacesContext();
+		return (T) context.getApplication().evaluateExpressionGet(context, expression, expectedType);
+	}
 }
