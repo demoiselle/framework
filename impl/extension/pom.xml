@@ -40,7 +40,7 @@
 
 	<groupId>br.gov.frameworkdemoiselle</groupId>
 	<artifactId>demoiselle-framework-extension-build</artifactId>
-	<version>2.2.2</version>
+	<version>2.2.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Extensions Build Aggregator</name>
