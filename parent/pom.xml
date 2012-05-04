@@ -40,7 +40,7 @@
 
 	<groupId>br.gov.frameworkdemoiselle</groupId>
 	<artifactId>demoiselle-framework-parent-build</artifactId>
-	<version>2.2.2-SNAPSHOT</version>
+	<version>2.2.2</version>
 	<packaging>pom</packaging>
 
 	<name>Parent Build Aggregator</name>
