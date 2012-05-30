@@ -69,7 +69,7 @@ import javax.inject.Singleton;
 public @interface Configuration {
 
 	/**
-	 * Define the default resource to be used
+	 * Define the default resource.
 	 */
 	public static final String DEFAULT_RESOURCE = "demoiselle";
 
