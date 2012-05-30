@@ -68,6 +68,9 @@ import javax.inject.Singleton;
 @Retention(RUNTIME)
 public @interface Configuration {
 
+	/**
+	 * Define the default resource.
+	 */
 	public static final String DEFAULT_RESOURCE = "demoiselle";
 
 	/**
