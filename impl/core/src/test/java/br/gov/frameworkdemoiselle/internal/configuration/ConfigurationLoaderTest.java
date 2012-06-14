@@ -277,7 +277,7 @@ public class ConfigurationLoaderTest {
 
 		protected ConfigurationWithConventionAllLowerCase complexObject;
 	}
-
+	
 	@Before
 	public void setUp() throws Exception {
 		Logger logger;
