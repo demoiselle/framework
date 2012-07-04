@@ -47,6 +47,8 @@ import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 import static org.powermock.reflect.Whitebox.setInternalState;
 
+import java.util.Locale;
+
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -70,7 +72,8 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import com.sun.faces.util.Util;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Parameter.class, Beans.class, Reflections.class, Converter.class, FacesContext.class, Util.class, Faces.class })
+@PrepareForTest({ Parameter.class, Beans.class, Reflections.class, Converter.class, FacesContext.class, Util.class,
+		Faces.class })
 public class AbstractEditPageBeanTest {
 
 	private AbstractEditPageBean<Contact, Object> pageBean;
@@ -79,7 +82,7 @@ public class AbstractEditPageBeanTest {
 
 	@Before
 	public void before() {
-		bundle = new ResourceBundleProducer().create("demoiselle-jsf-bundle");
+		bundle = new ResourceBundleProducer().create("demoiselle-jsf-bundle", Locale.getDefault());
 
 		pageBean = new AbstractEditPageBean<Contact, Object>() {
 
@@ -242,23 +245,23 @@ public class AbstractEditPageBeanTest {
 	@SuppressWarnings("unchecked")
 	public void testGetLongId() {
 		mockStatic(Faces.class);
-		
+
 		FacesContext facesContext = createMock(FacesContext.class);
 		Converter converter = createMock(Converter.class);
 		UIViewRoot viewRoot = createMock(UIViewRoot.class);
 		Parameter<String> parameter = createMock(Parameter.class);
-		
+
 		setInternalState(pageBean, "facesContext", facesContext);
 		setInternalState(pageBean, "id", parameter);
 		setInternalState(pageBean, "idClass", Long.class, AbstractEditPageBean.class);
-		
+
 		String value = "1";
-		
+
 		expect(parameter.getValue()).andReturn(value);
 		expect(facesContext.getViewRoot()).andReturn(viewRoot);
 		expect(Faces.getConverter(Long.class)).andReturn(converter);
 		expect(converter.getAsObject(facesContext, viewRoot, value)).andReturn(Long.valueOf(value));
-		
+
 		replayAll();
 		assertEquals(Long.valueOf(value), pageBean.getId());
 		verifyAll();
@@ -276,7 +279,8 @@ public class AbstractEditPageBeanTest {
 		try {
 			pageBean.getId();
 		} catch (DemoiselleException cause) {
-			assertEquals(bundle.getString("id-converter-not-found", Contact.class.getCanonicalName()), cause.getMessage());
+			assertEquals(bundle.getString("id-converter-not-found", Contact.class.getCanonicalName()),
+					cause.getMessage());
 		}
 
 		verifyAll();

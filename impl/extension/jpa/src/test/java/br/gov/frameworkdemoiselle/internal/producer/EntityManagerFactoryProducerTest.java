@@ -9,6 +9,7 @@ import static org.powermock.reflect.Whitebox.setInternalState;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
@@ -39,7 +40,7 @@ public class EntityManagerFactoryProducerTest {
 	@Before
 	public void setUp() {
 		logger = createMock(Logger.class);
-		bundle = new ResourceBundleProducer().create("demoiselle-jpa-bundle");
+		bundle = new ResourceBundleProducer().create("demoiselle-jpa-bundle", Locale.getDefault());
 		producer = new EntityManagerFactoryProducer();
 		cache = Collections.synchronizedMap(new HashMap<String, EntityManagerFactory>());
 		setInternalState(producer, Map.class, cache);

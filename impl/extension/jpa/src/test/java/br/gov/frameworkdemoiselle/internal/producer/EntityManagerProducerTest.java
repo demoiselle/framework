@@ -46,6 +46,7 @@ import static org.powermock.reflect.Whitebox.setInternalState;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.enterprise.inject.spi.Annotated;
@@ -86,11 +87,11 @@ public class EntityManagerProducerTest {
 	private Annotated annotated;
 
 	private Name name;
-	
+
 	private EntityManagerFactory emf;
-	
+
 	private Map<String, EntityManager> cache;
-	
+
 	private EntityManager em;
 
 	@Before
@@ -105,7 +106,7 @@ public class EntityManagerProducerTest {
 		replay(emf, Persistence.class);
 
 		producer = new EntityManagerProducer();
-		bundle = new ResourceBundleProducer().create("demoiselle-jpa-bundle");
+		bundle = new ResourceBundleProducer().create("demoiselle-jpa-bundle", Locale.getDefault());
 		logger = createMock(Logger.class);
 
 		setInternalState(producer, ResourceBundle.class, bundle);
@@ -126,14 +127,14 @@ public class EntityManagerProducerTest {
 		producer.close();
 		verify(em);
 	}
-	
+
 	@Test
 	public void testGetCache() {
 		cache = Collections.synchronizedMap(new HashMap<String, EntityManager>());
 		setInternalState(producer, Map.class, cache);
 		Assert.assertEquals(cache, producer.getCache());
 	}
-	
+
 	@After
 	public void tearDown() {
 		producer = null;
@@ -166,16 +167,16 @@ public class EntityManagerProducerTest {
 
 	@Test
 	public void testCreateWithPersistenceUnitNameFromPersistenceXML() {
-		
+
 		Map<String, EntityManagerFactory> cache = Collections
-		.synchronizedMap(new HashMap<String, EntityManagerFactory>());
-		
+				.synchronizedMap(new HashMap<String, EntityManagerFactory>());
+
 		cache.put("pu1", emf);
-		
+
 		EntityManagerFactoryProducer entityManagerFactoryProducer = createMock(EntityManagerFactoryProducer.class);
-		
+
 		expect(entityManagerFactoryProducer.getCache()).andReturn(cache);
-		
+
 		expect(annotated.isAnnotationPresent(Name.class)).andReturn(false);
 		expect(ip.getAnnotated()).andReturn(annotated).anyTimes();
 		expect(config.getPersistenceUnitName()).andReturn(null);
@@ -183,7 +184,7 @@ public class EntityManagerProducerTest {
 		replay(annotated, ip, config, entityManagerFactoryProducer);
 
 		setInternalState(producer, EntityManagerFactoryProducer.class, entityManagerFactoryProducer);
-		
+
 		EntityManagerProxy entityManagerProxy = (EntityManagerProxy) producer.create(ip, config);
 		assertNotNull(entityManagerProxy);
 	}
