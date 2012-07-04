@@ -37,16 +37,12 @@
 package br.gov.frameworkdemoiselle.internal.producer;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.MissingResourceException;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
@@ -57,29 +53,9 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * 
  * @author SERPRO
  */
-@ApplicationScoped
 public class ResourceBundleProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	@Inject
-	protected Locale locale;
-
-	private final Map<String, ResourceBundle> map = new HashMap<String, ResourceBundle>();
-
-	public ResourceBundleProducer() {
-		this.locale = Locale.getDefault();
-	}
-
-	/**
-	 * This constructor should be used by classes that can not inject ResourceBundle.
-	 * 
-	 * @param Locale
-	 *            locale
-	 */
-	public ResourceBundleProducer(Locale locale) {
-		this.locale = locale;
-	}
 
 	/**
 	 * This method should be used by classes that can not inject ResourceBundle, to create the ResourceBundle.
@@ -87,8 +63,18 @@ public class ResourceBundleProducer implements Serializable {
 	 * @param String
 	 *            baseName
 	 */
-	public ResourceBundle create(String baseName) {
-		return getResourceBundle(baseName);
+	public ResourceBundle create(String baseName, Locale locale) {
+		ResourceBundle bundle = null;
+
+		try {
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			bundle = new ResourceBundle(ResourceBundle.getBundle(baseName, locale, classLoader));
+
+		} catch (MissingResourceException e) {
+			throw new DemoiselleException("File " + baseName + " not found!");
+		}
+
+		return bundle;
 	}
 
 	/**
@@ -98,7 +84,6 @@ public class ResourceBundleProducer implements Serializable {
 	@Produces
 	@Default
 	public ResourceBundle create(InjectionPoint ip, Locale locale) {
-		this.locale = locale;
 		String baseName;
 
 		if (ip != null && ip.getAnnotated().isAnnotationPresent(Name.class)) {
@@ -107,29 +92,6 @@ public class ResourceBundleProducer implements Serializable {
 			baseName = "messages";
 		}
 
-		return create(baseName);
+		return create(baseName, locale);
 	}
-
-	/**
-	 * This method checks if the bundle was created already. If the bundle has not been created, it creates and saves
-	 * the bundle on a Map.
-	 */
-	private ResourceBundle getResourceBundle(String baseName) {
-		ResourceBundle bundle = null;
-
-		if (map.containsKey(baseName + "-" + this.locale)) {
-			bundle = map.get(baseName + "-" + this.locale);
-
-		} else {
-			try {
-				bundle = new ResourceBundle(ResourceBundle.getBundle(baseName, this.locale));
-			} catch (MissingResourceException e) {
-				throw new DemoiselleException("File " + baseName + " not found!");
-			}
-			map.put(baseName + "-" + this.locale, bundle);
-		}
-
-		return bundle;
-	}
-
 }

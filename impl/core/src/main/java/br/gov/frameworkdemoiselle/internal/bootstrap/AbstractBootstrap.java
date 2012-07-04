@@ -36,6 +36,8 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
+import java.util.Locale;
+
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
@@ -56,7 +58,7 @@ public class AbstractBootstrap implements Extension {
 	}
 
 	protected static ResourceBundle getBundle(String baseName) {
-		return bundleFactory.create(baseName);
+		return bundleFactory.create(baseName, Locale.getDefault());
 	}
 
 	protected static Logger getLogger() {

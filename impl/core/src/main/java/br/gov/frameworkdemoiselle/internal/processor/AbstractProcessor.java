@@ -36,6 +36,8 @@
  */
 package br.gov.frameworkdemoiselle.internal.processor;
 
+import java.util.Locale;
+
 import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -106,8 +108,10 @@ public abstract class AbstractProcessor<DC> implements Processor {
 	}
 
 	protected ResourceBundle getBundle(String baseName) {
-		if (bundle == null)
-			bundle = bundleFactory.create(baseName);
+		if (bundle == null) {
+			bundle = bundleFactory.create(baseName, Locale.getDefault());
+		}
+
 		return bundle;
 	}
 
