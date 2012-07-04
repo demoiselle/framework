@@ -51,22 +51,13 @@ public class TransactionBootstrap extends AbstractBootstrap {
 	public <T> void processAnnotatedType(@Observes final ProcessAnnotatedType<T> event) throws ConfigurationException {
 
 		Configuration config = new PropertiesConfiguration("demoiselle.properties");
-		String selected = config.getString("frameworkdemoiselle.transaction.class");
+		String selected = config.getString("frameworkdemoiselle.transaction.class",
+				DefaultTransaction.class.getCanonicalName());
 
 		Class<?> type = event.getAnnotatedType().getJavaClass();
-		if (Transaction.class.isAssignableFrom(type) && type != Transaction.class && type != DefaultTransaction.class) {
-			if (selected != null && !selected.equals(type.getCanonicalName())) {
-				event.veto();
-			}
+		if (Transaction.class.isAssignableFrom(type) && type != Transaction.class
+				&& !type.getCanonicalName().equals(selected)) {
+			event.veto();
 		}
-
-		// final AnnotatedType<T> annotatedType = event.getAnnotatedType();
-		// for (AnnotatedMethod<?> am : annotatedType.getMethods()) {
-		// if (am.isAnnotationPresent(annotationClass)) {
-		// @SuppressWarnings("unchecked")
-		// AnnotatedMethod<T> annotatedMethod = (AnnotatedMethod<T>) am;
-		// processors.add(new StartupProcessor<T>(annotatedMethod, beanManager));
-		// }
-		// }
 	}
 }

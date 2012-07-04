@@ -37,14 +37,12 @@
 package br.gov.frameworkdemoiselle.transaction;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Alternative;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import br.gov.frameworkdemoiselle.util.Beans;
 
-@Alternative
 @RequestScoped
 public class JTATransaction implements Transaction {
 

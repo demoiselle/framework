@@ -39,7 +39,6 @@ package br.gov.frameworkdemoiselle.transaction;
 import java.util.Collection;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -52,7 +51,6 @@ import br.gov.frameworkdemoiselle.internal.producer.EntityManagerProducer;
  * @author SERPRO
  * @see Transaction
  */
-@Alternative
 @RequestScoped
 public class JPATransaction implements Transaction {
 
