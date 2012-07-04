@@ -55,7 +55,6 @@ import org.junit.Test;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 public class ResourceBundleProducerTest {
 
@@ -82,28 +81,10 @@ public class ResourceBundleProducerTest {
 	}
 
 	@Test
-	public void testResourceBundleFactoryLocale() {
-		ResourceBundleProducer factory = new ResourceBundleProducer(Locale.getDefault());
-		Assert.assertNotNull(factory);
-	}
-
-	@Test
-	public void testCreateString() {
-		ResourceBundleProducer factory = new ResourceBundleProducer(Locale.getDefault());
-		Assert.assertNotNull(factory.create("demoiselle-core-bundle"));
-	}
-
-	@Test
-	public void testCreateStringWithoutLocale() {
-		ResourceBundleProducer factory = new ResourceBundleProducer();
-		Assert.assertNotNull(factory.create("demoiselle-core-bundle"));
-	}
-
-	@Test
 	public void testCreateWithNonExistentFile() {
-		ResourceBundleProducer factory = new ResourceBundleProducer(Locale.getDefault());
+		ResourceBundleProducer factory = new ResourceBundleProducer();
 		try {
-			factory.create("arquivo_inexistente");
+			factory.create("arquivo_inexistente", Locale.getDefault());
 		} catch (Exception e) {
 			assertTrue(e instanceof DemoiselleException);
 		}
@@ -146,14 +127,5 @@ public class ResourceBundleProducerTest {
 
 		ResourceBundleProducer factory = new ResourceBundleProducer();
 		Assert.assertNotNull(factory.create(ip, Locale.getDefault()));
-	}
-
-	@Test
-	public void testCreateTwice() {
-		ResourceBundleProducer factory = new ResourceBundleProducer(Locale.getDefault());
-		ResourceBundle bundle = factory.create("demoiselle-core-bundle");
-
-		Assert.assertNotNull(bundle);
-		Assert.assertEquals(bundle, factory.create("demoiselle-core-bundle"));
 	}
 }

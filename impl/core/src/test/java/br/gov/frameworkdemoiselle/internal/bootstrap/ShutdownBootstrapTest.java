@@ -48,6 +48,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -151,7 +152,8 @@ public class ShutdownBootstrapTest {
 		ResourceBundle bundle = PowerMock.createMock(ResourceBundle.class);
 
 		expect(LoggerProducer.create(EasyMock.anyObject(Class.class))).andReturn(logger).anyTimes();
-		expect(bundleFactory.create(EasyMock.anyObject(String.class))).andReturn(bundle).anyTimes();
+		expect(bundleFactory.create(EasyMock.anyObject(String.class), EasyMock.anyObject(Locale.class))).andReturn(
+				bundle).anyTimes();
 		expect(bundle.getString(EasyMock.anyObject(String.class), EasyMock.anyObject(String.class))).andReturn("")
 				.anyTimes();
 
@@ -175,7 +177,7 @@ public class ShutdownBootstrapTest {
 		EasyMock.expectLastCall().anyTimes();
 
 		PowerMock.replayAll();
-		bootstrap.shuttingDown(null);
+		ShutdownBootstrap.shuttingDown(null);
 
 		assertTrue(list.isEmpty());
 		PowerMock.verifyAll();

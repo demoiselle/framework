@@ -49,7 +49,7 @@ import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
-public class AbstractBootstrap implements Extension {
+public abstract class AbstractBootstrap implements Extension {
 
 	private static ResourceBundleProducer bundleFactory = new ResourceBundleProducer();
 

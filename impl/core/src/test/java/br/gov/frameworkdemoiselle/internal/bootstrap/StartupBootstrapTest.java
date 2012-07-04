@@ -48,6 +48,7 @@ import static org.junit.Assert.fail;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.enterprise.context.ConversationScoped;
@@ -160,7 +161,8 @@ public class StartupBootstrapTest {
 		assertTrue(tempContexts.isEmpty());
 
 		expect(LoggerProducer.create(EasyMock.anyObject(Class.class))).andReturn(logger).anyTimes();
-		expect(bundleFactory.create(EasyMock.anyObject(String.class))).andReturn(bundle).anyTimes();
+		expect(bundleFactory.create(EasyMock.anyObject(String.class), EasyMock.anyObject(Locale.class))).andReturn(
+				bundle).anyTimes();
 		expect(bundle.getString(EasyMock.anyObject(String.class), EasyMock.anyObject(String.class))).andReturn("")
 				.anyTimes();
 
@@ -199,7 +201,8 @@ public class StartupBootstrapTest {
 		ResourceBundle bundle = PowerMock.createMock(ResourceBundle.class);
 
 		expect(LoggerProducer.create(EasyMock.anyObject(Class.class))).andReturn(logger).anyTimes();
-		expect(bundleFactory.create(EasyMock.anyObject(String.class))).andReturn(bundle).anyTimes();
+		expect(bundleFactory.create(EasyMock.anyObject(String.class), EasyMock.anyObject(Locale.class))).andReturn(
+				bundle).anyTimes();
 		expect(bundle.getString(EasyMock.anyObject(String.class), EasyMock.anyObject(String.class))).andReturn("")
 				.anyTimes();
 
@@ -236,9 +239,7 @@ public class StartupBootstrapTest {
 		} catch (Throwable e) {
 			fail();
 		}
-
 	}
-
 }
 
 @SuppressWarnings("rawtypes")

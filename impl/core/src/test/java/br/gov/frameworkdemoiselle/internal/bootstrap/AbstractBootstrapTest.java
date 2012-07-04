@@ -41,11 +41,12 @@ import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
+import java.util.Locale;
+
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.inject.Scope;
 
 import org.easymock.EasyMock;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
@@ -63,30 +64,24 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ LoggerProducer.class, Contexts.class })
 public class AbstractBootstrapTest {
-
-	private AbstractBootstrap bootstrap;
-
-	@Before
-	public void setUp() {
-		bootstrap = new AbstractBootstrap();
-	}
-
-	@SuppressWarnings("unchecked")
+	
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testAddContext() {
 		mockStatic(LoggerProducer.class);
 		mockStatic(Contexts.class);
 
 		Logger logger = PowerMock.createMock(Logger.class);
 		logger.trace(EasyMock.anyObject(String.class));
-		
+
 		expect(LoggerProducer.create(EasyMock.anyObject(Class.class))).andReturn(logger);
 
 		ResourceBundle bundle = PowerMock.createMock(ResourceBundle.class);
 		expect(bundle.getString(EasyMock.anyObject(String.class), EasyMock.anyObject(String.class))).andReturn(null);
 
 		ResourceBundleProducer bundleFactory = PowerMock.createMock(ResourceBundleProducer.class);
-		expect(bundleFactory.create(EasyMock.anyObject(String.class))).andReturn(bundle);
+		expect(bundleFactory.create(EasyMock.anyObject(String.class), EasyMock.anyObject(Locale.class))).andReturn(
+				bundle);
 
 		Whitebox.setInternalState(AbstractBootstrap.class, "bundleFactory", bundleFactory);
 
@@ -94,16 +89,14 @@ public class AbstractBootstrapTest {
 		Contexts.add(EasyMock.anyObject(ThreadLocalContext.class), EasyMock.anyObject(AfterBeanDiscovery.class));
 		replayAll(bundle, bundleFactory, logger, LoggerProducer.class, Contexts.class);
 
-		bootstrap.addContext(context,null);
+		AbstractBootstrap.addContext(context, null);
 
 		verifyAll();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testDisableContext() {
-		AbstractBootstrap bootstrap = new AbstractBootstrap();
-
 		mockStatic(LoggerProducer.class);
 		mockStatic(Contexts.class);
 
@@ -115,7 +108,8 @@ public class AbstractBootstrapTest {
 		expect(bundle.getString(EasyMock.anyObject(String.class), EasyMock.anyObject(String.class))).andReturn(null);
 
 		ResourceBundleProducer bundleFactory = PowerMock.createMock(ResourceBundleProducer.class);
-		expect(bundleFactory.create(EasyMock.anyObject(String.class))).andReturn(bundle);
+		expect(bundleFactory.create(EasyMock.anyObject(String.class), EasyMock.anyObject(Locale.class))).andReturn(
+				bundle);
 
 		Whitebox.setInternalState(AbstractBootstrap.class, "bundleFactory", bundleFactory);
 
@@ -124,7 +118,7 @@ public class AbstractBootstrapTest {
 		Contexts.remove(context);
 		replayAll(bundle, bundleFactory, logger, LoggerProducer.class, Contexts.class);
 
-		bootstrap.disableContext(context);
+		AbstractBootstrap.disableContext(context);
 
 		verifyAll();
 	}
