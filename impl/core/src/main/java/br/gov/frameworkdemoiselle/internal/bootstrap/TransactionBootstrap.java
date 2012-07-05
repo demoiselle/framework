@@ -40,24 +40,51 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
+import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.internal.implementation.DefaultTransaction;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 
 public class TransactionBootstrap extends AbstractBootstrap {
 
-	public <T> void processAnnotatedType(@Observes final ProcessAnnotatedType<T> event) throws ConfigurationException {
+	private static Class<Transaction> selected;
 
-		Configuration config = new PropertiesConfiguration("demoiselle.properties");
-		String selected = config.getString("frameworkdemoiselle.transaction.class",
-				DefaultTransaction.class.getCanonicalName());
+	public <T> void processAnnotatedType(@Observes final ProcessAnnotatedType<T> event) {
+		Class<?> annotated = event.getAnnotatedType().getJavaClass();
 
-		Class<?> type = event.getAnnotatedType().getJavaClass();
-		if (Transaction.class.isAssignableFrom(type) && type != Transaction.class
-				&& !type.getCanonicalName().equals(selected)) {
+		if (Transaction.class.isAssignableFrom(annotated) && annotated != Transaction.class
+				&& !annotated.equals(getSelected())) {
 			event.veto();
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private synchronized static Class<Transaction> getSelected() {
+		if (selected == null) {
+			String canonicalName = null;
+
+			try {
+				Configuration config = new PropertiesConfiguration("demoiselle.properties");
+				canonicalName = config.getString("frameworkdemoiselle.transaction.class",
+						DefaultTransaction.class.getCanonicalName());
+
+				ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+				selected = (Class<Transaction>) Class.forName(canonicalName, false, classLoader);
+				selected.asSubclass(Transaction.class);
+
+			} catch (org.apache.commons.configuration.ConfigurationException cause) {
+				throw new ConfigurationException(getBundle().getString("file-not-found", "demoiselle.properties"));
+
+			} catch (ClassNotFoundException cause) {
+				throw new ConfigurationException(getBundle().getString("transaction-class-not-found", canonicalName));
+
+			} catch (ClassCastException cause) {
+				throw new ConfigurationException(getBundle().getString("transaction-class-must-be-of-type",
+						canonicalName, Transaction.class.getCanonicalName()));
+			}
+		}
+
+		return selected;
 	}
 }
