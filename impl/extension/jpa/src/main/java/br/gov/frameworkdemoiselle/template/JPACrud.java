@@ -48,6 +48,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Enumerated;
 import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -174,6 +175,49 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		List<T> lista = query.getResultList();
 		return lista;
 	}
+	
+	/**
+	 * Perform a paged query by JPQL
+	 * @param jpql
+	 * @return
+	 */
+	public List<T> findJPQL(String jpql) {
+		TypedQuery<T> listQuery = getEntityManager().createQuery(jpql, getBeanClass());
+		Pagination pagination = getPagination();
+		if (pagination != null) {
+			CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
+			CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+			countQuery.select(builder.count(countQuery.from(getBeanClass())));
+			getEntityManager().createQuery(jpql, getBeanClass());
+			pagination.setTotalResults((int) (getEntityManager().createQuery(countQuery).getSingleResult() + 0));
+			listQuery.setFirstResult(pagination.getFirstResult());
+			listQuery.setMaxResults(pagination.getPageSize());
+		}
+		return listQuery.getResultList();
+	}
+	
+	/**
+	 * Perform a paged query by CriteriaQuery
+	 * @param jpql
+	 * @return
+	 */
+	public List<T> findCriteria(CriteriaQuery<T> select) {
+		CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
+		
+		CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+		countQuery.select(builder.count(countQuery.from(getBeanClass())));
+		getEntityManager().createQuery(countQuery);		
+
+		Pagination p = getPagination();
+		p.setTotalResults((int) (getEntityManager().createQuery(countQuery).getSingleResult() + 0));
+
+		TypedQuery<T> listQuery = getEntityManager().createQuery(select);
+		listQuery.setFirstResult(p.getFirstResult());
+		listQuery.setMaxResults(p.getPageSize());
+
+		return listQuery.getResultList();
+	}
+	
 
 	/**
 	 * Retrieves the number of persisted objects for the current class type.
