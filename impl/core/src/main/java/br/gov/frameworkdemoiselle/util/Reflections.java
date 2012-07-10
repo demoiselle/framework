@@ -140,4 +140,7 @@ public class Reflections {
 		return object;
 	}
 
+	public static boolean isOfType(Class<?> clazz, Class<?> type) {
+		return type.isAssignableFrom(clazz) && clazz != type;
+	}
 }
