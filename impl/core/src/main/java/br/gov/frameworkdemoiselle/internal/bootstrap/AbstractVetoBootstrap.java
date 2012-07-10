@@ -40,18 +40,19 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
-public abstract class AbstractTransactionBootstrap<T extends Transaction> extends AbstractBootstrap {
+public abstract class AbstractVetoBootstrap<T, S> extends AbstractBootstrap {
 
-	private Class<T> transactionClass;
+	private Class<T> type;
+
+	private Class<S> subclass;
 
 	protected <A> void processAnnotatedType(@Observes final ProcessAnnotatedType<A> event) {
 		Class<?> annotated = event.getAnnotatedType().getJavaClass();
 
-		if (Reflections.isOfType(annotated, Transaction.class) && annotated != getTransactionClass()
-				&& getPriority(getTransactionClass()) < getPriority(annotated)) {
+		if (Reflections.isOfType(annotated, getType()) && annotated != getSubclass()
+				&& getPriority(getSubclass()) < getPriority(annotated)) {
 			event.veto();
 		}
 	}
@@ -67,10 +68,17 @@ public abstract class AbstractTransactionBootstrap<T extends Transaction> extend
 		return priority;
 	}
 
-	protected Class<T> getTransactionClass() {
-		if (this.transactionClass == null) {
-			this.transactionClass = Reflections.getGenericTypeArgument(this.getClass(), 0);
+	protected Class<T> getType() {
+		if (this.type == null) {
+			this.type = Reflections.getGenericTypeArgument(this.getClass(), 0);
 		}
-		return this.transactionClass;
+		return this.type;
+	}
+
+	protected Class<S> getSubclass() {
+		if (this.subclass == null) {
+			this.subclass = Reflections.getGenericTypeArgument(this.getClass(), 1);
+		}
+		return this.subclass;
 	}
 }

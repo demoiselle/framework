@@ -37,7 +37,8 @@
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import br.gov.frameworkdemoiselle.transaction.JTATransaction;
+import br.gov.frameworkdemoiselle.transaction.Transaction;
 
-public class JTATransactionBootstrap extends AbstractTransactionBootstrap<JTATransaction> {
+public class JTATransactionBootstrap extends AbstractVetoBootstrap<Transaction, JTATransaction> {
 
 }
