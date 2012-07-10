@@ -14,7 +14,6 @@
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="false" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
-			<property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup" />
 		</properties>
 	</persistence-unit>
 	
@@ -29,7 +28,7 @@
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="false" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
-			<property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup" />
+			<property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
 		</properties>
 	</persistence-unit>
 	-->
@@ -45,7 +44,6 @@
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="false" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
-			<property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup" />
 		</properties>
 	</persistence-unit>
 	-->

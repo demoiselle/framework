@@ -25,11 +25,14 @@
 			<artifactId>demoiselle-jpa</artifactId>
 			<scope>compile</scope>
 		</dependency>
+		<!-- If you are using a JTA transaction then use this extension -->
+		<!--
 		<dependency>
 		    <groupId>br.gov.frameworkdemoiselle</groupId>
 		    <artifactId>demoiselle-jta</artifactId>
 		    <scope>compile</scope>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>

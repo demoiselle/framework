@@ -1,3 +1,5 @@
+import static javax.persistence.GenerationType.SEQUENCE;
+
 package ${package}.domain;
 
 import java.io.Serializable;
@@ -13,7 +15,7 @@ public class Bookmark implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = SEQUENCE)
 	private Long id;
 	
 	@Column
