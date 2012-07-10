@@ -36,6 +36,8 @@
  */
 package br.gov.frameworkdemoiselle.transaction;
 
+import static br.gov.frameworkdemoiselle.annotation.Priority.MID_PRIORITY;
+
 import java.util.Collection;
 
 import javax.enterprise.context.RequestScoped;
@@ -43,6 +45,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.internal.producer.EntityManagerProducer;
 
 /**
@@ -52,6 +55,7 @@ import br.gov.frameworkdemoiselle.internal.producer.EntityManagerProducer;
  * @see Transaction
  */
 @RequestScoped
+@Priority(MID_PRIORITY)
 public class JPATransaction implements Transaction {
 
 	private static final long serialVersionUID = 1L;
