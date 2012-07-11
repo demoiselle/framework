@@ -175,46 +175,45 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		List<T> lista = query.getResultList();
 		return lista;
 	}
-	
+
 	/**
-	 * Perform a paged query by JPQL
-	 * @param jpql
-	 * @return
+	 * Search JPQL integrated into the context of paging
+	 * @param jpql - query in syntax JPQL
+	 * @return a list of entities
 	 */
-	public List<T> findJPQL(String jpql) {
+	protected List<T> findByJPQL(String jpql) {
+		pagination = getPagination();
 		TypedQuery<T> listQuery = getEntityManager().createQuery(jpql, getBeanClass());
-		Pagination pagination = getPagination();
 		if (pagination != null) {
-			CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
-			CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
-			countQuery.select(builder.count(countQuery.from(getBeanClass())));
-			getEntityManager().createQuery(jpql, getBeanClass());
-			pagination.setTotalResults((int) (getEntityManager().createQuery(countQuery).getSingleResult() + 0));
+			int indexFrom = jpql.toUpperCase().indexOf("FROM");
+			String countJPQL = "SELECT count(*) " + jpql.substring(indexFrom);
+			Query query= getEntityManager().createQuery(countJPQL);
+			Number cResults=(Number) query.getSingleResult();			
+			pagination.setTotalResults(cResults.intValue());
 			listQuery.setFirstResult(pagination.getFirstResult());
 			listQuery.setMaxResults(pagination.getPageSize());
 		}
 		return listQuery.getResultList();
 	}
-	
+
 	/**
-	 * Perform a paged query by CriteriaQuery
-	 * @param jpql
-	 * @return
+	 * Search CriteriaQuery integrated into the context of paging
+	 * @param criteriaQuery - structure CriteriaQuery
+	 * @return a list of entities
 	 */
-	public List<T> findCriteria(CriteriaQuery<T> select) {
-		CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
-		
-		CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
-		countQuery.select(builder.count(countQuery.from(getBeanClass())));
-		getEntityManager().createQuery(countQuery);		
-
-		Pagination p = getPagination();
-		p.setTotalResults((int) (getEntityManager().createQuery(countQuery).getSingleResult() + 0));
-
-		TypedQuery<T> listQuery = getEntityManager().createQuery(select);
-		listQuery.setFirstResult(p.getFirstResult());
-		listQuery.setMaxResults(p.getPageSize());
-
+	public List<T> findByCriteriaQuery(CriteriaQuery<T> criteriaQuery, List<Predicate> predicates) {
+		pagination = getPagination();		
+		TypedQuery<T> listQuery = getEntityManager().createQuery(criteriaQuery);
+		if (pagination != null) {		
+			CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
+			CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+			countQuery.select(builder.count(countQuery.from(getBeanClass())));
+			countQuery.where(predicates.toArray(new Predicate[] {}));
+			getEntityManager().createQuery(countQuery);
+			pagination.setTotalResults((int) (getEntityManager().createQuery(countQuery).getSingleResult() + 0));
+			listQuery.setFirstResult(pagination.getFirstResult());
+			listQuery.setMaxResults(pagination.getPageSize());
+		}
 		return listQuery.getResultList();
 	}
 	
