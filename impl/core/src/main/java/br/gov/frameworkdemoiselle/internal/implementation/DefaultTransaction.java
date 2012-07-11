@@ -85,6 +85,6 @@ public class DefaultTransaction implements Transaction {
 
 	private DemoiselleException getException() {
 		return new DemoiselleException(CoreBundle.get().getString("transaction-not-defined",
-				Transactional.class.getSimpleName(), Transaction.class.getSimpleName()));
+				Transactional.class.getSimpleName()));
 	}
 }
