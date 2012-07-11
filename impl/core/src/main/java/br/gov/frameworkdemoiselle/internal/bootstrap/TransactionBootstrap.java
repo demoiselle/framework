@@ -54,17 +54,12 @@ public class TransactionBootstrap extends AbstractBootstrap {
 
 	public void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event) {
 		selected = loadSelected();
-
-		if (selected == null) {
-			selected = DefaultTransaction.class;
-		}
-
 	}
 
 	public <T> void processAnnotatedType(@Observes final ProcessAnnotatedType<T> event) {
-		Class<?> annotated = event.getAnnotatedType().getJavaClass();
+		Class<T> annotated = event.getAnnotatedType().getJavaClass();
 
-		if (Reflections.isOfType(annotated, Transaction.class) && annotated != loadSelected()) {
+		if (Reflections.isOfType(annotated, Transaction.class) && annotated != selected) {
 			event.veto();
 		}
 	}
