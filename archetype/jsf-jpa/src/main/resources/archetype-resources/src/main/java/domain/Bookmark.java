@@ -1,6 +1,6 @@
-import static javax.persistence.GenerationType.SEQUENCE;
-
 package ${package}.domain;
+
+import static javax.persistence.GenerationType.SEQUENCE;
 
 import java.io.Serializable;
 
