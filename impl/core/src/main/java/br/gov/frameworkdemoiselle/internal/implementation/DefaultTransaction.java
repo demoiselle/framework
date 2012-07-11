@@ -36,12 +36,9 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import static br.gov.frameworkdemoiselle.annotation.Priority.MIN_PRIORITY;
-
 import javax.enterprise.context.RequestScoped;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 
@@ -52,7 +49,6 @@ import br.gov.frameworkdemoiselle.transaction.Transactional;
  * @see Transaction
  */
 @RequestScoped
-@Priority(MIN_PRIORITY)
 public class DefaultTransaction implements Transaction {
 
 	private static final long serialVersionUID = 1L;

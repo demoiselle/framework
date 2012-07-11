@@ -36,18 +36,14 @@
  */
 package br.gov.frameworkdemoiselle.transaction;
 
-import static br.gov.frameworkdemoiselle.annotation.Priority.MAX_PRIORITY;
-
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
-import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RequestScoped
-@Priority(MAX_PRIORITY)
 public class JTATransaction implements Transaction {
 
 	private static final long serialVersionUID = 1L;
