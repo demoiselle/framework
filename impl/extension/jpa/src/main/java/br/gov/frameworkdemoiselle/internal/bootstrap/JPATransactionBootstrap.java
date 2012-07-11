@@ -40,5 +40,5 @@ import br.gov.frameworkdemoiselle.transaction.JPATransaction;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 
 public class JPATransactionBootstrap extends AbstractVetoBootstrap<Transaction, JPATransaction> {
-
+	
 }
