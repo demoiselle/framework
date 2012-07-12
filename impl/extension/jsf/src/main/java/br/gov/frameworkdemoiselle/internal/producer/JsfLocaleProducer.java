@@ -45,7 +45,7 @@ public class JsfLocaleProducer implements Serializable {
 	@Named("currentLocale")
 	public Locale create() {
 		Locale locale;
-
+		
 		try {
 			FacesContext facesContext = Beans.getReference(FacesContext.class);
 
@@ -60,7 +60,7 @@ public class JsfLocaleProducer implements Serializable {
 			}
 			locale = facesContext.getApplication().getDefaultLocale();
 
-		} catch (ContextNotActiveException cause) {
+		} catch (Exception cause) {
 			locale = Locale.getDefault();
 		}
 
