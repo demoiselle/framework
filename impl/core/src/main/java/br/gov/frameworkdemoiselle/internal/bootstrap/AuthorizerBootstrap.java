@@ -41,7 +41,7 @@ import br.gov.frameworkdemoiselle.security.Authorizer;
 
 public class AuthorizerBootstrap extends AbstractStrategyBootstrap<Authorizer, DefaultAuthorizer> {
 
-	public String getConfigurationKey() {
+	public String getConfigKey() {
 		return "frameworkdemoiselle.security.authorizer.class";
 	}
 			

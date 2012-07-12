@@ -41,7 +41,7 @@ import br.gov.frameworkdemoiselle.security.Authenticator;
 
 public class AuthenticatorBootstrap extends AbstractStrategyBootstrap<Authenticator, DefaultAuthenticator> {
 
-	public String getConfigurationKey() {
+	public String getConfigKey() {
 		return "frameworkdemoiselle.security.authenticator.class";
 	}
 	

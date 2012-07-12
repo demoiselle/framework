@@ -41,7 +41,7 @@ import br.gov.frameworkdemoiselle.transaction.Transaction;
 
 public class TransactionBootstrap extends AbstractStrategyBootstrap<Transaction, DefaultTransaction> {
 
-	public String getConfigurationKey() {
+	public String getConfigKey() {
 		return "frameworkdemoiselle.transaction.class";
 	}
 
