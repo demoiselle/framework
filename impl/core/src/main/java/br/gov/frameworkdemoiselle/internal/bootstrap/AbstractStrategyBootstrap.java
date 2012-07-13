@@ -92,7 +92,7 @@ public abstract class AbstractStrategyBootstrap<T, D extends T> extends Abstract
 
 		try {
 			Configuration config = new PropertiesConfiguration("demoiselle.properties");
-			canonicalName = config.getString(getConfigurationKey(), getDefaultClass().getCanonicalName());
+			canonicalName = config.getString(getConfigKey(), getDefaultClass().getCanonicalName());
 
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			result = (Class<T>) Class.forName(canonicalName, false, classLoader);
@@ -113,6 +113,6 @@ public abstract class AbstractStrategyBootstrap<T, D extends T> extends Abstract
 		return result;
 	}
 	
-	public abstract String getConfigurationKey();
+	public abstract String getConfigKey();
 
 }
