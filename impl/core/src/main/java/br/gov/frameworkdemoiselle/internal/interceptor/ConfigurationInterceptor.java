@@ -55,10 +55,10 @@ public class ConfigurationInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private List<Class<?>> cache = new ArrayList<Class<?>>();
+	private static List<Class<?>> cache = new ArrayList<Class<?>>();
 
 	@AroundInvoke
-	public synchronized Object manage(final InvocationContext ic) throws Exception {
+	public static synchronized Object manage(final InvocationContext ic) throws Exception {
 		Class<?> type = ic.getTarget().getClass();
 
 		if (!cache.contains(type)) {
