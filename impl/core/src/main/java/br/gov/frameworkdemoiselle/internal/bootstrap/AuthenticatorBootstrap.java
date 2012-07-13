@@ -36,13 +36,13 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
-import br.gov.frameworkdemoiselle.internal.implementation.DefaultTransaction;
-import br.gov.frameworkdemoiselle.transaction.Transaction;
+import br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthenticator;
+import br.gov.frameworkdemoiselle.security.Authenticator;
 
-public class TransactionBootstrap extends AbstractStrategyBootstrap<Transaction, DefaultTransaction> {
+public class AuthenticatorBootstrap extends AbstractStrategyBootstrap<Authenticator, DefaultAuthenticator> {
 
 	public String getConfigurationKey() {
-		return "frameworkdemoiselle.transaction.class";
+		return "frameworkdemoiselle.security.authenticator.class";
 	}
-
+	
 }
