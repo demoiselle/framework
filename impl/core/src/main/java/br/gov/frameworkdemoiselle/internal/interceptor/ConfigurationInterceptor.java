@@ -34,62 +34,40 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.bootstrap;
+package br.gov.frameworkdemoiselle.internal.interceptor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 
 import br.gov.frameworkdemoiselle.configuration.Configuration;
-import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
-import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.util.Beans;
 
-/**
- * @author SERPRO
- */
-public class ConfigurationBootstrap extends AbstractBootstrap {
+@Interceptor
+@Configuration
+@SuppressWarnings("cdi-scope")
+public class ConfigurationInterceptor implements Serializable {
 
-	private static List<AnnotatedType<?>> types = Collections.synchronizedList(new ArrayList<AnnotatedType<?>>());
+	private static final long serialVersionUID = 1L;
 
-	private static final String MSG_PROCESSING = "bootstrap.configuration.processing";
+	private List<Class<?>> cache = new ArrayList<Class<?>>();
 
-	private ThreadLocalContext c1;
+	@AroundInvoke
+	public synchronized Object manage(final InvocationContext ic) throws Exception {
+		Class<?> type = ic.getTarget().getClass();
 
-	private ThreadLocalContext c2;
+		if (!cache.contains(type)) {
+			ConfigurationLoader loader = Beans.getReference(ConfigurationLoader.class);
+			loader.load(ic.getTarget());
 
-	public <T> void detectAnnotation(@Observes final ProcessAnnotatedType<T> event, final BeanManager beanManager) {
-		if (event.getAnnotatedType().isAnnotationPresent(Configuration.class)) {
-			types.add(event.getAnnotatedType());
+			cache.add(type);
 		}
-	}
 
-	public void loadTempContexts(@Observes final AfterBeanDiscovery event) {
-		c1 = new ThreadLocalContext(RequestScoped.class);
-		addContext(c1, event);
-		c2 = new ThreadLocalContext(SessionScoped.class);
-		addContext(c2, event);
+		return ic.proceed();
 	}
-
-	public void processLoader(@Observes final AfterDeploymentValidation event)
-			throws ConfigurationException {
-		ConfigurationLoader configurationLoader = Beans.getReference(ConfigurationLoader.class);
-		for (AnnotatedType<?> type : types) {
-			getLogger().debug(getBundle().getString(MSG_PROCESSING, type.toString()));
-			configurationLoader.load(Beans.getReference(type.getJavaClass()));
-		}
-		disableContext(c1);
-		disableContext(c2);
-	}
-
 }
