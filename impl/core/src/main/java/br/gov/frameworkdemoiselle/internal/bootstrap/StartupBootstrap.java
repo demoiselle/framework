@@ -46,7 +46,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
@@ -64,7 +63,7 @@ public class StartupBootstrap extends AbstractBootstrap {
 
 	private static final Class<? extends Annotation> annotationClass = Startup.class;
 
-	private final List<ThreadLocalContext> tempContexts = new ArrayList<ThreadLocalContext>();
+	private static final List<ThreadLocalContext> tempContexts = new ArrayList<ThreadLocalContext>();
 
 	@SuppressWarnings("rawtypes")
 	private static final List<StartupProcessor> processors = Collections
@@ -89,13 +88,13 @@ public class StartupBootstrap extends AbstractBootstrap {
 	}
 
 	public void loadTempContexts(@Observes final AfterBeanDiscovery event) {
-		//Não registrar o contexto de aplicação pq ele já é registrado pela implementação do CDI
-		this.tempContexts.add(new ThreadLocalContext(ViewScoped.class));
-		this.tempContexts.add(new ThreadLocalContext(SessionScoped.class));
-		this.tempContexts.add(new ThreadLocalContext(ConversationScoped.class));
-		this.tempContexts.add(new ThreadLocalContext(RequestScoped.class));
+		// Não registrar o contexto de aplicação pq ele já é registrado pela implementação do CDI
+		tempContexts.add(new ThreadLocalContext(ViewScoped.class));
+		tempContexts.add(new ThreadLocalContext(SessionScoped.class));
+		tempContexts.add(new ThreadLocalContext(ConversationScoped.class));
+		tempContexts.add(new ThreadLocalContext(RequestScoped.class));
 
-		for (ThreadLocalContext tempContext : this.tempContexts) {
+		for (ThreadLocalContext tempContext : tempContexts) {
 			addContext(tempContext, event);
 		}
 	}
@@ -108,7 +107,7 @@ public class StartupBootstrap extends AbstractBootstrap {
 	 * @throws StartupException
 	 */
 	@SuppressWarnings("unchecked")
-	public void startup(@Observes final AfterDeploymentValidation event) throws Throwable {
+	public static void startup() throws Throwable {
 		getLogger().debug(
 				getBundle("demoiselle-core-bundle").getString("executing-all", annotationClass.getSimpleName()));
 		Collections.sort(processors);
@@ -116,12 +115,13 @@ public class StartupBootstrap extends AbstractBootstrap {
 		for (StartupProcessor<?> action : processors) {
 			action.process();
 		}
+
 		processors.clear();
 		unloadTempContexts();
 	}
 
-	private void unloadTempContexts() {
-		for (ThreadLocalContext tempContext : this.tempContexts) {
+	private static void unloadTempContexts() {
+		for (ThreadLocalContext tempContext : tempContexts) {
 			disableContext(tempContext);
 		}
 	}

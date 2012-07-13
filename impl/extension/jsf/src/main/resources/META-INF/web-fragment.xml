@@ -1,0 +1,7 @@
+<web-fragment>
+
+	<listener>
+		<listener-class>br.gov.frameworkdemoiselle.util.DemoiselleServletContextListener</listener-class>
+	</listener>
+
+</web-fragment>

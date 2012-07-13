@@ -49,7 +49,6 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.annotation.Shutdown;
@@ -115,7 +114,7 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public static void shuttingDown(@Observes final BeforeShutdown event) throws Throwable {
+	public static void shutdown() throws Throwable {
 		loadTempContexts(ShutdownBootstrap.event);
 
 		getLogger().debug(

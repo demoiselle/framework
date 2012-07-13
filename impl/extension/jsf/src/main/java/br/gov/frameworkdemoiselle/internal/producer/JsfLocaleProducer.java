@@ -21,7 +21,6 @@ package br.gov.frameworkdemoiselle.internal.producer;
 import java.io.Serializable;
 import java.util.Locale;
 
-import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Default;
