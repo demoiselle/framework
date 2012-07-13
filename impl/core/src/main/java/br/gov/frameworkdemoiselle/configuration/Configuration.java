@@ -45,6 +45,7 @@ import java.lang.annotation.Target;
 
 import javax.enterprise.inject.Stereotype;
 import javax.inject.Singleton;
+import javax.interceptor.InterceptorBinding;
 
 /**
  * Identifies a <b>configuration class</b>, that is, a structure reserved to store configuration values retrieved from a
@@ -64,6 +65,7 @@ import javax.inject.Singleton;
 @Singleton
 @Stereotype
 @Inherited
+@InterceptorBinding
 @Target(TYPE)
 @Retention(RUNTIME)
 public @interface Configuration {
