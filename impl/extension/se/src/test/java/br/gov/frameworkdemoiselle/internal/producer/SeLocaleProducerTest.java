@@ -6,12 +6,12 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-public class LocaleProducerTest {
+public class SeLocaleProducerTest {
 	
 	@Test
 	public void testCreate() {
 		
-		Locale locale = (new LocaleProducer()).create();
+		Locale locale = (new SeLocaleProducer()).create();
 		
 		Assert.assertNotNull(locale);
 		
