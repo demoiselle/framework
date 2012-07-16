@@ -119,7 +119,7 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 
 			try {
 				processor.process();
-				processors.remove(processor);
+				iter.remove();
 
 			} catch (Throwable cause) {
 				failure = cause;

@@ -117,7 +117,7 @@ public class StartupBootstrap extends AbstractBootstrap {
 
 			try {
 				processor.process();
-				processors.remove(processor);
+				iter.remove();
 
 			} catch (Throwable cause) {
 				failure = cause;
