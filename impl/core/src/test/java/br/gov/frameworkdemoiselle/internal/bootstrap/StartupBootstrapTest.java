@@ -219,7 +219,7 @@ public class StartupBootstrapTest {
 		expect(processor.process()).andReturn(true).times(1);
 
 		PowerMock.replayAll();
-		bootstrap.startup(null);
+		bootstrap.startup();
 
 		assertTrue(list.isEmpty());
 		PowerMock.verifyAll();
@@ -234,7 +234,7 @@ public class StartupBootstrapTest {
 		Assert.assertFalse(Contexts.getActiveContexts().isEmpty());
 
 		try {
-			bootstrap.startup(null);
+			bootstrap.startup();
 			Assert.assertTrue(Contexts.getActiveContexts().isEmpty());
 		} catch (Throwable e) {
 			fail();

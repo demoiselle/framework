@@ -39,6 +39,7 @@ package br.gov.frameworkdemoiselle.internal.bootstrap;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.enterprise.context.ConversationScoped;
@@ -51,6 +52,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Shutdown;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.internal.context.CustomContext;
@@ -66,11 +68,8 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 
 	private static final List<CustomContext> tempContexts = new ArrayList<CustomContext>();
 
-	@SuppressWarnings("rawtypes")
-	private static final List<ShutdownProcessor> processors = Collections
-			.synchronizedList(new ArrayList<ShutdownProcessor>());
-
-	private static AfterBeanDiscovery event;
+	private static final List<ShutdownProcessor<?>> processors = Collections
+			.synchronizedList(new ArrayList<ShutdownProcessor<?>>());
 
 	/**
 	 * Observes all methods annotated with @Shutdown and create an instance of ShutdownProcessor for them
@@ -90,10 +89,6 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 		}
 	}
 
-	public void saveEvent(@Observes final AfterBeanDiscovery event) {
-		ShutdownBootstrap.event = event;
-	}
-
 	public static void loadTempContexts(final AfterBeanDiscovery event) {
 		// Não registrar o contexto de aplicação pq ele já é registrado pela
 		// implementação do CDI
@@ -109,24 +104,31 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 
 	/**
 	 * Before Shutdown it execute the methods annotateds with @Shutdown considering the priority order;
-	 * 
-	 * @param event
-	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
-	public static void shutdown() throws Throwable {
-		loadTempContexts(ShutdownBootstrap.event);
-
+	public synchronized static void shutdown() {
 		getLogger().debug(
 				getBundle("demoiselle-core-bundle").getString("executing-all", annotationClass.getSimpleName()));
-		Collections.sort(processors);
 
-		for (ShutdownProcessor<?> processor : processors) {
-			processor.process();
+		Collections.sort(processors);
+		Throwable failure = null;
+
+		for (Iterator<ShutdownProcessor<?>> iter = processors.iterator(); iter.hasNext();) {
+			ShutdownProcessor<?> processor = iter.next();
+
+			try {
+				processor.process();
+				processors.remove(processor);
+
+			} catch (Throwable cause) {
+				failure = cause;
+			}
 		}
 
-		processors.clear();
 		unloadTempContexts();
+
+		if (failure != null) {
+			throw new DemoiselleException(failure);
+		}
 	}
 
 	private static void unloadTempContexts() {

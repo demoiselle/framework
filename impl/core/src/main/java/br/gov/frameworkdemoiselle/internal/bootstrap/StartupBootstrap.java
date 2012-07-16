@@ -39,6 +39,7 @@ package br.gov.frameworkdemoiselle.internal.bootstrap;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.enterprise.context.ConversationScoped;
@@ -51,6 +52,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Startup;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
@@ -65,9 +67,8 @@ public class StartupBootstrap extends AbstractBootstrap {
 
 	private static final List<ThreadLocalContext> tempContexts = new ArrayList<ThreadLocalContext>();
 
-	@SuppressWarnings("rawtypes")
-	private static final List<StartupProcessor> processors = Collections
-			.synchronizedList(new ArrayList<StartupProcessor>());
+	private static final List<StartupProcessor<?>> processors = Collections
+			.synchronizedList(new ArrayList<StartupProcessor<?>>());
 
 	/**
 	 * Observes all methods annotated with @Startup and create an instance of StartupAction for them
@@ -101,23 +102,31 @@ public class StartupBootstrap extends AbstractBootstrap {
 
 	/**
 	 * After the deployment validation it execute the methods annotateds with @Startup considering the priority order;
-	 * 
-	 * @param event
-	 * @throws Exception
-	 * @throws StartupException
 	 */
-	@SuppressWarnings("unchecked")
-	public static void startup() throws Throwable {
+	public synchronized static void startup() {
 		getLogger().debug(
 				getBundle("demoiselle-core-bundle").getString("executing-all", annotationClass.getSimpleName()));
-		Collections.sort(processors);
 
-		for (StartupProcessor<?> action : processors) {
-			action.process();
+		Collections.sort(processors);
+		Throwable failure = null;
+
+		for (Iterator<StartupProcessor<?>> iter = processors.iterator(); iter.hasNext();) {
+			StartupProcessor<?> processor = iter.next();
+
+			try {
+				processor.process();
+				processors.remove(processor);
+
+			} catch (Throwable cause) {
+				failure = cause;
+			}
 		}
 
-		processors.clear();
 		unloadTempContexts();
+
+		if (failure != null) {
+			throw new DemoiselleException(failure);
+		}
 	}
 
 	private static void unloadTempContexts() {

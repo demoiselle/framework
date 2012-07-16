@@ -177,30 +177,10 @@ public class ShutdownBootstrapTest {
 		EasyMock.expectLastCall().anyTimes();
 
 		PowerMock.replayAll();
-		ShutdownBootstrap.shuttingDown(null);
+		ShutdownBootstrap.shutdown();
 
 		assertTrue(list.isEmpty());
 		PowerMock.verifyAll();
-	}
-
-	@Test
-	public void testSaveEvent() throws Throwable {
-
-		ShutdownBootstrap bootstrap = new ShutdownBootstrap();
-
-		AfterBeanDiscovery event = Whitebox.getInternalState(ShutdownBootstrap.class, AfterBeanDiscovery.class);
-
-		assertNull(event);
-
-		AfterBeanDiscovery newEvent = EasyMock.createMock(AfterBeanDiscovery.class);
-
-		EasyMock.replay(newEvent);
-
-		bootstrap.saveEvent(newEvent);
-
-		event = Whitebox.getInternalState(ShutdownBootstrap.class, AfterBeanDiscovery.class);
-
-		assertNotNull(event);
 	}
 }
 
