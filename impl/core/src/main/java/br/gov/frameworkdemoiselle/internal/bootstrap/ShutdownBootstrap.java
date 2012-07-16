@@ -68,8 +68,9 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 
 	private static final List<CustomContext> tempContexts = new ArrayList<CustomContext>();
 
-	private static final List<ShutdownProcessor<?>> processors = Collections
-			.synchronizedList(new ArrayList<ShutdownProcessor<?>>());
+	@SuppressWarnings("rawtypes")
+	private static final List<ShutdownProcessor> processors = Collections
+			.synchronizedList(new ArrayList<ShutdownProcessor>());
 
 	/**
 	 * Observes all methods annotated with @Shutdown and create an instance of ShutdownProcessor for them
@@ -105,6 +106,7 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 	/**
 	 * Before Shutdown it execute the methods annotateds with @Shutdown considering the priority order;
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public synchronized static void shutdown() {
 		getLogger().debug(
 				getBundle("demoiselle-core-bundle").getString("executing-all", annotationClass.getSimpleName()));
@@ -112,8 +114,8 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 		Collections.sort(processors);
 		Throwable failure = null;
 
-		for (Iterator<ShutdownProcessor<?>> iter = processors.iterator(); iter.hasNext();) {
-			ShutdownProcessor<?> processor = iter.next();
+		for (Iterator<ShutdownProcessor> iter = processors.iterator(); iter.hasNext();) {
+			ShutdownProcessor processor = iter.next();
 
 			try {
 				processor.process();
