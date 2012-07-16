@@ -5,7 +5,7 @@ import java.util.Locale;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 
-public class LocaleProducer {
+public class SeLocaleProducer {
 
 	@Produces
 	@Default

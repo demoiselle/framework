@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.faces.context.FacesContext;
@@ -32,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RequestScoped
-@Alternative
 public class JsfLocaleProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -44,7 +42,7 @@ public class JsfLocaleProducer implements Serializable {
 	@Named("currentLocale")
 	public Locale create() {
 		Locale locale;
-		
+
 		try {
 			FacesContext facesContext = Beans.getReference(FacesContext.class);
 
