@@ -7,7 +7,7 @@
 	-->
 	<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
 		<non-jta-data-source>java:jboss/datasources/ExampleDS</non-jta-data-source>
-		
+
 		<class>${package}.domain.Bookmark</class>
 
 		<properties>
@@ -16,7 +16,7 @@
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
 		</properties>
 	</persistence-unit>
-	
+
 	<!-- If you are using JBoss AS7 with JTA transaction then use this persistence-unit -->
 	<!--
 	<persistence-unit name="bookmark-ds" transaction-type="JTA">
@@ -32,7 +32,7 @@
 		</properties>
 	</persistence-unit>
 	-->
-	
+
 	<!-- If you are using JBoss AS6 with non JTA transaction then use this persistence-unit -->
 	<!--
 	<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
@@ -47,7 +47,7 @@
 		</properties>
 	</persistence-unit>
 	-->
-	
+
 	<!-- If you are using JBoss AS6 with JTA transaction then use this persistence-unit -->
 	<!--
 	<persistence-unit name="bookmark-ds" transaction-type="JTA">
@@ -64,6 +64,36 @@
 	</persistence-unit>
 	-->
 
+	<!-- If you are using GlassFish 3 with non JTA transaction then use this persistence-unit -->
+	<!--
+	<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
+		<non-jta-data-source>jdbc/__default</non-jta-data-source>
+
+		<class>${package}.domain.Bookmark</class>
+
+		<properties>
+			<property name="eclipselink.logging.level" value="FINE" />
+			<property name="eclipselink.ddl-generation" value="create-tables" />
+			<property name="eclipselink.ddl-generation.output-mode" value="database" />
+		</properties>
+	</persistence-unit>
+	-->
+
+	<!-- If you are using GlassFish 3 with JTA transaction then use this persistence-unit -->
+	<!--
+	<persistence-unit name="bookmark-ds" transaction-type="JTA">
+		<jta-data-source>jdbc/__TimerPool</jta-data-source>
+
+		<class>${package}.domain.Bookmark</class>
+
+		<properties>
+			<property name="eclipselink.logging.level" value="FINE" />
+			<property name="eclipselink.ddl-generation" value="create-tables" />
+			<property name="eclipselink.ddl-generation.output-mode" value="database" />
+		</properties>
+	</persistence-unit>
+	-->
+	
 	<!-- If you are using Tomcat 6 / Tomcat 7 / JUnit then use this persistence-unit -->
 	<!--
 	<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
