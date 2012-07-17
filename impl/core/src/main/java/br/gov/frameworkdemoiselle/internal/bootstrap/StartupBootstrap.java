@@ -104,8 +104,15 @@ public class StartupBootstrap extends AbstractBootstrap {
 	/**
 	 * After the deployment validation it execute the methods annotateds with @Startup considering the priority order;
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public synchronized static void startup() {
+		startup(true);
+	}
+
+	/**
+	 * After the deployment validation it execute the methods annotateds with @Startup considering the priority order;
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public synchronized static void startup(boolean remove) {
 		getLogger().debug(
 				getBundle("demoiselle-core-bundle").getString("executing-all", annotationClass.getSimpleName()));
 
@@ -117,7 +124,10 @@ public class StartupBootstrap extends AbstractBootstrap {
 
 			try {
 				processor.process();
-				iter.remove();
+
+				if (remove) {
+					iter.remove();
+				}
 
 			} catch (Throwable cause) {
 				failure = cause;

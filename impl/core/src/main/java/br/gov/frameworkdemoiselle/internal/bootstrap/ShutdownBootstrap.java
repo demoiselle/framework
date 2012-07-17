@@ -67,7 +67,7 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 	private static final Class<? extends Annotation> annotationClass = Shutdown.class;
 
 	private static final List<CustomContext> tempContexts = new ArrayList<CustomContext>();
-	
+
 	private static AfterBeanDiscovery abdEvent;
 
 	@SuppressWarnings("rawtypes")
@@ -105,8 +105,15 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 	/**
 	 * Before Shutdown it execute the methods annotateds with @Shutdown considering the priority order;
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public synchronized static void shutdown() {
+		shutdown(true);
+	}
+
+	/**
+	 * Before Shutdown it execute the methods annotateds with @Shutdown considering the priority order;
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public synchronized static void shutdown(boolean remove) {
 		getLogger().debug(
 				getBundle("demoiselle-core-bundle").getString("executing-all", annotationClass.getSimpleName()));
 
@@ -116,13 +123,16 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 		for (CustomContext tempContext : tempContexts) {
 			addContext(tempContext, abdEvent);
 		}
-		
+
 		for (Iterator<ShutdownProcessor> iter = processors.iterator(); iter.hasNext();) {
 			ShutdownProcessor processor = iter.next();
 
 			try {
 				processor.process();
-				iter.remove();
+
+				if (remove) {
+					iter.remove();
+				}
 
 			} catch (Throwable cause) {
 				failure = cause;
