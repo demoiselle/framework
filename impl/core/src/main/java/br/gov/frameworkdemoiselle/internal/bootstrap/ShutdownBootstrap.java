@@ -67,6 +67,8 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 	private static final Class<? extends Annotation> annotationClass = Shutdown.class;
 
 	private static final List<CustomContext> tempContexts = new ArrayList<CustomContext>();
+	
+	private static AfterBeanDiscovery abdEvent;
 
 	@SuppressWarnings("rawtypes")
 	private static final List<ShutdownProcessor> processors = Collections
@@ -97,10 +99,7 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 		tempContexts.add(new ThreadLocalContext(SessionScoped.class, false));
 		tempContexts.add(new ThreadLocalContext(ConversationScoped.class));
 		tempContexts.add(new ThreadLocalContext(RequestScoped.class));
-
-		for (CustomContext tempContext : tempContexts) {
-			addContext(tempContext, event);
-		}
+		abdEvent = event;
 	}
 
 	/**
@@ -114,6 +113,10 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 		Collections.sort(processors);
 		Throwable failure = null;
 
+		for (CustomContext tempContext : tempContexts) {
+			addContext(tempContext, abdEvent);
+		}
+		
 		for (Iterator<ShutdownProcessor> iter = processors.iterator(); iter.hasNext();) {
 			ShutdownProcessor processor = iter.next();
 
