@@ -44,6 +44,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import javax.enterprise.inject.Stereotype;
+import javax.enterprise.util.Nonbinding;
 import javax.inject.Singleton;
 import javax.interceptor.InterceptorBinding;
 
@@ -82,6 +83,7 @@ public @interface Configuration {
 	 * 
 	 * @return ConfigType
 	 */
+	@Nonbinding
 	ConfigType type() default ConfigType.PROPERTIES;
 
 	/**
@@ -93,6 +95,7 @@ public @interface Configuration {
 	 * 
 	 * @return String
 	 */
+	@Nonbinding
 	String prefix() default "";
 
 	/**
@@ -106,6 +109,7 @@ public @interface Configuration {
 	 * 
 	 * @return String
 	 */
+	@Nonbinding
 	String resource() default DEFAULT_RESOURCE;
 
 }
