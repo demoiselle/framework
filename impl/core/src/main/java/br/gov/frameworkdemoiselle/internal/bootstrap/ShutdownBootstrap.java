@@ -90,7 +90,7 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 		}
 	}
 
-	public static void loadTempContexts(final AfterBeanDiscovery event) {
+	public static void loadTempContexts(@Observes final AfterBeanDiscovery event) {
 		// Não registrar o contexto de aplicação pq ele já é registrado pela
 		// implementação do CDI
 		tempContexts.add(new ThreadLocalContext(ViewScoped.class));
