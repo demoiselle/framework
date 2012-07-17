@@ -51,14 +51,12 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 public abstract class AbstractBootstrap implements Extension {
 
-	private static ResourceBundleProducer bundleFactory = new ResourceBundleProducer();
-
 	protected static ResourceBundle getBundle() {
 		return getBundle("demoiselle-core-bundle");
 	}
 
 	protected static ResourceBundle getBundle(String baseName) {
-		return bundleFactory.create(baseName, Locale.getDefault());
+		return ResourceBundleProducer.create(baseName, Locale.getDefault());
 	}
 
 	protected static Logger getLogger() {

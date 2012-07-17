@@ -49,9 +49,15 @@
 package br.gov.frameworkdemoiselle.util;
 
 import java.lang.annotation.Annotation;
+import java.util.Locale;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+
+import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 
 public class Beans {
 
@@ -65,24 +71,38 @@ public class Beans {
 		return manager;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T> T getReference(final Class<T> beanClass, Annotation... qualifiers) {
-		Bean<?> bean = manager.getBeans(beanClass, qualifiers).iterator().next();
-		return (T) getReference(bean, beanClass);
+		return (T) getReference(manager.getBeans(beanClass, qualifiers));
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T> T getReference(final Class<T> beanClass) {
-		Bean<?> bean = manager.getBeans(beanClass).iterator().next();
-		return (T) getReference(bean, beanClass);
+		return (T) getReference(manager.getBeans(beanClass));
 	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getReference(String beanName) {
-		Bean<?> bean = manager.getBeans(beanName).iterator().next();
-		return (T) getReference(bean, bean.getBeanClass());
+		return (T) getReference(manager.getBeans(beanName));
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> T getReference(Bean<?> bean, final Class<T> beanClass) {
-		return (T) manager.getReference(bean, beanClass, manager.createCreationalContext(bean));
+	private static <T> T getReference(Set<Bean<?>> beans) {
+		T result = null;
+
+		try {
+			Bean<?> bean = beans.iterator().next();
+			result = (T) manager.getReference(bean, bean.getBeanClass(), manager.createCreationalContext(bean));
+
+		} catch (NoSuchElementException cause) {
+			String message = getBundle().getString("bean-not-found");
+			throw new DemoiselleException(message, cause);
+		}
+
+		return result;
+	}
+
+	private static ResourceBundle getBundle() {
+		return ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
 	}
 }

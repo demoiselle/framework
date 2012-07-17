@@ -63,7 +63,7 @@ public class ResourceBundleProducer implements Serializable {
 	 * @param String
 	 *            baseName
 	 */
-	public ResourceBundle create(String baseName, Locale locale) {
+	public static ResourceBundle create(String baseName, Locale locale) {
 		ResourceBundle bundle = null;
 
 		try {
