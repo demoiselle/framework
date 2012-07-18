@@ -101,6 +101,6 @@
 
 	<properties>
 		<project.alias>framework</project.alias>
-		<project.nextVersion>2.2.3-SNAPSHOT</project.nextVersion>
+		<project.nextVersion>2.3.0-BETA2-SNAPSHOT</project.nextVersion>
 	</properties>
 </project>
