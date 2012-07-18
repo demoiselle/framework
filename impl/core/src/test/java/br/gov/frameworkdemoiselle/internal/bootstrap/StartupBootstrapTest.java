@@ -64,6 +64,7 @@ import junit.framework.Assert;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
@@ -81,6 +82,7 @@ import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Contexts.class, LoggerProducer.class, ResourceBundle.class, ResourceBundleProducer.class })
 @SuppressWarnings({ "rawtypes", "unchecked" })

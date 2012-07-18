@@ -47,6 +47,7 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.inject.Scope;
 
 import org.easymock.EasyMock;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
@@ -61,6 +62,7 @@ import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ LoggerProducer.class, Contexts.class })
 public class AbstractBootstrapTest {
