@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-parent</artifactId>
-		<version>4-SNAPSHOT</version>
+		<version>4</version>
 		<relativePath>../../../internal/parent/demoiselle/pom.xml</relativePath>
 	</parent>
 
