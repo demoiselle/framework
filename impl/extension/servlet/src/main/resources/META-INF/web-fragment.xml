@@ -14,7 +14,7 @@
  GNU General Public License for more details.
  
  You should have received a copy of the GNU Lesser General Public License version 3
- along with this program; if not,  see <http://www.gnu.org/licenses />
+ along with this program; if not,  see <http://www.gnu.org/licenses/>
  or write to the Free Software Foundation, Inc., 51 Franklin Street,
  Fifth Floor, Boston, MA  02110-1301, USA.
  ============================================================================
@@ -30,51 +30,24 @@
  para maiores detalhes.
  
  Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
- "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses />
+ "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses/>
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<web-fragment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd" version="3.0">
 
-	<modelVersion>4.0.0</modelVersion>
+	<listener>
+		<listener-class>br.gov.frameworkdemoiselle.util.ServletListener</listener-class>
+	</listener>
 
-	<artifactId>demoiselle-jsf</artifactId>
-	<packaging>jar</packaging>
+	<filter>
+		<filter-name>Demoiselle Servlet Filter</filter-name>
+		<filter-class>br.gov.frameworkdemoiselle.util.ServletFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Demoiselle Servlet Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
-	<parent>
-		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-extension-parent</artifactId>
-		<version>2.3.0-BETA2-SNAPSHOT</version>
-		<relativePath>../../../parent/extension/pom.xml</relativePath>
-	</parent>
-
-	<name>JSF Extension</name>
-	<description />
-
-	<dependencies>
-		<dependency>
-			<groupId>br.gov.frameworkdemoiselle</groupId>
-			<artifactId>demoiselle-servlet</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.faces</groupId>
-			<artifactId>jsf-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.faces</groupId>
-			<artifactId>jsf-impl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.el</groupId>
-			<artifactId>el-api</artifactId>
-		</dependency>
-	</dependencies>
-
-	<repositories>
-		<repository>
-			<id>demoiselle.sourceforge.net</id>
-			<name>Demoiselle Maven Repository</name>
-			<url>http://demoiselle.sourceforge.net/repository/release</url>
-		</repository>
-	</repositories>
-</project>
+</web-fragment>

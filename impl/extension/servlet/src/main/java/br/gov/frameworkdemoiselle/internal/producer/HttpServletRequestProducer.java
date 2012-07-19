@@ -34,27 +34,25 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.bootstrap;
+package br.gov.frameworkdemoiselle.internal.producer;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Produces;
+import javax.servlet.http.HttpServletRequest;
 
-import br.gov.frameworkdemoiselle.internal.context.ViewContext;
-import br.gov.frameworkdemoiselle.internal.producer.ServletLocaleProducer;
+@RequestScoped
+public class HttpServletRequestProducer {
 
-public class JsfBootstrap extends AbstractBootstrap {
+	private HttpServletRequest request;
 
-	protected <T> void cancelServletLocaleProducer(@Observes final ProcessAnnotatedType<T> event) {
-		final AnnotatedType<T> annotatedType = event.getAnnotatedType();
-
-		if (annotatedType.getJavaClass() == ServletLocaleProducer.class) {
-			event.veto();
-		}
+	@Default
+	@Produces
+	public HttpServletRequest create() {
+		return request;
 	}
 
-	public void loadContexts(@Observes final AfterBeanDiscovery event) {
-		addContext(new ViewContext(), event);
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
 	}
 }

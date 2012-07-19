@@ -48,6 +48,7 @@
 
 	<modules>
 		<module>jta</module>
+		<module>servlet</module>
 		<module>jsf</module>
 		<module>se</module>
 		<module>jpa</module>

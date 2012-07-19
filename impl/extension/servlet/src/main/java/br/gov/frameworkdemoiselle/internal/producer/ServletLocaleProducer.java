@@ -36,46 +36,21 @@
  */
 package br.gov.frameworkdemoiselle.internal.producer;
 
-import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.powermock.api.easymock.PowerMock.replay;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
+import java.util.Locale;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+public class ServletLocaleProducer {
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ HttpServletRequest.class })
-public class HttpServletRequestProducerTest {
+	@Inject
+	private HttpServletRequest request;
 
-	private HttpServletRequestProducer producer;
-
-	@Before
-	public void before() {
-		this.producer = new HttpServletRequestProducer();
+	@Produces
+	@Default
+	public Locale create() {
+		return request.getLocale();
 	}
-
-	@Test
-	public void testCreate() {
-		FacesContext facesContext = PowerMock.createMock(FacesContext.class);
-		ExternalContext externalContext = PowerMock.createMock(ExternalContext.class);
-		HttpServletRequest request = PowerMock.createMock(HttpServletRequest.class);
-
-		expect(externalContext.getRequest()).andReturn(request);
-		expect(facesContext.getExternalContext()).andReturn(externalContext);
-		replay(facesContext, externalContext, request);
-
-		assertEquals(request, producer.create(facesContext));
-
-		verifyAll();
-	}
-
 }

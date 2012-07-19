@@ -34,22 +34,22 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.producer;
+package br.gov.frameworkdemoiselle.util;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Produces;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.ServletContextEvent;
 
-import br.gov.frameworkdemoiselle.internal.proxy.HttpSessionProxy;
+import br.gov.frameworkdemoiselle.internal.bootstrap.ShutdownBootstrap;
+import br.gov.frameworkdemoiselle.internal.bootstrap.StartupBootstrap;
 
-public class HttpSessionProducer {
+public class ServletListener implements javax.servlet.ServletContextListener {
 
-	@Produces
-	@Default
-	@SessionScoped
-	public HttpSession create(final HttpServletRequest request) {
-		return new HttpSessionProxy(request.getSession());
+	@Override
+	public void contextInitialized(ServletContextEvent event) {
+		StartupBootstrap.startup();
+	}
+
+	@Override
+	public void contextDestroyed(ServletContextEvent event) {
+		ShutdownBootstrap.shutdown();
 	}
 }

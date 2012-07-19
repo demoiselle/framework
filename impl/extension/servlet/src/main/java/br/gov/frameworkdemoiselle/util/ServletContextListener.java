@@ -34,20 +34,11 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.producer;
+package br.gov.frameworkdemoiselle.util;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Produces;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-
-public class HttpServletRequestProducer {
-
-	@Produces
-	@Default
-	@RequestScoped
-	public HttpServletRequest create(final FacesContext facesContext) {
-		return (HttpServletRequest) facesContext.getExternalContext().getRequest();
-	}
+/**
+ * @deprecated Use br.gov.frameworkdemoiselle.util.ServletListener instead.
+ */
+@Deprecated
+public class ServletContextListener extends ServletListener {
 }

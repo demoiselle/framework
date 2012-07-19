@@ -34,27 +34,42 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.bootstrap;
+package br.gov.frameworkdemoiselle.util;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import java.io.IOException;
 
-import br.gov.frameworkdemoiselle.internal.context.ViewContext;
-import br.gov.frameworkdemoiselle.internal.producer.ServletLocaleProducer;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-public class JsfBootstrap extends AbstractBootstrap {
+import br.gov.frameworkdemoiselle.internal.producer.HttpServletRequestProducer;
+import br.gov.frameworkdemoiselle.internal.producer.HttpServletResponseProducer;
 
-	protected <T> void cancelServletLocaleProducer(@Observes final ProcessAnnotatedType<T> event) {
-		final AnnotatedType<T> annotatedType = event.getAnnotatedType();
+public class ServletFilter implements Filter {
 
-		if (annotatedType.getJavaClass() == ServletLocaleProducer.class) {
-			event.veto();
-		}
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
 	}
 
-	public void loadContexts(@Observes final AfterBeanDiscovery event) {
-		addContext(new ViewContext(), event);
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+			ServletException {
+
+		HttpServletRequestProducer requestProducer = Beans.getReference(HttpServletRequestProducer.class);
+		requestProducer.setRequest((HttpServletRequest) request);
+		
+		HttpServletResponseProducer responseProducer = Beans.getReference(HttpServletResponseProducer.class);
+		responseProducer.setResponse((HttpServletResponse) response);
+		
+		chain.doFilter(request, response);
+	}
+
+	@Override
+	public void destroy() {
 	}
 }

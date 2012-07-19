@@ -38,7 +38,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>demoiselle-jsf</artifactId>
+	<artifactId>demoiselle-servlet</artifactId>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -48,25 +48,17 @@
 		<relativePath>../../../parent/extension/pom.xml</relativePath>
 	</parent>
 
-	<name>JSF Extension</name>
+	<name>Servlet Extension</name>
 	<description />
 
 	<dependencies>
 		<dependency>
-			<groupId>br.gov.frameworkdemoiselle</groupId>
-			<artifactId>demoiselle-servlet</artifactId>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.sun.faces</groupId>
-			<artifactId>jsf-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.faces</groupId>
-			<artifactId>jsf-impl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.el</groupId>
-			<artifactId>el-api</artifactId>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
 		</dependency>
 	</dependencies>
 

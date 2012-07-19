@@ -36,18 +36,18 @@
  */
 package br.gov.frameworkdemoiselle.internal.producer;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
-public class HttpServletResponseProducer {
+public class HttpSessionProducer {
 
 	@Produces
 	@Default
-	@RequestScoped
-	public HttpServletResponse create(final FacesContext facesContext) {
-		return (HttpServletResponse) facesContext.getExternalContext().getResponse();
+	@SessionScoped
+	public HttpSession create(final HttpServletRequest request) {
+		return request.getSession();
 	}
 }
