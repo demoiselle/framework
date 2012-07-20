@@ -51,6 +51,14 @@ public class ServletLocaleProducer {
 	@Produces
 	@Default
 	public Locale create() {
-		return request.getLocale();
+		Locale result;
+
+		if (request == null) {
+			result = Locale.getDefault();
+		} else {
+			result = request.getLocale();
+		}
+
+		return result;
 	}
 }
