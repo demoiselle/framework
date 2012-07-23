@@ -48,13 +48,13 @@ public class JsfLocaleProducer implements Serializable {
 
 			if (!loaded) {
 				if (facesContext != null) {
-					HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
-					locale = request.getLocale();
+					locale = Beans.getReference(HttpServletRequest.class).getLocale();
 					facesContext.getApplication().setDefaultLocale(locale);
 				}
 
 				loaded = true;
 			}
+
 			locale = facesContext.getApplication().getDefaultLocale();
 
 		} catch (Exception cause) {

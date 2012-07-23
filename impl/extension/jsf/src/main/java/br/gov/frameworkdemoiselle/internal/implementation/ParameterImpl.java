@@ -48,31 +48,49 @@ import javax.servlet.http.HttpServletRequest;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.Parameter;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
-public class ParameterImpl<T> implements Parameter<T>, Serializable {
+public class ParameterImpl<T extends Serializable> implements Parameter<T>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private Class<Object> type;
 
-	private Converter converter;
+	private transient Converter converter;
 
-	private final InjectionPoint ip;
-
-	private final HttpServletRequest request;
+	private transient HttpServletRequest request;
 
 	private T value;
 
 	private final String key;
 
-	@Inject
-	public ParameterImpl(InjectionPoint ip, HttpServletRequest request) {
-		this.ip = ip;
-		this.request = request;
+	private boolean viewScoped = false;
 
+	private boolean requestScoped = false;
+
+	private boolean sessionScoped = false;
+
+	public Converter getConverter() {
+		if (converter == null) {
+			converter = Faces.getConverter(type);
+		}
+
+		return converter;
+	}
+
+	private HttpServletRequest getRequest() {
+		if (request == null) {
+			request = Beans.getReference(HttpServletRequest.class);
+		}
+
+		return request;
+	}
+
+	@Inject
+	public ParameterImpl(InjectionPoint ip) {
 		if (ip.getAnnotated().isAnnotationPresent(Name.class)) {
 			this.key = ip.getAnnotated().getAnnotation(Name.class).value();
 		} else {
@@ -80,7 +98,10 @@ public class ParameterImpl<T> implements Parameter<T>, Serializable {
 		}
 
 		this.type = Reflections.getGenericTypeArgument(ip.getMember(), 0);
-		this.converter = Faces.getConverter(type);
+
+		this.viewScoped = ip.getAnnotated().isAnnotationPresent(ViewScoped.class);
+		this.requestScoped = ip.getAnnotated().isAnnotationPresent(RequestScoped.class);
+		this.sessionScoped = ip.getAnnotated().isAnnotationPresent(SessionScoped.class);
 	}
 
 	public String getKey() {
@@ -88,43 +109,43 @@ public class ParameterImpl<T> implements Parameter<T>, Serializable {
 	}
 
 	private boolean isSessionScoped() {
-		return ip.getAnnotated().isAnnotationPresent(SessionScoped.class);
+		return sessionScoped;
 	}
 
 	private boolean isViewScoped() {
-		return ip.getAnnotated().isAnnotationPresent(ViewScoped.class);
+		return viewScoped;
 	}
 
 	private boolean isRequestScoped() {
-		return ip.getAnnotated().isAnnotationPresent(RequestScoped.class);
+		return requestScoped;
 	}
 
 	@SuppressWarnings("unchecked")
 	public T getValue() {
 		T result = null;
-		String parameterValue = request.getParameter(key);
+		String parameterValue = getRequest().getParameter(key);
 
 		if (isSessionScoped()) {
 			if (parameterValue != null) {
-				request.getSession().setAttribute(key, Faces.convert(parameterValue, converter));
+				getRequest().getSession().setAttribute(key, Faces.convert(parameterValue, getConverter()));
 			}
 
-			result = (T) request.getSession().getAttribute(key);
+			result = (T) getRequest().getSession().getAttribute(key);
 
 		} else if (isRequestScoped()) {
-			result = (T) Faces.convert(parameterValue, converter);
+			result = (T) Faces.convert(parameterValue, getConverter());
 
 		} else if (isViewScoped()) {
 			Map<String, Object> viewMap = Faces.getViewMap();
 			if (parameterValue != null) {
-				viewMap.put(key, Faces.convert(parameterValue, converter));
+				viewMap.put(key, Faces.convert(parameterValue, getConverter()));
 			}
 
 			result = (T) viewMap.get(key);
 
 		} else {
 			if (value == null) {
-				value = (T) Faces.convert(parameterValue, converter);
+				value = (T) Faces.convert(parameterValue, getConverter());
 			}
 
 			result = value;
@@ -133,14 +154,10 @@ public class ParameterImpl<T> implements Parameter<T>, Serializable {
 		return result;
 	}
 
-	public Converter getConverter() {
-		return converter;
-	}
-
 	@Override
 	public void setValue(T value) {
 		if (isSessionScoped()) {
-			this.request.getSession().setAttribute(key, value);
+			getRequest().getSession().setAttribute(key, value);
 
 		} else if (isRequestScoped()) {
 			// FIXME Lançar exceção informando que não é possível setar parâmetros no request.

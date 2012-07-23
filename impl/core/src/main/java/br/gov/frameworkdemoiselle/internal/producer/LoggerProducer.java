@@ -55,7 +55,6 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import br.gov.frameworkdemoiselle.internal.proxy.Slf4jLoggerProxy;
 
@@ -78,6 +77,6 @@ public class LoggerProducer implements Serializable {
 	}
 
 	public static <T> Logger create(Class<T> type) {
-		return new Slf4jLoggerProxy(LoggerFactory.getLogger(type));
+		return new Slf4jLoggerProxy(type);
 	}
 }

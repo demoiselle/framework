@@ -36,6 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.internal.configuration;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -67,7 +68,9 @@ import br.gov.frameworkdemoiselle.util.Strings;
  * 
  * @author SERPRO
  */
-public class ConfigurationLoader {
+public class ConfigurationLoader implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Inject
 	@Name("demoiselle-core-bundle")

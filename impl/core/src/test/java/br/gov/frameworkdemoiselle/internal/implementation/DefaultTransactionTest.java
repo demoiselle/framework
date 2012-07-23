@@ -41,6 +41,8 @@ import static org.junit.Assert.assertTrue;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replay;
 
+import java.util.Locale;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +69,7 @@ public class DefaultTransactionTest {
 
 		mockStatic(CoreBundle.class);
 
-		ResourceBundle bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
+		ResourceBundle bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 		expect(CoreBundle.get()).andReturn(bundle);
 
 		replay(CoreBundle.class);

@@ -47,6 +47,8 @@ import static org.powermock.api.easymock.PowerMock.replay;
 import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
+import java.util.Locale;
+
 import javax.interceptor.InvocationContext;
 
 import org.easymock.EasyMock;
@@ -140,7 +142,7 @@ public class ExceptionHandlerInterceptorTest {
 	@Before
 	public void setUp() throws Exception {
 		this.logger = PowerMock.createMock(Logger.class);
-		this.bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
+		this.bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 		this.logger.info(EasyMock.anyObject(String.class));
 		PowerMock.expectLastCall().anyTimes();
 		replay(this.logger);

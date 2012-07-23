@@ -82,9 +82,8 @@ public class ResourceBundleProducerTest {
 
 	@Test
 	public void testCreateWithNonExistentFile() {
-		ResourceBundleProducer factory = new ResourceBundleProducer();
 		try {
-			factory.create("arquivo_inexistente", Locale.getDefault());
+			ResourceBundleProducer.create("arquivo_inexistente", Locale.getDefault());
 		} catch (Exception e) {
 			assertTrue(e instanceof DemoiselleException);
 		}

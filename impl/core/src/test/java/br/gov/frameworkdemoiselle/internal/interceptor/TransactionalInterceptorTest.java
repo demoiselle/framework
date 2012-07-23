@@ -43,6 +43,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Locale;
+
 import javax.enterprise.inject.Instance;
 import javax.interceptor.InvocationContext;
 
@@ -78,7 +80,7 @@ public class TransactionalInterceptorTest {
 		Instance<TransactionInfo> transactionContextInstance = EasyMock.createMock(Instance.class);
 
 		Logger logger = EasyMock.createMock(Logger.class);
-		ResourceBundle bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
+		ResourceBundle bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 		transaction = EasyMock.createMock(Transaction.class);
 		TransactionInfo context = new TransactionInfo();
 

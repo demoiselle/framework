@@ -36,9 +36,11 @@
  */
 package br.gov.frameworkdemoiselle.util;
 
+import java.io.Serializable;
+
 import javax.faces.convert.Converter;
 
-public interface Parameter<T> {
+public interface Parameter<T extends Serializable> {
 
 	void setValue(T value);
 

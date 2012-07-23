@@ -60,12 +60,9 @@ public class ServletFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
 
-		HttpServletRequestProducer requestProducer = Beans.getReference(HttpServletRequestProducer.class);
-		requestProducer.setRequest((HttpServletRequest) request);
-		
-		HttpServletResponseProducer responseProducer = Beans.getReference(HttpServletResponseProducer.class);
-		responseProducer.setResponse((HttpServletResponse) response);
-		
+		Beans.getReference(HttpServletRequestProducer.class).setDelegate((HttpServletRequest) request);
+		Beans.getReference(HttpServletResponseProducer.class).setDelegate((HttpServletResponse) response);
+
 		chain.doFilter(request, response);
 	}
 

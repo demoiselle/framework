@@ -40,6 +40,8 @@ import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 
+import java.util.Locale;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,17 +70,17 @@ public class EntityManagerConfigTest {
 	@Before
 	public void setUp() throws Exception {
 		Logger logger = PowerMock.createMock(Logger.class);
-		ResourceBundle bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));;
+		ResourceBundle bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());;
 
 		ConfigurationLoader configurationLoader = new ConfigurationLoader();
-		
+
 		Whitebox.setInternalState(configurationLoader, "bundle", bundle);
 		Whitebox.setInternalState(configurationLoader, "logger", logger);
-		
+
 		mockStatic(CoreBootstrap.class);
 		expect(CoreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
 		PowerMock.replay(CoreBootstrap.class);
-		
+
 		configurationLoader.load(config);
 	}
 

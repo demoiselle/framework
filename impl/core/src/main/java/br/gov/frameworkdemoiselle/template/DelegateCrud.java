@@ -39,6 +39,8 @@ package br.gov.frameworkdemoiselle.template;
 import java.util.List;
 import java.util.ListIterator;
 
+import br.gov.frameworkdemoiselle.internal.implementation.DefaultTransaction;
+import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
@@ -50,21 +52,45 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	private Class<C> delegateClass;
 
 	private C delegate;
-
+	
 	@Override
-	@Transactional
 	public void delete(final I id) {
-		this.getDelegate().delete(id);
+		if(isRunningTransactionalOperations()) {
+			transactionalDelete(id);
+		} else {
+			nonTransactionalDelete(id);
+		}
+	}
+	
+	@Transactional
+	private void transactionalDelete(final I id) {
+		nonTransactionalDelete(id);
+	}
+	
+	private void nonTransactionalDelete(final I id) {
+		getDelegate().delete(id);
+	}
+
+	public void delete(final List<I> ids) {
+		if(isRunningTransactionalOperations()) {
+			transactionalDelete(ids);
+		} else {
+			nonTransactionalDelete(ids);
+		}
 	}
 
 	@Transactional
-	public void delete(final List<I> idList) {
-		ListIterator<I> iter = idList.listIterator();
+	private void transactionalDelete(final List<I> ids) {
+		nonTransactionalDelete(ids);
+	}
+	
+	private void nonTransactionalDelete(final List<I> ids) {
+		ListIterator<I> iter = ids.listIterator();
 		while (iter.hasNext()) {
 			this.delete(iter.next());
 		}
 	}
-
+	
 	@Override
 	public List<T> findAll() {
 		return getDelegate().findAll();
@@ -85,8 +111,20 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	}
 
 	@Override
-	@Transactional
 	public void insert(final T bean) {
+		if(isRunningTransactionalOperations()) {
+			transactionalInsert(bean);
+		} else {
+			nonTransactionalInsert(bean);
+		}
+	}
+	
+	@Transactional
+	private void transactionalInsert(final T bean) {
+		nonTransactionalInsert(bean);
+	}
+	
+	private void nonTransactionalInsert(final T bean) {
 		getDelegate().insert(bean);
 	}
 
@@ -96,9 +134,24 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	}
 
 	@Override
-	@Transactional
 	public void update(final T bean) {
-		getDelegate().update(bean);
+		if(isRunningTransactionalOperations()) {
+			transactionalUpdate(bean);
+		} else {
+			nonTransactionalUpdate(bean);
+		}
 	}
 
+	@Transactional
+	private void transactionalUpdate(final T bean) {
+		nonTransactionalUpdate(bean);
+	}
+	
+	private void nonTransactionalUpdate(final T bean) {
+		getDelegate().update(bean);
+	}
+	
+	private boolean isRunningTransactionalOperations() {
+		return !(Beans.getReference(Transaction.class) instanceof DefaultTransaction);
+	}
 }

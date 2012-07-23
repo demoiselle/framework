@@ -7,6 +7,8 @@ import static org.junit.Assert.fail;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replay;
 
+import java.util.Locale;
+
 import javax.enterprise.inject.Instance;
 import javax.interceptor.InvocationContext;
 
@@ -116,7 +118,7 @@ public class RequiredPermissionInterceptorTest {
 		Instance<SecurityContext> securityContextInstance = createMock(Instance.class);
 		Logger logger = createMock(Logger.class);
 
-		ResourceBundle bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
+		ResourceBundle bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 		User user = createMock(User.class);
 
 		mockStatic(CoreBundle.class);
@@ -356,7 +358,7 @@ public class RequiredPermissionInterceptorTest {
 			fail();
 		}
 	}
-	
+
 	@Test
 	public void testManageClassAnnotedWithRequiredPermissionAtRequiredPermissionWithDeclaredOperation()
 			throws Exception {

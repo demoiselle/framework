@@ -14,8 +14,4 @@ public class BookmarkDAO extends JPACrud<Bookmark, Long> {
 	
 	private static final long serialVersionUID = 1L;
 	
-	@Inject
-	@SuppressWarnings("unused")
-	private Logger logger;
-	
 }

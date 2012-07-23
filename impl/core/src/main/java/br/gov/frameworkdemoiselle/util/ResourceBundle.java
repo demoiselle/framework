@@ -46,30 +46,44 @@ public class ResourceBundle extends java.util.ResourceBundle implements Serializ
 
 	private static final long serialVersionUID = 1L;
 
+	private String baseName;
+	
 	private transient java.util.ResourceBundle delegate;
 
-	public ResourceBundle(java.util.ResourceBundle resourceBundle) {
-		this.delegate = resourceBundle;
+	private final Locale locale;
+	
+	private java.util.ResourceBundle getDelegate() {
+		if(delegate == null) {
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			delegate = ResourceBundle.getBundle(baseName, locale, classLoader);
+		}
+		
+		return delegate;
 	}
 
+	public ResourceBundle(String baseName, Locale locale) {
+		this.baseName = baseName;
+		this.locale = locale;
+	}
+	
 	@Override
 	public boolean containsKey(String key) {
-		return delegate.containsKey(key);
+		return getDelegate().containsKey(key);
 	}
 
 	@Override
 	public Enumeration<String> getKeys() {
-		return delegate.getKeys();
+		return getDelegate().getKeys();
 	}
 
 	@Override
 	public Locale getLocale() {
-		return delegate.getLocale();
+		return getDelegate().getLocale();
 	}
 
 	@Override
 	public Set<String> keySet() {
-		return delegate.keySet();
+		return getDelegate().keySet();
 	}
 
 	public String getString(String key, Object... params) {
@@ -81,7 +95,7 @@ public class ResourceBundle extends java.util.ResourceBundle implements Serializ
 		Object result;
 
 		try {
-			Method method = delegate.getClass().getMethod("handleGetObject", String.class);
+			Method method = getDelegate().getClass().getMethod("handleGetObject", String.class);
 
 			method.setAccessible(true);
 			result = method.invoke(delegate, key);

@@ -5,6 +5,8 @@ import static org.junit.Assert.fail;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replay;
 
+import java.util.Locale;
+
 import javax.enterprise.inject.Instance;
 import javax.interceptor.InvocationContext;
 
@@ -84,7 +86,7 @@ public class RequiredRoleInterceptorTest {
 
 		@SuppressWarnings("unchecked")
 		Instance<SecurityContext> securityContextInstance = EasyMock.createMock(Instance.class);
-		ResourceBundle bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
+		ResourceBundle bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 		Logger logger = EasyMock.createMock(Logger.class);
 		User user = EasyMock.createMock(User.class);
 

@@ -78,7 +78,6 @@
 		<dependency>
 			<groupId>br.gov.frameworkdemoiselle</groupId>
 			<artifactId>demoiselle-core</artifactId>
-			<scope>compile</scope>
 		</dependency>
 		
 		<!-- Tests -->

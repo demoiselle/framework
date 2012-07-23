@@ -13,6 +13,8 @@ import static org.powermock.api.easymock.PowerMock.replay;
 import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.reflect.Whitebox.setInternalState;
 
+import java.util.Locale;
+
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.easymock.EasyMock;
@@ -67,7 +69,7 @@ public class SecurityContextImplTest {
 		Authenticator authenticator = createMock(Authenticator.class);
 		expect(authenticator.getUser()).andReturn(null).anyTimes();
 
-		ResourceBundle bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
+		ResourceBundle bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 		setInternalState(context, "bundle", bundle);
 		setInternalState(context, "authenticator", authenticator);
 
@@ -94,7 +96,7 @@ public class SecurityContextImplTest {
 		expect(authorizer.hasPermission(null, null)).andReturn(true);
 
 		setInternalState(context, "authorizer", authorizer);
-		
+
 		replay(authorizer);
 
 		try {
@@ -117,7 +119,7 @@ public class SecurityContextImplTest {
 
 		User user = createMock(User.class);
 		expect(authenticator.getUser()).andReturn(user).anyTimes();
-		
+
 		setInternalState(context, "authenticator", authenticator);
 
 		replayAll(authenticator, user, Beans.class, manager);
@@ -146,12 +148,12 @@ public class SecurityContextImplTest {
 		Authenticator authenticator = createMock(Authenticator.class);
 		expect(authenticator.getUser()).andReturn(null).anyTimes();
 
-		ResourceBundle bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
+		ResourceBundle bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 		setInternalState(context, "bundle", bundle);
 		expect(config.isEnabled()).andReturn(true).anyTimes();
 
 		setInternalState(context, "authenticator", authenticator);
-		
+
 		replay(config, authenticator);
 
 		try {
@@ -174,7 +176,7 @@ public class SecurityContextImplTest {
 		expect(authorizer.hasRole(null)).andReturn(true);
 
 		setInternalState(context, "authorizer", authorizer);
-		
+
 		replay(authorizer);
 
 		try {
@@ -191,9 +193,9 @@ public class SecurityContextImplTest {
 		expect(authenticator.getUser()).andReturn(null).anyTimes();
 
 		expect(config.isEnabled()).andReturn(true).anyTimes();
-		
+
 		setInternalState(context, "authenticator", authenticator);
-		
+
 		replay(config, authenticator);
 
 		assertFalse(context.isLoggedIn());
@@ -261,13 +263,13 @@ public class SecurityContextImplTest {
 		Authenticator authenticator = createMock(Authenticator.class);
 		expect(authenticator.getUser()).andReturn(null).anyTimes();
 
-		ResourceBundle bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
+		ResourceBundle bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 		setInternalState(context, "bundle", bundle);
 
 		expect(config.isEnabled()).andReturn(true).anyTimes();
-		
+
 		setInternalState(context, "authenticator", authenticator);
-		
+
 		replay(config, authenticator);
 
 		try {
@@ -281,7 +283,7 @@ public class SecurityContextImplTest {
 	@Test
 	public void testLogOutAfterSuccessfulLogin() {
 		mockStatic(Beans.class);
-		
+
 		expect(config.isEnabled()).andReturn(true).anyTimes();
 
 		Authenticator authenticator = createMock(Authenticator.class);
@@ -299,7 +301,7 @@ public class SecurityContextImplTest {
 		PowerMock.expectLastCall().times(2);
 
 		setInternalState(context, "authenticator", authenticator);
-		
+
 		replayAll(Beans.class, authenticator, user, manager, config);
 
 		context.login();
@@ -317,7 +319,7 @@ public class SecurityContextImplTest {
 		replay(config, authenticator, Beans.class);
 
 		setInternalState(context, "authenticator", authenticator);
-		
+
 		assertNotNull(context.getUser());
 		assertNotNull(context.getUser().getId());
 		assertNull(context.getUser().getAttribute(null));
@@ -333,7 +335,7 @@ public class SecurityContextImplTest {
 		replay(config, authenticator, Beans.class);
 
 		setInternalState(context, "authenticator", authenticator);
-		
+
 		assertNull(context.getUser());
 	}
 
@@ -348,7 +350,7 @@ public class SecurityContextImplTest {
 		replay(config, user, authenticator, Beans.class);
 
 		setInternalState(context, "authenticator", authenticator);
-		
+
 		assertEquals(context.getUser(), user);
 	}
 }

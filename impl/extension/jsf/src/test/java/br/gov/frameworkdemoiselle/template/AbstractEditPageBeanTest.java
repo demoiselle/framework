@@ -82,7 +82,7 @@ public class AbstractEditPageBeanTest {
 
 	@Before
 	public void before() {
-		bundle = new ResourceBundleProducer().create("demoiselle-jsf-bundle", Locale.getDefault());
+		bundle = ResourceBundleProducer.create("demoiselle-jsf-bundle", Locale.getDefault());
 
 		pageBean = new AbstractEditPageBean<Contact, Object>() {
 

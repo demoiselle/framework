@@ -67,8 +67,7 @@ public class ResourceBundleProducer implements Serializable {
 		ResourceBundle bundle = null;
 
 		try {
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			bundle = new ResourceBundle(ResourceBundle.getBundle(baseName, locale, classLoader));
+			bundle = new ResourceBundle(baseName, locale);
 
 		} catch (MissingResourceException e) {
 			throw new DemoiselleException("File " + baseName + " not found!");

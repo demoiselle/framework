@@ -36,21 +36,20 @@
  */
 package br.gov.frameworkdemoiselle.internal.producer;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-public class ServletLocaleProducer {
+public class ServletLocaleProducer implements Serializable {
 
-	@Inject
-	private HttpServletRequest request;
+	private static final long serialVersionUID = 1L;
 
-	@Produces
 	@Default
-	public Locale create() {
+	@Produces
+	public Locale create(HttpServletRequest request) {
 		Locale result;
 
 		if (request == null) {

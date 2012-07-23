@@ -36,18 +36,20 @@
  */
 package br.gov.frameworkdemoiselle.internal.producer;
 
-import javax.enterprise.context.SessionScoped;
+import java.io.Serializable;
+
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-public class HttpSessionProducer {
+public class HttpSessionProducer implements Serializable {
 
-	@Produces
+	private static final long serialVersionUID = 1L;
+
 	@Default
-	@SessionScoped
-	public HttpSession create(final HttpServletRequest request) {
-		return request.getSession();
+	@Produces
+	public HttpSession create(HttpServletRequest request) {
+		return request != null ? request.getSession() : null;
 	}
 }
