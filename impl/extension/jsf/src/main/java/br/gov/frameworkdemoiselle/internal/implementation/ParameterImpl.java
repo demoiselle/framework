@@ -61,8 +61,6 @@ public class ParameterImpl<T extends Serializable> implements Parameter<T>, Seri
 
 	private transient Converter converter;
 
-	private transient HttpServletRequest request;
-
 	private T value;
 
 	private final String key;
@@ -82,11 +80,7 @@ public class ParameterImpl<T extends Serializable> implements Parameter<T>, Seri
 	}
 
 	private HttpServletRequest getRequest() {
-		if (request == null) {
-			request = Beans.getReference(HttpServletRequest.class);
-		}
-
-		return request;
+		return Beans.getReference(HttpServletRequest.class);
 	}
 
 	@Inject
