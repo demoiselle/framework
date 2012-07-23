@@ -59,6 +59,7 @@ import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.pagination.Pagination;
 import br.gov.frameworkdemoiselle.pagination.PaginationContext;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -76,7 +77,6 @@ public class JPACrud<T, I> implements Crud<T, I> {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
 	private EntityManager entityManager;
 
 	@Inject
@@ -91,7 +91,6 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	private Class<T> beanClass;
 
 	protected Class<T> getBeanClass() {
-
 		if (this.beanClass == null) {
 			this.beanClass = Reflections.getGenericTypeArgument(this.getClass(), 0);
 		}
@@ -104,6 +103,10 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	}
 
 	protected EntityManager getEntityManager() {
+		if(this.entityManager == null) {
+			this.entityManager = Beans.getReference(EntityManager.class);
+		}
+		
 		return this.entityManager;
 	}
 

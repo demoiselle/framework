@@ -51,28 +51,28 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 
 	private Class<C> delegateClass;
 
-	private C delegate;
-	
+	private transient C delegate;
+
 	@Override
 	public void delete(final I id) {
-		if(isRunningTransactionalOperations()) {
+		if (isRunningTransactionalOperations()) {
 			transactionalDelete(id);
 		} else {
 			nonTransactionalDelete(id);
 		}
 	}
-	
+
 	@Transactional
 	private void transactionalDelete(final I id) {
 		nonTransactionalDelete(id);
 	}
-	
+
 	private void nonTransactionalDelete(final I id) {
 		getDelegate().delete(id);
 	}
 
 	public void delete(final List<I> ids) {
-		if(isRunningTransactionalOperations()) {
+		if (isRunningTransactionalOperations()) {
 			transactionalDelete(ids);
 		} else {
 			nonTransactionalDelete(ids);
@@ -83,14 +83,14 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	private void transactionalDelete(final List<I> ids) {
 		nonTransactionalDelete(ids);
 	}
-	
+
 	private void nonTransactionalDelete(final List<I> ids) {
 		ListIterator<I> iter = ids.listIterator();
 		while (iter.hasNext()) {
 			this.delete(iter.next());
 		}
 	}
-	
+
 	@Override
 	public List<T> findAll() {
 		return getDelegate().findAll();
@@ -100,6 +100,7 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 		if (this.delegate == null) {
 			this.delegate = Beans.getReference(getDelegateClass());
 		}
+
 		return this.delegate;
 	}
 
@@ -107,23 +108,24 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 		if (this.delegateClass == null) {
 			this.delegateClass = Reflections.getGenericTypeArgument(this.getClass(), 2);
 		}
+
 		return this.delegateClass;
 	}
 
 	@Override
 	public void insert(final T bean) {
-		if(isRunningTransactionalOperations()) {
+		if (isRunningTransactionalOperations()) {
 			transactionalInsert(bean);
 		} else {
 			nonTransactionalInsert(bean);
 		}
 	}
-	
+
 	@Transactional
 	private void transactionalInsert(final T bean) {
 		nonTransactionalInsert(bean);
 	}
-	
+
 	private void nonTransactionalInsert(final T bean) {
 		getDelegate().insert(bean);
 	}
@@ -135,7 +137,7 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 
 	@Override
 	public void update(final T bean) {
-		if(isRunningTransactionalOperations()) {
+		if (isRunningTransactionalOperations()) {
 			transactionalUpdate(bean);
 		} else {
 			nonTransactionalUpdate(bean);
@@ -146,11 +148,11 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	private void transactionalUpdate(final T bean) {
 		nonTransactionalUpdate(bean);
 	}
-	
+
 	private void nonTransactionalUpdate(final T bean) {
 		getDelegate().update(bean);
 	}
-	
+
 	private boolean isRunningTransactionalOperations() {
 		return !(Beans.getReference(Transaction.class) instanceof DefaultTransaction);
 	}
