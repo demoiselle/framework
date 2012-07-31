@@ -162,20 +162,8 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<T> findAll() {
-		final String jpql = "select this from " + getBeanClass().getSimpleName() + " this";
-		final Query query = getEntityManager().createQuery(jpql);
-
-		final Pagination pagination = getPagination();
-		if (pagination != null) {
-			pagination.setTotalResults(this.countAll().intValue());
-			query.setFirstResult(pagination.getFirstResult());
-			query.setMaxResults(pagination.getPageSize());
-		}
-
-		List<T> lista = query.getResultList();
-		return lista;
+		return findByJPQL("select this from " + getBeanClass().getSimpleName() + " this");
 	}
 
 	/**
@@ -224,6 +212,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	 * @return
 	 */
 	private String createCountQueryString(String query) {
+		query = query.toUpperCase();
 	    Matcher matcher = Pattern.compile("SELECT(.+)FROM").matcher(query);
 	    if (matcher.find()){
 	    	String group = matcher.group(1).trim();
