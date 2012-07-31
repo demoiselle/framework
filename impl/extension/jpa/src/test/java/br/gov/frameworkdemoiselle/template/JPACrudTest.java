@@ -129,28 +129,37 @@ public class JPACrudTest {
 		this.contactDAO.delete(this.contact.getId());
 		verify(this.entityManager);
 	}
-
+	
+	private TypedQuery<Contact> makeTypedQuery() {
+		@SuppressWarnings("unchecked")
+		TypedQuery<Contact> typeQuery = EasyMock.createMock(TypedQuery.class);
+		expect(typeQuery.setFirstResult(EasyMock.anyInt())).andReturn(null);
+		expect(typeQuery.setMaxResults(EasyMock.anyInt())).andReturn(null);
+		expect(typeQuery.getResultList()).andReturn(createContacts(1));
+		return typeQuery;
+	}
+	
 	@Test
 	public void testCountAll() {
 
 		Pagination pagination = new PaginationImpl();
+		pagination.setPageSize(10);
 		PaginationContext actualContext = PowerMock.createMock(PaginationContext.class);
 		expect(actualContext.getPagination(Contact.class)).andReturn(pagination);
 		@SuppressWarnings("unchecked")
 		Instance<PaginationContext> paginationContext = PowerMock.createMock(Instance.class);
 		expect(paginationContext.get()).andReturn(actualContext);
 		setInternalState(this.contactDAO, "paginationContext", paginationContext);
+		
+		TypedQuery<Contact> typeQuery = makeTypedQuery();		
 
 		Query query = EasyMock.createMock(Query.class);
-		expect(query.setFirstResult(EasyMock.anyInt())).andReturn(query);
-		expect(query.setMaxResults(EasyMock.anyInt())).andReturn(query);
 		expect(query.getSingleResult()).andReturn(10L);
+		
+		expect(this.entityManager.createQuery("select this from Contact this", Contact.class)).andReturn(typeQuery);
+		expect(this.entityManager.createQuery("SELECT COUNT(THIS) FROM CONTACT THIS")).andReturn(query);		
 
-		expect(this.entityManager.createQuery("select this from Contact this")).andReturn(query);
-		expect(this.entityManager.createQuery("select count(this) from Contact this")).andReturn(query);
-		expect(query.getResultList()).andReturn(createContacts(1));
-
-		replayAll(query, this.entityManager, paginationContext);
+		replayAll(typeQuery, query, this.entityManager, paginationContext);
 
 		List<Contact> find = this.contactDAO.findAll();
 
@@ -171,11 +180,13 @@ public class JPACrudTest {
 		expect(paginationContext.get()).andReturn(actualContext);
 		setInternalState(this.contactDAO, "paginationContext", paginationContext);
 
+		TypedQuery<Contact> typeQuery = makeTypedQuery();		
+		
 		Query query = EasyMock.createMock(Query.class);
 
 		expect(query.getSingleResult()).andThrow(new DemoiselleException(""));
-		expect(this.entityManager.createQuery("select this from Contact this")).andReturn(query);
-		expect(this.entityManager.createQuery("select count(this) from Contact this")).andReturn(query);
+		expect(this.entityManager.createQuery("select this from Contact this", Contact.class)).andReturn(typeQuery);
+		expect(this.entityManager.createQuery("SELECT COUNT(THIS) FROM CONTACT THIS")).andReturn(query);	
 
 		replayAll(query, this.entityManager, paginationContext);
 
@@ -280,27 +291,31 @@ public class JPACrudTest {
 
 	@Test
 	public void testFindAll() {
-
+		
+		Pagination pagination = new PaginationImpl();
+		pagination.setPageSize(10);
 		PaginationContext actualContext = PowerMock.createMock(PaginationContext.class);
-		expect(actualContext.getPagination(Contact.class)).andReturn(null);
+		expect(actualContext.getPagination(Contact.class)).andReturn(pagination);
 		@SuppressWarnings("unchecked")
 		Instance<PaginationContext> paginationContext = PowerMock.createMock(Instance.class);
 		expect(paginationContext.get()).andReturn(actualContext);
 		setInternalState(this.contactDAO, "paginationContext", paginationContext);
+		
+		TypedQuery<Contact> typeQuery = makeTypedQuery();		
 
 		Query query = EasyMock.createMock(Query.class);
-		// expect(query.setFirstResult(EasyMock.anyInt())).andReturn(query);
-		// expect(query.setMaxResults(EasyMock.anyInt())).andReturn(query);
-		expect(this.entityManager.createQuery("select this from Contact this")).andReturn(query);
-		expect(query.getResultList()).andReturn(createContacts(1));
+		expect(query.getSingleResult()).andReturn(10L);
+		
+		expect(this.entityManager.createQuery("select this from Contact this", Contact.class)).andReturn(typeQuery);
+		expect(this.entityManager.createQuery("SELECT COUNT(THIS) FROM CONTACT THIS")).andReturn(query);		
 
-		replayAll(query, this.entityManager, paginationContext);
+		replayAll(typeQuery, query, this.entityManager, paginationContext);
 
 		List<Contact> find = this.contactDAO.findAll();
 
 		assertEquals(1, find.size());
 		assertTrue(find.iterator().next().getId().equals(1L));
-
+		
 		verifyAll();
 	}
 
@@ -313,12 +328,15 @@ public class JPACrudTest {
 		Instance<PaginationContext> paginationContext = PowerMock.createMock(Instance.class);
 		expect(paginationContext.get()).andReturn(actualContext);
 		setInternalState(this.contactDAO, "paginationContext", paginationContext);
+		
+		@SuppressWarnings("unchecked")
+		TypedQuery<Contact> typeQuery = EasyMock.createMock(TypedQuery.class);
+		expect(typeQuery.getResultList()).andThrow(new DemoiselleException(""));
 
 		Query query = EasyMock.createMock(Query.class);
-		expect(this.entityManager.createQuery("select this from Contact this")).andReturn(query);
-		expect(query.getResultList()).andThrow(new DemoiselleException(""));
+		expect(this.entityManager.createQuery("select this from Contact this", Contact.class)).andReturn(typeQuery);		
 
-		replayAll(query, this.entityManager, paginationContext);
+		replayAll(typeQuery, query, this.entityManager, paginationContext);
 
 		try {
 			this.contactDAO.findAll();
