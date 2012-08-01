@@ -307,20 +307,18 @@ public class ConfigurationLoader implements Serializable {
 		return value;
 	}
 
-	public static URL getResourceAsURL(final String resource) throws FileNotFoundException {
+	public static ClassLoader getClassLoaderForResource(final String resource) throws FileNotFoundException {
 		final String stripped = resource.startsWith("/") ? resource.substring(1) : resource;
 
 		URL url = null;
-		final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		
-		if (classLoader != null) {
-			url = classLoader.getResource(stripped);
+		ClassLoader result = Thread.currentThread().getContextClassLoader();
+
+		if (result != null) {
+			url = result.getResource(stripped);
 		}
 
 		if (url == null) {
-			url = ConfigurationLoader.class.getResource(stripped);
-		}
-		if (url == null) {
+			result = ConfigurationLoader.class.getClassLoader();
 			url = ConfigurationLoader.class.getClassLoader().getResource(stripped);
 		}
 
@@ -328,6 +326,11 @@ public class ConfigurationLoader implements Serializable {
 			throw new FileNotFoundException(resource + " not found.");
 		}
 
-		return url;
+		return result;
+	}
+
+	public static URL getResourceAsURL(final String resource) throws FileNotFoundException {
+		ClassLoader classLoader = getClassLoaderForResource(resource);
+		return classLoader.getResource(resource);
 	}
 }

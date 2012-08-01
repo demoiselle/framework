@@ -99,7 +99,7 @@ public abstract class AbstractStrategyBootstrap<T, D extends T> extends Abstract
 			Configuration config = new PropertiesConfiguration(url);
 			canonicalName = config.getString(getConfigKey(), getDefaultClass().getCanonicalName());
 
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			ClassLoader classLoader = ConfigurationLoader.getClassLoaderForResource(canonicalName);
 			result = (Class<T>) Class.forName(canonicalName, false, classLoader);
 			result.asSubclass(getType());
 
