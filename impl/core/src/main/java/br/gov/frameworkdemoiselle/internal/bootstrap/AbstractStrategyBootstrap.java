@@ -36,6 +36,9 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
+import java.io.FileNotFoundException;
+import java.net.URL;
+
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
@@ -44,6 +47,7 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
+import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.Strings;
 
@@ -91,7 +95,8 @@ public abstract class AbstractStrategyBootstrap<T, D extends T> extends Abstract
 		String key = null;
 
 		try {
-			Configuration config = new PropertiesConfiguration("demoiselle.properties");
+			URL url = ConfigurationLoader.getResourceAsURL("demoiselle.properties");
+			Configuration config = new PropertiesConfiguration(url);
 			canonicalName = config.getString(getConfigKey(), getDefaultClass().getCanonicalName());
 
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -108,6 +113,9 @@ public abstract class AbstractStrategyBootstrap<T, D extends T> extends Abstract
 		} catch (ClassCastException cause) {
 			key = Strings.getString("{0}-class-must-be-of-type", typeName);
 			throw new ConfigurationException(getBundle().getString(key, canonicalName, getType()));
+			
+		} catch (FileNotFoundException e) {
+			throw new ConfigurationException(getBundle().getString("file-not-found", "demoiselle.properties"));
 		}
 
 		return result;

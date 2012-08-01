@@ -40,6 +40,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Set;
 
 public class ResourceBundle extends java.util.ResourceBundle implements Serializable {
@@ -47,17 +48,22 @@ public class ResourceBundle extends java.util.ResourceBundle implements Serializ
 	private static final long serialVersionUID = 1L;
 
 	private String baseName;
-	
+
 	private transient java.util.ResourceBundle delegate;
 
 	private final Locale locale;
-	
+
 	private java.util.ResourceBundle getDelegate() {
-		if(delegate == null) {
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			delegate = ResourceBundle.getBundle(baseName, locale, classLoader);
+		if (delegate == null) {
+			try {
+				ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+				delegate = ResourceBundle.getBundle(baseName, locale, classLoader);
+
+			} catch (MissingResourceException mre) {
+				delegate = ResourceBundle.getBundle(baseName, locale);
+			}
 		}
-		
+
 		return delegate;
 	}
 
@@ -65,7 +71,7 @@ public class ResourceBundle extends java.util.ResourceBundle implements Serializ
 		this.baseName = baseName;
 		this.locale = locale;
 	}
-	
+
 	@Override
 	public boolean containsKey(String key) {
 		return getDelegate().containsKey(key);
@@ -104,6 +110,7 @@ public class ResourceBundle extends java.util.ResourceBundle implements Serializ
 		} catch (Exception cause) {
 			throw new RuntimeException(cause);
 		}
+
 		return result;
 	}
 }

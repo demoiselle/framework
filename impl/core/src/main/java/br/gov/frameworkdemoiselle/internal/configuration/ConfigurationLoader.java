@@ -36,9 +36,11 @@
  */
 package br.gov.frameworkdemoiselle.internal.configuration;
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
@@ -49,7 +51,6 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.Ignore;
@@ -208,17 +209,21 @@ public class ConfigurationLoader implements Serializable {
 		org.apache.commons.configuration.Configuration config = null;
 
 		try {
+			URL url;
+
 			switch (type) {
 				case SYSTEM:
 					config = new SystemConfiguration();
 					break;
 
 				case PROPERTIES:
-					config = new PropertiesConfiguration(resource + ".properties");
+					url = getResourceAsURL(resource + ".properties");
+					config = new PropertiesConfiguration(url);
 					break;
 
 				case XML:
-					config = new XMLConfiguration(resource + ".xml");
+					url = getResourceAsURL(resource + ".xml");
+					config = new PropertiesConfiguration(url);
 					break;
 
 				default:
@@ -300,5 +305,29 @@ public class ConfigurationLoader implements Serializable {
 		}
 
 		return value;
+	}
+
+	public static URL getResourceAsURL(final String resource) throws FileNotFoundException {
+		final String stripped = resource.startsWith("/") ? resource.substring(1) : resource;
+
+		URL url = null;
+		final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		
+		if (classLoader != null) {
+			url = classLoader.getResource(stripped);
+		}
+
+		if (url == null) {
+			url = ConfigurationLoader.class.getResource(stripped);
+		}
+		if (url == null) {
+			url = ConfigurationLoader.class.getClassLoader().getResource(stripped);
+		}
+
+		if (url == null) {
+			throw new FileNotFoundException(resource + " not found.");
+		}
+
+		return url;
 	}
 }
