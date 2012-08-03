@@ -34,90 +34,49 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.transaction;
+/*
+ * Demoiselle Framework Copyright (c) 2010 Serpro and other contributors as indicated by the @author tag. See the
+ * copyright.txt in the distribution for a full listing of contributors. Demoiselle Framework is an open source Java EE
+ * library designed to accelerate the development of transactional database Web applications. Demoiselle Framework is
+ * released under the terms of the LGPL license 3 http://www.gnu.org/licenses/lgpl.html LGPL License 3 This file is part
+ * of Demoiselle Framework. Demoiselle Framework is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License 3 as published by the Free Software Foundation. Demoiselle Framework
+ * is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details. You
+ * should have received a copy of the GNU Lesser General Public License along with Demoiselle Framework. If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+package br.gov.frameworkdemoiselle.internal.producer;
 
-import javax.enterprise.context.RequestScoped;
+import java.lang.annotation.Annotation;
+
 import javax.enterprise.inject.Any;
-import javax.transaction.Status;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Produces;
 
+import br.gov.frameworkdemoiselle.internal.implementation.DefaultTransaction;
+import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.util.Beans;
 
-@Any
-@RequestScoped
-public class JTATransaction implements Transaction {
+public class TransactionProducer extends AbstractStrategyProducer<Transaction, DefaultTransaction> {
 
 	private static final long serialVersionUID = 1L;
 
-	private UserTransaction delegate;
+	@Default
+	@Produces
+	public Transaction create() {
+		return Beans.getReference(getSelected(), new Any() {
 
-	public UserTransaction getDelegate() {
+			@Override
+			public Class<? extends Annotation> annotationType() {
+				return Any.class;
 
-		if (delegate == null) {
-			delegate = Beans.getReference(UserTransaction.class);
-		}
-
-		return delegate;
+			}
+		});
 	}
 
 	@Override
-	public boolean isActive() {
-		try {
-			return getDelegate().getStatus() == Status.STATUS_ACTIVE || isMarkedRollback();
-
-		} catch (SystemException cause) {
-			throw new TransactionException(cause);
-		}
-	}
-
-	@Override
-	public boolean isMarkedRollback() {
-		try {
-			return getDelegate().getStatus() == Status.STATUS_MARKED_ROLLBACK;
-
-		} catch (SystemException cause) {
-			throw new TransactionException(cause);
-		}
-	}
-
-	@Override
-	public void begin() {
-		try {
-			getDelegate().begin();
-
-		} catch (Exception cause) {
-			throw new TransactionException(cause);
-		}
-	}
-
-	@Override
-	public void commit() {
-		try {
-			getDelegate().commit();
-
-		} catch (Exception cause) {
-			throw new TransactionException(cause);
-		}
-	}
-
-	@Override
-	public void rollback() {
-		try {
-			getDelegate().rollback();
-
-		} catch (SystemException cause) {
-			throw new TransactionException(cause);
-		}
-	}
-
-	@Override
-	public void setRollbackOnly() {
-		try {
-			getDelegate().setRollbackOnly();
-
-		} catch (SystemException cause) {
-			throw new TransactionException(cause);
-		}
+	public String getConfigKey() {
+		return "frameworkdemoiselle.transaction.class";
 	}
 }
