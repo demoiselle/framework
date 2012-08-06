@@ -45,6 +45,7 @@ import javax.inject.Inject;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
+import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
 import br.gov.frameworkdemoiselle.util.Reflections;
@@ -62,6 +63,7 @@ public abstract class AbstractStrategyProducer<T, D extends T> implements Serial
 	private Class<? extends T> selected;
 
 	@Inject
+	@Name("demoiselle-core-bundle")
 	private ResourceBundle bundle;
 
 	protected Class<? extends T> getSelected() {
@@ -119,8 +121,15 @@ public abstract class AbstractStrategyProducer<T, D extends T> implements Serial
 			Configuration config = new PropertiesConfiguration(url);
 			canonicalName = config.getString(getConfigKey(), getDefaultClass().getCanonicalName());
 
-			ClassLoader classLoader = ConfigurationLoader.getClassLoaderForResource(canonicalName
-					.replaceAll("\\.", "/") + ".class");
+			ClassLoader classLoader;
+
+			try {
+				classLoader = ConfigurationLoader.getClassLoaderForResource(canonicalName.replaceAll("\\.", "/")
+						+ ".class");
+			} catch (FileNotFoundException e) {
+				classLoader = Thread.currentThread().getContextClassLoader();
+			}
+
 			result = (Class<T>) Class.forName(canonicalName, false, classLoader);
 			result.asSubclass(getType());
 

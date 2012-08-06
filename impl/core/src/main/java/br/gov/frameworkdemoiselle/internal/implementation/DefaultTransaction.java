@@ -36,9 +36,6 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Any;
-
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
@@ -49,8 +46,6 @@ import br.gov.frameworkdemoiselle.transaction.Transactional;
  * @author SERPRO
  * @see Transaction
  */
-@Any
-@RequestScoped
 public class DefaultTransaction implements Transaction {
 
 	private static final long serialVersionUID = 1L;

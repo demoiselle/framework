@@ -36,16 +36,12 @@
  */
 package br.gov.frameworkdemoiselle.transaction;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Any;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import br.gov.frameworkdemoiselle.util.Beans;
 
-@Any
-@RequestScoped
 public class JTATransaction implements Transaction {
 
 	private static final long serialVersionUID = 1L;

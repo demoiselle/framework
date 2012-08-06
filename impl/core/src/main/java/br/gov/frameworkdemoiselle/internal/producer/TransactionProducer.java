@@ -48,15 +48,11 @@
  */
 package br.gov.frameworkdemoiselle.internal.producer;
 
-import java.lang.annotation.Annotation;
-
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 
 import br.gov.frameworkdemoiselle.internal.implementation.DefaultTransaction;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
-import br.gov.frameworkdemoiselle.util.Beans;
 
 public class TransactionProducer extends AbstractStrategyProducer<Transaction, DefaultTransaction> {
 
@@ -64,15 +60,8 @@ public class TransactionProducer extends AbstractStrategyProducer<Transaction, D
 
 	@Default
 	@Produces
-	public Transaction create() {
-		return Beans.getReference(getSelected(), new Any() {
-
-			@Override
-			public Class<? extends Annotation> annotationType() {
-				return Any.class;
-
-			}
-		});
+	public Transaction create() throws InstantiationException, IllegalAccessException {
+		return getSelected().newInstance();
 	}
 
 	@Override

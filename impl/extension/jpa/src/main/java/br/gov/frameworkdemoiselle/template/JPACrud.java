@@ -46,6 +46,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.Enumerated;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -77,6 +78,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 
 	private static final long serialVersionUID = 1L;
 
+//	@PersistenceContext
 	private EntityManager entityManager;
 
 	@Inject

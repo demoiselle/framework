@@ -54,7 +54,7 @@ import br.gov.frameworkdemoiselle.util.Strings;
 public abstract class AbstractStrategyBootstrap<T, D extends T> extends AbstractBootstrap {
 
 	private Class<T> type;
-	
+
 	private Class<D> defaultClass;
 
 	private Class<? extends T> selected;
@@ -63,15 +63,15 @@ public abstract class AbstractStrategyBootstrap<T, D extends T> extends Abstract
 		if (this.type == null) {
 			this.type = Reflections.getGenericTypeArgument(this.getClass(), 0);
 		}
-		
+
 		return this.type;
 	}
-	
+
 	private Class<D> getDefaultClass() {
 		if (this.defaultClass == null) {
 			this.defaultClass = Reflections.getGenericTypeArgument(this.getClass(), 1);
 		}
-		
+
 		return this.defaultClass;
 	}
 
@@ -99,7 +99,15 @@ public abstract class AbstractStrategyBootstrap<T, D extends T> extends Abstract
 			Configuration config = new PropertiesConfiguration(url);
 			canonicalName = config.getString(getConfigKey(), getDefaultClass().getCanonicalName());
 
-			ClassLoader classLoader = ConfigurationLoader.getClassLoaderForResource(canonicalName.replaceAll("\\.", "/") + ".class");
+			ClassLoader classLoader;
+			
+			try {
+				classLoader = ConfigurationLoader.getClassLoaderForResource(canonicalName.replaceAll("\\.",
+						"/") + ".class");
+			} catch (FileNotFoundException e) {
+				classLoader = Thread.currentThread().getContextClassLoader();
+			}
+
 			result = (Class<T>) Class.forName(canonicalName, false, classLoader);
 			result.asSubclass(getType());
 
@@ -113,14 +121,14 @@ public abstract class AbstractStrategyBootstrap<T, D extends T> extends Abstract
 		} catch (ClassCastException cause) {
 			key = Strings.getString("{0}-class-must-be-of-type", typeName);
 			throw new ConfigurationException(getBundle().getString(key, canonicalName, getType()));
-			
+
 		} catch (FileNotFoundException e) {
 			throw new ConfigurationException(getBundle().getString("file-not-found", "demoiselle.properties"));
 		}
 
 		return result;
 	}
-	
+
 	public abstract String getConfigKey();
 
 }

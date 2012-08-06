@@ -36,13 +36,20 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
-import br.gov.frameworkdemoiselle.internal.implementation.DefaultTransaction;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
+
 import br.gov.frameworkdemoiselle.transaction.Transaction;
+import br.gov.frameworkdemoiselle.util.Reflections;
 
-public class TransactionBootstrap extends AbstractStrategyBootstrap<Transaction, DefaultTransaction> {
+public class TransactionBootstrap implements Extension {
 
-	public String getConfigKey() {
-		return "frameworkdemoiselle.transaction.class";
+	public <A> void processAnnotatedType(@Observes final ProcessAnnotatedType<A> event) {
+		Class<A> annotated = event.getAnnotatedType().getJavaClass();
+
+		if (Reflections.isOfType(annotated, Transaction.class)) {
+			event.veto();
+		}
 	}
-
 }
