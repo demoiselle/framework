@@ -146,6 +146,7 @@ public class StartupBootstrapTest {
 		assertTrue(list.size() == 2);
 	}
 
+	@SuppressWarnings("static-access")
 	@Test
 	public void testLoadTempContexts() {
 		StartupBootstrap bootstrap = new StartupBootstrap();
@@ -191,6 +192,7 @@ public class StartupBootstrapTest {
 		}
 	}
 
+	@SuppressWarnings("static-access")
 	@Test
 	public void testStartup() throws Throwable {
 		StartupBootstrap bootstrap = new StartupBootstrap();
@@ -227,6 +229,7 @@ public class StartupBootstrapTest {
 		PowerMock.verifyAll();
 	}
 
+	@SuppressWarnings("static-access")
 	@Test
 	public void testLoadTempContextsAndStartup() {
 

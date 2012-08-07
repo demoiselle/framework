@@ -106,7 +106,7 @@ public class EntityManagerProducerTest {
 		replay(emf, Persistence.class);
 
 		producer = new EntityManagerProducer();
-		bundle = new ResourceBundleProducer().create("demoiselle-jpa-bundle", Locale.getDefault());
+		bundle = ResourceBundleProducer.create("demoiselle-jpa-bundle", Locale.getDefault());
 		logger = createMock(Logger.class);
 
 		setInternalState(producer, ResourceBundle.class, bundle);

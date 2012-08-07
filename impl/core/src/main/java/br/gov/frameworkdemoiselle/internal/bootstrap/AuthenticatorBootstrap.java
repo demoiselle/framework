@@ -36,13 +36,19 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
-import br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthenticator;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
+
 import br.gov.frameworkdemoiselle.security.Authenticator;
+import br.gov.frameworkdemoiselle.util.Reflections;
 
-public class AuthenticatorBootstrap extends AbstractStrategyBootstrap<Authenticator, DefaultAuthenticator> {
+public class AuthenticatorBootstrap extends AbstractBootstrap {
 
-	public String getConfigKey() {
-		return "frameworkdemoiselle.security.authenticator.class";
+	public <A> void processAnnotatedType(@Observes final ProcessAnnotatedType<A> event) {
+		Class<A> annotated = event.getAnnotatedType().getJavaClass();
+
+		if (Reflections.isOfType(annotated, Authenticator.class)) {
+			event.veto();
+		}
 	}
-	
 }

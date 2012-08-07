@@ -140,7 +140,7 @@ public class ShutdownBootstrapTest {
 		assertTrue(list.size() == 2);
 	}
 
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({ "unchecked", "static-access" })
 	@Test
 	public void testShuttingDown() throws Throwable {
 		ShutdownBootstrap bootstrap = new ShutdownBootstrap();

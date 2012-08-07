@@ -37,13 +37,12 @@
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
-public class TransactionBootstrap implements Extension {
+public class TransactionBootstrap extends AbstractBootstrap {
 
 	public <A> void processAnnotatedType(@Observes final ProcessAnnotatedType<A> event) {
 		Class<A> annotated = event.getAnnotatedType().getJavaClass();

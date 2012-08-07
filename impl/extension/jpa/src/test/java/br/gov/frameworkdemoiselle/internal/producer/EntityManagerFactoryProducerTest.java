@@ -40,7 +40,7 @@ public class EntityManagerFactoryProducerTest {
 	@Before
 	public void setUp() {
 		logger = createMock(Logger.class);
-		bundle = new ResourceBundleProducer().create("demoiselle-jpa-bundle", Locale.getDefault());
+		bundle = ResourceBundleProducer.create("demoiselle-jpa-bundle", Locale.getDefault());
 		producer = new EntityManagerFactoryProducer();
 		cache = Collections.synchronizedMap(new HashMap<String, EntityManagerFactory>());
 		setInternalState(producer, Map.class, cache);

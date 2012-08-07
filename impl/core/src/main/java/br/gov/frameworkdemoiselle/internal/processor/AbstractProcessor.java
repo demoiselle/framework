@@ -60,8 +60,6 @@ public abstract class AbstractProcessor<DC> implements Processor {
 
 	private AnnotatedCallable<DC> annotatedCallable;
 
-	private ResourceBundleProducer bundleFactory = new ResourceBundleProducer();
-
 	private ResourceBundle bundle;
 
 	protected static final String BUNDLE_BASE_NAME = "demoiselle-core-bundle";
@@ -109,7 +107,7 @@ public abstract class AbstractProcessor<DC> implements Processor {
 
 	protected ResourceBundle getBundle(String baseName) {
 		if (bundle == null) {
-			bundle = bundleFactory.create(baseName, Locale.getDefault());
+			bundle = ResourceBundleProducer.create(baseName, Locale.getDefault());
 		}
 
 		return bundle;

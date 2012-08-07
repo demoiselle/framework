@@ -307,6 +307,10 @@ public class ConfigurationLoader implements Serializable {
 		return value;
 	}
 
+	public static ClassLoader getClassLoaderForClass(final String canonicalName) throws FileNotFoundException {
+		return getClassLoaderForResource(canonicalName.replaceAll("\\.", "/") + ".class");
+	}
+
 	public static ClassLoader getClassLoaderForResource(final String resource) throws FileNotFoundException {
 		final String stripped = resource.startsWith("/") ? resource.substring(1) : resource;
 
@@ -323,7 +327,7 @@ public class ConfigurationLoader implements Serializable {
 		}
 
 		if (url == null) {
-			throw new FileNotFoundException(resource + " not found.");
+			result = null;
 		}
 
 		return result;

@@ -1,6 +1,6 @@
 br.gov.frameworkdemoiselle.internal.bootstrap.CoreBootstrap
 br.gov.frameworkdemoiselle.internal.bootstrap.TransactionBootstrap
-#br.gov.frameworkdemoiselle.internal.bootstrap.AuthenticatorBootstrap
-#br.gov.frameworkdemoiselle.internal.bootstrap.AuthorizerBootstrap
+br.gov.frameworkdemoiselle.internal.bootstrap.AuthenticatorBootstrap
+br.gov.frameworkdemoiselle.internal.bootstrap.AuthorizerBootstrap
 br.gov.frameworkdemoiselle.internal.bootstrap.StartupBootstrap
 br.gov.frameworkdemoiselle.internal.bootstrap.ShutdownBootstrap

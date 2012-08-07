@@ -48,6 +48,7 @@
  */
 package br.gov.frameworkdemoiselle.internal.producer;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 
@@ -60,8 +61,9 @@ public class TransactionProducer extends AbstractStrategyProducer<Transaction, D
 
 	@Default
 	@Produces
-	public Transaction create() throws InstantiationException, IllegalAccessException {
-		return getSelected().newInstance();
+	@RequestScoped
+	public Transaction create() {
+		return super.create();
 	}
 
 	@Override

@@ -34,64 +34,40 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
+/*
+ * Demoiselle Framework Copyright (c) 2010 Serpro and other contributors as indicated by the @author tag. See the
+ * copyright.txt in the distribution for a full listing of contributors. Demoiselle Framework is an open source Java EE
+ * library designed to accelerate the development of transactional database Web applications. Demoiselle Framework is
+ * released under the terms of the LGPL license 3 http://www.gnu.org/licenses/lgpl.html LGPL License 3 This file is part
+ * of Demoiselle Framework. Demoiselle Framework is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License 3 as published by the Free Software Foundation. Demoiselle Framework
+ * is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details. You
+ * should have received a copy of the GNU Lesser General Public License along with Demoiselle Framework. If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
 package br.gov.frameworkdemoiselle.internal.producer;
 
-import java.io.Serializable;
-import java.util.Locale;
-import java.util.MissingResourceException;
-
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
 
-import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
+import br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthenticator;
+import br.gov.frameworkdemoiselle.security.Authenticator;
 
-/**
- * This factory creates ResourceBundles with the application scopes.
- * 
- * @author SERPRO
- */
-public class ResourceBundleProducer implements Serializable {
+public class AuthenticatorProducer extends AbstractStrategyProducer<Authenticator, DefaultAuthenticator> {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * This method should be used by classes that can not inject ResourceBundle, to create the ResourceBundle.
-	 * 
-	 * @param String
-	 *            baseName
-	 */
-	public static ResourceBundle create(String baseName, Locale locale) {
-		ResourceBundle bundle = null;
-
-		try {
-			bundle = new ResourceBundle(baseName, locale);
-
-		} catch (MissingResourceException e) {
-			throw new DemoiselleException("File " + baseName + " not found!");
-		}
-
-		return bundle;
+	@Default
+	@Produces
+	@RequestScoped
+	public Authenticator create() {
+		return super.create();
 	}
 
-	/**
-	 * This method is the factory default for ResourceBundle. It creates the ResourceBundle based on a file called
-	 * messages.properties.
-	 */
-	@Produces
-	@Default
-	public ResourceBundle create(InjectionPoint ip) {
-		String baseName;
-
-		if (ip != null && ip.getAnnotated().isAnnotationPresent(Name.class)) {
-			baseName = ip.getAnnotated().getAnnotation(Name.class).value();
-		} else {
-			baseName = "messages";
-		}
-
-		return create(baseName, Beans.getReference(Locale.class));
+	@Override
+	public String getConfigKey() {
+		return "frameworkdemoiselle.security.authenticator.class";
 	}
 }

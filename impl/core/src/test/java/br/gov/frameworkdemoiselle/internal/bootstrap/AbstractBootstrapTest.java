@@ -68,7 +68,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 public class AbstractBootstrapTest {
 	
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "static-access" })
 	public void testAddContext() {
 		mockStatic(LoggerProducer.class);
 		mockStatic(Contexts.class);
@@ -97,7 +97,7 @@ public class AbstractBootstrapTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "static-access" })
 	public void testDisableContext() {
 		mockStatic(LoggerProducer.class);
 		mockStatic(Contexts.class);
