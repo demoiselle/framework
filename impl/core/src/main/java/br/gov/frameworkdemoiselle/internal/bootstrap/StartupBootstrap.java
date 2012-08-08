@@ -127,7 +127,7 @@ public class StartupBootstrap extends AbstractBootstrap {
 				ClassLoader classLoader = ConfigurationLoader.getClassLoaderForClass(processor.getAnnotatedMethod()
 						.getDeclaringType().getJavaClass().getCanonicalName());
 
-				if (classLoader.equals(Thread.currentThread().getContextClassLoader())) {
+				if (Thread.currentThread().getContextClassLoader().equals(classLoader)) {
 					processor.process();
 
 					if (remove) {
@@ -140,7 +140,9 @@ public class StartupBootstrap extends AbstractBootstrap {
 			}
 		}
 
-		unloadTempContexts();
+		if (processors.isEmpty()){
+			unloadTempContexts();
+		}
 
 		if (failure != null) {
 			throw new DemoiselleException(failure);
