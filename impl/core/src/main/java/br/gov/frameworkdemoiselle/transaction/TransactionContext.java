@@ -34,21 +34,16 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.bootstrap;
+package br.gov.frameworkdemoiselle.transaction;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import java.io.Serializable;
 
-import br.gov.frameworkdemoiselle.security.Authenticator;
-import br.gov.frameworkdemoiselle.util.Reflections;
+/**
+ * Structure used to handle trancationa mechanisms.
+ * 
+ * @author SERPRO
+ */
+public interface TransactionContext extends Serializable {
 
-public class AuthenticatorBootstrap extends AbstractBootstrap {
-
-	public <A> void processAnnotatedType(@Observes final ProcessAnnotatedType<A> event) {
-		Class<A> annotated = event.getAnnotatedType().getJavaClass();
-
-		if (Reflections.isOfType(annotated, Authenticator.class)) {
-			event.veto();
-		}
-	}
+	Transaction currentTransaction();
 }

@@ -36,12 +36,12 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
+import java.util.Locale;
+
 import javax.inject.Named;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfig;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
 import br.gov.frameworkdemoiselle.security.AfterLogoutSuccessful;
 import br.gov.frameworkdemoiselle.security.Authenticator;
@@ -57,33 +57,29 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * 
  * @author SERPRO
  */
-@SessionScoped
 @Named("securityContext")
 public class SecurityContextImpl implements SecurityContext {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	@Name("demoiselle-core-bundle")
-	private ResourceBundle bundle;
+	private Authenticator getAuthenticator() {
+		return StrategySelector.getReference("frameworkdemoiselle.security.authenticator.class", Authenticator.class,
+				DefaultAuthenticator.class);
+	}
 
-	@Inject
-	private Authenticator authenticator;
-
-	@Inject
-	private Authorizer authorizer;
-
-	@Inject
-	private SecurityConfig config;
+	private Authorizer getAuthorizer() {
+		return StrategySelector.getReference("frameworkdemoiselle.security.authorizer.class", Authorizer.class,
+				DefaultAuthorizer.class);
+	}
 
 	/**
 	 * @see br.gov.frameworkdemoiselle.security.SecurityContext#hasPermission(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public boolean hasPermission(String resource, String operation) throws NotLoggedInException {
-		if (config.isEnabled()) {
+		if (getConfig().isEnabled()) {
 			checkLoggedIn();
-			return authorizer.hasPermission(resource, operation);
+			return getAuthorizer().hasPermission(resource, operation);
 
 		} else {
 			return true;
@@ -95,9 +91,9 @@ public class SecurityContextImpl implements SecurityContext {
 	 */
 	@Override
 	public boolean hasRole(String role) throws NotLoggedInException {
-		if (config.isEnabled()) {
+		if (getConfig().isEnabled()) {
 			checkLoggedIn();
-			return authorizer.hasRole(role);
+			return getAuthorizer().hasRole(role);
 
 		} else {
 			return true;
@@ -109,7 +105,7 @@ public class SecurityContextImpl implements SecurityContext {
 	 */
 	@Override
 	public boolean isLoggedIn() {
-		if (config.isEnabled()) {
+		if (getConfig().isEnabled()) {
 			return getUser() != null;
 		} else {
 			return true;
@@ -121,7 +117,7 @@ public class SecurityContextImpl implements SecurityContext {
 	 */
 	@Override
 	public void login() {
-		if (config.isEnabled() && authenticator.authenticate()) {
+		if (getConfig().isEnabled() && getAuthenticator().authenticate()) {
 			Beans.getBeanManager().fireEvent(new AfterLoginSuccessful() {
 
 				private static final long serialVersionUID = 1L;
@@ -135,9 +131,9 @@ public class SecurityContextImpl implements SecurityContext {
 	 */
 	@Override
 	public void logout() throws NotLoggedInException {
-		if (config.isEnabled()) {
+		if (getConfig().isEnabled()) {
 			checkLoggedIn();
-			authenticator.unAuthenticate();
+			getAuthenticator().unAuthenticate();
 
 			Beans.getBeanManager().fireEvent(new AfterLogoutSuccessful() {
 
@@ -151,9 +147,9 @@ public class SecurityContextImpl implements SecurityContext {
 	 */
 	@Override
 	public User getUser() {
-		User user = authenticator.getUser();
+		User user = getAuthenticator().getUser();
 
-		if (!config.isEnabled() && user == null) {
+		if (!getConfig().isEnabled() && user == null) {
 			user = new User() {
 
 				private static final long serialVersionUID = 1L;
@@ -177,8 +173,15 @@ public class SecurityContextImpl implements SecurityContext {
 		return user;
 	}
 
+	private SecurityConfig getConfig() {
+		return Beans.getReference(SecurityConfig.class);
+	}
+
 	private void checkLoggedIn() throws NotLoggedInException {
 		if (!isLoggedIn()) {
+			Locale locale = Beans.getReference(Locale.class);
+			ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-core-bundle", locale);
+
 			throw new NotLoggedInException(bundle.getString("user-not-authenticated"));
 		}
 	}
