@@ -56,7 +56,7 @@ public class AnnotatedMethodProcessor<DC> extends AbstractProcessor<DC> {
 		super(annotatedMethod, beanManager);
 	}
 
-	protected AnnotatedMethod<DC> getAnnotatedMethod() {
+	public AnnotatedMethod<DC> getAnnotatedMethod() {
 		return (AnnotatedMethod<DC>) getAnnotatedCallable();
 	}
 

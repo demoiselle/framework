@@ -55,6 +55,7 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Startup;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
+import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.internal.processor.StartupProcessor;
 
@@ -123,10 +124,15 @@ public class StartupBootstrap extends AbstractBootstrap {
 			StartupProcessor processor = iter.next();
 
 			try {
-				processor.process();
+				ClassLoader classLoader = ConfigurationLoader.getClassLoaderForClass(processor.getAnnotatedMethod()
+						.getDeclaringType().getJavaClass().getCanonicalName());
 
-				if (remove) {
-					iter.remove();
+				if (classLoader.equals(Thread.currentThread().getContextClassLoader())) {
+					processor.process();
+
+					if (remove) {
+						iter.remove();
+					}
 				}
 
 			} catch (Throwable cause) {
