@@ -64,6 +64,16 @@ public class ResourceBundleProducer implements Serializable {
 	 * @param String
 	 *            baseName
 	 */
+	public static ResourceBundle create(String baseName) {
+		return create(baseName, Beans.getReference(Locale.class));
+	}
+
+	/**
+	 * This method should be used by classes that can not inject ResourceBundle, to create the ResourceBundle.
+	 * 
+	 * @param String
+	 *            baseName
+	 */
 	public static ResourceBundle create(String baseName, Locale locale) {
 		ResourceBundle bundle = null;
 

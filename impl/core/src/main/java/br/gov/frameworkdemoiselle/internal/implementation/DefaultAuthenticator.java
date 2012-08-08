@@ -37,9 +37,11 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.security.User;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
  * Authenticator that actually does nothing but raise exceptions.
@@ -50,6 +52,8 @@ import br.gov.frameworkdemoiselle.security.User;
 public class DefaultAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
+
+	private static ResourceBundle bundle;
 
 	/**
 	 * @see br.gov.frameworkdemoiselle.security.Authenticator#authenticate()
@@ -76,8 +80,15 @@ public class DefaultAuthenticator implements Authenticator {
 	}
 
 	private DemoiselleException getException() {
-		return new DemoiselleException(CoreBundle.get().getString("authenticator-not-defined",
+		return new DemoiselleException(getBundle().getString("authenticator-not-defined",
 				SecurityContext.class.getSimpleName()));
 	}
 
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+		}
+
+		return bundle;
+	}
 }
