@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -38,23 +37,28 @@ public class EntityManagerFactoryProducer implements Serializable {
 	@Name("demoiselle-jpa-bundle")
 	private ResourceBundle bundle;
 
-	private final Map<String, EntityManagerFactory> cache = Collections
-			.synchronizedMap(new HashMap<String, EntityManagerFactory>());
+	// private final Map<String, EntityManagerFactory> cache = Collections
+	// .synchronizedMap(new HashMap<String, EntityManagerFactory>());
+
+	private final Map<String [], EntityManagerFactory> cache = Collections
+			.synchronizedMap(new HashMap<String [], EntityManagerFactory>());
 
 	public EntityManagerFactory create(String persistenceUnit) {
 		EntityManagerFactory factory;
 
-		if (cache.containsKey(persistenceUnit)) {
-			factory = cache.get(persistenceUnit);
+		String[] key = new String [] { persistenceUnit, Thread.currentThread().getContextClassLoader().toString()};
+		
+		if (cache.containsKey(key)) {
+			factory = cache.get(key);
 		} else {
 			factory = Persistence.createEntityManagerFactory(persistenceUnit);
-			cache.put(persistenceUnit, factory);
+			cache.put(key, factory);
 		}
 
 		return factory;
 	}
 
-	@PostConstruct
+	// @PostConstruct
 	public void init() {
 		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 
@@ -94,6 +98,16 @@ public class EntityManagerFactoryProducer implements Serializable {
 	}
 
 	public Map<String, EntityManagerFactory> getCache() {
-		return cache;
+		init();
+		Map<String, EntityManagerFactory> result = new  HashMap<String, EntityManagerFactory>();
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		
+		for (String[] key : cache.keySet()) {
+			if(key[1].equals(classLoader.toString())) {
+				result.put(key[0], cache.get(key));
+			}
+		}		
+		
+		return result;
 	}
 }
