@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<chapter id="properties">
+
+	<title>Demoiselle Properties</title>
+	
+	<para>
+		Em um projeto com o <emphasis>Demoiselle Framework</emphasis>, algumas propriedades e configurações 
+		do <emphasis>Framework</emphasis> podem ser ajustadas no arquivo <literal>demoiselle.properties</literal>. 
+		Além disso, a partir da versão 2.3.0 também é nesse arquivo que devem ser definidas as estratégias de 
+		<emphasis>Transação</emphasis>, <emphasis>Autorização</emphasis> e <emphasis>Autenticação</emphasis>.
+	</para>
+	<para>
+		A seguir listamos as propriedades e configurações do <emphasis>Demoiselle Framework</emphasis> que o usuário pode modificar,
+		acompanhados de alguns exemplos ilustrativos. Também mostraremos como escolher as estratégias para
+		<emphasis>Transação</emphasis>, <emphasis>Autorização</emphasis> e <emphasis>Autenticação</emphasis>, oferecidas pelo
+		<emphasis>Demoiselle</emphasis>.
+	</para>	
+		
+	<section>
+		<title>Configurações do Core</title>
+		<para>
+			<itemizedlist>
+				<listitem>
+					<para>
+						<literal>frameworkdemoiselle.pagination.page.size</literal> - Configura o número de linhas que será 
+						exibido na grade de uma página. Por padrão, esse número é 10.
+					</para>
+					<para>
+						Exemplo de configuração: <literal>frameworkdemoiselle.pagination.page.size = 15</literal>, ajusta em 15
+						a quantidade de linhas em uma grade
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						<literal>frameworkdemoiselle.pagination.max.page.links</literal> - Configura a quantidade de links que 
+						será exibido em uma página. Por padrão, esse valor é 5.    
+					</para>
+					<para>
+						Exemplo de configuração: <literal>frameworkdemoiselle.pagination.max.page.links = 20</literal>, configura em 20
+						o número de links que podem ser exibidos em uma página.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						<literal>frameworkdemoiselle.security.enabled</literal> - Configura a habilitação das funcionalidades do 
+						<emphasis>Demoiselle</emphasis> relacionadas a segurança (como autenticação de usuário e verificação de
+						permissão de acesso à recursos). Por padrão, essas funcionalidades ficam habilitadas.   						
+					</para>
+					<para>
+						Exemplo de configuração: <literal>frameworkdemoiselle.security.enabled = false</literal>, desabilita as 
+						funcionalidades de segurança do <emphasis>Demoiselle</emphasis>. 
+					</para>
+				</listitem>
+			</itemizedlist>
+		</para>
+	</section>	
+	
+	<section>
+		<title>Configurações da extensão JSF</title>
+		<para>
+			<itemizedlist>
+				<listitem>
+					<para>
+						<literal>frameworkdemoiselle.security.login.page</literal> - Configura a página de login. Por padrão, a página 
+						configurada é <emphasis>“/login”</emphasis>.
+					</para>
+					<para>
+						Exemplo de configuração: <literal>frameworkdemoiselle.security.login.page = “/inicial”</literal>, configura a 
+						página <emphasis>“/inicial”</emphasis> como a página de login.
+					</para>
+				</listitem>
+				
+				<listitem>
+					<para>
+						<literal>frameworkdemoiselle.security.redirect.after.login</literal> - Configura a página que será acessada após 
+						o login. Por padrão, a página configurada é <emphasis>“/index”</emphasis>.
+					</para>
+					<para>
+						Exemplo de configuração: <literal>frameworkdemoiselle.security.redirect.after.login = "/menu"</literal>, configura 
+						a página <emphasis>“/menu”</emphasis> para ser acessada no redirecionamento após o login do usuário.						 
+					</para>
+				</listitem>
+				
+				<listitem>
+					<para>
+						<literal>frameworkdemoiselle.security.redirect.after.logout</literal> - Configura a página para a qual a aplicação 
+						será direcionada após o logout do usuário. Por padrão, a página configurada é <emphasis>“/login”</emphasis>.
+					</para>
+					<para>
+						Exemplo de configuração: <literal>frameworkdemoiselle.security.redirect.after.logout = "/index"</literal>, configura
+						a página "/index" para ser acessada no redirecionamento após o logout do usuário.
+					</para>
+				</listitem>
+				
+				<listitem>
+					<para>
+						<literal>frameworkdemoiselle.security.redirect.enebled</literal> - Configura a habilitação do redirecionamento da página
+						após <emphasis>login</emphasis> e <emphasis>logout</emphasis>. Por padrão, o valor dessa propriedade é <emphasis>true</emphasis>.
+					</para>
+					<para>
+						Exemplo de configuração: <literal>frameworkdemoiselle.security.redirect.enebled = false</literal>, desabilita os 
+						redirecionamentos de páginas após <emphasis>login</emphasis> e <emphasis>logout</emphasis>.
+					</para>
+				</listitem>
+				
+				<listitem>
+					<para>
+						<literal>frameworkdemoiselle.handle.application.exception</literal> - Define se a extensão vai capturar ou não alguma exceção 
+						lançada pela aplicação. Por padrão, essa configuração vem marcada como “true”, que diz para a extensão capturar a exceção.
+					</para>
+					<para>
+						Exemplo de configuração: <emphasis>frameworkdemoiselle.handle.application.exception = false</emphasis>, desabilita a captura
+						de exceções lançadas pela aplicação.  
+					</para>
+				</listitem>
+				
+				<listitem>
+					<para>
+						<literal>frameworkdemoiselle.handle.aplication.exception.page</literal> - Configura a página para a qual a aplicação será 
+						direcionada em caso de exceção. Por padrão, a página configurada é <emphasis>“/application_error”</emphasis>.
+					</para>
+					<para>
+						Exemplo de configuração: <emphasis>framework.handle.aplication.exception.page = “/exception_x_page”</emphasis>, redireciona a 
+						aplicação para a página <emphasis>/exception_x_page</emphasis> caso ocorra alguma exceção.
+					</para>
+				</listitem>
+			</itemizedlist>
+		</para>
+	</section>
+	
+	<section>
+		<title>Configurações da Extensão JPA</title>
+		<para>
+			<itemizedlist>
+				<listitem>
+					<para>
+						<literal>frameworkdemoiselle.persistence.unit.name</literal> - Quando é definida mais de uma unidade de persitencia 
+						no arquivo <literal>persistence.xml</literal>, muitas vezes é conveniente escolher uma unidade padrão, ao invés de 
+						definir as unidades	individualmente em cada <emphasis>Entity Manager</emphasis>. Esse parametro é utilizado para 
+						indicar qual é a unidade de persistência que deve ser utilizada quando no <emphasis>Entity Manager</emphasis> não 
+						houver essa definição.
+					</para>
+					<para>
+						Exemplo de configuração: <literal>frameworkdemoiselle.persistence.unit.name = database1-ds</literal>, configura a 
+						unidade de persistencia <literal>database1-ds</literal> como padrão da aplicação.   
+					</para>
+				</listitem>
+			</itemizedlist>
+		</para>
+	</section>
+	
+	<section>
+		<title>Escolhendo Estratégias</title>
+		<para>
+			Para escolher as estratégias de <emphasis>Transação</emphasis>, <emphasis>Autorização</emphasis> e <emphasis>Autenticação</emphasis>
+			devem ser configuradas as propriedades: <literal>frameworkdemoiselle.transaction.class</literal>, 
+			<literal>frameworkdemoiselle.security.authorizer.class</literal> e <literal>frameworkdemoiselle.security.authenticator.class</literal>
+			, respectivamente.
+		</para>
+		<para>
+			Para utilizar as estratégias fornecidas pelo próprio <emphasis>Framework Demoiselle</emphasis>, você deve configurar essas 
+			propriedades da seguinte forma:
+			<itemizedlist>
+				<listitem>
+					<para>
+						<literal>frameworkdemoiselle.transaction.class = br.gov.frameworkdemoiselle.transaction.JPATransaction</literal>, 
+						para transações <emphasis>JPA</emphasis>, e <literal>frameworkdemoiselle.transaction.class = 
+						br.gov.frameworkdemoiselle.transaction.JTATransaction</literal>, para transações <emphasis>JTA</emphasis>;
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						<literal>frameworkdemoiselle.security.authorizer.class = br.gov.serpro.inscricao.security.Autorizador</literal>;
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						<literal>frameworkdemoiselle.security.authenticator.class = br.gov.serpro.inscricao.security.Autenticador</literal>.
+					</para>
+				</listitem>
+			</itemizedlist>
+		As instruções para você construir e utilizar sua própria estratégia estãodescritas nos capítulos <link linkend="transacao">Transação</link> 
+		e <link linkend="security">Segurança</link>.
+		</para>
+	</section>
+</chapter>
