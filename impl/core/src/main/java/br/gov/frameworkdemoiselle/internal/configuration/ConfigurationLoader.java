@@ -108,7 +108,6 @@ public class ConfigurationLoader {
 			org.apache.commons.configuration.Configuration config = getConfiguration(resource, type);
 
 			String key = getKey(field, clazz, config);
-			//Object value = getValue(key, field.getType(), config);
 			Object value = getValue(key, field, config);
 
 			validate(field, key, value, resource);
@@ -235,31 +234,6 @@ public class ConfigurationLoader {
 		return config;
 	}
 
-	/**
-	 * Returns the value associated with the given configuration class and field type.
-	 * 
-	 * @param name
-	 * @param config
-	 * @param fieldClass
-	 * @return the value
-	 */
-	/*@SuppressWarnings("unchecked")
-	private <T> T getValue(String key, Class<T> fieldClass, org.apache.commons.configuration.Configuration config) {
-		Object value;
-
-		if (fieldClass.isArray() && fieldClass.getComponentType().equals(String.class)) {
-			value = config.getStringArray(key);
-
-		} else if (fieldClass.equals(Properties.class)) {
-			value = getProperty(key, config);
-
-		} else {
-			value = getBasic(key, fieldClass, config);
-		}
-
-		return (T) value;
-	}*/
-	
 	@SuppressWarnings("unchecked")
 	private <T> T getValue(String key, Field field, org.apache.commons.configuration.Configuration config) {
 		Object value;
@@ -277,29 +251,6 @@ public class ConfigurationLoader {
 
 		return (T) value;
 	}
-	
-	/*private <T> Object getBasic(String key, Class<T> fieldClass, org.apache.commons.configuration.Configuration config) {
-		Object value = null;
-
-		try {
-			Method method;
-			String methodName = "get" + Strings.firstToUpper(fieldClass.getSimpleName());
-
-			if (!fieldClass.isPrimitive()) {
-				method = config.getClass().getMethod(methodName, String.class, fieldClass);
-				value = method.invoke(config, key, null);
-				
-			} else if (config.containsKey(key)) {
-				method = config.getClass().getMethod(methodName, String.class);
-				value = method.invoke(config, key);
-			}
-
-		} catch (Throwable cause) {
-			throw new ConfigurationException(bundle.getString("error-converting-to-type", fieldClass.getName()), cause);
-		}
-
-		return value;
-	}*/
 	
 	private <T> Object getArray(String key, Field field, org.apache.commons.configuration.Configuration config) {
 		Object value = null;
