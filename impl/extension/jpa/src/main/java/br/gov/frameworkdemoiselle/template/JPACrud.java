@@ -39,6 +39,8 @@ package br.gov.frameworkdemoiselle.template;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -48,6 +50,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Enumerated;
 import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -159,20 +162,70 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<T> findAll() {
-		final String jpql = "select this from " + getBeanClass().getSimpleName() + " this";
-		final Query query = getEntityManager().createQuery(jpql);
+		return findByJPQL("select this from " + getBeanClass().getSimpleName() + " this");
+	}
 
-		final Pagination pagination = getPagination();
+	/**
+	 * Search JPQL integrated into the context of paging
+	 * @param jpql - query in syntax JPQL
+	 * @return a list of entities
+	 */
+	protected List<T> findByJPQL(String jpql) {
+		pagination = getPagination();
+		TypedQuery<T> listQuery = getEntityManager().createQuery(jpql, getBeanClass());
 		if (pagination != null) {
-			pagination.setTotalResults(this.countAll().intValue());
-			query.setFirstResult(pagination.getFirstResult());
-			query.setMaxResults(pagination.getPageSize());
+			String countQueryString = createCountQueryString(jpql);
+			Query query = getEntityManager().createQuery(countQueryString);
+			Number cResults = (Number) query.getSingleResult();			
+			pagination.setTotalResults(cResults.intValue());
+			listQuery.setFirstResult(pagination.getFirstResult());
+			listQuery.setMaxResults(pagination.getPageSize());
 		}
+		return listQuery.getResultList();
+	}
 
-		List<T> lista = query.getResultList();
-		return lista;
+	/**
+	 * Search CriteriaQuery integrated into the context of paging
+	 * @param criteriaQuery - structure CriteriaQuery
+	 * @return a list of entities
+	 */
+	public List<T> findByCriteriaQuery(CriteriaQuery<T> criteriaQuery) {
+		pagination = getPagination();		
+		TypedQuery<T> listQuery = getEntityManager().createQuery(criteriaQuery);
+		if (pagination != null) {		
+			CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
+			CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+			countQuery.select(builder.count(countQuery.from(getBeanClass())));
+			countQuery.where(criteriaQuery.getRestriction());
+			getEntityManager().createQuery(countQuery);
+			pagination.setTotalResults((int) (getEntityManager().createQuery(countQuery).getSingleResult() + 0));
+			listQuery.setFirstResult(pagination.getFirstResult());
+			listQuery.setMaxResults(pagination.getPageSize());
+		}
+		return listQuery.getResultList();
+	}
+	
+	/**
+	 * Converts JPA query to JPA count query
+	 * @param query
+	 * @return
+	 */
+	private String createCountQueryString(String query) {
+		query = query.toUpperCase();
+	    Matcher matcher = Pattern.compile("SELECT(.+)FROM").matcher(query);
+	    if (matcher.find()){
+	    	String group = matcher.group(1).trim();
+	    	query = query.replaceFirst(group, "COUNT(" + group + ")");
+	    	matcher = Pattern.compile("ORDER(.+)").matcher(query);
+	    	if (matcher.find()){
+	    		group = matcher.group(1);
+	    		query = query.replaceFirst("ORDER"+group, "");
+	    	}
+	    	return query;
+	    }else{
+	    	throw new DemoiselleException(bundle.get().getString("malformed-jpql"));
+	    }	    
 	}
 
 	/**
