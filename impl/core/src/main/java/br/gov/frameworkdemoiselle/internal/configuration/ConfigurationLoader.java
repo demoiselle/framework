@@ -38,6 +38,8 @@ package br.gov.frameworkdemoiselle.internal.configuration;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
@@ -46,6 +48,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -105,7 +108,8 @@ public class ConfigurationLoader {
 			org.apache.commons.configuration.Configuration config = getConfiguration(resource, type);
 
 			String key = getKey(field, clazz, config);
-			Object value = getValue(key, field.getType(), config);
+			//Object value = getValue(key, field.getType(), config);
+			Object value = getValue(key, field, config);
 
 			validate(field, key, value, resource);
 			setValue(field, key, object, value);
@@ -211,11 +215,11 @@ public class ConfigurationLoader {
 					break;
 
 				case PROPERTIES:
-					config = new PropertiesConfiguration(resource + ".properties");
+					config = new DataConfiguration(new PropertiesConfiguration(resource + ".properties"));
 					break;
 
 				case XML:
-					config = new XMLConfiguration(resource + ".xml");
+					config = new DataConfiguration(new XMLConfiguration(resource + ".xml"));
 					break;
 
 				default:
@@ -239,7 +243,7 @@ public class ConfigurationLoader {
 	 * @param fieldClass
 	 * @return the value
 	 */
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	private <T> T getValue(String key, Class<T> fieldClass, org.apache.commons.configuration.Configuration config) {
 		Object value;
 
@@ -254,9 +258,27 @@ public class ConfigurationLoader {
 		}
 
 		return (T) value;
-	}
+	}*/
+	
+	@SuppressWarnings("unchecked")
+	private <T> T getValue(String key, Field field, org.apache.commons.configuration.Configuration config) {
+		Object value;
 
-	private <T> Object getBasic(String key, Class<T> fieldClass, org.apache.commons.configuration.Configuration config) {
+		Class<?> fieldClass = (Class<?>) field.getType();
+		
+		if (fieldClass.isArray()) {
+			value = getArray(key, field, config);
+		} else if (fieldClass.equals(Properties.class)) {
+			value = getProperty(key, config);
+
+		} else {
+			value = getBasic(key, field, config);
+		}
+
+		return (T) value;
+	}
+	
+	/*private <T> Object getBasic(String key, Class<T> fieldClass, org.apache.commons.configuration.Configuration config) {
 		Object value = null;
 
 		try {
@@ -266,6 +288,62 @@ public class ConfigurationLoader {
 			if (!fieldClass.isPrimitive()) {
 				method = config.getClass().getMethod(methodName, String.class, fieldClass);
 				value = method.invoke(config, key, null);
+				
+			} else if (config.containsKey(key)) {
+				method = config.getClass().getMethod(methodName, String.class);
+				value = method.invoke(config, key);
+			}
+
+		} catch (Throwable cause) {
+			throw new ConfigurationException(bundle.getString("error-converting-to-type", fieldClass.getName()), cause);
+		}
+
+		return value;
+	}*/
+	
+	private <T> Object getArray(String key, Field field, org.apache.commons.configuration.Configuration config) {
+		Object value = null;
+
+		Class<?> fieldClass = (Class<?>) field.getType();
+		
+		try {
+			Method method;
+			
+			String methodName = "get";
+			
+			methodName += Strings.firstToUpper(fieldClass.getSimpleName());
+			methodName = Strings.removeChars(methodName, '[', ']');
+			
+			methodName += "Array";
+
+			method = config.getClass().getMethod(methodName, String.class);
+			value = method.invoke(config, key);
+
+		} catch (Throwable cause) {
+			throw new ConfigurationException(bundle.getString("error-converting-to-type", fieldClass.getName()), cause);
+		}
+
+		return value;
+	}
+
+	private <T> Object getBasic(String key, Field field, org.apache.commons.configuration.Configuration config) {
+		Object value = null;
+
+		Class<?> fieldClass = (Class<?>) field.getType();
+		
+		try {
+			Method method;
+			
+			String methodName = "get";
+			
+			methodName += discoveryGenericType(field);
+			
+			methodName += Strings.firstToUpper(fieldClass.getSimpleName());
+
+			if (!fieldClass.isPrimitive()) {
+				method = config.getClass().getMethod(methodName, String.class, fieldClass);
+				value = method.invoke(config, key, null);
+				
 			} else if (config.containsKey(key)) {
 				method = config.getClass().getMethod(methodName, String.class);
 				value = method.invoke(config, key);
@@ -278,6 +356,36 @@ public class ConfigurationLoader {
 		return value;
 	}
 
+	/**
+	 * Discovery the Generic's type.
+	 * 
+	 *  for example: the generic's type of List<Integer> list is an Integer type 
+	 * 
+	 * @param field
+	 * @return
+	 */
+	private String discoveryGenericType(Field field) {
+		
+		Type genericFieldType = field.getGenericType();
+		
+		if(genericFieldType instanceof ParameterizedType){
+		    ParameterizedType type = (ParameterizedType) genericFieldType;
+		    Type[] fieldArgumentTypes = type.getActualTypeArguments();
+		    for(Type fieldArgumentType : fieldArgumentTypes){
+		        @SuppressWarnings("rawtypes")
+				Class fieldArgumentClass = (Class) fieldArgumentType;
+		        
+		        if("String".equals(fieldArgumentClass.getSimpleName())) {
+		        	return "";
+		        }
+		        
+		        return fieldArgumentClass.getSimpleName();
+		    }
+		}
+		
+		return "";
+	}
+	
 	private Object getProperty(String key, org.apache.commons.configuration.Configuration config) {
 		Object value = null;
 
