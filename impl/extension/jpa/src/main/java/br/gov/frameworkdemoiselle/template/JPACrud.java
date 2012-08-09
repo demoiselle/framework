@@ -94,7 +94,6 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	private Class<T> beanClass;
 
 	protected Class<T> getBeanClass() {
-
 		if (this.beanClass == null) {
 			this.beanClass = Reflections.getGenericTypeArgument(this.getClass(), 0);
 		}
@@ -115,6 +114,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 			PaginationContext context = paginationContext.get();
 			pagination = context.getPagination(getBeanClass());
 		}
+
 		return pagination;
 	}
 
@@ -130,6 +130,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		if (cause instanceof TransactionRequiredException) {
 			String message = bundle.get().getString("no-transaction-active", "frameworkdemoiselle.transaction.class",
 					Configuration.DEFAULT_RESOURCE);
+
 			throw new DemoiselleException(message, cause);
 
 		} else {
@@ -168,75 +169,74 @@ public class JPACrud<T, I> implements Crud<T, I> {
 
 	/**
 	 * Search JPQL integrated into the context of paging
-	 * @param jpql - query in syntax JPQL
+	 * 
+	 * @param jpql
+	 *            - query in syntax JPQL
 	 * @return a list of entities
 	 */
 	protected List<T> findByJPQL(String jpql) {
-		pagination = getPagination();
 		TypedQuery<T> listQuery = getEntityManager().createQuery(jpql, getBeanClass());
-		if (pagination != null) {
-			String countQueryString = createCountQueryString(jpql);
-			Query query = getEntityManager().createQuery(countQueryString);
-			Number cResults = (Number) query.getSingleResult();			
-			pagination.setTotalResults(cResults.intValue());
-			listQuery.setFirstResult(pagination.getFirstResult());
-			listQuery.setMaxResults(pagination.getPageSize());
+
+		if (getPagination() != null) {
+			String countQuery = createCountQuery(jpql);
+			Query query = getEntityManager().createQuery(countQuery);
+			Number cResults = (Number) query.getSingleResult();
+			getPagination().setTotalResults(cResults.intValue());
+			listQuery.setFirstResult(getPagination().getFirstResult());
+			listQuery.setMaxResults(getPagination().getPageSize());
 		}
+
 		return listQuery.getResultList();
 	}
 
 	/**
 	 * Search CriteriaQuery integrated into the context of paging
-	 * @param criteriaQuery - structure CriteriaQuery
+	 * 
+	 * @param criteriaQuery
+	 *            - structure CriteriaQuery
 	 * @return a list of entities
 	 */
 	public List<T> findByCriteriaQuery(CriteriaQuery<T> criteriaQuery) {
-		pagination = getPagination();		
 		TypedQuery<T> listQuery = getEntityManager().createQuery(criteriaQuery);
-		if (pagination != null) {		
+
+		if (getPagination() != null) {
 			CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
 			CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
 			countQuery.select(builder.count(countQuery.from(getBeanClass())));
 			countQuery.where(criteriaQuery.getRestriction());
 			getEntityManager().createQuery(countQuery);
-			pagination.setTotalResults((int) (getEntityManager().createQuery(countQuery).getSingleResult() + 0));
-			listQuery.setFirstResult(pagination.getFirstResult());
-			listQuery.setMaxResults(pagination.getPageSize());
+			getPagination().setTotalResults((int) (getEntityManager().createQuery(countQuery).getSingleResult() + 0));
+			listQuery.setFirstResult(getPagination().getFirstResult());
+			listQuery.setMaxResults(getPagination().getPageSize());
 		}
+
 		return listQuery.getResultList();
-	}
-	
-	/**
-	 * Converts JPA query to JPA count query
-	 * @param query
-	 * @return
-	 */
-	private String createCountQueryString(String query) {
-		query = query.toUpperCase();
-	    Matcher matcher = Pattern.compile("SELECT(.+)FROM").matcher(query);
-	    if (matcher.find()){
-	    	String group = matcher.group(1).trim();
-	    	query = query.replaceFirst(group, "COUNT(" + group + ")");
-	    	matcher = Pattern.compile("ORDER(.+)").matcher(query);
-	    	if (matcher.find()){
-	    		group = matcher.group(1);
-	    		query = query.replaceFirst("ORDER"+group, "");
-	    	}
-	    	return query;
-	    }else{
-	    	throw new DemoiselleException(bundle.get().getString("malformed-jpql"));
-	    }	    
 	}
 
 	/**
-	 * Retrieves the number of persisted objects for the current class type.
+	 * Converts a query into a count query
 	 * 
-	 * @return the row count
+	 * @param query
+	 * @return
 	 */
-	private Long countAll() {
-		final Query query = getEntityManager().createQuery(
-				"select count(this) from " + beanClass.getSimpleName() + " this");
-		return (Long) query.getSingleResult();
+	private String createCountQuery(String query) {
+		Matcher matcher = Pattern.compile("[Ss][Ee][Ll][Ee][Cc][Tt](.+)[Ff][Rr][Oo][Mm]").matcher(query);
+
+		if (matcher.find()) {
+			String group = matcher.group(1).trim();
+			query = query.replaceFirst(group, "COUNT(" + group + ")");
+			matcher = Pattern.compile("[Oo][Rr][Dd][Ee][Rr](.+)").matcher(query);
+
+			if (matcher.find()) {
+				group = matcher.group(0);
+				query = query.replaceFirst(group, "");
+			}
+
+			return query;
+
+		} else {
+			throw new DemoiselleException(bundle.get().getString("malformed-jpql"));
+		}
 	}
 
 	/**
@@ -267,7 +267,6 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	 * @return an instance of {@code CriteriaQuery}
 	 */
 	private CriteriaQuery<T> createCriteriaByExample(final T example) {
-
 		final CriteriaBuilder builder = getCriteriaBuilder();
 		final CriteriaQuery<T> query = builder.createQuery(getBeanClass());
 		final Root<T> entity = query.from(getBeanClass());
@@ -276,7 +275,6 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		final Field[] fields = example.getClass().getDeclaredFields();
 
 		for (Field field : fields) {
-
 			if (!field.isAnnotationPresent(Column.class) && !field.isAnnotationPresent(Basic.class)
 					&& !field.isAnnotationPresent(Enumerated.class)) {
 				continue;
@@ -287,10 +285,13 @@ public class JPACrud<T, I> implements Crud<T, I> {
 			try {
 				field.setAccessible(true);
 				value = field.get(example);
+
 			} catch (IllegalArgumentException e) {
 				continue;
+
 			} catch (IllegalAccessException e) {
 				continue;
+
 			}
 
 			if (value == null) {
@@ -300,6 +301,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 			final Predicate pred = builder.equal(entity.get(field.getName()), value);
 			predicates.add(pred);
 		}
+
 		return query.where(predicates.toArray(new Predicate[0])).select(entity);
 	}
 
