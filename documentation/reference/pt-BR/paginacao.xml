@@ -3,178 +3,287 @@
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
 <chapter id="paginacao">
 
-   <title>Paginação</title>
+   	<title>Paginação</title>
   
-   <para>
-      Neste capítulo serão considerados os seguintes assuntos:
-      <itemizedlist>
-         <listitem>motivação para o uso de um mecanismo padronizado para <emphasis>paginação</emphasis>;</listitem>
-         <listitem>funcionamento e uso da estrutura <literal>Pagination</literal> e do contexto de paginação (<literal>PaginationContext</literal>).</listitem>
-      </itemizedlist>
-   </para>
+   	<para>
+      	Neste capítulo serão considerados os seguintes assuntos:
+      	<itemizedlist>
+         	<listitem><para>Motivação para o uso de um mecanismo padronizado para <emphasis>paginação</emphasis>;</para></listitem>
+         	<listitem><para>Funcionamento e uso da estrutura <literal>Pagination</literal> e do contexto de paginação 
+         	(<literal>PaginationContext</literal>).</para></listitem>
+      	</itemizedlist>
+   	</para>
 
-   <section>
-      <title>Introdução ao mecanismo</title>
-      <para>
-         A apresentação de conjuntos de registros de médio a grande porte em formato de tabelas em aplicações Web geralmente requer um
-         <emphasis>mecanismo de paginação</emphasis>, o qual permite ao cliente ver apenas um pedaço do resultado final, podendo este
-         navegar para frente e para trás através dos registros. A menos que o conjunto de registros seja garantidamente pequeno, qualquer
-         aplicação do tipo Web com funcionalidades de busca precisa ser dotada de paginação.
-      </para>
-      <para>
-         O mecanismo de paginação para as aplicações fornecido pelo <emphasis>Demoiselle Framework</emphasis> consiste em um algoritmo de
-         direcionado ao banco de dados (i.e., Database-Driven Pagination). Essa abordagem, apesar de requerer instruções SQL específicas
-         para obter porções determinadas de registros, é a mais utilizada por ser mais eficiente e produzir menos redundância dos dados.
-      </para>
-      <para>
-         É fornecido em tempo de execução um <emphasis>contexto de paginação</emphasis>, o qual tem escopo de sessão e armazena a informação
-         de paginação de cada entidade (i.e., bean) que necessite de tal mecanismo. Esse contexto é compartilhado entre as diversas camadas
-         da aplicação, especificamente entre as camadas de visão e persistência. Dessa maneira, a paginação dos dados é transparente para a
-         camada intermediária (i.e., negócio) e não interfere na modelagem das classes de um projeto.
-      </para>
-   </section>
+   	<section>
+      	<title>Introdução ao mecanismo</title>
+      	<para>
+         	A apresentação de conjuntos de registros de médio a grande porte em formato de tabelas em aplicações Web geralmente requer um
+         	<emphasis>mecanismo de paginação</emphasis>, o qual permite ao cliente ver apenas um pedaço do resultado final, podendo este
+         	navegar para frente e para trás através dos registros. A menos que o conjunto de registros seja garantidamente pequeno, qualquer
+         	aplicação do tipo Web com funcionalidades de busca precisa ser dotada de paginação.
+      	</para>
+      	<para>
+         	O mecanismo de paginação para as aplicações fornecido pelo <emphasis>Demoiselle Framework</emphasis> consiste em um algoritmo
+         	direcionado ao banco de dados (i.e., Database-Driven Pagination). Essa abordagem, apesar de requerer instruções SQL específicas
+         	para obter porções determinadas de registros, é a mais utilizada por ser mais eficiente e produzir menos redundância de dados, 
+         	diminuindo assim tráfego de rede, consumo de memória e reduzindo o tempo de resposta.
+      	</para>
+      	<para>
+         	É fornecido em tempo de execução um <emphasis>contexto de paginação</emphasis>, o qual tem escopo de sessão e armazena a informação
+         	de paginação de cada entidade (i.e., bean) que necessite de tal mecanismo. Esse contexto é compartilhado entre as diversas camadas
+         	da aplicação, especificamente entre as camadas de visão e persistência. Dessa maneira, a paginação dos dados é transparente para a
+         	camada intermediária (i.e., negócio) e não interfere na modelagem das classes de um projeto.
+      	</para>
+   	</section>
 
-   <section>
-      <title>Códigos de suporte</title>
-     <!-- 
-      <para>
-         // TODO: explicar Pagination e PaginationContext
-      </para>
-      --> 
-      <para>
-         Veremos na seção seguinte como implementar a paginação em uma aplicação Java.
- 
-  - Farão parte do código de suporte para paginação:
-      * a classe Pagination: usada para manipular a paginação dos dados resultantes, contendo os campos currentPage (página atual, selecionada na camada de visão), pageSize (tamanho da página, a quantidade de registros que ela comportará) e totalResults (a quantidade de resultados existentes na base de dados);
-      * a classe PaginationContext: contexto usado para armazenar e fornecer estruturas do tipo Pagination;
-      * a classe PaginationConfig: armazenador de configurações referentes à paginação.
-         
-- Códigos internos de suporte no Core:
+   	<section>
+      	<title>Códigos de suporte</title>
+	     <!-- 
+	      <para>
+	         // TODO: explicar Pagination e PaginationContext
+	      </para>
+	      --> 
+      	<para>
+      		O <emphasis>mecanismo de paginação</emphasis> do <emphasis>Demoiselle Framework</emphasis> permite que os parâmetros para a consulta 
+      		no banco sejam configurados de forma bastante prática. Por outro lado, a consulta paginada ao banco já é feita pela extensão 
+      		<literal>demoiselle-jpa</literal>. Dessa forma, basta ajustar os parametros da paginação, e pedir as consultas normalmente. 
+      		O resultado da consulta é então passado para algum componente de iteração de dados com suporte ao mecanismo conhecido como <emphasis>Lazy 
+      		Load</emphasis> (ou <emphasis>Lazy Loading</emphasis>).
+      	</para>
+      	<para> 
+      		Farão parte do código de suporte para paginação:
+      		<itemizedlist>
+      			<listitem>
+      				<para>
+      					A classe <literal>Pagination</literal>: usada para manipular a paginação dos dados resultantes, contendo os campos <literal>currentPage</literal>
+      					(página atual, selecionada na camada de visão), <literal>pageSize</literal> (tamanho da página, a quantidade de registros que ela comportará) 
+      					e <literal>totalResults</literal> (a quantidade de resultados existentes na base de dados);
+      				</para>
+      			</listitem>  
+      			<listitem> 
+      				<para>		
+      					A classe <literal>PaginationContext</literal>: contexto usado para armazenar e fornecer estruturas do tipo <literal>Pagination</literal>;
+      				</para>
+      			</listitem>
+      			<listitem>
+      				<para>
+      					A classe <literal>PaginationConfig</literal>: armazenador de configurações referentes à paginação.
+      				</para>
+      			</listitem>
+      		</itemizedlist>
+      	</para>
+  	  
+  	  	<para>Códigos internos de suporte no Core:</para>      
 
-      <programlisting role="JAVA"><![CDATA[
+      	<programlisting role="JAVA"><![CDATA[
+			public class Pagination {
+			
+			    private int currentPage;
+			    private int pageSize;
+			
+			    private Long totalResults;
+			    private Integer totalPages;
+			
+			    // ...
+			}
+			
+			@SessionScoped
+			public class PaginationContext {
+			
+			    private final Map<Class<?>, Pagination> map;
+			
+			    public Pagination getPagination(Class<?> clazz) { ... }
+			
+			    public Pagination get -->Pagination(Class<?> clazz, boolean create) { ... }
+			
+			}
+			
+			@Configuration
+			public class PaginationConfig {
+			
+			    @Key("default_page_size")
+			    private int defaultPageSize = 10;
+			
+			    @Key("max_page_links")
+			    private int maxPageLinks = 5;
+			
+			}
+	  	]]></programlisting>
 
-public class Pagination {
+      	<para>Códigos internos de suporte em JPA:</para>
 
-    private int currentPage;
-    private int pageSize;
+		  <programlisting role="JAVA"><![CDATA[
+			public class JPACrud<T, I> implements Crud<T, I> {
+			
+			    @Inject
+			    private PaginationContext paginationContext;
+			
+			    // ...
+			
+			    public List<T> findAll() {
+			
+			    	final String jpql = "select this from " + getBeanClass().getSimpleName() + " this";
+			    	final Query query = getEntityManager().createQuery(jpql);
+			        
+			    	final Pagination pagination = paginationContext.getPagination(getBeanClass());
+			        if (pagination != null) {
+			            if (pagination.getTotalPages() == null) {
+			                pagination.setTotalResults(this.countAll());
+			            }
+			            query.setFirstResult(pagination.getFirstResult());
+			            query.setMaxResults(pagination.getPageSize());
+			        }
+			
+			        // ...
+			    }
+			
+			}
+	  	]]></programlisting>	
 
-    private Long totalResults;
-    private Integer totalPages;
+      	<para>Códigos internos de suporte em JSF:</para>
+    
+		<programlisting role="JAVA"><![CDATA[
+			public abstract class AbstractListPageBean<T, I> extends AbstractPage 
+					implements ListPageBean<T, I> {
+			
+			    @Inject
+			    private PaginationContext paginationContext;
+			
+			    @Inject
+			    private PaginationConfig paginationConfig;
+			
+			    // ...
+			
+			    public Pagination getPagination() {
+			        return paginationContext.getPagination(getBeanClass(), true);
+			    }
+			
+			    public int getPageSize() {
+			        return paginationConfig.getDefaultPageSize();
+			    }
+			
+			    public int getMaxPageLinks() {
+			        return paginationConfig.getMaxPageLinks();
+			    }
+			
+			}         
+	  	]]></programlisting>
+   	</section>
+   
+   	<section>
+   		<title>Implementação na aplicação</title>
+      	<para>
+         	Veremos nessa seção como implementar a paginação em uma aplicação Java. Para esse exmplo tomamos como base a aplicação de Bookmarks 
+         	fornecida pelo arquétipo <emphasis>JSF com JPA</emphasis> do <emphasis>Demoiselle Framework</emphasis> (para maiores detalhes 
+         	ver <link linkend="estrutura">Arquétipos</link>). Iremos utilizar o componente <literal>DataTable</literal> do <emphasis>PrimeFaces</emphasis>,
+         	que oferece o mecanismo de <emphasis>Lazy Loading</emphasis> conhecido como <literal>LazyDataModel</literal>, muito útil para paginação 
+         	e classificação de dados.
+      	</para>
+      	<para>
+         	Primeiro é preciso configurar um objeto <literal>LazyDataModel</literal> no construtor do <emphasis>Managed Bean</emphasis> 
+         	(<emphasis>BookmarkList</emphasis> nesse exemplo): instancia-lo e sobrescrever o método abstrado <literal>load</literal>, que recebe
+         	vários argumentos. Esses argumentos são recuperados na página <literal>jsf</literal> que carrega a instância do objeto <literal>LazyDataModel</literal>.
+      	</para>
+      	<para>
+      		Dentro do método <literal>load</literal> iremos pegar do contexto de paginação uma instância da implementação da interface <literal>Pagination</literal>
+      		e ajustar alguns dos seus parâmetros para: indicar a partir de qual item a paginação deve iniciar, e o tamanho (quantidade de itens) de cada página.
+      		Esses dados são usados no método  <literal>findAll()</literal>, da classe <literal>JPACrud</literal> (extensão JPA), que utiliza o contexto de 
+      		paginação para pegar os parametros e fazer a consulta no banco buscando apenas os itens que estão dentro da pagina que o parametro 
+      		<literal>first</literal> indicar. O resultado é passado para a instancia do <literal>LazyDataModel</literal>, que é responsável por exibir 
+      		os dados de forma apropriada.
+      	</para>
+      	<para>
+      		À classe <emphasis>BookmarkList</emphasis> devem ser adicionados os seguintes trechos de código: 
+      	</para>
+      	
+      	<programlisting role="JAVA"><![CDATA[
+    		// ...
+    		import java.util.Map;
+    		import br.gov.frameworkdemoiselle.pagination.Pagination;
+    		
+    		// ...
+    		private LazyDataModel<Bookmark> lazyModel;
 
-    // ...
-}
+			public BookmarkListMB() {
+				lazyModel = new LazyDataModel<Bookmark>() {
 
-@SessionScoped
-public class PaginationContext {
+					@Override
+					public List<Bookmark> load (int first, int pageSize, String sortField, 
+							SortOrder sortOrder, Map<String, String> filters){
+				
+						Pagination pagination = getPagination();
+						pagination.setPageSize(pageSize);
+						pagination.setFirstResult(first);
 
-    private final Map<Class<?>, Pagination> map;
-
-    public Pagination getPagination(Class<?> clazz) { ... }
-
-    public Pagination get -->Pagination(Class<?> clazz, boolean create) { ... }
-
-}
-
-@Configuration
-public class PaginationConfig {
-
-    @Key("default_page_size")
-    private int defaultPageSize = 10;
-
-    @Key("max_page_links")
-    private int maxPageLinks = 5;
-
-}
-
-    - Códigos internos de suporte em JPA:
-
-public class JPACrud<T, I> implements Crud<T, I> {
-
-    @Inject
-    private PaginationContext paginationContext;
-
-    // ...
-
-    public List<T> findAll() {
-
-        final String jpql = "select this from " + getBeanClass().getSimpleName() + " this";
-        final Query query = getEntityManager().createQuery(jpql);
-        
-        final Pagination pagination = paginationContext.getPagination(getBeanClass());
-        if (pagination != null) {
-            if (pagination.getTotalPages() == null) {
-                pagination.setTotalResults(this.countAll());
-            }
-            query.setFirstResult(pagination.getFirstResult());
-            query.setMaxResults(pagination.getPageSize());
-        }
-
-        // ...
-    }
-
-}
-
-    - Códigos internos de suporte em JSF:
-
-public abstract class AbstractListPageBean<T, I> extends AbstractPage implements ListPageBean<T, I> {
-
-    @Inject
-    private PaginationContext paginationContext;
-
-    @Inject
-    private PaginationConfig paginationConfig;
-
-    // ...
-
-    public Pagination getPagination() {
-        return paginationContext.getPagination(getBeanClass(), true);
-    }
-
-    public int getPageSize() {
-        return paginationConfig.getDefaultPageSize();
-    }
-
-    public int getMaxPageLinks() {
-        return paginationConfig.getMaxPageLinks();
-    }
-
-}
-
-frameworkdemoiselle.pagination.default_page_size=50
-frameworkdemoiselle.pagination.max_page_links=10
-         
-]]></programlisting>
-      </para>
+						List<Bookmark> itemsList = bc.findAll();
+				
+						lazyModel.setRowCount(pagination.getTotalResults());
+				
+						return itemsList;
+					}
+				};
+			}
+    		
+    		// ...
+    		
+    		public LazyDataModel<Bookmark> getLazyModel() {
+				return lazyModel;
+			}
+			
+			// ...
+		]]></programlisting>
+		
+		<para>
+			No arquivo <literal>messages.properties</literal> adicione as linhas:
+		</para>		
+      	
+      	<programlisting role="JAVA"><![CDATA[
+      		page.first=0
+   	 		page.rows=4
+			page.max.links=3
+		]]></programlisting>
+      	
+      	<para>
+      		Na página JSF <literal>bookmark_list.xhtml</literal>, substitua a linha:
+      	</para>
+      	
+      	<programlisting role="JAVA"><![CDATA[
+   	 		<p:dataTable id="list" var="bean" value="#{bookmarkListMB.resultList}">
+		]]></programlisting>
+		
+		<para>
+			por:
+		</para>
+		
+		<programlisting role="JAVA"><![CDATA[
+   	 		<p:dataTable id="list" var="bean" 
+				value="#{bookmarkListMB.lazyModel}" lazy="true" paginator="true" 
+				first="#{messages['page.first']}" rows="#{messages['page.rows']}"
+				pageLinks="#{messages['page.max.links']}">
+		]]></programlisting>
+		
+		<para>
+			Com essas alterações simples, a aplicação Bookmarks passa a utilizar o mecanismo de paginação oferecido pelo <emphasis>Demoiselle Framework</emphasis>.
+		</para>
+		
+      	<tip>
+         	<para>
+         		O método <literal>getPagination()</literal> do contexto <literal>PaginationContext</literal> é sobrecarregado, podendo aceitar
+         		os seguintes argumentos: <literal>Class</literal> ou <literal>Class</literal> e <literal>boolean</literal>.
+         	</para>
+      	</tip>
+      	<note>
+         	<para>
+            	A JPA 2.0, através da Query API, suporta controle de paginação independente de fornecedor de banco de dados.
+            	Para controlar a paginação, a interface <literal>Query</literal> define os métodos <literal>setFirstResult()</literal> e
+            	<literal>setMaxResults()</literal> para especificar o primeiro resultado a ser recebido e o número máximo de resultados a
+            	serem retornados em relação àquele ponto. Internamente, são usadas instruções específicas do SGBD (ex: LIMIT e OFFSET no
+            	PostgreSQL).
+         	</para>
+      	</note>
    </section>
    
-   <section>
-      <title>Implementação na aplicação</title>
-      <para>
-         Eis um exemplo de implementação de paginação em uma aplicação:
-      </para>
-      <programlisting role="JAVA"><![CDATA[
-    @Inject
-	private PaginationContext paginationContext;
-]]></programlisting>
-      <programlisting role="JAVA"><![CDATA[
-    Pagination pagination = paginationContext.getPagination(Audit.class);
-]]></programlisting>
-      <tip>
-         <para>
-         	O método <literal>getPagination()</literal> do contexto <literal>PaginationContext</literal> é sobrecarregado, podendo aceitar
-         	os seguintes argumentos: <literal>Class</literal> ou <literal>Class</literal> e <literal>boolean</literal>.
-         </para>
-      </tip>
-      <note>
-         <para>
-            A JPA 2.0, através da Query API, suporta controle de paginação independente de fornecedor de banco de dados.
-            Para controlar a paginação, a interface <literal>Query</literal> define os métodos <literal>setFirstResult()</literal> e
-            <literal>setMaxResults()</literal> para especificar o primeiro resultado a ser recebido e o número máximo de resultados a
-            serem retornados em relação àquele ponto. Internamente, são usadas instruções específicas do SGBD (ex: LIMIT e OFFSET no
-            PostgreSQL).
-         </para>
-      </note>
-   </section>
+</chapter>
    
 <!--<section>
       <title>Um exemplo usando PrimeFaces</title>
@@ -238,7 +347,7 @@ public class AuditMB extends AbstractListPageBean<Audit, Long> {
     rows="#{auditMB.pageSize}" pageLinks="#{auditMB.maxPageLinks}">]]></programlisting>
    </section>
     -->
-
+<!--  
    <section>
       <title>Referências</title>
       <itemizedlist>
@@ -246,8 +355,8 @@ public class AuditMB extends AbstractListPageBean<Audit, Long> {
          <listitem>Implementing Search Result Pagination in a Web Application (http://www.developer.com/java/other/article.php/3696226/)</listitem>
          <listitem>A Pagination Technique Using Spring (http://www.developer.com/java/web/article.php/10935_3830886_1/)</listitem>
          <listitem>Spring JDBC Pagination Tutorial (http://www.codefutures.com/tutorials/spring-pagination/)</listitem>
-         <!-- <listitem>PrimeFaces DataTable - Lazy Loading (http://www.primefaces.org/showcase/ui/datatableLazy.jsf)</listitem>  -->
+         <listitem>PrimeFaces DataTable - Lazy Loading (http://www.primefaces.org/showcase/ui/datatableLazy.jsf)</listitem> 
       </itemizedlist>
    </section>
-   
-</chapter>
+   -->
+
