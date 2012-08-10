@@ -40,13 +40,14 @@ public class EntityManagerFactoryProducer implements Serializable {
 	// private final Map<String, EntityManagerFactory> cache = Collections
 	// .synchronizedMap(new HashMap<String, EntityManagerFactory>());
 
-	private final Map<String [], EntityManagerFactory> cache = Collections
-			.synchronizedMap(new HashMap<String [], EntityManagerFactory>());
+	private final Map<Key, EntityManagerFactory> cache = Collections
+			.synchronizedMap(new HashMap<Key, EntityManagerFactory>());
 
 	public EntityManagerFactory create(String persistenceUnit) {
 		EntityManagerFactory factory;
 
-		String[] key = new String [] { persistenceUnit, Thread.currentThread().getContextClassLoader().toString()};
+		//String[] key = new String [] { persistenceUnit, Thread.currentThread().getContextClassLoader().toString()};
+		Key key = new Key(persistenceUnit, Thread.currentThread().getContextClassLoader());
 		
 		if (cache.containsKey(key)) {
 			factory = cache.get(key);
@@ -102,12 +103,60 @@ public class EntityManagerFactoryProducer implements Serializable {
 		Map<String, EntityManagerFactory> result = new  HashMap<String, EntityManagerFactory>();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		
-		for (String[] key : cache.keySet()) {
-			if(key[1].equals(classLoader.toString())) {
-				result.put(key[0], cache.get(key));
+		for (Key key : cache.keySet()) {
+			if(key.classLoader.equals(classLoader)) {
+				result.put(key.persistenceUnit, cache.get(key));
 			}
 		}		
 		
 		return result;
 	}
+	
+	
+	class Key{
+		
+		private String persistenceUnit; 
+		private ClassLoader classLoader;
+		
+		
+		public Key(String persistenceUnit,  ClassLoader classLoader) {
+			this.persistenceUnit = persistenceUnit;
+			this.classLoader = classLoader;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((classLoader == null) ? 0 : classLoader.hashCode());
+			result = prime * result + ((persistenceUnit == null) ? 0 : persistenceUnit.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Key other = (Key) obj;
+			if (classLoader == null) {
+				if (other.classLoader != null)
+					return false;
+			} else if (!classLoader.equals(other.classLoader))
+				return false;
+			if (persistenceUnit == null) {
+				if (other.persistenceUnit != null)
+					return false;
+			} else if (!persistenceUnit.equals(other.persistenceUnit))
+				return false;
+			return true;
+		}
+
+	}
+
 }
+
+
