@@ -36,9 +36,11 @@
 
    <section>
       <title>Códigos de suporte</title>
+     <!-- 
       <para>
          // TODO: explicar Pagination e PaginationContext
       </para>
+      --> 
       <para>
          Veremos na seção seguinte como implementar a paginação em uma aplicação Java.
  
@@ -69,7 +71,7 @@ public class PaginationContext {
 
     public Pagination getPagination(Class<?> clazz) { ... }
 
-    public Pagination getPagination(Class<?> clazz, boolean create) { ... }
+    public Pagination get -->Pagination(Class<?> clazz, boolean create) { ... }
 
 }
 
@@ -147,30 +149,6 @@ frameworkdemoiselle.pagination.max_page_links=10
    
    <section>
       <title>Implementação na aplicação</title>
-      <!-- 
-      <para>
-         A fim de utilizar o mecanismo inerente do <emphasis>Demoiselle Framework</emphasis>, é preciso simplesmente anotar os métodos
-         contendo as instruções desejadas com <literal>@Startup</literal>, para a <emphasis>inicialização</emphasis>, ou
-         <literal>@Shutdown</literal>, para a <emphasis>finalização</emphasis>.
-      </para>
-      <tip>
-         <para>
-            O mecanismo de inicialização do <emphasis>Demoiselle Framework</emphasis> é independente da natureza da aplicação Java, isto é,
-            visa tanto aplicações do tipo Web quanto do tipo desktop (ex: Swing).
-         </para>
-      </tip>
-      <para>
-         As instruções contidas em um método anotado com <literal>@Startup</literal> serão executadas automaticamente quando a aplicação
-         Java for inicializada, seja ela hospedada em um contêiner Web ou executada através de um método <literal>main()</literal>.
-         Nenhum outro arquivo ou classe precisa ser definido. A anotação <literal>@Startup</literal> permite a indicação do argumento
-         <literal>priority</literal>, um número inteiro que serve para definir a prioridade de execução do respectivo método na existência
-         de mais de um inicializador para a aplicação.
-      </para>
-      <para>
-         De maneira análoga, um método anotado com <literal>@Shutdown</literal> será executado no momento de finalização de uma aplicação,
-         obedecendo também à ordem de prioridade definida com o argumento <literal>priority</literal>.
-      </para>
-       -->
       <para>
          Eis um exemplo de implementação de paginação em uma aplicação:
       </para>
@@ -198,7 +176,7 @@ frameworkdemoiselle.pagination.max_page_links=10
       </note>
    </section>
    
-   <section>
+<!--<section>
       <title>Um exemplo usando PrimeFaces</title>
       <para>
          Eis um interessante caso de uso de paginação: ????.
@@ -259,6 +237,7 @@ public class AuditMB extends AbstractListPageBean<Audit, Long> {
     value="#{auditMB.lazyModel}" lazy="true" paginator="true"
     rows="#{auditMB.pageSize}" pageLinks="#{auditMB.maxPageLinks}">]]></programlisting>
    </section>
+    -->
 
    <section>
       <title>Referências</title>
@@ -267,7 +246,7 @@ public class AuditMB extends AbstractListPageBean<Audit, Long> {
          <listitem>Implementing Search Result Pagination in a Web Application (http://www.developer.com/java/other/article.php/3696226/)</listitem>
          <listitem>A Pagination Technique Using Spring (http://www.developer.com/java/web/article.php/10935_3830886_1/)</listitem>
          <listitem>Spring JDBC Pagination Tutorial (http://www.codefutures.com/tutorials/spring-pagination/)</listitem>
-         <listitem>PrimeFaces DataTable - Lazy Loading (http://www.primefaces.org/showcase/ui/datatableLazy.jsf)</listitem>
+         <!-- <listitem>PrimeFaces DataTable - Lazy Loading (http://www.primefaces.org/showcase/ui/datatableLazy.jsf)</listitem>  -->
       </itemizedlist>
    </section>
    
