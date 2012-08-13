@@ -221,20 +221,12 @@ public class MeuAuthorizer implements Authorizer {
 
 }]]></programlisting>
 		<para>
-			Feito isso deve-se definir no arquivo META-INF/beans.xml, as classes criadas:
+			Feito isso deve-se definir no arquivo <filename>demoiselle.properties</filename>, as classes criadas:
 		</para>
-		<programlisting role="XML"><![CDATA[<?xml version="1.0"?>
-<beans xmlns="http://java.sun.com/xml/ns/javaee"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-	                       http://java.sun.com/xml/ns/javaee/beans_1_1.xsd">
-
-	<alternatives> 
-		<class>projeto.MeuAuthenticator</class> 
-		<class>projeto.MeuAuthorizer</class> 
-	</alternatives> 
-
-</beans>]]></programlisting>
+		<programlisting>
+			frameworkdemoiselle.security.authenticator.class=projeto.MeuAuthenticator 
+			frameworkdemoiselle.security.authorizer.class=projeto.MeuAuthorizer 
+		</programlisting>
 		<para>
 			À partir desse momento, a aplicação já possui uma implementação de segurança definida.		
 		</para>
