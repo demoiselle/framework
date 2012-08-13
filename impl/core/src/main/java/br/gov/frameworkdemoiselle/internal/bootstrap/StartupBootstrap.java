@@ -56,6 +56,7 @@ import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Startup;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
+import br.gov.frameworkdemoiselle.internal.context.CustomContext;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.internal.processor.StartupProcessor;
 
@@ -66,7 +67,7 @@ public class StartupBootstrap extends AbstractBootstrap {
 
 	private static final Class<? extends Annotation> annotationClass = Startup.class;
 
-	private static final List<ThreadLocalContext> tempContexts = new ArrayList<ThreadLocalContext>();
+	private static final List<CustomContext> tempContexts = new ArrayList<CustomContext>();
 
 	@SuppressWarnings("rawtypes")
 	private static final List<StartupProcessor> processors = Collections
@@ -97,7 +98,7 @@ public class StartupBootstrap extends AbstractBootstrap {
 		tempContexts.add(new ThreadLocalContext(ConversationScoped.class));
 		tempContexts.add(new ThreadLocalContext(RequestScoped.class));
 
-		for (ThreadLocalContext tempContext : tempContexts) {
+		for (CustomContext tempContext : tempContexts) {
 			addContext(tempContext, event);
 		}
 	}
@@ -140,7 +141,7 @@ public class StartupBootstrap extends AbstractBootstrap {
 			}
 		}
 
-		if (processors.isEmpty()){
+		if (processors.isEmpty()) {
 			unloadTempContexts();
 		}
 
@@ -150,7 +151,7 @@ public class StartupBootstrap extends AbstractBootstrap {
 	}
 
 	private static void unloadTempContexts() {
-		for (ThreadLocalContext tempContext : tempContexts) {
+		for (CustomContext tempContext : tempContexts) {
 			disableContext(tempContext);
 		}
 	}
