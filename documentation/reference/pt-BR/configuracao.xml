@@ -47,6 +47,25 @@
 	</section>
 	
 	<section>
+    	<title>Configurando</title>
+    	<para>
+    	Para um correto funcionamento do Demoiselle é necessário inserir o interceptador de configuração no arquivo <filename>src/main/WEB-INF/beans.xml</filename>.
+    	</para>
+		<programlisting role="XML">
+		<![CDATA[
+		<beans xmlns="http://java.sun.com/xml/ns/javaee" 
+		       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+			                       http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+			<interceptors>
+				<class>br.gov.frameworkdemoiselle.internal.interceptor.ConfigurationInterceptor</class>
+			</interceptors>
+		</beans>
+		]]>
+		</programlisting>
+    </section> 
+	
+	<section>
 		<title>As classes de configuração</title>
 		<para>
 			A primeira etapa para a utilização do mecanismo de configuração em uma aplicação consiste em criar uma classe específica

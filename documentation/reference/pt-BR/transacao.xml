@@ -22,6 +22,25 @@
 		Neste capítulo apresentaremos para você como usar a nossa solução de controle de transação, as estratégias
 		prontas que oferecemos e a criação de sua própria estratégia.   
     </para>
+    
+    <section>
+    	<title>Configurando</title>
+    	<para>
+    	Para um correto funcionamento do Demoiselle é necessário inserir o interceptador de transação no arquivo <filename>src/main/WEB-INF/beans.xml</filename>.
+    	</para>
+		<programlisting role="XML">
+		<![CDATA[
+		<beans xmlns="http://java.sun.com/xml/ns/javaee" 
+		       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+			                       http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+			<interceptors>
+				<class>br.gov.frameworkdemoiselle.internal.interceptor.TransactionalInterceptor</class>
+			</interceptors>
+		</beans>
+		]]>
+		</programlisting>
+    </section>
 
 	<section>
 		<title>Métodos transacionais</title>
