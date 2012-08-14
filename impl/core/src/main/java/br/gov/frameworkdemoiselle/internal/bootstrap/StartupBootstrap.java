@@ -73,6 +73,8 @@ public class StartupBootstrap extends AbstractBootstrap {
 	private static final List<StartupProcessor> processors = Collections
 			.synchronizedList(new ArrayList<StartupProcessor>());
 
+	private static AfterBeanDiscovery abdEvent;
+
 	/**
 	 * Observes all methods annotated with @Startup and create an instance of StartupAction for them
 	 * 
@@ -97,10 +99,7 @@ public class StartupBootstrap extends AbstractBootstrap {
 		tempContexts.add(new ThreadLocalContext(SessionScoped.class));
 		tempContexts.add(new ThreadLocalContext(ConversationScoped.class));
 		tempContexts.add(new ThreadLocalContext(RequestScoped.class));
-
-		for (CustomContext tempContext : tempContexts) {
-			addContext(tempContext, event);
-		}
+		abdEvent = event;
 	}
 
 	/**
@@ -109,6 +108,8 @@ public class StartupBootstrap extends AbstractBootstrap {
 	public synchronized static void startup() {
 		startup(true);
 	}
+
+	private static boolean x = true;
 
 	/**
 	 * After the deployment validation it execute the methods annotateds with @Startup considering the priority order;
@@ -120,6 +121,14 @@ public class StartupBootstrap extends AbstractBootstrap {
 
 		Collections.sort(processors);
 		Throwable failure = null;
+
+		if (x) {
+			for (CustomContext tempContext : tempContexts) {
+				addContext(tempContext, abdEvent);
+			}
+
+			x = false;
+		}
 
 		for (Iterator<StartupProcessor> iter = processors.iterator(); iter.hasNext();) {
 			StartupProcessor processor = iter.next();

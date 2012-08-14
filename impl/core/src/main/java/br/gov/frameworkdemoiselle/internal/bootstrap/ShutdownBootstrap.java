@@ -110,6 +110,8 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 		shutdown(true);
 	}
 
+	private static boolean x = true;
+
 	/**
 	 * Before Shutdown it execute the methods annotateds with @Shutdown considering the priority order;
 	 */
@@ -121,8 +123,12 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 		Collections.sort(processors);
 		Throwable failure = null;
 
-		for (CustomContext tempContext : tempContexts) {
-			addContext(tempContext, abdEvent);
+		if (x) {
+			for (CustomContext tempContext : tempContexts) {
+				addContext(tempContext, abdEvent);
+			}
+
+			x = false;
 		}
 
 		for (Iterator<ShutdownProcessor> iter = processors.iterator(); iter.hasNext();) {
