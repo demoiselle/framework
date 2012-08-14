@@ -56,6 +56,7 @@ import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Startup;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
+import br.gov.frameworkdemoiselle.internal.context.CustomContext;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.internal.processor.StartupProcessor;
 
@@ -66,11 +67,13 @@ public class StartupBootstrap extends AbstractBootstrap {
 
 	private static final Class<? extends Annotation> annotationClass = Startup.class;
 
-	private static final List<ThreadLocalContext> tempContexts = new ArrayList<ThreadLocalContext>();
+	private static final List<CustomContext> tempContexts = new ArrayList<CustomContext>();
 
 	@SuppressWarnings("rawtypes")
 	private static final List<StartupProcessor> processors = Collections
 			.synchronizedList(new ArrayList<StartupProcessor>());
+
+	private static AfterBeanDiscovery abdEvent;
 
 	/**
 	 * Observes all methods annotated with @Startup and create an instance of StartupAction for them
@@ -96,10 +99,7 @@ public class StartupBootstrap extends AbstractBootstrap {
 		tempContexts.add(new ThreadLocalContext(SessionScoped.class));
 		tempContexts.add(new ThreadLocalContext(ConversationScoped.class));
 		tempContexts.add(new ThreadLocalContext(RequestScoped.class));
-
-		for (ThreadLocalContext tempContext : tempContexts) {
-			addContext(tempContext, event);
-		}
+		abdEvent = event;
 	}
 
 	/**
@@ -108,6 +108,8 @@ public class StartupBootstrap extends AbstractBootstrap {
 	public synchronized static void startup() {
 		startup(true);
 	}
+
+	private static boolean x = true;
 
 	/**
 	 * After the deployment validation it execute the methods annotateds with @Startup considering the priority order;
@@ -119,6 +121,14 @@ public class StartupBootstrap extends AbstractBootstrap {
 
 		Collections.sort(processors);
 		Throwable failure = null;
+
+		if (x) {
+			for (CustomContext tempContext : tempContexts) {
+				addContext(tempContext, abdEvent);
+			}
+
+			x = false;
+		}
 
 		for (Iterator<StartupProcessor> iter = processors.iterator(); iter.hasNext();) {
 			StartupProcessor processor = iter.next();
@@ -140,7 +150,7 @@ public class StartupBootstrap extends AbstractBootstrap {
 			}
 		}
 
-		if (processors.isEmpty()){
+		if (processors.isEmpty()) {
 			unloadTempContexts();
 		}
 
@@ -150,7 +160,7 @@ public class StartupBootstrap extends AbstractBootstrap {
 	}
 
 	private static void unloadTempContexts() {
-		for (ThreadLocalContext tempContext : tempContexts) {
+		for (CustomContext tempContext : tempContexts) {
 			disableContext(tempContext);
 		}
 	}

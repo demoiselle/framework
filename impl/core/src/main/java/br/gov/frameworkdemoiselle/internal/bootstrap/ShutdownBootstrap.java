@@ -55,6 +55,7 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Shutdown;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
+import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
 import br.gov.frameworkdemoiselle.internal.context.CustomContext;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.internal.processor.ShutdownProcessor;
@@ -109,6 +110,8 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 		shutdown(true);
 	}
 
+	private static boolean x = true;
+
 	/**
 	 * Before Shutdown it execute the methods annotateds with @Shutdown considering the priority order;
 	 */
@@ -120,18 +123,28 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 		Collections.sort(processors);
 		Throwable failure = null;
 
-		for (CustomContext tempContext : tempContexts) {
-			addContext(tempContext, abdEvent);
+		if (x) {
+			for (CustomContext tempContext : tempContexts) {
+				addContext(tempContext, abdEvent);
+			}
+
+			x = false;
 		}
 
 		for (Iterator<ShutdownProcessor> iter = processors.iterator(); iter.hasNext();) {
 			ShutdownProcessor processor = iter.next();
 
 			try {
-				processor.process();
+				ClassLoader classLoader = ConfigurationLoader.getClassLoaderForClass(processor.getAnnotatedMethod()
+						.getDeclaringType().getJavaClass().getCanonicalName());
 
-				if (remove) {
-					iter.remove();
+				if (Thread.currentThread().getContextClassLoader().equals(classLoader)) {
+
+					processor.process();
+
+					if (remove) {
+						iter.remove();
+					}
 				}
 
 			} catch (Throwable cause) {
@@ -139,7 +152,9 @@ public class ShutdownBootstrap extends AbstractBootstrap {
 			}
 		}
 
-		unloadTempContexts();
+		if (processors.isEmpty()) {
+			unloadTempContexts();
+		}
 
 		if (failure != null) {
 			throw new DemoiselleException(failure);
