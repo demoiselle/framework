@@ -1,10 +1,12 @@
 package br.gov.frameworkdemoiselle.internal.producer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -40,32 +42,42 @@ public class EntityManagerFactoryProducer implements Serializable {
 	// private final Map<String, EntityManagerFactory> cache = Collections
 	// .synchronizedMap(new HashMap<String, EntityManagerFactory>());
 
-	private final Map<Key, EntityManagerFactory> cache = Collections
-			.synchronizedMap(new HashMap<Key, EntityManagerFactory>());
+	/*
+	 * private final Map<Key, EntityManagerFactory> cache = Collections .synchronizedMap(new HashMap<Key,
+	 * EntityManagerFactory>());
+	 */
+
+	private final Map<ClassLoader, Map<String, EntityManagerFactory>> factoryCache = Collections
+			.synchronizedMap(new HashMap<ClassLoader, Map<String, EntityManagerFactory>>());
 
 	public EntityManagerFactory create(String persistenceUnit) {
 		EntityManagerFactory factory;
 
-		//String[] key = new String [] { persistenceUnit, Thread.currentThread().getContextClassLoader().toString()};
-		Key key = new Key(persistenceUnit, Thread.currentThread().getContextClassLoader());
-		
-		if (cache.containsKey(key)) {
-			factory = cache.get(key);
+		ClassLoader c = Thread.currentThread().getContextClassLoader();
+
+		if (factoryCache.containsKey(c)) {
+			Map<String, EntityManagerFactory> localCache = factoryCache.get(c);
+			if (localCache.containsKey(persistenceUnit)) {
+				factory = localCache.get(persistenceUnit);
+			} else {
+				factory = Persistence.createEntityManagerFactory(persistenceUnit);
+				localCache.put(persistenceUnit, factory);
+			}
 		} else {
+			Map<String, EntityManagerFactory> localCache = new HashMap<String, EntityManagerFactory>();
 			factory = Persistence.createEntityManagerFactory(persistenceUnit);
-			cache.put(key, factory);
+			localCache.put(persistenceUnit, factory);
+			factoryCache.put(c, localCache);
 		}
 
 		return factory;
 	}
 
-	// @PostConstruct
-	public void init() {
-		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-
+	private String[] loadPersistenceUnitFromClassloader(ClassLoader classLoader) {
 		try {
+			ArrayList<String> persistenceUnits = new ArrayList<String>();
 			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document document = documentBuilder.parse(contextClassLoader.getResourceAsStream(ENTITY_MANAGER_RESOURCE));
+			Document document = documentBuilder.parse(classLoader.getResourceAsStream(ENTITY_MANAGER_RESOURCE));
 			NodeList nodes = document.getElementsByTagName("persistence-unit");
 
 			String persistenceUnit = "";
@@ -75,11 +87,15 @@ public class EntityManagerFactoryProducer implements Serializable {
 
 				if ("".equals(persistenceUnit)) {
 					throw new DemoiselleException(bundle.getString("can-not-get-persistence-unit-from-persistence"));
+				} else {
+					persistenceUnits.add(persistenceUnit);
 				}
+				// logger.debug(bundle.getString("persistence-unit-name-found",
+				// persistenceUnit));
 
-				create(persistenceUnit);
-				logger.debug(bundle.getString("persistence-unit-name-found", persistenceUnit));
 			}
+
+			return persistenceUnits.toArray(new String[0]);
 
 		} catch (Exception cause) {
 			String message = bundle.getString("can-not-get-persistence-unit-from-persistence");
@@ -87,76 +103,41 @@ public class EntityManagerFactoryProducer implements Serializable {
 
 			throw new DemoiselleException(message, cause);
 		}
+
+	}
+
+	@PostConstruct
+	public void loadPersistenceUnits() {
+		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+		for (String persistenceUnit : loadPersistenceUnitFromClassloader(contextClassLoader)) {
+			create(persistenceUnit);
+			logger.debug(bundle.getString("persistence-unit-name-found", persistenceUnit));
+		}
 	}
 
 	@PreDestroy
 	public void close() {
-		for (EntityManagerFactory factory : cache.values()) {
-			factory.close();
+		for (Map<String, EntityManagerFactory> factories : factoryCache.values()) {
+			for (EntityManagerFactory factory : factories.values()) {
+				factory.close();
+			}
 		}
-
-		cache.clear();
+		factoryCache.clear();
 	}
 
 	public Map<String, EntityManagerFactory> getCache() {
-		init();
-		Map<String, EntityManagerFactory> result = new  HashMap<String, EntityManagerFactory>();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		
-		for (Key key : cache.keySet()) {
-			if(key.classLoader.equals(classLoader)) {
-				result.put(key.persistenceUnit, cache.get(key));
+		Map<String, EntityManagerFactory> result = factoryCache.get(classLoader);
+
+		if (result == null || result.isEmpty()) {
+			logger.debug(bundle.getString("entity-manager-factory-not-found-in-cache"));
+			for (String persistenceUnit : loadPersistenceUnitFromClassloader(classLoader)) {
+				create(persistenceUnit);
+				result = factoryCache.get(classLoader);
 			}
-		}		
-		
+		}
+
 		return result;
-	}
-	
-	
-	class Key{
-		
-		private String persistenceUnit; 
-		private ClassLoader classLoader;
-		
-		
-		public Key(String persistenceUnit,  ClassLoader classLoader) {
-			this.persistenceUnit = persistenceUnit;
-			this.classLoader = classLoader;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((classLoader == null) ? 0 : classLoader.hashCode());
-			result = prime * result + ((persistenceUnit == null) ? 0 : persistenceUnit.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Key other = (Key) obj;
-			if (classLoader == null) {
-				if (other.classLoader != null)
-					return false;
-			} else if (!classLoader.equals(other.classLoader))
-				return false;
-			if (persistenceUnit == null) {
-				if (other.persistenceUnit != null)
-					return false;
-			} else if (!persistenceUnit.equals(other.persistenceUnit))
-				return false;
-			return true;
-		}
-
 	}
 
 }
-
-

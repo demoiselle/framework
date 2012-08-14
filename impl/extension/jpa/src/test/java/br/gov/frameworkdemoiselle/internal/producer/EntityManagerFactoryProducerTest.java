@@ -72,14 +72,14 @@ public class EntityManagerFactoryProducerTest {
 		expect(Persistence.createEntityManagerFactory("pu1")).andReturn(emFactory);
 		replay(Persistence.class);
 		
-		producer.init();
+		producer.loadPersistenceUnits();
 		Assert.assertEquals(emFactory, cache.get("pu1"));
 	}
 	
 	@Test
 	public void testInitWithError() {
 		try {
-			producer.init();
+			producer.loadPersistenceUnits();
 			Assert.fail();
 		}catch(DemoiselleException cause) {
 			Assert.assertTrue(true);
