@@ -49,7 +49,7 @@ public class ServletListener implements javax.servlet.ServletContextListener {
 
 			@Override
 			public boolean removeProcessors() {
-				return false;
+				return true;
 			}
 		});
 	}
@@ -60,7 +60,7 @@ public class ServletListener implements javax.servlet.ServletContextListener {
 
 			@Override
 			public boolean removeProcessors() {
-				return false;
+				return true;
 			}
 		});
 	}

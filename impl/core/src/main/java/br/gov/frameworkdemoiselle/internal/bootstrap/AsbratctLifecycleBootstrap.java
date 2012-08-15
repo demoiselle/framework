@@ -104,7 +104,7 @@ public abstract class AsbratctLifecycleBootstrap<A extends Annotation> extends A
 		afterBeanDiscoveryEvent = event;
 	}
 
-	private static boolean x = true;
+	private boolean x = true;
 
 	protected synchronized void proccessEvent(final ApplicationLifecycleEvent event) {
 		getLogger().debug(
