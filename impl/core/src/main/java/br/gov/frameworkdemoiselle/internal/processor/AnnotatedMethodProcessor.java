@@ -41,6 +41,7 @@ import java.lang.reflect.InvocationTargetException;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.BeanManager;
 
+import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 
@@ -61,7 +62,16 @@ public abstract class AnnotatedMethodProcessor<T> extends AbstractProcessor<T> i
 		return (AnnotatedMethod<T>) getAnnotatedCallable();
 	}
 
-	abstract protected Integer getPriority(AnnotatedMethod<T> annotatedMethod);
+	protected Integer getPriority(AnnotatedMethod<T> annotatedMethod) {
+		Integer priority = Priority.MIN_PRIORITY;
+
+		Priority annotation = annotatedMethod.getAnnotation(Priority.class);
+		if (annotation != null) {
+			priority = annotation.value();
+		}
+
+		return priority;
+	}
 
 	public int compareTo(final AnnotatedMethodProcessor<T> other) {
 		Integer orderThis = getPriority(getAnnotatedMethod());

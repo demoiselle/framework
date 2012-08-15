@@ -39,6 +39,7 @@ package br.gov.frameworkdemoiselle.internal.processor;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.BeanManager;
 
+import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.annotation.Startup;
 
 /**
@@ -54,7 +55,13 @@ public class StartupProcessor<T> extends AnnotatedMethodProcessor<T> {
 
 	@SuppressWarnings("deprecation")
 	protected Integer getPriority(AnnotatedMethod<T> annotatedMethod) {
-		Startup annotation = annotatedMethod.getAnnotation(Startup.class);
-		return annotation.priority();
+		Integer priority = super.getPriority(annotatedMethod);
+		
+		if (!annotatedMethod.isAnnotationPresent(Priority.class)) {
+			Startup annotation = annotatedMethod.getAnnotation(Startup.class);
+			priority = annotation.priority();
+		}
+
+		return priority;
 	}
 }
