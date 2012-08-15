@@ -36,134 +36,26 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
-import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Shutdown;
-import br.gov.frameworkdemoiselle.annotation.ViewScoped;
-import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
-import br.gov.frameworkdemoiselle.internal.context.CustomContext;
-import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
+import br.gov.frameworkdemoiselle.internal.processor.AnnotatedMethodProcessor;
 import br.gov.frameworkdemoiselle.internal.processor.ShutdownProcessor;
 
 /**
  * This class run at application shutdown
  */
-public class ShutdownBootstrap extends AbstractBootstrap {
+public class ShutdownBootstrap extends AsbratctLifecycleBootstrap<Shutdown> {
 
-	private static final Class<? extends Annotation> annotationClass = Shutdown.class;
-
-	private static final List<CustomContext> tempContexts = new ArrayList<CustomContext>();
-
-	private static AfterBeanDiscovery abdEvent;
-
-	@SuppressWarnings("rawtypes")
-	private static final List<ShutdownProcessor> processors = Collections
-			.synchronizedList(new ArrayList<ShutdownProcessor>());
-
-	/**
-	 * Observes all methods annotated with @Shutdown and create an instance of ShutdownProcessor for them
-	 * 
-	 * @param <T>
-	 * @param event
-	 * @param beanManager
-	 */
-	public <T> void processAnnotatedType(@Observes final ProcessAnnotatedType<T> event, final BeanManager beanManager) {
-		final AnnotatedType<T> annotatedType = event.getAnnotatedType();
-		for (AnnotatedMethod<?> am : annotatedType.getMethods()) {
-			if (am.isAnnotationPresent(annotationClass)) {
-				@SuppressWarnings("unchecked")
-				AnnotatedMethod<T> annotatedMethod = (AnnotatedMethod<T>) am;
-				processors.add(new ShutdownProcessor<T>(annotatedMethod, beanManager));
-			}
-		}
+	@Override
+	protected <T> AnnotatedMethodProcessor<T> newProcessorInstance(AnnotatedMethod<T> annotatedMethod,
+			BeanManager beanManager) {
+		return new ShutdownProcessor<T>(annotatedMethod, beanManager);
 	}
 
-	public static void loadTempContexts(@Observes final AfterBeanDiscovery event) {
-		// Não registrar o contexto de aplicação pq ele já é registrado pela
-		// implementação do CDI
-		tempContexts.add(new ThreadLocalContext(ViewScoped.class));
-		tempContexts.add(new ThreadLocalContext(SessionScoped.class, false));
-		tempContexts.add(new ThreadLocalContext(ConversationScoped.class));
-		tempContexts.add(new ThreadLocalContext(RequestScoped.class));
-		abdEvent = event;
-	}
-
-	/**
-	 * Before Shutdown it execute the methods annotateds with @Shutdown considering the priority order;
-	 */
-	public synchronized static void shutdown() {
-		shutdown(true);
-	}
-
-	private static boolean x = true;
-
-	/**
-	 * Before Shutdown it execute the methods annotateds with @Shutdown considering the priority order;
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public synchronized static void shutdown(boolean remove) {
-		getLogger().debug(
-				getBundle("demoiselle-core-bundle").getString("executing-all", annotationClass.getSimpleName()));
-
-		Collections.sort(processors);
-		Throwable failure = null;
-
-		if (x) {
-			for (CustomContext tempContext : tempContexts) {
-				addContext(tempContext, abdEvent);
-			}
-
-			x = false;
-		}
-
-		for (Iterator<ShutdownProcessor> iter = processors.iterator(); iter.hasNext();) {
-			ShutdownProcessor processor = iter.next();
-
-			try {
-				ClassLoader classLoader = ConfigurationLoader.getClassLoaderForClass(processor.getAnnotatedMethod()
-						.getDeclaringType().getJavaClass().getCanonicalName());
-
-				if (Thread.currentThread().getContextClassLoader().equals(classLoader)) {
-
-					processor.process();
-
-					if (remove) {
-						iter.remove();
-					}
-				}
-
-			} catch (Throwable cause) {
-				failure = cause;
-			}
-		}
-
-		if (processors.isEmpty()) {
-			unloadTempContexts();
-		}
-
-		if (failure != null) {
-			throw new DemoiselleException(failure);
-		}
-	}
-
-	private static void unloadTempContexts() {
-		for (CustomContext tempContext : tempContexts) {
-			disableContext(tempContext);
-		}
+	public void shutdown(@Observes BeforeApplicationFinalization event) {
+		proccessEvent(event);
 	}
 }

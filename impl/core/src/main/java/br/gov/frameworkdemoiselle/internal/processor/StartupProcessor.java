@@ -43,26 +43,18 @@ import br.gov.frameworkdemoiselle.annotation.Startup;
 
 /**
  * Processor for a {@code @Startup} annotated method, making it comparable.
- *
+ * 
  * @param <T>
  */
-public class StartupProcessor<T> extends AnnotatedMethodProcessor<T> implements Comparable<StartupProcessor<T>> {
+public class StartupProcessor<T> extends AnnotatedMethodProcessor<T> {
 
 	public StartupProcessor(final AnnotatedMethod<T> annotatedMethod, final BeanManager beanManager) {
 		super(annotatedMethod, beanManager);
 	}
 
-	@Override
-	public int compareTo(final StartupProcessor<T> other) {
-		int result = 0;
-		Startup annotationThis = getAnnotatedMethod().getAnnotation(Startup.class);
-		Startup annotationOther = other.getAnnotatedMethod().getAnnotation(Startup.class);
-		if (annotationThis != null && annotationOther != null) {
-			Integer orderThis = annotationThis.priority();
-			Integer orderOther = annotationOther.priority();
-			result = orderThis.compareTo(orderOther);
-		}
-		return result;
+	@SuppressWarnings("deprecation")
+	protected Integer getPriority(AnnotatedMethod<T> annotatedMethod) {
+		Startup annotation = annotatedMethod.getAnnotation(Startup.class);
+		return annotation.priority();
 	}
-
 }
