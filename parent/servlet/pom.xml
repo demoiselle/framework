@@ -38,35 +38,72 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>demoiselle-jsf-parent</artifactId>
+	<artifactId>demoiselle-servlet-parent</artifactId>
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-servlet-parent</artifactId>
+		<artifactId>demoiselle-minimal-parent</artifactId>
 		<version>2.3.0-BETA2-SNAPSHOT</version>
-		<relativePath>../servlet/pom.xml</relativePath>
+		<relativePath>../minimal/pom.xml</relativePath>
 	</parent>
 
-	<name>JSF Parent</name>
+	<name>Servlet Parent</name>
 	<description>
-		Especialização do POM demoiselle-web-parent, contendo configurações úteis para todas as aplicações JSF que
-		utilizam o framework.
+		Especialização do POM mínimo, contendo configurações úteis para todas as aplicações Servlet que	utilizam o framework.
 	</description>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<webResources>
+						<resource>
+							<directory>src/main/webapp/WEB-INF</directory>
+							<targetPath>WEB-INF</targetPath>
+							<filtering>true</filtering>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>3.0.1</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
 			<groupId>br.gov.frameworkdemoiselle</groupId>
-			<artifactId>demoiselle-jsf</artifactId>
+			<artifactId>demoiselle-servlet</artifactId>
 			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 
 	<profiles>
-		<!-- Os profiles foram replicados do parent pois o Maven 2 não suporta herança de profile. Provavelmente isto estará corrigido no Maven 3 -->
 		<profile>
 			<id>tomcat6</id>
 			<dependencies>
+				<dependency>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
 				<dependency>
 					<groupId>org.jboss.weld</groupId>
 					<artifactId>weld-core</artifactId>
@@ -75,11 +112,6 @@
 				<dependency>
 					<groupId>org.jboss.weld.servlet</groupId>
 					<artifactId>weld-servlet-core</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.sun.faces</groupId>
-					<artifactId>jsf-impl</artifactId>
 					<scope>runtime</scope>
 				</dependency>
 				<dependency>
@@ -108,6 +140,11 @@
 			<id>tomcat7</id>
 			<dependencies>
 				<dependency>
+					<groupId>javax.servlet</groupId>
+					<artifactId>javax.servlet-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
 					<groupId>org.jboss.weld</groupId>
 					<artifactId>weld-core</artifactId>
 					<scope>runtime</scope>
@@ -115,11 +152,6 @@
 				<dependency>
 					<groupId>org.jboss.weld.servlet</groupId>
 					<artifactId>weld-servlet-core</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.sun.faces</groupId>
-					<artifactId>jsf-impl</artifactId>
 					<scope>runtime</scope>
 				</dependency>
 				<dependency>
@@ -160,6 +192,11 @@
 			</build>
 			<dependencies>
 				<dependency>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
 					<groupId>org.jboss.weld</groupId>
 					<artifactId>weld-core</artifactId>
 					<scope>runtime</scope>
@@ -167,16 +204,6 @@
 				<dependency>
 					<groupId>org.jboss.weld.servlet</groupId>
 					<artifactId>weld-servlet-core</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.sun.faces</groupId>
-					<artifactId>jsf-impl</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.glassfish.web</groupId>
-					<artifactId>el-impl</artifactId>
 					<scope>runtime</scope>
 				</dependency>
 				<dependency>
@@ -210,6 +237,11 @@
 			<id>glassfish3</id>
 			<dependencies>
 				<dependency>
+					<groupId>javax.servlet</groupId>
+					<artifactId>javax.servlet-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
 					<groupId>javax.enterprise</groupId>
 					<artifactId>cdi-api</artifactId>
 					<scope>provided</scope>
@@ -240,11 +272,6 @@
 					<scope>provided</scope>
 				</dependency>
 				<dependency>
-					<groupId>com.sun.faces</groupId>
-					<artifactId>jsf-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
 					<groupId>hsqldb</groupId>
 					<artifactId>hsqldb</artifactId>
 					<scope>provided</scope>
@@ -259,6 +286,11 @@
 		<profile>
 			<id>jboss6</id>
 			<dependencies>
+				<dependency>
+					<groupId>javax.servlet</groupId>
+					<artifactId>javax.servlet-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
 				<dependency>
 					<groupId>javax.enterprise</groupId>
 					<artifactId>cdi-api</artifactId>
@@ -287,11 +319,6 @@
 				<dependency>
 					<groupId>org.eclipse.persistence</groupId>
 					<artifactId>javax.persistence</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.sun.faces</groupId>
-					<artifactId>jsf-api</artifactId>
 					<scope>provided</scope>
 				</dependency>
 				<dependency>
@@ -313,13 +340,13 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>javax.enterprise</groupId>
-					<artifactId>cdi-api</artifactId>
+					<groupId>javax.servlet</groupId>
+					<artifactId>javax.servlet-api</artifactId>
 					<scope>provided</scope>
 				</dependency>
 				<dependency>
-					<groupId>javax.servlet</groupId>
-					<artifactId>jstl</artifactId>
+					<groupId>javax.enterprise</groupId>
+					<artifactId>cdi-api</artifactId>
 					<scope>provided</scope>
 				</dependency>
 				<dependency>
@@ -340,11 +367,6 @@
 				<dependency>
 					<groupId>org.eclipse.persistence</groupId>
 					<artifactId>javax.persistence</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.sun.faces</groupId>
-					<artifactId>jsf-api</artifactId>
 					<scope>provided</scope>
 				</dependency>
 				<dependency>

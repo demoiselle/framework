@@ -52,7 +52,7 @@
 		<module>archetype</module>
 		<module>minimal</module>
 		<module>extension</module>
-		<module>web</module>
+		<module>servlet</module>
 		<module>jsf</module>
 		<module>se</module>
 	</modules>
