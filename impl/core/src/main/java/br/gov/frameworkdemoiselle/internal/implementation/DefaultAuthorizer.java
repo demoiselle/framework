@@ -37,9 +37,11 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.Authorizer;
 import br.gov.frameworkdemoiselle.security.RequiredPermission;
 import br.gov.frameworkdemoiselle.security.RequiredRole;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
  * Authorizator that actually does nothing but raise exceptions.
@@ -51,16 +53,25 @@ public class DefaultAuthorizer implements Authorizer {
 
 	private static final long serialVersionUID = 1L;
 
+	private static ResourceBundle bundle;
+
 	@Override
 	public boolean hasRole(String role) {
-		throw new DemoiselleException(CoreBundle.get().getString("authorizer-not-defined",
+		throw new DemoiselleException(getBundle().getString("authorizer-not-defined",
 				RequiredRole.class.getSimpleName()));
 	}
 
 	@Override
 	public boolean hasPermission(String resource, String operation) {
-		throw new DemoiselleException(CoreBundle.get().getString("authorizer-not-defined",
+		throw new DemoiselleException(getBundle().getString("authorizer-not-defined",
 				RequiredPermission.class.getSimpleName()));
 	}
 
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+		}
+
+		return bundle;
+	}
 }

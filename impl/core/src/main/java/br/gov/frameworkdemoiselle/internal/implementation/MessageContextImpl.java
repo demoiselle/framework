@@ -45,10 +45,12 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.message.DefaultMessage;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.MessageContext;
 import br.gov.frameworkdemoiselle.message.SeverityType;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
  * The message store is designed to provide access to messages. It is shared by every application layer.
@@ -65,6 +67,8 @@ public class MessageContextImpl implements Serializable, MessageContext {
 
 	private final List<Message> messages = new ArrayList<Message>();
 
+	private static ResourceBundle bundle;
+
 	@Override
 	public void add(final Message message, Object... params) {
 		Message aux;
@@ -75,7 +79,7 @@ public class MessageContextImpl implements Serializable, MessageContext {
 			aux = message;
 		}
 
-		logger.debug(CoreBundle.get().getString("adding-message-to-context", message.toString()));
+		logger.debug(getBundle().getString("adding-message-to-context", message.toString()));
 		messages.add(aux);
 	}
 
@@ -96,7 +100,15 @@ public class MessageContextImpl implements Serializable, MessageContext {
 
 	@Override
 	public void clear() {
-		logger.debug(CoreBundle.get().getString("cleaning-message-context"));
+		logger.debug(getBundle().getString("cleaning-message-context"));
 		messages.clear();
+	}
+
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+		}
+
+		return bundle;
 	}
 }

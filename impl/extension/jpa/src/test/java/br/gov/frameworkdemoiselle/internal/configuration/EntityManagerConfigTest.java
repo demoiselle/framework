@@ -70,7 +70,7 @@ public class EntityManagerConfigTest {
 	@Before
 	public void setUp() throws Exception {
 		Logger logger = PowerMock.createMock(Logger.class);
-		ResourceBundle bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());;
+		ResourceBundle bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 
 		ConfigurationLoader configurationLoader = new ConfigurationLoader();
 

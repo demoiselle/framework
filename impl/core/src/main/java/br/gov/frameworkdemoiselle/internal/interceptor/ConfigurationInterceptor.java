@@ -50,7 +50,6 @@ import br.gov.frameworkdemoiselle.util.Beans;
 
 @Interceptor
 @Configuration
-@SuppressWarnings("cdi-scope")
 public class ConfigurationInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;

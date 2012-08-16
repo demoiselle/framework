@@ -22,6 +22,25 @@
 		Neste capítulo apresentaremos para você como usar a nossa solução de controle de transação, as estratégias
 		prontas que oferecemos e a criação de sua própria estratégia.   
     </para>
+    
+    <section>
+    	<title>Configurando</title>
+    	<para>
+    	Para um correto funcionamento do Demoiselle é necessário inserir o interceptador de transação no arquivo <filename>src/main/WEB-INF/beans.xml</filename>.
+    	</para>
+		<programlisting role="XML">
+		<![CDATA[
+		<beans xmlns="http://java.sun.com/xml/ns/javaee" 
+		       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+			                       http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+			<interceptors>
+				<class>br.gov.frameworkdemoiselle.internal.interceptor.TransactionalInterceptor</class>
+			</interceptors>
+		</beans>
+		]]>
+		</programlisting>
+    </section>
 
 	<section>
 		<title>Métodos transacionais</title>
@@ -99,19 +118,11 @@ public class AbacaxiException {
 		</para>
 		<para>
 			A transação JPA é simples de configurar e não exige nenhum recurso externo à sua aplicação.
-			Basta definir no arquivo <filename>META-INF/beans.xml</filename> a seguinte configuração:
+			Basta definir no arquivo <filename>demoiselle.properties</filename> a seguinte configuração:
 		</para>
-		<programlisting role="XML"><![CDATA[<?xml version="1.0"?>
-<beans xmlns="http://java.sun.com/xml/ns/javaee"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-	                       http://java.sun.com/xml/ns/javaee/beans_1_1.xsd">
-
-	<alternatives>
-		<class>br.gov.frameworkdemoiselle.transaction.JPATransaction</class>
-	</alternatives>
-
-</beans>]]></programlisting>
+		<programlisting>
+			frameworkdemoiselle.transaction.class=br.gov.frameworkdemoiselle.transaction.JPATransaction
+		</programlisting>
 	<tip><para> Caso não esteja utilizando o arquétipo JSF-JPA fornecidos pelo Demoiselle, confira se a dependência para a 
 	extensão está indicada corretamente no arquivo POM.XML.</para>  
 	 <programlisting role="XML"><![CDATA[<dependency>
@@ -132,23 +143,13 @@ public class AbacaxiException {
 		<para>
 			A estratégia JTA não serve apenas para persistência em banco de dados, serve também para integrar com
 			tecnologias que façam acesso ao contexto JTA, como é o caso do EJB. Para ativar esta estratégia defina no
-			arquivo <filename>META-INF/beans.xml</filename> a seguinte configuração:
+			arquivo <filename>demoiselle.properties</filename> a seguinte configuração:
 		</para>
-		<programlisting role="XML"><![CDATA[<?xml version="1.0"?>
-<beans xmlns="http://java.sun.com/xml/ns/javaee"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-	                       http://java.sun.com/xml/ns/javaee/beans_1_1.xsd">
-
-	<alternatives>
-		<class>br.gov.frameworkdemoiselle.transaction.JTATransaction</class>
-	</alternatives>
-
-</beans>]]></programlisting>
+		<programlisting>frameworkdemoiselle.transaction.class=br.gov.frameworkdemoiselle.transaction.JTATransaction</programlisting>
 		<para>
 			Feito isto, o controle transacional será delegado para a transação acessível via JNDI com o nome
 			<literal>UserTransaction</literal>. A estratégia acessa o objeto da seguinte maneira:
-			<literal>context.lookup("UserTransaction")</literal>. Portanto, para você utilizar esta estratégia,
+			<literal>Beans.getReference(UserTransaction.class)</literal>. Portanto, para você utilizar esta estratégia,
 			você precisa de um container JEE ou de um servidor JTA qualquer.
 		</para>
 		<para>
@@ -156,18 +157,20 @@ public class AbacaxiException {
 			JTA gerenciada. Veja um exemplo utilizando o servidor de aplicações JBoss-AS6 e com o provider Hibernate (embutido no JBoss-AS) como implementação JPA:
 		</para>
 		<programlisting role="XML"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.0"
-             xmlns="http://java.sun.com/xml/ns/persistence"
+<persistence version="2.0" 
+             xmlns="http://java.sun.com/xml/ns/persistence" 
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	         xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
-	                             http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	         xsi:schemaLocation="http://java.sun.com/xml/ns/persistence 
+	         http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 
-	<persistence-unit name="contactlist-ds">
-		<jta-data-source>java:/DefaultDS</jta-data-source>
+	<persistence-unit name="bookmark-ds" transaction-type="JTA">
+		<jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
 		<properties>
-			<property name="hibernate.transaction.factory_class"
-			          value="org.hibernate.transaction.JTATransactionFactory" />
-			<property name="jta.UserTransaction" value="UserTransaction" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.transaction.jta.platform" 
+			value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
 		</properties>
 	</persistence-unit>
 </persistence>]]></programlisting>
@@ -221,19 +224,11 @@ public class MegaTransaction implements Transaction {
 }
 ]]></programlisting>
 		<para>
-			Basta agora definir no arquivo <filename>META-INF/beans.xml</filename> a sua estratégia:
+			Basta agora definir no arquivo <filename>demoiselle.properties</filename> a sua estratégia:
 		</para>
-		<programlisting role="XML"><![CDATA[<?xml version="1.0"?>
-<beans xmlns="http://java.sun.com/xml/ns/javaee"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-	                       http://java.sun.com/xml/ns/javaee/beans_1_1.xsd">
-
-	<alternatives>
-		<class>projeto.MegaTransaction</class>
-	</alternatives>
-
-</beans>]]></programlisting>
+		<programlisting>
+			frameworkdemoiselle.transaction.class=projeto.MegaTransaction
+		</programlisting>
 	</section>
 	
 </chapter>

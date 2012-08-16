@@ -41,23 +41,43 @@ import java.lang.reflect.InvocationTargetException;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.BeanManager;
 
+import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 
 /**
  * Represents an annotated method to be processed;
  * 
- * @param <DC>
+ * @param <T>
  *            declaring class owner of the method
  */
-public class AnnotatedMethodProcessor<DC> extends AbstractProcessor<DC> {
+public abstract class AnnotatedMethodProcessor<T> extends AbstractProcessor<T> implements
+		Comparable<AnnotatedMethodProcessor<T>> {
 
-	public AnnotatedMethodProcessor(final AnnotatedMethod<DC> annotatedMethod, final BeanManager beanManager) {
+	public AnnotatedMethodProcessor(final AnnotatedMethod<T> annotatedMethod, final BeanManager beanManager) {
 		super(annotatedMethod, beanManager);
 	}
 
-	protected AnnotatedMethod<DC> getAnnotatedMethod() {
-		return (AnnotatedMethod<DC>) getAnnotatedCallable();
+	public AnnotatedMethod<T> getAnnotatedMethod() {
+		return (AnnotatedMethod<T>) getAnnotatedCallable();
+	}
+
+	protected Integer getPriority(AnnotatedMethod<T> annotatedMethod) {
+		Integer priority = Priority.MIN_PRIORITY;
+
+		Priority annotation = annotatedMethod.getAnnotation(Priority.class);
+		if (annotation != null) {
+			priority = annotation.value();
+		}
+
+		return priority;
+	}
+
+	public int compareTo(final AnnotatedMethodProcessor<T> other) {
+		Integer orderThis = getPriority(getAnnotatedMethod());
+		Integer orderOther = getPriority(other.getAnnotatedMethod());
+
+		return orderThis.compareTo(orderOther);
 	}
 
 	public boolean process(Object... args) throws Throwable {

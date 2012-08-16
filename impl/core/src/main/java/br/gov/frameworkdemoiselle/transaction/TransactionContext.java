@@ -34,15 +34,16 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.bootstrap;
+package br.gov.frameworkdemoiselle.transaction;
 
-import br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthorizer;
-import br.gov.frameworkdemoiselle.security.Authorizer;
+import java.io.Serializable;
 
-public class AuthorizerBootstrap extends AbstractStrategyBootstrap<Authorizer, DefaultAuthorizer> {
+/**
+ * Structure used to handle trancationa mechanisms.
+ * 
+ * @author SERPRO
+ */
+public interface TransactionContext extends Serializable {
 
-	public String getConfigKey() {
-		return "frameworkdemoiselle.security.authorizer.class";
-	}
-			
+	Transaction currentTransaction();
 }

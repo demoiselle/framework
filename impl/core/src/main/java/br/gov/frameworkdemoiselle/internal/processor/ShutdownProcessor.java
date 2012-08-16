@@ -39,25 +39,29 @@ package br.gov.frameworkdemoiselle.internal.processor;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.BeanManager;
 
+import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.annotation.Shutdown;
 
-public class ShutdownProcessor<T> extends AnnotatedMethodProcessor<T> implements Comparable<ShutdownProcessor<T>> {
+/**
+ * Processor for a {@code Shutdown} annotated method, making it comparable.
+ * 
+ * @param <T>
+ */
+public class ShutdownProcessor<T> extends AnnotatedMethodProcessor<T> {
 
 	public ShutdownProcessor(AnnotatedMethod<T> annotatedMethod, BeanManager beanManager) {
 		super(annotatedMethod, beanManager);
 	}
 
-	@Override
-	public int compareTo(final ShutdownProcessor<T> other) {
-		int result = 0;
-		Shutdown annotationThis = getAnnotatedMethod().getAnnotation(Shutdown.class);
-		Shutdown annotationOther = other.getAnnotatedMethod().getAnnotation(Shutdown.class);
-		if (annotationThis != null && annotationThis != null) {
-			Integer orderThis = annotationThis.priority();
-			Integer orderOther = annotationOther.priority();
-			result = orderThis.compareTo(orderOther);
-		}
-		return result;
-	}
+	@SuppressWarnings("deprecation")
+	protected Integer getPriority(AnnotatedMethod<T> annotatedMethod) {
+		Integer priority = super.getPriority(annotatedMethod);
 
+		if (!annotatedMethod.isAnnotationPresent(Priority.class)) {
+			Shutdown annotation = annotatedMethod.getAnnotation(Shutdown.class);
+			priority = annotation.priority();
+		}
+
+		return priority;
+	}
 }

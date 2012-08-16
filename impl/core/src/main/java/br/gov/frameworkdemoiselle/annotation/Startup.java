@@ -52,11 +52,14 @@ import java.lang.annotation.Target;
  * <pre>
  * public class Initializer {
  * 
- * 	&#064;Startup(priority = 1)
+ * 	&#064;Startup
+ * 	&#064;Priority(1)
  *    public void initialize() {
  *       ...
  *    }
  * }
+ * 
+ * 
  * 
  * 
  * </pre>
@@ -74,17 +77,29 @@ public @interface Startup {
 
 	/**
 	 * Most important priority value.
+	 * 
+	 * @deprecated
+	 * @see Priority
 	 */
+	@Deprecated
 	public static int MAX_PRIORITY = Integer.MIN_VALUE;
 
 	/**
 	 * Less important priority value.
+	 * 
+	 * @deprecated
+	 * @see Priority
 	 */
+	@Deprecated
 	public static int MIN_PRIORITY = Integer.MAX_VALUE;
 
 	/**
 	 * An integer value defines method execution order (i.e., priority).
+	 * 
+	 * @deprecated
+	 * @see Priority
 	 */
+	@Deprecated
 	int priority() default MIN_PRIORITY;
 
 }

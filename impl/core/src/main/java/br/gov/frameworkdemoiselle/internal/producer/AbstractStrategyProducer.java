@@ -40,6 +40,10 @@ import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.net.URL;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionTarget;
 import javax.inject.Inject;
 
 import org.apache.commons.configuration.Configuration;
@@ -48,6 +52,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
@@ -65,6 +70,21 @@ public abstract class AbstractStrategyProducer<T, D extends T> implements Serial
 	@Inject
 	@Name("demoiselle-core-bundle")
 	private ResourceBundle bundle;
+
+	@SuppressWarnings("unchecked")
+	public T create() {
+		BeanManager beanManager = Beans.getBeanManager();
+
+		AnnotatedType<T> type = ((AnnotatedType<T>) beanManager.createAnnotatedType(getSelected()));
+		InjectionTarget<T> it = beanManager.createInjectionTarget(type);
+		CreationalContext<T> ctx = beanManager.createCreationalContext(null);
+
+		T instance = it.produce(ctx);
+		it.inject(instance, ctx);
+		it.postConstruct(instance);
+
+		return instance;
+	}
 
 	protected Class<? extends T> getSelected() {
 		if (selected == null) {
@@ -88,26 +108,7 @@ public abstract class AbstractStrategyProducer<T, D extends T> implements Serial
 		}
 
 		return this.defaultClass;
-	}// public <A> void processAnnotatedType(@Observes final ProcessAnnotatedType<A> event) {
-		// Class<A> annotated = event.getAnnotatedType().getJavaClass();
-
-	//
-	// if (Reflections.isOfType(annotated, getType()) && annotated != selected) {
-	// event.veto();
-	// }
-	// }
-
-	// public void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event) {
-	// selected = loadSelected();
-	// }
-
-	// public <A> void processAnnotatedType(@Observes final ProcessAnnotatedType<A> event) {
-	// Class<A> annotated = event.getAnnotatedType().getJavaClass();
-	//
-	// if (Reflections.isOfType(annotated, getType()) && annotated != selected) {
-	// event.veto();
-	// }
-	// }
+	}
 
 	@SuppressWarnings("unchecked")
 	private Class<T> loadSelected() {
@@ -121,12 +122,8 @@ public abstract class AbstractStrategyProducer<T, D extends T> implements Serial
 			Configuration config = new PropertiesConfiguration(url);
 			canonicalName = config.getString(getConfigKey(), getDefaultClass().getCanonicalName());
 
-			ClassLoader classLoader;
-
-			try {
-				classLoader = ConfigurationLoader.getClassLoaderForResource(canonicalName.replaceAll("\\.", "/")
-						+ ".class");
-			} catch (FileNotFoundException e) {
+			ClassLoader classLoader = ConfigurationLoader.getClassLoaderForClass(canonicalName);
+			if (classLoader == null) {
 				classLoader = Thread.currentThread().getContextClassLoader();
 			}
 

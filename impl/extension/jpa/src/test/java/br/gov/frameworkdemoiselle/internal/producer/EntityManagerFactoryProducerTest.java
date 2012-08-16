@@ -40,7 +40,7 @@ public class EntityManagerFactoryProducerTest {
 	@Before
 	public void setUp() {
 		logger = createMock(Logger.class);
-		bundle = new ResourceBundleProducer().create("demoiselle-jpa-bundle", Locale.getDefault());
+		bundle = ResourceBundleProducer.create("demoiselle-jpa-bundle", Locale.getDefault());
 		producer = new EntityManagerFactoryProducer();
 		cache = Collections.synchronizedMap(new HashMap<String, EntityManagerFactory>());
 		setInternalState(producer, Map.class, cache);
@@ -72,14 +72,14 @@ public class EntityManagerFactoryProducerTest {
 		expect(Persistence.createEntityManagerFactory("pu1")).andReturn(emFactory);
 		replay(Persistence.class);
 		
-		producer.init();
+		producer.loadPersistenceUnits();
 		Assert.assertEquals(emFactory, cache.get("pu1"));
 	}
 	
 	@Test
 	public void testInitWithError() {
 		try {
-			producer.init();
+			producer.loadPersistenceUnits();
 			Assert.fail();
 		}catch(DemoiselleException cause) {
 			Assert.assertTrue(true);

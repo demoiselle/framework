@@ -34,15 +34,33 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.bootstrap;
+package br.gov.frameworkdemoiselle.annotation;
 
-import br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthenticator;
-import br.gov.frameworkdemoiselle.security.Authenticator;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-public class AuthenticatorBootstrap extends AbstractStrategyBootstrap<Authenticator, DefaultAuthenticator> {
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-	public String getConfigKey() {
-		return "frameworkdemoiselle.security.authenticator.class";
-	}
-	
+/**
+ * @author SERPRO
+ */
+@Target(METHOD)
+@Retention(RUNTIME)
+public @interface Priority {
+
+	/**
+	 * Most important priority value.
+	 */
+	public static int MAX_PRIORITY = Integer.MIN_VALUE;
+
+	/**
+	 * Less important priority value.
+	 */
+	public static int MIN_PRIORITY = Integer.MAX_VALUE;
+
+	/**
+	 * An integer value defines the priority order.
+	 */
+	int value();
 }

@@ -52,11 +52,13 @@ import java.lang.annotation.Target;
  * <pre>
  * public class Finalizer {
  * 
- * 	&#064;Shutdown(priority = 5)
+ * 	&#064;Shutdown
+ * 	&#064;Priority(5)
  *    public void finalize() {
  *       ...
  *    }
  * }
+ * 
  * 
  * 
  * 
@@ -75,17 +77,29 @@ public @interface Shutdown {
 
 	/**
 	 * Most important priority value.
+	 * 
+	 * @deprecated
+	 * @see Priority
 	 */
+	@Deprecated
 	public static int MAX_PRIORITY = Integer.MIN_VALUE;
 
 	/**
 	 * Less important priority value.
+	 * 
+	 * @deprecated
+	 * @see Priority
 	 */
+	@Deprecated
 	public static int MIN_PRIORITY = Integer.MAX_VALUE;
 
 	/**
 	 * An integer value defines method execution order (i.e., priority).
+	 * 
+	 * @deprecated
+	 * @see Priority
 	 */
+	@Deprecated
 	int priority() default MIN_PRIORITY;
 
 }

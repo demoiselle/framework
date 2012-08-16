@@ -51,16 +51,14 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 /**
  * It abstract the integration between Processor and the context;
  * 
- * @param <DC>
+ * @param <T>
  *            the declaring class
  */
-public abstract class AbstractProcessor<DC> implements Processor {
+public abstract class AbstractProcessor<T> implements Processor {
 
 	private BeanManager beanManager;
 
-	private AnnotatedCallable<DC> annotatedCallable;
-
-	private ResourceBundleProducer bundleFactory = new ResourceBundleProducer();
+	private AnnotatedCallable<T> annotatedCallable;
 
 	private ResourceBundle bundle;
 
@@ -70,12 +68,12 @@ public abstract class AbstractProcessor<DC> implements Processor {
 		this.beanManager = beanManager;
 	}
 
-	public AbstractProcessor(final AnnotatedCallable<DC> annotatedCallable, final BeanManager beanManager) {
+	public AbstractProcessor(final AnnotatedCallable<T> annotatedCallable, final BeanManager beanManager) {
 		this.annotatedCallable = annotatedCallable;
 		this.beanManager = beanManager;
 	}
 
-	protected AnnotatedCallable<DC> getAnnotatedCallable() {
+	protected AnnotatedCallable<T> getAnnotatedCallable() {
 		return this.annotatedCallable;
 	}
 
@@ -92,15 +90,15 @@ public abstract class AbstractProcessor<DC> implements Processor {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	protected DC getReferencedBean() {
-		Class<DC> classType = (Class<DC>) getAnnotatedCallable().getJavaMember().getDeclaringClass();
+	protected T getReferencedBean() {
+		Class<T> classType = (Class<T>) getAnnotatedCallable().getJavaMember().getDeclaringClass();
 		return getReferencedBean(classType);
 	}
 
 	@SuppressWarnings("unchecked")
-	protected DC getReferencedBean(final Class<DC> type) {
-		Bean<DC> bean = (Bean<DC>) beanManager.getBeans(type).iterator().next();
-		return (DC) beanManager.getReference(bean, type, beanManager.createCreationalContext(bean));
+	protected T getReferencedBean(final Class<T> type) {
+		Bean<T> bean = (Bean<T>) beanManager.getBeans(type).iterator().next();
+		return (T) beanManager.getReference(bean, type, beanManager.createCreationalContext(bean));
 	}
 
 	protected ResourceBundle getBundle() {
@@ -109,7 +107,7 @@ public abstract class AbstractProcessor<DC> implements Processor {
 
 	protected ResourceBundle getBundle(String baseName) {
 		if (bundle == null) {
-			bundle = bundleFactory.create(baseName, Locale.getDefault());
+			bundle = ResourceBundleProducer.create(baseName, Locale.getDefault());
 		}
 
 		return bundle;

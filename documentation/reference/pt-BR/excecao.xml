@@ -11,6 +11,25 @@
 		Oferecemos à você uma alternativa para resolver estes problemas, mas você estará livre para usá-la: isoladamente,
 		misturando com a forma verbosa ou até mesmo não usá-la.
 	</para>
+	
+	<section>
+    	<title>Configurando</title>
+    	<para>
+    	Para um correto funcionamento do Demoiselle é necessário inserir o interceptador de exceção no arquivo <filename>src/main/WEB-INF/beans.xml</filename>.
+    	</para>
+		<programlisting role="XML">
+		<![CDATA[
+		<beans xmlns="http://java.sun.com/xml/ns/javaee" 
+		       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+			                       http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+			<interceptors>
+				<class>br.gov.frameworkdemoiselle.internal.interceptor.ExceptionHandlerInterceptor</class>
+			</interceptors>
+		</beans>
+		]]>
+		</programlisting>
+    </section>
 
 	<section>
 		<title>Tratadores de exceção</title>

@@ -46,6 +46,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -56,6 +57,16 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 public class ResourceBundleProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * This method should be used by classes that can not inject ResourceBundle, to create the ResourceBundle.
+	 * 
+	 * @param String
+	 *            baseName
+	 */
+	public static ResourceBundle create(String baseName) {
+		return create(baseName, Beans.getReference(Locale.class));
+	}
 
 	/**
 	 * This method should be used by classes that can not inject ResourceBundle, to create the ResourceBundle.
@@ -82,7 +93,7 @@ public class ResourceBundleProducer implements Serializable {
 	 */
 	@Produces
 	@Default
-	public ResourceBundle create(InjectionPoint ip, Locale locale) {
+	public ResourceBundle create(InjectionPoint ip) {
 		String baseName;
 
 		if (ip != null && ip.getAnnotated().isAnnotationPresent(Name.class)) {
@@ -91,6 +102,6 @@ public class ResourceBundleProducer implements Serializable {
 			baseName = "messages";
 		}
 
-		return create(baseName, locale);
+		return create(baseName, Beans.getReference(Locale.class));
 	}
 }

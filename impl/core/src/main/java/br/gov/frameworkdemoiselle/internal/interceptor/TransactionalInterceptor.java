@@ -50,6 +50,7 @@ import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
 import br.gov.frameworkdemoiselle.internal.implementation.TransactionInfo;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
+import br.gov.frameworkdemoiselle.transaction.TransactionContext;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -59,19 +60,19 @@ public class TransactionalInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Instance<Transaction> transaction;
+	private final Instance<TransactionContext> context;
 
 	private final Logger logger;
 
 	private final ResourceBundle bundle;
 
-	private final Instance<TransactionInfo> transactionInfo;
+	private final Instance<TransactionInfo> info;
 
 	@Inject
-	public TransactionalInterceptor(Instance<Transaction> transaction, Instance<TransactionInfo> transactionInfo,
+	public TransactionalInterceptor(Instance<TransactionContext> context, Instance<TransactionInfo> info,
 			Logger logger, @Name("demoiselle-core-bundle") ResourceBundle bundle) {
-		this.transaction = transaction;
-		this.transactionInfo = transactionInfo;
+		this.context = context;
+		this.info = info;
 		this.logger = logger;
 		this.bundle = bundle;
 
@@ -84,7 +85,7 @@ public class TransactionalInterceptor implements Serializable {
 		Object result = null;
 		try {
 			this.logger.debug(bundle.getString("transactional-execution", ic.getMethod().toGenericString()));
-			transactionInfo.get().incrementCounter();
+			info.get().incrementCounter();
 
 			result = ic.proceed();
 
@@ -93,7 +94,7 @@ public class TransactionalInterceptor implements Serializable {
 			throw cause;
 
 		} finally {
-			transactionInfo.get().decrementCounter();
+			info.get().decrementCounter();
 			complete(ic);
 		}
 
@@ -101,8 +102,8 @@ public class TransactionalInterceptor implements Serializable {
 	}
 
 	private void initiate(final InvocationContext ic) {
-		Transaction tx = this.transaction.get();
-		TransactionInfo ctx = this.transactionInfo.get();
+		Transaction tx = this.context.get().currentTransaction();
+		TransactionInfo ctx = this.info.get();
 
 		if (!tx.isActive()) {
 			tx.begin();
@@ -112,7 +113,7 @@ public class TransactionalInterceptor implements Serializable {
 	}
 
 	private void handleException(final Exception cause) {
-		Transaction tx = this.transaction.get();
+		Transaction tx = this.context.get().currentTransaction();
 
 		if (!tx.isMarkedRollback()) {
 			boolean rollback = false;
@@ -130,8 +131,8 @@ public class TransactionalInterceptor implements Serializable {
 	}
 
 	private void complete(final InvocationContext ic) {
-		Transaction tx = this.transaction.get();
-		TransactionInfo ctx = this.transactionInfo.get();
+		Transaction tx = this.context.get().currentTransaction();
+		TransactionInfo ctx = this.info.get();
 
 		if (ctx.getCounter() == 0 && tx.isActive()) {
 
