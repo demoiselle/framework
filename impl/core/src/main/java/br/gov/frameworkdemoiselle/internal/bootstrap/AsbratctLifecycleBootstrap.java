@@ -64,8 +64,9 @@ public abstract class AsbratctLifecycleBootstrap<A extends Annotation> extends A
 
 	private Class<A> annotationClass;
 
-	private final List<AnnotatedMethodProcessor<?>> processors = Collections
-			.synchronizedList(new ArrayList<AnnotatedMethodProcessor<?>>());
+	@SuppressWarnings("rawtypes")
+	private final List<AnnotatedMethodProcessor> processors = Collections
+			.synchronizedList(new ArrayList<AnnotatedMethodProcessor>());
 
 	private final List<CustomContext> tempContexts = new ArrayList<CustomContext>();
 
@@ -106,6 +107,7 @@ public abstract class AsbratctLifecycleBootstrap<A extends Annotation> extends A
 
 	private boolean x = true;
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected synchronized void proccessEvent(final ApplicationLifecycleEvent event) {
 		getLogger().debug(
 				getBundle("demoiselle-core-bundle").getString("executing-all", annotationClass.getSimpleName()));
@@ -121,7 +123,7 @@ public abstract class AsbratctLifecycleBootstrap<A extends Annotation> extends A
 			x = false;
 		}
 
-		for (Iterator<AnnotatedMethodProcessor<?>> iter = processors.iterator(); iter.hasNext();) {
+		for (Iterator<AnnotatedMethodProcessor> iter = processors.iterator(); iter.hasNext();) {
 			AnnotatedMethodProcessor<?> processor = iter.next();
 
 			try {
