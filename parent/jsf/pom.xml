@@ -69,6 +69,11 @@
 			<dependencies>
 				<dependency>
 					<groupId>com.sun.faces</groupId>
+					<artifactId>jsf-api</artifactId>
+					<scope>compile</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.faces</groupId>
 					<artifactId>jsf-impl</artifactId>
 					<scope>runtime</scope>
 				</dependency>
@@ -79,6 +84,11 @@
 			<dependencies>
 				<dependency>
 					<groupId>com.sun.faces</groupId>
+					<artifactId>jsf-api</artifactId>
+					<scope>compile</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.faces</groupId>
 					<artifactId>jsf-impl</artifactId>
 					<scope>runtime</scope>
 				</dependency>
@@ -87,6 +97,11 @@
 		<profile>
 			<id>gae</id>
 			<dependencies>
+				<dependency>
+					<groupId>com.sun.faces</groupId>
+					<artifactId>jsf-api</artifactId>
+					<scope>compile</scope>
+				</dependency>			
 				<dependency>
 					<groupId>com.sun.faces</groupId>
 					<artifactId>jsf-impl</artifactId>
