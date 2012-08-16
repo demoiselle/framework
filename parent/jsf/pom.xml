@@ -68,39 +68,9 @@
 			<id>tomcat6</id>
 			<dependencies>
 				<dependency>
-					<groupId>org.jboss.weld</groupId>
-					<artifactId>weld-core</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.jboss.weld.servlet</groupId>
-					<artifactId>weld-servlet-core</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
 					<groupId>com.sun.faces</groupId>
 					<artifactId>jsf-impl</artifactId>
 					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.eclipse.persistence</groupId>
-					<artifactId>eclipselink</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-validator</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>hsqldb</groupId>
-					<artifactId>hsqldb</artifactId>
-					<scope>compile</scope>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -108,67 +78,15 @@
 			<id>tomcat7</id>
 			<dependencies>
 				<dependency>
-					<groupId>org.jboss.weld</groupId>
-					<artifactId>weld-core</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.jboss.weld.servlet</groupId>
-					<artifactId>weld-servlet-core</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
 					<groupId>com.sun.faces</groupId>
 					<artifactId>jsf-impl</artifactId>
 					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.eclipse.persistence</groupId>
-					<artifactId>eclipselink</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-validator</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>hsqldb</groupId>
-					<artifactId>hsqldb</artifactId>
-					<scope>compile</scope>
 				</dependency>
 			</dependencies>
 		</profile>
 		<profile>
 			<id>gae</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>net.kindleit</groupId>
-						<artifactId>maven-gae-plugin</artifactId>
-						<version>${kindleit.plugin.version}</version>
-						<configuration>
-							<serverId>appengine.google.com</serverId>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
 			<dependencies>
-				<dependency>
-					<groupId>org.jboss.weld</groupId>
-					<artifactId>weld-core</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.jboss.weld.servlet</groupId>
-					<artifactId>weld-servlet-core</artifactId>
-					<scope>runtime</scope>
-				</dependency>
 				<dependency>
 					<groupId>com.sun.faces</groupId>
 					<artifactId>jsf-impl</artifactId>
@@ -179,80 +97,15 @@
 					<artifactId>el-impl</artifactId>
 					<scope>runtime</scope>
 				</dependency>
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-validator</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.google.appengine</groupId>
-					<artifactId>appengine-api-1.0-sdk</artifactId>
-					<version>${gae.version}</version>
-				</dependency>
 			</dependencies>
-			<repositories>
-				<repository>
-					<id>objectify-appengine</id>
-					<url>http://objectify-appengine.googlecode.com/svn/maven</url>
-				</repository>
-			</repositories>
-			<properties>
-				<gae.version>1.7.0</gae.version>
-				<kindleit.plugin.version>0.9.4</kindleit.plugin.version>
-			</properties>
 		</profile>
 		<profile>
 			<id>glassfish3</id>
 			<dependencies>
 				<dependency>
-					<groupId>javax.enterprise</groupId>
-					<artifactId>cdi-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>javax.servlet</groupId>
-					<artifactId>jstl</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<artifactId>validation-api</artifactId>
-					<groupId>javax.validation</groupId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>javax.transaction</groupId>
-					<artifactId>jta</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.eclipse.persistence</groupId>
-					<artifactId>javax.persistence</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
 					<groupId>com.sun.faces</groupId>
 					<artifactId>jsf-api</artifactId>
 					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>hsqldb</groupId>
-					<artifactId>hsqldb</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-entitymanager</artifactId>
-					<scope>test</scope>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -260,49 +113,9 @@
 			<id>jboss6</id>
 			<dependencies>
 				<dependency>
-					<groupId>javax.enterprise</groupId>
-					<artifactId>cdi-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>javax.servlet</groupId>
-					<artifactId>jstl</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<artifactId>validation-api</artifactId>
-					<groupId>javax.validation</groupId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>javax.transaction</groupId>
-					<artifactId>jta</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.eclipse.persistence</groupId>
-					<artifactId>javax.persistence</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
 					<groupId>com.sun.faces</groupId>
 					<artifactId>jsf-api</artifactId>
 					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>hsqldb</groupId>
-					<artifactId>hsqldb</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-entitymanager</artifactId>
-					<scope>test</scope>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -313,49 +126,9 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>javax.enterprise</groupId>
-					<artifactId>cdi-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>javax.servlet</groupId>
-					<artifactId>jstl</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<artifactId>validation-api</artifactId>
-					<groupId>javax.validation</groupId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>javax.transaction</groupId>
-					<artifactId>jta</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.eclipse.persistence</groupId>
-					<artifactId>javax.persistence</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
 					<groupId>com.sun.faces</groupId>
 					<artifactId>jsf-api</artifactId>
 					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>hsqldb</groupId>
-					<artifactId>hsqldb</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-entitymanager</artifactId>
-					<scope>test</scope>
 				</dependency>
 			</dependencies>
 		</profile>
