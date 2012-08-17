@@ -45,5 +45,5 @@ import java.io.Serializable;
  */
 public interface TransactionContext extends Serializable {
 
-	Transaction currentTransaction();
+	Transaction getCurrentTransaction();
 }

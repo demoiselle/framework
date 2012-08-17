@@ -36,8 +36,6 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import java.util.Locale;
-
 import javax.inject.Named;
 
 import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfig;
@@ -179,9 +177,7 @@ public class SecurityContextImpl implements SecurityContext {
 
 	private void checkLoggedIn() throws NotLoggedInException {
 		if (!isLoggedIn()) {
-			Locale locale = Beans.getReference(Locale.class);
-			ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-core-bundle", locale);
-
+			ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
 			throw new NotLoggedInException(bundle.getString("user-not-authenticated"));
 		}
 	}

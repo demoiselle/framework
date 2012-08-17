@@ -38,20 +38,20 @@ package br.gov.frameworkdemoiselle.internal.interceptor;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 import org.slf4j.Logger;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
 import br.gov.frameworkdemoiselle.internal.implementation.TransactionInfo;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.TransactionContext;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @Interceptor
@@ -60,22 +60,41 @@ public class TransactionalInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Instance<TransactionContext> context;
+	private TransactionContext transactionContext;
 
-	private final Logger logger;
+	private TransactionInfo transactionInfo;
 
-	private final ResourceBundle bundle;
+	private ResourceBundle bundle;
 
-	private final Instance<TransactionInfo> info;
+	private Logger logger;
 
-	@Inject
-	public TransactionalInterceptor(Instance<TransactionContext> context, Instance<TransactionInfo> info,
-			Logger logger, @Name("demoiselle-core-bundle") ResourceBundle bundle) {
-		this.context = context;
-		this.info = info;
-		this.logger = logger;
-		this.bundle = bundle;
+	private TransactionContext getTransactionContext() {
+		if (this.transactionContext == null) {
+			this.transactionContext = Beans.getReference(TransactionContext.class);
+		}
 
+		return this.transactionContext;
+	}
+
+	private TransactionInfo newTransactionInfo() {
+		TransactionInfo instance;
+
+		try {
+			instance = Beans.getReference(TransactionInfo.class);
+
+		} catch (ContextNotActiveException cause) {
+			instance = new TransactionInfo();
+		}
+
+		return instance;
+	}
+
+	private TransactionInfo getTransactionInfo() {
+		if (this.transactionInfo == null) {
+			this.transactionInfo = newTransactionInfo();
+		}
+
+		return this.transactionInfo;
 	}
 
 	@AroundInvoke
@@ -84,9 +103,7 @@ public class TransactionalInterceptor implements Serializable {
 
 		Object result = null;
 		try {
-			this.logger.debug(bundle.getString("transactional-execution", ic.getMethod().toGenericString()));
-			info.get().incrementCounter();
-
+			getLogger().debug(getBundle().getString("transactional-execution", ic.getMethod().toGenericString()));
 			result = ic.proceed();
 
 		} catch (Exception cause) {
@@ -94,7 +111,6 @@ public class TransactionalInterceptor implements Serializable {
 			throw cause;
 
 		} finally {
-			info.get().decrementCounter();
 			complete(ic);
 		}
 
@@ -102,20 +118,22 @@ public class TransactionalInterceptor implements Serializable {
 	}
 
 	private void initiate(final InvocationContext ic) {
-		Transaction tx = this.context.get().currentTransaction();
-		TransactionInfo ctx = this.info.get();
+		Transaction transaction = getTransactionContext().getCurrentTransaction();
+		TransactionInfo transactionInfo = getTransactionInfo();
 
-		if (!tx.isActive()) {
-			tx.begin();
-			ctx.markAsOwner();
-			this.logger.info(bundle.getString("begin-transaction"));
+		if (!transaction.isActive()) {
+			transaction.begin();
+			transactionInfo.markAsOwner();
+			getLogger().info(getBundle().getString("begin-transaction"));
 		}
+
+		transactionInfo.incrementCounter();
 	}
 
 	private void handleException(final Exception cause) {
-		Transaction tx = this.context.get().currentTransaction();
+		Transaction transaction = getTransactionContext().getCurrentTransaction();
 
-		if (!tx.isMarkedRollback()) {
+		if (!transaction.isMarkedRollback()) {
 			boolean rollback = false;
 			ApplicationException annotation = cause.getClass().getAnnotation(ApplicationException.class);
 
@@ -124,30 +142,47 @@ public class TransactionalInterceptor implements Serializable {
 			}
 
 			if (rollback) {
-				tx.setRollbackOnly();
-				this.logger.info(bundle.getString("transaction-marked-rollback", cause.getMessage()));
+				transaction.setRollbackOnly();
+				getLogger().info(getBundle().getString("transaction-marked-rollback", cause.getMessage()));
 			}
 		}
 	}
 
 	private void complete(final InvocationContext ic) {
-		Transaction tx = this.context.get().currentTransaction();
-		TransactionInfo ctx = this.info.get();
+		Transaction transaction = getTransactionContext().getCurrentTransaction();
+		TransactionInfo transactionInfo = getTransactionInfo();
+		transactionInfo.decrementCounter();
 
-		if (ctx.getCounter() == 0 && tx.isActive()) {
+		if (transactionInfo.getCounter() == 0 && transaction.isActive()) {
 
-			if (ctx.isOwner()) {
-				if (tx.isMarkedRollback()) {
-					tx.rollback();
-					this.logger.info(bundle.getString("transaction-rolledback"));
+			if (transactionInfo.isOwner()) {
+				if (transaction.isMarkedRollback()) {
+					transaction.rollback();
+					getLogger().info(getBundle().getString("transaction-rolledback"));
 				} else {
-					tx.commit();
-					this.logger.info(bundle.getString("transaction-commited"));
+					transaction.commit();
+					getLogger().info(getBundle().getString("transaction-commited"));
 				}
 			}
 
-		} else if (ctx.getCounter() == 0 && !tx.isActive()) {
-			this.logger.info(bundle.getString("transaction-already-finalized"));
+		} else if (transactionInfo.getCounter() == 0 && !transaction.isActive()) {
+			getLogger().info(getBundle().getString("transaction-already-finalized"));
 		}
+	}
+
+	private ResourceBundle getBundle() {
+		if (this.bundle == null) {
+			this.bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+		}
+
+		return this.bundle;
+	}
+
+	private Logger getLogger() {
+		if (this.logger == null) {
+			this.logger = Beans.getReference(Logger.class);
+		}
+
+		return this.logger;
 	}
 }

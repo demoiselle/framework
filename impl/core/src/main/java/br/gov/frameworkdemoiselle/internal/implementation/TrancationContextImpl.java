@@ -16,8 +16,9 @@ public class TrancationContextImpl implements TransactionContext {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public Transaction currentTransaction() {
-		return StrategySelector.getReference("frameworkdemoiselle.transaction.class", Transaction.class, DefaultTransaction.class);
+	public Transaction getCurrentTransaction() {
+		return StrategySelector.getReference("frameworkdemoiselle.transaction.class", Transaction.class,
+				DefaultTransaction.class);
 	}
 
 }
