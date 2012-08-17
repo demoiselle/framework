@@ -38,8 +38,6 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.Alternative;
-
 import br.gov.frameworkdemoiselle.pagination.Pagination;
 import br.gov.frameworkdemoiselle.util.Strings;
 
@@ -53,7 +51,6 @@ import br.gov.frameworkdemoiselle.util.Strings;
  * @author SERPRO
  * @see Pagination
  */
-@Alternative
 public class PaginationImpl implements Serializable, Pagination {
 
 	private static final long serialVersionUID = 1L;
