@@ -43,12 +43,9 @@ import static org.junit.Assert.assertTrue;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.gov.frameworkdemoiselle.annotation.Ignore;
 
-@RunWith(PowerMockRunner.class)
 public class StringsTest {
 
 	@Test
@@ -144,7 +141,7 @@ public class StringsTest {
 		}
 
 		String result = Strings.toString(new Test());
-		
+
 		assertTrue(result.contains("Test [name=myName, lastname=myLastname, nullField=null, this"));
 
 		verifyAll();
@@ -195,15 +192,15 @@ public class StringsTest {
 		assertEquals(-1, string.indexOf('L'));
 		assertEquals(-1, string.indexOf('l'));
 	}
-	
+
 	@Test
 	public void insertZeros() {
 		String string = "Lorem ipsum";
 		assertEquals("00000", Strings.insertZeros(null, 5));
-		assertEquals(string, Strings.insertZeros(string, string.length()-1));
+		assertEquals(string, Strings.insertZeros(string, string.length() - 1));
 		assertEquals(string, Strings.insertZeros(string, string.length()));
-		assertEquals("0"+string, Strings.insertZeros(string, string.length()+1));
-		assertEquals("00"+string, Strings.insertZeros(string, string.length()+2));
+		assertEquals("0" + string, Strings.insertZeros(string, string.length() + 1));
+		assertEquals("00" + string, Strings.insertZeros(string, string.length() + 2));
 	}
-	
+
 }

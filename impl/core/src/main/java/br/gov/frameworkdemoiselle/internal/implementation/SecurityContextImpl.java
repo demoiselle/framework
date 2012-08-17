@@ -60,14 +60,26 @@ public class SecurityContextImpl implements SecurityContext {
 
 	private static final long serialVersionUID = 1L;
 
+	private Authenticator authenticator;
+
+	private Authorizer authorizer;
+
 	private Authenticator getAuthenticator() {
-		return StrategySelector.getReference("frameworkdemoiselle.security.authenticator.class", Authenticator.class,
-				DefaultAuthenticator.class);
+		if (authenticator == null) {
+			authenticator = StrategySelector.getReference("frameworkdemoiselle.security.authenticator.class",
+					Authenticator.class, DefaultAuthenticator.class);
+		}
+
+		return authenticator;
 	}
 
 	private Authorizer getAuthorizer() {
-		return StrategySelector.getReference("frameworkdemoiselle.security.authorizer.class", Authorizer.class,
-				DefaultAuthorizer.class);
+		if (authorizer == null) {
+			authorizer = StrategySelector.getReference("frameworkdemoiselle.security.authorizer.class",
+					Authorizer.class, DefaultAuthorizer.class);
+		}
+
+		return authorizer;
 	}
 
 	/**

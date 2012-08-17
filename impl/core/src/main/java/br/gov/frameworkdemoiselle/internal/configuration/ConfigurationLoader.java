@@ -48,7 +48,6 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.configuration.DataConfiguration;
@@ -63,6 +62,8 @@ import br.gov.frameworkdemoiselle.configuration.ConfigType;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.internal.bootstrap.CoreBootstrap;
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
@@ -77,12 +78,9 @@ public class ConfigurationLoader implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	@Name("demoiselle-core-bundle")
-	private ResourceBundle bundle;
+	private static ResourceBundle bundle;
 
-	@Inject
-	private Logger logger;
+	private static Logger logger;
 
 	/**
 	 * Loads a config class filling it with the corresponding values.
@@ -96,10 +94,10 @@ public class ConfigurationLoader implements Serializable {
 
 		if (!CoreBootstrap.isAnnotatedType(config)) {
 			config = config.getSuperclass();
-			logger.debug(bundle.getString("proxy-detected", config, config.getClass().getSuperclass()));
+			getLogger().debug(getBundle().getString("proxy-detected", config, config.getClass().getSuperclass()));
 		}
 
-		logger.debug(bundle.getString("loading-configuration-class", config.getName()));
+		getLogger().debug(getBundle().getString("loading-configuration-class", config.getName()));
 
 		for (Field field : Reflections.getNonStaticDeclaredFields(config)) {
 			loadField(field, object, config);
@@ -123,13 +121,14 @@ public class ConfigurationLoader implements Serializable {
 	private void setValue(Field field, String key, Object object, Object value) {
 		if (value != null) {
 			Reflections.setFieldValue(field, object, value);
-			logger.debug(bundle.getString("configuration-field-loaded", key, field.getName(), value));
+			getLogger().debug(getBundle().getString("configuration-field-loaded", key, field.getName(), value));
 		}
 	}
 
 	private void validate(Field field, String key, Object value, String resource) {
 		if (field.isAnnotationPresent(NotNull.class) && value == null) {
-			throw new ConfigurationException(bundle.getString("configuration-attribute-is-mandatory", key, resource));
+			throw new ConfigurationException(getBundle().getString("configuration-attribute-is-mandatory", key,
+					resource));
 		}
 	}
 
@@ -166,7 +165,7 @@ public class ConfigurationLoader implements Serializable {
 
 		Name nameAnnotation = field.getAnnotation(Name.class);
 		if (Strings.isEmpty(nameAnnotation.value())) {
-			throw new ConfigurationException(bundle.getString("configuration-name-attribute-cant-be-empty"));
+			throw new ConfigurationException(getBundle().getString("configuration-name-attribute-cant-be-empty"));
 		} else {
 			key = nameAnnotation.value();
 		}
@@ -193,9 +192,9 @@ public class ConfigurationLoader implements Serializable {
 		}
 
 		if (matches == 0) {
-			logger.debug(bundle.getString("configuration-key-not-found", key, conventions));
+			getLogger().debug(getBundle().getString("configuration-key-not-found", key, conventions));
 		} else if (matches > 1) {
-			throw new ConfigurationException(bundle.getString("ambiguous-key", field.getName(),
+			throw new ConfigurationException(getBundle().getString("ambiguous-key", field.getName(),
 					field.getDeclaringClass()));
 		}
 
@@ -222,7 +221,7 @@ public class ConfigurationLoader implements Serializable {
 
 				case PROPERTIES:
 					url = getResourceAsURL(resource + ".properties");
-					config =  new DataConfiguration(new PropertiesConfiguration(url));
+					config = new DataConfiguration(new PropertiesConfiguration(url));
 					break;
 
 				case XML:
@@ -231,13 +230,13 @@ public class ConfigurationLoader implements Serializable {
 					break;
 
 				default:
-					throw new ConfigurationException(bundle.getString("configuration-type-not-implemented-yet",
+					throw new ConfigurationException(getBundle().getString("configuration-type-not-implemented-yet",
 							type.name()));
 			}
 
 		} catch (Exception cause) {
-			throw new ConfigurationException(bundle.getString("error-creating-configuration-from-resource", resource),
-					cause);
+			throw new ConfigurationException(getBundle().getString("error-creating-configuration-from-resource",
+					resource), cause);
 		}
 
 		return config;
@@ -248,7 +247,7 @@ public class ConfigurationLoader implements Serializable {
 		Object value;
 
 		Class<?> fieldClass = (Class<?>) field.getType();
-		
+
 		if (fieldClass.isArray()) {
 			value = getArray(key, field, config);
 		} else if (fieldClass.equals(Properties.class)) {
@@ -260,27 +259,28 @@ public class ConfigurationLoader implements Serializable {
 
 		return (T) value;
 	}
-	
+
 	private <T> Object getArray(String key, Field field, org.apache.commons.configuration.Configuration config) {
 		Object value = null;
 
 		Class<?> fieldClass = (Class<?>) field.getType();
-		
+
 		try {
 			Method method;
-			
+
 			String methodName = "get";
-			
+
 			methodName += Strings.firstToUpper(fieldClass.getSimpleName());
 			methodName = Strings.removeChars(methodName, '[', ']');
-			
+
 			methodName += "Array";
 
 			method = config.getClass().getMethod(methodName, String.class);
 			value = method.invoke(config, key);
 
 		} catch (Throwable cause) {
-			throw new ConfigurationException(bundle.getString("error-converting-to-type", fieldClass.getName()), cause);
+			throw new ConfigurationException(getBundle().getString("error-converting-to-type", fieldClass.getName()),
+					cause);
 		}
 
 		return value;
@@ -290,62 +290,61 @@ public class ConfigurationLoader implements Serializable {
 		Object value = null;
 
 		Class<?> fieldClass = (Class<?>) field.getType();
-		
+
 		try {
 			Method method;
-			
+
 			String methodName = "get";
-			
+
 			methodName += discoveryGenericType(field);
-			
+
 			methodName += Strings.firstToUpper(fieldClass.getSimpleName());
 
 			if (!fieldClass.isPrimitive()) {
 				method = config.getClass().getMethod(methodName, String.class, fieldClass);
 				value = method.invoke(config, key, null);
-				
+
 			} else if (config.containsKey(key)) {
 				method = config.getClass().getMethod(methodName, String.class);
 				value = method.invoke(config, key);
 			}
 
 		} catch (Throwable cause) {
-			throw new ConfigurationException(bundle.getString("error-converting-to-type", fieldClass.getName()), cause);
+			throw new ConfigurationException(getBundle().getString("error-converting-to-type", fieldClass.getName()),
+					cause);
 		}
 
 		return value;
 	}
 
 	/**
-	 * Discovery the Generic's type.
-	 * 
-	 *  for example: the generic's type of List<Integer> list is an Integer type 
+	 * Discovery the Generic's type. for example: the generic's type of List<Integer> list is an Integer type
 	 * 
 	 * @param field
 	 * @return
 	 */
 	private String discoveryGenericType(Field field) {
-		
+
 		Type genericFieldType = field.getGenericType();
-		
-		if(genericFieldType instanceof ParameterizedType){
-		    ParameterizedType type = (ParameterizedType) genericFieldType;
-		    Type[] fieldArgumentTypes = type.getActualTypeArguments();
-		    for(Type fieldArgumentType : fieldArgumentTypes){
-		        @SuppressWarnings("rawtypes")
+
+		if (genericFieldType instanceof ParameterizedType) {
+			ParameterizedType type = (ParameterizedType) genericFieldType;
+			Type[] fieldArgumentTypes = type.getActualTypeArguments();
+			for (Type fieldArgumentType : fieldArgumentTypes) {
+				@SuppressWarnings("rawtypes")
 				Class fieldArgumentClass = (Class) fieldArgumentType;
-		        
-		        if("String".equals(fieldArgumentClass.getSimpleName())) {
-		        	return "";
-		        }
-		        
-		        return fieldArgumentClass.getSimpleName();
-		    }
+
+				if ("String".equals(fieldArgumentClass.getSimpleName())) {
+					return "";
+				}
+
+				return fieldArgumentClass.getSimpleName();
+			}
 		}
-		
+
 		return "";
 	}
-	
+
 	private Object getProperty(String key, org.apache.commons.configuration.Configuration config) {
 		Object value = null;
 
@@ -396,5 +395,21 @@ public class ConfigurationLoader implements Serializable {
 	public static URL getResourceAsURL(final String resource) throws FileNotFoundException {
 		ClassLoader classLoader = getClassLoaderForResource(resource);
 		return classLoader.getResource(resource);
+	}
+
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+		}
+
+		return bundle;
+	}
+
+	private static Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(ConfigurationLoader.class);
+		}
+
+		return logger;
 	}
 }

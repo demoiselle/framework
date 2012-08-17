@@ -52,39 +52,38 @@ public class ExceptionsTest {
 		assertFalse(Exceptions.isApplicationException(new Exception()));
 	}
 
-	@SuppressWarnings("static-access")
 	@Test
 	public void testHandleRuntimeException() {
-		Exceptions exceptions = new Exceptions();
 		try {
-			exceptions.handleToRuntimeException(new SomeRuntimeException());
+			Exceptions.handleToRuntimeException(new SomeRuntimeException());
 			fail();
 		} catch (Throwable t) {
-			if ( !RuntimeException.class.isInstance(t) ) {
+			if (!RuntimeException.class.isInstance(t)) {
 				fail();
-			} 
+			}
 		}
 
 		try {
-			exceptions.handleToRuntimeException(new Exception());
+			Exceptions.handleToRuntimeException(new Exception());
 			fail();
 		} catch (Throwable t) {
-			if ( !RuntimeException.class.isInstance(t) ) {
+			if (!RuntimeException.class.isInstance(t)) {
 				fail();
-			} 
+			}
 		}
 
 	}
 
 }
 
-@SuppressWarnings("serial")
 @ApplicationException
 class MyException extends Exception {
 
+	private static final long serialVersionUID = 1L;
 }
 
-@SuppressWarnings("serial")
 class SomeRuntimeException extends RuntimeException {
+
+	private static final long serialVersionUID = 1L;
 
 }

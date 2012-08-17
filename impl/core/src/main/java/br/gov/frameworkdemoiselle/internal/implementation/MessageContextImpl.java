@@ -41,10 +41,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.internal.interceptor.ExceptionHandlerInterceptor;
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.message.DefaultMessage;
 import br.gov.frameworkdemoiselle.message.Message;
@@ -62,12 +63,11 @@ public class MessageContextImpl implements Serializable, MessageContext {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	private Logger logger;
-
 	private final List<Message> messages = new ArrayList<Message>();
 
 	private static ResourceBundle bundle;
+
+	private static Logger logger;
 
 	@Override
 	public void add(final Message message, Object... params) {
@@ -79,7 +79,7 @@ public class MessageContextImpl implements Serializable, MessageContext {
 			aux = message;
 		}
 
-		logger.debug(getBundle().getString("adding-message-to-context", message.toString()));
+		getLogger().debug(getBundle().getString("adding-message-to-context", message.toString()));
 		messages.add(aux);
 	}
 
@@ -100,7 +100,7 @@ public class MessageContextImpl implements Serializable, MessageContext {
 
 	@Override
 	public void clear() {
-		logger.debug(getBundle().getString("cleaning-message-context"));
+		getLogger().debug(getBundle().getString("cleaning-message-context"));
 		messages.clear();
 	}
 
@@ -110,5 +110,13 @@ public class MessageContextImpl implements Serializable, MessageContext {
 		}
 
 		return bundle;
+	}
+
+	private static Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(ExceptionHandlerInterceptor.class);
+		}
+
+		return logger;
 	}
 }

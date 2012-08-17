@@ -59,9 +59,12 @@ import javax.enterprise.inject.spi.BeanManager;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 
-public class Beans {
+public final class Beans {
 
 	private static BeanManager manager;
+
+	private Beans() {
+	}
 
 	public static void setBeanManager(BeanManager beanManager) {
 		manager = beanManager;

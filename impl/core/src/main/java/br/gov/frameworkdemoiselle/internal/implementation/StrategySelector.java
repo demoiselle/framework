@@ -37,6 +37,7 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.Locale;
 
@@ -50,7 +51,12 @@ import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
 
-public class StrategySelector {
+public final class StrategySelector implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private StrategySelector() {
+	}
 
 	public static <T> T getReference(String configKey, Class<T> type, Class<? extends T> defaultType) {
 		Class<T> selectedType = loadSelected(configKey, type, defaultType);

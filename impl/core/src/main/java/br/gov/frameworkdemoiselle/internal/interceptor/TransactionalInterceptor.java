@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
 import br.gov.frameworkdemoiselle.internal.implementation.TransactionInfo;
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.TransactionContext;
@@ -64,9 +65,9 @@ public class TransactionalInterceptor implements Serializable {
 
 	private TransactionInfo transactionInfo;
 
-	private ResourceBundle bundle;
+	private static ResourceBundle bundle;
 
-	private Logger logger;
+	private static Logger logger;
 
 	private TransactionContext getTransactionContext() {
 		if (this.transactionContext == null) {
@@ -83,7 +84,15 @@ public class TransactionalInterceptor implements Serializable {
 			instance = Beans.getReference(TransactionInfo.class);
 
 		} catch (ContextNotActiveException cause) {
-			instance = new TransactionInfo();
+			instance = new TransactionInfo() {
+
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public boolean isOwner() {
+					return false;
+				}
+			};
 		}
 
 		return instance;
@@ -170,19 +179,19 @@ public class TransactionalInterceptor implements Serializable {
 		}
 	}
 
-	private ResourceBundle getBundle() {
-		if (this.bundle == null) {
-			this.bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
 		}
 
-		return this.bundle;
+		return bundle;
 	}
 
-	private Logger getLogger() {
-		if (this.logger == null) {
-			this.logger = Beans.getReference(Logger.class);
+	private static Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(TransactionalInterceptor.class);
 		}
 
-		return this.logger;
+		return logger;
 	}
 }
