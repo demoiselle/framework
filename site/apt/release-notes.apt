@@ -38,6 +38,35 @@
 
 Notas de Versão
 
+* v2.3.0-BETA2
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000821}0000821}} [Bug] Execução de Startup e Shutdown com ClassLoader correto.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000818}0000818}} [Bug] Injeção de Locale utilizando o ClassLoader correto.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000831}0000831}} [Improvement] Criação da anotação @Priority
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000830}0000830}} [Improvement] Depreciação do argumento Priority nas anotações Startup e Shutdown
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000827}0000827}} [Improvement] Melhorias para o Configuration, com possibilidade de utilização de tipos complexos como Array e Date.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000826}0000826}} [Improvement] Melhoria do mecanismo de paginação com inclusão de consulta JPQL e CriteriaQuery genérica ao JPACrud.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000820}0000820}} [New Feature] Criação da interface TransactionalContext.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000817}0000817}} [New Feature] Criação da extensão Servlet.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000825}0000825}} [Task] Otimização do cache de EntityManagerFactory para separar fábricas por ClassLoader.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000824}0000824}} [Task] Definição das dependencias do SL4J como provided nos profiles do jboss6 e jboss7.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000823}0000823}} [Task] Experimentos bem sucedidos com deploy no GAE.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000822}0000822}} [Task] Experimentos bem sucedidos com empacotamento de EAR.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000819}0000819}} [Task] Ajustes relacionados a serialização de objetos internos do Framework.
+
+
 * v2.3.0-BETA1
 
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000800}0000800}} [Bug] Correção do erro NoSuchElementException ao usar o Beans.getReference().
