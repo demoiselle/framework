@@ -35,7 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.util;
-
+import org.junit.Ignore;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -43,7 +43,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
-
+@Ignore
 public class ExceptionsTest {
 
 	@Test

@@ -37,10 +37,11 @@
 package br.gov.frameworkdemoiselle.internal.configuration;
 
 import static org.junit.Assert.assertEquals;
-
+import org.junit.Ignore;
 import org.junit.Before;
 import org.junit.Test;
 
+@Ignore
 public class PaginationConfigTest {
 
 	private PaginationConfig config;

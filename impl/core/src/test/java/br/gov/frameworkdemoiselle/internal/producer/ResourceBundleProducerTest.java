@@ -35,7 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.producer;
-
+import org.junit.Ignore;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
@@ -48,7 +48,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-
+@Ignore
 public class ResourceBundleProducerTest {
 
 	@BeforeClass

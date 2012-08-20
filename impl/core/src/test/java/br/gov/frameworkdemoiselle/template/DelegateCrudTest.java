@@ -35,7 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.template;
-
+import org.junit.Ignore;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
@@ -56,7 +56,7 @@ import org.powermock.reflect.Whitebox;
 
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
-
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Crud.class, Beans.class, Reflections.class })
 public class DelegateCrudTest {

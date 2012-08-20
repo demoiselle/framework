@@ -35,7 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.template;
-
+import org.junit.Ignore;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -77,7 +77,7 @@ import br.gov.frameworkdemoiselle.internal.implementation.PaginationImpl;
 import br.gov.frameworkdemoiselle.pagination.Pagination;
 import br.gov.frameworkdemoiselle.pagination.PaginationContext;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
-
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ResourceBundle.class, Instance.class })
 public class JPACrudTest {

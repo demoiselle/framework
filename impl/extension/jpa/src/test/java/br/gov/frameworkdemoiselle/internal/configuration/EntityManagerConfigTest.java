@@ -35,7 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.configuration;
-
+import org.junit.Ignore;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
@@ -61,6 +61,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 /**
  * @author 80342167553
  */
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(CoreBootstrap.class)
 public class EntityManagerConfigTest {

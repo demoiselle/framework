@@ -17,7 +17,7 @@
  * Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.message;
-
+import org.junit.Ignore;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -40,7 +40,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
-
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Beans.class, ResourceBundle.class })
 public class DefaultMessageTest {

@@ -1,5 +1,5 @@
 package br.gov.frameworkdemoiselle.transaction;
-
+import org.junit.Ignore;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
@@ -25,7 +25,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.gov.frameworkdemoiselle.util.Beans;
-
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Beans.class })
 public class JTATransactionTest {
