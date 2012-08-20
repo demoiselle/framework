@@ -47,7 +47,16 @@ public class TransactionInfo implements Serializable {
 
 	private int counter = 0;
 
-	private boolean owner = false;
+	private boolean owner;
+
+	public TransactionInfo() {
+		clear();
+	}
+
+	public void clear() {
+		this.owner = false;
+		this.counter = 0;
+	}
 
 	public int getCounter() {
 		return counter;

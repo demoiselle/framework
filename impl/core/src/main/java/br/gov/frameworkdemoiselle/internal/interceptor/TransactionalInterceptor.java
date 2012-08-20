@@ -167,9 +167,14 @@ public class TransactionalInterceptor implements Serializable {
 			if (transactionInfo.isOwner()) {
 				if (transaction.isMarkedRollback()) {
 					transaction.rollback();
+					transactionInfo.clear();
+
 					getLogger().info(getBundle().getString("transaction-rolledback"));
+
 				} else {
 					transaction.commit();
+					transactionInfo.clear();
+
 					getLogger().info(getBundle().getString("transaction-commited"));
 				}
 			}
