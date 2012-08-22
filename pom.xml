@@ -39,7 +39,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>demoiselle-framework-build</artifactId>
-	<version>2.3.0-SNAPSHOT</version>
+	<version>2.3.0-BETA3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -101,6 +101,6 @@
 
 	<properties>
 		<project.alias>framework</project.alias>
-		<project.nextVersion>2.3.0-BETA2-SNAPSHOT</project.nextVersion>
+		<project.nextVersion>2.3.0-RC1-SNAPSHOT</project.nextVersion>
 	</properties>
 </project>
