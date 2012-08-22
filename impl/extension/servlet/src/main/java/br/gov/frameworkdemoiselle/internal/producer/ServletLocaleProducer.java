@@ -43,14 +43,23 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.servlet.http.HttpServletRequest;
 
+import br.gov.frameworkdemoiselle.util.Beans;
+
 public class ServletLocaleProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Default
 	@Produces
-	public Locale create(HttpServletRequest request) {
+	public Locale create() {
 		Locale result;
+		HttpServletRequest request;
+
+		try {
+			request = Beans.getReference(HttpServletRequest.class);
+		} catch (Exception cause) {
+			request = null;
+		}
 
 		if (request == null) {
 			result = Locale.getDefault();
