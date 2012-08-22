@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.persistence.Basic;
@@ -82,9 +83,6 @@ public class JPACrud<T, I> implements Crud<T, I> {
 
 	private EntityManager entityManager;
 
-	@Inject
-	private Instance<PaginationContext> paginationContext;
-
 	private Pagination pagination;
 
 	@Inject
@@ -115,8 +113,13 @@ public class JPACrud<T, I> implements Crud<T, I> {
 
 	protected Pagination getPagination() {
 		if (pagination == null) {
-			PaginationContext context = paginationContext.get();
-			pagination = context.getPagination(getBeanClass());
+			try {
+				PaginationContext context = Beans.getReference(PaginationContext.class);
+				pagination = context.getPagination(getBeanClass());
+
+			} catch (ContextNotActiveException cause) {
+				pagination = null;
+			}
 		}
 
 		return pagination;
