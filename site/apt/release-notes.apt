@@ -44,9 +44,9 @@ Notas de Versão
   
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000818}0000818}} [Bug] Injeção de Locale utilizando o ClassLoader correto.
   
-  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000831}0000831}} [Improvement] Criação da anotação @Priority
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000831}0000831}} [Improvement] Criação da anotação @Priority.
   
-  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000830}0000830}} [Improvement] Depreciação do argumento Priority nas anotações Startup e Shutdown
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000830}0000830}} [Improvement] Depreciação do parâmetro "priority" nas anotações @Startup e @Shutdown.
 
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000827}0000827}} [Improvement] Melhorias para o Configuration, com possibilidade de utilização de tipos complexos como Array e Date.
   
@@ -58,7 +58,7 @@ Notas de Versão
   
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000825}0000825}} [Task] Otimização do cache de EntityManagerFactory para separar fábricas por ClassLoader.
   
-  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000824}0000824}} [Task] Definição das dependencias do SL4J como provided nos profiles do jboss6 e jboss7.
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000824}0000824}} [Task] Definição das dependencias do SL4J como provided nos profiles do "jboss6" e "jboss7".
   
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000823}0000823}} [Task] Experimentos bem sucedidos com deploy no GAE.
   
@@ -67,7 +67,7 @@ Notas de Versão
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000819}0000819}} [Task] Ajustes relacionados a serialização de objetos internos do Framework.
 
 
-* v2.3.0-BETA1
+* {{{../2.3.0-BETA1/}v2.3.0-BETA1}}
 
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000800}0000800}} [Bug] Correção do erro NoSuchElementException ao usar o Beans.getReference().
 

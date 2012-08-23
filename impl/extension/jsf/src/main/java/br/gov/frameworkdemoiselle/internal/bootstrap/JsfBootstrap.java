@@ -38,21 +38,10 @@ package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.internal.context.ViewContext;
-import br.gov.frameworkdemoiselle.internal.producer.ServletLocaleProducer;
 
 public class JsfBootstrap extends AbstractBootstrap {
-
-	protected <T> void cancelServletLocaleProducer(@Observes final ProcessAnnotatedType<T> event) {
-		final AnnotatedType<T> annotatedType = event.getAnnotatedType();
-
-		if (annotatedType.getJavaClass() == ServletLocaleProducer.class) {
-			event.veto();
-		}
-	}
 
 	public void loadContexts(@Observes final AfterBeanDiscovery event) {
 		addContext(new ViewContext(), event);
