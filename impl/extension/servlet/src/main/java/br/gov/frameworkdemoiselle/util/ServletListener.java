@@ -46,22 +46,12 @@ public class ServletListener implements javax.servlet.ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		Beans.getBeanManager().fireEvent(new BeforeApplicationInitialization() {
-
-			@Override
-			public boolean removeProcessors() {
-				return true;
-			}
 		});
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
 		Beans.getBeanManager().fireEvent(new BeforeApplicationFinalization() {
-
-			@Override
-			public boolean removeProcessors() {
-				return true;
-			}
 		});
 	}
 }

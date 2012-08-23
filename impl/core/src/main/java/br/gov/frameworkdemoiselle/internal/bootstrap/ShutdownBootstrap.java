@@ -56,6 +56,6 @@ public class ShutdownBootstrap extends AsbratctLifecycleBootstrap<Shutdown> {
 	}
 
 	public void shutdown(@Observes BeforeApplicationFinalization event) {
-		proccessEvent(event);
+		proccessEvent();
 	}
 }
