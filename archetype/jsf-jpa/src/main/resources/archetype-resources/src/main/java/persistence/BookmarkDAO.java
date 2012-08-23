@@ -1,9 +1,5 @@
 package ${package}.persistence;
 
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-
 import br.gov.frameworkdemoiselle.stereotype.PersistenceController;
 import br.gov.frameworkdemoiselle.template.JPACrud;
 

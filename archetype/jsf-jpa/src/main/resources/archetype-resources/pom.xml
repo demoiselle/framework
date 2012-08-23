@@ -38,9 +38,10 @@
 			<artifactId>primefaces</artifactId>
 			<scope>compile</scope>
 		</dependency>
+
 		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-easymock</artifactId>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
