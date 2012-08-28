@@ -39,7 +39,7 @@ package br.gov.frameworkdemoiselle.transaction;
 import java.io.Serializable;
 
 /**
- * Structure used to handle trancationa mechanisms.
+ * Structure used to handle transaction mechanisms.
  * 
  * @author SERPRO
  */
