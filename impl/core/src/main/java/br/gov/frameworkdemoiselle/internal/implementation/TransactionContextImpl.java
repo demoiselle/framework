@@ -47,7 +47,7 @@ import br.gov.frameworkdemoiselle.transaction.TransactionContext;
  * @author SERPRO
  */
 @Named("transactionContext")
-public class TrancationContextImpl implements TransactionContext {
+public class TransactionContextImpl implements TransactionContext {
 
 	private static final long serialVersionUID = 1L;
 
