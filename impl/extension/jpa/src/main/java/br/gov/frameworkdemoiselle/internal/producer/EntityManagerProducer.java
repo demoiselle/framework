@@ -125,7 +125,9 @@ public class EntityManagerProducer implements Serializable {
 	private String getPersistenceUnit(InjectionPoint ip, EntityManagerConfig config) {
 		String persistenceUnitName;
 
-		if (ip != null && ip.getAnnotated().isAnnotationPresent(Name.class)) {
+		if (ip != null && ip.getAnnotated()!=null && ip.getAnnotated().isAnnotationPresent(Name.class)) {
+			//Quando o comando Beans.getReference é usado para simular injeção, não existe
+			//anotação @Inject então precisamos testar se #getAnnotated() retorna nulo aqui.
 			persistenceUnitName = ip.getAnnotated().getAnnotation(Name.class).value();
 
 		} else {
