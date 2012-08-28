@@ -76,33 +76,62 @@ public final class Beans {
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getReference(final Class<T> beanClass, Annotation... qualifiers) {
-		return (T) getReference(manager.getBeans(beanClass, qualifiers));
+		T instance;
+
+		try {
+			instance = (T) getReference(manager.getBeans(beanClass, qualifiers));
+
+		} catch (NoSuchElementException cause) {
+			StringBuffer buffer = new StringBuffer();
+			buffer.append(beanClass.getCanonicalName());
+
+			for (Annotation qualifier : qualifiers) {
+				buffer.append(", ");
+				buffer.append(qualifier.getClass().getCanonicalName());
+			}
+
+			String message = getBundle()
+					.getString("bean-not-found", buffer.toString());
+			throw new DemoiselleException(message, cause);
+		}
+
+		return instance;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T getReference(final Class<T> beanClass) {
-		return (T) getReference(manager.getBeans(beanClass));
+		
+		T instance;
+		
+		try {
+			instance = (T) getReference(manager.getBeans(beanClass));
+		}catch (NoSuchElementException cause) {
+			String message = getBundle()
+					.getString("bean-not-found", beanClass.getCanonicalName());
+			throw new DemoiselleException(message, cause);
+		}
+		
+		return instance;
 	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getReference(String beanName) {
-		return (T) getReference(manager.getBeans(beanName));
+		T instance;
+		
+		try {
+			instance = (T) getReference(manager.getBeans(beanName));
+		}catch (NoSuchElementException cause) {
+			String message = getBundle()
+					.getString("bean-not-found", beanName);
+			throw new DemoiselleException(message, cause);
+		}
+		
+		return instance;
 	}
 
 	@SuppressWarnings("unchecked")
 	private static <T> T getReference(Set<Bean<?>> beans) {
-		T result = null;
-
-		try {
-			Bean<?> bean = beans.iterator().next();
-			result = (T) manager.getReference(bean, bean.getBeanClass(), manager.createCreationalContext(bean));
-
-		} catch (NoSuchElementException cause) {
-			String message = getBundle().getString("bean-not-found");
-			throw new DemoiselleException(message, cause);
-		}
-
-		return result;
+		Bean<?> bean = beans.iterator().next();
+		return (T) manager.getReference(bean, bean.getBeanClass(), manager.createCreationalContext(bean));
 	}
 
 	private static ResourceBundle getBundle() {

@@ -56,6 +56,6 @@ public class StartupBootstrap extends AsbratctLifecycleBootstrap<Startup> {
 	}
 
 	public void startup(@Observes BeforeApplicationInitialization event) {
-		proccessEvent(event);
+		proccessEvent();
 	}
 }

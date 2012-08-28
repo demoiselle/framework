@@ -39,13 +39,13 @@ package br.gov.frameworkdemoiselle.internal.processor;
 import java.util.Locale;
 
 import javax.enterprise.inject.spi.AnnotatedCallable;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -92,13 +92,7 @@ public abstract class AbstractProcessor<T> implements Processor {
 	@SuppressWarnings("unchecked")
 	protected T getReferencedBean() {
 		Class<T> classType = (Class<T>) getAnnotatedCallable().getJavaMember().getDeclaringClass();
-		return getReferencedBean(classType);
-	}
-
-	@SuppressWarnings("unchecked")
-	protected T getReferencedBean(final Class<T> type) {
-		Bean<T> bean = (Bean<T>) beanManager.getBeans(type).iterator().next();
-		return (T) beanManager.getReference(bean, type, beanManager.createCreationalContext(bean));
+		return Beans.getReference(classType);
 	}
 
 	protected ResourceBundle getBundle() {

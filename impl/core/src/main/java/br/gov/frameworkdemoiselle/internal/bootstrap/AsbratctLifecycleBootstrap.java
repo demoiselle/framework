@@ -72,6 +72,8 @@ public abstract class AsbratctLifecycleBootstrap<A extends Annotation> extends A
 
 	private AfterBeanDiscovery afterBeanDiscoveryEvent;
 
+	private boolean registered = false;
+
 	protected abstract <T> AnnotatedMethodProcessor<T> newProcessorInstance(AnnotatedMethod<T> annotatedMethod,
 			BeanManager beanManager);
 
@@ -105,22 +107,20 @@ public abstract class AsbratctLifecycleBootstrap<A extends Annotation> extends A
 		afterBeanDiscoveryEvent = event;
 	}
 
-	private boolean x = true;
-
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected synchronized void proccessEvent(final ApplicationLifecycleEvent event) {
+	protected synchronized void proccessEvent() {
 		getLogger().debug(
 				getBundle("demoiselle-core-bundle").getString("executing-all", annotationClass.getSimpleName()));
 
 		Collections.sort(processors);
 		Throwable failure = null;
 
-		if (x) {
+		if (!registered) {
 			for (CustomContext tempContext : tempContexts) {
 				addContext(tempContext, afterBeanDiscoveryEvent);
 			}
 
-			x = false;
+			registered = true;
 		}
 
 		for (Iterator<AnnotatedMethodProcessor> iter = processors.iterator(); iter.hasNext();) {
@@ -132,10 +132,7 @@ public abstract class AsbratctLifecycleBootstrap<A extends Annotation> extends A
 
 				if (Thread.currentThread().getContextClassLoader().equals(classLoader)) {
 					processor.process();
-
-					if (event.removeProcessors()) {
-						iter.remove();
-					}
+					iter.remove();
 				}
 
 			} catch (Throwable cause) {
