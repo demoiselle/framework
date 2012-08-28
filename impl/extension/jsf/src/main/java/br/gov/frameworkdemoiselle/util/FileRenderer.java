@@ -53,6 +53,17 @@ public interface FileRenderer extends Serializable {
 	 * @param byteArray Byte Array to be rendered.
 	 * @param contentType 
 	 * @param fileName
+	 * @param forceDownload If true, will force a download from the browser, otherwise the browser is free to determine what will happen with the rendered content. 
+	 */
+	void render(final byte[] byteArray, final ContentType contentType, final String fileName, boolean forceDownload);
+	
+	/**
+	 * Renders a byteArray for display to the user.
+	 * 
+	 * @param byteArray Byte Array to be rendered.
+	 * @param contentType 
+	 * @param fileName
+	 *  
 	 */
 	void render(final byte[] byteArray, final ContentType contentType, final String fileName);
 
@@ -64,6 +75,16 @@ public interface FileRenderer extends Serializable {
 	 * @param fileName
 	 */
 	void render(final InputStream stream, final ContentType contentType, final String fileName);
+	
+	/**
+	 * Renders an inputStream for display to the user.
+	 * 
+	 * @param stream
+	 * @param contentType
+	 * @param fileName
+	 * @param forceDownload If true, will force a download from the browser, otherwise the browser is free to determine what will happen with the rendered content.
+	 */
+	void render(final InputStream stream, final ContentType contentType, final String fileName, boolean forceDownload);
 
 	/**
 	 * Renders a file for display to the user.
@@ -73,6 +94,16 @@ public interface FileRenderer extends Serializable {
 	 * @param fileName
 	 */
 	void render(final File file, final ContentType contentType, final String fileName);
+	
+	/**
+	 * Renders a file for display to the user.
+	 * 
+	 * @param file
+	 * @param contentType
+	 * @param fileName
+	 * @param forceDownload If true, will force a download from the browser, otherwise the browser is free to determine what will happen with the rendered content.
+	 */
+	void render(final File file, final ContentType contentType, final String fileName, boolean forceDownload);
 
 	/**
 	 * File content type.

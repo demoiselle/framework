@@ -69,13 +69,15 @@ public class FileRendererImpl implements FileRenderer {
 	private FacesContext context;
 
 	@Override
-	public void render(final byte[] byteArray, final ContentType contentType, final String fileName) {
+	public void render(final byte[] byteArray, final ContentType contentType, final String fileName, boolean forceDownload) {
 		logger.debug("Renderizando para o arquivo " + fileName + ".");
 
 		try {
 			response.setContentType(contentType.getContentType());
 			response.setContentLength(byteArray.length);
-			response.setHeader("Content-Disposition", "filename=\"" + fileName + "\"");
+			
+			String forceDownloadCommand = forceDownload ? "attachment; " : "";
+			response.setHeader("Content-Disposition", forceDownloadCommand + "filename=\"" + fileName + "\"");
 
 			logger.debug("Escrevendo o arquivo " + fileName + " no response.");
 			response.getOutputStream().write(byteArray, 0, byteArray.length);
@@ -87,22 +89,37 @@ public class FileRendererImpl implements FileRenderer {
 		}
 		context.responseComplete();
 	}
-
+	
 	@Override
-	public void render(final InputStream stream, final ContentType contentType, final String fileName) {
-		logger.debug("Renderizando o arquivo " + fileName + ".");
-		render(getBytes(stream), contentType, fileName);
+	public void render(final byte[] byteArray, final ContentType contentType, final String fileName) {
+		render(byteArray, contentType, fileName, false);
 	}
 
 	@Override
-	public void render(File file, ContentType contentType, String fileName) {
+	public void render(final InputStream stream, final ContentType contentType, final String fileName, boolean forceDownload) {
+		logger.debug("Renderizando o arquivo " + fileName + ".");
+		render(getBytes(stream), contentType, fileName, forceDownload);
+	}
+	
+	@Override
+	public void render(final InputStream stream, final ContentType contentType, final String fileName) {
+		render(stream, contentType, fileName, false);
+	}
+
+	@Override
+	public void render(File file, ContentType contentType, String fileName, boolean forceDownload) {
 		logger.debug("Renderizando para o arquivo " + fileName + ".");
 		try {
-			render(new FileInputStream(file), contentType, fileName);
+			render(new FileInputStream(file), contentType, fileName, forceDownload);
 		} catch (FileNotFoundException e) {
 			logger.info("Erro na geração do relatório. Incluíndo a exceção de erro em um FacesMessage", e);
 			Faces.addMessage(e);
 		}
+	}
+	
+	@Override
+	public void render(File file, ContentType contentType, String fileName) {
+		render(file, contentType, fileName, false);
 	}
 
 	private byte[] getBytes(InputStream stream) {
