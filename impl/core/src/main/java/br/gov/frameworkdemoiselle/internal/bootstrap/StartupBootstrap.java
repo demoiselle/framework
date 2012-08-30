@@ -47,7 +47,7 @@ import br.gov.frameworkdemoiselle.internal.processor.StartupProcessor;
 /**
  * This class is the bootstrap to execute the processes at load time.
  */
-public class StartupBootstrap extends AsbratctLifecycleBootstrap<Startup> {
+public class StartupBootstrap extends AbstractLifecycleBootstrap<Startup> {
 
 	@Override
 	protected <T> AnnotatedMethodProcessor<T> newProcessorInstance(AnnotatedMethod<T> annotatedMethod,
