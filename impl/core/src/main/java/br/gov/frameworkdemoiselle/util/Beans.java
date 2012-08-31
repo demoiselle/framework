@@ -103,7 +103,7 @@ public final class Beans {
 		T instance;
 		
 		try {
-			instance = (T) getReference(manager.getBeans(beanClass));
+			instance = getReference(manager.getBeans(beanClass));
 		}catch (NoSuchElementException cause) {
 			String message = getBundle()
 					.getString("bean-not-found", beanClass.getCanonicalName());
