@@ -47,7 +47,7 @@ import br.gov.frameworkdemoiselle.internal.processor.ShutdownProcessor;
 /**
  * This class run at application shutdown
  */
-public class ShutdownBootstrap extends AsbratctLifecycleBootstrap<Shutdown> {
+public class ShutdownBootstrap extends AbstractLifecycleBootstrap<Shutdown> {
 
 	@Override
 	protected <T> AnnotatedMethodProcessor<T> newProcessorInstance(AnnotatedMethod<T> annotatedMethod,

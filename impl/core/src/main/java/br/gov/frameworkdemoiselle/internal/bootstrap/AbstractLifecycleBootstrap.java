@@ -60,7 +60,7 @@ import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.internal.processor.AnnotatedMethodProcessor;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
-public abstract class AsbratctLifecycleBootstrap<A extends Annotation> extends AbstractBootstrap {
+public abstract class AbstractLifecycleBootstrap<A extends Annotation> extends AbstractBootstrap {
 
 	private Class<A> annotationClass;
 
