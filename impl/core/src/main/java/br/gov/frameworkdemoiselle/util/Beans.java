@@ -103,6 +103,7 @@ public final class Beans {
 
 		try {
 			instance = (T) getReference(manager.getBeans(beanClass));
+
 		} catch (NoSuchElementException cause) {
 			String message = getBundle().getString("bean-not-found", beanClass.getCanonicalName());
 			throw new DemoiselleException(message, cause);
@@ -117,6 +118,7 @@ public final class Beans {
 
 		try {
 			instance = (T) getReference(manager.getBeans(beanName));
+
 		} catch (NoSuchElementException cause) {
 			String message = getBundle().getString("bean-not-found", beanName);
 			throw new DemoiselleException(message, cause);
