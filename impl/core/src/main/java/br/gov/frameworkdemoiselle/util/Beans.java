@@ -90,8 +90,7 @@ public final class Beans {
 				buffer.append(qualifier.getClass().getCanonicalName());
 			}
 
-			String message = getBundle()
-					.getString("bean-not-found", buffer.toString());
+			String message = getBundle().getString("bean-not-found", buffer.toString());
 			throw new DemoiselleException(message, cause);
 		}
 
@@ -100,32 +99,29 @@ public final class Beans {
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getReference(final Class<T> beanClass) {
-		
 		T instance;
-		
+
 		try {
 			instance = (T) getReference(manager.getBeans(beanClass));
-		}catch (NoSuchElementException cause) {
-			String message = getBundle()
-					.getString("bean-not-found", beanClass.getCanonicalName());
+		} catch (NoSuchElementException cause) {
+			String message = getBundle().getString("bean-not-found", beanClass.getCanonicalName());
 			throw new DemoiselleException(message, cause);
 		}
-		
+
 		return instance;
 	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getReference(String beanName) {
 		T instance;
-		
+
 		try {
 			instance = (T) getReference(manager.getBeans(beanName));
-		}catch (NoSuchElementException cause) {
-			String message = getBundle()
-					.getString("bean-not-found", beanName);
+		} catch (NoSuchElementException cause) {
+			String message = getBundle().getString("bean-not-found", beanName);
 			throw new DemoiselleException(message, cause);
 		}
-		
+
 		return instance;
 	}
 
