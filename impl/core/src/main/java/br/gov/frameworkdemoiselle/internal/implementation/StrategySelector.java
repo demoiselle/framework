@@ -36,14 +36,18 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import static br.gov.frameworkdemoiselle.annotation.Priority.MIN_PRIORITY;
+
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.net.URL;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
+import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
@@ -53,9 +57,41 @@ import br.gov.frameworkdemoiselle.util.Strings;
 
 public final class StrategySelector implements Serializable {
 
+	public static final int CORE_PRIORITY = MIN_PRIORITY;
+
+	public static final int EXTENSIONS_PRIORITY = CORE_PRIORITY + 100;
+
+	public static final int COMPONENTS_PRIORITY = EXTENSIONS_PRIORITY + 100;
+
 	private static final long serialVersionUID = 1L;
 
 	private StrategySelector() {
+	}
+
+	public static <T> T getPriorityReference(List<Class<T>> options) {
+		Class<T> selected = null;
+
+		for (Class<T> option : options) {
+			if (selected == null || getPriority(option) < getPriority(selected)) {
+				selected = option;
+			}
+
+			System.out.println(option.getCanonicalName());
+			System.out.println(selected.getCanonicalName());
+		}
+
+		return Beans.getReference(selected);
+	}
+
+	private static <T> int getPriority(Class<T> type) {
+		int result = Priority.MAX_PRIORITY;
+		Priority priority = type.getAnnotation(Priority.class);
+
+		if (priority != null) {
+			result = priority.value();
+		}
+
+		return result;
 	}
 
 	public static <T> T getReference(String configKey, Class<T> type, Class<? extends T> defaultType) {

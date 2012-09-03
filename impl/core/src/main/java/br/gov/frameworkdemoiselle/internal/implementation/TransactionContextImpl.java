@@ -38,8 +38,10 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 
 import javax.inject.Named;
 
+import br.gov.frameworkdemoiselle.internal.bootstrap.TransactionBootstrap;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.TransactionContext;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
  * This is the default implementation of {@link TransactionContext} interface.
@@ -51,10 +53,19 @@ public class TransactionContextImpl implements TransactionContext {
 
 	private static final long serialVersionUID = 1L;
 
-	@Override
-	public Transaction getCurrentTransaction() {
-		return StrategySelector.getReference("frameworkdemoiselle.transaction.class", Transaction.class,
-				DefaultTransaction.class);
+	private Transaction transaction;
+
+	private Transaction getTransaction() {
+		if (this.transaction == null) {
+			TransactionBootstrap bootstrap = Beans.getReference(TransactionBootstrap.class);
+			this.transaction = StrategySelector.getPriorityReference(bootstrap.getCache());
+		}
+
+		return this.transaction;
 	}
 
+	@Override
+	public Transaction getCurrentTransaction() {
+		return getTransaction();
+	}
 }

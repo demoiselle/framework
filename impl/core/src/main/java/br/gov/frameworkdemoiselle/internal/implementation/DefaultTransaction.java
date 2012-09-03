@@ -36,7 +36,9 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.CORE_PRIORITY;
 import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
@@ -48,6 +50,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * @author SERPRO
  * @see Transaction
  */
+@Priority(CORE_PRIORITY)
 public class DefaultTransaction implements Transaction {
 
 	private static final long serialVersionUID = 1L;

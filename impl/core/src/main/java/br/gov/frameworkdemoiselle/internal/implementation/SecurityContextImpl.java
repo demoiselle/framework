@@ -38,6 +38,8 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 
 import javax.inject.Named;
 
+import br.gov.frameworkdemoiselle.internal.bootstrap.AuthenticatorBootstrap;
+import br.gov.frameworkdemoiselle.internal.bootstrap.AuthorizerBootstrap;
 import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfig;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
@@ -66,8 +68,8 @@ public class SecurityContextImpl implements SecurityContext {
 
 	private Authenticator getAuthenticator() {
 		if (authenticator == null) {
-			authenticator = StrategySelector.getReference("frameworkdemoiselle.security.authenticator.class",
-					Authenticator.class, DefaultAuthenticator.class);
+			AuthenticatorBootstrap bootstrap = Beans.getReference(AuthenticatorBootstrap.class);
+			authenticator = StrategySelector.getPriorityReference(bootstrap.getCache());
 		}
 
 		return authenticator;
@@ -75,8 +77,8 @@ public class SecurityContextImpl implements SecurityContext {
 
 	private Authorizer getAuthorizer() {
 		if (authorizer == null) {
-			authorizer = StrategySelector.getReference("frameworkdemoiselle.security.authorizer.class",
-					Authorizer.class, DefaultAuthorizer.class);
+			AuthorizerBootstrap bootstrap = Beans.getReference(AuthorizerBootstrap.class);
+			authorizer = StrategySelector.getPriorityReference(bootstrap.getCache());
 		}
 
 		return authorizer;
