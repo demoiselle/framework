@@ -98,12 +98,13 @@ public final class Beans {
 		return instance;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T> T getReference(final Class<T> beanClass) {
 		
 		T instance;
 		
 		try {
-			instance = getReference(manager.getBeans(beanClass));
+			instance = (T) getReference(manager.getBeans(beanClass));
 		}catch (NoSuchElementException cause) {
 			String message = getBundle()
 					.getString("bean-not-found", beanClass.getCanonicalName());
