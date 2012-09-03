@@ -1,6 +1,6 @@
 <class-diagram version="1.0.3" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
   realizations="true" associations="false" dependencies="true" nesting-relationships="true">  
-  <annotation id="1" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.annotation.Shutdown" 
+  <annotation id="1" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.lifecycle.Shutdown" 
     project="demoiselle-core" file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/annotation/Shutdown.java" 
     binary="false">    
     <position height="-1" width="-1" x="230" y="252"/>    

@@ -49,7 +49,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
@@ -57,7 +56,7 @@ import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
 import br.gov.frameworkdemoiselle.internal.context.CustomContext;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
-import br.gov.frameworkdemoiselle.internal.processor.AnnotatedMethodProcessor;
+import br.gov.frameworkdemoiselle.internal.implementation.AnnotatedMethodProcessor;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
 public abstract class AbstractLifecycleBootstrap<A extends Annotation> extends AbstractBootstrap {
@@ -74,8 +73,11 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> extends A
 
 	private boolean registered = false;
 
-	protected abstract <T> AnnotatedMethodProcessor<T> newProcessorInstance(AnnotatedMethod<T> annotatedMethod,
-			BeanManager beanManager);
+	// protected abstract <T> AnnotatedMethodProcessor<T> newProcessorInstance(AnnotatedMethod<T> annotatedMethod);
+
+	protected <T> AnnotatedMethodProcessor<T> newProcessorInstance(AnnotatedMethod<T> annotatedMethod) {
+		return new AnnotatedMethodProcessor<T>(annotatedMethod);
+	}
 
 	protected Class<A> getAnnotationClass() {
 		if (this.annotationClass == null) {
@@ -85,14 +87,14 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> extends A
 		return this.annotationClass;
 	}
 
-	public <T> void processAnnotatedType(@Observes final ProcessAnnotatedType<T> event, final BeanManager beanManager) {
+	public <T> void processAnnotatedType(@Observes final ProcessAnnotatedType<T> event) {
 		final AnnotatedType<T> annotatedType = event.getAnnotatedType();
 
 		for (AnnotatedMethod<?> am : annotatedType.getMethods()) {
 			if (am.isAnnotationPresent(getAnnotationClass())) {
 				@SuppressWarnings("unchecked")
 				AnnotatedMethod<T> annotatedMethod = (AnnotatedMethod<T>) am;
-				processors.add(newProcessorInstance(annotatedMethod, beanManager));
+				processors.add(newProcessorInstance(annotatedMethod));
 			}
 		}
 	}

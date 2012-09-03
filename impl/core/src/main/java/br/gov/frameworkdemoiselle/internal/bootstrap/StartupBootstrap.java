@@ -37,25 +37,16 @@
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.BeanManager;
 
-import br.gov.frameworkdemoiselle.annotation.Startup;
-import br.gov.frameworkdemoiselle.internal.processor.AnnotatedMethodProcessor;
-import br.gov.frameworkdemoiselle.internal.processor.StartupProcessor;
+import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
+import br.gov.frameworkdemoiselle.lifecycle.Startup;
 
 /**
  * This class is the bootstrap to execute the processes at load time.
  */
 public class StartupBootstrap extends AbstractLifecycleBootstrap<Startup> {
 
-	@Override
-	protected <T> AnnotatedMethodProcessor<T> newProcessorInstance(AnnotatedMethod<T> annotatedMethod,
-			BeanManager beanManager) {
-		return new StartupProcessor<T>(annotatedMethod, beanManager);
-	}
-
-	public void startup(@Observes BeforeApplicationInitialization event) {
+	public void startup(@Observes AfterStartupProccess event) {
 		proccessEvent();
 	}
 }

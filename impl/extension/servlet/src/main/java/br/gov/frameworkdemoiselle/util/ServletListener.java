@@ -38,20 +38,20 @@ package br.gov.frameworkdemoiselle.util;
 
 import javax.servlet.ServletContextEvent;
 
-import br.gov.frameworkdemoiselle.internal.bootstrap.BeforeApplicationFinalization;
-import br.gov.frameworkdemoiselle.internal.bootstrap.BeforeApplicationInitialization;
+import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
+import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
 
 public class ServletListener implements javax.servlet.ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		Beans.getBeanManager().fireEvent(new BeforeApplicationInitialization() {
+		Beans.getBeanManager().fireEvent(new AfterStartupProccess() {
 		});
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
-		Beans.getBeanManager().fireEvent(new BeforeApplicationFinalization() {
+		Beans.getBeanManager().fireEvent(new AfterShutdownProccess() {
 		});
 	}
 }

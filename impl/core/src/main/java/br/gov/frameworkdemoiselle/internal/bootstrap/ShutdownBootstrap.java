@@ -37,25 +37,16 @@
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.BeanManager;
 
-import br.gov.frameworkdemoiselle.annotation.Shutdown;
-import br.gov.frameworkdemoiselle.internal.processor.AnnotatedMethodProcessor;
-import br.gov.frameworkdemoiselle.internal.processor.ShutdownProcessor;
+import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
+import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
 
 /**
  * This class run at application shutdown
  */
 public class ShutdownBootstrap extends AbstractLifecycleBootstrap<Shutdown> {
 
-	@Override
-	protected <T> AnnotatedMethodProcessor<T> newProcessorInstance(AnnotatedMethod<T> annotatedMethod,
-			BeanManager beanManager) {
-		return new ShutdownProcessor<T>(annotatedMethod, beanManager);
-	}
-
-	public void shutdown(@Observes BeforeApplicationFinalization event) {
+	public void shutdown(@Observes AfterShutdownProccess event) {
 		proccessEvent();
 	}
 }
