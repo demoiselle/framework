@@ -36,7 +36,9 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.CORE_PRIORITY;
 import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
@@ -49,6 +51,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * @author SERPRO
  * @see Authenticator
  */
+@Priority(CORE_PRIORITY)
 public class DefaultAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;

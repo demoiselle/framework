@@ -36,12 +36,16 @@
  */
 package br.gov.frameworkdemoiselle.transaction;
 
+import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L2_PRIORITY;
+
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.util.Beans;
 
+@Priority(EXTENSIONS_L2_PRIORITY)
 public class JTATransaction implements Transaction {
 
 	private static final long serialVersionUID = 1L;

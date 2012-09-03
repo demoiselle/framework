@@ -36,7 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.transaction;
 
-import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_PRIORITY;
+import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
 
 import java.util.Collection;
 
@@ -53,7 +53,7 @@ import br.gov.frameworkdemoiselle.util.Beans;
  * @author SERPRO
  * @see Transaction
  */
-@Priority(EXTENSIONS_PRIORITY)
+@Priority(EXTENSIONS_L1_PRIORITY)
 public class JPATransaction implements Transaction {
 
 	private static final long serialVersionUID = 1L;

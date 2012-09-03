@@ -59,9 +59,11 @@ public final class StrategySelector implements Serializable {
 
 	public static final int CORE_PRIORITY = MIN_PRIORITY;
 
-	public static final int EXTENSIONS_PRIORITY = CORE_PRIORITY + 100;
+	public static final int EXTENSIONS_L1_PRIORITY = CORE_PRIORITY - 100;
 
-	public static final int COMPONENTS_PRIORITY = EXTENSIONS_PRIORITY + 100;
+	public static final int EXTENSIONS_L2_PRIORITY = EXTENSIONS_L1_PRIORITY - 100;
+	
+	public static final int COMPONENTS_PRIORITY = EXTENSIONS_L2_PRIORITY - 100;
 
 	private static final long serialVersionUID = 1L;
 

@@ -36,7 +36,9 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.CORE_PRIORITY;
 import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.Authorizer;
 import br.gov.frameworkdemoiselle.security.RequiredPermission;
@@ -49,6 +51,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * @author SERPRO
  * @see Authorizer
  */
+@Priority(CORE_PRIORITY)
 public class DefaultAuthorizer implements Authorizer {
 
 	private static final long serialVersionUID = 1L;
