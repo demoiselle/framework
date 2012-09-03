@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.annotation;
+package br.gov.frameworkdemoiselle.lifecycle;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -43,63 +43,28 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Identifies a method eligible to be executed automatically during <b>application initialization</b>.
+ * Identifies a method eligible to be executed automatically during <b>application finalization</b>.
  * <p>
  * Take a look at the following usage sample:
  * <p>
  * <blockquote>
- * 
  * <pre>
- * public class Initializer {
+ * public class Finalizer {
  * 
- * 	&#064;Startup
- * 	&#064;Priority(1)
- *    public void initialize() {
+ *   &#064;Shutdown
+ *   &#064;Priority(5)
+ *   public void finalize() {
  *       ...
  *    }
  * }
  * 
- * 
- * 
- * 
  * </pre>
- * 
  * </blockquote>
  * <p>
- * The <code>@Startup</code> annotation allows an integer value to be defined, which stands for the method execution
- * priority when several initializer classes are available in the application.
  * 
  * @author SERPRO
  */
 @Target(METHOD)
 @Retention(RUNTIME)
-public @interface Startup {
-
-	/**
-	 * Most important priority value.
-	 * 
-	 * @deprecated
-	 * @see Priority
-	 */
-	@Deprecated
-	public static int MAX_PRIORITY = Integer.MIN_VALUE;
-
-	/**
-	 * Less important priority value.
-	 * 
-	 * @deprecated
-	 * @see Priority
-	 */
-	@Deprecated
-	public static int MIN_PRIORITY = Integer.MAX_VALUE;
-
-	/**
-	 * An integer value defines method execution order (i.e., priority).
-	 * 
-	 * @deprecated
-	 * @see Priority
-	 */
-	@Deprecated
-	int priority() default MIN_PRIORITY;
-
+public @interface Shutdown {
 }
