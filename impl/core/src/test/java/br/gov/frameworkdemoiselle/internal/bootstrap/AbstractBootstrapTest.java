@@ -41,88 +41,173 @@ import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
-import java.util.Locale;
-
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.inject.Scope;
 
 import org.easymock.EasyMock;
-import org.junit.Ignore;
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.internal.context.Contexts;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
-@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ LoggerProducer.class, Contexts.class })
 public class AbstractBootstrapTest {
 	
+	@After
+	public void afterTests() {
+		for(int x=0; x < Contexts.getActiveContexts().size(); x++) 
+			Contexts.getActiveContexts().remove(x);
+		
+		for(int x=0; x < Contexts.getInactiveContexts().size(); x++) 
+			Contexts.getInactiveContexts().remove(x);
+	}
+	
 	@Test
-	@SuppressWarnings({ "unchecked", "static-access" })
-	public void testAddContext() {
+	@SuppressWarnings({ "unchecked"})
+	public void testAddContextThatIsNotActive() {
 		mockStatic(LoggerProducer.class);
-		mockStatic(Contexts.class);
-
 		Logger logger = PowerMock.createMock(Logger.class);
 		logger.trace(EasyMock.anyObject(String.class));
-
 		expect(LoggerProducer.create(EasyMock.anyObject(Class.class))).andReturn(logger);
-
-		ResourceBundle bundle = PowerMock.createMock(ResourceBundle.class);
-		expect(bundle.getString(EasyMock.anyObject(String.class), EasyMock.anyObject(String.class))).andReturn(null);
-
-		ResourceBundleProducer bundleFactory = PowerMock.createMock(ResourceBundleProducer.class);
-		expect(bundleFactory.create(EasyMock.anyObject(String.class), EasyMock.anyObject(Locale.class))).andReturn(
-				bundle);
-
-		Whitebox.setInternalState(AbstractBootstrap.class, "bundleFactory", bundleFactory);
+		replayAll(logger, LoggerProducer.class);
 
 		ThreadLocalContext context = new ThreadLocalContext(Scope.class);
-		Contexts.add(EasyMock.anyObject(ThreadLocalContext.class), EasyMock.anyObject(AfterBeanDiscovery.class));
-		replayAll(bundle, bundleFactory, logger, LoggerProducer.class, Contexts.class);
 
 		AbstractBootstrap.addContext(context, null);
 
-		verifyAll();
+		Assert.assertTrue(context.isActive());
+		Assert.assertEquals(1, Contexts.getActiveContexts().size());
 	}
-
+	
 	@Test
-	@SuppressWarnings({ "unchecked", "static-access" })
-	public void testDisableContext() {
+	@SuppressWarnings({ "unchecked"})
+	public void testAddContextThatIsActive() {
 		mockStatic(LoggerProducer.class);
-		mockStatic(Contexts.class);
-
 		Logger logger = PowerMock.createMock(Logger.class);
 		logger.trace(EasyMock.anyObject(String.class));
 		expect(LoggerProducer.create(EasyMock.anyObject(Class.class))).andReturn(logger);
-
-		ResourceBundle bundle = PowerMock.createMock(ResourceBundle.class);
-		expect(bundle.getString(EasyMock.anyObject(String.class), EasyMock.anyObject(String.class))).andReturn(null);
-
-		ResourceBundleProducer bundleFactory = PowerMock.createMock(ResourceBundleProducer.class);
-		expect(bundleFactory.create(EasyMock.anyObject(String.class), EasyMock.anyObject(Locale.class))).andReturn(
-				bundle);
-
-		Whitebox.setInternalState(AbstractBootstrap.class, "bundleFactory", bundleFactory);
+		replayAll(logger, LoggerProducer.class);
 
 		ThreadLocalContext context = new ThreadLocalContext(Scope.class);
+		Contexts.getActiveContexts().add(context);
+		
+		AbstractBootstrap.addContext(context, null);
 
-		Contexts.remove(context);
-		replayAll(bundle, bundleFactory, logger, LoggerProducer.class, Contexts.class);
-
-		AbstractBootstrap.disableContext(context);
-
-		verifyAll();
+		Assert.assertFalse(context.isActive());
+		Assert.assertEquals(1, Contexts.getInactiveContexts().size());
 	}
 
+	@Test
+	@SuppressWarnings({ "unchecked"})
+	public void testAddContextThatEventIsNotNull() {
+		mockStatic(LoggerProducer.class);
+		Logger logger = PowerMock.createMock(Logger.class);
+		logger.trace(EasyMock.anyObject(String.class));
+		expect(LoggerProducer.create(EasyMock.anyObject(Class.class))).andReturn(logger);
+		AfterBeanDiscovery event = PowerMock.createMock(AfterBeanDiscovery.class);
+
+		ThreadLocalContext context = new ThreadLocalContext(Scope.class);
+		event.addContext(context);
+		
+		replayAll(logger, LoggerProducer.class);
+
+
+		AbstractBootstrap.addContext(context, event);
+
+		Assert.assertTrue(context.isActive());
+		Assert.assertEquals(1, Contexts.getActiveContexts().size());
+		
+		verifyAll();
+	}
+	
+	@Test
+	@SuppressWarnings({ "unchecked"})
+	public void testDisableContextIsActive() {
+		mockStatic(LoggerProducer.class);
+		Logger logger = PowerMock.createMock(Logger.class);
+		logger.trace(EasyMock.anyObject(String.class));
+		logger.trace(EasyMock.anyObject(String.class));
+		expect(LoggerProducer.create(EasyMock.anyObject(Class.class))).andReturn(logger).anyTimes();
+
+		ThreadLocalContext context = new ThreadLocalContext(Scope.class);
+		
+		replayAll(logger, LoggerProducer.class);
+
+
+		AbstractBootstrap.addContext(context, null);
+
+		Assert.assertTrue(context.isActive());
+		Assert.assertEquals(1, Contexts.getActiveContexts().size());
+		
+		AbstractBootstrap.disableContext(context);
+		
+		Assert.assertFalse(context.isActive());
+		Assert.assertEquals(0, Contexts.getActiveContexts().size());
+		
+	}
+	
+	@Test
+	@SuppressWarnings({ "unchecked"})
+	public void testDisableContextIsNotActive() {
+		mockStatic(LoggerProducer.class);
+		Logger logger = PowerMock.createMock(Logger.class);
+		logger.trace(EasyMock.anyObject(String.class));
+		logger.trace(EasyMock.anyObject(String.class));
+		expect(LoggerProducer.create(EasyMock.anyObject(Class.class))).andReturn(logger).anyTimes();
+
+		ThreadLocalContext context = new ThreadLocalContext(Scope.class);
+		
+		replayAll(logger, LoggerProducer.class);
+
+		Contexts.getInactiveContexts().add(context);
+		Assert.assertEquals(1, Contexts.getInactiveContexts().size());
+
+		AbstractBootstrap.disableContext(context);
+		
+		Assert.assertEquals(0, Contexts.getInactiveContexts().size());
+		
+	}
+	
+	@Test
+	@SuppressWarnings({ "unchecked"})
+	public void testDisableContextIsActiveAndExistTheSameScopeInTheInactives() {
+		mockStatic(LoggerProducer.class);
+		Logger logger = PowerMock.createMock(Logger.class);
+		logger.trace(EasyMock.anyObject(String.class));
+		logger.trace(EasyMock.anyObject(String.class));
+		expect(LoggerProducer.create(EasyMock.anyObject(Class.class))).andReturn(logger).anyTimes();
+
+		ThreadLocalContext context = new ThreadLocalContext(Scope.class);
+		
+		replayAll(logger, LoggerProducer.class);
+
+		AbstractBootstrap.addContext(context, null);
+
+		ThreadLocalContext context2 = new ThreadLocalContext(Scope.class);
+		context2.setActive(false);
+		Contexts.getInactiveContexts().add(context2);
+		
+		Assert.assertTrue(context.isActive());
+		Assert.assertEquals(1, Contexts.getActiveContexts().size());
+		
+		Assert.assertFalse(context2.isActive());
+		Assert.assertEquals(1, Contexts.getInactiveContexts().size());
+		
+		AbstractBootstrap.disableContext(context);
+		
+		Assert.assertFalse(context.isActive());
+		Assert.assertTrue(context2.isActive());
+		Assert.assertEquals(1, Contexts.getActiveContexts().size());
+		Assert.assertEquals(0, Contexts.getInactiveContexts().size());
+		
+	}
 }
