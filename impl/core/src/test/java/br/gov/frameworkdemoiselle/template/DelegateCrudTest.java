@@ -91,24 +91,32 @@ public class DelegateCrudTest {
 		PowerMock.verify();
 	}
 
-	@Ignore
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testUpdate() {
 		Whitebox.setInternalState(delegateCrud, "delegate", mockCrud);
 		
+		mockStatic(Beans.class);
+		
+		expect(Beans.getReference(EasyMock.anyObject(Class.class))).andReturn(mockCrud);
+		
 		Contact update = new Contact();
 		mockCrud.update(update);
-		replayAll(mockCrud);
+		replayAll(Beans.class, mockCrud);
 
 		delegateCrud.update(update);
 
 		verifyAll();
 	}
 	
-	@Ignore
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testInsert() {
 		Whitebox.setInternalState(delegateCrud, "delegate", mockCrud);
+		
+		mockStatic(Beans.class);
+		
+		expect(Beans.getReference(EasyMock.anyObject(Class.class))).andReturn(mockCrud);
 		
 		Contact insert = new Contact();
 		mockCrud.insert(insert);
