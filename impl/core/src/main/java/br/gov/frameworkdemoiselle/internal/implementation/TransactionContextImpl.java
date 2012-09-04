@@ -58,7 +58,9 @@ public class TransactionContextImpl implements TransactionContext {
 	private Transaction getTransaction() {
 		if (this.transaction == null) {
 			TransactionBootstrap bootstrap = Beans.getReference(TransactionBootstrap.class);
-			this.transaction = StrategySelector.getPriorityReference(bootstrap.getCache());
+
+			this.transaction = StrategySelector.getReference("frameworkdemoiselle.transaction.class",
+					Transaction.class, DefaultTransaction.class, bootstrap.getCache());
 		}
 
 		return this.transaction;

@@ -69,7 +69,9 @@ public class SecurityContextImpl implements SecurityContext {
 	private Authenticator getAuthenticator() {
 		if (authenticator == null) {
 			AuthenticatorBootstrap bootstrap = Beans.getReference(AuthenticatorBootstrap.class);
-			authenticator = StrategySelector.getPriorityReference(bootstrap.getCache());
+
+			authenticator = StrategySelector.getReference("frameworkdemoiselle.security.authenticator.class",
+					Authenticator.class, DefaultAuthenticator.class, bootstrap.getCache());
 		}
 
 		return authenticator;
@@ -78,7 +80,9 @@ public class SecurityContextImpl implements SecurityContext {
 	private Authorizer getAuthorizer() {
 		if (authorizer == null) {
 			AuthorizerBootstrap bootstrap = Beans.getReference(AuthorizerBootstrap.class);
-			authorizer = StrategySelector.getPriorityReference(bootstrap.getCache());
+
+			authorizer = StrategySelector.getReference("frameworkdemoiselle.security.authorizer.class",
+					Authorizer.class, DefaultAuthorizer.class, bootstrap.getCache());
 		}
 
 		return authorizer;

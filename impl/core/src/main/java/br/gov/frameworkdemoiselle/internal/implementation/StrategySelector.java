@@ -62,12 +62,23 @@ public final class StrategySelector implements Serializable {
 	public static final int EXTENSIONS_L1_PRIORITY = CORE_PRIORITY - 100;
 
 	public static final int EXTENSIONS_L2_PRIORITY = EXTENSIONS_L1_PRIORITY - 100;
-	
+
 	public static final int COMPONENTS_PRIORITY = EXTENSIONS_L2_PRIORITY - 100;
 
 	private static final long serialVersionUID = 1L;
 
 	private StrategySelector() {
+	}
+
+	public static <T> T getReference(String configKey, Class<T> strategyType, Class<? extends T> defaultType,
+			List<Class<T>> options) {
+		T result = getExplicitReference(configKey, strategyType, defaultType);
+
+		if (result.getClass() == defaultType) {
+			result = getPriorityReference(options);
+		}
+
+		return result;
 	}
 
 	public static <T> T getPriorityReference(List<Class<T>> options) {
@@ -77,9 +88,6 @@ public final class StrategySelector implements Serializable {
 			if (selected == null || getPriority(option) < getPriority(selected)) {
 				selected = option;
 			}
-
-			System.out.println(option.getCanonicalName());
-			System.out.println(selected.getCanonicalName());
 		}
 
 		return Beans.getReference(selected);
@@ -96,19 +104,19 @@ public final class StrategySelector implements Serializable {
 		return result;
 	}
 
-	public static <T> T getReference(String configKey, Class<T> type, Class<? extends T> defaultType) {
-		Class<T> selectedType = loadSelected(configKey, type, defaultType);
+	public static <T> T getExplicitReference(String configKey, Class<T> strategyType, Class<? extends T> defaultType) {
+		Class<T> selectedType = loadSelected(configKey, strategyType, defaultType);
 		return Beans.getReference(selectedType);
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> Class<T> loadSelected(String configKey, Class<T> type, Class<? extends T> defaultType) {
+	private static <T> Class<T> loadSelected(String configKey, Class<T> strategyType, Class<? extends T> defaultType) {
 		ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-core-bundle",
 				Beans.getReference(Locale.class));
 
 		Class<T> result = null;
 		String canonicalName = null;
-		String typeName = type.getSimpleName().toLowerCase();
+		String typeName = strategyType.getSimpleName().toLowerCase();
 		String key = null;
 
 		try {
@@ -122,7 +130,7 @@ public final class StrategySelector implements Serializable {
 			}
 
 			result = (Class<T>) Class.forName(canonicalName, false, classLoader);
-			result.asSubclass(type);
+			result.asSubclass(strategyType);
 
 		} catch (org.apache.commons.configuration.ConfigurationException cause) {
 			throw new ConfigurationException(bundle.getString("file-not-found", "demoiselle.properties"));
@@ -136,7 +144,7 @@ public final class StrategySelector implements Serializable {
 
 		} catch (ClassCastException cause) {
 			key = Strings.getString("{0}-class-must-be-of-type", typeName);
-			throw new ConfigurationException(bundle.getString(key, canonicalName, type));
+			throw new ConfigurationException(bundle.getString(key, canonicalName, strategyType));
 		}
 
 		return result;
