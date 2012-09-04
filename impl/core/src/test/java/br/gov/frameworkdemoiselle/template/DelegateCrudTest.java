@@ -56,7 +56,7 @@ import org.powermock.reflect.Whitebox;
 
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
-@Ignore
+//@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Crud.class, Beans.class, Reflections.class })
 public class DelegateCrudTest {
@@ -79,7 +79,7 @@ public class DelegateCrudTest {
 		mockStatic(Reflections.class);
 
 		expect(Reflections.getGenericTypeArgument(EasyMock.anyObject(Class.class), EasyMock.anyInt())).andReturn(null);
-		expect(Beans.getReference(EasyMock.anyObject(Class.class))).andReturn(mockCrud);
+		expect(Beans.getReference(EasyMock.anyObject(Class.class))).andReturn(mockCrud).times(2);
 
 		mockCrud.delete(1L);
 		PowerMock.expectLastCall();
@@ -91,6 +91,7 @@ public class DelegateCrudTest {
 		PowerMock.verify();
 	}
 
+	@Ignore
 	@Test
 	public void testUpdate() {
 		Whitebox.setInternalState(delegateCrud, "delegate", mockCrud);
@@ -104,6 +105,7 @@ public class DelegateCrudTest {
 		verifyAll();
 	}
 	
+	@Ignore
 	@Test
 	public void testInsert() {
 		Whitebox.setInternalState(delegateCrud, "delegate", mockCrud);
