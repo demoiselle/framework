@@ -34,74 +34,41 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>demoiselle-framework-build</artifactId>
-	<version>2.3.0-RC1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<artifactId>demoiselle-framework-initializer-example</artifactId>
+	<packaging>jar</packaging>
+
+	<name></name>
+	<description></description>
+	<url></url>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-build-parent</artifactId>
-		<version>1</version>
-		<relativePath>../internal/parent/build/demoiselle/pom.xml</relativePath>
+		<artifactId>demoiselle-minimal-parent</artifactId>
+		<version>2.3.0-RC1-SNAPSHOT</version>
+		<relativePath>../../parent/minimal/pom.xml</relativePath>
 	</parent>
 
-	<name>Build Aggregator</name>
-	<description>
-		A liberação de versões do framework deve ser feita a partir deste build, que fará automaticamente o build
-		de todos os artefatos com versionamento sincronizado. Jamais gere uma versão do framework sem utilizar este build.
-	</description>
-
-	<modules>
-		<module>impl</module>
-		<module>parent</module>
-		<module>archetype</module>
-		<module>example</module>
-		<module>documentation</module>
-	</modules>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
-	<distributionManagement>
-		<site>
-			<id>demoiselle.sourceforge.net</id>
-			<url>${site.url}</url>
-		</site>
-	</distributionManagement>
-
-	<scm>
-		<connection>scm:git:git://github.com/demoiselle/${project.alias}.git</connection>
-		<developerConnection>scm:git:git://github.com/demoiselle/${project.alias}.git</developerConnection>
-		<url>scm:git:git://github.com/demoiselle/${project.alias}.git</url>
-	</scm>
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 	<repositories>
 		<repository>
-			<id>demoiselle.sourceforge.net</id>
-			<name>Demoiselle Maven Repository</name>
+			<id>demoiselle.sourceforge.net-release</id>
 			<url>http://demoiselle.sourceforge.net/repository/release</url>
 		</repository>
 	</repositories>
 
 	<properties>
-		<project.alias>framework</project.alias>
-		<project.nextVersion>2.3.0-SNAPSHOT</project.nextVersion>
+		<demoiselle.junit.version>2.3.0-RC1-SNAPSHOT</demoiselle.junit.version>
 	</properties>
 </project>
