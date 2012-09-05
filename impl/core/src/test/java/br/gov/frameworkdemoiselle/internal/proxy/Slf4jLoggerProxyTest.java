@@ -1,84 +1,99 @@
-///*
-// * Demoiselle Framework
-// * Copyright (C) 2010 SERPRO
-// * ----------------------------------------------------------------------------
-// * This file is part of Demoiselle Framework.
-// * 
-// * Demoiselle Framework is free software; you can redistribute it and/or
-// * modify it under the terms of the GNU Lesser General Public License version 3
-// * as published by the Free Software Foundation.
-// * 
-// * This program is distributed in the hope that it will be useful,
-// * but WITHOUT ANY WARRANTY; without even the implied warranty of
-// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// * GNU General Public License for more details.
-// * 
-// * You should have received a copy of the GNU Lesser General Public License version 3
-// * along with this program; if not,  see <http://www.gnu.org/licenses/>
-// * or write to the Free Software Foundation, Inc., 51 Franklin Street,
-// * Fifth Floor, Boston, MA  02110-1301, USA.
-// * ----------------------------------------------------------------------------
-// * Este arquivo é parte do Framework Demoiselle.
-// * 
-// * O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
-// * modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
-// * do Software Livre (FSF).
-// * 
-// * Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA
-// * GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou
-// * APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português
-// * para maiores detalhes.
-// * 
-// * Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
-// * "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses/>
-// * ou escreva para a Fundação do Software Livre (FSF) Inc.,
-// * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
-// */
-//package br.gov.frameworkdemoiselle.internal.proxy;
-//
-//import static org.easymock.EasyMock.expect;
-//import static org.easymock.EasyMock.replay;
-//import static org.easymock.EasyMock.verify;
-//import static org.junit.Assert.assertEquals;
-//
-//import org.easymock.EasyMock;
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.slf4j.Logger;
-//import org.slf4j.Marker;
-//
-//
-//public class Slf4jLoggerProxyTest {
-//
-//	private Logger logger;
-//	private Slf4jLoggerProxy slf4jLoggerProxy;
-//	
-//	@Before
-//	public void setUp() throws Exception {
-//		this.logger = EasyMock.createMock(Logger.class);
-//		this.slf4jLoggerProxy = new Slf4jLoggerProxy(this.logger);
-//	}
-//	
-//	@Test
-//	public void testDebugWithMarkerAndString() {
-//		Marker marker = null;
-//		this.logger.debug(marker,"");
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.debug(marker,"");
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testDebugWithMarkerStringAndOneObject() {
-//		Marker marker = null;
-//		Object obj = null;
-//		this.logger.debug(marker,"",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.debug(marker,"",obj);
-//		verify(this.logger);
-//	}
+/*
+ * Demoiselle Framework
+ * Copyright (C) 2010 SERPRO
+ * ----------------------------------------------------------------------------
+ * This file is part of Demoiselle Framework.
+ * 
+ * Demoiselle Framework is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License version 3
+ * as published by the Free Software Foundation.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License version 3
+ * along with this program; if not,  see <http://www.gnu.org/licenses/>
+ * or write to the Free Software Foundation, Inc., 51 Franklin Street,
+ * Fifth Floor, Boston, MA  02110-1301, USA.
+ * ----------------------------------------------------------------------------
+ * Este arquivo é parte do Framework Demoiselle.
+ * 
+ * O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
+ * do Software Livre (FSF).
+ * 
+ * Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA
+ * GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou
+ * APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português
+ * para maiores detalhes.
+ * 
+ * Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
+ * "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses/>
+ * ou escreva para a Fundação do Software Livre (FSF) Inc.,
+ * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
+ */
+package br.gov.frameworkdemoiselle.internal.proxy;
+
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.powermock.api.easymock.PowerMock.mockStatic;
+
+import javax.inject.Inject;
+
+import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(LoggerFactory.class)
+public class Slf4jLoggerProxyTest {
+
+	private Logger logger;
+	private Slf4jLoggerProxy slf4jLoggerProxy;
+	
+	@Before
+	public void setUp() throws Exception {
+		this.logger = EasyMock.createMock(Logger.class);
+		this.slf4jLoggerProxy = new Slf4jLoggerProxy(Logger.class);
+		
+		mockStatic(LoggerFactory.class);
+		
+		expect(LoggerFactory.getLogger(EasyMock.anyObject(Class.class))).andReturn(logger);
+	}
+	
+	@Test
+	public void testDebugWithMarkerAndString() {
+		Marker marker = null;
+		this.logger.debug(marker,"");
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.debug(marker,"");
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test
+	public void testDebugWithMarkerStringAndOneObject() {
+		Marker marker = null;
+		Object obj = null;
+		this.logger.debug(marker,"",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.debug(marker,"",obj);
+		PowerMock.verify(this.logger);
+	}
+	
 //	@Test
 //	public void testDebugWithMarkerStringAndTwoObjects() {
-//		Marker marker = null;
+//		Marker marker = nullthis.slf4jLoggerProxy = new Slf4jLoggerProxy(Logger.class);;
 //		Object obj1 = null, obj2 = null;
 //		this.logger.debug(marker,"",obj1,obj2);
 //		replay(this.logger);
@@ -557,4 +572,4 @@
 //		this.slf4jLoggerProxy.warn("",t);
 //		verify(this.logger);
 //	}
-//}
+}
