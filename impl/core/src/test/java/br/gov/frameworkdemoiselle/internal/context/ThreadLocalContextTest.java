@@ -35,6 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.context;
+
 import org.junit.Ignore;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.fail;
@@ -58,7 +59,7 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
-@Ignore
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Bean.class })
 public class ThreadLocalContextTest {

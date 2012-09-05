@@ -35,11 +35,11 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.util;
-import org.junit.Ignore;
+
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-@Ignore
+
 public class ReflectionsTest {
 
 	@Test
@@ -51,7 +51,7 @@ public class ReflectionsTest {
 }
 
 class SomeClass<T, I> {
-	
+
 }
 
 class OtherClass extends SomeClass<Long, String> {

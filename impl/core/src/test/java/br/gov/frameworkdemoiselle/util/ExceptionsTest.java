@@ -43,7 +43,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
-@Ignore
+
 public class ExceptionsTest {
 
 	@Test
