@@ -34,56 +34,14 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+	<interceptors>
+		<class>br.gov.frameworkdemoiselle.internal.interceptor.ExceptionHandlerInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.internal.interceptor.RequiredPermissionInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.internal.interceptor.RequiredRoleInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.internal.interceptor.TransactionalInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.internal.interceptor.ConfigurationInterceptor</class>
+	</interceptors>
 
-	<groupId>br.gov.frameworkdemoiselle</groupId>
-	<artifactId>demoiselle-framework-example-build</artifactId>
-	<version>2.3.0-RC1-SNAPSHOT</version>
-	<packaging>pom</packaging>
-
-	<name>Examples Build Aggregator</name>
-	<description>Demoiselle Examples Build Aggregator</description>
-
-	<modules>
-		<module>initializer</module>
-		<module>security</module>
-	</modules>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>wagon-maven-plugin</artifactId>
-				<configuration>
-					<url>.</url>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
-	<distributionManagement>
-		<repository>
-			<id />
-			<url />
-		</repository>
-		<snapshotRepository>
-			<id />
-			<url />
-		</snapshotRepository>
-		<site>
-			<id />
-			<url>file://${project.build.directory}/tmp</url>
-		</site>
-	</distributionManagement>
-</project>
+</beans>

@@ -39,51 +39,36 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>br.gov.frameworkdemoiselle</groupId>
-	<artifactId>demoiselle-framework-example-build</artifactId>
-	<version>2.3.0-RC1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<artifactId>demoiselle-security-example</artifactId>
+	<packaging>jar</packaging>
 
-	<name>Examples Build Aggregator</name>
-	<description>Demoiselle Examples Build Aggregator</description>
+	<name></name>
+	<description></description>
+	<url></url>
 
-	<modules>
-		<module>initializer</module>
-		<module>security</module>
-	</modules>
+	<parent>
+		<groupId>br.gov.frameworkdemoiselle</groupId>
+		<artifactId>demoiselle-minimal-parent</artifactId>
+		<version>2.3.0-RC1-SNAPSHOT</version>
+		<relativePath>../../parent/minimal/pom.xml</relativePath>
+	</parent>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>wagon-maven-plugin</artifactId>
-				<configuration>
-					<url>.</url>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
-	<distributionManagement>
+	<repositories>
 		<repository>
-			<id />
-			<url />
+			<id>demoiselle.sourceforge.net-release</id>
+			<url>http://demoiselle.sourceforge.net/repository/release</url>
 		</repository>
-		<snapshotRepository>
-			<id />
-			<url />
-		</snapshotRepository>
-		<site>
-			<id />
-			<url>file://${project.build.directory}/tmp</url>
-		</site>
-	</distributionManagement>
+	</repositories>
+
+	<properties>
+		<demoiselle.junit.version>2.3.0-RC1-SNAPSHOT</demoiselle.junit.version>
+	</properties>
 </project>
