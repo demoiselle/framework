@@ -39,6 +39,7 @@ package br.gov.frameworkdemoiselle.internal.configuration;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
+import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replay;
 
 import java.awt.Color;
@@ -55,6 +56,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
@@ -62,9 +64,11 @@ import org.slf4j.Logger;
 import br.gov.frameworkdemoiselle.configuration.ConfigType;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.internal.bootstrap.CoreBootstrap;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @RunWith(PowerMockRunner.class)
+@PrepareForTest(Beans.class)
 public class ConfigurationLoaderWithArrayTest {
 
 	private ConfigurationLoader configurationLoader;
@@ -149,13 +153,7 @@ public class ConfigurationLoaderWithArrayTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Logger logger;
-		ResourceBundle bundle;
-		logger = PowerMock.createMock(Logger.class);
-		bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 		configurationLoader = new ConfigurationLoader();
-		Whitebox.setInternalState(this.configurationLoader, "bundle", bundle);
-		Whitebox.setInternalState(this.configurationLoader, "logger", logger);
 	}
 
 	@After
@@ -341,12 +339,16 @@ public class ConfigurationLoaderWithArrayTest {
 	}
 
 	private ConfigurationPropertiesWithArray prepareConfigurationPropertiesWithArray() {
+		mockStatic(Beans.class);
 		ConfigurationPropertiesWithArray config = new ConfigurationPropertiesWithArray();
-
-		CoreBootstrap coreBootstrap = createMock(CoreBootstrap.class);
+		CoreBootstrap coreBootstrap = PowerMock.createMock(CoreBootstrap.class);
+		
+		expect(Beans.getReference(CoreBootstrap.class)).andReturn(coreBootstrap);
+		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault());
+		
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
 
-		replay(coreBootstrap);
+		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
 
 		configurationLoader.load(config);
 		return config;
@@ -531,13 +533,17 @@ public class ConfigurationLoaderWithArrayTest {
 	}
 
 	private ConfigurationXMLWithArray prepareConfigurationXMLWithArray() {
+		mockStatic(Beans.class);
 		ConfigurationXMLWithArray config = new ConfigurationXMLWithArray();
-
-		CoreBootstrap coreBootstrap = createMock(CoreBootstrap.class);
+		CoreBootstrap coreBootstrap = PowerMock.createMock(CoreBootstrap.class);
+		
+		expect(Beans.getReference(CoreBootstrap.class)).andReturn(coreBootstrap);
+		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault());
+		
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
 
-		replay(CoreBootstrap.class);
-
+		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		
 		configurationLoader.load(config);
 		return config;
 	}
