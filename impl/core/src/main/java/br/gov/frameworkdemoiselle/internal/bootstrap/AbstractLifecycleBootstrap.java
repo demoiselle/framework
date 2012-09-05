@@ -62,7 +62,6 @@ import br.gov.frameworkdemoiselle.internal.context.Contexts;
 import br.gov.frameworkdemoiselle.internal.context.CustomContext;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.internal.implementation.AnnotatedMethodProcessor;
-import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
@@ -81,24 +80,16 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 
 	private boolean registered = false;
 
-	private static Logger logger;
+	private ResourceBundle bundle;
 
-	private static ResourceBundle bundle;
+	protected abstract Logger getLogger();
 
-	protected static Logger getLogger() {
-		if (logger == null) {
-			logger = LoggerProducer.create(AbstractLifecycleBootstrap.class);
+	protected ResourceBundle getBundle() {
+		if (this.bundle == null) {
+			this.bundle = ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
 		}
 
-		return logger;
-	}
-
-	protected static ResourceBundle getBundle() {
-		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
-		}
-
-		return bundle;
+		return this.bundle;
 	}
 
 	protected <T> AnnotatedMethodProcessor<T> newProcessorInstance(AnnotatedMethod<T> annotatedMethod) {

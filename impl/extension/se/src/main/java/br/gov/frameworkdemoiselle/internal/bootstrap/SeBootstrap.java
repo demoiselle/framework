@@ -60,22 +60,22 @@ public class SeBootstrap implements Extension {
 	private AfterBeanDiscovery afterBeanDiscoveryEvent;
 
 	public void storeContexts(@Observes final AfterBeanDiscovery event) {
-		tempContexts.add(new ThreadLocalContext(ViewScoped.class));
-		tempContexts.add(new ThreadLocalContext(SessionScoped.class));
-		tempContexts.add(new ThreadLocalContext(ConversationScoped.class));
-		tempContexts.add(new ThreadLocalContext(RequestScoped.class));
+		this.tempContexts.add(new ThreadLocalContext(ViewScoped.class));
+		this.tempContexts.add(new ThreadLocalContext(SessionScoped.class));
+		this.tempContexts.add(new ThreadLocalContext(ConversationScoped.class));
+		this.tempContexts.add(new ThreadLocalContext(RequestScoped.class));
 
-		afterBeanDiscoveryEvent = event;
+		this.afterBeanDiscoveryEvent = event;
 	}
 
 	public void addContexts(@Observes final AfterDeploymentValidation event) {
-		for (CustomContext tempContext : tempContexts) {
-			Contexts.add(tempContext, afterBeanDiscoveryEvent);
+		for (CustomContext tempContext : this.tempContexts) {
+			Contexts.add(tempContext, this.afterBeanDiscoveryEvent);
 		}
 	}
 
 	public void removeContexts(@Observes AfterShutdownProccess event) {
-		for (CustomContext tempContext : tempContexts) {
+		for (CustomContext tempContext : this.tempContexts) {
 			Contexts.remove(tempContext);
 		}
 	}

@@ -43,9 +43,10 @@ import br.gov.frameworkdemoiselle.security.Authorizer;
 
 public class AuthorizerBootstrap extends AbstractStrategyBootstrap<Authorizer> {
 
-	private static Logger logger;
+	private Logger logger;
 
-	protected static Logger getLogger() {
+	@Override
+	protected Logger getLogger() {
 		if (logger == null) {
 			logger = LoggerProducer.create(AuthorizerBootstrap.class);
 		}

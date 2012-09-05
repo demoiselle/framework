@@ -60,24 +60,24 @@ public class CoreBootstrap implements Extension {
 
 	private final Map<Class<?>, AnnotatedType<?>> beans = new HashMap<Class<?>, AnnotatedType<?>>();
 
-	private static Logger logger;
+	private Logger logger;
 
-	private static ResourceBundle bundle;
+	private ResourceBundle bundle;
 
-	private static Logger getLogger() {
-		if (logger == null) {
-			logger = LoggerProducer.create(CoreBootstrap.class);
+	private Logger getLogger() {
+		if (this.logger == null) {
+			this.logger = LoggerProducer.create(CoreBootstrap.class);
 		}
 
-		return logger;
+		return this.logger;
 	}
 
-	private static ResourceBundle getBundle() {
-		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
+	private ResourceBundle getBundle() {
+		if (this.bundle == null) {
+			this.bundle = ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
 		}
 
-		return bundle;
+		return this.bundle;
 	}
 
 	public boolean isAnnotatedType(Class<?> type) {
