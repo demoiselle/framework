@@ -11,24 +11,15 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.slf4j.Logger;
 
-import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
-public class AbstractStrategyBootstrap<I> implements Extension {
+public abstract class AbstractStrategyBootstrap<I> implements Extension {
 
 	private Class<? extends I> strategyClass;
 
 	private List<Class<? extends I>> cache;
 
-	private static Logger logger;
-
-	protected static Logger getLogger() {
-		if (logger == null) {
-			logger = LoggerProducer.create(AbstractStrategyBootstrap.class);
-		}
-
-		return logger;
-	}
+	protected abstract Logger getLogger();
 
 	protected Class<? extends I> getStrategyClass() {
 		if (this.strategyClass == null) {

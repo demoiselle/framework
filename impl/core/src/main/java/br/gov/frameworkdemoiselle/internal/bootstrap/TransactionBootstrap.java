@@ -36,7 +36,21 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
+import org.slf4j.Logger;
+
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 
 public class TransactionBootstrap extends AbstractStrategyBootstrap<Transaction> {
+
+	private Logger logger;
+
+	@Override
+	protected Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(TransactionBootstrap.class);
+		}
+
+		return logger;
+	}
 }

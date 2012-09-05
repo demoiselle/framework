@@ -38,6 +38,9 @@ package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import javax.enterprise.event.Observes;
 
+import org.slf4j.Logger;
+
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
 import br.gov.frameworkdemoiselle.lifecycle.Startup;
 
@@ -45,6 +48,17 @@ import br.gov.frameworkdemoiselle.lifecycle.Startup;
  * This class is the bootstrap to execute the processes at load time.
  */
 public class StartupBootstrap extends AbstractLifecycleBootstrap<Startup> {
+
+	private Logger logger;
+
+	@Override
+	protected Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(StartupBootstrap.class);
+		}
+
+		return logger;
+	}
 
 	public void startup(@Observes AfterStartupProccess event) {
 		proccessEvent();

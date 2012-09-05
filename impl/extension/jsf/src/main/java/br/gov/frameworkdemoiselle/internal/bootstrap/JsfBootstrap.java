@@ -56,19 +56,18 @@ public class JsfBootstrap implements Extension {
 	private AfterBeanDiscovery afterBeanDiscoveryEvent;
 
 	public void storeContexts(@Observes final AfterBeanDiscovery event) {
-		tempContexts.add(new ViewContext());
-
-		afterBeanDiscoveryEvent = event;
+		this.tempContexts.add(new ViewContext());
+		this.afterBeanDiscoveryEvent = event;
 	}
 
 	public void addContexts(@Observes final AfterDeploymentValidation event) {
-		for (CustomContext tempContext : tempContexts) {
-			Contexts.add(tempContext, afterBeanDiscoveryEvent);
+		for (CustomContext tempContext : this.tempContexts) {
+			Contexts.add(tempContext, this.afterBeanDiscoveryEvent);
 		}
 	}
 
 	public void removeContexts(@Observes AfterShutdownProccess event) {
-		for (CustomContext tempContext : tempContexts) {
+		for (CustomContext tempContext : this.tempContexts) {
 			Contexts.remove(tempContext);
 		}
 	}

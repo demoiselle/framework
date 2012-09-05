@@ -38,6 +38,9 @@ package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import javax.enterprise.event.Observes;
 
+import org.slf4j.Logger;
+
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
 
@@ -45,6 +48,17 @@ import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
  * This class run at application shutdown
  */
 public class ShutdownBootstrap extends AbstractLifecycleBootstrap<Shutdown> {
+
+	private Logger logger;
+
+	@Override
+	protected Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(ShutdownBootstrap.class);
+		}
+
+		return logger;
+	}
 
 	public void shutdown(@Observes AfterShutdownProccess event) {
 		proccessEvent();
