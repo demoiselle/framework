@@ -67,25 +67,27 @@ public class SecurityContextImpl implements SecurityContext {
 	private Authorizer authorizer;
 
 	private Authenticator getAuthenticator() {
-		if (authenticator == null) {
+		if (this.authenticator == null) {
 			AuthenticatorBootstrap bootstrap = Beans.getReference(AuthenticatorBootstrap.class);
+			Class<? extends Authenticator> clazz = getConfig().getAuthenticatorClass();
+			clazz = StrategySelector.getClass(clazz, bootstrap.getCache());
 
-			authenticator = StrategySelector.getReference("frameworkdemoiselle.security.authenticator.class",
-					Authenticator.class, DefaultAuthenticator.class, bootstrap.getCache());
+			this.authenticator = Beans.getReference(clazz);
 		}
 
-		return authenticator;
+		return this.authenticator;
 	}
 
 	private Authorizer getAuthorizer() {
-		if (authorizer == null) {
+		if (this.authorizer == null) {
 			AuthorizerBootstrap bootstrap = Beans.getReference(AuthorizerBootstrap.class);
+			Class<? extends Authorizer> clazz = getConfig().getAuthorizerClass();
+			clazz = StrategySelector.getClass(clazz, bootstrap.getCache());
 
-			authorizer = StrategySelector.getReference("frameworkdemoiselle.security.authorizer.class",
-					Authorizer.class, DefaultAuthorizer.class, bootstrap.getCache());
+			this.authorizer = Beans.getReference(clazz);
 		}
 
-		return authorizer;
+		return this.authorizer;
 	}
 
 	/**

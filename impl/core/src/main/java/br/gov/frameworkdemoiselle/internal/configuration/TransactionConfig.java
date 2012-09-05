@@ -34,46 +34,22 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.implementation;
+package br.gov.frameworkdemoiselle.internal.configuration;
 
-import javax.inject.Named;
+import java.io.Serializable;
 
-import br.gov.frameworkdemoiselle.internal.bootstrap.TransactionBootstrap;
-import br.gov.frameworkdemoiselle.internal.configuration.TransactionConfig;
+import br.gov.frameworkdemoiselle.configuration.Configuration;
+import br.gov.frameworkdemoiselle.internal.implementation.DefaultTransaction;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
-import br.gov.frameworkdemoiselle.transaction.TransactionContext;
-import br.gov.frameworkdemoiselle.util.Beans;
 
-/**
- * This is the default implementation of {@link TransactionContext} interface.
- * 
- * @author SERPRO
- */
-@Named("transactionContext")
-public class TransactionContextImpl implements TransactionContext {
+@Configuration(prefix = "frameworkdemoiselle.transaction")
+public class TransactionConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Transaction transaction;
+	private Class<? extends Transaction> transactionClass = DefaultTransaction.class;
 
-	private Transaction getTransaction() {
-		if (this.transaction == null) {
-			TransactionBootstrap bootstrap = Beans.getReference(TransactionBootstrap.class);
-			Class<? extends Transaction> clazz = getConfig().getTransactionClass();
-			clazz = StrategySelector.getClass(clazz, bootstrap.getCache());
-
-			this.transaction = Beans.getReference(clazz);
-		}
-
-		return this.transaction;
-	}
-
-	@Override
-	public Transaction getCurrentTransaction() {
-		return getTransaction();
-	}
-
-	private TransactionConfig getConfig() {
-		return Beans.getReference(TransactionConfig.class);
+	public Class<? extends Transaction> getTransactionClass() {
+		return transactionClass;
 	}
 }

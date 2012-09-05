@@ -38,8 +38,11 @@ package br.gov.frameworkdemoiselle.internal.configuration;
 
 import java.io.Serializable;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
+import br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthenticator;
+import br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthorizer;
+import br.gov.frameworkdemoiselle.security.Authenticator;
+import br.gov.frameworkdemoiselle.security.Authorizer;
 
 /**
  * A <code>SecurityConfig</code> object is responsible for specifying which security configurations should be used for a
@@ -52,8 +55,11 @@ public class SecurityConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Name("enabled")
 	private boolean enabled = true;
+
+	private Class<? extends Authenticator> authenticatorClass = DefaultAuthenticator.class;
+
+	private Class<? extends Authorizer> authorizerClass = DefaultAuthorizer.class;
 
 	/**
 	 * Tells whether or not the security is enabled for the current application. This value could be defined in the
@@ -64,5 +70,13 @@ public class SecurityConfig implements Serializable {
 	 */
 	public boolean isEnabled() {
 		return enabled;
+	}
+
+	public Class<? extends Authenticator> getAuthenticatorClass() {
+		return authenticatorClass;
+	}
+
+	public Class<? extends Authorizer> getAuthorizerClass() {
+		return authorizerClass;
 	}
 }

@@ -35,10 +35,11 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.configuration;
-import org.junit.Ignore;
+
+import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
-import static org.powermock.api.easymock.PowerMock.mockStatic;
+import static org.powermock.api.easymock.PowerMock.replay;
 
 import java.awt.Color;
 import java.math.BigDecimal;
@@ -52,10 +53,10 @@ import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
@@ -67,7 +68,6 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @Ignore
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(CoreBootstrap.class)
 public class ConfigurationLoaderWithListTest {
 
 	private ConfigurationLoader configurationLoader;
@@ -344,9 +344,10 @@ public class ConfigurationLoaderWithListTest {
 	private ConfigurationPropertiesWithList prepareConfigurationPropertiesWithList() {
 		ConfigurationPropertiesWithList config = new ConfigurationPropertiesWithList();
 
-		mockStatic(CoreBootstrap.class);
-		expect(CoreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replay(CoreBootstrap.class);
+		CoreBootstrap coreBootstrap = createMock(CoreBootstrap.class);
+		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
+
+		replay(coreBootstrap);
 
 		configurationLoader.load(config);
 		return config;
@@ -533,9 +534,10 @@ public class ConfigurationLoaderWithListTest {
 	private ConfigurationXMLWithList prepareConfigurationXMLWithList() {
 		ConfigurationXMLWithList config = new ConfigurationXMLWithList();
 
-		mockStatic(CoreBootstrap.class);
-		expect(CoreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replay(CoreBootstrap.class);
+		CoreBootstrap coreBootstrap = createMock(CoreBootstrap.class);
+		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
+
+		replay(coreBootstrap);
 
 		configurationLoader.load(config);
 		return config;

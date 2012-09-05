@@ -64,6 +64,7 @@ import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.internal.bootstrap.CoreBootstrap;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
@@ -91,8 +92,9 @@ public class ConfigurationLoader implements Serializable {
 	 */
 	public void load(Object object) throws ConfigurationException {
 		Class<?> config = object.getClass();
-
-		if (!CoreBootstrap.isAnnotatedType(config)) {
+		CoreBootstrap bootstrap = Beans.getReference(CoreBootstrap.class);
+		
+		if (!bootstrap.isAnnotatedType(config)) {
 			config = config.getSuperclass();
 			getLogger().debug(getBundle().getString("proxy-detected", config, config.getClass().getSuperclass()));
 		}
@@ -209,24 +211,24 @@ public class ConfigurationLoader implements Serializable {
 	 * @return a configuration
 	 */
 	private org.apache.commons.configuration.Configuration getConfiguration(String resource, ConfigType type) {
-		org.apache.commons.configuration.Configuration config = null;
+		org.apache.commons.configuration.Configuration result = null;
 
 		try {
 			URL url;
 
 			switch (type) {
 				case SYSTEM:
-					config = new SystemConfiguration();
+					result = new SystemConfiguration();
 					break;
 
 				case PROPERTIES:
 					url = getResourceAsURL(resource + ".properties");
-					config = new DataConfiguration(new PropertiesConfiguration(url));
+					result = new DataConfiguration(new PropertiesConfiguration(url));
 					break;
 
 				case XML:
 					url = getResourceAsURL(resource + ".xml");
-					config = new DataConfiguration(new XMLConfiguration(url));
+					result = new DataConfiguration(new XMLConfiguration(url));
 					break;
 
 				default:
@@ -239,7 +241,7 @@ public class ConfigurationLoader implements Serializable {
 					resource), cause);
 		}
 
-		return config;
+		return result;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -250,8 +252,12 @@ public class ConfigurationLoader implements Serializable {
 
 		if (fieldClass.isArray()) {
 			value = getArray(key, field, config);
+
 		} else if (fieldClass.equals(Properties.class)) {
 			value = getProperty(key, config);
+
+		} else if (fieldClass.equals(Class.class)) {
+			value = getClass(key, field, config);
 
 		} else {
 			value = getBasic(key, field, config);
@@ -267,7 +273,6 @@ public class ConfigurationLoader implements Serializable {
 
 		try {
 			Method method;
-
 			String methodName = "get";
 
 			methodName += Strings.firstToUpper(fieldClass.getSimpleName());
@@ -293,11 +298,9 @@ public class ConfigurationLoader implements Serializable {
 
 		try {
 			Method method;
-
 			String methodName = "get";
 
 			methodName += discoveryGenericType(field);
-
 			methodName += Strings.firstToUpper(fieldClass.getSimpleName());
 
 			if (!fieldClass.isPrimitive()) {
@@ -312,6 +315,25 @@ public class ConfigurationLoader implements Serializable {
 		} catch (Throwable cause) {
 			throw new ConfigurationException(getBundle().getString("error-converting-to-type", fieldClass.getName()),
 					cause);
+		}
+
+		return value;
+	}
+
+	private <T> Object getClass(String key, Field field, org.apache.commons.configuration.Configuration config) {
+		Object value = null;
+
+		try {
+			String canonicalName = config.getString(key);
+
+			if (canonicalName != null) {
+				ClassLoader classLoader = getClassLoaderForClass(canonicalName);
+				value = Class.forName(canonicalName, true, classLoader);
+			}
+
+		} catch (Exception cause) {
+			// TODO Lançar a mensagem correta
+			throw new ConfigurationException(null, cause);
 		}
 
 		return value;
