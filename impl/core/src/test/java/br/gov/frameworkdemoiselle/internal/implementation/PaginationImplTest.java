@@ -35,6 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
+
 import org.junit.Ignore;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -49,7 +50,7 @@ import br.gov.frameworkdemoiselle.util.Strings;
 /**
  * @author SERPRO
  */
-@Ignore
+
 public class PaginationImplTest {
 
 	private Pagination pagination;
@@ -171,7 +172,7 @@ public class PaginationImplTest {
 			fail();
 		} catch (IndexOutOfBoundsException cause) {
 		}
-		
+
 		try {
 			pagination.setTotalResults(0);
 			pagination.setFirstResult(0);
@@ -314,7 +315,7 @@ public class PaginationImplTest {
 		pagination.setCurrentPage(9);
 		assertEquals(90, pagination.getFirstResult());
 	}
-	
+
 	@Test
 	public void testToStringFormat() {
 		assertEquals(Strings.toString(pagination), pagination.toString());
