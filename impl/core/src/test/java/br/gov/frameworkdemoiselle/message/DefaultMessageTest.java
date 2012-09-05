@@ -40,7 +40,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
-@Ignore
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Beans.class, ResourceBundle.class })
 public class DefaultMessageTest {
@@ -193,15 +193,16 @@ public class DefaultMessageTest {
 
 	}
 
-	// @Test
+	@Ignore
+	@Test
 	public void testMessagesEnum() {
 
-		// bundle = PowerMock.createMock(ResourceBundle.class);
-		// expect(bundle.getString("first-key")).andReturn("First message text");
-		// expect(bundle.getString("second-key")).andReturn("Second message text");
-		// expect(bundle.getString("THIRD_KEY")).andReturn("Third message text");
-		// expect(bundle.getString("FOURTH_KEY")).andReturn("Fourth message text");
-		// replayAll(bundle);
+		bundle = PowerMock.createMock(ResourceBundle.class);
+		expect(bundle.getString("first-key")).andReturn("First message text");
+		expect(bundle.getString("second-key")).andReturn("Second message text");
+		expect(bundle.getString("THIRD_KEY")).andReturn("Third message text");
+		expect(bundle.getString("FOURTH_KEY")).andReturn("Fourth message text");
+		replayAll(bundle);
 
 		message = MessagesEnum.FIRST_KEY;
 		assertEquals(SeverityType.INFO, message.getSeverity());
@@ -250,7 +251,8 @@ public class DefaultMessageTest {
 
 	}
 
-	// @Test
+	@Ignore
+	@Test
 	public void testErrorMessagesEnum() {
 		message = ErrorMessages.FIRST_ERROR_KEY;
 		assertEquals(SeverityType.ERROR, message.getSeverity());
@@ -279,7 +281,8 @@ public class DefaultMessageTest {
 
 	}
 
-	// @Test
+	@Ignore
+	@Test
 	public void testMessagesInterface() {
 		message = MessagesInterface.FIRST_KEY;
 		assertEquals(SeverityType.INFO, message.getSeverity());
