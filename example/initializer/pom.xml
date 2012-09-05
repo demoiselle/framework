@@ -39,7 +39,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>demoiselle-framework-initializer-example</artifactId>
+	<artifactId>demoiselle-initializer-example</artifactId>
 	<packaging>jar</packaging>
 
 	<name></name>
