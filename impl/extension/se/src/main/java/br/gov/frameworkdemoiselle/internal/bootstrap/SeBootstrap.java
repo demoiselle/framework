@@ -36,19 +36,47 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import javax.enterprise.inject.spi.Extension;
 
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
+import br.gov.frameworkdemoiselle.internal.context.Contexts;
+import br.gov.frameworkdemoiselle.internal.context.CustomContext;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
+import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 
-public class SeBootstrap extends AbstractBootstrap {
+public class SeBootstrap implements Extension {
 
-	public void loadContext(@Observes final AfterBeanDiscovery event) {
-		addContext(new ThreadLocalContext(RequestScoped.class), event);
-		addContext(new ThreadLocalContext(SessionScoped.class), event);
-		addContext(new ThreadLocalContext(ViewScoped.class), event);
+	private List<CustomContext> tempContexts = new ArrayList<CustomContext>();
+
+	private AfterBeanDiscovery afterBeanDiscoveryEvent;
+
+	public void storeContexts(@Observes final AfterBeanDiscovery event) {
+		tempContexts.add(new ThreadLocalContext(ViewScoped.class));
+		tempContexts.add(new ThreadLocalContext(SessionScoped.class));
+		tempContexts.add(new ThreadLocalContext(ConversationScoped.class));
+		tempContexts.add(new ThreadLocalContext(RequestScoped.class));
+
+		afterBeanDiscoveryEvent = event;
+	}
+
+	public void addContexts(@Observes final AfterDeploymentValidation event) {
+		for (CustomContext tempContext : tempContexts) {
+			Contexts.add(tempContext, afterBeanDiscoveryEvent);
+		}
+	}
+
+	public void removeContexts(@Observes AfterShutdownProccess event) {
+		for (CustomContext tempContext : tempContexts) {
+			Contexts.remove(tempContext);
+		}
 	}
 }

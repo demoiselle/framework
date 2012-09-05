@@ -54,6 +54,7 @@ import br.gov.frameworkdemoiselle.internal.bootstrap.CoreBootstrap;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.stereotype.Controller;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @Interceptor
@@ -89,8 +90,9 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 	private final Class<?> getType(final InvocationContext ic) {
 		Class<?> type = ic.getTarget().getClass();
+		CoreBootstrap bootstrap = Beans.getReference(CoreBootstrap.class);
 
-		if (!CoreBootstrap.isAnnotatedType(type)) {
+		if (!bootstrap.isAnnotatedType(type)) {
 			type = type.getSuperclass();
 			getLogger().debug(
 					getBundle().getString("proxy-detected", ic.getTarget().getClass(),

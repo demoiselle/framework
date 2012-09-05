@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.RequestScoped;
@@ -49,31 +50,56 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+
+import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
+import br.gov.frameworkdemoiselle.internal.context.Contexts;
 import br.gov.frameworkdemoiselle.internal.context.CustomContext;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.internal.implementation.AnnotatedMethodProcessor;
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Reflections;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
-public abstract class AbstractLifecycleBootstrap<A extends Annotation> extends AbstractBootstrap {
+public abstract class AbstractLifecycleBootstrap<A extends Annotation> implements Extension {
 
 	private Class<A> annotationClass;
 
 	@SuppressWarnings("rawtypes")
-	private final List<AnnotatedMethodProcessor> processors = Collections
+	private List<AnnotatedMethodProcessor> processors = Collections
 			.synchronizedList(new ArrayList<AnnotatedMethodProcessor>());
 
-	private final List<CustomContext> tempContexts = new ArrayList<CustomContext>();
+	private List<CustomContext> tempContexts = new ArrayList<CustomContext>();
 
 	private AfterBeanDiscovery afterBeanDiscoveryEvent;
 
 	private boolean registered = false;
 
-	// protected abstract <T> AnnotatedMethodProcessor<T> newProcessorInstance(AnnotatedMethod<T> annotatedMethod);
+	private static Logger logger;
+
+	private static ResourceBundle bundle;
+
+	protected static Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(AbstractLifecycleBootstrap.class);
+		}
+
+		return logger;
+	}
+
+	protected static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
+		}
+
+		return bundle;
+	}
 
 	protected <T> AnnotatedMethodProcessor<T> newProcessorInstance(AnnotatedMethod<T> annotatedMethod) {
 		return new AnnotatedMethodProcessor<T>(annotatedMethod);
@@ -111,15 +137,14 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> extends A
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected synchronized void proccessEvent() {
-		getLogger().debug(
-				getBundle("demoiselle-core-bundle").getString("executing-all", annotationClass.getSimpleName()));
+		getLogger().debug(getBundle().getString("executing-all", annotationClass.getSimpleName()));
 
 		Collections.sort(processors);
 		Throwable failure = null;
 
 		if (!registered) {
 			for (CustomContext tempContext : tempContexts) {
-				addContext(tempContext, afterBeanDiscoveryEvent);
+				Contexts.add(tempContext, afterBeanDiscoveryEvent);
 			}
 
 			registered = true;
@@ -153,7 +178,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> extends A
 
 	private void unloadTempContexts() {
 		for (CustomContext tempContext : tempContexts) {
-			disableContext(tempContext);
+			Contexts.remove(tempContext);
 		}
 	}
 }

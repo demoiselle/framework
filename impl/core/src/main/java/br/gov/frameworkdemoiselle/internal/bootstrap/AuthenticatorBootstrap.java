@@ -36,7 +36,20 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
+import org.slf4j.Logger;
+
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 
 public class AuthenticatorBootstrap extends AbstractStrategyBootstrap<Authenticator> {
+
+	private static Logger logger;
+
+	protected static Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(AuthenticatorBootstrap.class);
+		}
+
+		return logger;
+	}
 }

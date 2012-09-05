@@ -37,6 +37,7 @@
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.enterprise.event.Observes;
@@ -45,18 +46,41 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
-//TODO Inter [NQ]: verificar o melhor nome para todas as classes desta natureza. 
-public class CoreBootstrap extends AbstractBootstrap {
+public class CoreBootstrap implements Extension {
 
-	private static final Map<Class<?>, AnnotatedType<?>> beans = new HashMap<Class<?>, AnnotatedType<?>>();
+	private final Map<Class<?>, AnnotatedType<?>> beans = new HashMap<Class<?>, AnnotatedType<?>>();
 
-	public static boolean isAnnotatedType(Class<?> type) {
+	private static Logger logger;
+
+	private static ResourceBundle bundle;
+
+	private static Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(CoreBootstrap.class);
+		}
+
+		return logger;
+	}
+
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
+		}
+
+		return bundle;
+	}
+
+	public boolean isAnnotatedType(Class<?> type) {
 		return beans.containsKey(type);
 	}
 
@@ -64,13 +88,12 @@ public class CoreBootstrap extends AbstractBootstrap {
 		String description;
 		Logger log = getLogger();
 
-		description = getBundle("demoiselle-core-bundle").getString("engine-on");
+		description = getBundle().getString("engine-on");
 		log.info(description);
 
 		Beans.setBeanManager(beanManager);
 
-		description = getBundle("demoiselle-core-bundle").getString("setting-up-bean-manager",
-				Beans.class.getCanonicalName());
+		description = getBundle().getString("setting-up-bean-manager", Beans.class.getCanonicalName());
 		log.info(description);
 	}
 
@@ -78,15 +101,15 @@ public class CoreBootstrap extends AbstractBootstrap {
 		beans.put(event.getAnnotatedType().getJavaClass(), event.getAnnotatedType());
 	}
 
-	public static void takeOff(@Observes final AfterDeploymentValidation event) {
-		String description = getBundle("demoiselle-core-bundle").getString("taking-off");
+	public void takeOff(@Observes final AfterDeploymentValidation event) {
+		String description = getBundle().getString("taking-off");
 
 		Logger log = getLogger();
 		log.info(description);
 	}
 
-	public static void engineOff(@Observes final BeforeShutdown event) {
-		String description = getBundle("demoiselle-core-bundle").getString("engine-off");
+	public void engineOff(@Observes final BeforeShutdown event) {
+		String description = getBundle().getString("engine-off");
 
 		Logger log = getLogger();
 		log.info(description);
