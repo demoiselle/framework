@@ -51,12 +51,24 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 
 	private C delegate;
 
+	/**
+	 * Remove a persistent instance from the database.
+	 * 
+	 * @param id
+	 *            entity class with the given identifier
+	 */
 	@Override
 	@Transactional
 	public void delete(final I id) {
 		this.getDelegate().delete(id);
 	}
 
+	/**
+	 * Remove a list of persistent instances from the database.
+	 * 
+	 * @param idList
+	 *            list of entity class with the given identifier
+	 */
 	@Transactional
 	public void delete(final List<I> idList) {
 		ListIterator<I> iter = idList.listIterator();
@@ -65,6 +77,11 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 		}
 	}
 
+	/**
+	 * Get the results.
+	 * 
+	 * @return the list of matched query results.
+	 */
 	@Override
 	public List<T> findAll() {
 		return getDelegate().findAll();
@@ -79,26 +96,46 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 
 	protected Class<C> getDelegateClass() {
 		if (this.delegateClass == null) {
-			this.delegateClass = Reflections.getGenericTypeArgument(this.getClass(), 2);
+			this.delegateClass = Reflections.getGenericTypeArgument(
+					this.getClass(), 2);
 		}
 		return this.delegateClass;
 	}
 
+	/**
+	 * Persist the given transient instance.
+	 * 
+	 * @param bean
+	 *            a transient instance of a persistent class
+	 */
 	@Override
 	@Transactional
 	public void insert(final T bean) {
 		getDelegate().insert(bean);
 	}
 
+	/**
+	 * Return the persistent instance of the given entity class with the given
+	 * identifier
+	 * 
+	 * @return the persistent instance
+	 */
 	@Override
 	public T load(final I id) {
 		return getDelegate().load(id);
 	}
 
+	/**
+	 * 
+	 * Update the persistent instance with the identifier of the given detached
+	 * instance.
+	 * 
+	 * @param bean
+	 *            a detached instance containing updated state.
+	 */
 	@Override
 	@Transactional
 	public void update(final T bean) {
 		getDelegate().update(bean);
 	}
-
 }
