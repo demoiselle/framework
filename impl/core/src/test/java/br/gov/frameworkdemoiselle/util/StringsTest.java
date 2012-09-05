@@ -33,9 +33,9 @@
  * "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses/>
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
+ */
 
 package br.gov.frameworkdemoiselle.util;
-import org.junit.Ignore;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -44,8 +44,8 @@ import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import org.junit.Test;
 
-//import br.gov.frameworkdemoiselle.annotation.Ignore;
-@Ignore
+import br.gov.frameworkdemoiselle.annotation.Ignore;
+
 public class StringsTest {
 
 	@Test
@@ -204,4 +204,3 @@ public class StringsTest {
 	}
 
 }
- */
