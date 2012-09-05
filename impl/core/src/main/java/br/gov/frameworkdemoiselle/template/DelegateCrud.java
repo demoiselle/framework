@@ -53,6 +53,12 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 
 	private transient C delegate;
 
+	/**
+	 * Removes a instance from delegate.
+	 * 
+	 * @param id
+	 *            Entity with the given identifier
+	 */
 	@Override
 	public void delete(final I id) {
 		if (isRunningTransactionalOperations()) {
@@ -71,6 +77,12 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 		getDelegate().delete(id);
 	}
 
+	/**
+	 * Removes a list of instances from delegate.
+	 * 
+	 * @param ids
+	 *            List of entities identifiers
+	 */
 	public void delete(final List<I> ids) {
 		if (isRunningTransactionalOperations()) {
 			transactionalDelete(ids);
@@ -91,6 +103,11 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 		}
 	}
 
+	/**
+	 * Gets the results from delegate.
+	 * 
+	 * @return The list of matched query results.
+	 */
 	@Override
 	public List<T> findAll() {
 		return getDelegate().findAll();
@@ -112,6 +129,12 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 		return this.delegateClass;
 	}
 
+	/**
+	 * Delegates the insert operation of the given instance.
+	 * 
+	 * @param bean
+	 *            A entity to be inserted by the delegate
+	 */
 	@Override
 	public void insert(final T bean) {
 		if (isRunningTransactionalOperations()) {
@@ -130,11 +153,22 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 		getDelegate().insert(bean);
 	}
 
+	/**
+	 * Returns the instance of the given entity with the given identifier
+	 * 
+	 * @return The instance
+	 */
 	@Override
 	public T load(final I id) {
 		return getDelegate().load(id);
 	}
 
+	/**
+	 * Delegates the update operation of the given instance.
+	 * 
+	 * @param bean
+	 *            The instance containing the updated state.
+	 */
 	@Override
 	public void update(final T bean) {
 		if (isRunningTransactionalOperations()) {
