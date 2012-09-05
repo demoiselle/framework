@@ -35,7 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.util;
-import org.junit.Ignore;
+
 import static junit.framework.Assert.assertEquals;
 import static org.easymock.EasyMock.expect;
 import static org.powermock.api.easymock.PowerMock.replayAll;
@@ -50,19 +50,18 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.easymock.EasyMock;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-@Ignore
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ BeanManager.class, Bean.class })
 public class BeansTest {
 
-	@Ignore
 	@SuppressWarnings("unchecked")
+	@Test
 	public void testGetReferenceByClass() {
 		BeanManager beanManager = PowerMock.createMock(BeanManager.class);
 
@@ -74,9 +73,10 @@ public class BeansTest {
 
 		expect(beanManager.createCreationalContext(EasyMock.anyObject(Contextual.class))).andReturn(null);
 		expect(beanManager.getBeans(EasyMock.anyObject(Class.class))).andReturn(collection);
-		expect(
-				beanManager.getReference(EasyMock.anyObject(Bean.class), EasyMock.anyObject(Class.class),
+		expect(beanManager.getReference(EasyMock.anyObject(Bean.class), EasyMock.anyObject(Class.class),
 						EasyMock.anyObject(CreationalContext.class))).andReturn(object);
+		
+		expect(bean.getBeanClass()).andReturn(null);
 
 		replayAll(beanManager, bean);
 
@@ -103,8 +103,7 @@ public class BeansTest {
 		expect(bean.getBeanClass()).andReturn(null);
 		expect(beanManager.createCreationalContext(EasyMock.anyObject(Contextual.class))).andReturn(null);
 		expect(beanManager.getBeans("something")).andReturn(collection);
-		expect(
-				beanManager.getReference(EasyMock.anyObject(Bean.class), EasyMock.anyObject(Class.class),
+		expect(beanManager.getReference(EasyMock.anyObject(Bean.class), EasyMock.anyObject(Class.class),
 						EasyMock.anyObject(CreationalContext.class))).andReturn(object);
 
 		replayAll(beanManager, bean);
