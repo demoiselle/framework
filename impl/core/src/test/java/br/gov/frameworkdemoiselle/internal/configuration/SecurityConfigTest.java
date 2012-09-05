@@ -1,11 +1,11 @@
 package br.gov.frameworkdemoiselle.internal.configuration;
+
 import org.junit.Ignore;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 
-@Ignore
 public class SecurityConfigTest {
 
 	private SecurityConfig config;

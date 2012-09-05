@@ -41,21 +41,20 @@ import org.junit.Ignore;
 import org.junit.Before;
 import org.junit.Test;
 
-@Ignore
 public class PaginationConfigTest {
 
 	private PaginationConfig config;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		this.config = new PaginationConfig();
 	}
-	
+
 	@Test
 	public void testGetMaxPageLinks() {
 		assertEquals(5, config.getMaxPageLinks());
 	}
-	
+
 	@Test
 	public void testGetPageSize() {
 		assertEquals(10, config.getPageSize());

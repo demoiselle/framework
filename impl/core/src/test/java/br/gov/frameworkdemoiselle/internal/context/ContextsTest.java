@@ -17,6 +17,7 @@
  * Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.context;
+
 import org.junit.Ignore;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expectLastCall;
@@ -39,7 +40,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
-@Ignore
+
 public class ContextsTest {
 
 	private AfterBeanDiscovery event;
@@ -193,7 +194,7 @@ public class ContextsTest {
 		Contexts.add(context, event);
 		assertEquals(1, Contexts.getActiveContexts().size());
 	}
-	
+
 	// Only to get 100% on coverage report
 	@Test
 	public void testCreateNew() {
