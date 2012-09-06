@@ -37,12 +37,8 @@
 package br.gov.frameworkdemoiselle.internal.proxy;
 
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
-
-import javax.inject.Inject;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -72,7 +68,7 @@ public class Slf4jLoggerProxyTest {
 		expect(LoggerFactory.getLogger(EasyMock.anyObject(Class.class))).andReturn(logger);
 	}
 	
-	@Test//1
+	@Test
 	public void testDebugWithMarkerAndString() {
 		Marker marker = null;
 		this.logger.debug(marker,"");
@@ -81,7 +77,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//2
+	@Test
 	public void testDebugWithMarkerStringAndOneObject() {
 		Marker marker = null;
 		Object obj = null;
@@ -91,7 +87,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//3
+	@Test
 	public void testDebugWithMarkerStringAndTwoObjects() {
 		Marker marker = null;
 		Object obj1 = null, obj2 = null;
@@ -101,7 +97,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//4
+	@Test
 	public void testDebugWithMarkerStringAndObjectArray() {
 		Marker marker = null;
 		Object[] obj = null;
@@ -111,7 +107,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//5
+	@Test
 	public void testDebugWithMarkerStringAndThrowable() {
 		Marker marker = null;
 		Throwable t = null;
@@ -121,7 +117,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//6
+	@Test
 	public void testDebugWithString() {
 		this.logger.debug("");
 		PowerMock.replay(LoggerFactory.class, this.logger);
@@ -129,7 +125,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//7
+	@Test
 	public void testDebugWithStringAndOneObject() {
 		Object obj = null;
 		this.logger.debug("",obj);
@@ -138,7 +134,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//8
+	@Test
 	public void testDebugWithStringAndTwoObjects() {
 		Object obj1 = null, obj2 = null;
 		this.logger.debug("",obj1,obj2);
@@ -147,7 +143,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 
-	@Test//9
+	@Test
 	public void testDebugWithStringAndObjectArray() {
 		Object[] obj = null;
 		this.logger.debug("",obj);
@@ -156,7 +152,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//10
+	@Test
 	public void testDebugWithStringAndThrowable() {
 		Throwable t = null;
 		this.logger.debug("",t);
@@ -165,7 +161,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//11
+	@Test
 	public void testErrorWithMarkerAndString() {
 		Marker marker = null;
 		this.logger.error(marker,"");
@@ -174,7 +170,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//12
+	@Test
 	public void testErrorWithMarkerStringAndOneObject() {
 		Marker marker = null;
 		Object obj = null;
@@ -184,7 +180,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 		
-	@Test//13
+	@Test
 	public void testErrorWithMarkerStringAndTwoObjects() {
 		Marker marker = null;
 		Object obj1 = null, obj2 = null;
@@ -194,7 +190,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//14
+	@Test
 	public void testErrorWithMarkerStringAndObjectArray() {
 		Marker marker = null;
 		Object[] obj1 = null;
@@ -204,7 +200,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//15
+	@Test
 	public void testErrorWithMarkerStringAndThrowable() {
 		Marker marker = null;
 		Throwable t = null;
@@ -214,7 +210,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//16
+	@Test
 	public void testErrorWithString() {
 		this.logger.error("");
 		PowerMock.replay(LoggerFactory.class, this.logger);
@@ -222,7 +218,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//17
+	@Test
 	public void testErrorWithStringAndOneObject() {
 		Object obj = null;
 		this.logger.error("",obj);
@@ -231,7 +227,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//18
+	@Test
 	public void testErrorWithStringAndTwoObjects() {
 		Object obj1 = null,obj2 = null;
 		this.logger.error("",obj1,obj2);
@@ -240,7 +236,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//19
+	@Test
 	public void testErrorWithStringAndObjectArray() {
 		Object[] obj = null;
 		this.logger.error("",obj);
@@ -249,7 +245,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//20
+	@Test
 	public void testErrorWithStringAndThrowable() {
 		Throwable t = null;
 		this.logger.error("",t);
@@ -258,7 +254,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//21
+	@Test
 	public void testGetName() {
 		expect(this.logger.getName()).andReturn("xxx");
 		PowerMock.replay(LoggerFactory.class, this.logger);
@@ -266,7 +262,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//22
+	@Test
 	public void testInfoWithMarkerAndString() {
 		Marker marker = null;
 		this.logger.info(marker,"");
@@ -275,7 +271,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//23
+	@Test
 	public void testInfoWithMarkerStringAndOneObject() {
 		Marker marker = null;
 		Object obj = null;
@@ -285,7 +281,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//24
+	@Test
 	public void testInfoWithMarkerStringAndTwoObjects() {
 		Marker marker = null;
 		Object obj1 = null, obj2 = null;
@@ -295,7 +291,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//25
+	@Test
 	public void testInfoWithMarkerStringAndObjectArray() {
 		Marker marker = null;
 		Object[] obj = null;
@@ -305,7 +301,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//26
+	@Test
 	public void testInfoWithMarkerStringAndThrowable() {
 		Marker marker = null;
 		Throwable t = null;
@@ -315,7 +311,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//27
+	@Test
 	public void testInfoWithString() {
 		this.logger.info("");
 		PowerMock.replay(LoggerFactory.class, this.logger);
@@ -323,7 +319,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//28
+	@Test
 	public void testInfoWithStringAndOneObject() {
 		Object obj = null;
 		this.logger.info("",obj);
@@ -332,7 +328,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//29
+	@Test
 	public void testInfoWithStringAndTwoObjects() {
 		Object obj1 = null, obj2 = null;
 		this.logger.info("",obj1,obj2);
@@ -341,7 +337,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//30
+	@Test
 	public void testInfoWithStringAndObjectArray() {
 		Object[] obj = null;
 		this.logger.info("",obj);
@@ -350,7 +346,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//31
+	@Test
 	public void testInfoWithStringAndThrowable() {
 		Throwable t = null;
 		this.logger.info("",t);
@@ -359,7 +355,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//32
+	@Test
 	public void testIsDebugEnabled() {
 		expect(this.logger.isDebugEnabled()).andReturn(true);
 		PowerMock.replay(LoggerFactory.class, this.logger);
@@ -367,7 +363,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//33
+	@Test
 	public void testIsDebugEnabledWithMarker() {
 		Marker marker = null;
 		expect(this.logger.isDebugEnabled(marker)).andReturn(true);
@@ -376,7 +372,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//34
+	@Test
 	public void testIsErrorEnabled() {
 		expect(this.logger.isErrorEnabled()).andReturn(true);
 		PowerMock.replay(LoggerFactory.class, this.logger);
@@ -384,7 +380,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//35
+	@Test
 	public void testIsErrorEnabledWithMarker() {
 		Marker marker = null;
 		expect(this.logger.isErrorEnabled(marker)).andReturn(true);
@@ -393,7 +389,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//36
+	@Test
 	public void testIsInfoEnabled() {
 		expect(this.logger.isInfoEnabled()).andReturn(true);
 		PowerMock.replay(LoggerFactory.class, this.logger);
@@ -401,7 +397,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//37
+	@Test
 	public void testIsInfoEnabledWithMarker() {
 		Marker marker = null;
 		expect(this.logger.isInfoEnabled(marker)).andReturn(true);
@@ -410,7 +406,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//38
+	@Test
 	public void testIsTRaceEnabled() {
 		expect(this.logger.isTraceEnabled()).andReturn(true);
 		PowerMock.replay(LoggerFactory.class, this.logger);
@@ -418,7 +414,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//39
+	@Test
 	public void testIsTraceEnabledWithMarker() {
 		Marker marker = null;
 		expect(this.logger.isTraceEnabled(marker)).andReturn(true);
@@ -427,7 +423,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//40
+	@Test
 	public void testIsWarnEnabled() {
 		expect(this.logger.isWarnEnabled()).andReturn(true);
 		PowerMock.replay(LoggerFactory.class, this.logger);
@@ -435,7 +431,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//41
+	@Test
 	public void testIsWarnEnabledWithMarker() {
 		Marker marker = null;
 		expect(this.logger.isWarnEnabled(marker)).andReturn(true);
@@ -444,7 +440,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//42
+	@Test
 	public void testTraceWithMarkerAndString() {
 		Marker marker = null;
 		this.logger.trace(marker,"");
@@ -453,7 +449,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//43
+	@Test
 	public void testTraceWithMarkerStringAndOneObject() {
 		Marker marker = null;
 		Object obj = null;
@@ -463,7 +459,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//44
+	@Test
 	public void testTraceWithMarkerStringAndTwoObjects() {
 		Marker marker = null;
 		Object obj1 = null, obj2 = null;
@@ -473,7 +469,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//45
+	@Test
 	public void testTraceWithMarkerStringAndObjectArray() {
 		Marker marker = null;
 		Object[] obj = null;
@@ -483,7 +479,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//46
+	@Test
 	public void testTraceWithMarkerStringAndThrowable() {
 		Marker marker = null;
 		Throwable t = null;
@@ -493,7 +489,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//47
+	@Test
 	public void testTraceWithString() {
 		this.logger.trace("");
 		PowerMock.replay(LoggerFactory.class, this.logger);
@@ -501,7 +497,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//48
+	@Test
 	public void testTraceWithStringAndOneObject() {
 		Object obj = null;
 		this.logger.trace("",obj);
@@ -510,7 +506,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//49
+	@Test
 	public void testTraceWithStringAndTwoObjects() {
 		Object obj1 = null, obj2 = null;
 		this.logger.trace("",obj1,obj2);
@@ -519,7 +515,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//50
+	@Test
 	public void testTraceWithStringAndObjectArray() {
 		Object[] obj = null;
 		this.logger.trace("",obj);
@@ -528,7 +524,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//51
+	@Test
 	public void testTraceWithStringAndThrowable() {
 		Throwable t = null;
 		this.logger.trace("",t);
@@ -537,7 +533,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//52
+	@Test
 	public void testWarnWithMarkerAndString() {
 		Marker marker = null;
 		this.logger.warn(marker,"");
@@ -546,7 +542,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//53
+	@Test
 	public void testWarnWithMarkerStringAndOneObject() {
 		Marker marker = null;
 		Object obj = null;
@@ -556,7 +552,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//54
+	@Test
 	public void testWarnWithMarkerStringAndTwoObjects() {
 		Marker marker = null;
 		Object obj1 = null, obj2 = null;
@@ -566,7 +562,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//55
+	@Test
 	public void testWarnWithMarkerStringAndObjectArray() {
 		Marker marker = null;
 		Object[] obj = null;
@@ -576,7 +572,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//56
+	@Test
 	public void testWarnWithMarkerStringAndThrowable() {
 		Marker marker = null;
 		Throwable t = null;
@@ -586,7 +582,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//57
+	@Test
 	public void testWarnWithString() {
 		this.logger.warn("");
 		PowerMock.replay(LoggerFactory.class, this.logger);
@@ -594,7 +590,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//58
+	@Test
 	public void testWarnWithStringAndOneObject() {
 		Object obj = null;
 		this.logger.warn("",obj);
@@ -603,7 +599,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//59
+	@Test
 	public void testWarnWithStringAndTwoObjects() {
 		Object obj1 = null, obj2 = null;
 		this.logger.warn("",obj1,obj2);
@@ -612,7 +608,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 		
-	@Test//60
+	@Test
 	public void testWarnWithStringAndObjectArray() {
 		Object[] obj = null;
 		this.logger.warn("",obj);
@@ -621,7 +617,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test//61
+	@Test
 	public void testWarnWithStringAndThrowable() {
 		Throwable t = null;
 		this.logger.warn("",t);
