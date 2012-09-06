@@ -72,7 +72,7 @@ public class Slf4jLoggerProxyTest {
 		expect(LoggerFactory.getLogger(EasyMock.anyObject(Class.class))).andReturn(logger);
 	}
 	
-	@Test
+	@Test//1
 	public void testDebugWithMarkerAndString() {
 		Marker marker = null;
 		this.logger.debug(marker,"");
@@ -81,7 +81,7 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-	@Test
+	@Test//2
 	public void testDebugWithMarkerStringAndOneObject() {
 		Marker marker = null;
 		Object obj = null;
@@ -91,485 +91,542 @@ public class Slf4jLoggerProxyTest {
 		PowerMock.verify(this.logger);
 	}
 	
-//	@Test
-//	public void testDebugWithMarkerStringAndTwoObjects() {
-//		Marker marker = nullthis.slf4jLoggerProxy = new Slf4jLoggerProxy(Logger.class);;
-//		Object obj1 = null, obj2 = null;
-//		this.logger.debug(marker,"",obj1,obj2);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.debug(marker,"",obj1,obj2);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testDebugWithMarkerStringAndObjectArray() {
-//		Marker marker = null;
-//		Object[] obj = null;
-//		this.logger.debug(marker,"",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.debug(marker,"",obj);
-//		verify(this.logger);
-//	}
-//	
-//	@Test
-//	public void testDebugWithMarkerStringAndThrowable() {
-//		Marker marker = null;
-//		Throwable t = null;
-//		this.logger.debug(marker,"",t);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.debug(marker,"",t);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testDebugWithString() {
-//		this.logger.debug("");
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.debug("");
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testDebugWithStringAndOneObject() {
-//		Object obj = null;
-//		this.logger.debug("",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.debug("",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testDebugWithStringAndTwoObjects() {
-//		Object obj1 = null, obj2 = null;
-//		this.logger.debug("",obj1,obj2);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.debug("",obj1,obj2);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testDebugWithStringAndObjectArray() {
-//		Object[] obj = null;
-//		this.logger.debug("",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.debug("",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testDebugWithStringAndThrowable() {
-//		Throwable t = null;
-//		this.logger.debug("",t);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.debug("",t);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testErrorWithMarkerAndString() {
-//		Marker marker = null;
-//		this.logger.error(marker,"");
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.error(marker,"");
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testErrorWithMarkerStringAndOneObject() {
-//		Marker marker = null;
-//		Object obj = null;
-//		this.logger.error(marker,"",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.error(marker,"",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testErrorWithMarkerStringAndTwoObjects() {
-//		Marker marker = null;
-//		Object obj1 = null, obj2 = null;
-//		this.logger.error(marker,"",obj1,obj2);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.error(marker,"",obj1,obj2);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testErrorWithMarkerStringAndObjectArray() {
-//		Marker marker = null;
-//		Object[] obj1 = null;
-//		this.logger.error(marker,"",obj1);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.error(marker,"",obj1);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testErrorWithMarkerStringAndThrowable() {
-//		Marker marker = null;
-//		Throwable t = null;
-//		this.logger.error(marker,"",t);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.error(marker,"",t);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testErrorWithString() {
-//		this.logger.error("");
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.error("");
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testErrorWithStringAndOneObject() {
-//		Object obj = null;
-//		this.logger.error("",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.error("",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testErrorWithStringAndTwoObjects() {
-//		Object obj1 = null,obj2 = null;
-//		this.logger.error("",obj1,obj2);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.error("",obj1,obj2);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testErrorWithStringAndObjectArray() {
-//		Object[] obj = null;
-//		this.logger.error("",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.error("",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testErrorWithStringAndThrowable() {
-//		Throwable t = null;
-//		this.logger.error("",t);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.error("",t);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testGetName() {
-//		expect(this.logger.getName()).andReturn("xxx");
-//		replay(this.logger);
-//		assertEquals("xxx", this.slf4jLoggerProxy.getName());
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testInfoWithMarkerAndString() {
-//		Marker marker = null;
-//		this.logger.info(marker,"");
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.info(marker,"");
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testInfoWithMarkerStringAndOneObject() {
-//		Marker marker = null;
-//		Object obj = null;
-//		this.logger.info(marker,"",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.info(marker,"",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testInfoWithMarkerStringAndTwoObjects() {
-//		Marker marker = null;
-//		Object obj1 = null, obj2 = null;
-//		this.logger.info(marker,"",obj1, obj2);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.info(marker,"",obj1,obj2);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testInfoWithMarkerStringAndObjectArray() {
-//		Marker marker = null;
-//		Object[] obj = null;
-//		this.logger.info(marker,"",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.info(marker,"",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testInfoWithMarkerStringAndThrowable() {
-//		Marker marker = null;
-//		Throwable t = null;
-//		this.logger.info(marker,"",t);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.info(marker,"",t);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testInfoWithString() {
-//		this.logger.info("");
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.info("");
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testInfoWithStringAndOneObject() {
-//		Object obj = null;
-//		this.logger.info("",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.info("",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testInfoWithStringAndTwoObjects() {
-//		Object obj1 = null, obj2 = null;
-//		this.logger.info("",obj1,obj2);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.info("",obj1,obj2);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testInfoWithStringAndObjectArray() {
-//		Object[] obj = null;
-//		this.logger.info("",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.info("",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testInfoWithStringAndThrowable() {
-//		Throwable t = null;
-//		this.logger.info("",t);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.info("",t);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testIsDebugEnabled() {
-//		expect(this.logger.isDebugEnabled()).andReturn(true);
-//		replay(this.logger);
-//		assertEquals(true, this.slf4jLoggerProxy.isDebugEnabled());
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testIsDebugEnabledWithMarker() {
-//		Marker marker = null;
-//		expect(this.logger.isDebugEnabled(marker)).andReturn(true);
-//		replay(this.logger);
-//		assertEquals(true, this.slf4jLoggerProxy.isDebugEnabled(marker));
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testIsErrorEnabled() {
-//		expect(this.logger.isErrorEnabled()).andReturn(true);
-//		replay(this.logger);
-//		assertEquals(true, this.slf4jLoggerProxy.isErrorEnabled());
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testIsErrorEnabledWithMarker() {
-//		Marker marker = null;
-//		expect(this.logger.isErrorEnabled(marker)).andReturn(true);
-//		replay(this.logger);
-//		assertEquals(true, this.slf4jLoggerProxy.isErrorEnabled(marker));
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testIsInfoEnabled() {
-//		expect(this.logger.isInfoEnabled()).andReturn(true);
-//		replay(this.logger);
-//		assertEquals(true, this.slf4jLoggerProxy.isInfoEnabled());
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testIsInfoEnabledWithMarker() {
-//		Marker marker = null;
-//		expect(this.logger.isInfoEnabled(marker)).andReturn(true);
-//		replay(this.logger);
-//		assertEquals(true, this.slf4jLoggerProxy.isInfoEnabled(marker));
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testIsTRaceEnabled() {
-//		expect(this.logger.isTraceEnabled()).andReturn(true);
-//		replay(this.logger);
-//		assertEquals(true, this.slf4jLoggerProxy.isTraceEnabled());
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testIsTraceEnabledWithMarker() {
-//		Marker marker = null;
-//		expect(this.logger.isTraceEnabled(marker)).andReturn(true);
-//		replay(this.logger);
-//		assertEquals(true, this.slf4jLoggerProxy.isTraceEnabled(marker));
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testIsWarnEnabled() {
-//		expect(this.logger.isWarnEnabled()).andReturn(true);
-//		replay(this.logger);
-//		assertEquals(true, this.slf4jLoggerProxy.isWarnEnabled());
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testIsWarnEnabledWithMarker() {
-//		Marker marker = null;
-//		expect(this.logger.isWarnEnabled(marker)).andReturn(true);
-//		replay(this.logger);
-//		assertEquals(true, this.slf4jLoggerProxy.isWarnEnabled(marker));
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testTraceWithMarkerAndString() {
-//		Marker marker = null;
-//		this.logger.trace(marker,"");
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.trace(marker,"");
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testTraceWithMarkerStringAndOneObject() {
-//		Marker marker = null;
-//		Object obj = null;
-//		this.logger.trace(marker,"",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.trace(marker,"",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testTraceWithMarkerStringAndTwoObjects() {
-//		Marker marker = null;
-//		Object obj1 = null, obj2 = null;
-//		this.logger.trace(marker,"",obj1, obj2);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.trace(marker,"",obj1,obj2);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testTraceWithMarkerStringAndObjectArray() {
-//		Marker marker = null;
-//		Object[] obj = null;
-//		this.logger.trace(marker,"",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.trace(marker,"",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testTraceWithMarkerStringAndThrowable() {
-//		Marker marker = null;
-//		Throwable t = null;
-//		this.logger.trace(marker,"",t);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.trace(marker,"",t);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testTraceWithString() {
-//		this.logger.trace("");
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.trace("");
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testTraceWithStringAndOneObject() {
-//		Object obj = null;
-//		this.logger.trace("",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.trace("",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testTraceWithStringAndTwoObjects() {
-//		Object obj1 = null, obj2 = null;
-//		this.logger.trace("",obj1,obj2);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.trace("",obj1,obj2);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testTraceWithStringAndObjectArray() {
-//		Object[] obj = null;
-//		this.logger.trace("",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.trace("",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testTraceWithStringAndThrowable() {
-//		Throwable t = null;
-//		this.logger.trace("",t);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.trace("",t);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testWarnWithMarkerAndString() {
-//		Marker marker = null;
-//		this.logger.warn(marker,"");
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.warn(marker,"");
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testWarnWithMarkerStringAndOneObject() {
-//		Marker marker = null;
-//		Object obj = null;
-//		this.logger.warn(marker,"",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.warn(marker,"",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testWarnWithMarkerStringAndTwoObjects() {
-//		Marker marker = null;
-//		Object obj1 = null, obj2 = null;
-//		this.logger.warn(marker,"",obj1, obj2);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.warn(marker,"",obj1,obj2);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testWarnWithMarkerStringAndObjectArray() {
-//		Marker marker = null;
-//		Object[] obj = null;
-//		this.logger.warn(marker,"",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.warn(marker,"",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testWarnWithMarkerStringAndThrowable() {
-//		Marker marker = null;
-//		Throwable t = null;
-//		this.logger.warn(marker,"",t);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.warn(marker,"",t);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testWarnWithString() {
-//		this.logger.warn("");
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.warn("");
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testWarnWithStringAndOneObject() {
-//		Object obj = null;
-//		this.logger.warn("",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.warn("",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testWarnWithStringAndTwoObjects() {
-//		Object obj1 = null, obj2 = null;
-//		this.logger.warn("",obj1,obj2);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.warn("",obj1,obj2);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testWarnWithStringAndObjectArray() {
-//		Object[] obj = null;
-//		this.logger.warn("",obj);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.warn("",obj);
-//		verify(this.logger);
-//	}
-//	@Test
-//	public void testWarnWithStringAndThrowable() {
-//		Throwable t = null;
-//		this.logger.warn("",t);
-//		replay(this.logger);
-//		this.slf4jLoggerProxy.warn("",t);
-//		verify(this.logger);
-//	}
+	@Test//3
+	public void testDebugWithMarkerStringAndTwoObjects() {
+		Marker marker = null;
+		Object obj1 = null, obj2 = null;
+		this.logger.debug(marker,"",obj1,obj2);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.debug(marker,"",obj1,obj2);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//4
+	public void testDebugWithMarkerStringAndObjectArray() {
+		Marker marker = null;
+		Object[] obj = null;
+		this.logger.debug(marker,"",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.debug(marker,"",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//5
+	public void testDebugWithMarkerStringAndThrowable() {
+		Marker marker = null;
+		Throwable t = null;
+		this.logger.debug(marker,"",t);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.debug(marker,"",t);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//6
+	public void testDebugWithString() {
+		this.logger.debug("");
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.debug("");
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//7
+	public void testDebugWithStringAndOneObject() {
+		Object obj = null;
+		this.logger.debug("",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.debug("",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//8
+	public void testDebugWithStringAndTwoObjects() {
+		Object obj1 = null, obj2 = null;
+		this.logger.debug("",obj1,obj2);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.debug("",obj1,obj2);
+		PowerMock.verify(this.logger);
+	}
+
+	@Test//9
+	public void testDebugWithStringAndObjectArray() {
+		Object[] obj = null;
+		this.logger.debug("",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.debug("",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//10
+	public void testDebugWithStringAndThrowable() {
+		Throwable t = null;
+		this.logger.debug("",t);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.debug("",t);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//11
+	public void testErrorWithMarkerAndString() {
+		Marker marker = null;
+		this.logger.error(marker,"");
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.error(marker,"");
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//12
+	public void testErrorWithMarkerStringAndOneObject() {
+		Marker marker = null;
+		Object obj = null;
+		this.logger.error(marker,"",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.error(marker,"",obj);
+		PowerMock.verify(this.logger);
+	}
+		
+	@Test//13
+	public void testErrorWithMarkerStringAndTwoObjects() {
+		Marker marker = null;
+		Object obj1 = null, obj2 = null;
+		this.logger.error(marker,"",obj1,obj2);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.error(marker,"",obj1,obj2);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//14
+	public void testErrorWithMarkerStringAndObjectArray() {
+		Marker marker = null;
+		Object[] obj1 = null;
+		this.logger.error(marker,"",obj1);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.error(marker,"",obj1);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//15
+	public void testErrorWithMarkerStringAndThrowable() {
+		Marker marker = null;
+		Throwable t = null;
+		this.logger.error(marker,"",t);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.error(marker,"",t);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//16
+	public void testErrorWithString() {
+		this.logger.error("");
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.error("");
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//17
+	public void testErrorWithStringAndOneObject() {
+		Object obj = null;
+		this.logger.error("",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.error("",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//18
+	public void testErrorWithStringAndTwoObjects() {
+		Object obj1 = null,obj2 = null;
+		this.logger.error("",obj1,obj2);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.error("",obj1,obj2);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//19
+	public void testErrorWithStringAndObjectArray() {
+		Object[] obj = null;
+		this.logger.error("",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.error("",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//20
+	public void testErrorWithStringAndThrowable() {
+		Throwable t = null;
+		this.logger.error("",t);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.error("",t);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//21
+	public void testGetName() {
+		expect(this.logger.getName()).andReturn("xxx");
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		assertEquals("xxx", this.slf4jLoggerProxy.getName());
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//22
+	public void testInfoWithMarkerAndString() {
+		Marker marker = null;
+		this.logger.info(marker,"");
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.info(marker,"");
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//23
+	public void testInfoWithMarkerStringAndOneObject() {
+		Marker marker = null;
+		Object obj = null;
+		this.logger.info(marker,"",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.info(marker,"",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//24
+	public void testInfoWithMarkerStringAndTwoObjects() {
+		Marker marker = null;
+		Object obj1 = null, obj2 = null;
+		this.logger.info(marker,"",obj1, obj2);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.info(marker,"",obj1,obj2);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//25
+	public void testInfoWithMarkerStringAndObjectArray() {
+		Marker marker = null;
+		Object[] obj = null;
+		this.logger.info(marker,"",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.info(marker,"",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//26
+	public void testInfoWithMarkerStringAndThrowable() {
+		Marker marker = null;
+		Throwable t = null;
+		this.logger.info(marker,"",t);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.info(marker,"",t);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//27
+	public void testInfoWithString() {
+		this.logger.info("");
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.info("");
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//28
+	public void testInfoWithStringAndOneObject() {
+		Object obj = null;
+		this.logger.info("",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.info("",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//29
+	public void testInfoWithStringAndTwoObjects() {
+		Object obj1 = null, obj2 = null;
+		this.logger.info("",obj1,obj2);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.info("",obj1,obj2);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//30
+	public void testInfoWithStringAndObjectArray() {
+		Object[] obj = null;
+		this.logger.info("",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.info("",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//31
+	public void testInfoWithStringAndThrowable() {
+		Throwable t = null;
+		this.logger.info("",t);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.info("",t);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//32
+	public void testIsDebugEnabled() {
+		expect(this.logger.isDebugEnabled()).andReturn(true);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		assertEquals(true, this.slf4jLoggerProxy.isDebugEnabled());
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//33
+	public void testIsDebugEnabledWithMarker() {
+		Marker marker = null;
+		expect(this.logger.isDebugEnabled(marker)).andReturn(true);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		assertEquals(true, this.slf4jLoggerProxy.isDebugEnabled(marker));
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//34
+	public void testIsErrorEnabled() {
+		expect(this.logger.isErrorEnabled()).andReturn(true);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		assertEquals(true, this.slf4jLoggerProxy.isErrorEnabled());
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//35
+	public void testIsErrorEnabledWithMarker() {
+		Marker marker = null;
+		expect(this.logger.isErrorEnabled(marker)).andReturn(true);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		assertEquals(true, this.slf4jLoggerProxy.isErrorEnabled(marker));
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//36
+	public void testIsInfoEnabled() {
+		expect(this.logger.isInfoEnabled()).andReturn(true);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		assertEquals(true, this.slf4jLoggerProxy.isInfoEnabled());
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//37
+	public void testIsInfoEnabledWithMarker() {
+		Marker marker = null;
+		expect(this.logger.isInfoEnabled(marker)).andReturn(true);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		assertEquals(true, this.slf4jLoggerProxy.isInfoEnabled(marker));
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//38
+	public void testIsTRaceEnabled() {
+		expect(this.logger.isTraceEnabled()).andReturn(true);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		assertEquals(true, this.slf4jLoggerProxy.isTraceEnabled());
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//39
+	public void testIsTraceEnabledWithMarker() {
+		Marker marker = null;
+		expect(this.logger.isTraceEnabled(marker)).andReturn(true);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		assertEquals(true, this.slf4jLoggerProxy.isTraceEnabled(marker));
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//40
+	public void testIsWarnEnabled() {
+		expect(this.logger.isWarnEnabled()).andReturn(true);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		assertEquals(true, this.slf4jLoggerProxy.isWarnEnabled());
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//41
+	public void testIsWarnEnabledWithMarker() {
+		Marker marker = null;
+		expect(this.logger.isWarnEnabled(marker)).andReturn(true);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		assertEquals(true, this.slf4jLoggerProxy.isWarnEnabled(marker));
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//42
+	public void testTraceWithMarkerAndString() {
+		Marker marker = null;
+		this.logger.trace(marker,"");
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.trace(marker,"");
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//43
+	public void testTraceWithMarkerStringAndOneObject() {
+		Marker marker = null;
+		Object obj = null;
+		this.logger.trace(marker,"",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.trace(marker,"",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//44
+	public void testTraceWithMarkerStringAndTwoObjects() {
+		Marker marker = null;
+		Object obj1 = null, obj2 = null;
+		this.logger.trace(marker,"",obj1, obj2);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.trace(marker,"",obj1,obj2);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//45
+	public void testTraceWithMarkerStringAndObjectArray() {
+		Marker marker = null;
+		Object[] obj = null;
+		this.logger.trace(marker,"",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.trace(marker,"",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//46
+	public void testTraceWithMarkerStringAndThrowable() {
+		Marker marker = null;
+		Throwable t = null;
+		this.logger.trace(marker,"",t);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.trace(marker,"",t);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//47
+	public void testTraceWithString() {
+		this.logger.trace("");
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.trace("");
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//48
+	public void testTraceWithStringAndOneObject() {
+		Object obj = null;
+		this.logger.trace("",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.trace("",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//49
+	public void testTraceWithStringAndTwoObjects() {
+		Object obj1 = null, obj2 = null;
+		this.logger.trace("",obj1,obj2);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.trace("",obj1,obj2);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//50
+	public void testTraceWithStringAndObjectArray() {
+		Object[] obj = null;
+		this.logger.trace("",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.trace("",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//51
+	public void testTraceWithStringAndThrowable() {
+		Throwable t = null;
+		this.logger.trace("",t);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.trace("",t);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//52
+	public void testWarnWithMarkerAndString() {
+		Marker marker = null;
+		this.logger.warn(marker,"");
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.warn(marker,"");
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//53
+	public void testWarnWithMarkerStringAndOneObject() {
+		Marker marker = null;
+		Object obj = null;
+		this.logger.warn(marker,"",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.warn(marker,"",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//54
+	public void testWarnWithMarkerStringAndTwoObjects() {
+		Marker marker = null;
+		Object obj1 = null, obj2 = null;
+		this.logger.warn(marker,"",obj1, obj2);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.warn(marker,"",obj1,obj2);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//55
+	public void testWarnWithMarkerStringAndObjectArray() {
+		Marker marker = null;
+		Object[] obj = null;
+		this.logger.warn(marker,"",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.warn(marker,"",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//56
+	public void testWarnWithMarkerStringAndThrowable() {
+		Marker marker = null;
+		Throwable t = null;
+		this.logger.warn(marker,"",t);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.warn(marker,"",t);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//57
+	public void testWarnWithString() {
+		this.logger.warn("");
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.warn("");
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//58
+	public void testWarnWithStringAndOneObject() {
+		Object obj = null;
+		this.logger.warn("",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.warn("",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//59
+	public void testWarnWithStringAndTwoObjects() {
+		Object obj1 = null, obj2 = null;
+		this.logger.warn("",obj1,obj2);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.warn("",obj1,obj2);
+		PowerMock.verify(this.logger);
+	}
+		
+	@Test//60
+	public void testWarnWithStringAndObjectArray() {
+		Object[] obj = null;
+		this.logger.warn("",obj);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.warn("",obj);
+		PowerMock.verify(this.logger);
+	}
+	
+	@Test//61
+	public void testWarnWithStringAndThrowable() {
+		Throwable t = null;
+		this.logger.warn("",t);
+		PowerMock.replay(LoggerFactory.class, this.logger);
+		this.slf4jLoggerProxy.warn("",t);
+		PowerMock.verify(this.logger);
+	}
 }
