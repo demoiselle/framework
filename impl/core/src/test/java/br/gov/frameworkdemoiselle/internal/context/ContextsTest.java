@@ -37,14 +37,18 @@
 package br.gov.frameworkdemoiselle.internal.context;
 
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
+//import static org.easymock.EasyMock.replay;
+import static org.powermock.api.easymock.PowerMock.mockStatic;
+import static org.powermock.api.easymock.PowerMock.replay;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
@@ -53,9 +57,15 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
+import br.gov.frameworkdemoiselle.util.Beans;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Beans.class)
 public class ContextsTest {
 
 	private AfterBeanDiscovery event;
@@ -63,6 +73,11 @@ public class ContextsTest {
 	@Before
 	public void setUp() throws Exception {
 		Contexts.clear();
+		mockStatic(Beans.class);
+
+		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault());
+
+		replay(Beans.class);
 	}
 
 	@Test

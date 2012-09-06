@@ -35,20 +35,35 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.producer;
-import org.junit.Ignore;
+
+import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertTrue;
+import static org.powermock.api.easymock.PowerMock.mockStatic;
+import static org.powermock.api.easymock.PowerMock.replay;
 
 import java.util.Locale;
 
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.InjectionPoint;
+
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-@Ignore
+import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Beans.class)
 public class ResourceBundleProducerTest {
 
 	@BeforeClass
@@ -61,6 +76,11 @@ public class ResourceBundleProducerTest {
 
 	@Before
 	public void setUp() throws Exception {
+		mockStatic(Beans.class);
+
+		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault());
+
+		replay(Beans.class);
 	}
 
 	@After
@@ -73,39 +93,31 @@ public class ResourceBundleProducerTest {
 		Assert.assertNotNull(factory);
 	}
 
+	 @Test
+	 public void testCreateNullInjectionPoint() {
+		 ResourceBundleProducer factory = new ResourceBundleProducer();
+		 ResourceBundle resourceBundle = factory.create((InjectionPoint) null); 
+		 Assert.assertNotNull(resourceBundle);
+	 }
+
 	@Test
-	public void testCreateWithNonExistentFile() {
-		try {
-			ResourceBundleProducer.create("arquivo_inexistente", Locale.getDefault());
-		} catch (Exception e) {
-			assertTrue(e instanceof DemoiselleException);
-		}
+	public void testCreateInjectionPointNameAnnoted() {
+		Name name = EasyMock.createMock(Name.class);
+		expect(name.value()).andReturn("demoiselle-core-bundle");
+		replay(name);
+
+		Annotated annotated = EasyMock.createMock(Annotated.class);
+		expect(annotated.getAnnotation(Name.class)).andReturn(name).anyTimes();
+		expect(annotated.isAnnotationPresent(Name.class)).andReturn(true).anyTimes();
+		replay(annotated);
+
+		InjectionPoint ip = EasyMock.createMock(InjectionPoint.class);
+		expect(ip.getAnnotated()).andReturn(annotated).anyTimes();
+		replay(ip);
+
+		ResourceBundleProducer factory = new ResourceBundleProducer();
+		Assert.assertNotNull(factory.create(ip));
 	}
-
-	// @Test
-	// public void testCreateNullInjectionPoint() {
-	// ResourceBundleProducer factory = new ResourceBundleProducer();
-	// Assert.assertNotNull(factory.create((InjectionPoint) null, Locale.getDefault()));
-	// }
-
-	// @Test
-	// public void testCreateInjectionPointNameAnnoted() {
-	// Name name = EasyMock.createMock(Name.class);
-	// expect(name.value()).andReturn("demoiselle-core-bundle");
-	// replay(name);
-	//
-	// Annotated annotated = EasyMock.createMock(Annotated.class);
-	// expect(annotated.getAnnotation(Name.class)).andReturn(name).anyTimes();
-	// expect(annotated.isAnnotationPresent(Name.class)).andReturn(true).anyTimes();
-	// replay(annotated);
-	//
-	// InjectionPoint ip = EasyMock.createMock(InjectionPoint.class);
-	// expect(ip.getAnnotated()).andReturn(annotated).anyTimes();
-	// replay(ip);
-	//
-	// ResourceBundleProducer factory = new ResourceBundleProducer();
-	// Assert.assertNotNull(factory.create(ip, Locale.getDefault()));
-	// }
 
 	// @Test
 	// public void testCreateInjectionPointNameUnannoted() {

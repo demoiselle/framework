@@ -76,14 +76,7 @@ public class ResourceBundleProducer implements Serializable {
 	 */
 	public static ResourceBundle create(String baseName, Locale locale) {
 		ResourceBundle bundle = null;
-
-		try {
-			bundle = new ResourceBundle(baseName, locale);
-
-		} catch (MissingResourceException e) {
-			throw new DemoiselleException("File " + baseName + " not found!");
-		}
-
+		bundle = new ResourceBundle(baseName, locale);
 		return bundle;
 	}
 
