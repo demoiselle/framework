@@ -71,7 +71,7 @@ public final class StrategySelector implements Serializable {
 		return result;
 	}
 
-	public static <T> Class<? extends T> getPriorityReference(List<Class<? extends T>> options)
+	private static <T> Class<? extends T> getPriorityReference(List<Class<? extends T>> options)
 			throws ConfigurationException {
 		Class<? extends T> selected = null;
 

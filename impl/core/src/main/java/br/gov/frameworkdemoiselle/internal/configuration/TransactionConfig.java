@@ -38,6 +38,7 @@ package br.gov.frameworkdemoiselle.internal.configuration;
 
 import java.io.Serializable;
 
+import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 
@@ -46,6 +47,7 @@ public class TransactionConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@Name("class")
 	private Class<? extends Transaction> transactionClass;
 
 	public Class<? extends Transaction> getTransactionClass() {
