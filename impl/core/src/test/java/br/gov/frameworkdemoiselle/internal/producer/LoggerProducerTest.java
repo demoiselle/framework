@@ -35,6 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.producer;
+
 import org.junit.Ignore;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -47,7 +48,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.junit.Test;
 import org.slf4j.Logger;
-@Ignore
+
 public class LoggerProducerTest {
 
 	private Logger logger;

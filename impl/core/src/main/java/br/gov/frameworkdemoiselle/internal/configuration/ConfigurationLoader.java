@@ -82,7 +82,7 @@ public class ConfigurationLoader implements Serializable {
 	private static ResourceBundle bundle;
 
 	private static Logger logger;
-
+	
 	/**
 	 * Loads a config class filling it with the corresponding values.
 	 * 
