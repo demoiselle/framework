@@ -39,44 +39,72 @@ package br.gov.frameworkdemoiselle.internal.configuration;
 import java.io.Serializable;
 
 import br.gov.frameworkdemoiselle.configuration.Configuration;
-import br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthenticator;
-import br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthorizer;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.Authorizer;
+import br.gov.frameworkdemoiselle.security.SecurityConfig;
 
-/**
- * A <code>SecurityConfig</code> object is responsible for specifying which security configurations should be used for a
- * particular application.
- * 
- * @author SERPRO
- */
 @Configuration(prefix = "frameworkdemoiselle.security")
-public class SecurityConfig implements Serializable {
+public class SecurityConfigImpl implements Serializable, SecurityConfig {
 
 	private static final long serialVersionUID = 1L;
 
 	private boolean enabled = true;
 
-	private Class<? extends Authenticator> authenticatorClass = DefaultAuthenticator.class;
+	private Class<? extends Authenticator> authenticatorClass;
 
-	private Class<? extends Authorizer> authorizerClass = DefaultAuthorizer.class;
+	private Class<? extends Authorizer> authorizerClass;
 
-	/**
-	 * Tells whether or not the security is enabled for the current application. This value could be defined in the
-	 * <b>demoiselle.properties</b> file, using the key <i>frameworkdemoiselle.security.enabled</i>.
-	 * 
-	 * @return the value defined for the key <i>frameworkdemoiselle.security.enabled</i> in the
-	 *         <b>demoiselle.properties</b> file. If there is no value defined, returns the default value <tt>true</tt>
+	/*
+	 * (non-Javadoc)
+	 * @see br.gov.frameworkdemoiselle.security.SecurityConfig#isEnabled()
 	 */
+	@Override
 	public boolean isEnabled() {
-		return enabled;
+		return this.enabled;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see br.gov.frameworkdemoiselle.security.SecurityConfig#setEnabled(boolean)
+	 */
+	@Override
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see br.gov.frameworkdemoiselle.security.SecurityConfig#getAuthenticatorClass()
+	 */
+	@Override
 	public Class<? extends Authenticator> getAuthenticatorClass() {
-		return authenticatorClass;
+		return this.authenticatorClass;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see br.gov.frameworkdemoiselle.security.SecurityConfig#setAuthenticatorClass(java.lang.Class)
+	 */
+	@Override
+	public void setAuthenticatorClass(Class<? extends Authenticator> authenticatorClass) {
+		this.authenticatorClass = authenticatorClass;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see br.gov.frameworkdemoiselle.security.SecurityConfig#getAuthorizerClass()
+	 */
+	@Override
 	public Class<? extends Authorizer> getAuthorizerClass() {
-		return authorizerClass;
+		return this.authorizerClass;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see br.gov.frameworkdemoiselle.security.SecurityConfig#setAuthorizerClass(java.lang.Class)
+	 */
+	@Override
+	public void setAuthorizerClass(Class<? extends Authorizer> authorizerClass) {
+		this.authorizerClass = authorizerClass;
 	}
 }

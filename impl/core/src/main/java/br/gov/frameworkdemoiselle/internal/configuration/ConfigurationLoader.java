@@ -93,7 +93,7 @@ public class ConfigurationLoader implements Serializable {
 	public void load(Object object) throws ConfigurationException {
 		Class<?> config = object.getClass();
 		CoreBootstrap bootstrap = Beans.getReference(CoreBootstrap.class);
-		
+
 		if (!bootstrap.isAnnotatedType(config)) {
 			config = config.getSuperclass();
 			getLogger().debug(getBundle().getString("proxy-detected", config, config.getClass().getSuperclass()));
@@ -112,11 +112,13 @@ public class ConfigurationLoader implements Serializable {
 			ConfigType type = clazz.getAnnotation(Configuration.class).type();
 			org.apache.commons.configuration.Configuration config = getConfiguration(resource, type);
 
-			String key = getKey(field, clazz, config);
-			Object value = getValue(key, field, config);
+			if (config != null) {
+				String key = getKey(field, clazz, config);
+				Object value = getValue(key, field, config);
 
-			validate(field, key, value, resource);
-			setValue(field, key, object, value);
+				validate(field, key, value, resource);
+				setValue(field, key, object, value);
+			}
 		}
 	}
 
@@ -223,12 +225,20 @@ public class ConfigurationLoader implements Serializable {
 
 				case PROPERTIES:
 					url = getResourceAsURL(resource + ".properties");
-					result = new DataConfiguration(new PropertiesConfiguration(url));
+
+					if (url != null) {
+						result = new DataConfiguration(new PropertiesConfiguration(url));
+					}
+
 					break;
 
 				case XML:
 					url = getResourceAsURL(resource + ".xml");
-					result = new DataConfiguration(new XMLConfiguration(url));
+
+					if (url != null) {
+						result = new DataConfiguration(new XMLConfiguration(url));
+					}
+
 					break;
 
 				default:
@@ -416,7 +426,7 @@ public class ConfigurationLoader implements Serializable {
 
 	public static URL getResourceAsURL(final String resource) throws FileNotFoundException {
 		ClassLoader classLoader = getClassLoaderForResource(resource);
-		return classLoader.getResource(resource);
+		return classLoader != null ? classLoader.getResource(resource) : null;
 	}
 
 	private static ResourceBundle getBundle() {

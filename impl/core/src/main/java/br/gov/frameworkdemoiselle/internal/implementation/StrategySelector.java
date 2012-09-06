@@ -39,9 +39,11 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 import static br.gov.frameworkdemoiselle.annotation.Priority.MIN_PRIORITY;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 
 public final class StrategySelector implements Serializable {
 
@@ -58,39 +60,19 @@ public final class StrategySelector implements Serializable {
 	private StrategySelector() {
 	}
 
-	public static <T> Class<? extends T> getClass(Class<? extends T> configClass/* , Class<T> defaultClass */,
+	public static <T> Class<? extends T> getClass(Class<? extends T> configClass,
 			List<Class<? extends T>> optionalClasses) {
 		Class<? extends T> result = configClass;
 
-		if (configClass == getDefaultClass(optionalClasses)) {
+		if (configClass == null) {
 			result = getPriorityReference(optionalClasses);
 		}
 
 		return result;
 	}
 
-	public static <T> Class<? extends T> getDefaultClass(List<Class<? extends T>> optionalClasses) {
-		Class<? extends T> result = null;
-
-		for (Class<? extends T> optionalClass : optionalClasses) {
-			Priority priority = optionalClass.getAnnotation(Priority.class);
-
-			if (priority != null && priority.value() == CORE_PRIORITY) {
-				result = optionalClass;
-				break;
-			}
-		}
-
-		return result;
-	}
-
-	/*
-	 * public static <T> T getReference(String configKey, Class<T> strategyType, Class<T> defaultType, List<Class<T>>
-	 * options) { T result = getExplicitReference(configKey, strategyType, defaultType); if (result.getClass() ==
-	 * defaultType) { result = getPriorityReference(options); } return result; }
-	 */
-
-	public static <T> Class<? extends T> getPriorityReference(List<Class<? extends T>> options) {
+	public static <T> Class<? extends T> getPriorityReference(List<Class<? extends T>> options)
+			throws ConfigurationException {
 		Class<? extends T> selected = null;
 
 		for (Class<? extends T> option : options) {
@@ -98,6 +80,8 @@ public final class StrategySelector implements Serializable {
 				selected = option;
 			}
 		}
+
+		checkForAmbiguity(selected, options);
 
 		return selected;
 	}
@@ -111,6 +95,23 @@ public final class StrategySelector implements Serializable {
 		}
 
 		return result;
+	}
+
+	private static <T> void checkForAmbiguity(Class<? extends T> selected, List<Class<? extends T>> options)
+			throws ConfigurationException {
+		int selectedPriority = getPriority(selected);
+
+		List<Class<? extends T>> ambiguous = new ArrayList<Class<? extends T>>();
+
+		for (Class<? extends T> option : options) {
+			if (selected != option && selectedPriority == getPriority(option)) {
+				ambiguous.add(option);
+			}
+		}
+
+		if (!ambiguous.isEmpty()) {
+			throw new ConfigurationException("AMBIGUO");
+		}
 	}
 
 	/*

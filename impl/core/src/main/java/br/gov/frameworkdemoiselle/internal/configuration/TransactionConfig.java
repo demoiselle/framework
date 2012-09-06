@@ -39,7 +39,6 @@ package br.gov.frameworkdemoiselle.internal.configuration;
 import java.io.Serializable;
 
 import br.gov.frameworkdemoiselle.configuration.Configuration;
-import br.gov.frameworkdemoiselle.internal.implementation.DefaultTransaction;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 
 @Configuration(prefix = "frameworkdemoiselle.transaction")
@@ -47,7 +46,7 @@ public class TransactionConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Class<? extends Transaction> transactionClass = DefaultTransaction.class;
+	private Class<? extends Transaction> transactionClass;
 
 	public Class<? extends Transaction> getTransactionClass() {
 		return transactionClass;
