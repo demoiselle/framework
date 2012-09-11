@@ -40,13 +40,14 @@ import javax.inject.Named;
 
 import br.gov.frameworkdemoiselle.internal.bootstrap.AuthenticatorBootstrap;
 import br.gov.frameworkdemoiselle.internal.bootstrap.AuthorizerBootstrap;
-import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfig;
+import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfigImpl;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
 import br.gov.frameworkdemoiselle.security.AfterLogoutSuccessful;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.Authorizer;
 import br.gov.frameworkdemoiselle.security.NotLoggedInException;
+import br.gov.frameworkdemoiselle.security.SecurityConfig;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.security.User;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -70,7 +71,10 @@ public class SecurityContextImpl implements SecurityContext {
 		if (this.authenticator == null) {
 			AuthenticatorBootstrap bootstrap = Beans.getReference(AuthenticatorBootstrap.class);
 			Class<? extends Authenticator> clazz = getConfig().getAuthenticatorClass();
-			clazz = StrategySelector.getClass(clazz, bootstrap.getCache());
+
+			if (clazz == null) {
+				clazz = StrategySelector.getClass(Authenticator.class, bootstrap.getCache());
+			}
 
 			this.authenticator = Beans.getReference(clazz);
 		}
@@ -82,7 +86,10 @@ public class SecurityContextImpl implements SecurityContext {
 		if (this.authorizer == null) {
 			AuthorizerBootstrap bootstrap = Beans.getReference(AuthorizerBootstrap.class);
 			Class<? extends Authorizer> clazz = getConfig().getAuthorizerClass();
-			clazz = StrategySelector.getClass(clazz, bootstrap.getCache());
+
+			if (clazz == null) {
+				clazz = StrategySelector.getClass(Authorizer.class, bootstrap.getCache());
+			}
 
 			this.authorizer = Beans.getReference(clazz);
 		}
@@ -192,7 +199,7 @@ public class SecurityContextImpl implements SecurityContext {
 	}
 
 	private SecurityConfig getConfig() {
-		return Beans.getReference(SecurityConfig.class);
+		return Beans.getReference(SecurityConfigImpl.class);
 	}
 
 	private void checkLoggedIn() throws NotLoggedInException {

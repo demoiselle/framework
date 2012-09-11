@@ -59,7 +59,6 @@
 		<module>impl</module>
 		<module>parent</module>
 		<module>archetype</module>
-		<module>example</module>
 		<module>documentation</module>
 	</modules>
 

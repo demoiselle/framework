@@ -39,9 +39,13 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 import static br.gov.frameworkdemoiselle.annotation.Priority.MIN_PRIORITY;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 public final class StrategySelector implements Serializable {
 
@@ -55,42 +59,21 @@ public final class StrategySelector implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private static ResourceBundle bundle;
+
 	private StrategySelector() {
 	}
 
-	public static <T> Class<? extends T> getClass(Class<? extends T> configClass/* , Class<T> defaultClass */,
-			List<Class<? extends T>> optionalClasses) {
-		Class<? extends T> result = configClass;
-
-		if (configClass == getDefaultClass(optionalClasses)) {
-			result = getPriorityReference(optionalClasses);
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
 		}
 
-		return result;
+		return bundle;
 	}
 
-	public static <T> Class<? extends T> getDefaultClass(List<Class<? extends T>> optionalClasses) {
-		Class<? extends T> result = null;
-
-		for (Class<? extends T> optionalClass : optionalClasses) {
-			Priority priority = optionalClass.getAnnotation(Priority.class);
-
-			if (priority != null && priority.value() == CORE_PRIORITY) {
-				result = optionalClass;
-				break;
-			}
-		}
-
-		return result;
-	}
-
-	/*
-	 * public static <T> T getReference(String configKey, Class<T> strategyType, Class<T> defaultType, List<Class<T>>
-	 * options) { T result = getExplicitReference(configKey, strategyType, defaultType); if (result.getClass() ==
-	 * defaultType) { result = getPriorityReference(options); } return result; }
-	 */
-
-	public static <T> Class<? extends T> getPriorityReference(List<Class<? extends T>> options) {
+	public static <T> Class<? extends T> getClass(Class<T> type, List<Class<? extends T>> options)
+			throws ConfigurationException {
 		Class<? extends T> selected = null;
 
 		for (Class<? extends T> option : options) {
@@ -99,7 +82,44 @@ public final class StrategySelector implements Serializable {
 			}
 		}
 
+		checkForAmbiguity(type, selected, options);
+
 		return selected;
+	}
+
+	private static <T> void checkForAmbiguity(Class<T> type, Class<? extends T> selected,
+			List<Class<? extends T>> options) throws ConfigurationException {
+		int selectedPriority = getPriority(selected);
+
+		List<Class<? extends T>> ambiguous = new ArrayList<Class<? extends T>>();
+
+		for (Class<? extends T> option : options) {
+			if (selected != option && selectedPriority == getPriority(option)) {
+				ambiguous.add(option);
+			}
+		}
+
+		if (!ambiguous.isEmpty()) {
+			ambiguous.add(selected);
+
+			String message = getExceptionMessage(type, ambiguous);
+			throw new ConfigurationException(message);
+		}
+	}
+
+	private static <T> String getExceptionMessage(Class<T> type, List<Class<? extends T>> ambiguous) {
+		StringBuffer classes = new StringBuffer();
+
+		int i = 0;
+		for (Class<? extends T> clazz : ambiguous) {
+			if (i++ != 0) {
+				classes.append(", ");
+			}
+
+			classes.append(clazz.getCanonicalName());
+		}
+
+		return getBundle().getString("ambiguous-strategy-resolution", type.getCanonicalName(), classes.toString());
 	}
 
 	private static <T> int getPriority(Class<T> type) {
@@ -113,28 +133,40 @@ public final class StrategySelector implements Serializable {
 		return result;
 	}
 
-	/*
-	 * public static <T> T getExplicitReference(String configKey, Class<T> strategyType, Class<T> defaultType) {
-	 * Class<T> selectedType = loadSelected(configKey, strategyType, defaultType); return
-	 * Beans.getReference(selectedType); }
-	 */
-
-	/*
-	 * @SuppressWarnings("unchecked") private static <T> Class<T> loadSelected(String configKey, Class<T> strategyType,
-	 * Class<T> defaultType) { ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-core-bundle",
-	 * Beans.getReference(Locale.class)); Class<T> result = null; String canonicalName = null; String typeName =
-	 * strategyType.getSimpleName().toLowerCase(); String key = null; try { URL url =
-	 * ConfigurationLoader.getResourceAsURL("demoiselle.properties"); Configuration config = new
-	 * PropertiesConfiguration(url); canonicalName = config.getString(configKey, defaultType.getCanonicalName());
-	 * ClassLoader classLoader = ConfigurationLoader.getClassLoaderForClass(canonicalName); if (classLoader == null) {
-	 * classLoader = Thread.currentThread().getContextClassLoader(); } result = (Class<T>) Class.forName(canonicalName,
-	 * false, classLoader); result.asSubclass(strategyType); } catch
-	 * (org.apache.commons.configuration.ConfigurationException cause) { throw new
-	 * ConfigurationException(bundle.getString("file-not-found", "demoiselle.properties")); } catch
-	 * (ClassNotFoundException cause) { key = Strings.getString("{0}-class-not-found", typeName); throw new
-	 * ConfigurationException(bundle.getString(key, canonicalName)); } catch (FileNotFoundException e) { throw new
-	 * ConfigurationException(bundle.getString("file-not-found", "demoiselle.properties")); } catch (ClassCastException
-	 * cause) { key = Strings.getString("{0}-class-must-be-of-type", typeName); throw new
-	 * ConfigurationException(bundle.getString(key, canonicalName, strategyType)); } return result; }
-	 */
+	// public static <T> T getExplicitReference(String configKey, Class<T> strategyType, Class<T> defaultType) {
+	// Class<T> selectedType = loadSelected(configKey, strategyType, defaultType);
+	// return Beans.getReference(selectedType);
+	// }
+	//
+	// @SuppressWarnings("unchecked")
+	// private static <T> Class<T> loadSelected(String configKey, Class<T> strategyType, Class<T> defaultType) {
+	// ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-core-bundle",
+	// Beans.getReference(Locale.class));
+	// Class<T> result = null;
+	// String canonicalName = null;
+	// String typeName = strategyType.getSimpleName().toLowerCase();
+	// String key = null;
+	// try {
+	// URL url = ConfigurationLoader.getResourceAsURL("demoiselle.properties");
+	// Configuration config = new PropertiesConfiguration(url);
+	// canonicalName = config.getString(configKey, defaultType.getCanonicalName());
+	// ClassLoader classLoader = ConfigurationLoader.getClassLoaderForClass(canonicalName);
+	// if (classLoader == null) {
+	// classLoader = Thread.currentThread().getContextClassLoader();
+	// }
+	// result = (Class<T>) Class.forName(canonicalName, false, classLoader);
+	// result.asSubclass(strategyType);
+	// } catch (org.apache.commons.configuration.ConfigurationException cause) {
+	// throw new ConfigurationException(bundle.getString("file-not-found", "demoiselle.properties"));
+	// } catch (ClassNotFoundException cause) {
+	// key = Strings.getString("{0}-class-not-found", typeName);
+	// throw new ConfigurationException(bundle.getString(key, canonicalName));
+	// } catch (FileNotFoundException e) {
+	// throw new ConfigurationException(bundle.getString("file-not-found", "demoiselle.properties"));
+	// } catch (ClassCastException cause) {
+	// key = Strings.getString("{0}-class-must-be-of-type", typeName);
+	// throw new ConfigurationException(bundle.getString(key, canonicalName, strategyType));
+	// }
+	// return result;
+	// }
 }

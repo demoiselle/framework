@@ -34,37 +34,77 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package example;
+package br.gov.frameworkdemoiselle.internal.configuration;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.Serializable;
 
-import br.gov.frameworkdemoiselle.security.User;
+import br.gov.frameworkdemoiselle.configuration.Configuration;
+import br.gov.frameworkdemoiselle.security.Authenticator;
+import br.gov.frameworkdemoiselle.security.Authorizer;
+import br.gov.frameworkdemoiselle.security.SecurityConfig;
 
-public class MyUser implements User {
+@Configuration(prefix = "frameworkdemoiselle.security")
+public class SecurityConfigImpl implements Serializable, SecurityConfig {
 
 	private static final long serialVersionUID = 1L;
 
-	private final String username;
+	private boolean enabled = true;
 
-	private Map<String, Object> attrs = new HashMap<String, Object>();
+	private Class<? extends Authenticator> authenticatorClass;
 
-	public MyUser(String username) {
-		this.username = username;
+	private Class<? extends Authorizer> authorizerClass;
+
+	/*
+	 * (non-Javadoc)
+	 * @see br.gov.frameworkdemoiselle.security.SecurityConfig#isEnabled()
+	 */
+	@Override
+	public boolean isEnabled() {
+		return this.enabled;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see br.gov.frameworkdemoiselle.security.SecurityConfig#setEnabled(boolean)
+	 */
 	@Override
-	public String getId() {
-		return this.username;
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see br.gov.frameworkdemoiselle.security.SecurityConfig#getAuthenticatorClass()
+	 */
 	@Override
-	public Object getAttribute(Object key) {
-		return this.attrs.get(key);
+	public Class<? extends Authenticator> getAuthenticatorClass() {
+		return this.authenticatorClass;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see br.gov.frameworkdemoiselle.security.SecurityConfig#setAuthenticatorClass(java.lang.Class)
+	 */
 	@Override
-	public void setAttribute(Object key, Object value) {
-		this.attrs.put((String) key, value);
+	public void setAuthenticatorClass(Class<? extends Authenticator> authenticatorClass) {
+		this.authenticatorClass = authenticatorClass;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see br.gov.frameworkdemoiselle.security.SecurityConfig#getAuthorizerClass()
+	 */
+	@Override
+	public Class<? extends Authorizer> getAuthorizerClass() {
+		return this.authorizerClass;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see br.gov.frameworkdemoiselle.security.SecurityConfig#setAuthorizerClass(java.lang.Class)
+	 */
+	@Override
+	public void setAuthorizerClass(Class<? extends Authorizer> authorizerClass) {
+		this.authorizerClass = authorizerClass;
 	}
 }

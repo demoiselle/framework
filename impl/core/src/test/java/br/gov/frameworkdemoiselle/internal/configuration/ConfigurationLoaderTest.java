@@ -44,6 +44,7 @@ import static org.junit.Assert.fail;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 
 import java.util.Locale;
+import java.util.Properties;
 
 import javax.validation.constraints.NotNull;
 
@@ -70,6 +71,20 @@ public class ConfigurationLoaderTest {
 	private ConfigurationLoader configurationLoader;
 
 	private CoreBootstrap coreBootstrap;
+	
+	@Configuration
+	public class ConfigurationSuccessfulPropertiesWithClassField {
+
+		protected Class classe;
+
+	}
+	
+	@Configuration
+	public class ConfigurationSuccessfulPropertiesWithPropertiesField {
+
+		protected Properties properties;
+
+	}
 	
 	@Configuration
 	public class ConfigurationSuccessfulProperties {
@@ -294,6 +309,27 @@ public class ConfigurationLoaderTest {
 	public void tearDown() throws Exception {
 	}
 
+	@Test
+	public void testConfigurationSuccessfulPropertiesWithClassField() {
+		ConfigurationSuccessfulPropertiesWithClassField config = new ConfigurationSuccessfulPropertiesWithClassField();
+		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
+		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		configurationLoader.load(config);
+		assertEquals(ConfigurationLoaderTest.class,config.classe);
+	}
+	
+	@Test
+	public void testConfigurationSuccessfulPropertiesWithPropertiesField() {
+		ConfigurationSuccessfulPropertiesWithPropertiesField config = new ConfigurationSuccessfulPropertiesWithPropertiesField();
+		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
+		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		configurationLoader.load(config);
+		assertEquals("teste1",config.properties.getProperty("1"));
+		assertEquals("teste2",config.properties.getProperty("2"));
+		assertTrue(config.properties.containsKey("1"));
+		assertTrue(config.properties.containsKey("2"));
+	}
+	
 	@Test
 	public void testConfigurationSuccessfulPropertiesPossibleConventions() {
 		ConfigurationSuccessfulProperties config = new ConfigurationSuccessfulProperties();
