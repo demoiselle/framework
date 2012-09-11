@@ -61,7 +61,7 @@ public class DefaultMessageTest {
 		expect(Beans.getReference(Locale.class)).andReturn(locale).anyTimes();
 		replay(Beans.class);
 
-		bundle = ResourceBundleProducer.create("teste-message");
+		bundle = ResourceBundleProducer.create("test-message");
 
 		mockStatic(Beans.class);
 		expect(Beans.getReference(ResourceBundle.class)).andReturn(bundle).anyTimes();
