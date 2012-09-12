@@ -349,19 +349,19 @@ public class ConfigurationLoaderTest {
 		assertEquals("ConfigurationTest2", config.name);
 	}
 
-	@Test
-	public void ConfigurationPropertiesWithAbsentFile() {
-		ConfigurationPropertiesWithAbsentFile config = new ConfigurationPropertiesWithAbsentFile();
-
-		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
-
-		try {
-			configurationLoader.load(config);
-			fail();
-		} catch (Exception e) {
-		}
-	}
+//	@Test
+//	public void ConfigurationPropertiesWithAbsentFile() {
+//		ConfigurationPropertiesWithAbsentFile config = new ConfigurationPropertiesWithAbsentFile();
+//
+//		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
+//		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+//
+//		try {
+//			configurationLoader.load(config);
+//			fail();
+//		} catch (Exception e) {
+//		}
+//	}
 
 	@Test
 	public void testConfigurationProcessorWithNameEmpty() {

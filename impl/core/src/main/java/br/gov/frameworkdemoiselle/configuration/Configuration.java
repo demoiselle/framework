@@ -43,6 +43,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Stereotype;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Singleton;
@@ -66,7 +67,6 @@ import javax.interceptor.InterceptorBinding;
 @Singleton
 @Stereotype
 @Inherited
-@InterceptorBinding
 @Target(TYPE)
 @Retention(RUNTIME)
 public @interface Configuration {

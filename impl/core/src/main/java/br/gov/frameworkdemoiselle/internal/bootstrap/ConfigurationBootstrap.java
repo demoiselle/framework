@@ -34,40 +34,32 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.interceptor;
+package br.gov.frameworkdemoiselle.internal.bootstrap;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.configuration.Configuration;
-import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
-import br.gov.frameworkdemoiselle.util.Beans;
 
-@Interceptor
-@Configuration
-@SuppressWarnings("cdi-scope")
-public class ConfigurationInterceptor implements Serializable {
+public class ConfigurationBootstrap implements Extension {
 
-	private static final long serialVersionUID = 1L;
+	private final List<Class<?>> cache = Collections.synchronizedList(new ArrayList<Class<?>>());
 
-	private static List<Class<?>> cache = new ArrayList<Class<?>>();
+	public <T> void processAnnotatedType(@Observes final ProcessAnnotatedType<T> event) {
+		final AnnotatedType<T> annotatedType = event.getAnnotatedType();
 
-	@AroundInvoke
-	public static synchronized Object manage(final InvocationContext ic) throws Exception {
-		Class<?> type = ic.getTarget().getClass();
-
-		if (!cache.contains(type)) {
-			ConfigurationLoader loader = Beans.getReference(ConfigurationLoader.class);
-			loader.load(ic.getTarget());
-
-			cache.add(type);
+		if (annotatedType.getJavaClass().isAnnotationPresent(Configuration.class)) {
+			getCache().add(annotatedType.getJavaClass());
 		}
+	}
 
-		return ic.proceed();
+	public List<Class<?>> getCache() {
+		return cache;
 	}
 }
