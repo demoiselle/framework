@@ -84,7 +84,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 			loadHandlers(type);
 		}
 
-		Method handler = getMethod(type, cause);
+		Method handler = getMethod(type, cause.getClass());
 		if (handler != null) {
 			invoke(handler, ic.getTarget(), cause);
 			handled = true;
@@ -103,21 +103,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 		}
 
 		return type;
-	}
-
-	/**
-	 * If there is an handler in the current class for the expected exception, then this method will be returned; Else
-	 * returns null;
-	 * 
-	 * @param type
-	 * @param cause
-	 * @return
-	 */
-	private final Method getMethod(final Class<?> type, final Exception cause) {
-		Method handler = null;
-		handler = getMethod(type, cause.getClass());
-		return handler;
-	}
+	}	
 	
 	
 	/**

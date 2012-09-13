@@ -319,12 +319,48 @@ public class ExceptionHandlerInterceptorTest {
 	public void manageWithClassThatContainsParentExceptionHandleMethod() throws Exception {
 		ClassWithMethodsAnnotatedWithExceptionHandler classWithException = new ClassWithMethodsAnnotatedWithExceptionHandler();
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
-		expect(this.context.proceed()).andThrow(new TestException("TEST EXCEPTION"));
+		expect(this.context.proceed()).andThrow(new TestException(""));
 		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
 		replayAll(this.context, CoreBootstrap.class);
 
 		assertNull(this.interceptor.manage(this.context));
 		assertEquals(1, classWithException.times);
+		verifyAll();
+	}
+	
+	@Test
+	public void manageWithClassThatDoesNotContainsParentExceptionHandleMethod() throws Exception {
+		ClassWithoutMethodsAnnotatedWithExceptionHandler classWithException = new ClassWithoutMethodsAnnotatedWithExceptionHandler();
+		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
+		expect(this.context.proceed()).andThrow(new TestException(""));
+		expect(CoreBootstrap.isAnnotatedType(ClassWithoutMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
+		replayAll(this.context, CoreBootstrap.class);
+
+		try {
+			this.interceptor.manage(this.context);
+			fail();
+		} catch (TestException e) {
+			assertTrue(true);
+		}
+
+		verifyAll();
+	}
+	
+	@Test
+	public void manageWithClassThatContainsOnlySubExceptionHandleMethod() throws Exception {
+		ClassWithExceptionHandlerMethodThatRethrowException classWithException = new ClassWithExceptionHandlerMethodThatRethrowException();
+		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
+		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
+		expect(CoreBootstrap.isAnnotatedType(ClassWithExceptionHandlerMethodThatRethrowException.class)).andReturn(true);
+		replayAll(this.context, CoreBootstrap.class);
+
+		try {
+			this.interceptor.manage(this.context);
+			fail();
+		} catch (DemoiselleException e) {
+			assertTrue(true);
+		}
+
 		verifyAll();
 	}
 
