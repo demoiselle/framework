@@ -83,6 +83,7 @@ public class ExceptionHandlerInterceptorTest {
 			super(message);
 		}
 	}
+	
 
 	class ClassWithMethodsAnnotatedWithExceptionHandler {
 
@@ -155,7 +156,7 @@ public class ExceptionHandlerInterceptorTest {
 		replay();
 		assertEquals(null, this.interceptor.manage(this.context));
 		verify();
-	}
+	}	
 
 	@Test
 	public void manageWithClassThatDoesNotContainHandleMethod() throws Exception {
@@ -186,20 +187,7 @@ public class ExceptionHandlerInterceptorTest {
 		assertNull(this.interceptor.manage(this.context));
 		assertEquals(1, classWithException.times);
 		verifyAll();
-	}
-
-	@Test
-	public void manageWithClassThatContainsParentExceptionHandleMethod() throws Exception {
-		ClassWithMethodsAnnotatedWithExceptionHandler classWithException = new ClassWithMethodsAnnotatedWithExceptionHandler();
-		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
-		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
-		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
-		replayAll(this.context, CoreBootstrap.class);
-
-		assertNull(this.interceptor.manage(this.context));
-		assertEquals(1, classWithException.times);
-		verifyAll();
-	}
+	}	
 
 	@Test
 	public void manageWithClassThatContainsHandleMethodWithDiferentException() throws Exception {
@@ -210,12 +198,8 @@ public class ExceptionHandlerInterceptorTest {
 		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
 		replayAll(this.context, CoreBootstrap.class);
 
-		try {
-			this.interceptor.manage(this.context);
-			fail();
-		} catch (TestException e) {
-			assertEquals(0, classWithException.times);
-		}
+		assertNull(this.interceptor.manage(this.context));
+		assertEquals(1, classWithException.times);	
 
 		verify();
 	}
@@ -329,6 +313,19 @@ public class ExceptionHandlerInterceptorTest {
 		} catch (TestException e) {
 			assertEquals(1, testClass.times);
 		}
+	}
+	
+	@Test
+	public void manageWithClassThatContainsParentExceptionHandleMethod() throws Exception {
+		ClassWithMethodsAnnotatedWithExceptionHandler classWithException = new ClassWithMethodsAnnotatedWithExceptionHandler();
+		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
+		expect(this.context.proceed()).andThrow(new TestException("TEST EXCEPTION"));
+		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
+		replayAll(this.context, CoreBootstrap.class);
+
+		assertNull(this.interceptor.manage(this.context));
+		assertEquals(1, classWithException.times);
+		verifyAll();
 	}
 
 }
