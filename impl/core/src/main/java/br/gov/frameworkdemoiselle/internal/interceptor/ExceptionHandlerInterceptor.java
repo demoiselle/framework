@@ -84,7 +84,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 			loadHandlers(type);
 		}
 
-		Method handler = getMethod(type, cause);
+		Method handler = getMethod(type, cause.getClass());
 		if (handler != null) {
 			invoke(handler, ic.getTarget(), cause);
 			handled = true;
@@ -103,22 +103,30 @@ public class ExceptionHandlerInterceptor implements Serializable {
 		}
 
 		return type;
-	}
-
+	}	
+	
+	
 	/**
-	 * If there is an handler in the current class for the expected exception, then this method will be returned; Else
+	 * If there is an handler in the current class or superClass for the expected exception, then this method will be returned; Else
 	 * returns null;
 	 * 
 	 * @param type
-	 * @param cause
+	 * @param causeClass
 	 * @return
 	 */
-	private final Method getMethod(final Class<?> type, final Exception cause) {
+	private final Method getMethod(final Class<?> type, final Class<?> causeClass) {
 		Method handler = null;
 
-		if (cache.containsKey(type) && cache.get(type).containsKey(cause.getClass())) {
-			handler = cache.get(type).get(cause.getClass());
-		}
+		if (cache.containsKey(type) ){
+			Map<Class<?>, Method> map = cache.get(type);
+			if(Throwable.class.isAssignableFrom(causeClass)){
+				if(map.containsKey(causeClass)){
+					handler = map.get(causeClass);
+				}else{
+					handler = getMethod(type, causeClass.getSuperclass());
+				}
+			}			
+		}		
 
 		return handler;
 	}
