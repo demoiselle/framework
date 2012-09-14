@@ -40,6 +40,8 @@ Notas de Versão
 
 * v2.3.0-RC1
 
+  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000845}0000845}} [Improvement] Declaração da dependência do Junit deve ser feita no POM da aplicação.
+
   * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000842}0000842}} [Improvement] Suporte ao tipo Class nos atributos das classes @Configuration.
 
   * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000841}0000841}} [Improvement] Estratégias de controle de acesso detectadas e configuradas automaticamente.
