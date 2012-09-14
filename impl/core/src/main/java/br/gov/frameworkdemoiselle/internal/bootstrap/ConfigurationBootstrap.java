@@ -40,12 +40,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.CtNewMethod;
+
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.configuration.Configuration;
+import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
 
 public class ConfigurationBootstrap implements Extension {
 
@@ -55,11 +63,50 @@ public class ConfigurationBootstrap implements Extension {
 		final AnnotatedType<T> annotatedType = event.getAnnotatedType();
 
 		if (annotatedType.getJavaClass().isAnnotationPresent(Configuration.class)) {
-			getCache().add(annotatedType.getJavaClass());
+			cache.add(annotatedType.getJavaClass());
+			event.veto();
 		}
 	}
 
-	public List<Class<?>> getCache() {
-		return cache;
+	public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
+		Class<?> proxy;
+
+		for (Class<?> config : cache) {
+			proxy = createProxy(config);
+			abd.addBean(new ProxyBean((Class<Object>) proxy, beanManager));
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private Class<Object> createProxy(Class<?> type) throws Exception {
+		String superClassName = type.getCanonicalName();
+		String chieldClassName = superClassName + "__DemoiselleProxy";
+		ClassPool pool = ClassPool.getDefault();
+
+		CtClass ctChieldClass = pool.makeClass(chieldClassName);
+		CtClass ctSuperClass = pool.get(superClassName);
+		ctChieldClass.setSuperclass(ctSuperClass);
+
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("new ");
+		buffer.append(ConfigurationLoader.class.getCanonicalName());
+		buffer.append("().load(this);");
+
+		CtMethod ctChieldMethod;
+		for (CtMethod ctSuperMethod : ctSuperClass.getDeclaredMethods()) {
+			ctChieldMethod = CtNewMethod.delegator(ctSuperMethod, ctChieldClass);
+			ctChieldMethod.insertBefore(buffer.toString());
+
+			ctChieldClass.addMethod(ctChieldMethod);
+		}
+
+		// CtConstructor ctChieldDefaultConstructor = CtNewConstructor.defaultConstructor(ctChieldClass);
+		// ctChieldClass.addConstructor(ctChieldDefaultConstructor);
+		//
+		// for (CtConstructor ctConstructor : ctChieldClass.getConstructors()) {
+		// ctConstructor.insertBefore(buffer.toString());
+		// }
+
+		return ctChieldClass.toClass();
 	}
 }
