@@ -91,4 +91,8 @@
 			<url>http://demoiselle.sourceforge.net/repository/release</url>
 		</repository>
 	</repositories>
+	
+	<properties>
+		<demoiselle.junit.version>2.3.0-RC1</demoiselle.junit.version>
+	</properties>
 </project>
