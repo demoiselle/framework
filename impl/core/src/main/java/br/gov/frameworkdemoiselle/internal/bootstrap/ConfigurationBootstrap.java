@@ -44,6 +44,7 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
+import javassist.LoaderClassPath;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -68,44 +69,43 @@ public class ConfigurationBootstrap implements Extension {
 		}
 	}
 
-	public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
+	public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) throws Exception {
 		Class<Object> proxy;
 
 		for (Class<Object> config : cache) {
 			proxy = createProxy(config);
-			abd.addBean(new ProxyBean(proxy, beanManager));
+			event.addBean(new ProxyBean(proxy, beanManager));
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private Class<Object> createProxy(Class<?> type) throws Exception {
+	private Class<Object> createProxy(Class<Object> type) throws Exception {
 		String superClassName = type.getCanonicalName();
 		String chieldClassName = superClassName + "__DemoiselleProxy";
+
 		ClassPool pool = ClassPool.getDefault();
+		CtClass ctChieldClass = pool.getOrNull(chieldClassName);
 
-		CtClass ctChieldClass = pool.makeClass(chieldClassName);
-		CtClass ctSuperClass = pool.get(superClassName);
-		ctChieldClass.setSuperclass(ctSuperClass);
+		if (ctChieldClass == null) {
+			ClassLoader classLoader = ConfigurationLoader.getClassLoaderForClass(superClassName);
+			pool.appendClassPath(new LoaderClassPath(classLoader));
+			CtClass ctSuperClass = pool.get(superClassName);
 
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("new ");
-		buffer.append(ConfigurationLoader.class.getCanonicalName());
-		buffer.append("().load(this);");
+			ctChieldClass = pool.makeClass(chieldClassName, ctSuperClass);
 
-		CtMethod ctChieldMethod;
-		for (CtMethod ctSuperMethod : ctSuperClass.getDeclaredMethods()) {
-			ctChieldMethod = CtNewMethod.delegator(ctSuperMethod, ctChieldClass);
-			ctChieldMethod.insertBefore(buffer.toString());
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("new ");
+			buffer.append(ConfigurationLoader.class.getCanonicalName());
+			buffer.append("().load(this);");
 
-			ctChieldClass.addMethod(ctChieldMethod);
+			CtMethod ctChieldMethod;
+			for (CtMethod ctSuperMethod : ctSuperClass.getDeclaredMethods()) {
+				ctChieldMethod = CtNewMethod.delegator(ctSuperMethod, ctChieldClass);
+				ctChieldMethod.insertBefore(buffer.toString());
+
+				ctChieldClass.addMethod(ctChieldMethod);
+			}
 		}
-
-		// CtConstructor ctChieldDefaultConstructor = CtNewConstructor.defaultConstructor(ctChieldClass);
-		// ctChieldClass.addConstructor(ctChieldDefaultConstructor);
-		//
-		// for (CtConstructor ctConstructor : ctChieldClass.getConstructors()) {
-		// ctConstructor.insertBefore(buffer.toString());
-		// }
 
 		return ctChieldClass.toClass();
 	}
