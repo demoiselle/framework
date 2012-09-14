@@ -57,10 +57,10 @@ import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
 
 public class ConfigurationBootstrap implements Extension {
 
-	private final List<Class<?>> cache = Collections.synchronizedList(new ArrayList<Class<?>>());
+	private final List<Class<Object>> cache = Collections.synchronizedList(new ArrayList<Class<Object>>());
 
-	public <T> void processAnnotatedType(@Observes final ProcessAnnotatedType<T> event) {
-		final AnnotatedType<T> annotatedType = event.getAnnotatedType();
+	public void processAnnotatedType(@Observes final ProcessAnnotatedType<Object> event) {
+		final AnnotatedType<Object> annotatedType = event.getAnnotatedType();
 
 		if (annotatedType.getJavaClass().isAnnotationPresent(Configuration.class)) {
 			cache.add(annotatedType.getJavaClass());
@@ -69,11 +69,11 @@ public class ConfigurationBootstrap implements Extension {
 	}
 
 	public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) throws Exception {
-		Class<?> proxy;
+		Class<Object> proxy;
 
-		for (Class<?> config : cache) {
+		for (Class<Object> config : cache) {
 			proxy = createProxy(config);
-			abd.addBean(new ProxyBean((Class<Object>) proxy, beanManager));
+			abd.addBean(new ProxyBean(proxy, beanManager));
 		}
 	}
 
