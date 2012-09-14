@@ -38,7 +38,23 @@
 
 Notas de Versão
 
-* v2.3.0-BETA2
+* v2.3.0-RC1
+
+  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000842}0000842}} [Improvement] Suporte ao tipo Class nos atributos das classes @Configuration.
+
+  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000841}0000841}} [Improvement] Estratégias de controle de acesso detectadas e configuradas automaticamente.
+
+  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000840}0000840}} [Improvement] Estratégias de transação detectadas e configuradas automaticamente.
+
+  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000839}0000839}} [Improvement] Criação dos eventos AfterStartupProccess e AfterShutdownProccess.
+
+  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000838}0000838}} [Improvement] Remoção do atributo depreciado "priority" das annotações @Startup e @Shutdown.
+
+  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000837}0000837}} [Improvement] Anotações @Startup e @Shutdown movidas para o pacote lifecycle.
+  
+  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000836}0000836}} [Improvement] Remoção da declaração do ConfigurationInterceptor do beans.xml.
+
+* {{{../2.3.0-BETA2/}v2.3.0-BETA2}}
 
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000821}0000821}} [Bug] Execução de Startup e Shutdown com ClassLoader correto.
   
@@ -65,7 +81,6 @@ Notas de Versão
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000822}0000822}} [Task] Experimentos bem sucedidos com empacotamento de EAR.
   
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000819}0000819}} [Task] Ajustes relacionados a serialização de objetos internos do Framework.
-
 
 * {{{../2.3.0-BETA1/}v2.3.0-BETA1}}
 
@@ -98,7 +113,6 @@ Notas de Versão
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000799}0000799}} [Task] Atualização do SLF4J para a versão 1.6.1.
 
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000797}0000797}} [Task] Execução do @Startup e @Shutdown nas Extensões ao invés do Core.
-
 
 * {{{../2.2.2/}v2.2.2}}
 
