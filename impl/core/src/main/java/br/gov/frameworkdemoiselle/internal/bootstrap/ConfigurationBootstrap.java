@@ -42,6 +42,7 @@ import java.util.List;
 
 import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.LoaderClassPath;
@@ -54,7 +55,6 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.configuration.Configuration;
-import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
 
 public class ConfigurationBootstrap implements Extension {
 
@@ -86,27 +86,36 @@ public class ConfigurationBootstrap implements Extension {
 		ClassPool pool = ClassPool.getDefault();
 		CtClass ctChieldClass = pool.getOrNull(chieldClassName);
 
+		ClassLoader classLoader = type.getClassLoader();
 		if (ctChieldClass == null) {
-			ClassLoader classLoader = ConfigurationLoader.getClassLoaderForClass(superClassName);
+
 			pool.appendClassPath(new LoaderClassPath(classLoader));
+			// classLoader = Thread.currentThread().getContextClassLoader();
+			// pool.appendClassPath(new LoaderClassPath(classLoader));
+			// classLoader = ConfigurationLoader.getClassLoaderForClass(superClassName);
+			// pool.appendClassPath(new LoaderClassPath(classLoader));
+
 			CtClass ctSuperClass = pool.get(superClassName);
 
 			ctChieldClass = pool.makeClass(chieldClassName, ctSuperClass);
 
-			StringBuffer buffer = new StringBuffer();
-			buffer.append("new ");
-			buffer.append(ConfigurationLoader.class.getCanonicalName());
-			buffer.append("().load(this);");
+			CtClass ctClassX = pool.get("br.gov.frameworkdemoiselle.internal.implementation.X");
+
+			CtField ctFieldX = ctClassX.getField("cache");
+			ctChieldClass.addField(new CtField(ctFieldX, ctChieldClass));
+
+			CtMethod ctMethodX = ctClassX.getDeclaredMethod("loadProxyConfigurarion");
+			ctChieldClass.addMethod(new CtMethod(ctMethodX, ctChieldClass, null));
 
 			CtMethod ctChieldMethod;
 			for (CtMethod ctSuperMethod : ctSuperClass.getDeclaredMethods()) {
 				ctChieldMethod = CtNewMethod.delegator(ctSuperMethod, ctChieldClass);
-				ctChieldMethod.insertBefore(buffer.toString());
+				ctChieldMethod.insertBefore("loadProxyConfigurarion();");
 
 				ctChieldClass.addMethod(ctChieldMethod);
 			}
 		}
 
-		return ctChieldClass.toClass();
+		return ctChieldClass.toClass(classLoader, type.getProtectionDomain());
 	}
 }
