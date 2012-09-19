@@ -46,7 +46,7 @@
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-documentation-parent</artifactId>
 		<version>2</version>
-		<relativePath>../../../internal/parent/documentation/pom.xml</relativePath>
+		<relativePath>../../../internal/parent/documentation</relativePath>
 	</parent>
 
 	<name>Reference Documentation</name>

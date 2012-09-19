@@ -10,7 +10,7 @@
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-parent</artifactId>
 		<version>6-SNAPSHOT</version>
-		<relativePath>../../../internal/parent/demoiselle/pom.xml</relativePath>
+		<relativePath>../../../internal/parent/demoiselle</relativePath>
 	</parent>
 
 	<name>Framework Bill of Materials</name>

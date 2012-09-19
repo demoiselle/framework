@@ -45,7 +45,7 @@
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-extension-parent</artifactId>
 		<version>2.3.0-RC2-SNAPSHOT</version>
-		<relativePath>../../../parent/extension/pom.xml</relativePath>
+		<relativePath>../../../parent/extension</relativePath>
 	</parent>
 
 	<name>JTA Extension</name>

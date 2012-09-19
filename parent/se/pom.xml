@@ -45,7 +45,7 @@
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-minimal-parent</artifactId>
 		<version>2.3.0-RC2-SNAPSHOT</version>
-		<relativePath>../minimal/pom.xml</relativePath>
+		<relativePath>../minimal</relativePath>
 	</parent>
 
 	<name>SE Parent</name>

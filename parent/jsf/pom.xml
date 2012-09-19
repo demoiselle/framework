@@ -45,7 +45,7 @@
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-servlet-parent</artifactId>
 		<version>2.3.0-RC2-SNAPSHOT</version>
-		<relativePath>../servlet/pom.xml</relativePath>
+		<relativePath>../servlet</relativePath>
 	</parent>
 
 	<name>JSF Parent</name>
