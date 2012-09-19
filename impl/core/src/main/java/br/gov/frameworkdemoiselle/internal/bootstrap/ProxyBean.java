@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
@@ -51,7 +52,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Singleton;
+import javax.inject.Scope;
 
 /**
  * @see http://docs.jboss.org/weld/reference/latest/en-US/html_single/#d0e5035
@@ -101,7 +102,7 @@ public class ProxyBean implements Bean<Object> {
 	}
 
 	public Class<? extends Annotation> getScope() {
-		return Singleton.class;
+		return Dependent.class;
 	}
 
 	public String getName() {

@@ -42,7 +42,6 @@ import java.util.List;
 
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.LoaderClassPath;
@@ -55,6 +54,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.configuration.Configuration;
+import br.gov.frameworkdemoiselle.internal.implementation.ConfigurationImpl;
 
 public class ConfigurationBootstrap implements Extension {
 
@@ -84,6 +84,8 @@ public class ConfigurationBootstrap implements Extension {
 		String chieldClassName = superClassName + "__DemoiselleProxy";
 
 		ClassPool pool = ClassPool.getDefault();
+		ClassPool.doPruning = true;
+		
 		CtClass ctChieldClass = pool.getOrNull(chieldClassName);
 
 		ClassLoader classLoader = type.getClassLoader();
@@ -97,20 +99,26 @@ public class ConfigurationBootstrap implements Extension {
 
 			CtClass ctSuperClass = pool.get(superClassName);
 
-			ctChieldClass = pool.makeClass(chieldClassName, ctSuperClass);
+			// ctChieldClass = pool.makeClass(chieldClassName, ctSuperClass);
+			ctChieldClass = pool.getAndRename(ConfigurationImpl.class.getCanonicalName(), chieldClassName);
+			ctChieldClass.setSuperclass(ctSuperClass);
 
-			CtClass ctClassX = pool.get("br.gov.frameworkdemoiselle.internal.implementation.X");
+			// for (CtField ctFieldImpl : ctClassImpl.getDeclaredFields()) {
+			// ctChieldClass.addField(new CtField(ctFieldImpl, ctChieldClass));
+			// System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFF-----------" + ctFieldImpl.toString());
+			// }
 
-			CtField ctFieldX = ctClassX.getField("cache");
-			ctChieldClass.addField(new CtField(ctFieldX, ctChieldClass));
-
-			CtMethod ctMethodX = ctClassX.getDeclaredMethod("loadProxyConfigurarion");
-			ctChieldClass.addMethod(new CtMethod(ctMethodX, ctChieldClass, null));
+			// for (CtMethod ctMethodImpl : ctClassImpl.getDeclaredMethods()) {
+			// ctChieldClass.addMethod(new CtMethod(ctMethodImpl, ctChieldClass, null));
+			// System.out.println("MMMMMMMMMMMMMMMMMMMMMMMMMM-----------" + ctMethodImpl.toString());
+			// }
 
 			CtMethod ctChieldMethod;
 			for (CtMethod ctSuperMethod : ctSuperClass.getDeclaredMethods()) {
 				ctChieldMethod = CtNewMethod.delegator(ctSuperMethod, ctChieldClass);
-				ctChieldMethod.insertBefore("loadProxyConfigurarion();");
+				ctChieldMethod.insertBefore("loadProxyConfigurarion(this);");
+				// ctChieldMethod
+				// .insertBefore("new br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader().load(this);");
 
 				ctChieldClass.addMethod(ctChieldMethod);
 			}

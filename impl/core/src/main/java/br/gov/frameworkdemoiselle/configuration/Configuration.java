@@ -43,6 +43,8 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Stereotype;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Singleton;
@@ -62,7 +64,7 @@ import javax.inject.Singleton;
  * 
  * @author SERPRO
  */
-@Singleton
+//@Singleton
 @Stereotype
 @Inherited
 @Target(TYPE)
