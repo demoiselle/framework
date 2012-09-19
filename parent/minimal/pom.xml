@@ -88,6 +88,6 @@
 	</repositories>
 
 	<properties>
-		<demoiselle.junit.version>2.3.0-RC1</demoiselle.junit.version>
+		<demoiselle.junit.version>2.3.0-RC1-SNAPSHOT</demoiselle.junit.version>
 	</properties>
 </project>

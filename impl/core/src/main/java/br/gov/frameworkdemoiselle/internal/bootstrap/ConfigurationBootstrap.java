@@ -40,26 +40,69 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.CtNewMethod;
+import javassist.LoaderClassPath;
+
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.configuration.Configuration;
+import br.gov.frameworkdemoiselle.internal.implementation.ConfigurationImpl;
 
 public class ConfigurationBootstrap implements Extension {
 
-	private final List<Class<?>> cache = Collections.synchronizedList(new ArrayList<Class<?>>());
+	private final List<Class<Object>> cache = Collections.synchronizedList(new ArrayList<Class<Object>>());
 
-	public <T> void processAnnotatedType(@Observes final ProcessAnnotatedType<T> event) {
-		final AnnotatedType<T> annotatedType = event.getAnnotatedType();
+	public void processAnnotatedType(@Observes final ProcessAnnotatedType<Object> event) {
+		final AnnotatedType<Object> annotatedType = event.getAnnotatedType();
 
 		if (annotatedType.getJavaClass().isAnnotationPresent(Configuration.class)) {
-			getCache().add(annotatedType.getJavaClass());
+			cache.add(annotatedType.getJavaClass());
+			event.veto();
 		}
 	}
 
-	public List<Class<?>> getCache() {
-		return cache;
+	public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) throws Exception {
+		Class<Object> proxy;
+
+		for (Class<Object> config : cache) {
+			proxy = createProxy(config);
+			event.addBean(new CustomBean(proxy, beanManager));
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private Class<Object> createProxy(Class<Object> type) throws Exception {
+		String superClassName = type.getCanonicalName();
+		String chieldClassName = superClassName + "__DemoiselleProxy";
+
+		ClassPool pool = ClassPool.getDefault();
+		CtClass ctChieldClass = pool.getOrNull(chieldClassName);
+
+		ClassLoader classLoader = type.getClassLoader();
+		if (ctChieldClass == null) {
+			pool.appendClassPath(new LoaderClassPath(classLoader));
+			CtClass ctSuperClass = pool.get(superClassName);
+
+			ctChieldClass = pool.getAndRename(ConfigurationImpl.class.getCanonicalName(), chieldClassName);
+			ctChieldClass.setSuperclass(ctSuperClass);
+
+			CtMethod ctChieldMethod;
+			for (CtMethod ctSuperMethod : ctSuperClass.getDeclaredMethods()) {
+				ctChieldMethod = CtNewMethod.delegator(ctSuperMethod, ctChieldClass);
+				ctChieldMethod.insertBefore("load(this);");
+
+				ctChieldClass.addMethod(ctChieldMethod);
+			}
+		}
+
+		return ctChieldClass.toClass(classLoader, type.getProtectionDomain());
 	}
 }
