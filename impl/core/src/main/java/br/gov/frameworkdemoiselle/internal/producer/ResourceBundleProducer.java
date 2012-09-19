@@ -38,13 +38,11 @@ package br.gov.frameworkdemoiselle.internal.producer;
 
 import java.io.Serializable;
 import java.util.Locale;
-import java.util.MissingResourceException;
 
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;

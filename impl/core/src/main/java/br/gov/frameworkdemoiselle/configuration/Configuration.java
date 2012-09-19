@@ -43,11 +43,8 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Stereotype;
 import javax.enterprise.util.Nonbinding;
-import javax.inject.Singleton;
-import javax.interceptor.InterceptorBinding;
 
 /**
  * Identifies a <b>configuration class</b>, that is, a structure reserved to store configuration values retrieved from a
@@ -64,7 +61,7 @@ import javax.interceptor.InterceptorBinding;
  * 
  * @author SERPRO
  */
-@Singleton
+// @Singleton
 @Stereotype
 @Inherited
 @Target(TYPE)
