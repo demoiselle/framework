@@ -56,12 +56,6 @@
 	</description>
 
 	<modules>
-		<module>impl/core</module>
-		<module>impl/extension/jpa</module>
-		<module>impl/extension/jsf</module>
-		<module>impl/extension/jta</module>
-		<module>impl/extension/se</module>
-		<module>impl/extension/servlet</module>
 		<module>parent/bom</module>
 		<module>parent/framework</module>
 		<module>parent/minimal</module>
@@ -70,6 +64,12 @@
 		<module>parent/servlet</module>
 		<module>parent/se</module>
 		<module>parent/archetype</module>
+		<module>impl/core</module>
+		<module>impl/extension/jpa</module>
+		<module>impl/extension/jsf</module>
+		<module>impl/extension/jta</module>
+		<module>impl/extension/se</module>
+		<module>impl/extension/servlet</module>
 		<module>archetype/minimal</module>
 		<module>archetype/jsf-jpa</module>
 		<!--

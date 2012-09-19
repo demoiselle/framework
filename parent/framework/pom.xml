@@ -3,13 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>demoiselle-framework-parent</artifactId>
+	<version>2.3.0-RC2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-framework-bom</artifactId>
-		<version>2.3.0-RC2-SNAPSHOT</version>
-		<relativePath>../bom</relativePath>
+		<artifactId>demoiselle-parent</artifactId>
+		<version>6-SNAPSHOT</version>
+		<relativePath>../../../internal/parent/demoiselle</relativePath>
 	</parent>
 
 	<name>Framework Parent</name>

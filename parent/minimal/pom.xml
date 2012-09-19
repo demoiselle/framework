@@ -54,6 +54,18 @@
 		utiliza o Demoiselle herde deste POM ou de uma de suas especializações.
 	</description>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>br.gov.frameworkdemoiselle</groupId>
+				<artifactId>demoiselle-framework-bom</artifactId>
+				<version>2.3.0-RC2-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<build>
 		<plugins>
 			<plugin>
