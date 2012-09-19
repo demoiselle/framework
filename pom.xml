@@ -62,6 +62,7 @@
 		<module>impl/extension/jta</module>
 		<module>impl/extension/se</module>
 		<module>impl/extension/servlet</module>
+		<module>parent/bom</module>
 		<module>parent/framework</module>
 		<module>parent/minimal</module>
 		<module>parent/extension</module>
@@ -71,8 +72,10 @@
 		<module>parent/archetype</module>
 		<module>archetype/minimal</module>
 		<module>archetype/jsf-jpa</module>
+		<!--
 		<module>documentation/quickstart</module>
 		<module>documentation/reference</module>
+		-->
 	</modules>
 
 	<build>

@@ -3,14 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>demoiselle-framework-parent</artifactId>
-	<version>2.3.0-RC2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-parent</artifactId>
-		<version>5</version>
-		<relativePath>../../../internal/parent/demoiselle/pom.xml</relativePath>
+		<artifactId>demoiselle-framework-bom</artifactId>
+		<version>2.3.0-RC2-SNAPSHOT</version>
+		<relativePath>../bom/pom.xml</relativePath>
 	</parent>
 
 	<name>Framework Parent</name>
@@ -18,41 +17,6 @@
 		Contém as informações de build comum a todos os projetos do Framework Demoiselle.
 		Se você é usuário do framework, certamente este POM não servirá para você.
 	</description>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>br.gov.frameworkdemoiselle</groupId>
-				<artifactId>demoiselle-core</artifactId>
-				<version>2.3.0-RC2-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>br.gov.frameworkdemoiselle</groupId>
-				<artifactId>demoiselle-jta</artifactId>
-				<version>2.3.0-RC2-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>br.gov.frameworkdemoiselle</groupId>
-				<artifactId>demoiselle-jpa</artifactId>
-				<version>2.3.0-RC2-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>br.gov.frameworkdemoiselle</groupId>
-				<artifactId>demoiselle-servlet</artifactId>
-				<version>2.3.0-RC2-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>br.gov.frameworkdemoiselle</groupId>
-				<artifactId>demoiselle-jsf</artifactId>
-				<version>2.3.0-RC2-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>br.gov.frameworkdemoiselle</groupId>
-				<artifactId>demoiselle-se</artifactId>
-				<version>2.3.0-RC2-SNAPSHOT</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<repositories>
 		<repository>

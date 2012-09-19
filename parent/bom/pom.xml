@@ -1,0 +1,320 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>demoiselle-framework-bom</artifactId>
+	<version>2.3.0-RC2-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>br.gov.frameworkdemoiselle</groupId>
+		<artifactId>demoiselle-parent</artifactId>
+		<version>6-SNAPSHOT</version>
+		<relativePath>../../../internal/parent/demoiselle/pom.xml</relativePath>
+	</parent>
+
+	<name>Framework Bill of Materials</name>
+	<description>
+		Contém a lista de todas as dependências utilizadas na construção do framework.
+	</description>
+
+	<dependencyManagement>
+		<dependencies>
+		
+			<!-- core + extensions -->
+			<dependency>
+				<groupId>br.gov.frameworkdemoiselle</groupId>
+				<artifactId>demoiselle-core</artifactId>
+				<version>2.3.0-RC2-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>br.gov.frameworkdemoiselle</groupId>
+				<artifactId>demoiselle-jta</artifactId>
+				<version>2.3.0-RC2-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>br.gov.frameworkdemoiselle</groupId>
+				<artifactId>demoiselle-jpa</artifactId>
+				<version>2.3.0-RC2-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>br.gov.frameworkdemoiselle</groupId>
+				<artifactId>demoiselle-servlet</artifactId>
+				<version>2.3.0-RC2-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>br.gov.frameworkdemoiselle</groupId>
+				<artifactId>demoiselle-jsf</artifactId>
+				<version>2.3.0-RC2-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>br.gov.frameworkdemoiselle</groupId>
+				<artifactId>demoiselle-se</artifactId>
+				<version>2.3.0-RC2-SNAPSHOT</version>
+			</dependency>
+
+			<!-- jsr-299 api -->
+			<dependency>
+				<groupId>javax.enterprise</groupId>
+				<artifactId>cdi-api</artifactId>
+				<version>${cdi.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>jsr250-api</artifactId>
+						<groupId>javax.annotation</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<!-- jsr-299 impl -->
+			<dependency>
+				<groupId>org.jboss.weld</groupId>
+				<artifactId>weld-core</artifactId>
+				<version>${weld.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>jsr250-api</artifactId>
+						<groupId>javax.annotation</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.weld.servlet</groupId>
+				<artifactId>weld-servlet-core</artifactId>
+				<version>${weld.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.weld.se</groupId>
+				<artifactId>weld-se-core</artifactId>
+				<version>${weld.version}</version>
+			</dependency>
+
+			<!-- jsr-303 api -->
+			<dependency>
+				<artifactId>validation-api</artifactId>
+				<groupId>javax.validation</groupId>
+				<version>${validation.version}</version>
+			</dependency>
+
+			<!-- jsr-303 impl -->
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-validator</artifactId>
+				<version>4.2.0.Final</version>
+				<exclusions>
+					<exclusion>
+						<groupId>javax.xml.bind</groupId>
+						<artifactId>jaxb-api</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.sun.xml.bind</groupId>
+						<artifactId>jaxb-impl</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<!-- jsr-??? api -->
+			<dependency>
+				<groupId>javax.el</groupId>
+				<artifactId>el-api</artifactId>
+				<version>${el.version}</version>
+			</dependency>
+
+			<!-- jsr-??? api -->
+			<dependency>
+				<groupId>org.glassfish.web</groupId>
+				<artifactId>el-impl</artifactId>
+				<version>${el.version}</version>
+			</dependency>
+
+			<!-- jsr-314 api -->
+			<dependency>
+				<groupId>com.sun.faces</groupId>
+				<artifactId>jsf-api</artifactId>
+				<version>${jsf.version}</version>
+			</dependency>
+
+			<!-- jsr-314 impl -->
+			<dependency>
+				<groupId>com.sun.faces</groupId>
+				<artifactId>jsf-impl</artifactId>
+				<version>${jsf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.primefaces</groupId>
+				<artifactId>primefaces</artifactId>
+				<version>${primefaces.version}</version>
+			</dependency>
+
+			<!-- jsr-316 api -->
+			<dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-api</artifactId>
+				<version>${javaee.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-web-api</artifactId>
+				<version>${javaee.version}</version>
+			</dependency>
+
+			<!-- jsr-??? api -->
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>${servlet.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>jstl</artifactId>
+				<version>1.2</version>
+			</dependency>
+
+			<!-- jsr-317 api -->
+			<dependency>
+				<groupId>org.eclipse.persistence</groupId>
+				<artifactId>javax.persistence</artifactId>
+				<version>${persistence.version}</version>
+			</dependency>
+
+			<!-- jsr-317 impl -->
+			<dependency>
+				<groupId>org.eclipse.persistence</groupId>
+				<artifactId>eclipselink</artifactId>
+				<version>2.1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+
+			<!-- jsr-907 api -->
+			<dependency>
+				<groupId>javax.transaction</groupId>
+				<artifactId>jta</artifactId>
+				<version>${transaction.version}</version>
+			</dependency>
+
+			<!-- logger api -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+
+			<!-- logger impl -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+
+			<!-- configuration api+impl -->
+			<dependency>
+				<groupId>commons-configuration</groupId>
+				<artifactId>commons-configuration</artifactId>
+				<version>${commons.configuration.version}</version>
+			</dependency>
+
+			<!-- banco de dados embarcado -->
+			<dependency>
+				<groupId>hsqldb</groupId>
+				<artifactId>hsqldb</artifactId>
+				<version>${hsqldb.version}</version>
+			</dependency>
+
+			<!-- test tools -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-module-junit4</artifactId>
+				<version>${powermock.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-api-easymock</artifactId>
+				<version>${powermock.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.easymock</groupId>
+				<artifactId>easymock</artifactId>
+				<version>${easymock.version}</version>
+			</dependency>
+
+			<!-- Demoiselle Components -->
+			<dependency>
+				<groupId>br.gov.frameworkdemoiselle.component</groupId>
+				<artifactId>demoiselle-junit</artifactId>
+				<version>${demoiselle.junit.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>br.gov.frameworkdemoiselle.component</groupId>
+				<artifactId>demoiselle-authorization</artifactId>
+				<version>${demoiselle.authorization.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<repositories>
+		<repository>
+			<id>demoiselle.sourceforge.net</id>
+			<name>Demoiselle Maven Repository</name>
+			<url>http://demoiselle.sourceforge.net/repository/release</url>
+		</repository>
+	</repositories>
+
+	<properties>
+		<maven.compiler.plugin.version>2.1</maven.compiler.plugin.version>
+		<maven.war.plugin.version>2.1.1</maven.war.plugin.version>
+		<maven.deploy.plugin.version>2.5</maven.deploy.plugin.version>
+		<maven.site.plugin.version>2.2</maven.site.plugin.version>
+		<maven.assembly.plugin.version>2.2-beta-5</maven.assembly.plugin.version>
+		<maven.javadoc.plugin.version>2.7</maven.javadoc.plugin.version>
+		<maven.source.plugin.version>2.1.2</maven.source.plugin.version>
+		<maven.resources.plugin.version>2.5</maven.resources.plugin.version>
+		<maven.cobertura.plugin.version>2.4</maven.cobertura.plugin.version>
+		<maven.install.plugin.version>2.3.1</maven.install.plugin.version>
+		<wagon.plugin.version>1.0-beta-3</wagon.plugin.version>
+
+		<java.version>1.6</java.version>
+		<javaee.version>6.0</javaee.version>
+		<cdi.version>1.0-SP4</cdi.version>
+		<validation.version>1.0.0.GA</validation.version>
+		<transaction.version>1.1</transaction.version>
+		<jsf.version>2.1.11</jsf.version>
+		<el.version>2.2</el.version>
+		<servlet.version>2.5</servlet.version>
+		<persistence.version>2.0.1</persistence.version>
+
+		<vaadin.version>6.5.2</vaadin.version>
+		<gwt.version>2.1.1</gwt.version>
+		<shiro.version>1.1.0</shiro.version>
+		<hibernate.version>3.6.0.Final</hibernate.version>
+
+		<junit.version>4.8.1</junit.version>
+		<easymock.version>3.0</easymock.version>
+		<arquillian.junit.version>1.0.0.Alpha4.SP2</arquillian.junit.version>
+		<arquillian.weld.embdedded.version>1.0.0.Alpha2</arquillian.weld.embdedded.version>
+		<powermock.version>1.4.6</powermock.version>
+		<primefaces.version>3.2</primefaces.version>
+		<slf4j.version>1.6.1</slf4j.version>
+		<weld.version>1.1.8.Final</weld.version>
+		<commons.configuration.version>1.5</commons.configuration.version>
+		<hsqldb.version>1.8.0.10</hsqldb.version>
+		<jasperreports.version>4.0.1</jasperreports.version>
+		<mail.version>1.4.4</mail.version>
+		<mockjavamail.version>1.9</mockjavamail.version>
+
+		<demoiselle.junit.version>2.3.0-BETA2</demoiselle.junit.version>
+		<demoiselle.vaadin.version>2.3.0-BETA1</demoiselle.vaadin.version>
+		<demoiselle.shiro.version>2.2.2</demoiselle.shiro.version>
+		<demoiselle.valitation.version>2.0.0</demoiselle.valitation.version>
+		<demoiselle.report.version>2.0.3</demoiselle.report.version>
+		<demoiselle.authorization.version>2.0.2</demoiselle.authorization.version>
+	</properties>
+</project>
