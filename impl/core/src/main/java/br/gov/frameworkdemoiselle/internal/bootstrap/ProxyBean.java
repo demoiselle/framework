@@ -38,20 +38,24 @@ package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Named;
+import javax.inject.Qualifier;
 import javax.inject.Scope;
 
 /**
@@ -59,21 +63,22 @@ import javax.inject.Scope;
  */
 public class ProxyBean implements Bean<Object> {
 
-	private Class<Object> proxy;
+	private Class<Object> beanClass;
 
 	private InjectionTarget<Object> injectionTarget;
 
-	public ProxyBean(Class<Object> proxy, BeanManager beanManager) {
-		AnnotatedType<Object> annotatedType = beanManager.createAnnotatedType(proxy);
+	public ProxyBean(Class<Object> beanClass, BeanManager beanManager) {
+		AnnotatedType<Object> annotatedType = beanManager.createAnnotatedType(beanClass);
 
 		this.injectionTarget = beanManager.createInjectionTarget(annotatedType);
-		this.proxy = proxy;
+		this.beanClass = beanClass;
 	}
 
 	public Object create(CreationalContext<Object> creationalContext) {
 		Object instance = injectionTarget.produce(creationalContext);
 		injectionTarget.inject(instance, creationalContext);
 		injectionTarget.postConstruct(instance);
+
 		return instance;
 	}
 
@@ -85,40 +90,75 @@ public class ProxyBean implements Bean<Object> {
 
 	public Set<Type> getTypes() {
 		Set<Type> types = new HashSet<Type>();
-		types.add(proxy.getSuperclass());
+		types.add(beanClass.getSuperclass());
 		types.add(Object.class);
+
 		return types;
 	}
 
 	@SuppressWarnings("serial")
 	public Set<Annotation> getQualifiers() {
-		Set<Annotation> qualifiers = new HashSet<Annotation>();
-		qualifiers.add(new AnnotationLiteral<Default>() {
+		Set<Annotation> result = new HashSet<Annotation>();
+
+		result.add(new AnnotationLiteral<Default>() {
 		});
-		qualifiers.add(new AnnotationLiteral<Any>() {
+		result.add(new AnnotationLiteral<Any>() {
 		});
 
-		return qualifiers;
+		for (Annotation annotation : beanClass.getAnnotations()) {
+			if (annotation.getClass().isAnnotationPresent(Qualifier.class)) {
+				result.add(annotation);
+			}
+		}
+
+		return result;
 	}
 
 	public Class<? extends Annotation> getScope() {
-		return Dependent.class;
+		Class<? extends Annotation> result = Dependent.class;
+
+		Class<? extends Annotation> annotationClass;
+		for (Annotation annotation : beanClass.getAnnotations()) {
+			annotationClass = annotation.getClass();
+
+			if (annotationClass.isAnnotationPresent(Scope.class)
+					|| annotationClass.isAnnotationPresent(NormalScope.class)) {
+				result = annotationClass;
+				break;
+			}
+		}
+
+		return result;
 	}
 
 	public String getName() {
-		return null;
+		String result = null;
+
+		if (beanClass.isAnnotationPresent(Named.class)) {
+			result = beanClass.getAnnotation(Named.class).value();
+		}
+
+		return result;
 	}
 
 	public Set<Class<? extends Annotation>> getStereotypes() {
-		return Collections.emptySet();
+		Set<Class<? extends Annotation>> result = new HashSet<Class<? extends Annotation>>();
+
+		for (Annotation annotation : beanClass.getAnnotations()) {
+			if (annotation.getClass().isAnnotationPresent(Stereotype.class)) {
+				result.add(annotation.getClass());
+			}
+		}
+
+		return result;
 	}
 
 	public Class<Object> getBeanClass() {
-		return proxy;
+		return beanClass;
 	}
 
 	public boolean isAlternative() {
-		return false;
+		return beanClass.isAnnotationPresent(Alternative.class);
 	}
 
 	public boolean isNullable() {
