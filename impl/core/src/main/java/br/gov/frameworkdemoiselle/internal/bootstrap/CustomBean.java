@@ -61,13 +61,13 @@ import javax.inject.Scope;
 /**
  * @see http://docs.jboss.org/weld/reference/latest/en-US/html_single/#d0e5035
  */
-public class ProxyBean implements Bean<Object> {
+public class CustomBean implements Bean<Object> {
 
 	private Class<Object> beanClass;
 
 	private InjectionTarget<Object> injectionTarget;
 
-	public ProxyBean(Class<Object> beanClass, BeanManager beanManager) {
+	public CustomBean(Class<Object> beanClass, BeanManager beanManager) {
 		AnnotatedType<Object> annotatedType = beanManager.createAnnotatedType(beanClass);
 
 		this.injectionTarget = beanManager.createInjectionTarget(annotatedType);

@@ -74,7 +74,7 @@ public class ConfigurationBootstrap implements Extension {
 
 		for (Class<Object> config : cache) {
 			proxy = createProxy(config);
-			event.addBean(new ProxyBean(proxy, beanManager));
+			event.addBean(new CustomBean(proxy, beanManager));
 		}
 	}
 
@@ -85,40 +85,21 @@ public class ConfigurationBootstrap implements Extension {
 
 		ClassPool pool = ClassPool.getDefault();
 		ClassPool.doPruning = true;
-		
+
 		CtClass ctChieldClass = pool.getOrNull(chieldClassName);
 
 		ClassLoader classLoader = type.getClassLoader();
 		if (ctChieldClass == null) {
-
 			pool.appendClassPath(new LoaderClassPath(classLoader));
-			// classLoader = Thread.currentThread().getContextClassLoader();
-			// pool.appendClassPath(new LoaderClassPath(classLoader));
-			// classLoader = ConfigurationLoader.getClassLoaderForClass(superClassName);
-			// pool.appendClassPath(new LoaderClassPath(classLoader));
-
 			CtClass ctSuperClass = pool.get(superClassName);
 
-			// ctChieldClass = pool.makeClass(chieldClassName, ctSuperClass);
 			ctChieldClass = pool.getAndRename(ConfigurationImpl.class.getCanonicalName(), chieldClassName);
 			ctChieldClass.setSuperclass(ctSuperClass);
-
-			// for (CtField ctFieldImpl : ctClassImpl.getDeclaredFields()) {
-			// ctChieldClass.addField(new CtField(ctFieldImpl, ctChieldClass));
-			// System.out.println("FFFFFFFFFFFFFFFFFFFFFFFFFF-----------" + ctFieldImpl.toString());
-			// }
-
-			// for (CtMethod ctMethodImpl : ctClassImpl.getDeclaredMethods()) {
-			// ctChieldClass.addMethod(new CtMethod(ctMethodImpl, ctChieldClass, null));
-			// System.out.println("MMMMMMMMMMMMMMMMMMMMMMMMMM-----------" + ctMethodImpl.toString());
-			// }
 
 			CtMethod ctChieldMethod;
 			for (CtMethod ctSuperMethod : ctSuperClass.getDeclaredMethods()) {
 				ctChieldMethod = CtNewMethod.delegator(ctSuperMethod, ctChieldClass);
-				ctChieldMethod.insertBefore("loadProxyConfigurarion(this);");
-				// ctChieldMethod
-				// .insertBefore("new br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader().load(this);");
+				ctChieldMethod.insertBefore("load(this);");
 
 				ctChieldClass.addMethod(ctChieldMethod);
 			}
