@@ -84,8 +84,6 @@ public class ConfigurationBootstrap implements Extension {
 		String chieldClassName = superClassName + "__DemoiselleProxy";
 
 		ClassPool pool = ClassPool.getDefault();
-		ClassPool.doPruning = true;
-
 		CtClass ctChieldClass = pool.getOrNull(chieldClassName);
 
 		ClassLoader classLoader = type.getClassLoader();
