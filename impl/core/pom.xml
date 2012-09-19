@@ -94,6 +94,12 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.14.0-GA</version>
+		</dependency>
+
+		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
 			<exclusions>

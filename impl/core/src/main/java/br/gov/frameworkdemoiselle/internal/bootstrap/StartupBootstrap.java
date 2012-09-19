@@ -40,11 +40,9 @@ import javax.enterprise.event.Observes;
 
 import org.slf4j.Logger;
 
-import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
 import br.gov.frameworkdemoiselle.lifecycle.Startup;
-import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
  * This class is the bootstrap to execute the processes at load time.
@@ -63,12 +61,6 @@ public class StartupBootstrap extends AbstractLifecycleBootstrap<Startup> {
 	}
 
 	public void startup(@Observes AfterStartupProccess event) {
-		ConfigurationLoader loader = Beans.getReference(ConfigurationLoader.class);
-		ConfigurationBootstrap bootstrap = Beans.getReference(ConfigurationBootstrap.class);
-		for (Class<?> clazz: bootstrap.getCache()) {
-			Object object = Beans.getReference(clazz);
-			loader.load(object);
-		}
 		proccessEvent();
 	}
 }
