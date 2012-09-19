@@ -1,3 +1,39 @@
+<!--
+ Demoiselle Framework
+ Copyright (C) 2010 SERPRO
+ ============================================================================
+ This file is part of Demoiselle Framework.
+ 
+ Demoiselle Framework is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License version 3
+ as published by the Free Software Foundation.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public License version 3
+ along with this program; if not,  see <http://www.gnu.org/licenses />
+ or write to the Free Software Foundation, Inc., 51 Franklin Street,
+ Fifth Floor, Boston, MA  02110-1301, USA.
+ ============================================================================
+ Este arquivo é parte do Framework Demoiselle.
+ 
+ O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
+ modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
+ do Software Livre (FSF).
+ 
+ Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA
+ GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou
+ APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português
+ para maiores detalhes.
+ 
+ Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
+ "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses />
+ ou escreva para a Fundação do Software Livre (FSF) Inc.,
+ 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
@@ -20,7 +56,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-		
 			<!-- core + extensions -->
 			<dependency>
 				<groupId>br.gov.frameworkdemoiselle</groupId>
@@ -81,11 +116,6 @@
 			<dependency>
 				<groupId>org.jboss.weld.servlet</groupId>
 				<artifactId>weld-servlet-core</artifactId>
-				<version>${weld.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.weld.se</groupId>
-				<artifactId>weld-se-core</artifactId>
 				<version>${weld.version}</version>
 			</dependency>
 
@@ -217,11 +247,17 @@
 				<version>${commons.configuration.version}</version>
 			</dependency>
 
-			<!-- banco de dados embarcado -->
+			<!-- embedded database -->
 			<dependency>
 				<groupId>hsqldb</groupId>
 				<artifactId>hsqldb</artifactId>
 				<version>${hsqldb.version}</version>
+			</dependency>
+
+			<dependency>
+				<artifactId>javassist</artifactId>
+				<groupId>org.javassist</groupId>
+				<version>${javassist.version}</version>
 			</dependency>
 
 			<!-- test tools -->
@@ -291,9 +327,6 @@
 		<servlet.version>2.5</servlet.version>
 		<persistence.version>2.0.1</persistence.version>
 
-		<vaadin.version>6.5.2</vaadin.version>
-		<gwt.version>2.1.1</gwt.version>
-		<shiro.version>1.1.0</shiro.version>
 		<hibernate.version>3.6.0.Final</hibernate.version>
 
 		<junit.version>4.8.1</junit.version>
@@ -309,12 +342,9 @@
 		<jasperreports.version>4.0.1</jasperreports.version>
 		<mail.version>1.4.4</mail.version>
 		<mockjavamail.version>1.9</mockjavamail.version>
+		<javassist.version>3.14.0-GA</javassist.version>
 
-		<demoiselle.junit.version>2.3.0-BETA2</demoiselle.junit.version>
-		<demoiselle.vaadin.version>2.3.0-BETA1</demoiselle.vaadin.version>
-		<demoiselle.shiro.version>2.2.2</demoiselle.shiro.version>
-		<demoiselle.valitation.version>2.0.0</demoiselle.valitation.version>
-		<demoiselle.report.version>2.0.3</demoiselle.report.version>
+		<demoiselle.junit.version>2.3.0-RC2-SNAPSHOT</demoiselle.junit.version>
 		<demoiselle.authorization.version>2.0.2</demoiselle.authorization.version>
 	</properties>
 </project>

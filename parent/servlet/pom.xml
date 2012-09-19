@@ -302,6 +302,11 @@
 					<scope>provided</scope>
 				</dependency>
 				<dependency>
+					<groupId>org.javassist</groupId>
+					<artifactId>javassist</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
 					<artifactId>validation-api</artifactId>
 					<groupId>javax.validation</groupId>
 					<scope>provided</scope>
@@ -347,6 +352,11 @@
 				<dependency>
 					<groupId>javax.enterprise</groupId>
 					<artifactId>cdi-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.javassist</groupId>
+					<artifactId>javassist</artifactId>
 					<scope>provided</scope>
 				</dependency>
 				<dependency>
