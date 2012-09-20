@@ -48,16 +48,24 @@
 		<relativePath>../../parent/framework</relativePath>
 	</parent>
 
-	<organization>
-		<name>Serpro</name>
-		<url>http://www.serpro.gov.br</url>
-	</organization>
-
-	<name>Core</name>
+	<name>Demoiselle Framework Core</name>
 	<description>
 		Contém funcionalidades comuns a todos os projetos e extensões do framework de forma independente de
 		camadas de apresentação e persistência.
 	</description>
+	<url>http://www.frameworkdemoiselle.gov.br</url>
+
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>SERPRO - Serviço Federal de Processamento de Dados</name>
+		<url>http://www.frameworkdemoiselle.gov.br</url>
+	</organization>
 
 	<dependencyManagement>
 		<dependencies>
@@ -172,9 +180,9 @@
 
 	<repositories>
 		<repository>
-			<id>demoiselle.sourceforge.net</id>
-			<name>Demoiselle Maven Repository</name>
-			<url>http://demoiselle.sourceforge.net/repository/release</url>
+			<id>sonatype-nexus</id>
+			<name>Sonatype Nexus</name>
+			<url>https://oss.sonatype.org/content/groups/public</url>
 		</repository>
 	</repositories>
 </project>

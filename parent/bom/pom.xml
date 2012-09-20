@@ -49,10 +49,23 @@
 		<relativePath>../../../internal/parent/demoiselle</relativePath>
 	</parent>
 
-	<name>Framework Bill of Materials</name>
+	<name>Demoiselle Framework Bill of Materials</name>
 	<description>
 		Contém a lista de todas as dependências utilizadas na construção do framework.
 	</description>
+	<url>http://www.frameworkdemoiselle.gov.br</url>
+
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>SERPRO - Serviço Federal de Processamento de Dados</name>
+		<url>http://www.frameworkdemoiselle.gov.br</url>
+	</organization>
 
 	<dependencyManagement>
 		<dependencies>
@@ -298,26 +311,13 @@
 
 	<repositories>
 		<repository>
-			<id>demoiselle.sourceforge.net</id>
-			<name>Demoiselle Maven Repository</name>
-			<url>http://demoiselle.sourceforge.net/repository/release</url>
+			<id>sonatype-nexus</id>
+			<name>Sonatype Nexus</name>
+			<url>https://oss.sonatype.org/content/groups/public</url>
 		</repository>
 	</repositories>
 
 	<properties>
-		<maven.compiler.plugin.version>2.1</maven.compiler.plugin.version>
-		<maven.war.plugin.version>2.1.1</maven.war.plugin.version>
-		<maven.deploy.plugin.version>2.5</maven.deploy.plugin.version>
-		<maven.site.plugin.version>2.2</maven.site.plugin.version>
-		<maven.assembly.plugin.version>2.2-beta-5</maven.assembly.plugin.version>
-		<maven.javadoc.plugin.version>2.7</maven.javadoc.plugin.version>
-		<maven.source.plugin.version>2.1.2</maven.source.plugin.version>
-		<maven.resources.plugin.version>2.5</maven.resources.plugin.version>
-		<maven.cobertura.plugin.version>2.4</maven.cobertura.plugin.version>
-		<maven.install.plugin.version>2.3.1</maven.install.plugin.version>
-		<wagon.plugin.version>1.0-beta-3</wagon.plugin.version>
-
-		<java.version>1.6</java.version>
 		<javaee.version>6.0</javaee.version>
 		<cdi.version>1.0-SP4</cdi.version>
 		<validation.version>1.0.0.GA</validation.version>
