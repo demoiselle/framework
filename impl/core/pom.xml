@@ -180,9 +180,9 @@
 
 	<repositories>
 		<repository>
-			<id>sonatype-nexus</id>
-			<name>Sonatype Nexus</name>
-			<url>https://oss.sonatype.org/content/groups/public</url>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</repository>
 	</repositories>
 </project>
