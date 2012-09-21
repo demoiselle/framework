@@ -48,7 +48,7 @@
 		<relativePath>../framework</relativePath>
 	</parent>
 
-	<name>Extension Parent</name>
+	<name>Demoiselle Framework Extension Parent</name>
 	<description>
 		Configurações gerais para as extensões do framework.
 	</description>

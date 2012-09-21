@@ -36,7 +36,6 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
-import org.junit.Ignore;
 import java.util.Map;
 import java.util.TreeMap;
 

@@ -35,7 +35,6 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.interceptor;
-import org.junit.Ignore;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -46,6 +45,7 @@ import static org.junit.Assert.fail;
 import javax.interceptor.InvocationContext;
 
 import org.easymock.EasyMock;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;

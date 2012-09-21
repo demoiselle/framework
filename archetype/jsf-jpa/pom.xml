@@ -49,7 +49,7 @@
 		<relativePath>../../parent/archetype</relativePath>
 	</parent>
 
-	<name>JSF and JPA Archetype</name>
+	<name>Demoiselle Framework JSF and JPA Archetype</name>
 	<description>
 		Archetype for web applications (JSF/JPA)
 	</description>

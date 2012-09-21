@@ -36,7 +36,6 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import org.junit.Ignore;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;

@@ -48,7 +48,7 @@
 		<relativePath>../framework</relativePath>
 	</parent>
 
-	<name>App Parent</name>
+	<name>Demoiselle Framework Minimal Parent</name>
 	<description>
 		Configurações úteis para todas as aplicações que utilizam o framework. O ideal é que toda aplicação que
 		utiliza o Demoiselle herde deste POM ou de uma de suas especializações.

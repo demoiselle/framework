@@ -48,7 +48,7 @@
 		<relativePath>../servlet</relativePath>
 	</parent>
 
-	<name>JSF Parent</name>
+	<name>Demoiselle Framework JSF Parent</name>
 	<description>
 		Especialização do POM demoiselle-web-parent, contendo configurações úteis para todas as aplicações JSF que
 		utilizam o framework.

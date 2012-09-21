@@ -48,7 +48,7 @@
 		<relativePath>../../../parent/extension</relativePath>
 	</parent>
 
-	<name>JSF Extension</name>
+	<name>Demoiselle Framework JSF Extension</name>
 	<description>
 		JSF Extension
 	</description>

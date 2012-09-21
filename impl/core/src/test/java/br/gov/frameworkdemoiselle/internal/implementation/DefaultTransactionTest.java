@@ -37,7 +37,6 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertTrue;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replay;
 
@@ -52,7 +51,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
  * @author SERPRO

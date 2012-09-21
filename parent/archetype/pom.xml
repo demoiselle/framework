@@ -48,7 +48,7 @@
 		<relativePath>../framework</relativePath>
 	</parent>
 
-	<name>Archetype Parent</name>
+	<name>Demoiselle Framework Archetype Parent</name>
 	<description>
 		Contém configurações comuns a todos os projetos geradores de arquétipos.
 	</description>

@@ -48,7 +48,7 @@
 		<relativePath>../../../parent/extension</relativePath>
 	</parent>
 
-	<name>Servlet Extension</name>
+	<name>Demoiselle Framework Servlet Extension</name>
 	<description>
 		Servlet Extension
 	</description>

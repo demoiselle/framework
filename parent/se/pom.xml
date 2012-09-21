@@ -48,7 +48,7 @@
 		<relativePath>../../../parent/extension</relativePath>
 	</parent>
 
-	<name>SE Parent</name>
+	<name>Demoiselle Framework SE Parent</name>
 	<description>
 		Especialização do POM mínimo, contendo configurações úteis para todas as aplicações SE que utilizam o framework.
 	</description>

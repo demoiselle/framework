@@ -48,7 +48,7 @@
 		<relativePath>../extension</relativePath>
 	</parent>
 
-	<name>Servlet Parent</name>
+	<name>Demoiselle Framework Servlet Parent</name>
 	<description>
 		Especialização do POM mínimo, contendo configurações úteis para todas as aplicações Servlet que	utilizam o framework.
 	</description>

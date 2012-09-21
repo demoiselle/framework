@@ -71,21 +71,21 @@ public class ConfigurationLoaderTest {
 	private ConfigurationLoader configurationLoader;
 
 	private CoreBootstrap coreBootstrap;
-	
+
 	@Configuration
 	public class ConfigurationSuccessfulPropertiesWithClassField {
 
-		protected Class classe;
+		protected Class<?> classe;
 
 	}
-	
+
 	@Configuration
 	public class ConfigurationSuccessfulPropertiesWithPropertiesField {
 
 		protected Properties properties;
 
 	}
-	
+
 	@Configuration
 	public class ConfigurationSuccessfulProperties {
 
@@ -300,7 +300,7 @@ public class ConfigurationLoaderTest {
 		this.configurationLoader = new ConfigurationLoader();
 		mockStatic(Beans.class);
 		this.coreBootstrap = PowerMock.createMock(CoreBootstrap.class);
-		
+
 		expect(Beans.getReference(CoreBootstrap.class)).andReturn(coreBootstrap);
 		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault());
 	}
@@ -313,28 +313,28 @@ public class ConfigurationLoaderTest {
 	public void testConfigurationSuccessfulPropertiesWithClassField() {
 		ConfigurationSuccessfulPropertiesWithClassField config = new ConfigurationSuccessfulPropertiesWithClassField();
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 		configurationLoader.load(config);
-		assertEquals(ConfigurationLoaderTest.class,config.classe);
+		assertEquals(ConfigurationLoaderTest.class, config.classe);
 	}
-	
+
 	@Test
 	public void testConfigurationSuccessfulPropertiesWithPropertiesField() {
 		ConfigurationSuccessfulPropertiesWithPropertiesField config = new ConfigurationSuccessfulPropertiesWithPropertiesField();
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 		configurationLoader.load(config);
-		assertEquals("teste1",config.properties.getProperty("1"));
-		assertEquals("teste2",config.properties.getProperty("2"));
+		assertEquals("teste1", config.properties.getProperty("1"));
+		assertEquals("teste2", config.properties.getProperty("2"));
 		assertTrue(config.properties.containsKey("1"));
 		assertTrue(config.properties.containsKey("2"));
 	}
-	
+
 	@Test
 	public void testConfigurationSuccessfulPropertiesPossibleConventions() {
 		ConfigurationSuccessfulProperties config = new ConfigurationSuccessfulProperties();
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 		configurationLoader.load(config);
 		assertEquals("ConfigurationTest", config.nameConfiguration);
 
@@ -344,31 +344,31 @@ public class ConfigurationLoaderTest {
 	public void testConfigurationSuccessfulPropertiesNoConventions() {
 		ConfigurationSuccessfulProperties2 config = new ConfigurationSuccessfulProperties2();
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 		configurationLoader.load(config);
 		assertEquals("ConfigurationTest2", config.name);
 	}
 
-//	@Test
-//	public void ConfigurationPropertiesWithAbsentFile() {
-//		ConfigurationPropertiesWithAbsentFile config = new ConfigurationPropertiesWithAbsentFile();
-//
-//		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-//		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
-//
-//		try {
-//			configurationLoader.load(config);
-//			fail();
-//		} catch (Exception e) {
-//		}
-//	}
+	// @Test
+	// public void ConfigurationPropertiesWithAbsentFile() {
+	// ConfigurationPropertiesWithAbsentFile config = new ConfigurationPropertiesWithAbsentFile();
+	//
+	// expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
+	// PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+	//
+	// try {
+	// configurationLoader.load(config);
+	// fail();
+	// } catch (Exception e) {
+	// }
+	// }
 
 	@Test
 	public void testConfigurationProcessorWithNameEmpty() {
 		ConfigurationWithEmptyName config = new ConfigurationWithEmptyName();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		try {
 			configurationLoader.load(config);
@@ -382,7 +382,7 @@ public class ConfigurationLoaderTest {
 		ConfigurationWithoutNameAnnotation config = new ConfigurationWithoutNameAnnotation();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		configurationLoader.load(config);
 		assertEquals("ConfigurationTest", config.nameConfiguration);
@@ -393,8 +393,8 @@ public class ConfigurationLoaderTest {
 		ConfigurationWithIgnoreAnnotation config = new ConfigurationWithIgnoreAnnotation();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
-		
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+
 		configurationLoader.load(config);
 		assertNull(config.nameConfiguration);
 	}
@@ -404,7 +404,7 @@ public class ConfigurationLoaderTest {
 		ConfigurationWithPrefix config = new ConfigurationWithPrefix();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		configurationLoader.load(config);
 		assertEquals("ConfigurationTest", config.nameConfiguration);
@@ -415,8 +415,8 @@ public class ConfigurationLoaderTest {
 		ConfigurationWithKeyNotFoundInProperties config = new ConfigurationWithKeyNotFoundInProperties();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
-		
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+
 		configurationLoader.load(config);
 		assertNull(config.notExistKey);
 	}
@@ -426,7 +426,7 @@ public class ConfigurationLoaderTest {
 		ConfigurationWithNotNullFieldButValueIsNull config = new ConfigurationWithNotNullFieldButValueIsNull();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		try {
 			configurationLoader.load(config);
@@ -441,7 +441,7 @@ public class ConfigurationLoaderTest {
 		ConfigurationWithNotNullFieldAndValueIsNotNull config = new ConfigurationWithNotNullFieldAndValueIsNotNull();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		configurationLoader.load(config);
 		assertEquals("ConfigurationTest", config.nameConfiguration);
@@ -452,8 +452,8 @@ public class ConfigurationLoaderTest {
 		ConfigurationWithNonPrimitiveFieldValueNull config = new ConfigurationWithNonPrimitiveFieldValueNull();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
-		
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+
 		configurationLoader.load(config);
 		assertNull(config.nameConfiguration);
 	}
@@ -463,8 +463,8 @@ public class ConfigurationLoaderTest {
 		ConfigurationWithPrimitiveFieldValueNull config = new ConfigurationWithPrimitiveFieldValueNull();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
-		
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+
 		configurationLoader.load(config);
 		assertEquals(1, config.nameConfiguration);
 	}
@@ -474,7 +474,7 @@ public class ConfigurationLoaderTest {
 		ConfigurationWithKeyFromSystem config = new ConfigurationWithKeyFromSystem();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		configurationLoader.load(config);
 		assertEquals(System.getProperty("os.name"), config.nameConfiguration);
@@ -485,7 +485,7 @@ public class ConfigurationLoaderTest {
 		ConfigurationWithKeyFromXML config = new ConfigurationWithKeyFromXML();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		configurationLoader.load(config);
 		assertEquals("ConfigurationTest", config.nameConfiguration);
@@ -496,7 +496,7 @@ public class ConfigurationLoaderTest {
 		ConfigurationPropertiesWithTwoAmbiguousKey config = new ConfigurationPropertiesWithTwoAmbiguousKey();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		try {
 			configurationLoader.load(config);
@@ -512,7 +512,7 @@ public class ConfigurationLoaderTest {
 		ConfigurationPropertiesWithThreeAmbiguousKey config = new ConfigurationPropertiesWithThreeAmbiguousKey();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		try {
 			configurationLoader.load(config);
@@ -528,7 +528,7 @@ public class ConfigurationLoaderTest {
 		ConfigurationPropertiesWithFourAmbiguousKey config = new ConfigurationPropertiesWithFourAmbiguousKey();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		try {
 			configurationLoader.load(config);
@@ -544,7 +544,7 @@ public class ConfigurationLoaderTest {
 		ConfigurationPropertiesSuccessWithPrefixNonAmbiguous config = new ConfigurationPropertiesSuccessWithPrefixNonAmbiguous();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		configurationLoader.load(config);
 		assertEquals("Success", config.success);
@@ -555,7 +555,7 @@ public class ConfigurationLoaderTest {
 		ConfigurationWithConventionUnderline config = new ConfigurationWithConventionUnderline();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		configurationLoader.load(config);
 		assertEquals("Convention Underline", config.conventionUnderline);
@@ -566,7 +566,7 @@ public class ConfigurationLoaderTest {
 		ConfigurationWithConventionDot config = new ConfigurationWithConventionDot();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		configurationLoader.load(config);
 		assertEquals("Convention Dot", config.conventionDot);
@@ -577,7 +577,7 @@ public class ConfigurationLoaderTest {
 		ConfigurationWithConventionAllLowerCase config = new ConfigurationWithConventionAllLowerCase();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		configurationLoader.load(config);
 		assertEquals("All LowerCase", config.conventionAllLowerCase);
@@ -588,7 +588,7 @@ public class ConfigurationLoaderTest {
 		ConfigurationWithConventionAllUpperCase config = new ConfigurationWithConventionAllUpperCase();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 
 		configurationLoader.load(config);
 		assertEquals("ALL UPPERCASE", config.conventionAllUpperCase);
@@ -599,8 +599,8 @@ public class ConfigurationLoaderTest {
 		ConfigurationPropertiesErrorWithComplexObject config = new ConfigurationPropertiesErrorWithComplexObject();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
-		
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+
 		try {
 			configurationLoader.load(config);
 			fail();
@@ -613,8 +613,8 @@ public class ConfigurationLoaderTest {
 		ConfigurationFromXMLWithPrefix config = new ConfigurationFromXMLWithPrefix();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
-		
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+
 		configurationLoader.load(config);
 		assertEquals("ConfigurationTest", config.nameConfiguration);
 	}
@@ -624,8 +624,8 @@ public class ConfigurationLoaderTest {
 		ConfigurationXMLWithConventionDot config = new ConfigurationXMLWithConventionDot();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
-		
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+
 		configurationLoader.load(config);
 		assertEquals("convention.dot", config.conventionDot);
 	}
@@ -635,8 +635,8 @@ public class ConfigurationLoaderTest {
 		ConfigurationXMLWithConventionUnderline config = new ConfigurationXMLWithConventionUnderline();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
-		
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+
 		configurationLoader.load(config);
 		assertEquals("Convention_Underline", config.conventionUnderline);
 	}
@@ -646,8 +646,8 @@ public class ConfigurationLoaderTest {
 		ConfigurationXMLWithConventionAllUpperCase config = new ConfigurationXMLWithConventionAllUpperCase();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
-		
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+
 		configurationLoader.load(config);
 		assertEquals("ALL UPPERCASE", config.conventionAllUpperCase);
 	}
@@ -657,8 +657,8 @@ public class ConfigurationLoaderTest {
 		ConfigurationXMLWithConventionAllLowerCase config = new ConfigurationXMLWithConventionAllLowerCase();
 
 		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class,Beans.class);
-		
+		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+
 		configurationLoader.load(config);
 		assertEquals("All LowerCase", config.conventionAllLowerCase);
 	}

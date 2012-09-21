@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
  Demoiselle Framework
  Copyright (C) 2010 SERPRO
@@ -35,7 +34,6 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-
 <configuration>
 
 	<integer>
@@ -44,14 +42,14 @@
 		<array>12330</array>
 		<array>129399</array>
 	</integer>
-	
+
 	<short>
 		<array>32767</array>
 		<array>123</array>
 		<array>5512</array>
 		<array>4212</array>
 	</short>
-	
+
 	<byte>
 		<array>127</array>
 		<array>12</array>
@@ -62,12 +60,12 @@
 		<array>1</array>
 		<array>-12</array>
 	</byte>
-	
+
 	<boolean>
 		<array>true</array>
 		<array>false</array>
 	</boolean>
-	
+
 	<long>
 		<array>9223372036854775807</array>
 		<array>0901920390123</array>
@@ -75,7 +73,7 @@
 		<array>134230094</array>
 		<array>66123413423</array>
 	</long>
-	
+
 	<float>
 		<array>3.4028235E38</array>
 		<array>34.244</array>
@@ -83,13 +81,13 @@
 		<array>513.234</array>
 		<array>10000.000</array>
 	</float>
-	
+
 	<double>
 		<array>1.7976931348623157E308</array>
 		<array>1231234.00120349192348123</array>
 		<array>1234123512341.9134828348238</array>
 	</double>
-	
+
 	<big>
 		<decimal>
 			<array>16578.69899</array>
@@ -97,7 +95,7 @@
 			<array>4487787.559</array>
 		</decimal>
 	</big>
-	
+
 	<big>
 		<integer>
 			<array>1998987987897</array>
@@ -105,37 +103,37 @@
 			<array>21474836475</array>
 		</integer>
 	</big>
-	
+
 	<calendar>
 		<array>2012-06-14 10:10:00</array>
 		<array>2012-07-14 10:10:00</array>
 		<array>2012-06-15 18:10:00</array>
 	</calendar>
-	
+
 	<date>
 		<array>2012-08-14 18:10:50</array>
 		<array>2012-07-14 10:10:00</array>
 		<array>2012-06-15 18:10:00</array>
 	</date>
-	
+
 	<color>
 		<array>#808080</array>
 		<array>#cccccc</array>
 		<array> #ABCCCC</array>
 	</color>
-	
+
 	<locale>
 		<array>en</array>
 		<array>pt_br</array>
 		<array>ca</array>
 	</locale>
-	
+
 	<url>
 		<array>http://www.test.com</array>
 		<array>https://test.of.test.com</array>
 		<array>ftp://192.168.0.1</array>
 	</url>
-	
+
 	<string>
 		<array>Test</array>
 		<array>One</array>

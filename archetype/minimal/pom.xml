@@ -49,7 +49,7 @@
 		<relativePath>../../parent/archetype</relativePath>
 	</parent>
 
-	<name>Minimal Archetype</name>
+	<name>Demoiselle Framework Minimal Archetype</name>
 	<description>
 		Basic archetype for generic applications
 	</description>

@@ -36,7 +36,6 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
-import org.junit.Ignore;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.fail;
 

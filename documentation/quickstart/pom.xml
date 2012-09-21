@@ -49,7 +49,7 @@
 		<relativePath>../../../internal/parent/documentation</relativePath>
 	</parent>
 
-	<name>Quickstart Documentation</name>
+	<name>Demoiselle Framework Quickstart Documentation</name>
 	<description />
 
 	<build>
