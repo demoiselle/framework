@@ -325,7 +325,7 @@
 		<jsf.version>2.1.11</jsf.version>
 		<el.version>2.2</el.version>
 		<servlet.version>2.5</servlet.version>
-		<persistence.version>2.0.1</persistence.version>
+		<persistence.version>2.0.0</persistence.version>
 
 		<hibernate.version>3.6.0.Final</hibernate.version>
 
