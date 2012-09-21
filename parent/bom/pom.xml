@@ -294,18 +294,6 @@
 				<artifactId>easymock</artifactId>
 				<version>${easymock.version}</version>
 			</dependency>
-
-			<!-- Demoiselle Components -->
-			<dependency>
-				<groupId>br.gov.frameworkdemoiselle.component</groupId>
-				<artifactId>demoiselle-junit</artifactId>
-				<version>${demoiselle.junit.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>br.gov.frameworkdemoiselle.component</groupId>
-				<artifactId>demoiselle-authorization</artifactId>
-				<version>${demoiselle.authorization.version}</version>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -341,10 +329,6 @@
 		<hsqldb.version>1.8.0.10</hsqldb.version>
 		<jasperreports.version>4.0.1</jasperreports.version>
 		<mail.version>1.4.4</mail.version>
-		<mockjavamail.version>1.9</mockjavamail.version>
 		<javassist.version>3.14.0-GA</javassist.version>
-
-		<demoiselle.junit.version>2.3.0-RC2-SNAPSHOT</demoiselle.junit.version>
-		<demoiselle.authorization.version>2.0.2</demoiselle.authorization.version>
 	</properties>
 </project>
