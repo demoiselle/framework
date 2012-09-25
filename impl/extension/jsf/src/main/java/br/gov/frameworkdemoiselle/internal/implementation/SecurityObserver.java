@@ -64,7 +64,7 @@ public class SecurityObserver implements Serializable {
 	@Inject
 	private JsfSecurityConfig config;
 
-	private Map<String, Object> savedParams = new HashMap<String, Object>();
+	private Map<String, Object> savedParams;
 
 	private String savedViewId;
 
@@ -74,13 +74,21 @@ public class SecurityObserver implements Serializable {
 	public SecurityObserver() {
 		clear();
 	}
+	
+	private Map<String, Object> getSavedParams(){
+		if(this.savedParams == null) {
+			this.savedParams = new HashMap<String, Object>();
+		}
+		
+		return this.savedParams;
+	}
 
 	private void saveCurrentState() {
 		clear();
 		FacesContext facesContext = Beans.getReference(FacesContext.class);
 
 		if (!config.getLoginPage().equals(facesContext.getViewRoot().getViewId())) {
-			savedParams.putAll(facesContext.getExternalContext().getRequestParameterMap());
+			getSavedParams().putAll(facesContext.getExternalContext().getRequestParameterMap());
 			savedViewId = facesContext.getViewRoot().getViewId();
 		}
 	}
@@ -106,11 +114,11 @@ public class SecurityObserver implements Serializable {
 
 		try {
 			if (savedViewId != null) {
-				Redirector.redirect(savedViewId, savedParams);
+				Redirector.redirect(savedViewId, getSavedParams());
 
 			} else if (config.isRedirectEnabled()) {
 				redirectedFromConfig = true;
-				Redirector.redirect(config.getRedirectAfterLogin(), savedParams);
+				Redirector.redirect(config.getRedirectAfterLogin(), getSavedParams());
 			}
 
 		} catch (PageNotFoundException cause) {
@@ -155,6 +163,6 @@ public class SecurityObserver implements Serializable {
 
 	private void clear() {
 		savedViewId = null;
-		savedParams.clear();
+		getSavedParams().clear();
 	}
 }
