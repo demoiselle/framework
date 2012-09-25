@@ -36,6 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -58,33 +59,54 @@ import javax.inject.Named;
 import javax.inject.Qualifier;
 import javax.inject.Scope;
 
+import br.gov.frameworkdemoiselle.util.Beans;
+
 /**
  * @see http://docs.jboss.org/weld/reference/latest/en-US/html_single/#d0e5035
  */
-public class CustomBean implements Bean<Object> {
+public class CustomBean implements Bean<Object>, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Class<Object> beanClass;
 
-	private InjectionTarget<Object> injectionTarget;
+	private transient InjectionTarget<Object> injectionTarget;
+
+	private transient BeanManager beanManager;
+
+	private InjectionTarget<Object> getInjectionTarget() {
+		if (this.injectionTarget == null) {
+			AnnotatedType<Object> annotatedType = getBeanManager().createAnnotatedType(beanClass);
+			this.injectionTarget = getBeanManager().createInjectionTarget(annotatedType);
+		}
+
+		return this.injectionTarget;
+	}
+
+	private BeanManager getBeanManager() {
+		if (this.beanManager == null) {
+			this.beanManager = Beans.getBeanManager();
+		}
+
+		return this.beanManager;
+	}
 
 	public CustomBean(Class<Object> beanClass, BeanManager beanManager) {
-		AnnotatedType<Object> annotatedType = beanManager.createAnnotatedType(beanClass);
-
-		this.injectionTarget = beanManager.createInjectionTarget(annotatedType);
 		this.beanClass = beanClass;
+		this.beanManager = beanManager;
 	}
 
 	public Object create(CreationalContext<Object> creationalContext) {
-		Object instance = injectionTarget.produce(creationalContext);
-		injectionTarget.inject(instance, creationalContext);
-		injectionTarget.postConstruct(instance);
+		Object instance = getInjectionTarget().produce(creationalContext);
+		getInjectionTarget().inject(instance, creationalContext);
+		getInjectionTarget().postConstruct(instance);
 
 		return instance;
 	}
 
 	public void destroy(Object instance, CreationalContext<Object> creationalContext) {
-		injectionTarget.preDestroy(instance);
-		injectionTarget.dispose(instance);
+		getInjectionTarget().preDestroy(instance);
+		getInjectionTarget().dispose(instance);
 		creationalContext.release();
 	}
 
@@ -166,6 +188,6 @@ public class CustomBean implements Bean<Object> {
 	}
 
 	public Set<InjectionPoint> getInjectionPoints() {
-		return injectionTarget.getInjectionPoints();
+		return getInjectionTarget().getInjectionPoints();
 	}
 }
