@@ -58,14 +58,10 @@ public class Redirector implements Serializable {
 	public static void redirect(String viewId, Map<String, Object> params) {
 		try {
 			if (viewId != null && !viewId.isEmpty()) {
-				Boolean includeViewParams = true;
-				if (params.isEmpty()) {
-					includeViewParams = false;
-				}
-
 				FacesContext facesContext = Beans.getReference(FacesContext.class);
 				ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
-				String url = viewHandler.getBookmarkableURL(facesContext, viewId, parse(params), includeViewParams);
+				String url = viewHandler.getBookmarkableURL(facesContext, viewId, parse(params), params == null ? false
+						: !params.isEmpty());
 
 				facesContext.getExternalContext().redirect(url);
 			}
