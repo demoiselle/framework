@@ -1,4 +1,7 @@
-package br.gov.frameworkdemoiselle.security;
+package br.gov.frameworkdemoiselle.internal.configuration;
+
+import br.gov.frameworkdemoiselle.security.Authenticator;
+import br.gov.frameworkdemoiselle.security.Authorizer;
 
 /**
  * A <code>SecurityConfig</code> object is responsible for specifying which security configurations should be used for a

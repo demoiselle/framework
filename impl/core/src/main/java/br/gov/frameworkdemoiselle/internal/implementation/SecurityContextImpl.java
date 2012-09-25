@@ -40,6 +40,7 @@ import javax.inject.Named;
 
 import br.gov.frameworkdemoiselle.internal.bootstrap.AuthenticatorBootstrap;
 import br.gov.frameworkdemoiselle.internal.bootstrap.AuthorizerBootstrap;
+import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfig;
 import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfigImpl;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
@@ -47,7 +48,6 @@ import br.gov.frameworkdemoiselle.security.AfterLogoutSuccessful;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.Authorizer;
 import br.gov.frameworkdemoiselle.security.NotLoggedInException;
-import br.gov.frameworkdemoiselle.security.SecurityConfig;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.security.User;
 import br.gov.frameworkdemoiselle.util.Beans;

@@ -41,7 +41,6 @@ import java.io.Serializable;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.Authorizer;
-import br.gov.frameworkdemoiselle.security.SecurityConfig;
 
 @Configuration(prefix = "frameworkdemoiselle.security")
 public class SecurityConfigImpl implements Serializable, SecurityConfig {
