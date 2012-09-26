@@ -54,5 +54,4 @@ public class ContextStore {
 	public void put(final String name, final Object instance) {
 		this.map.put(name, instance);
 	}
-
 }

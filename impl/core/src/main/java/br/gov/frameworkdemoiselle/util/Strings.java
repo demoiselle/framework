@@ -43,7 +43,10 @@ import java.util.regex.Pattern;
 
 import br.gov.frameworkdemoiselle.annotation.Ignore;
 
-public class Strings {
+public final class Strings {
+
+	private Strings() {
+	}
 
 	public static boolean isResourceBundleKeyFormat(final String key) {
 		return Pattern.matches("^\\{(.+)\\}$", key == null ? "" : key);

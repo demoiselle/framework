@@ -43,15 +43,28 @@
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-minimal-parent</artifactId>
-		<version>2.2.3-SNAPSHOT</version>
-		<relativePath>../minimal/pom.xml</relativePath>
+		<artifactId>demoiselle-extension-parent</artifactId>
+		<version>2.3.0-RC2-SNAPSHOT</version>
+		<relativePath>../../../parent/extension</relativePath>
 	</parent>
 
-	<name>SE Parent</name>
+	<name>Demoiselle Framework SE Parent</name>
 	<description>
 		Especialização do POM mínimo, contendo configurações úteis para todas as aplicações SE que utilizam o framework.
 	</description>
+	<url>http://www.frameworkdemoiselle.gov.br</url>
+
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>SERPRO - Serviço Federal de Processamento de Dados</name>
+		<url>http://www.serpro.gov.br</url>
+	</organization>
 
 	<dependencies>
 		<dependency>
@@ -63,9 +76,9 @@
 
 	<repositories>
 		<repository>
-			<id>demoiselle.sourceforge.net</id>
-			<name>Demoiselle Maven Repository</name>
-			<url>http://demoiselle.sourceforge.net/repository/release</url>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</repository>
 	</repositories>
 </project>

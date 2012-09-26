@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.persistence.Basic;
@@ -62,6 +63,7 @@ import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.pagination.Pagination;
 import br.gov.frameworkdemoiselle.pagination.PaginationContext;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -79,11 +81,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
 	private EntityManager entityManager;
-
-	@Inject
-	private Instance<PaginationContext> paginationContext;
 
 	private Pagination pagination;
 
@@ -106,13 +104,22 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	}
 
 	protected EntityManager getEntityManager() {
+		if (this.entityManager == null) {
+			this.entityManager = Beans.getReference(EntityManager.class);
+		}
+
 		return this.entityManager;
 	}
 
 	protected Pagination getPagination() {
 		if (pagination == null) {
-			PaginationContext context = paginationContext.get();
-			pagination = context.getPagination(getBeanClass());
+			try {
+				PaginationContext context = Beans.getReference(PaginationContext.class);
+				pagination = context.getPagination(getBeanClass());
+
+			} catch (ContextNotActiveException cause) {
+				pagination = null;
+			}
 		}
 
 		return pagination;

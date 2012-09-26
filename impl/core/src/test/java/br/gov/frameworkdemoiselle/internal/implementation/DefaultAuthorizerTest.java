@@ -1,9 +1,10 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertTrue;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replay;
+
+import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
@@ -13,14 +14,14 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
  * @author SERPRO
  * @see DefaultAuthorizer
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(CoreBundle.class)
+@PrepareForTest(Beans.class)
 public class DefaultAuthorizerTest {
 
 	private DefaultAuthorizer authorizer;
@@ -29,12 +30,11 @@ public class DefaultAuthorizerTest {
 	public void setUp() throws Exception {
 		authorizer = new DefaultAuthorizer();
 
-		mockStatic(CoreBundle.class);
+		mockStatic(Beans.class);
 
-		ResourceBundle bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
-		expect(CoreBundle.get()).andReturn(bundle);
+		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault());
 
-		replay(CoreBundle.class);
+		replay(Beans.class);
 	}
 
 	@After
@@ -42,22 +42,14 @@ public class DefaultAuthorizerTest {
 		authorizer = null;
 	}
 
-	@Test
+	@Test(expected = DemoiselleException.class)
 	public void testHasRole() {
-		try {
-			authorizer.hasRole(null);
-		} catch (Exception e) {
-			assertTrue(e instanceof DemoiselleException);
-		}
+		authorizer.hasRole(null);
 	}
 
-	@Test
+	@Test(expected = DemoiselleException.class)
 	public void testHasPermission() {
-		try {
-			authorizer.hasPermission(null, null);
-		} catch (Exception e) {
-			assertTrue(e instanceof DemoiselleException);
-		}
+		authorizer.hasPermission(null, null);
 	}
 
 }

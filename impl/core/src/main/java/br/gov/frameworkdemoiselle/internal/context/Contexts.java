@@ -39,25 +39,58 @@ package br.gov.frameworkdemoiselle.internal.context;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 
+import org.slf4j.Logger;
+
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
+
 public class Contexts {
 
-	private static List<CustomContext> activeContexts;
+	private static List<CustomContext> activeContexts = Collections.synchronizedList(new ArrayList<CustomContext>());
 
-	private static List<CustomContext> inactiveContexts;
+	private static List<CustomContext> inactiveContexts = Collections.synchronizedList(new ArrayList<CustomContext>());
 
-	public static void add(CustomContext context, AfterBeanDiscovery event) {
+	private static Logger logger;
+
+	private static ResourceBundle bundle;
+
+	private static Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(Contexts.class);
+		}
+
+		return logger;
+	}
+
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+		}
+
+		return bundle;
+	}
+
+	private Contexts() {
+	}
+
+	public static synchronized void add(CustomContext context, AfterBeanDiscovery event) {
 		Class<? extends Annotation> scope = context.getScope();
 
-		if (get(scope, getActiveContexts()) != null) {
-			getInactiveContexts().add(context);
+		getLogger()
+				.trace(getBundle().getString("custom-context-was-registered", context.getScope().getCanonicalName()));
+
+		if (get(scope, activeContexts) != null) {
+			inactiveContexts.add(context);
 			context.setActive(false);
 
 		} else {
-			getActiveContexts().add(context);
+			activeContexts.add(context);
 			context.setActive(true);
 		}
 
@@ -79,45 +112,43 @@ public class Contexts {
 		return result;
 	}
 
-	public static void remove(CustomContext context) {
-		if (getActiveContexts().contains(context)) {
-			getActiveContexts().remove(context);
+	public static synchronized void remove(CustomContext context) {
+		getLogger().trace(
+				getBundle().getString("custom-context-was-unregistered", context.getScope().getCanonicalName()));
+
+		if (activeContexts.contains(context)) {
+			activeContexts.remove(context);
 			context.setActive(false);
 
-			CustomContext inactive = get(context.getScope(), getInactiveContexts());
+			CustomContext inactive = get(context.getScope(), inactiveContexts);
 			if (inactive != null) {
-				getActiveContexts().add(inactive);
+				activeContexts.add(inactive);
 				inactive.setActive(true);
-				getInactiveContexts().remove(inactive);
+				inactiveContexts.remove(inactive);
 			}
 
-		} else if (getInactiveContexts().contains(context)) {
-			getInactiveContexts().remove(context);
+		} else if (inactiveContexts.contains(context)) {
+			inactiveContexts.remove(context);
 		}
 	}
 
-	public static void clear() {
-		for (CustomContext context : getActiveContexts()) {
+	public static synchronized void clear() {
+		CustomContext context;
+		for (Iterator<CustomContext> iter = activeContexts.iterator(); iter.hasNext();) {
+			context = iter.next();
 			context.setActive(false);
+			iter.remove();
 		}
 
-		activeContexts = null;
-		inactiveContexts = null;
+		activeContexts.clear();
+		inactiveContexts.clear();
 	}
 
-	public static List<CustomContext> getActiveContexts() {
-		if (activeContexts == null) {
-			activeContexts = Collections.synchronizedList(new ArrayList<CustomContext>());
-		}
-
+	public static synchronized List<CustomContext> getActiveContexts() {
 		return activeContexts;
 	}
 
-	public static List<CustomContext> getInactiveContexts() {
-		if (inactiveContexts == null) {
-			inactiveContexts = Collections.synchronizedList(new ArrayList<CustomContext>());
-		}
-
+	public static synchronized List<CustomContext> getInactiveContexts() {
 		return inactiveContexts;
 	}
 }

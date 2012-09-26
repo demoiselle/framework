@@ -38,8 +38,6 @@ package br.gov.frameworkdemoiselle.internal.interceptor;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -47,10 +45,13 @@ import javax.interceptor.InvocationContext;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.AuthorizationException;
 import br.gov.frameworkdemoiselle.security.RequiredPermission;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.security.User;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
 
@@ -65,19 +66,11 @@ public class RequiredPermissionInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Instance<SecurityContext> securityContext;
+	private SecurityContext securityContext;
 
-	private final ResourceBundle bundle;
+	private static ResourceBundle bundle;
 
-	private final Logger logger;
-
-	@Inject
-	public RequiredPermissionInterceptor(Instance<SecurityContext> securityContext,
-			@Name("demoiselle-core-bundle") ResourceBundle bundle, Logger logger) {
-		this.securityContext = securityContext;
-		this.bundle = bundle;
-		this.logger = logger;
-	}
+	private static Logger logger;
 
 	/**
 	 * Gets the values for both resource and operation properties of {@code @RequiredPermission}. Delegates to
@@ -98,17 +91,17 @@ public class RequiredPermissionInterceptor implements Serializable {
 		String operation = getOperation(ic);
 		String username = null;
 
-		if (securityContext.get().isLoggedIn()) {
+		if (getSecurityContext().isLoggedIn()) {
 			username = getUsername();
-			logger.trace(bundle.getString("access-checking", username, operation, resource));
+			getLogger().trace(getBundle().getString("access-checking", username, operation, resource));
 		}
 
-		if (!securityContext.get().hasPermission(resource, operation)) {
-			logger.error(bundle.getString("access-denied", username, operation, resource));
-			throw new AuthorizationException(bundle.getString("access-denied-ui", resource, operation));
+		if (!getSecurityContext().hasPermission(resource, operation)) {
+			getLogger().error(getBundle().getString("access-denied", username, operation, resource));
+			throw new AuthorizationException(getBundle().getString("access-denied-ui", resource, operation));
 		}
 
-		logger.debug(bundle.getString("access-allowed", username, operation, resource));
+		getLogger().debug(getBundle().getString("access-allowed", username, operation, resource));
 		return ic.proceed();
 	}
 
@@ -119,7 +112,7 @@ public class RequiredPermissionInterceptor implements Serializable {
 	 */
 	private String getUsername() {
 		String username = "";
-		User user = securityContext.get().getUser();
+		User user = getSecurityContext().getUser();
 
 		if (user != null && user.getId() != null) {
 			username = user.getId();
@@ -172,5 +165,29 @@ public class RequiredPermissionInterceptor implements Serializable {
 		} else {
 			return requiredPermission.operation();
 		}
+	}
+
+	private SecurityContext getSecurityContext() {
+		if (securityContext == null) {
+			securityContext = Beans.getReference(SecurityContext.class);
+		}
+
+		return securityContext;
+	}
+
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+		}
+
+		return bundle;
+	}
+
+	private static Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(RequiredPermissionInterceptor.class);
+		}
+
+		return logger;
 	}
 }

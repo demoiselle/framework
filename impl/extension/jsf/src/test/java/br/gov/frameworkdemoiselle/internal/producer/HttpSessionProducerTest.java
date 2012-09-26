@@ -35,7 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.producer;
-
+import org.junit.Ignore;
 import javax.servlet.http.HttpServletRequest;
 
 import org.easymock.EasyMock;
@@ -48,7 +48,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.gov.frameworkdemoiselle.internal.proxy.HttpSessionProxy;
-
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ HttpServletRequest.class })
 public class HttpSessionProducerTest {

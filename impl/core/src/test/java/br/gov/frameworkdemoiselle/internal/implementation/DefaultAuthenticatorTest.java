@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replay;
 
+import java.util.Locale;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,14 +15,14 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
  * @author SERPRO
  * @see DefaultAuthenticator
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(CoreBundle.class)
+@PrepareForTest(Beans.class)
 public class DefaultAuthenticatorTest {
 
 	private DefaultAuthenticator authenticator;
@@ -29,12 +31,11 @@ public class DefaultAuthenticatorTest {
 	public void setUp() throws Exception {
 		authenticator = new DefaultAuthenticator();
 
-		mockStatic(CoreBundle.class);
+		mockStatic(Beans.class);
 
-		ResourceBundle bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
-		expect(CoreBundle.get()).andReturn(bundle);
+		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault());
 
-		replay(CoreBundle.class);
+		replay(Beans.class);
 	}
 
 	@After
@@ -51,22 +52,14 @@ public class DefaultAuthenticatorTest {
 		}
 	}
 
-	@Test
+	@Test(expected = DemoiselleException.class)
 	public void testUnAuthenticate() {
-		try {
-			authenticator.unAuthenticate();
-		} catch (Exception e) {
-			assertTrue(e instanceof DemoiselleException);
-		}
+		authenticator.unAuthenticate();
 	}
 
-	@Test
+	@Test(expected = DemoiselleException.class)
 	public void testGetUser() {
-		try {
-			authenticator.getUser();
-		} catch (Exception e) {
-			assertTrue(e instanceof DemoiselleException);
-		}
+		authenticator.getUser();
 	}
 
 }

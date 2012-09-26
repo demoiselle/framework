@@ -51,321 +51,332 @@ package br.gov.frameworkdemoiselle.internal.proxy;
 import java.io.Serializable;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
 public class Slf4jLoggerProxy implements Logger, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private transient final Logger delegate;
+	private transient Logger delegate;
 
-	public Slf4jLoggerProxy(final Logger logger) {
-		this.delegate = logger;
+	private final Class<?> type;
+	
+	private Logger getDelegate() {
+		if(delegate == null) {
+			delegate = LoggerFactory.getLogger(type);
+		}
+		
+		return delegate;
+	}
+
+	public Slf4jLoggerProxy(final Class<?> type) {
+		this.type = type;
 	}
 
 	@Override
 	public void debug(final Marker marker, final String msg) {
-		this.delegate.debug(marker, msg);
+		getDelegate().debug(marker, msg);
 	}
 
 	@Override
 	public void debug(final Marker marker, final String format, final Object arg) {
-		this.delegate.debug(marker, format, arg);
+		getDelegate().debug(marker, format, arg);
 	}
 
 	@Override
 	public void debug(final Marker marker, final String format, final Object arg1, final Object arg2) {
-		this.delegate.debug(marker, format, arg1, arg2);
+		getDelegate().debug(marker, format, arg1, arg2);
 	}
 
 	@Override
 	public void debug(final Marker marker, final String format, final Object[] argArray) {
-		this.delegate.debug(marker, format, argArray);
+		getDelegate().debug(marker, format, argArray);
 	}
 
 	@Override
 	public void debug(final Marker marker, final String msg, final Throwable t) {
-		this.delegate.debug(marker, msg, t);
+		getDelegate().debug(marker, msg, t);
 	}
 
 	@Override
 	public void debug(final String msg) {
-		this.delegate.debug(msg);
+		getDelegate().debug(msg);
 	}
 
 	@Override
 	public void debug(final String format, final Object arg) {
-		this.delegate.debug(format, arg);
+		getDelegate().debug(format, arg);
 	}
 
 	@Override
 	public void debug(final String format, final Object arg1, final Object arg2) {
-		this.delegate.debug(format, arg1, arg2);
+		getDelegate().debug(format, arg1, arg2);
 	}
 
 	@Override
 	public void debug(final String format, final Object[] argArray) {
-		this.delegate.debug(format, argArray);
+		getDelegate().debug(format, argArray);
 	}
 
 	@Override
 	public void debug(final String msg, final Throwable t) {
-		this.delegate.debug(msg, t);
+		getDelegate().debug(msg, t);
 	}
 
 	@Override
 	public void error(final Marker marker, final String msg) {
-		this.delegate.error(marker, msg);
+		getDelegate().error(marker, msg);
 	}
 
 	@Override
 	public void error(final Marker marker, final String format, final Object arg) {
-		this.delegate.error(marker, format, arg);
+		getDelegate().error(marker, format, arg);
 	}
 
 	@Override
 	public void error(final Marker marker, final String format, final Object arg1, final Object arg2) {
-		this.delegate.error(marker, format, arg1, arg2);
+		getDelegate().error(marker, format, arg1, arg2);
 	}
 
 	@Override
 	public void error(final Marker marker, final String format, final Object[] argArray) {
-		this.delegate.error(marker, format, argArray);
+		getDelegate().error(marker, format, argArray);
 	}
 
 	@Override
 	public void error(final Marker marker, final String msg, final Throwable t) {
-		this.delegate.error(marker, msg, t);
+		getDelegate().error(marker, msg, t);
 	}
 
 	@Override
 	public void error(final String msg) {
-		this.delegate.error(msg);
+		getDelegate().error(msg);
 	}
 
 	@Override
 	public void error(final String format, final Object arg) {
-		this.delegate.error(format, arg);
+		getDelegate().error(format, arg);
 	}
 
 	@Override
 	public void error(final String format, final Object arg1, final Object arg2) {
-		this.delegate.error(format, arg1, arg2);
+		getDelegate().error(format, arg1, arg2);
 	}
 
 	@Override
 	public void error(final String format, final Object[] argArray) {
-		this.delegate.error(format, argArray);
+		getDelegate().error(format, argArray);
 	}
 
 	@Override
 	public void error(final String msg, final Throwable t) {
-		this.delegate.error(msg, t);
+		getDelegate().error(msg, t);
 	}
 
 	@Override
 	public String getName() {
-		return this.delegate.getName();
+		return getDelegate().getName();
 	}
 
 	@Override
 	public void info(final Marker marker, final String msg) {
-		this.delegate.info(marker, msg);
+		getDelegate().info(marker, msg);
 	}
 
 	@Override
 	public void info(final Marker marker, final String format, final Object arg) {
-		this.delegate.info(marker, format, arg);
+		getDelegate().info(marker, format, arg);
 	}
 
 	@Override
 	public void info(final Marker marker, final String format, final Object arg1, final Object arg2) {
-		this.delegate.info(marker, format, arg1, arg2);
+		getDelegate().info(marker, format, arg1, arg2);
 	}
 
 	@Override
 	public void info(final Marker marker, final String format, final Object[] argArray) {
-		this.delegate.info(marker, format, argArray);
+		getDelegate().info(marker, format, argArray);
 	}
 
 	@Override
 	public void info(final Marker marker, final String msg, final Throwable t) {
-		this.delegate.info(marker, msg, t);
+		getDelegate().info(marker, msg, t);
 	}
 
 	@Override
 	public void info(final String msg) {
-		this.delegate.info(msg);
+		getDelegate().info(msg);
 	}
 
 	@Override
 	public void info(final String format, final Object arg) {
-		this.delegate.info(format, arg);
+		getDelegate().info(format, arg);
 	}
 
 	@Override
 	public void info(final String format, final Object arg1, final Object arg2) {
-		this.delegate.info(format, arg1, arg2);
+		getDelegate().info(format, arg1, arg2);
 	}
 
 	@Override
 	public void info(final String format, final Object[] argArray) {
-		this.delegate.info(format, argArray);
+		getDelegate().info(format, argArray);
 	}
 
 	@Override
 	public void info(final String msg, final Throwable t) {
-		this.delegate.info(msg, t);
+		getDelegate().info(msg, t);
 	}
 
 	@Override
 	public boolean isDebugEnabled() {
-		return this.delegate.isDebugEnabled();
+		return getDelegate().isDebugEnabled();
 	}
 
 	@Override
 	public boolean isDebugEnabled(final Marker marker) {
-		return this.delegate.isDebugEnabled(marker);
+		return getDelegate().isDebugEnabled(marker);
 	}
 
 	@Override
 	public boolean isErrorEnabled() {
-		return this.delegate.isErrorEnabled();
+		return getDelegate().isErrorEnabled();
 	}
 
 	@Override
 	public boolean isErrorEnabled(final Marker marker) {
-		return this.delegate.isErrorEnabled(marker);
+		return getDelegate().isErrorEnabled(marker);
 	}
 
 	@Override
 	public boolean isInfoEnabled() {
-		return this.delegate.isInfoEnabled();
+		return getDelegate().isInfoEnabled();
 	}
 
 	@Override
 	public boolean isInfoEnabled(final Marker marker) {
-		return this.delegate.isInfoEnabled(marker);
+		return getDelegate().isInfoEnabled(marker);
 	}
 
 	@Override
 	public boolean isTraceEnabled() {
-		return this.delegate.isTraceEnabled();
+		return getDelegate().isTraceEnabled();
 	}
 
 	@Override
 	public boolean isTraceEnabled(final Marker marker) {
-		return this.delegate.isTraceEnabled(marker);
+		return getDelegate().isTraceEnabled(marker);
 	}
 
 	@Override
 	public boolean isWarnEnabled() {
-		return this.delegate.isWarnEnabled();
+		return getDelegate().isWarnEnabled();
 	}
 
 	@Override
 	public boolean isWarnEnabled(final Marker marker) {
-		return this.delegate.isWarnEnabled(marker);
+		return getDelegate().isWarnEnabled(marker);
 	}
 
 	@Override
 	public void trace(final Marker marker, final String msg) {
-		this.delegate.trace(marker, msg);
+		getDelegate().trace(marker, msg);
 	}
 
 	@Override
 	public void trace(final Marker marker, final String format, final Object arg) {
-		this.delegate.trace(marker, format, arg);
+		getDelegate().trace(marker, format, arg);
 	}
 
 	@Override
 	public void trace(final Marker marker, final String format, final Object arg1, final Object arg2) {
-		this.delegate.trace(marker, format, arg1, arg2);
+		getDelegate().trace(marker, format, arg1, arg2);
 	}
 
 	@Override
 	public void trace(final Marker marker, final String format, final Object[] argArray) {
-		this.delegate.trace(marker, format, argArray);
+		getDelegate().trace(marker, format, argArray);
 	}
 
 	@Override
 	public void trace(final Marker marker, final String msg, final Throwable t) {
-		this.delegate.trace(marker, msg, t);
+		getDelegate().trace(marker, msg, t);
 	}
 
 	@Override
 	public void trace(final String msg) {
-		this.delegate.trace(msg);
+		getDelegate().trace(msg);
 	}
 
 	@Override
 	public void trace(final String format, final Object arg) {
-		this.delegate.trace(format, arg);
+		getDelegate().trace(format, arg);
 	}
 
 	@Override
 	public void trace(final String format, final Object arg1, final Object arg2) {
-		this.delegate.trace(format, arg1, arg2);
+		getDelegate().trace(format, arg1, arg2);
 	}
 
 	@Override
 	public void trace(final String format, final Object[] argArray) {
-		this.delegate.trace(format, argArray);
+		getDelegate().trace(format, argArray);
 	}
 
 	@Override
 	public void trace(final String msg, final Throwable t) {
-		this.delegate.trace(msg, t);
+		getDelegate().trace(msg, t);
 	}
 
 	@Override
 	public void warn(final Marker marker, final String msg) {
-		this.delegate.warn(marker, msg);
+		getDelegate().warn(marker, msg);
 	}
 
 	@Override
 	public void warn(final Marker marker, final String format, final Object arg) {
-		this.delegate.warn(marker, format, arg);
+		getDelegate().warn(marker, format, arg);
 	}
 
 	@Override
 	public void warn(final Marker marker, final String format, final Object arg1, final Object arg2) {
-		this.delegate.warn(marker, format, arg1, arg2);
+		getDelegate().warn(marker, format, arg1, arg2);
 	}
 
 	@Override
 	public void warn(final Marker marker, final String format, final Object[] argArray) {
-		this.delegate.warn(marker, format, argArray);
+		getDelegate().warn(marker, format, argArray);
 	}
 
 	@Override
 	public void warn(final Marker marker, final String msg, final Throwable t) {
-		this.delegate.warn(marker, msg, t);
+		getDelegate().warn(marker, msg, t);
 	}
 
 	@Override
 	public void warn(final String msg) {
-		this.delegate.warn(msg);
+		getDelegate().warn(msg);
 	}
 
 	@Override
 	public void warn(final String format, final Object arg) {
-		this.delegate.warn(format, arg);
+		getDelegate().warn(format, arg);
 	}
 
 	@Override
 	public void warn(final String format, final Object arg1, final Object arg2) {
-		this.delegate.warn(format, arg1, arg2);
+		getDelegate().warn(format, arg1, arg2);
 	}
 
 	@Override
 	public void warn(final String format, final Object[] argArray) {
-		this.delegate.warn(format, argArray);
+		getDelegate().warn(format, argArray);
 	}
 
 	@Override
 	public void warn(final String msg, final Throwable t) {
-		this.delegate.warn(msg, t);
+		getDelegate().warn(msg, t);
 	}
 
 }

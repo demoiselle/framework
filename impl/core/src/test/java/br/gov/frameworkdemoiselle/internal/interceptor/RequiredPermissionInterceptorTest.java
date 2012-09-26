@@ -7,6 +7,8 @@ import static org.junit.Assert.fail;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replay;
 
+import java.util.Locale;
+
 import javax.enterprise.inject.Instance;
 import javax.interceptor.InvocationContext;
 
@@ -15,19 +17,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.internal.implementation.CoreBundle;
 import br.gov.frameworkdemoiselle.security.NotLoggedInException;
 import br.gov.frameworkdemoiselle.security.RequiredPermission;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.security.SecurityException;
 import br.gov.frameworkdemoiselle.security.User;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(CoreBundle.class)
+@PrepareForTest(Beans.class)
 public class RequiredPermissionInterceptorTest {
 
 	private RequiredPermissionInterceptor interceptor;
@@ -114,24 +114,23 @@ public class RequiredPermissionInterceptorTest {
 	public void setUp() throws Exception {
 		@SuppressWarnings("unchecked")
 		Instance<SecurityContext> securityContextInstance = createMock(Instance.class);
-		Logger logger = createMock(Logger.class);
 
-		ResourceBundle bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
 		User user = createMock(User.class);
-
-		mockStatic(CoreBundle.class);
-		expect(CoreBundle.get()).andReturn(bundle);
 
 		this.securityContext = createMock(SecurityContext.class);
 		this.ic = createMock(InvocationContext.class);
+
+		mockStatic(Beans.class);
+		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault());
+		expect(Beans.getReference(SecurityContext.class)).andReturn(this.securityContext);
 
 		expect(user.getId()).andReturn("UserName").anyTimes();
 		expect(this.securityContext.getUser()).andReturn(user).anyTimes();
 		expect(securityContextInstance.get()).andReturn(securityContext).anyTimes();
 		expect(this.ic.proceed()).andReturn(null);
-		replay(securityContextInstance, user, CoreBundle.class);
+		replay(securityContextInstance, user, Beans.class);
 
-		this.interceptor = new RequiredPermissionInterceptor(securityContextInstance, bundle, logger);
+		this.interceptor = new RequiredPermissionInterceptor();
 	}
 
 	private void prepareMock(Object target, String methodName, String expectedResource, String expectedOperation,
@@ -356,7 +355,7 @@ public class RequiredPermissionInterceptorTest {
 			fail();
 		}
 	}
-	
+
 	@Test
 	public void testManageClassAnnotedWithRequiredPermissionAtRequiredPermissionWithDeclaredOperation()
 			throws Exception {

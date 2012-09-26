@@ -37,9 +37,10 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertTrue;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replay;
+
+import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
@@ -49,14 +50,14 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
  * @author SERPRO
  * @see DefaultTransaction
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(CoreBundle.class)
+@PrepareForTest(Beans.class)
 public class DefaultTransactionTest {
 
 	private DefaultTransaction tx;
@@ -65,12 +66,11 @@ public class DefaultTransactionTest {
 	public void setUp() throws Exception {
 		tx = new DefaultTransaction();
 
-		mockStatic(CoreBundle.class);
+		mockStatic(Beans.class);
 
-		ResourceBundle bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
-		expect(CoreBundle.get()).andReturn(bundle);
+		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault());
 
-		replay(CoreBundle.class);
+		replay(Beans.class);
 	}
 
 	@After
@@ -78,57 +78,33 @@ public class DefaultTransactionTest {
 		tx = null;
 	}
 
-	@Test
+	@Test(expected=DemoiselleException.class)
 	public void testBegin() {
-		try {
 			tx.begin();
-		} catch (Exception e) {
-			assertTrue(e instanceof DemoiselleException);
-		}
 	}
 
-	@Test
+	@Test(expected=DemoiselleException.class)
 	public void testCommit() {
-		try {
 			tx.commit();
-		} catch (Exception e) {
-			assertTrue(e instanceof DemoiselleException);
-		}
 	}
 
-	@Test
+	@Test(expected=DemoiselleException.class)
 	public void testIsActive() {
-		try {
 			tx.isActive();
-		} catch (Exception e) {
-			assertTrue(e instanceof DemoiselleException);
-		}
 	}
 
-	@Test
+	@Test(expected=DemoiselleException.class)
 	public void testIsMarkedRollback() {
-		try {
 			tx.isMarkedRollback();
-		} catch (Exception e) {
-			assertTrue(e instanceof DemoiselleException);
-		}
 	}
 
-	@Test
+	@Test(expected=DemoiselleException.class)
 	public void testRollback() {
-		try {
 			tx.rollback();
-		} catch (Exception e) {
-			assertTrue(e instanceof DemoiselleException);
-		}
 	}
 
-	@Test
+	@Test(expected=DemoiselleException.class)
 	public void testSetRollbackOnly() {
-		try {
 			tx.setRollbackOnly();
-		} catch (Exception e) {
-			assertTrue(e instanceof DemoiselleException);
-		}
 	}
 }

@@ -36,11 +36,13 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import javax.enterprise.context.RequestScoped;
-
+import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.CORE_PRIORITY;
 import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
  * Transaction strategy that actually does nothing but raise exceptions.
@@ -48,10 +50,12 @@ import br.gov.frameworkdemoiselle.transaction.Transactional;
  * @author SERPRO
  * @see Transaction
  */
-@RequestScoped
+@Priority(CORE_PRIORITY)
 public class DefaultTransaction implements Transaction {
 
 	private static final long serialVersionUID = 1L;
+
+	private static ResourceBundle bundle;
 
 	@Override
 	public void begin() {
@@ -84,7 +88,15 @@ public class DefaultTransaction implements Transaction {
 	}
 
 	private DemoiselleException getException() {
-		return new DemoiselleException(CoreBundle.get().getString("transaction-not-defined",
+		return new DemoiselleException(getBundle().getString("transaction-not-defined",
 				Transactional.class.getSimpleName()));
+	}
+
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+		}
+
+		return bundle;
 	}
 }

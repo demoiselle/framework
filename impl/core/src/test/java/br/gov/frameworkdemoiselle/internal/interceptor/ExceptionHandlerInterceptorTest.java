@@ -47,6 +47,8 @@ import static org.powermock.api.easymock.PowerMock.replay;
 import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
+import java.util.Locale;
+
 import javax.interceptor.InvocationContext;
 
 import org.easymock.EasyMock;
@@ -61,10 +63,10 @@ import org.slf4j.Logger;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
 import br.gov.frameworkdemoiselle.internal.bootstrap.CoreBootstrap;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(CoreBootstrap.class)
+@PrepareForTest(Beans.class)
 public class ExceptionHandlerInterceptorTest {
 
 	private ExceptionHandlerInterceptor interceptor;
@@ -73,7 +75,7 @@ public class ExceptionHandlerInterceptorTest {
 
 	private Logger logger;
 
-	private ResourceBundle bundle;
+	private CoreBootstrap coreBootstrap;
 
 	class TestException extends DemoiselleException {
 
@@ -139,20 +141,21 @@ public class ExceptionHandlerInterceptorTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.logger = PowerMock.createMock(Logger.class);
-		this.bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
-		this.logger.info(EasyMock.anyObject(String.class));
-		PowerMock.expectLastCall().anyTimes();
-		replay(this.logger);
-		this.interceptor = new ExceptionHandlerInterceptor(this.logger, this.bundle);
+
+		this.interceptor = new ExceptionHandlerInterceptor();
 		this.context = PowerMock.createMock(InvocationContext.class);
-		mockStatic(CoreBootstrap.class);
+		this.coreBootstrap = PowerMock.createMock(CoreBootstrap.class);
+
+		mockStatic(Beans.class);
+		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault()).anyTimes();
+		expect(Beans.getReference(CoreBootstrap.class)).andReturn(this.coreBootstrap).anyTimes();
+
 	}
 
 	@Test
 	public void manageSuccessfully() throws Throwable {
 		expect(this.context.proceed()).andReturn(null);
-		replay();
+		replayAll();
 		assertEquals(null, this.interceptor.manage(this.context));
 		verify();
 	}
@@ -160,10 +163,13 @@ public class ExceptionHandlerInterceptorTest {
 	@Test
 	public void manageWithClassThatDoesNotContainHandleMethod() throws Exception {
 		ClassWithoutMethodsAnnotatedWithExceptionHandler classWithoutException = new ClassWithoutMethodsAnnotatedWithExceptionHandler();
+
 		expect(this.context.getTarget()).andReturn(classWithoutException);
 		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
-		expect(CoreBootstrap.isAnnotatedType(ClassWithoutMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
-		replayAll(this.context, ClassWithoutMethodsAnnotatedWithExceptionHandler.class);
+		expect(this.coreBootstrap.isAnnotatedType(ClassWithoutMethodsAnnotatedWithExceptionHandler.class)).andReturn(
+				true);
+
+		replayAll(this.context, this.coreBootstrap, Beans.class);
 
 		try {
 			this.interceptor.manage(this.context);
@@ -180,8 +186,9 @@ public class ExceptionHandlerInterceptorTest {
 		ClassWithMethodsAnnotatedWithExceptionHandler classWithException = new ClassWithMethodsAnnotatedWithExceptionHandler();
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
 		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
-		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
-		replayAll(this.context, CoreBootstrap.class);
+		expect(this.coreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
+
+		replayAll(this.context, this.coreBootstrap, Beans.class);
 
 		assertNull(this.interceptor.manage(this.context));
 		assertEquals(1, classWithException.times);
@@ -193,8 +200,8 @@ public class ExceptionHandlerInterceptorTest {
 		ClassWithMethodsAnnotatedWithExceptionHandler classWithException = new ClassWithMethodsAnnotatedWithExceptionHandler();
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
 		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
-		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
-		replayAll(this.context, CoreBootstrap.class);
+		expect(this.coreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
+		replayAll(this.context, this.coreBootstrap, Beans.class);
 
 		assertNull(this.interceptor.manage(this.context));
 		assertEquals(1, classWithException.times);
@@ -207,8 +214,8 @@ public class ExceptionHandlerInterceptorTest {
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
 		expect(this.context.proceed()).andThrow(new TestException(""));
 		replay(this.context);
-		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
-		replayAll(this.context, CoreBootstrap.class);
+		expect(this.coreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
+		replayAll(this.context, this.coreBootstrap, Beans.class);
 
 		try {
 			this.interceptor.manage(this.context);
@@ -225,9 +232,9 @@ public class ExceptionHandlerInterceptorTest {
 		ClassWithMethodsAnnotatedWithExceptionHandlerAndThrowException classWithException = new ClassWithMethodsAnnotatedWithExceptionHandlerAndThrowException();
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
 		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
-		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandlerAndThrowException.class))
+		expect(this.coreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandlerAndThrowException.class))
 				.andReturn(true);
-		replayAll(this.context, CoreBootstrap.class);
+		replayAll(this.context, this.coreBootstrap, Beans.class);
 
 		try {
 			this.interceptor.manage(this.context);
@@ -244,9 +251,9 @@ public class ExceptionHandlerInterceptorTest {
 		ClassWithMethodsAnnotatedWithExceptionHandler classWithException = new ClassWithMethodsAnnotatedWithExceptionHandler();
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
 		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
-		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true)
+		expect(this.coreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true)
 				.anyTimes();
-		replayAll(this.context, CoreBootstrap.class);
+		replayAll(this.context, this.coreBootstrap, Beans.class);
 
 		assertNull(this.interceptor.manage(this.context));
 		assertEquals(1, classWithException.times);
@@ -254,7 +261,7 @@ public class ExceptionHandlerInterceptorTest {
 		this.context = PowerMock.createMock(InvocationContext.class);
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
 		expect(this.context.proceed()).andThrow(new Exception(""));
-		replayAll(this.context, CoreBootstrap.class);
+		replayAll(this.context);
 
 		assertNull(this.interceptor.manage(this.context));
 		assertEquals(2, classWithException.times);
@@ -267,9 +274,9 @@ public class ExceptionHandlerInterceptorTest {
 		ClassWithMethodWithoutParameterAnnotatedWithExceptionHandler classWithException = new ClassWithMethodWithoutParameterAnnotatedWithExceptionHandler();
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
 		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
-		expect(CoreBootstrap.isAnnotatedType(ClassWithMethodWithoutParameterAnnotatedWithExceptionHandler.class))
+		expect(this.coreBootstrap.isAnnotatedType(ClassWithMethodWithoutParameterAnnotatedWithExceptionHandler.class))
 				.andReturn(true);
-		replayAll(this.context, CoreBootstrap.class);
+		replayAll(this.context, this.coreBootstrap, Beans.class);
 
 		try {
 			this.interceptor.manage(this.context);
@@ -286,9 +293,9 @@ public class ExceptionHandlerInterceptorTest {
 		ClassWithExceptionHandlerMethodThatRethrowException testClass = new ClassWithExceptionHandlerMethodThatRethrowException();
 		expect(this.context.getTarget()).andReturn(testClass).anyTimes();
 		expect(this.context.proceed()).andThrow(new TestException(""));
-		expect(CoreBootstrap.isAnnotatedType(ClassWithExceptionHandlerMethodThatRethrowException.class))
+		expect(this.coreBootstrap.isAnnotatedType(ClassWithExceptionHandlerMethodThatRethrowException.class))
 				.andReturn(true);
-		replayAll(this.context, CoreBootstrap.class);
+		replayAll(this.context, this.coreBootstrap, Beans.class);
 
 		try {
 			this.interceptor.manage(this.context);
@@ -314,14 +321,14 @@ public class ExceptionHandlerInterceptorTest {
 						"methodThatRethrowException");
 		expect(this.context.getTarget()).andReturn(testClass).anyTimes();
 		expect(this.context.proceed()).andThrow(new TestException(""));
-		expect(CoreBootstrap.isAnnotatedType(testClass.getClass())).andReturn(false);
+		expect(this.coreBootstrap.isAnnotatedType(testClass.getClass())).andReturn(false);
 
 		this.logger = PowerMock.createMock(Logger.class);
 		this.logger.info(EasyMock.anyObject(String.class));
 		this.logger.debug(EasyMock.anyObject(String.class));
-		replayAll(testClass, this.context, CoreBootstrap.class, logger);
+		replayAll(testClass, this.context, this.coreBootstrap, logger, Beans.class);
 
-		this.interceptor = new ExceptionHandlerInterceptor(this.logger, this.bundle);
+		this.interceptor = new ExceptionHandlerInterceptor();
 
 		try {
 			this.interceptor.manage(this.context);

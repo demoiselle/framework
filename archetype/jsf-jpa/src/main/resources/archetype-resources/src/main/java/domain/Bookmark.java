@@ -1,5 +1,7 @@
 package ${package}.domain;
 
+import static javax.persistence.GenerationType.SEQUENCE;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -12,8 +14,11 @@ public class Bookmark implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	/*
+	 *  If you are using Glassfish then remove the strategy attribute
+	 */
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = SEQUENCE)
 	private Long id;
 	
 	@Column

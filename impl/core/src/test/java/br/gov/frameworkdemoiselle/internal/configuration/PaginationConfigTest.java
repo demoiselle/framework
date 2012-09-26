@@ -44,17 +44,17 @@ import org.junit.Test;
 public class PaginationConfigTest {
 
 	private PaginationConfig config;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		this.config = new PaginationConfig();
 	}
-	
+
 	@Test
 	public void testGetMaxPageLinks() {
 		assertEquals(5, config.getMaxPageLinks());
 	}
-	
+
 	@Test
 	public void testGetPageSize() {
 		assertEquals(10, config.getPageSize());

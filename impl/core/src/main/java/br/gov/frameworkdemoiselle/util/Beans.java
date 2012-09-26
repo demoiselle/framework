@@ -49,13 +49,22 @@
 package br.gov.frameworkdemoiselle.util;
 
 import java.lang.annotation.Annotation;
+import java.util.Locale;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-public class Beans {
+import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+
+public final class Beans {
 
 	private static BeanManager manager;
+
+	private Beans() {
+	}
 
 	public static void setBeanManager(BeanManager beanManager) {
 		manager = beanManager;
@@ -65,24 +74,66 @@ public class Beans {
 		return manager;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T> T getReference(final Class<T> beanClass, Annotation... qualifiers) {
-		Bean<?> bean = manager.getBeans(beanClass, qualifiers).iterator().next();
-		return (T) getReference(bean, beanClass);
+		T instance;
+
+		try {
+			instance = (T) getReference(manager.getBeans(beanClass, qualifiers));
+
+		} catch (NoSuchElementException cause) {
+			StringBuffer buffer = new StringBuffer();
+			buffer.append(beanClass.getCanonicalName());
+
+			for (Annotation qualifier : qualifiers) {
+				buffer.append(", ");
+				buffer.append(qualifier.getClass().getCanonicalName());
+			}
+
+			String message = getBundle().getString("bean-not-found", buffer.toString());
+			throw new DemoiselleException(message, cause);
+		}
+
+		return instance;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T> T getReference(final Class<T> beanClass) {
-		Bean<?> bean = manager.getBeans(beanClass).iterator().next();
-		return (T) getReference(bean, beanClass);
+		T instance;
+
+		try {
+			instance = (T) getReference(manager.getBeans(beanClass));
+
+		} catch (NoSuchElementException cause) {
+			String message = getBundle().getString("bean-not-found", beanClass.getCanonicalName());
+			throw new DemoiselleException(message, cause);
+		}
+
+		return instance;
 	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getReference(String beanName) {
-		Bean<?> bean = manager.getBeans(beanName).iterator().next();
-		return (T) getReference(bean, bean.getBeanClass());
+		T instance;
+
+		try {
+			instance = (T) getReference(manager.getBeans(beanName));
+
+		} catch (NoSuchElementException cause) {
+			String message = getBundle().getString("bean-not-found", beanName);
+			throw new DemoiselleException(message, cause);
+		}
+
+		return instance;
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> T getReference(Bean<?> bean, final Class<T> beanClass) {
-		return (T) manager.getReference(bean, beanClass, manager.createCreationalContext(bean));
+	private static <T> T getReference(Set<Bean<?>> beans) {
+		Bean<?> bean = beans.iterator().next();
+		return (T) manager.getReference(bean, bean.getBeanClass(), manager.createCreationalContext(bean));
+	}
+
+	private static ResourceBundle getBundle() {
+		return ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
 	}
 }

@@ -60,7 +60,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @PrepareForTest({ BeanManager.class, Bean.class })
 public class BeansTest {
 
-	@SuppressWarnings({ "unchecked", "static-access" })
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetReferenceByClass() {
 		BeanManager beanManager = PowerMock.createMock(BeanManager.class);
@@ -73,25 +73,24 @@ public class BeansTest {
 
 		expect(beanManager.createCreationalContext(EasyMock.anyObject(Contextual.class))).andReturn(null);
 		expect(beanManager.getBeans(EasyMock.anyObject(Class.class))).andReturn(collection);
-		expect(
-				beanManager.getReference(EasyMock.anyObject(Bean.class), EasyMock.anyObject(Class.class),
+		expect(beanManager.getReference(EasyMock.anyObject(Bean.class), EasyMock.anyObject(Class.class),
 						EasyMock.anyObject(CreationalContext.class))).andReturn(object);
+		
+		expect(bean.getBeanClass()).andReturn(null);
 
 		replayAll(beanManager, bean);
 
-		// There is no need to instantiate utility classes. But it's the only way to get 100% cobertura.
-		Beans beans = new Beans();
-		beans.setBeanManager(beanManager);
-		String returned = beans.getReference(String.class);
+		Beans.setBeanManager(beanManager);
+		String returned = Beans.getReference(String.class);
 
 		assertEquals(returned, object);
-		assertEquals(beanManager, beans.getBeanManager());
+		assertEquals(beanManager, Beans.getBeanManager());
 
 		verifyAll();
 	}
 
-	@SuppressWarnings({ "unchecked", "static-access" })
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testGetReferenceByString() {
 		BeanManager beanManager = PowerMock.createMock(BeanManager.class);
 
@@ -104,19 +103,16 @@ public class BeansTest {
 		expect(bean.getBeanClass()).andReturn(null);
 		expect(beanManager.createCreationalContext(EasyMock.anyObject(Contextual.class))).andReturn(null);
 		expect(beanManager.getBeans("something")).andReturn(collection);
-		expect(
-				beanManager.getReference(EasyMock.anyObject(Bean.class), EasyMock.anyObject(Class.class),
+		expect(beanManager.getReference(EasyMock.anyObject(Bean.class), EasyMock.anyObject(Class.class),
 						EasyMock.anyObject(CreationalContext.class))).andReturn(object);
 
 		replayAll(beanManager, bean);
 
-		// There is no need to instantiate utility classes. But it's the only way to get 100% cobertura.
-		Beans beans = new Beans();
-		beans.setBeanManager(beanManager);
-		String returned = beans.getReference("something");
+		Beans.setBeanManager(beanManager);
+		String returned = Beans.getReference("something");
 
 		assertEquals(returned, object);
-		assertEquals(beanManager, beans.getBeanManager());
+		assertEquals(beanManager, Beans.getBeanManager());
 
 		verifyAll();
 	}

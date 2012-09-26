@@ -3,11 +3,26 @@
 	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	version="3.0">
 
- 	<!-- If you are using tomcat6/tomcat7 then uncomment this listener -->
+ 	<!-- If you are using tomcat6/tomcat7/gae then uncomment this listener -->
  	<!--
 	<listener>
 		<listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
 	</listener>
+ 	-->
+
+ 	<!-- If you are using servlet 2.5 then uncomment this listener -->
+ 	<!--
+	<listener>
+		<listener-class>br.gov.frameworkdemoiselle.util.ServletListener</listener-class>
+	</listener>
+	<filter>
+		<filter-name>Demoiselle Servlet Filter</filter-name>
+		<filter-class>br.gov.frameworkdemoiselle.util.ServletFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Demoiselle Servlet Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
  	-->
 
 	<servlet>
@@ -29,5 +44,5 @@
 		</web-resource-collection>
 		<auth-constraint />
 	</security-constraint>
-	
+
 </web-app>

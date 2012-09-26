@@ -44,14 +44,33 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-extension-parent</artifactId>
-		<version>2.2.3-SNAPSHOT</version>
-		<relativePath>../../../parent/extension/pom.xml</relativePath>
+		<version>2.3.0-RC2-SNAPSHOT</version>
+		<relativePath>../../../parent/extension</relativePath>
 	</parent>
 
-	<name>JSF Extension</name>
-	<description />
+	<name>Demoiselle Framework JSF Extension</name>
+	<description>
+		JSF Extension
+	</description>
+	<url>http://www.frameworkdemoiselle.gov.br</url>
+
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>SERPRO - Serviço Federal de Processamento de Dados</name>
+		<url>http://www.serpro.gov.br</url>
+	</organization>
 
 	<dependencies>
+		<dependency>
+			<groupId>br.gov.frameworkdemoiselle</groupId>
+			<artifactId>demoiselle-servlet</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.sun.faces</groupId>
 			<artifactId>jsf-api</artifactId>
@@ -59,26 +78,15 @@
 		<dependency>
 			<groupId>com.sun.faces</groupId>
 			<artifactId>jsf-impl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.el</groupId>
-			<artifactId>el-api</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
 	<repositories>
 		<repository>
-			<id>demoiselle.sourceforge.net</id>
-			<name>Demoiselle Maven Repository</name>
-			<url>http://demoiselle.sourceforge.net/repository/release</url>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</repository>
 	</repositories>
 </project>

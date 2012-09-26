@@ -35,7 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
-
+import org.junit.Ignore;
 import java.io.IOException;
 
 import javax.faces.context.FacesContext;
@@ -57,7 +57,7 @@ import org.slf4j.Logger;
 import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.FileRenderer;
 import br.gov.frameworkdemoiselle.util.FileRenderer.ContentType;
-
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Faces.class })
 public class FileRendererImplTest {

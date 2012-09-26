@@ -41,7 +41,8 @@
 		<xi:include href="logger.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 		<xi:include href="templates.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 		<xi:include href="security.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-		<!-- <xi:include href="paginacao.xml" xmlns:xi="http://www.w3.org/2001/XInclude" /> -->
+		<xi:include href="paginacao.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+		<xi:include href="properties.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 	</part>
 	<!-- parte 2 -->
 <!--	<part id="2">-->

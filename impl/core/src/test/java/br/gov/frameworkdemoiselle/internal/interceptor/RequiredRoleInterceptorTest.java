@@ -5,6 +5,8 @@ import static org.junit.Assert.fail;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replay;
 
+import java.util.Locale;
+
 import javax.enterprise.inject.Instance;
 import javax.interceptor.InvocationContext;
 
@@ -14,18 +16,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.slf4j.Logger;
 
-import br.gov.frameworkdemoiselle.internal.implementation.CoreBundle;
 import br.gov.frameworkdemoiselle.security.AuthorizationException;
 import br.gov.frameworkdemoiselle.security.NotLoggedInException;
 import br.gov.frameworkdemoiselle.security.RequiredRole;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.security.User;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(CoreBundle.class)
+@PrepareForTest(Beans.class)
 public class RequiredRoleInterceptorTest {
 
 	private RequiredRoleInterceptor interceptor;
@@ -84,23 +84,22 @@ public class RequiredRoleInterceptorTest {
 
 		@SuppressWarnings("unchecked")
 		Instance<SecurityContext> securityContextInstance = EasyMock.createMock(Instance.class);
-		ResourceBundle bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
-		Logger logger = EasyMock.createMock(Logger.class);
 		User user = EasyMock.createMock(User.class);
 
 		this.securityContext = EasyMock.createMock(SecurityContext.class);
 		this.ic = EasyMock.createMock(InvocationContext.class);
 
-		mockStatic(CoreBundle.class);
-		expect(CoreBundle.get()).andReturn(bundle);
+		mockStatic(Beans.class);
+		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault());
+		expect(Beans.getReference(SecurityContext.class)).andReturn(this.securityContext);
 
 		expect(user.getId()).andReturn("UserName").anyTimes();
 		expect(this.securityContext.getUser()).andReturn(user).anyTimes();
 		expect(securityContextInstance.get()).andReturn(securityContext).anyTimes();
 		expect(this.ic.proceed()).andReturn(null);
-		replay(securityContextInstance, user, CoreBundle.class);
+		replay(securityContextInstance, user, Beans.class);
 
-		this.interceptor = new RequiredRoleInterceptor(securityContextInstance, bundle, logger);
+		this.interceptor = new RequiredRoleInterceptor();
 	}
 
 	private void prepareMock(Object target, String methodName, String[] expectedRoles, boolean hasHole,

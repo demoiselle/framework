@@ -77,5 +77,4 @@ public class PaginationConfig implements Serializable {
 	public int getMaxPageLinks() {
 		return maxPageLinks;
 	}
-
 }

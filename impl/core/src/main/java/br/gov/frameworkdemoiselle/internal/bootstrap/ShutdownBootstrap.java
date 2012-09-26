@@ -36,103 +36,31 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeShutdown;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
-import br.gov.frameworkdemoiselle.annotation.Shutdown;
-import br.gov.frameworkdemoiselle.annotation.ViewScoped;
-import br.gov.frameworkdemoiselle.internal.context.CustomContext;
-import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
-import br.gov.frameworkdemoiselle.internal.processor.ShutdownProcessor;
+import org.slf4j.Logger;
+
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
+import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
+import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
 
 /**
  * This class run at application shutdown
  */
-public class ShutdownBootstrap extends AbstractBootstrap {
+public class ShutdownBootstrap extends AbstractLifecycleBootstrap<Shutdown> {
 
-	private static final Class<? extends Annotation> annotationClass = Shutdown.class;
+	private Logger logger;
 
-	private static final List<CustomContext> tempContexts = new ArrayList<CustomContext>();
-
-	@SuppressWarnings("rawtypes")
-	private static final List<ShutdownProcessor> processors = Collections
-			.synchronizedList(new ArrayList<ShutdownProcessor>());
-
-	private static AfterBeanDiscovery event;
-
-	/**
-	 * Observes all methods annotated with @Shutdown and create an instance of ShutdownProcessor for them
-	 * 
-	 * @param <T>
-	 * @param event
-	 * @param beanManager
-	 */
-	public <T> void processAnnotatedType(@Observes final ProcessAnnotatedType<T> event, final BeanManager beanManager) {
-		final AnnotatedType<T> annotatedType = event.getAnnotatedType();
-		for (AnnotatedMethod<?> am : annotatedType.getMethods()) {
-			if (am.isAnnotationPresent(annotationClass)) {
-				@SuppressWarnings("unchecked")
-				AnnotatedMethod<T> annotatedMethod = (AnnotatedMethod<T>) am;
-				processors.add(new ShutdownProcessor<T>(annotatedMethod, beanManager));
-			}
-		}
-	}
-
-	public void saveEvent(@Observes final AfterBeanDiscovery event) {
-		ShutdownBootstrap.event = event;
-	}
-
-	public static void loadTempContexts(final AfterBeanDiscovery event) {
-		// Não registrar o contexto de aplicação pq ele já é registrado pela
-		// implementação do CDI
-		tempContexts.add(new ThreadLocalContext(ViewScoped.class));
-		tempContexts.add(new ThreadLocalContext(SessionScoped.class, false));
-		tempContexts.add(new ThreadLocalContext(ConversationScoped.class));
-		tempContexts.add(new ThreadLocalContext(RequestScoped.class));
-
-		for (CustomContext tempContext : tempContexts) {
-			addContext(tempContext, event);
-		}
-	}
-
-	/**
-	 * Before Shutdown it execute the methods annotateds with @Shutdown considering the priority order;
-	 * 
-	 * @param event
-	 * @throws Exception
-	 */
-	@SuppressWarnings("unchecked")
-	public static void shuttingDown(@Observes final BeforeShutdown event) throws Throwable {
-		loadTempContexts(ShutdownBootstrap.event);
-
-		getLogger().debug(
-				getBundle("demoiselle-core-bundle").getString("executing-all", annotationClass.getSimpleName()));
-		Collections.sort(processors);
-
-		for (ShutdownProcessor<?> processor : processors) {
-			processor.process();
+	@Override
+	protected Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(ShutdownBootstrap.class);
 		}
 
-		processors.clear();
-		unloadTempContexts();
+		return logger;
 	}
 
-	private static void unloadTempContexts() {
-		for (CustomContext tempContext : tempContexts) {
-			disableContext(tempContext);
-		}
+	public void shutdown(@Observes AfterShutdownProccess event) {
+		proccessEvent();
 	}
 }

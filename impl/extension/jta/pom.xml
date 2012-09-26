@@ -44,12 +44,27 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-extension-parent</artifactId>
-		<version>2.2.3-SNAPSHOT</version>
-		<relativePath>../../../parent/extension/pom.xml</relativePath>
+		<version>2.3.0-RC2-SNAPSHOT</version>
+		<relativePath>../../../parent/extension</relativePath>
 	</parent>
 
-	<name>JTA Extension</name>
-	<description />
+	<name>Demoiselle Framework JTA Extension</name>
+	<description>
+		JTA Extension
+	</description>
+	<url>http://www.frameworkdemoiselle.gov.br</url>
+
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>SERPRO - Serviço Federal de Processamento de Dados</name>
+		<url>http://www.serpro.gov.br</url>
+	</organization>
 
 	<dependencies>
 		<dependency>
@@ -60,9 +75,9 @@
 
 	<repositories>
 		<repository>
-			<id>demoiselle.sourceforge.net</id>
-			<name>Demoiselle Maven Repository</name>
-			<url>http://demoiselle.sourceforge.net/repository/release</url>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</repository>
 	</repositories>
 </project>

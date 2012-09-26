@@ -49,6 +49,7 @@ import br.gov.frameworkdemoiselle.util.Strings;
 /**
  * @author SERPRO
  */
+
 public class PaginationImplTest {
 
 	private Pagination pagination;
@@ -170,7 +171,7 @@ public class PaginationImplTest {
 			fail();
 		} catch (IndexOutOfBoundsException cause) {
 		}
-		
+
 		try {
 			pagination.setTotalResults(0);
 			pagination.setFirstResult(0);
@@ -313,7 +314,7 @@ public class PaginationImplTest {
 		pagination.setCurrentPage(9);
 		assertEquals(90, pagination.getFirstResult());
 	}
-	
+
 	@Test
 	public void testToStringFormat() {
 		assertEquals(Strings.toString(pagination), pagination.toString());

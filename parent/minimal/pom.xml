@@ -44,15 +44,40 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-framework-parent</artifactId>
-		<version>2.2.3-SNAPSHOT</version>
-		<relativePath>../framework/pom.xml</relativePath>
+		<version>2.3.0-RC2-SNAPSHOT</version>
+		<relativePath>../framework</relativePath>
 	</parent>
 
-	<name>App Parent</name>
+	<name>Demoiselle Framework Minimal Parent</name>
 	<description>
 		Configurações úteis para todas as aplicações que utilizam o framework. O ideal é que toda aplicação que
 		utiliza o Demoiselle herde deste POM ou de uma de suas especializações.
 	</description>
+	<url>http://www.frameworkdemoiselle.gov.br</url>
+
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>SERPRO - Serviço Federal de Processamento de Dados</name>
+		<url>http://www.serpro.gov.br</url>
+	</organization>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>br.gov.frameworkdemoiselle</groupId>
+				<artifactId>demoiselle-framework-bom</artifactId>
+				<version>2.3.0-RC2-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<plugins>
@@ -77,18 +102,13 @@
 			<artifactId>demoiselle-core</artifactId>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
-			<groupId>br.gov.frameworkdemoiselle.component</groupId>
-			<artifactId>demoiselle-junit</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<repositories>
 		<repository>
-			<id>demoiselle.sourceforge.net</id>
-			<name>Demoiselle Maven Repository</name>
-			<url>http://demoiselle.sourceforge.net/repository/release</url>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</repository>
 	</repositories>
 </project>

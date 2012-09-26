@@ -48,13 +48,13 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.internal.configuration.JsfSecurityConfig;
 import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
 import br.gov.frameworkdemoiselle.security.AfterLogoutSuccessful;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.PageNotFoundException;
 import br.gov.frameworkdemoiselle.util.Redirector;
-
-import com.sun.faces.config.ConfigurationException;
 
 @SessionScoped
 public class SecurityObserver implements Serializable {
@@ -62,15 +62,9 @@ public class SecurityObserver implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	private FacesContext facesContext;
-
-	@Inject
 	private JsfSecurityConfig config;
 
-	@Inject
-	private HttpSession session;
-
-	private Map<String, Object> savedParams = new HashMap<String, Object>();
+	private Map<String, Object> savedParams;
 
 	private String savedViewId;
 
@@ -80,12 +74,21 @@ public class SecurityObserver implements Serializable {
 	public SecurityObserver() {
 		clear();
 	}
+	
+	private Map<String, Object> getSavedParams(){
+		if(this.savedParams == null) {
+			this.savedParams = new HashMap<String, Object>();
+		}
+		
+		return this.savedParams;
+	}
 
 	private void saveCurrentState() {
 		clear();
+		FacesContext facesContext = Beans.getReference(FacesContext.class);
 
 		if (!config.getLoginPage().equals(facesContext.getViewRoot().getViewId())) {
-			savedParams.putAll(facesContext.getExternalContext().getRequestParameterMap());
+			getSavedParams().putAll(facesContext.getExternalContext().getRequestParameterMap());
 			savedViewId = facesContext.getViewRoot().getViewId();
 		}
 	}
@@ -111,11 +114,11 @@ public class SecurityObserver implements Serializable {
 
 		try {
 			if (savedViewId != null) {
-				Redirector.redirect(savedViewId, savedParams);
+				Redirector.redirect(savedViewId, getSavedParams());
 
 			} else if (config.isRedirectEnabled()) {
 				redirectedFromConfig = true;
-				Redirector.redirect(config.getRedirectAfterLogin(), savedParams);
+				Redirector.redirect(config.getRedirectAfterLogin(), getSavedParams());
 			}
 
 		} catch (PageNotFoundException cause) {
@@ -151,7 +154,7 @@ public class SecurityObserver implements Serializable {
 
 		} finally {
 			try {
-				session.invalidate();
+				Beans.getReference(HttpSession.class).invalidate();
 			} catch (IllegalStateException e) {
 				logger.debug("Esta sessão já foi invalidada.");
 			}
@@ -160,6 +163,6 @@ public class SecurityObserver implements Serializable {
 
 	private void clear() {
 		savedViewId = null;
-		savedParams.clear();
+		getSavedParams().clear();
 	}
 }

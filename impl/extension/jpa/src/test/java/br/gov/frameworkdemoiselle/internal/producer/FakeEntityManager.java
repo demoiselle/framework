@@ -49,6 +49,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.Metamodel;
 
+
 public class FakeEntityManager implements EntityManager {
 
 	private boolean closed = false;

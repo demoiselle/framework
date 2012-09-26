@@ -44,29 +44,33 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-extension-parent</artifactId>
-		<version>2.2.3-SNAPSHOT</version>
-		<relativePath>../../../parent/extension/pom.xml</relativePath>
+		<version>2.3.0-RC2-SNAPSHOT</version>
+		<relativePath>../../../parent/extension</relativePath>
 	</parent>
 
-	<name>SE Extension</name>
-	<description>Extensão para aplicações SE</description>
+	<name>Demoiselle Framework SE Extension</name>
+	<description>
+		Extensão para aplicações SE
+	</description>
+	<url>http://www.frameworkdemoiselle.gov.br</url>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.jboss.weld.se</groupId>
-			<artifactId>weld-se-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-		</dependency>
-	</dependencies>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>SERPRO - Serviço Federal de Processamento de Dados</name>
+		<url>http://www.serpro.gov.br</url>
+	</organization>
 
 	<repositories>
 		<repository>
-			<id>demoiselle.sourceforge.net</id>
-			<name>Demoiselle Maven Repository</name>
-			<url>http://demoiselle.sourceforge.net/repository/release</url>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</repository>
 	</repositories>
 </project>

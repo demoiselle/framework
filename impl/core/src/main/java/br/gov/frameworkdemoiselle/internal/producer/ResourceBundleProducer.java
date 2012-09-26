@@ -38,14 +38,13 @@ package br.gov.frameworkdemoiselle.internal.producer;
 
 import java.io.Serializable;
 import java.util.Locale;
-import java.util.MissingResourceException;
 
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -63,17 +62,19 @@ public class ResourceBundleProducer implements Serializable {
 	 * @param String
 	 *            baseName
 	 */
-	public ResourceBundle create(String baseName, Locale locale) {
+	public static ResourceBundle create(String baseName) {
+		return create(baseName, Beans.getReference(Locale.class));
+	}
+
+	/**
+	 * This method should be used by classes that can not inject ResourceBundle, to create the ResourceBundle.
+	 * 
+	 * @param String
+	 *            baseName
+	 */
+	public static ResourceBundle create(String baseName, Locale locale) {
 		ResourceBundle bundle = null;
-
-		try {
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			bundle = new ResourceBundle(ResourceBundle.getBundle(baseName, locale, classLoader));
-
-		} catch (MissingResourceException e) {
-			throw new DemoiselleException("File " + baseName + " not found!");
-		}
-
+		bundle = new ResourceBundle(baseName, locale);
 		return bundle;
 	}
 
@@ -83,7 +84,7 @@ public class ResourceBundleProducer implements Serializable {
 	 */
 	@Produces
 	@Default
-	public ResourceBundle create(InjectionPoint ip, Locale locale) {
+	public ResourceBundle create(InjectionPoint ip) {
 		String baseName;
 
 		if (ip != null && ip.getAnnotated().isAnnotationPresent(Name.class)) {
@@ -92,6 +93,6 @@ public class ResourceBundleProducer implements Serializable {
 			baseName = "messages";
 		}
 
-		return create(baseName, locale);
+		return create(baseName, Beans.getReference(Locale.class));
 	}
 }

@@ -40,56 +40,69 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.CtNewMethod;
+import javassist.LoaderClassPath;
+
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.configuration.Configuration;
-import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
-import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
-import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
-import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.internal.implementation.ConfigurationImpl;
 
-/**
- * @author SERPRO
- */
-public class ConfigurationBootstrap extends AbstractBootstrap {
+public class ConfigurationBootstrap implements Extension {
 
-	private static List<AnnotatedType<?>> types = Collections.synchronizedList(new ArrayList<AnnotatedType<?>>());
+	private final List<Class<Object>> cache = Collections.synchronizedList(new ArrayList<Class<Object>>());
 
-	private static final String MSG_PROCESSING = "bootstrap.configuration.processing";
+	public void processAnnotatedType(@Observes final ProcessAnnotatedType<Object> event) {
+		final AnnotatedType<Object> annotatedType = event.getAnnotatedType();
 
-	private ThreadLocalContext c1;
-
-	private ThreadLocalContext c2;
-
-	public <T> void detectAnnotation(@Observes final ProcessAnnotatedType<T> event, final BeanManager beanManager) {
-		if (event.getAnnotatedType().isAnnotationPresent(Configuration.class)) {
-			types.add(event.getAnnotatedType());
+		if (annotatedType.getJavaClass().isAnnotationPresent(Configuration.class)) {
+			cache.add(annotatedType.getJavaClass());
+			event.veto();
 		}
 	}
 
-	public void loadTempContexts(@Observes final AfterBeanDiscovery event) {
-		c1 = new ThreadLocalContext(RequestScoped.class);
-		addContext(c1, event);
-		c2 = new ThreadLocalContext(SessionScoped.class);
-		addContext(c2, event);
-	}
+	public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) throws Exception {
+		Class<Object> proxy;
 
-	public void processLoader(@Observes final AfterDeploymentValidation event)
-			throws ConfigurationException {
-		ConfigurationLoader configurationLoader = Beans.getReference(ConfigurationLoader.class);
-		for (AnnotatedType<?> type : types) {
-			getLogger().debug(getBundle().getString(MSG_PROCESSING, type.toString()));
-			configurationLoader.load(Beans.getReference(type.getJavaClass()));
+		for (Class<Object> config : cache) {
+			proxy = createProxy(config);
+			event.addBean(new CustomBean(proxy, beanManager));
 		}
-		disableContext(c1);
-		disableContext(c2);
 	}
 
+	@SuppressWarnings("unchecked")
+	private Class<Object> createProxy(Class<Object> type) throws Exception {
+		String superClassName = type.getCanonicalName();
+		String chieldClassName = superClassName + "__DemoiselleProxy";
+
+		ClassPool pool = ClassPool.getDefault();
+		CtClass ctChieldClass = pool.getOrNull(chieldClassName);
+
+		ClassLoader classLoader = type.getClassLoader();
+		if (ctChieldClass == null) {
+			pool.appendClassPath(new LoaderClassPath(classLoader));
+			CtClass ctSuperClass = pool.get(superClassName);
+
+			ctChieldClass = pool.getAndRename(ConfigurationImpl.class.getCanonicalName(), chieldClassName);
+			ctChieldClass.setSuperclass(ctSuperClass);
+
+			CtMethod ctChieldMethod;
+			for (CtMethod ctSuperMethod : ctSuperClass.getDeclaredMethods()) {
+				ctChieldMethod = CtNewMethod.delegator(ctSuperMethod, ctChieldClass);
+				ctChieldMethod.insertBefore("load(this);");
+
+				ctChieldClass.addMethod(ctChieldMethod);
+			}
+		}
+
+		return ctChieldClass.toClass(classLoader, type.getProtectionDomain());
+	}
 }

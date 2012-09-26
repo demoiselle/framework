@@ -41,11 +41,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.internal.configuration.PaginationConfig;
 import br.gov.frameworkdemoiselle.pagination.Pagination;
 import br.gov.frameworkdemoiselle.pagination.PaginationContext;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
  * Context implementation reserved for pagination purposes. Internally a hash map is used to store pagination data for
@@ -59,7 +59,6 @@ public class PaginationContextImpl implements Serializable, PaginationContext {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
 	private PaginationConfig config;
 
 	private final Map<Class<?>, Pagination> cache = new HashMap<Class<?>, Pagination>();
@@ -73,7 +72,7 @@ public class PaginationContextImpl implements Serializable, PaginationContext {
 
 		if (pagination == null && create) {
 			pagination = new PaginationImpl();
-			pagination.setPageSize(config.getPageSize());
+			pagination.setPageSize(getConfig().getPageSize());
 
 			cache.put(clazz, pagination);
 		}
@@ -81,4 +80,11 @@ public class PaginationContextImpl implements Serializable, PaginationContext {
 		return pagination;
 	}
 
+	private PaginationConfig getConfig() {
+		if (config == null) {
+			config = Beans.getReference(PaginationConfig.class);
+		}
+
+		return config;
+	}
 }

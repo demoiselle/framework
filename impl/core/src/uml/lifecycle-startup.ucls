@@ -1,6 +1,6 @@
 <class-diagram version="1.0.3" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
   realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
-  <annotation id="1" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.annotation.Startup" 
+  <annotation id="1" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.lifecycle.Startup" 
     project="demoiselle-core" file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/annotation/Startup.java" 
     binary="false">    
     <position height="-1" width="-1" x="301" y="232"/>    

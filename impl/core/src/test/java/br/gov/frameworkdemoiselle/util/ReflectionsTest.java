@@ -51,7 +51,7 @@ public class ReflectionsTest {
 }
 
 class SomeClass<T, I> {
-	
+
 }
 
 class OtherClass extends SomeClass<Long, String> {

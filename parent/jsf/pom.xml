@@ -43,16 +43,29 @@
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-minimal-parent</artifactId>
-		<version>2.2.3-SNAPSHOT</version>
-		<relativePath>../minimal/pom.xml</relativePath>
+		<artifactId>demoiselle-servlet-parent</artifactId>
+		<version>2.3.0-RC2-SNAPSHOT</version>
+		<relativePath>../servlet</relativePath>
 	</parent>
 
-	<name>JSF Parent</name>
+	<name>Demoiselle Framework JSF Parent</name>
 	<description>
 		Especialização do POM demoiselle-web-parent, contendo configurações úteis para todas as aplicações JSF que
 		utilizam o framework.
 	</description>
+	<url>http://www.frameworkdemoiselle.gov.br</url>
+
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>SERPRO - Serviço Federal de Processamento de Dados</name>
+		<url>http://www.serpro.gov.br</url>
+	</organization>
 
 	<dependencies>
 		<dependency>
@@ -60,23 +73,7 @@
 			<artifactId>demoiselle-jsf</artifactId>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
-			<groupId>javax.el</groupId>
-			<artifactId>el-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>javax.servlet-api</artifactId>
-				<version>3.0.1</version>
-				<scope>provided</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<profiles>
 		<!-- Os profiles foram replicados do parent pois o Maven 2 não suporta herança de profile. Provavelmente isto estará corrigido no Maven 3 -->
@@ -84,39 +81,14 @@
 			<id>tomcat6</id>
 			<dependencies>
 				<dependency>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.jboss.weld</groupId>
-					<artifactId>weld-core</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.jboss.weld.servlet</groupId>
-					<artifactId>weld-servlet-core</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.eclipse.persistence</groupId>
-					<artifactId>eclipselink</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-validator</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>hsqldb</groupId>
-					<artifactId>hsqldb</artifactId>
+					<groupId>com.sun.faces</groupId>
+					<artifactId>jsf-api</artifactId>
 					<scope>compile</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.faces</groupId>
+					<artifactId>jsf-impl</artifactId>
+					<scope>runtime</scope>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -124,125 +96,67 @@
 			<id>tomcat7</id>
 			<dependencies>
 				<dependency>
-					<groupId>br.gov.frameworkdemoiselle</groupId>
-					<artifactId>demoiselle-jsf</artifactId>
+					<groupId>com.sun.faces</groupId>
+					<artifactId>jsf-api</artifactId>
 					<scope>compile</scope>
-					<exclusions>
-						<exclusion>
-							<groupId>javax.servlet</groupId>
-							<artifactId>servlet-api</artifactId>
-						</exclusion>
-					</exclusions>
 				</dependency>
 				<dependency>
-					<groupId>javax.servlet</groupId>
-					<artifactId>javax.servlet-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.jboss.weld</groupId>
-					<artifactId>weld-core</artifactId>
+					<groupId>com.sun.faces</groupId>
+					<artifactId>jsf-impl</artifactId>
 					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.jboss.weld.servlet</groupId>
-					<artifactId>weld-servlet-core</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.eclipse.persistence</groupId>
-					<artifactId>eclipselink</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-validator</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>hsqldb</groupId>
-					<artifactId>hsqldb</artifactId>
-					<scope>compile</scope>
 				</dependency>
 			</dependencies>
 		</profile>
 		<profile>
-			<id>jboss6</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
+			<id>gae</id>
 			<dependencies>
 				<dependency>
-					<groupId>br.gov.frameworkdemoiselle</groupId>
-					<artifactId>demoiselle-jsf</artifactId>
+					<groupId>com.sun.faces</groupId>
+					<artifactId>jsf-api</artifactId>
 					<scope>compile</scope>
-					<exclusions>
-						<exclusion>
-							<groupId>javax.servlet</groupId>
-							<artifactId>servlet-api</artifactId>
-						</exclusion>
-					</exclusions>
 				</dependency>
 				<dependency>
-					<groupId>javax.servlet</groupId>
-					<artifactId>javax.servlet-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>javax.enterprise</groupId>
-					<artifactId>cdi-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>javax.servlet</groupId>
-					<artifactId>jstl</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<artifactId>validation-api</artifactId>
-					<groupId>javax.validation</groupId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>javax.transaction</groupId>
-					<artifactId>jta</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
+					<groupId>com.sun.faces</groupId>
+					<artifactId>jsf-impl</artifactId>
 					<scope>runtime</scope>
 				</dependency>
 				<dependency>
-					<groupId>org.eclipse.persistence</groupId>
-					<artifactId>javax.persistence</artifactId>
-					<scope>provided</scope>
+					<groupId>org.glassfish.web</groupId>
+					<artifactId>el-impl</artifactId>
+					<scope>runtime</scope>
 				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>glassfish3</id>
+			<dependencies>
 				<dependency>
 					<groupId>com.sun.faces</groupId>
 					<artifactId>jsf-api</artifactId>
 					<scope>provided</scope>
 				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>jboss6</id>
+			<dependencies>
 				<dependency>
 					<groupId>com.sun.faces</groupId>
-					<artifactId>jsf-impl</artifactId>
+					<artifactId>jsf-api</artifactId>
 					<scope>provided</scope>
 				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>jboss7</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<dependencies>
 				<dependency>
-					<groupId>hsqldb</groupId>
-					<artifactId>hsqldb</artifactId>
+					<groupId>com.sun.faces</groupId>
+					<artifactId>jsf-api</artifactId>
 					<scope>provided</scope>
-				</dependency>
-
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-entitymanager</artifactId>
-					<scope>test</scope>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -250,9 +164,9 @@
 
 	<repositories>
 		<repository>
-			<id>demoiselle.sourceforge.net</id>
-			<name>Demoiselle Maven Repository</name>
-			<url>http://demoiselle.sourceforge.net/repository/release</url>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</repository>
 	</repositories>
 </project>

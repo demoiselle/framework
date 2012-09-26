@@ -45,7 +45,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Reflections {
+public final class Reflections {
+
+	private Reflections() {
+	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getGenericTypeArgument(final Class<?> clazz, final int idx) {
@@ -127,11 +130,11 @@ public class Reflections {
 
 		return fields.toArray(new Field[0]);
 	}
-	
+
 	public static <T> T instantiate(Class<T> clasz) {
 		T object = null;
 		try {
-			 object = clasz.newInstance();
+			object = clasz.newInstance();
 		} catch (InstantiationException e) {
 			Exceptions.handleToRuntimeException(e);
 		} catch (IllegalAccessException e) {
@@ -140,4 +143,7 @@ public class Reflections {
 		return object;
 	}
 
+	public static boolean isOfType(Class<?> clazz, Class<?> type) {
+		return type.isAssignableFrom(clazz) && clazz != type;
+	}
 }

@@ -21,22 +21,22 @@ package br.gov.frameworkdemoiselle.message;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.powermock.api.easymock.PowerMock.expectPrivate;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
+import static org.powermock.api.easymock.PowerMock.replay;
 import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import java.util.Arrays;
+import java.util.Locale;
 
-import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
@@ -55,14 +55,17 @@ public class DefaultMessageTest {
 
 	@Before
 	public void setUp() throws Exception {
-		bundle = PowerMock.createMock(ResourceBundle.class);
-		expect(bundle.getString(MOCK_RESOURCE_BUNDLE_KEY)).andReturn(MOCK_RESOURCE_BUNDLE_VALUE).anyTimes();
-		expectPrivate(bundle, "handleGetObject", EasyMock.anyObject(String.class))
-				.andReturn(MOCK_RESOURCE_BUNDLE_VALUE).anyTimes();
+		Locale locale = Locale.getDefault();
+
+		mockStatic(Beans.class);
+		expect(Beans.getReference(Locale.class)).andReturn(locale).anyTimes();
+		replay(Beans.class);
+
+		bundle = ResourceBundleProducer.create("test-message");
 
 		mockStatic(Beans.class);
 		expect(Beans.getReference(ResourceBundle.class)).andReturn(bundle).anyTimes();
-		replayAll(bundle, Beans.class);
+		replayAll(Beans.class);
 	}
 
 	@After
@@ -125,7 +128,7 @@ public class DefaultMessageTest {
 		text = MOCK_RESOURCE_BUNDLE_KEY;
 		params = new Object[] { "1", "2" };
 		message = new DefaultMessage(text, params);
-		assertEquals(Strings.getString(bundle.getString(text), params), message.getText());
+		assertEquals(Strings.getString(bundle.getString("key"), params), message.getText());
 	}
 
 	@Test
@@ -143,7 +146,7 @@ public class DefaultMessageTest {
 		message = new DefaultMessage(text, SeverityType.FATAL, params);
 		assertEquals(
 				"DefaultMessage [originalText=" + text + ", parsedText="
-						+ Strings.getString(bundle.getString(text), params) + ", severity=FATAL, params="
+						+ Strings.getString(bundle.getString("key"), params) + ", severity=FATAL, params="
 						+ Arrays.toString(params) + ", bundle=" + bundle.toString() + "]", message.toString());
 	}
 
@@ -160,7 +163,7 @@ public class DefaultMessageTest {
 
 	enum MessagesEnum implements Message {
 
-		FIRST_KEY("first-key"), SECOND_KEY("second-key", SeverityType.WARN), THIRD_KEY, FOURTH_KEY(SeverityType.FATAL), LITERAL_TEXT(
+		FIRST_KEY("{first-key}"), SECOND_KEY("{second-key}", SeverityType.WARN), THIRD_KEY("{THIRD_KEY}"), FOURTH_KEY("{FOURTH_KEY}",SeverityType.FATAL), LITERAL_TEXT(
 				"This is a literal text");
 
 		private final DefaultMessage msg;
@@ -193,16 +196,8 @@ public class DefaultMessageTest {
 
 	}
 
-	// @Test
-	public void testMessagesEnum() {
-
-		// bundle = PowerMock.createMock(ResourceBundle.class);
-		// expect(bundle.getString("first-key")).andReturn("First message text");
-		// expect(bundle.getString("second-key")).andReturn("Second message text");
-		// expect(bundle.getString("THIRD_KEY")).andReturn("Third message text");
-		// expect(bundle.getString("FOURTH_KEY")).andReturn("Fourth message text");
-		// replayAll(bundle);
-
+	@Test
+	public void testMessagesEnum() throws Exception {
 		message = MessagesEnum.FIRST_KEY;
 		assertEquals(SeverityType.INFO, message.getSeverity());
 		assertEquals("First message text", message.getText());
@@ -226,7 +221,7 @@ public class DefaultMessageTest {
 
 	enum ErrorMessages implements Message {
 
-		FIRST_ERROR_KEY, SECOND_ERROR_KEY("second-error-key"), LITERAL_ERROR_TEXT("This is a literal error text");
+	    ERROR_KEY("{error-key}"), LITERAL_ERROR_TEXT("This is a literal error text");
 
 		private final DefaultMessage msg;
 
@@ -250,15 +245,11 @@ public class DefaultMessageTest {
 
 	}
 
-	// @Test
+	@Test
 	public void testErrorMessagesEnum() {
-		message = ErrorMessages.FIRST_ERROR_KEY;
+		message = ErrorMessages.ERROR_KEY;
 		assertEquals(SeverityType.ERROR, message.getSeverity());
-		assertEquals("First error message text", message.getText());
-
-		message = ErrorMessages.SECOND_ERROR_KEY;
-		assertEquals(SeverityType.ERROR, message.getSeverity());
-		assertEquals("Second error message text", message.getText());
+		assertEquals("Error message text", message.getText());
 
 		message = ErrorMessages.LITERAL_ERROR_TEXT;
 		assertEquals(SeverityType.ERROR, message.getSeverity());
@@ -267,19 +258,19 @@ public class DefaultMessageTest {
 
 	interface MessagesInterface {
 
-		final Message FIRST_KEY = new DefaultMessage("first-key");
+		final Message FIRST_KEY = new DefaultMessage("{first-key}");
 
-		final Message SECOND_KEY = new DefaultMessage("second-key", SeverityType.WARN);
+		final Message SECOND_KEY = new DefaultMessage("{second-key}", SeverityType.WARN);
 
-		final Message THIRD_KEY = new DefaultMessage("THIRD_KEY");
+		final Message THIRD_KEY = new DefaultMessage("{THIRD_KEY}");
 
-		final Message FOURTH_KEY = new DefaultMessage("FOURTH_KEY", SeverityType.FATAL);
+		final Message FOURTH_KEY = new DefaultMessage("{FOURTH_KEY}", SeverityType.FATAL);
 
 		final Message LITERAL_TEXT = new DefaultMessage("This is a literal text");
 
 	}
 
-	// @Test
+	@Test
 	public void testMessagesInterface() {
 		message = MessagesInterface.FIRST_KEY;
 		assertEquals(SeverityType.INFO, message.getSeverity());

@@ -130,7 +130,7 @@ public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> {
 			<filename>bookmark_edit.xhtml</filename> com o conteúdo seguinte:
 		</para>
 		<programlisting role="XML"><![CDATA[<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
-		xmlns:p="http://primefaces.prime.com.tr/ui"	xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:p="http://primefaces.org/ui"	xmlns:h="http://java.sun.com/jsf/html"
 		xmlns:ui="http://java.sun.com/jsf/facelets" template="/template/main.xhtml">
 	<ui:define name="body">
 		<h:form prependId="false">
@@ -184,7 +184,7 @@ public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> {
 			<filename>bookmark_list.xhtml</filename> com o conteúdo seguinte:
 		</para>
 		<programlisting role="XML"><![CDATA[<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.prime.com.tr/ui" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets" template="/template/main.xhtml">
 	<ui:define name="body">
 		<h:form>
@@ -242,7 +242,7 @@ public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> {
 			<filename>menu.xhtml</filename> conforme o conteúdo seguinte:
 		</para>
 		<programlisting role="XML"><![CDATA[<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.prime.com.tr/ui" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 	<h:form>
 		<p:menubar>

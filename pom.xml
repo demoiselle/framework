@@ -39,27 +39,41 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>demoiselle-framework-build</artifactId>
-	<version>2.2.3-SNAPSHOT</version>
+	<version>2.3.0-RC2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-build-parent</artifactId>
-		<version>1</version>
-		<relativePath>../internal/parent/build/demoiselle/pom.xml</relativePath>
+		<version>2-SNAPSHOT</version>
+		<relativePath>../internal/parent/build/demoiselle</relativePath>
 	</parent>
 
-	<name>Build Aggregator</name>
+	<name>Demoiselle Framework Build Aggregator</name>
 	<description>
 		A liberação de versões do framework deve ser feita a partir deste build, que fará automaticamente o build
 		de todos os artefatos com versionamento sincronizado. Jamais gere uma versão do framework sem utilizar este build.
 	</description>
 
 	<modules>
-		<module>impl</module>
-		<module>parent</module>
-		<module>archetype</module>
-		<module>documentation</module>
+		<module>parent/bom</module>
+		<module>parent/framework</module>
+		<module>parent/minimal</module>
+		<module>parent/extension</module>
+		<module>parent/jsf</module>
+		<module>parent/servlet</module>
+		<module>parent/se</module>
+		<module>parent/archetype</module>
+		<module>impl/core</module>
+		<module>impl/extension/jpa</module>
+		<module>impl/extension/jsf</module>
+		<module>impl/extension/jta</module>
+		<module>impl/extension/se</module>
+		<module>impl/extension/servlet</module>
+		<module>archetype/minimal</module>
+		<module>archetype/jsf-jpa</module>
+		<module>documentation/quickstart</module>
+		<module>documentation/reference</module>
 	</modules>
 
 	<build>
@@ -93,14 +107,14 @@
 
 	<repositories>
 		<repository>
-			<id>demoiselle.sourceforge.net</id>
-			<name>Demoiselle Maven Repository</name>
-			<url>http://demoiselle.sourceforge.net/repository/release</url>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</repository>
 	</repositories>
 
 	<properties>
 		<project.alias>framework</project.alias>
-		<project.nextVersion>2.2.3-SNAPSHOT</project.nextVersion>
+		<project.nextVersion>2.3.0-SNAPSHOT</project.nextVersion>
 	</properties>
 </project>

@@ -36,13 +36,17 @@
  */
 package br.gov.frameworkdemoiselle.template;
 
+import java.io.Serializable;
 
-public class Contact {
+public class Contact implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private Long id;
 
 	public Contact() {
 	}
-	
+
 	public Contact(Long id) {
 		this.id = id;
 	}
@@ -54,5 +58,5 @@ public class Contact {
 	public Long getId() {
 		return id;
 	}
-	
+
 }

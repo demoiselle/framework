@@ -68,5 +68,4 @@ public class ConfigurationException extends DemoiselleException {
 	public ConfigurationException(String message, Throwable cause) {
 		super(message, cause);
 	}
-
 }

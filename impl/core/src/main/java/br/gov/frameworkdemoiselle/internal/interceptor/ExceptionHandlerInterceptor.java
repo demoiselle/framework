@@ -42,7 +42,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -50,10 +49,12 @@ import javax.interceptor.InvocationContext;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
 import br.gov.frameworkdemoiselle.internal.bootstrap.CoreBootstrap;
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.stereotype.Controller;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @Interceptor
@@ -62,20 +63,14 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final ResourceBundle bundle;
+	private static ResourceBundle bundle;
 
-	private final Logger logger;
-
-	@Inject
-	public ExceptionHandlerInterceptor(Logger logger, @Name("demoiselle-core-bundle") ResourceBundle bundle) {
-		this.logger = logger;
-		this.bundle = bundle;
-	}
+	private static Logger logger;
 
 	private final Map<Class<?>, Map<Class<?>, Method>> cache = new HashMap<Class<?>, Map<Class<?>, Method>>();
 
 	private final boolean handleException(final Exception cause, final InvocationContext ic) throws Exception {
-		logger.info(bundle.getString("handling-exception", cause.getClass().getCanonicalName()));
+		getLogger().info(getBundle().getString("handling-exception", cause.getClass().getCanonicalName()));
 
 		boolean handled = false;
 		Class<?> type = getType(ic);
@@ -95,11 +90,13 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 	private final Class<?> getType(final InvocationContext ic) {
 		Class<?> type = ic.getTarget().getClass();
+		CoreBootstrap bootstrap = Beans.getReference(CoreBootstrap.class);
 
-		if (!CoreBootstrap.isAnnotatedType(type)) {
+		if (!bootstrap.isAnnotatedType(type)) {
 			type = type.getSuperclass();
-			logger.debug(bundle.getString("proxy-detected", ic.getTarget().getClass(), ic.getTarget().getClass()
-					.getSuperclass()));
+			getLogger().debug(
+					getBundle().getString("proxy-detected", ic.getTarget().getClass(),
+							ic.getTarget().getClass().getSuperclass()));
 		}
 
 		return type;
@@ -149,7 +146,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 	 */
 	private final void validateHandler(final Method method) {
 		if (method.getParameterTypes().length != 1) {
-			throw new DemoiselleException(bundle.getString("must-declare-one-single-parameter",
+			throw new DemoiselleException(getBundle().getString("must-declare-one-single-parameter",
 					method.toGenericString()));
 		}
 	}
@@ -170,8 +167,10 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 		try {
 			method.invoke(object, param);
+
 		} catch (InvocationTargetException cause) {
 			Throwable targetTrowable = cause.getTargetException();
+
 			if (targetTrowable instanceof Exception) {
 				throw (Exception) targetTrowable;
 			} else {
@@ -181,13 +180,14 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 		method.setAccessible(accessible);
 	}
-	
+
 	@AroundInvoke
 	public Object manage(final InvocationContext ic) throws Exception {
 		Object result = null;
 
 		try {
 			result = ic.proceed();
+
 		} catch (Exception cause) {
 			if (!handleException(cause, ic)) {
 				throw cause;
@@ -197,4 +197,19 @@ public class ExceptionHandlerInterceptor implements Serializable {
 		return result;
 	}
 
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+		}
+
+		return bundle;
+	}
+
+	private static Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(ExceptionHandlerInterceptor.class);
+		}
+
+		return logger;
+	}
 }

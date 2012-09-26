@@ -44,7 +44,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import javax.enterprise.inject.Stereotype;
-import javax.inject.Singleton;
+import javax.enterprise.util.Nonbinding;
 
 /**
  * Identifies a <b>configuration class</b>, that is, a structure reserved to store configuration values retrieved from a
@@ -61,7 +61,7 @@ import javax.inject.Singleton;
  * 
  * @author SERPRO
  */
-@Singleton
+// @Singleton
 @Stereotype
 @Inherited
 @Target(TYPE)
@@ -80,6 +80,7 @@ public @interface Configuration {
 	 * 
 	 * @return ConfigType
 	 */
+	@Nonbinding
 	ConfigType type() default ConfigType.PROPERTIES;
 
 	/**
@@ -91,6 +92,7 @@ public @interface Configuration {
 	 * 
 	 * @return String
 	 */
+	@Nonbinding
 	String prefix() default "";
 
 	/**
@@ -104,6 +106,7 @@ public @interface Configuration {
 	 * 
 	 * @return String
 	 */
+	@Nonbinding
 	String resource() default DEFAULT_RESOURCE;
 
 }

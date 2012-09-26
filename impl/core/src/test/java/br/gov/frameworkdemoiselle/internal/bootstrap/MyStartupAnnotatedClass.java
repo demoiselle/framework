@@ -38,23 +38,27 @@ package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import java.util.Stack;
 
-import br.gov.frameworkdemoiselle.annotation.Startup;
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.lifecycle.Startup;
 
 public class MyStartupAnnotatedClass {
 
 	public static Stack<String> stackOfMethods = new Stack<String>();
 	
-	@Startup(priority=-1)
+	@Startup
+	@Priority(1)
 	public void startMethod1(){
 		addMethodExecuted("startMethod1");
 	}
 	
-	@Startup(priority=1)
+	@Startup
+	@Priority(1)
 	public void startMethod2(){
 		addMethodExecuted("startMethod2");
 	}
 	
-	@Startup(priority=0)
+	@Startup
+	@Priority(0)
 	public void startMethod3(){
 		addMethodExecuted("startMethod3");
 	}

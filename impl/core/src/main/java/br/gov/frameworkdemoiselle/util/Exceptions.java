@@ -20,7 +20,10 @@ package br.gov.frameworkdemoiselle.util;
 
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
 
-public class Exceptions {
+public final class Exceptions {
+
+	private Exceptions() {
+	}
 
 	public static boolean isApplicationException(final Throwable throwable) {
 		return throwable.getClass().isAnnotationPresent(ApplicationException.class);
