@@ -51,7 +51,7 @@
 
 	<name>Demoiselle Framework JSF and JPA Archetype</name>
 	<description>
-		Archetype for web applications (JSF/JPA)
+		Archetype for web applications (JSF + JPA) using Demoiselle Framework
 	</description>
 	<url>http://www.frameworkdemoiselle.gov.br</url>
 
