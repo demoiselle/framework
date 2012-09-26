@@ -39,14 +39,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>demoiselle-framework-bom</artifactId>
-	<version>2.3.0-RC2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-parent</artifactId>
-		<version>6-SNAPSHOT</version>
-		<relativePath>../../../internal/parent/demoiselle</relativePath>
+		<artifactId>demoiselle-framework-parent</artifactId>
+		<version>2.3.0-RC2-SNAPSHOT</version>
+		<relativePath>../framework</relativePath>
 	</parent>
 
 	<name>Demoiselle Framework Bill of Materials</name>
