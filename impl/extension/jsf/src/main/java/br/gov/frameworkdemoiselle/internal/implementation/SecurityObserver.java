@@ -64,7 +64,7 @@ public class SecurityObserver implements Serializable {
 	@Inject
 	private JsfSecurityConfig config;
 
-	private Map<String, Object> savedParams;
+	private transient Map<String, Object> savedParams;
 
 	private String savedViewId;
 
