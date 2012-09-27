@@ -38,23 +38,37 @@
 
 Notas de Versão
 
-* v2.3.0-RC1
+* v2.3.0-RC2
 
-  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000845}0000845}} [Improvement] Declaração da dependência do Junit deve ser feita no POM da aplicação.
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000864}0000864}} [Bug] Correção no redirecionamento de URL na extensão JSF
 
-  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000842}0000842}} [Improvement] Suporte ao tipo Class nos atributos das classes @Configuration.
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000859}0000859}} [Bug] Correção de mais falhas ao utilizar @Configuration com EAR.
 
-  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000841}0000841}} [Improvement] Estratégias de controle de acesso detectadas e configuradas automaticamente.
-
-  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000840}0000840}} [Improvement] Estratégias de transação detectadas e configuradas automaticamente.
-
-  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000839}0000839}} [Improvement] Criação dos eventos AfterStartupProccess e AfterShutdownProccess.
-
-  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000838}0000838}} [Improvement] Remoção do atributo depreciado "priority" das annotações @Startup e @Shutdown.
-
-  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000837}0000837}} [Improvement] Anotações @Startup e @Shutdown movidas para o pacote lifecycle.
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000861}0000861}} [Improvement] Migração do repositório Maven para o Nexus.
   
-  * {{{https://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000836}0000836}} [Improvement] Remoção da declaração do ConfigurationInterceptor do beans.xml.
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000862}0000862}} [Improvement] Disponibilização dos artefatos no Maven Central Repository.
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000863}0000863}} [Improvement] Arquétipos disponibilizados no catálogo Nexus Indexer.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000860}0000860}} [New Feature] Criação do artefato demoiselle-framework-bom.
+
+* {{{../2.3.0-RC1/}v2.3.0-RC1}}
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000845}0000845}} [Improvement] Declaração da dependência do JUnit deve ser feita no POM da aplicação.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000842}0000842}} [Improvement] Suporte ao tipo Class nos atributos das classes @Configuration.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000841}0000841}} [Improvement] Estratégias de controle de acesso detectadas e configuradas automaticamente.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000840}0000840}} [Improvement] Estratégias de transação detectadas e configuradas automaticamente.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000839}0000839}} [Improvement] Criação dos eventos AfterStartupProccess e AfterShutdownProccess.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000838}0000838}} [Improvement] Remoção do atributo depreciado "priority" das annotações @Startup e @Shutdown.
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000837}0000837}} [Improvement] Anotações @Startup e @Shutdown movidas para o pacote "lifecycle".
+  
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000836}0000836}} [Improvement] Remoção da declaração do ConfigurationInterceptor do beans.xml.
 
 * {{{../2.3.0-BETA2/}v2.3.0-BETA2}}
 
