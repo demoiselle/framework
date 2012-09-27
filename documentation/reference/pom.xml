@@ -45,12 +45,14 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-documentation-parent</artifactId>
-		<version>3</version>
+		<version>4-SNAPSHOT</version>
 		<relativePath>../../../internal/parent/documentation</relativePath>
 	</parent>
 
 	<name>Demoiselle Framework Reference Documentation</name>
-	<description />
+	<description>
+		Demoiselle Framework Reference Documentation
+	</description>
 
 	<build>
 		<plugins>
@@ -80,17 +82,6 @@
 			<id>sonatype-nexus-releases</id>
 			<name>Sonatype Nexus Releases</name>
 			<url>https://oss.sonatype.org/content/repositories/releases</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-		<repository>
-			<id>nexus.jboss.org</id>
-			<name>JBoss Maven Repository</name>
-			<url>http://repository.jboss.org/nexus/content/groups/public</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
