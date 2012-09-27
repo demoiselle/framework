@@ -93,9 +93,9 @@
 	</build>
 
 	<scm>
-		<connection>scm:git:git://github.com/demoiselle/${project.alias}.git</connection>
-		<developerConnection>scm:git:git://github.com/demoiselle/${project.alias}.git</developerConnection>
-		<url>scm:git:git://github.com/demoiselle/${project.alias}.git</url>
+		<connection>scm:git:git@github.com:demoiselle/${project.alias}.git</connection>
+		<developerConnection>scm:git:git@github.com:demoiselle/${project.alias}.git</developerConnection>
+		<url>http://github.com/demoiselle/${project.alias}</url>
 	</scm>
 
 	<repositories>
