@@ -40,7 +40,7 @@ Notas de Versão
 
 * v2.3.0-RC2
 
-  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000864}0000864}} [Bug] Correção no redirecionamento de URL na extensão JSF
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000864}0000864}} [Bug] Correção no redirecionamento de URL na extensão JSF.
 
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000859}0000859}} [Bug] Correção de mais falhas ao utilizar @Configuration com EAR.
 
