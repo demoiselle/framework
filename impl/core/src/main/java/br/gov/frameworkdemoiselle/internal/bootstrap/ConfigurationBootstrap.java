@@ -38,7 +38,9 @@ package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -60,6 +62,8 @@ public class ConfigurationBootstrap implements Extension {
 
 	private final List<Class<Object>> cache = Collections.synchronizedList(new ArrayList<Class<Object>>());
 
+	private static final Map<ClassLoader, List<String>> cacheClassLoader = Collections.synchronizedMap(new HashMap<ClassLoader, List<String>>());
+	
 	public void processAnnotatedType(@Observes final ProcessAnnotatedType<Object> event) {
 		final AnnotatedType<Object> annotatedType = event.getAnnotatedType();
 
@@ -74,7 +78,9 @@ public class ConfigurationBootstrap implements Extension {
 
 		for (Class<Object> config : cache) {
 			proxy = createProxy(config);
-			event.addBean(new CustomBean(proxy, beanManager));
+			if (proxy != null) {
+				event.addBean(new CustomBean(proxy, beanManager));
+			}
 		}
 	}
 
@@ -83,11 +89,27 @@ public class ConfigurationBootstrap implements Extension {
 		String superClassName = type.getCanonicalName();
 		String chieldClassName = superClassName + "__DemoiselleProxy";
 
-		ClassPool pool = ClassPool.getDefault();
-		CtClass ctChieldClass = pool.getOrNull(chieldClassName);
-
+		Class<Object> clazz = null;
+		
+		Boolean loaded = true;
 		ClassLoader classLoader = type.getClassLoader();
-		if (ctChieldClass == null) {
+		if (cacheClassLoader.containsKey(classLoader)) { 
+			if (!cacheClassLoader.get(classLoader).contains(chieldClassName)) { 
+				loaded = false;
+			}
+		}
+		else{
+			List<String> strings = Collections.synchronizedList(new ArrayList<String>());
+			cacheClassLoader.put(classLoader, strings);
+			loaded = false;
+		}
+		
+		if (!loaded){
+			cacheClassLoader.get(classLoader).add(chieldClassName);
+			
+			ClassPool pool = new ClassPool();
+			CtClass ctChieldClass = pool.getOrNull(chieldClassName);
+
 			pool.appendClassPath(new LoaderClassPath(classLoader));
 			CtClass ctSuperClass = pool.get(superClassName);
 
@@ -101,8 +123,9 @@ public class ConfigurationBootstrap implements Extension {
 
 				ctChieldClass.addMethod(ctChieldMethod);
 			}
+			clazz = ctChieldClass.toClass(classLoader, type.getProtectionDomain()); 
 		}
 
-		return ctChieldClass.toClass(classLoader, type.getProtectionDomain());
-	}
+		return clazz;
+	}	
 }
