@@ -92,4 +92,15 @@
 			</releases>
 		</repository>
 	</repositories>
+
+	<distributionManagement>
+		<site>
+			<id>demoiselle.sourceforge.net</id>
+			<url>${site.url}</url>
+		</site>
+	</distributionManagement>
+
+	<properties>
+		<site.url>file://${project.build.directory}/tmp</site.url>
+	</properties>
 </project>

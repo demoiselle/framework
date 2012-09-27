@@ -56,8 +56,8 @@
 	</description>
 
 	<modules>
-		<module>parent/bom</module>
 		<module>parent/framework</module>
+		<module>parent/bom</module>
 		<module>parent/minimal</module>
 		<module>parent/extension</module>
 		<module>parent/jsf</module>
@@ -92,21 +92,6 @@
 		</plugins>
 	</build>
 
-	<distributionManagement>
-		<repository>
-			<id />
-			<url />
-		</repository>
-		<snapshotRepository>
-			<id />
-			<url />
-		</snapshotRepository>
-		<site>
-			<id>demoiselle.sourceforge.net</id>
-			<url>${site.url}</url>
-		</site>
-	</distributionManagement>
-
 	<scm>
 		<connection>scm:git:git://github.com/demoiselle/${project.alias}.git</connection>
 		<developerConnection>scm:git:git://github.com/demoiselle/${project.alias}.git</developerConnection>
@@ -137,6 +122,13 @@
 			</releases>
 		</repository>
 	</repositories>
+
+	<distributionManagement>
+		<site>
+			<id>demoiselle.sourceforge.net</id>
+			<url>${site.url}</url>
+		</site>
+	</distributionManagement>
 
 	<properties>
 		<project.alias>framework</project.alias>
