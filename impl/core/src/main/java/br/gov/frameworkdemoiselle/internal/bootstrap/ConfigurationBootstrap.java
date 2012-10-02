@@ -62,8 +62,9 @@ public class ConfigurationBootstrap implements Extension {
 
 	private final List<Class<Object>> cache = Collections.synchronizedList(new ArrayList<Class<Object>>());
 
-	private static final Map<ClassLoader, List<String>> cacheClassLoader = Collections.synchronizedMap(new HashMap<ClassLoader, List<String>>());
-	
+	private static final Map<ClassLoader, Map<String, Class<Object>>> cacheClassLoader = Collections
+			.synchronizedMap(new HashMap<ClassLoader, Map<String, Class<Object>>>());
+
 	public void processAnnotatedType(@Observes final ProcessAnnotatedType<Object> event) {
 		final AnnotatedType<Object> annotatedType = event.getAnnotatedType();
 
@@ -78,9 +79,7 @@ public class ConfigurationBootstrap implements Extension {
 
 		for (Class<Object> config : cache) {
 			proxy = createProxy(config);
-			if (proxy != null) {
-				event.addBean(new CustomBean(proxy, beanManager));
-			}
+			event.addBean(new CustomBean(proxy, beanManager));
 		}
 	}
 
@@ -89,24 +88,20 @@ public class ConfigurationBootstrap implements Extension {
 		String superClassName = type.getCanonicalName();
 		String chieldClassName = superClassName + "__DemoiselleProxy";
 
-		Class<Object> clazz = null;
-		
-		Boolean loaded = true;
+		Map<String, Class<Object>> cacheProxy = Collections.synchronizedMap(new HashMap<String, Class<Object>>());;
+
+		Class<Object> clazzProxy = null;
+
 		ClassLoader classLoader = type.getClassLoader();
-		if (cacheClassLoader.containsKey(classLoader)) { 
-			if (!cacheClassLoader.get(classLoader).contains(chieldClassName)) { 
-				loaded = false;
+		if (cacheClassLoader.containsKey(classLoader)) {
+			cacheProxy = cacheClassLoader.get(classLoader);
+			if (cacheProxy.containsKey(chieldClassName)) {
+				clazzProxy = cacheProxy.get(chieldClassName);
 			}
 		}
-		else{
-			List<String> strings = Collections.synchronizedList(new ArrayList<String>());
-			cacheClassLoader.put(classLoader, strings);
-			loaded = false;
-		}
-		
-		if (!loaded){
-			cacheClassLoader.get(classLoader).add(chieldClassName);
-			
+
+		if (clazzProxy == null) {
+
 			ClassPool pool = new ClassPool();
 			CtClass ctChieldClass = pool.getOrNull(chieldClassName);
 
@@ -123,9 +118,13 @@ public class ConfigurationBootstrap implements Extension {
 
 				ctChieldClass.addMethod(ctChieldMethod);
 			}
-			clazz = ctChieldClass.toClass(classLoader, type.getProtectionDomain()); 
+
+			clazzProxy = ctChieldClass.toClass(classLoader, type.getProtectionDomain());
+
+			cacheProxy.put(chieldClassName, clazzProxy);
+			cacheClassLoader.put(classLoader, cacheProxy);
 		}
 
-		return clazz;
-	}	
+		return clazzProxy;
+	}
 }
