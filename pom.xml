@@ -132,6 +132,5 @@
 
 	<properties>
 		<project.alias>framework</project.alias>
-		<project.nextVersion>2.3.0-SNAPSHOT</project.nextVersion>
 	</properties>
 </project>
