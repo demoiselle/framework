@@ -38,7 +38,11 @@
 
 Notas de Versão
 
-* v2.3.0-RC2
+* v2.3.0-RC3
+
+  * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000869}0000869}} [Task] Atualização para versão 2.3.2 do plugin de release.
+
+* {{{../2.3.0-RC2/}v2.3.0-RC2}}
 
   * {{{http://sourceforge.net/apps/mantisbt/demoiselle/view.php?id=0000864}0000864}} [Bug] Correção no redirecionamento de URL na extensão JSF.
 
