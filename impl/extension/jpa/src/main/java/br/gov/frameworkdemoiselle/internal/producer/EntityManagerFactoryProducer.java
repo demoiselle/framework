@@ -110,7 +110,14 @@ public class EntityManagerFactoryProducer implements Serializable {
 	public void loadPersistenceUnits() {
 		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 		for (String persistenceUnit : loadPersistenceUnitFromClassloader(contextClassLoader)) {
-			create(persistenceUnit);
+			
+			try{
+				create(persistenceUnit);
+			}
+			catch(Throwable t){
+				throw new DemoiselleException(t);
+			}
+			
 			logger.debug(bundle.getString("persistence-unit-name-found", persistenceUnit));
 		}
 	}

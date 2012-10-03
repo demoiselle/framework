@@ -79,9 +79,11 @@ public class ConfigurationLoader implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static ResourceBundle bundle;
+	private ResourceBundle bundle;
 
-	private static Logger logger;
+	private Logger logger;
+	
+	private CoreBootstrap bootstrap;
 	
 	/**
 	 * Loads a config class filling it with the corresponding values.
@@ -92,9 +94,8 @@ public class ConfigurationLoader implements Serializable {
 	 */
 	public void load(Object object) throws ConfigurationException {
 		Class<?> config = object.getClass();
-		CoreBootstrap bootstrap = Beans.getReference(CoreBootstrap.class);
 
-		if (!bootstrap.isAnnotatedType(config)) {
+		if (!getBootstrap().isAnnotatedType(config)) {
 			config = config.getSuperclass();
 			getLogger().debug(getBundle().getString("proxy-detected", config, config.getClass().getSuperclass()));
 		}
@@ -429,7 +430,7 @@ public class ConfigurationLoader implements Serializable {
 		return classLoader != null ? classLoader.getResource(resource) : null;
 	}
 
-	private static ResourceBundle getBundle() {
+	private ResourceBundle getBundle() {
 		if (bundle == null) {
 			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
 		}
@@ -437,11 +438,19 @@ public class ConfigurationLoader implements Serializable {
 		return bundle;
 	}
 
-	private static Logger getLogger() {
+	private Logger getLogger() {
 		if (logger == null) {
 			logger = LoggerProducer.create(ConfigurationLoader.class);
 		}
 
 		return logger;
+	}
+	
+	private CoreBootstrap getBootstrap(){
+		if (bootstrap == null){
+			bootstrap = Beans.getReference(CoreBootstrap.class);
+		}
+		
+		return bootstrap;
 	}
 }

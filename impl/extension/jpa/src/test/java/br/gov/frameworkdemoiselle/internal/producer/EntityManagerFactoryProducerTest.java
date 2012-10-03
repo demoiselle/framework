@@ -1,5 +1,4 @@
 package br.gov.frameworkdemoiselle.internal.producer;
-import org.junit.Ignore;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.verify;
@@ -26,14 +25,14 @@ import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
-@Ignore
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Persistence.class)
 public class EntityManagerFactoryProducerTest {
 
 	private EntityManagerFactory emFactory;
 	private EntityManagerFactoryProducer producer;
-	private Map<String, EntityManagerFactory> cache;
+	private Map<ClassLoader, Map<String, EntityManagerFactory>> cache;
 	private Logger logger;
 	private ResourceBundle bundle;
 	
@@ -42,8 +41,8 @@ public class EntityManagerFactoryProducerTest {
 		logger = createMock(Logger.class);
 		bundle = ResourceBundleProducer.create("demoiselle-jpa-bundle", Locale.getDefault());
 		producer = new EntityManagerFactoryProducer();
-		cache = Collections.synchronizedMap(new HashMap<String, EntityManagerFactory>());
-		setInternalState(producer, Map.class, cache);
+		cache = Collections.synchronizedMap(new HashMap<ClassLoader, Map<String, EntityManagerFactory>>());
+		setInternalState(producer, "factoryCache", cache);
 		setInternalState(producer, Logger.class, logger);
 		setInternalState(producer, ResourceBundle.class, bundle);
 		emFactory = createMock(EntityManagerFactory.class);
@@ -51,7 +50,11 @@ public class EntityManagerFactoryProducerTest {
 	
 	@Test
 	public void testCreateWithUnitPersistenceExisting() {
-		cache.put("pu1", emFactory);
+		ClassLoader cl = this.getClass().getClassLoader();
+		HashMap<String, EntityManagerFactory> emEntry = new HashMap<String, EntityManagerFactory>();
+		emEntry.put("pu1", emFactory);
+		cache.put(cl,emEntry);
+
 		Assert.assertEquals(emFactory, producer.create("pu1"));
 	}
 	
@@ -73,7 +76,12 @@ public class EntityManagerFactoryProducerTest {
 		replay(Persistence.class);
 		
 		producer.loadPersistenceUnits();
-		Assert.assertEquals(emFactory, cache.get("pu1"));
+		
+		ClassLoader cl = this.getClass().getClassLoader();
+		Map<String, EntityManagerFactory> internalCache = cache.get(cl);
+		
+		Assert.assertNotNull(internalCache);
+		Assert.assertEquals(emFactory, internalCache.get("pu1"));
 	}
 	
 	@Test
@@ -88,12 +96,25 @@ public class EntityManagerFactoryProducerTest {
 	
 	@Test
 	public void testGetCache() {
-		Assert.assertEquals(cache, producer.getCache());
+		ClassLoader cl = this.getClass().getClassLoader();
+		HashMap<String, EntityManagerFactory> emEntry = new HashMap<String, EntityManagerFactory>();
+		emEntry.put("pu1", emFactory);
+		cache.put(cl, emEntry);
+		
+		mockStatic(Persistence.class);
+		expect(Persistence.createEntityManagerFactory("pu1")).andReturn(emFactory);
+		replay(Persistence.class);
+		
+		Assert.assertEquals(cache.get(this.getClass().getClassLoader()), producer.getCache());
 	}
 	
 	@Test
 	public void testClose() {
-		cache.put("pu1", emFactory);
+		ClassLoader cl = this.getClass().getClassLoader();
+		HashMap<String, EntityManagerFactory> emEntry = new HashMap<String, EntityManagerFactory>();
+		emEntry.put("pu1", emFactory);
+		cache.put(cl, emEntry);
+
 		emFactory.close();
 		replay(emFactory);
 		producer.close();
