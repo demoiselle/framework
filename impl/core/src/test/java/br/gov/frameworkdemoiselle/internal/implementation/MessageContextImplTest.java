@@ -34,123 +34,136 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-//package br.gov.frameworkdemoiselle.internal.implementation;
-//
-//import java.util.Locale;
-//
-//import junit.framework.Assert;
-//
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.powermock.api.easymock.PowerMock;
-//import org.powermock.modules.junit4.PowerMockRunner;
-//import org.powermock.reflect.Whitebox;
-//import org.slf4j.Logger;
-//
-//import br.gov.frameworkdemoiselle.message.Message;
-//import br.gov.frameworkdemoiselle.message.MessageContext;
-//import br.gov.frameworkdemoiselle.message.SeverityType;
-//import br.gov.frameworkdemoiselle.util.ResourceBundle;
-//
-//@RunWith(PowerMockRunner.class)
-//public class MessageContextImplTest {
-//
-//	MessageContext messageContext;
-//
-//	Message m1;
-//
-//	@SuppressWarnings("unused")
-//	@Before
-//	public void before() {
-//		messageContext = new MessageContextImpl();
-//
-//		Logger logger = PowerMock.createMock(Logger.class);
-//		ResourceBundle bundle = new ResourceBundle(ResourceBundle.getBundle("demoiselle-core-bundle"));
-//
-//		Whitebox.setInternalState(messageContext, "logger", logger);
-//		Whitebox.setInternalState(messageContext, "bundle", bundle);
-//
-//		m1 = new Message() {
-//
-//			private String key = "m1.message";
-//
-//			private String resourceName = "messages";
-//
-//			private Locale locale = Locale.getDefault();
-//
-//			private SeverityType severityType = SeverityType.INFO;
-//
-//			private Object[] parameters = {};
-//
-//			public String getText() {
-//				return key;
-//			}
-//
-//			public void setKey(String key) {
-//				this.key = key;
-//			}
-//
-//			public String getResourceName() {
-//				return resourceName;
-//			}
-//
-//			public void setResourceName(String resourceName) {
-//				this.resourceName = resourceName;
-//			}
-//
-//			public Locale getLocale() {
-//				return locale;
-//			}
-//
-//			public void setLocale(Locale locale) {
-//				this.locale = locale;
-//			}
-//
-//			public SeverityType getSeverity() {
-//				return severityType;
-//			}
-//
-//			public void setSeverityType(SeverityType severityType) {
-//				this.severityType = severityType;
-//			}
-//
-//			public Object[] getParameters() {
-//				return parameters;
-//			}
-//
-//			public Message setParameters(Object[] parameters) {
-//				this.parameters = parameters;
-//				return this;
-//			}
-//
-//			public String getStringMessage() {
-//				return "stringMessage";
-//			}
-//		};
-//	}
-//
+package br.gov.frameworkdemoiselle.internal.implementation;
+
+import static org.easymock.EasyMock.expect;
+import static org.powermock.api.easymock.PowerMock.mockStatic;
+import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+
+import java.util.Locale;
+
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
+import org.slf4j.Logger;
+
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.message.Message;
+import br.gov.frameworkdemoiselle.message.MessageContext;
+import br.gov.frameworkdemoiselle.message.SeverityType;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ Beans.class, ResourceBundle.class })
+public class MessageContextImplTest {
+
+	MessageContext messageContext;
+
+	Message m1;
+	
+	private ResourceBundle bundle;
+
+	@SuppressWarnings("unused")
+	@Before
+	public void before() {
+		messageContext = new MessageContextImpl();
+		
+		Locale locale = Locale.getDefault();
+		
+		mockStatic(Beans.class);
+		expect(Beans.getReference(Locale.class)).andReturn(locale).anyTimes();
+				
+		expect(Beans.getReference(ResourceBundle.class)).andReturn(bundle).anyTimes();
+		replayAll(Beans.class);
+
+		Logger logger = PowerMock.createMock(Logger.class);
+
+		m1 = new Message() {
+
+			private String key = "m1.message";
+
+			private String resourceName = "messages";
+
+			private Locale locale = Locale.getDefault();
+
+			private SeverityType severityType = SeverityType.INFO;
+
+			private Object[] parameters = {};
+
+			public String getText() {
+				return key;
+			}
+
+			public void setKey(String key) {
+				this.key = key;
+			}
+
+			public String getResourceName() {
+				return resourceName;
+			}
+
+			public void setResourceName(String resourceName) {
+				this.resourceName = resourceName;
+			}
+
+			public Locale getLocale() {
+				return locale;
+			}
+
+			public void setLocale(Locale locale) {
+				this.locale = locale;
+			}
+
+			public SeverityType getSeverity() {
+				return severityType;
+			}
+
+			public void setSeverityType(SeverityType severityType) {
+				this.severityType = severityType;
+			}
+
+			public Object[] getParameters() {
+				return parameters;
+			}
+
+			public Message setParameters(Object[] parameters) {
+				this.parameters = parameters;
+				return this;
+			}
+
+			public String getStringMessage() {
+				return "stringMessage";
+			}
+		};
+	}
+
 //	@Test
 //	public void testAddMessage() {
 //		messageContext.add(m1);
 //		Assert.assertTrue(messageContext.getMessages().size() == 1);
 //		Assert.assertTrue(messageContext.getMessages().contains(m1));
-//
 //	}
-//
+
 //	@Test
 //	public void testAddMessageObjectArray() {
 //		Object[] param = { "1", "2" };
 //		messageContext.add(m1, param);
-//
+
 //		Assert.assertTrue(messageContext.getMessages().size() == 1);
 //		Assert.assertTrue(messageContext.getMessages().contains(m1));
 //		Assert.assertNotNull(messageContext.getMessages().get(0).getParameters());
 //		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[0] == param[0]);
 //		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[1] == param[1]);
-//
 //	}
-//
+
 //	@Test
 //	public void testAddStringObjectArray() {
 //		String key = "my.key";
@@ -210,20 +223,20 @@
 //		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[0] == param[0]);
 //		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[1] == param[1]);
 //	}
-//
-//	@Test
-//	public void testGetMessages() {
-//		Assert.assertNotNull(messageContext.getMessages());
-//		Assert.assertTrue(messageContext.getMessages().isEmpty());
-//
-//		messageContext.add("key1");
-//		Assert.assertTrue(messageContext.getMessages().size() == 1);
-//
-//		messageContext.add("key2");
-//		Assert.assertTrue(messageContext.getMessages().size() == 2);
-//
-//		Assert.assertTrue(messageContext.getMessages().get(0).getText().equals("key1"));
-//		Assert.assertTrue(messageContext.getMessages().get(1).getText().equals("key2"));
-//	}
-//
-//}
+
+	@Test
+	public void testGetMessages() {
+		Assert.assertNotNull(messageContext.getMessages());
+		Assert.assertTrue(messageContext.getMessages().isEmpty());
+
+		messageContext.add("key1");
+		Assert.assertTrue(messageContext.getMessages().size() == 1);
+
+		messageContext.add("key2");
+		Assert.assertTrue(messageContext.getMessages().size() == 2);
+
+		Assert.assertTrue(messageContext.getMessages().get(0).getText().equals("key1"));
+		Assert.assertTrue(messageContext.getMessages().get(1).getText().equals("key2"));
+	}
+
+}
