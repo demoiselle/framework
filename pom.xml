@@ -45,7 +45,7 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-build-parent</artifactId>
-		<version>3</version>
+		<version>4</version>
 		<relativePath>../internal/parent/build/demoiselle</relativePath>
 	</parent>
 
@@ -96,7 +96,8 @@
 		<connection>scm:git:git@github.com:demoiselle/${project.alias}.git</connection>
 		<developerConnection>scm:git:git@github.com:demoiselle/${project.alias}.git</developerConnection>
 		<url>http://github.com/demoiselle/${project.alias}</url>
-	</scm>
+	  <tag>HEAD</tag>
+  </scm>
 
 	<repositories>
 		<repository>
@@ -132,6 +133,5 @@
 
 	<properties>
 		<project.alias>framework</project.alias>
-		<project.nextVersion>2.3.0-SNAPSHOT</project.nextVersion>
 	</properties>
 </project>
