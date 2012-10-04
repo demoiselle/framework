@@ -35,7 +35,6 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.proxy;
-import org.junit.Ignore;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -67,7 +66,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import br.gov.frameworkdemoiselle.internal.producer.EntityManagerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.FakeEntityManager;
 import br.gov.frameworkdemoiselle.util.Beans;
-@Ignore
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Beans.class })
 public class EntityManagerProxyTest {
