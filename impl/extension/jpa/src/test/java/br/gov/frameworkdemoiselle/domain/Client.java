@@ -1,10 +1,13 @@
 package br.gov.frameworkdemoiselle.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Simle entity for test classes
@@ -19,6 +22,8 @@ public class Client implements Serializable {
 	private Long id;
 	
 	private String name;
+	
+	private Date birthDate;
 
 	@Id
 	@GeneratedValue
@@ -40,6 +45,20 @@ public class Client implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+
+	@Temporal(TemporalType.DATE)
+	public Date getBirthDate() {
+		return birthDate;
+	}
+
+
+	
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
+	}
+	
+	
 	
 	
 

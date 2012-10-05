@@ -47,13 +47,18 @@ import static org.powermock.reflect.Whitebox.setInternalState;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.inject.Instance;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
 import javax.persistence.TypedQuery;
@@ -71,6 +76,7 @@ import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
@@ -104,6 +110,7 @@ public class JPACrudTest {
 		setInternalState(this.contactDAO, EntityManager.class, this.entityManager);
 	}
 
+	@Entity
 	class Contact implements Serializable {
 
 		private static final long serialVersionUID = 1L;
@@ -425,6 +432,27 @@ public class JPACrudTest {
 		
 		setInternalState(this.contactDAO, EntityManager.class, (EntityManager)null);
 		Assert.assertNotNull(this.contactDAO.getEntityManager());
+	}
+	
+	@Test
+	public void testCriteriaQuery(){
+		Map<String, Object> configOverrides = new HashMap<String, Object>();
+		configOverrides.put("javax.persistence.provider", "org.hibernate.ejb.HibernatePersistence");
+		configOverrides.put("javax.persistence.jdbc.url", "jdbc:hsqldb:hsql:.");
+		configOverrides.put("hibernate.show_sql", "true");
+		configOverrides.put("hibernate.hbm2ddl.auto", "create-drop");
+		
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("pu1", configOverrides);
+		this.entityManager = factory.createEntityManager();
+		Whitebox.setInternalState(this.contactDAO, EntityManager.class, (EntityManager)null);
+		
+		PowerMock.mockStatic(Beans.class);
+		expect(Beans.getReference(EntityManager.class)).andReturn(entityManager);
+		PowerMock.replay(Beans.class);
+		
+		CriteriaQuery<Contact> query = this.contactDAO.createCriteriaQuery();
+		query.select( query.from(Contact.class) );
+
 	}
 
 }

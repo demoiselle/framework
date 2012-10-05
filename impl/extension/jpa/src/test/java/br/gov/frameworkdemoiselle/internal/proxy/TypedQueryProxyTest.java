@@ -14,6 +14,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
 
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -28,18 +29,18 @@ import org.powermock.reflect.Whitebox;
 
 import br.gov.frameworkdemoiselle.domain.Client;
 import br.gov.frameworkdemoiselle.internal.producer.EntityManagerProducer;
-import br.gov.frameworkdemoiselle.internal.proxy.query.QueryProxy;
+import br.gov.frameworkdemoiselle.internal.proxy.query.TypedQueryProxy;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
- * Test the proxied {@link Query} class, {@link QueryProxy}.
+ * Test the proxied {@link Query} class, {@link TypedQueryProxy}.
  * @author 81986912515
  *
  */
 @Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Beans.class})
-public class QueryProxyTest {
+public class TypedQueryProxyTest {
 	
 	private EntityManager manager;
 	private EntityManagerProducer producer;
@@ -93,9 +94,9 @@ public class QueryProxyTest {
 		PowerMock.resetAll();
 	}
 	
-	private QueryProxy getQueryProxy(String jpql,Object... params){
-		Query q = manager.createQuery(jpql);
-		if (!(q instanceof QueryProxy)){
+	private <T> TypedQueryProxy<T> getQueryProxy(String jpql,Class<T> classType,Object... params){
+		TypedQuery<T> q = manager.createQuery(jpql,classType);
+		if (!(q instanceof TypedQueryProxy)){
 			Assert.fail("Query não é instância de QueryProxy");
 		}
 		
@@ -106,7 +107,7 @@ public class QueryProxyTest {
 			}
 		}
 		
-		return (QueryProxy)q;
+		return (TypedQueryProxy<T>)q;
 	}
 	
 	@Test
@@ -114,7 +115,7 @@ public class QueryProxyTest {
 		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(2);
 		PowerMock.replay(Beans.class);
 		
-		List<?> retorno = getQueryProxy("select c from Client c").getResultList();
+		List<?> retorno = getQueryProxy("select c from Client c",Client.class).getResultList();
 		Assert.assertNotNull(retorno);
 		Assert.assertFalse(retorno.isEmpty());
 	}
@@ -124,19 +125,8 @@ public class QueryProxyTest {
 		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(2);
 		PowerMock.replay(Beans.class);
 		
-		Client retorno = (Client)getQueryProxy("select c from Client c where c.name=?1","Cliente 1").getSingleResult();
+		Client retorno = (Client)getQueryProxy("select c from Client c where c.name=?1",Client.class,"Cliente 1").getSingleResult();
 		Assert.assertNotNull(retorno);
-	}
-	
-	@Test
-	public void testExecuteUpdate(){
-		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(4);
-		PowerMock.replay(Beans.class);
-
-		manager.getTransaction().begin();
-		int linesAffected = getQueryProxy("update Client set name=?1 where name=?2","Novo Cliente","Cliente 1").executeUpdate();
-		manager.getTransaction().commit();
-		Assert.assertEquals(1, linesAffected);
 	}
 	
 	@Test
@@ -144,7 +134,7 @@ public class QueryProxyTest {
 		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(2);
 		PowerMock.replay(Beans.class);
 
-		QueryProxy proxy = getQueryProxy("select c from Client c");
+		TypedQueryProxy<Client> proxy = getQueryProxy("select c from Client c",Client.class);
 		
 		proxy.setMaxResults(2);
 		Assert.assertEquals(2, proxy.getMaxResults());
@@ -163,7 +153,7 @@ public class QueryProxyTest {
 
 		//Consulta um cliente definindo a hint readOnly, que torna a entidade retornada não atualizável.
 		manager.getTransaction().begin();
-		QueryProxy proxy = getQueryProxy("select c from Client c where c.name=?1","Cliente 1");
+		TypedQueryProxy<Client> proxy = getQueryProxy("select c from Client c where c.name=?1",Client.class,"Cliente 1");
 		proxy.setHint("org.hibernate.readOnly", true);
 		Assert.assertFalse( proxy.getHints().isEmpty() );
 		
@@ -176,7 +166,7 @@ public class QueryProxyTest {
 		
 		//Reconsultar a entidade tem que retornar 1 resultado, pois o nome "Cliente 1" não deve ter sido alterado.
 		manager.getTransaction().begin();
-		proxy = getQueryProxy("select c from Client c where c.name=?1","Cliente 1");
+		proxy = getQueryProxy("select c from Client c where c.name=?1",Client.class,"Cliente 1");
 		c = (Client)proxy.getSingleResult();
 		Assert.assertNotNull(c);
 		
@@ -186,7 +176,7 @@ public class QueryProxyTest {
 		manager.getTransaction().commit();
 		manager.clear();
 		
-		proxy = getQueryProxy("select c from Client c where c.name=?1","Cliente 1");
+		proxy = getQueryProxy("select c from Client c where c.name=?1",Client.class,"Cliente 1");
 		
 		try{
 			proxy.getSingleResult();
@@ -204,7 +194,7 @@ public class QueryProxyTest {
 		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(2);
 		PowerMock.replay(Beans.class);
 		
-		QueryProxy proxy = getQueryProxy("select c.name from Client c where 'Named Parameter'=:name and c.birthDate=:dateName and c.name=?1 and c.birthDate=?2");
+		TypedQueryProxy<Client> proxy = getQueryProxy("select c from Client c where 'Named Parameter'=:name and c.birthDate=:dateName and c.name=?1 and c.birthDate=?2",Client.class);
 		
 		Date dateValue = new Date();
 		
@@ -217,8 +207,7 @@ public class QueryProxyTest {
 		Assert.assertEquals(proxy.getParameterValue("name"),"Named Parameter");
 		Assert.assertEquals(proxy.getParameterValue(1), "Cliente 1");
 		
-		@SuppressWarnings("unchecked")
-		List<Map<String, Object>> result = proxy.getResultList();
+		List<Client> result = proxy.getResultList();
 		
 		Assert.assertNotNull(result);
 		Assert.assertFalse(result.isEmpty());
@@ -232,7 +221,7 @@ public class QueryProxyTest {
 		PowerMock.replay(Beans.class);
 		
 		manager.getTransaction().begin();
-		QueryProxy proxy = getQueryProxy("update Client set name=?1 where name=?2","Cliente 1 Alterado","Cliente 1");
+		TypedQueryProxy<Client> proxy = getQueryProxy("select c from Client c where c.name=?1",Client.class,"Cliente 1");
 		proxy.setFlushMode(FlushModeType.COMMIT);
 		Assert.assertEquals(proxy.getFlushMode(), FlushModeType.COMMIT);
 		manager.getTransaction().commit();
@@ -242,11 +231,11 @@ public class QueryProxyTest {
 	
 	@Test
 	public void testLockMode(){
-		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(4);
+		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(3);
 		PowerMock.replay(Beans.class);
 		
 		manager.getTransaction().begin();
-		QueryProxy proxy = getQueryProxy("update Client set name=?1 where name=?2","Cliente 1 Alterado","Cliente 1");
+		TypedQueryProxy<Client> proxy = getQueryProxy("select c from Client c where c.name=?1",Client.class,"Cliente 1");
 		proxy.setLockMode(LockModeType.OPTIMISTIC);
 		Assert.assertEquals(proxy.getLockMode(), LockModeType.OPTIMISTIC);
 		manager.getTransaction().commit();

@@ -1,4 +1,4 @@
-package br.gov.frameworkdemoiselle.internal.proxy;
+package br.gov.frameworkdemoiselle.internal.proxy.query;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -9,26 +9,28 @@ import java.util.Set;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.Parameter;
-import javax.persistence.Query;
 import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
 
-public class QueryProxy implements Query {
+import br.gov.frameworkdemoiselle.internal.proxy.EntityManagerProxy;
+
+public class TypedQueryProxy<X> implements TypedQuery<X> {
 	
-	private Query queryDelegate;
+	private TypedQuery<X> queryDelegate;
 	private EntityManagerProxy entityManagerCaller;
 	
-	public QueryProxy(Query queryDelegate,EntityManagerProxy entityManagerCaller){
+	public TypedQueryProxy(TypedQuery<X> queryDelegate,
+			EntityManagerProxy entityManagerCaller) {
 		this.queryDelegate = queryDelegate;
 		this.entityManagerCaller = entityManagerCaller;
 	}
 
-	@SuppressWarnings("rawtypes")
-	public List getResultList() {
+	public List<X> getResultList() {
 		entityManagerCaller.joinTransactionIfNecessary();
 		return queryDelegate.getResultList();
 	}
 
-	public Object getSingleResult() {
+	public X getSingleResult() {
 		entityManagerCaller.joinTransactionIfNecessary();
 		return queryDelegate.getSingleResult();
 	}
@@ -38,8 +40,18 @@ public class QueryProxy implements Query {
 		return queryDelegate.executeUpdate();
 	}
 
-	public Query setMaxResults(int maxResult) {
+	public TypedQuery<X> setMaxResults(int maxResult) {
 		queryDelegate.setMaxResults(maxResult);
+		return this;
+	}
+
+	public TypedQuery<X> setFirstResult(int startPosition) {
+		queryDelegate.setFirstResult(startPosition);
+		return this;
+	}
+
+	public TypedQuery<X> setHint(String hintName, Object value) {
+		queryDelegate.setHint(hintName, value);
 		return this;
 	}
 
@@ -47,8 +59,8 @@ public class QueryProxy implements Query {
 		return queryDelegate.getMaxResults();
 	}
 
-	public Query setFirstResult(int startPosition) {
-		queryDelegate.setFirstResult(startPosition);
+	public <T> TypedQuery<X> setParameter(Parameter<T> param, T value) {
+		queryDelegate.setParameter(param, value);
 		return this;
 	}
 
@@ -56,8 +68,15 @@ public class QueryProxy implements Query {
 		return queryDelegate.getFirstResult();
 	}
 
-	public Query setHint(String hintName, Object value) {
-		queryDelegate.setHint(hintName, value);
+	public TypedQuery<X> setParameter(Parameter<Calendar> param,
+			Calendar value, TemporalType temporalType) {
+		queryDelegate.setParameter(param, value, temporalType);
+		return this;
+	}
+
+	public TypedQuery<X> setParameter(Parameter<Date> param, Date value,
+			TemporalType temporalType) {
+		queryDelegate.setParameter(param, value, temporalType);
 		return this;
 	}
 
@@ -65,53 +84,47 @@ public class QueryProxy implements Query {
 		return queryDelegate.getHints();
 	}
 
-	public <T> Query setParameter(Parameter<T> param, T value) {
-		queryDelegate.setParameter(param, value);
-		return this;
-	}
-
-	public Query setParameter(Parameter<Calendar> param, Calendar value,
-			TemporalType temporalType) {
-		queryDelegate.setParameter(param, value, temporalType);
-		return this;
-	}
-
-	public Query setParameter(Parameter<Date> param, Date value,
-			TemporalType temporalType) {
-		queryDelegate.setParameter(param, value, temporalType);
-		return this;
-	}
-
-	public Query setParameter(String name, Object value) {
+	public TypedQuery<X> setParameter(String name, Object value) {
 		queryDelegate.setParameter(name, value);
 		return this;
 	}
 
-	public Query setParameter(String name, Calendar value,
+	public TypedQuery<X> setParameter(String name, Calendar value,
 			TemporalType temporalType) {
 		queryDelegate.setParameter(name, value, temporalType);
 		return this;
 	}
 
-	public Query setParameter(String name, Date value, TemporalType temporalType) {
+	public TypedQuery<X> setParameter(String name, Date value,
+			TemporalType temporalType) {
 		queryDelegate.setParameter(name, value, temporalType);
 		return this;
 	}
 
-	public Query setParameter(int position, Object value) {
+	public TypedQuery<X> setParameter(int position, Object value) {
 		queryDelegate.setParameter(position, value);
 		return this;
 	}
 
-	public Query setParameter(int position, Calendar value,
+	public TypedQuery<X> setParameter(int position, Calendar value,
 			TemporalType temporalType) {
 		queryDelegate.setParameter(position, value, temporalType);
 		return this;
 	}
 
-	public Query setParameter(int position, Date value,
+	public TypedQuery<X> setParameter(int position, Date value,
 			TemporalType temporalType) {
 		queryDelegate.setParameter(position, value, temporalType);
+		return this;
+	}
+
+	public TypedQuery<X> setFlushMode(FlushModeType flushMode) {
+		queryDelegate.setFlushMode(flushMode);
+		return this;
+	}
+
+	public TypedQuery<X> setLockMode(LockModeType lockMode) {
+		queryDelegate.setLockMode(lockMode);
 		return this;
 	}
 
@@ -151,19 +164,8 @@ public class QueryProxy implements Query {
 		return queryDelegate.getParameterValue(position);
 	}
 
-	public Query setFlushMode(FlushModeType flushMode) {
-		queryDelegate.setFlushMode(flushMode);
-		return this;
-	}
-
 	public FlushModeType getFlushMode() {
 		return queryDelegate.getFlushMode();
-	}
-
-	public Query setLockMode(LockModeType lockMode) {
-		entityManagerCaller.joinTransactionIfNecessary();
-		queryDelegate.setLockMode(lockMode);
-		return this;
 	}
 
 	public LockModeType getLockMode() {
@@ -173,7 +175,7 @@ public class QueryProxy implements Query {
 	public <T> T unwrap(Class<T> cls) {
 		return queryDelegate.unwrap(cls);
 	}
-
+	
 	
 
 }
