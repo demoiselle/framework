@@ -45,7 +45,7 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-documentation-parent</artifactId>
-		<version>4</version>
+		<version>5-SNAPSHOT</version>
 		<relativePath>../../../internal/parent/documentation</relativePath>
 	</parent>
 
