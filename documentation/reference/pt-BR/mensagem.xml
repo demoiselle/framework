@@ -8,8 +8,8 @@
 	<section>
 		<title>Mensagens em uma aplicação</title>
 		<para>
-			Uma aplicação bem estruturada, seja na plataforma Web ou desktop, deve exibir mensagens informativas,
-			de aviso ou de erro ao usuário após efetuar determinadas tarefas. Por exemplo, após gravar um registro
+			Uma aplicação bem estruturada, seja na plataforma Web ou Desktop, deve exibir mensagens informativas,
+			de aviso, ou de erro para o usuário após efetuar determinadas tarefas. Por exemplo, após gravar um registro
 			no banco de dados, é aconselhável que a aplicação exiba uma mensagem informativa. Se alguma exceção
 			ocorreu, é preciso exibir uma mensagem de erro. Ou seja, a severidade da mensagem deve ser escolhida de
 			acordo com o resultado da execução.

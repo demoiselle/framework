@@ -20,7 +20,7 @@
          	A apresentação de conjuntos de registros de médio a grande porte em formato de tabelas em aplicações Web geralmente requer um
          	<emphasis>mecanismo de paginação</emphasis>, o qual permite ao cliente ver apenas um pedaço do resultado final, podendo este
          	navegar para frente e para trás através dos registros. A menos que o conjunto de registros seja garantidamente pequeno, qualquer
-         	aplicação do tipo Web com funcionalidades de busca precisa ser dotada de paginação.
+         	aplicação do tipo Web com funcionalidades de busca e/ou listagem de registros, precisa ser dotada de paginação.
       	</para>
       	<para>
          	O mecanismo de paginação para as aplicações fornecido pelo <emphasis>Demoiselle Framework</emphasis> consiste em um algoritmo

@@ -36,25 +36,27 @@
 		<para>
 			As instruções contidas em um método anotado com <literal>@Startup</literal> serão executadas automaticamente quando a aplicação
 			Java for inicializada, seja ela hospedada em um contêiner Web ou executada através de um método <literal>main()</literal>.
-			Nenhum outro arquivo ou classe precisa ser definido. A anotação <literal>@Startup</literal> permite a indicação do argumento
-			<literal>priority</literal>, um número inteiro que serve para definir a prioridade de execução do respectivo método na existência
-			de mais de um inicializador para a aplicação.
+			Nenhum outro arquivo ou classe precisa ser definido. A anotação <literal>@Startup</literal> pode ser utilizada em conjunto com a anotação 
+			<literal>@Priority</literal>, que recebe como parametro um número inteiro que serve para definir a prioridade de execução do respectivo 
+			método, na existência de mais de um inicializador para a aplicação.
 		</para>
 		<para>
 			De maneira análoga, um método anotado com <literal>@Shutdown</literal> será executado no momento de finalização de uma aplicação,
-			obedecendo também à ordem de prioridade definida com o argumento <literal>priority</literal>.
+			obedecendo também à ordem de prioridade definida com a anotação <literal>@Priority</literal>.
 		</para>
 		<para>
 			Eis um exemplo de implementação de inicializador em uma aplicação:
 		</para>
 		<programlisting role="JAVA"><![CDATA[public class BookmarkInitializer {
 	
-	@Startup(priority = 1)
+	@Startup
+	@Priority(1)
 	public void initialize() {	
 		...
 	}
 
-	@Shutdown(priority = 5)
+	@Shutdown
+	@Priority(5)
 	public void finalize() {
 		...
 	}
@@ -64,7 +66,7 @@
 			<para>
 				Para a definição de prioridade de execução de um método na inicialização ou finalização, podem ser
 				utilizadas as constantes <literal>MIN_PRIORITY</literal> ou <literal>MAX_PRIORITY</literal> presentes em
-				<literal>br.gov.frameworkdemoiselle.annotation.Startup</literal>.
+				<literal>br.gov.frameworkdemoiselle.annotation.Priority</literal>.
 			</para>
 		</tip>
 	</section>
@@ -75,11 +77,11 @@
 			Eis um interessante caso de uso de inicialização e finalização: rodar um servidor de modo standalone em paralelo à
 			execução da aplicação principal. Eis o código referente à essa implementação:
 		</para>
-		<programlisting role="JAVA"><![CDATA[import br.gov.frameworkdemoiselle.annotation.Shutdown;
-import br.gov.frameworkdemoiselle.annotation.Startup;
+		<programlisting role="JAVA"><![CDATA[import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
+import br.gov.frameworkdemoiselle.lifecycle.Startup;
 
-import static br.gov.frameworkdemoiselle.annotation.Startup.MAX_PRIORITY;
-import static br.gov.frameworkdemoiselle.annotation.Startup.MIN_PRIORITY;
+import static br.gov.frameworkdemoiselle.annotation.Priority.MAX_PRIORITY;
+import static br.gov.frameworkdemoiselle.annotation.Priority.MIN_PRIORITY;
 
 public class DatabaseServer {
 
@@ -93,12 +95,14 @@ public class DatabaseServer {
 		server.setSilent(true);
 	}
 
-	@Startup(priority = MAX_PRIORITY)
+	@Startup
+	@Priority(MAX_PRIORITY)
 	public void startup() {
 		server.start();
 	}
 
-	@Shutdown(priority = MIN_PRIORITY)
+	@Shutdown
+	@Priority (MIN_PRIORITY)
 	public void shutdown() {
 		server.stop();
 	}

@@ -8,14 +8,14 @@
 	<para>
 		Em um projeto com o <emphasis>Demoiselle Framework</emphasis>, algumas propriedades e configurações 
 		do <emphasis>Framework</emphasis> podem ser ajustadas no arquivo <literal>demoiselle.properties</literal>. 
-		Além disso, a partir da versão 2.3.0 também é nesse arquivo que devem ser definidas as estratégias de 
-		<emphasis>Transação</emphasis>, <emphasis>Autorização</emphasis> e <emphasis>Autenticação</emphasis>.
+	<!--Além disso, a partir da versão 2.3.0 também é nesse arquivo que devem ser definidas as estratégias de 
+		<emphasis>Transação</emphasis>, <emphasis>Autorização</emphasis> e <emphasis>Autenticação</emphasis>. 
 	</para>
-	<para>
+	<para>-->
 		A seguir listamos as propriedades e configurações do <emphasis>Demoiselle Framework</emphasis> que o usuário pode modificar,
-		acompanhados de alguns exemplos ilustrativos. Também mostraremos como escolher as estratégias para
+		acompanhados de alguns exemplos ilustrativos. <!-- Também mostraremos como escolher as estratégias para
 		<emphasis>Transação</emphasis>, <emphasis>Autorização</emphasis> e <emphasis>Autenticação</emphasis>, oferecidas pelo
-		<emphasis>Demoiselle</emphasis>.
+		<emphasis>Demoiselle</emphasis>. --> 
 	</para>	
 		
 	<section>
@@ -151,7 +151,7 @@
 		</para>
 	</section>
 	
-	<section>
+	<!-- <section>
 		<title>Escolhendo Estratégias</title>
 		<para>
 			Para escolher as estratégias de <emphasis>Transação</emphasis>, <emphasis>Autorização</emphasis> e <emphasis>Autenticação</emphasis>
@@ -184,5 +184,5 @@
 		As instruções para você construir e utilizar sua própria estratégia estãodescritas nos capítulos <link linkend="transacao">Transação</link> 
 		e <link linkend="security">Segurança</link>.
 		</para>
-	</section>
+	</section> -->
 </chapter>

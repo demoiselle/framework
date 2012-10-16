@@ -46,6 +46,7 @@
 		</para>
 	</section>
 	
+	<!-- 
 	<section>
     	<title>Configurando</title>
     	<para>
@@ -64,6 +65,7 @@
 		]]>
 		</programlisting>
     </section> 
+	 -->
 	
 	<section>
 		<title>As classes de configuração</title>
@@ -233,7 +235,8 @@ general.load.initial.data = true
 			<para>
 				Além de <literal>String</literal> e <literal>boolean</literal>, existe a possibilidade de se recuperar valores de qualquer 
 				tipo primitivo do Java (i.e., <literal>int, byte, short, char, long, float, double</literal> e <literal>boolean</literal>)
-				e também arrays desses tipos.
+				e também arrays desses tipos e de alguns tipos complexos (i.e., <literal>Integer, BigDecimal, BigInteger, Calendar, Date, 
+				Color, Locale, URL</literal> e <literal>String</literal>).
 			</para>
 		</tip>
 	</section>
