@@ -331,7 +331,7 @@
 		<servlet.version>2.5</servlet.version>
 		<persistence.version>2.0.0</persistence.version>
 
-		<hibernate.version>3.6.0.Final</hibernate.version>
+		<hibernate.version>4.1.7.Final</hibernate.version>
 
 		<junit.version>4.8.1</junit.version>
 		<easymock.version>3.0</easymock.version>
