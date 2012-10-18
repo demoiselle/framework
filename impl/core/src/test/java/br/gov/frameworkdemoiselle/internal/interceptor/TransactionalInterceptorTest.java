@@ -35,22 +35,36 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.interceptor;
+
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.powermock.api.easymock.PowerMock.mockStatic;
+import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.replayAll;
 
+import java.util.Locale;
+
+import javax.enterprise.inject.Instance;
 import javax.interceptor.InvocationContext;
 
 import org.easymock.EasyMock;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.internal.implementation.TransactionInfo;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
-@Ignore
+import br.gov.frameworkdemoiselle.transaction.TransactionContext;
+import br.gov.frameworkdemoiselle.util.Beans;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Beans.class)
 public class TransactionalInterceptorTest {
 
 	private TransactionalInterceptor interceptor;
@@ -59,6 +73,8 @@ public class TransactionalInterceptorTest {
 
 	private Transaction transaction;
 
+	private TransactionContext transactionContext;
+
 	class ClassWithMethod {
 
 		public void method() {
@@ -66,26 +82,35 @@ public class TransactionalInterceptorTest {
 		}
 	}
 
-	// @Before
-	// @SuppressWarnings("unchecked")
-	// public void setUp() throws Exception {
-	// Instance<Transaction> transactionInstance = EasyMock.createMock(Instance.class);
-	// Instance<TransactionInfo> transactionContextInstance = EasyMock.createMock(Instance.class);
-	//
-	// Logger logger = EasyMock.createMock(Logger.class);
-	// ResourceBundle bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
-	// transaction = EasyMock.createMock(Transaction.class);
-	// TransactionInfo context = new TransactionInfo();
-	//
-	// this.interceptor = new TransactionalInterceptor(transactionInstance, transactionContextInstance, logger, bundle);
-	// this.ic = EasyMock.createMock(InvocationContext.class);
-	//
-	// expect(transactionInstance.get()).andReturn(transaction).anyTimes();
-	// expect(transactionContextInstance.get()).andReturn(context).anyTimes();
-	// expect(this.ic.proceed()).andReturn(null);
-	// expect(this.ic.getMethod()).andReturn(ClassWithMethod.class.getMethod("method"));
-	// replay(this.ic, transactionInstance, transactionContextInstance);
-	// }
+	@Before
+	@SuppressWarnings("unchecked")
+	public void setUp() throws Exception {
+		Instance<Transaction> transactionInstance = EasyMock.createMock(Instance.class);
+		Instance<TransactionInfo> transactionInfoInstance = EasyMock.createMock(Instance.class);
+		Instance<TransactionContext> transactionContextInstance = EasyMock.createMock(Instance.class);
+
+		TransactionInfo transactionInfo = new TransactionInfo();
+		transaction = EasyMock.createMock(Transaction.class);
+		this.transactionContext = EasyMock.createMock(TransactionContext.class);
+		this.ic = EasyMock.createMock(InvocationContext.class);
+
+		mockStatic(Beans.class);
+		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault());
+		expect(Beans.getReference(TransactionContext.class)).andReturn(transactionContext);
+		expect(Beans.getReference(TransactionInfo.class)).andReturn(transactionInfo);
+
+		expect(transactionInstance.get()).andReturn(transaction).anyTimes();
+		expect(transactionContextInstance.get()).andReturn(transactionContext).anyTimes();
+		expect(transactionInfoInstance.get()).andReturn(transactionInfo).anyTimes();
+		expect(transactionContext.getCurrentTransaction()).andReturn(transaction).anyTimes();
+		expect(this.ic.proceed()).andReturn(null);
+		expect(this.ic.getMethod()).andReturn(ClassWithMethod.class.getMethod("method"));
+		replayAll(Beans.class, this.ic, transactionContextInstance, transactionInfoInstance, transactionInstance,
+				transactionContext);
+
+		this.interceptor = new TransactionalInterceptor();
+
+	}
 
 	@Test
 	public void testManageWithInativeTransactionAndTransactionInterceptorBeginAndDoNotIsMarkedRollback()
