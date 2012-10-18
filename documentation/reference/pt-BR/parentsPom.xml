@@ -32,19 +32,34 @@ Assim, a alteração no POM.XML da aplicação será a minima possível. Outra v
 	</section>
 
 	<section>
-		<title>Demoiselle-WEB-Parent</title>
+		<title>Demoiselle-SE-Parent</title>
 		<para>
-			Especialização do POM mínimo, contendo configurações úteis para todas as aplicações JEE6/Web que utilizam o Demoiselle, mas sem a definição de 
-			qual camada de apresentação utilizará.
+			Especialização do POM mínimo, contendo configurações úteis para todas as aplicações <!-- SE -->Desktop que utilizam o framework, mas sem definição da
+			camada de apresentação que será utilizada.
+		</para>
+	</section>
+
+	<section>
+		<title>Demoiselle-Servlet-Parent</title>
+		<para>
+			Especialização do POM mínimo, contendo profiles para Tomcat 6, Tomcat 7, GAE, Glassfish 3, JBoss 6 e JBoss 7, e outras configurações úteis para todas 
+			as aplicações JEE6/Web que utilizam o Demoiselle, mas sem a definição de qual camada de apresentação utilizará. Entre as dependências referênciadas 
+			por este POM está a extensão Demoiselle-Servlet.
 		</para>
 	</section>
 
 	<section>
 		<title>Demoiselle-JSF-Parent</title>
 		<para>
-			Especialização do POM demoiselle-web-parent, contendo configurações úteis e necessárias para todas as aplicações que utilizarão a tecnologia JSF2
-			para camada de apresentação.
-			Entre as dependências referênciadas por este POM está obviamente a extensão Demoiselle-JSF.			
+			Especialização do POM demoiselle-servlet-parent, contendo configurações úteis e necessárias para todas as aplicações que utilizarão a tecnologia JSF2
+			para camada de apresentação. Entre as dependências referênciadas por este POM está obviamente a extensão Demoiselle-JSF.			
+		</para>
+	</section>
+	
+	<section>
+		<title>Demoiselle-Archetype-Parent</title>
+		<para>
+			Contém configurações comuns a todos os projetos geradores de arquétipos.			
 		</para>
 	</section>
 

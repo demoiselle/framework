@@ -30,7 +30,9 @@
 			Já os Componentes são artefatos separados e que, portanto, não são dependentes diretamente do Core. Aliás, os
 			Componentes podem até mesmo existir sem referenciar o Core. Desta forma, o seu ciclo de vida é totalmente
 			independente do Core e Extensões. Um componente não precisa, necessariamente, estender o comportamento do Core, mas
-			permitir disponibilizar novas funcionalidades ao usuário. Um exemplo é o <literal>demoiselle-validation</literal>.
+			permitir disponibilizar novas funcionalidades ao usuário. Outra diferença importante é que, diferente de Core e
+			Extensões, os Componentes não necessariamente são aderentes a alguma especificação. Um exemplo é o 
+			<literal>demoiselle-validation</literal>.
 		</para>
 	</section>
 

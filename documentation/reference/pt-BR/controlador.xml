@@ -42,7 +42,7 @@
 public @interface SeuController {
 }]]></programlisting>
 		<para>
-			Neste exemplo foi criado um controlador chamado <literal>SeuController</literal> quem tem a característica de ter um escopo de
+			Neste exemplo foi criado um controlador chamado <literal>SeuController</literal> que tem a característica de ter um escopo de
 			View. Isto quer dizer que toda classe que seja desse tipo de controlador, também terá o escopo de View.
 		</para>
 		<!-- TODO: qual a vantagem em se criar um controlador customizado? incluir um exemplo possível e prático de utilização disso -->

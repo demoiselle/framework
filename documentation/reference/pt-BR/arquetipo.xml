@@ -6,9 +6,9 @@
 	<title>Arquétipos</title>
 
 	<para>
-		Como o projeto Demoiselle recomenda e usa a ferramenta <ulink url="http://maven.apache.org/">Apache-Maven</ulink> , para gerenciamento do ciclo de vida do desenvolvimento
+		O projeto Demoiselle recomenda e usa a ferramenta <ulink url="http://maven.apache.org/">Apache-Maven</ulink> , para gerenciamento do ciclo de vida do desenvolvimento
 		de projeto. Baseada nesta ferramenta, além do fornecimento dos POMs Parentes, também fornece as estruturas chamadas <ulink url="http://maven.apache.org/archetype/maven-archetype-plugin/">arquétipos</ulink>  
-		para facilitar a criação de aplicações, garantido a estrutura recomendada pelo framework e conceito de gerenciamento do próprio Maven. 
+		para facilitar a criação de aplicações, garantido a estrutura recomendada pelo framework e o conceito de gerenciamento do próprio Maven. 
 		Atualmente estão disponíveis os seguintes artefatos: 
 	</para>
 
@@ -27,7 +27,7 @@
 			é baseado no Demoiselle-JSF-Parent,
 			e que já traz uma estrutura padrão de pacotes e todas
 			as dependências necessárias para rodar a aplicação. Ao usar este
-			arquétipo, você já terá uma pequena aplicação de
+			arquétipo, você terá uma pequena aplicação de
 			Bookmarks já pronta para rodar. Para isto, basta instalá-la em um
 			servidor da sua preferência! Para mais detalhes
 			sobre esta aplicação de exemplo e em como usar o arquétipo, acesse

@@ -43,7 +43,7 @@
 			nome diferente ao objeto, ele pode anotá-lo com <literal>@Name</literal> e no valor dessa anotação, colocar o
 			nome do parâmetro. Por default o objeto criado tem o escopo de request, mas é possível usar o escopo de sessão
 			ou de visão, bastando anotar o objeto com <literal>@SessionScoped</literal> ou <literal>@ViewScoped</literal>,
-			respectivamente. Veja abaixo como ficaria essa passagem de parãmetros na versão 2.X do Demoiselle.
+			respectivamente. Veja abaixo como ficaria essa passagem de parâmetros na versão 2.X do Demoiselle.
 		</para>
 		<para>
 			Passagem do parâmetro

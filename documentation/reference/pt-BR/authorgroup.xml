@@ -8,7 +8,15 @@
 	</author>
 	<author>
 		<firstname>Emerson</firstname>
+		<surname>Oliveira</surname>
+	</author>
+	<author>
+		<firstname>Emerson</firstname>
 		<surname>Saito</surname>
+	</author>
+	<author>
+		<firstname>Luciano</firstname>
+		<surname>Borges</surname>
 	</author>
 	<author>
 		<firstname>Marlon</firstname>
@@ -34,12 +42,4 @@
 		<firstname>Wilson</firstname>
 		<surname>Guimarães</surname>
 	</author>
-	<author>
-		<firstname>Emerson</firstname>
-		<surname>Oliveira</surname>
-	</author>
-	<author>
-		<firstname>Luciano</firstname>
-		<surname>Borges</surname>
-	</author>	
 </authorgroup>

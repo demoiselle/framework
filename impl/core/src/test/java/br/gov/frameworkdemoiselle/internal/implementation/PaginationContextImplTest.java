@@ -36,34 +36,40 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.powermock.api.easymock.PowerMock.mockStatic;
+import static org.powermock.api.easymock.PowerMock.replayAll;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.easymock.EasyMock;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import br.gov.frameworkdemoiselle.internal.configuration.PaginationConfig;
 import br.gov.frameworkdemoiselle.pagination.Pagination;
 import br.gov.frameworkdemoiselle.pagination.PaginationContext;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(PowerMockRunner.class)
+@PrepareForTest(Beans.class)
 public class PaginationContextImplTest {
 
 	private PaginationContext context;
 
+	private PaginationConfig config = new PaginationConfig();
+	
 	private Pagination pagination;
 
-	@Before
 	public void setUp() {
 		context = new PaginationContextImpl();
 
@@ -87,21 +93,38 @@ public class PaginationContextImplTest {
 
 		return map;
 	}
+	
+	@Test
+	public void testNullPaginationConfig() {
+		context = new PaginationContextImpl();
+		
+		mockStatic(Beans.class);
+		expect(Beans.getReference(PaginationConfig.class)).andReturn(config).anyTimes();
+		replayAll(Beans.class);
+
+		assertNotNull(context.getPagination(Object.class, true));
+	}
 
 	@Test
 	public void testGetPaginationWithoutCreateParameter() {
+		setUp();
+		
 		assertEquals(pagination, context.getPagination(getClass()));
 		assertNull(context.getPagination(Object.class));
 	}
 
 	@Test
 	public void testGetPaginationWithCreateParameterTrueValued() {
+		setUp();
+		
 		assertEquals(pagination, context.getPagination(getClass(), true));
 		assertNotNull(context.getPagination(Object.class, true));
 	}
 
 	@Test
 	public void testGetPaginationWithCreateParameterFalseValued() {
+		setUp();
+		
 		assertEquals(pagination, context.getPagination(getClass(), false));
 		assertNull(context.getPagination(Object.class, false));
 	}

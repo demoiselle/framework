@@ -145,12 +145,42 @@ public class MessageContextImplTest {
 		};
 	}
 
-//	@Test
-//	public void testAddMessage() {
-//		messageContext.add(m1);
-//		Assert.assertTrue(messageContext.getMessages().size() == 1);
-//		Assert.assertTrue(messageContext.getMessages().contains(m1));
-//	}
+	@Test
+	public void testAddMessage() {
+		messageContext.add(m1);
+		Assert.assertTrue(messageContext.getMessages().size() == 1);
+		Assert.assertTrue(messageContext.getMessages().get(0).getText().equals(m1.getText()));
+		Assert.assertTrue(messageContext.getMessages().get(0).getSeverity().equals(m1.getSeverity()));		
+	}
+	
+	@Test
+	public void testClearMessages() {
+		Assert.assertTrue(messageContext.getMessages().isEmpty());
+
+		messageContext.add(m1);
+		messageContext.add(m1, null);
+		
+		Assert.assertTrue(messageContext.getMessages().size() == 2);
+		
+		messageContext.clear();
+		
+		Assert.assertTrue(messageContext.getMessages().isEmpty());
+	}
+
+	@Test
+	public void testGetMessages() {
+		Assert.assertNotNull(messageContext.getMessages());
+		Assert.assertTrue(messageContext.getMessages().isEmpty());
+		
+		messageContext.add("key1");
+		Assert.assertTrue(messageContext.getMessages().size() == 1);
+		
+		messageContext.add("key2");
+		Assert.assertTrue(messageContext.getMessages().size() == 2);
+		
+		Assert.assertTrue(messageContext.getMessages().get(0).getText().equals("key1"));
+		Assert.assertTrue(messageContext.getMessages().get(1).getText().equals("key2"));
+	}
 
 //	@Test
 //	public void testAddMessageObjectArray() {
@@ -224,19 +254,5 @@ public class MessageContextImplTest {
 //		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[1] == param[1]);
 //	}
 
-	@Test
-	public void testGetMessages() {
-		Assert.assertNotNull(messageContext.getMessages());
-		Assert.assertTrue(messageContext.getMessages().isEmpty());
-
-		messageContext.add("key1");
-		Assert.assertTrue(messageContext.getMessages().size() == 1);
-
-		messageContext.add("key2");
-		Assert.assertTrue(messageContext.getMessages().size() == 2);
-
-		Assert.assertTrue(messageContext.getMessages().get(0).getText().equals("key1"));
-		Assert.assertTrue(messageContext.getMessages().get(1).getText().equals("key2"));
-	}
 
 }

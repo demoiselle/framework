@@ -20,7 +20,7 @@
 	<section>
     	<title>Configurando</title>
     	<para>
-    	Para um correto funcionamento do Demoiselle é necessário inserir od interceptadores de segurança no arquivo <filename>src/main/WEB-INF/beans.xml</filename>.
+    	Para um correto funcionamento do Demoiselle é necessário inserir os interceptadores de segurança no arquivo <filename>src/main/WEB-INF/beans.xml</filename>.
     	</para>
 		<programlisting role="XML">
 		<![CDATA[
@@ -179,10 +179,11 @@ public class Credential {
 			Após toda essa explicação, fica a dúvida: como implementar um esquema de segurança sem utilizar a extensão existente?
 		</para>
 		<para>
-			O primeiro passo é criar classes para implementar as interfaces Authenticator e Authorizer. Essas classes devem ser
-			anotadas com @Alternative para que o CDI saiba que se trata de uma estratégia:
+			O primeiro passo é criar classes para implementar as interfaces Authenticator e Authorizer. O <literal>Demoiselle</literal> detecta automaticamente
+			a implementação, e torna essa classe a implementação padrão dessas interfaces:<!-- Essas classes devem ser
+			anotadas com @Alternative para que o CDI saiba que se trata de uma estratégia: -->
 		</para>
-		<programlisting role="JAVA"><![CDATA[@Alternative 
+		<programlisting role="JAVA"><![CDATA[
 public class MeuAuthenticator implements Authenticator { 
 
 	@Override 
@@ -204,7 +205,7 @@ public class MeuAuthenticator implements Authenticator {
 	} 
 
 }]]></programlisting>
-		<programlisting role="JAVA"><![CDATA[@Alternative 
+		<programlisting role="JAVA"><![CDATA[
 public class MeuAuthorizer implements Authorizer { 
 
 	@Override 
@@ -220,19 +221,30 @@ public class MeuAuthorizer implements Authorizer {
 	} 
 
 }]]></programlisting>
-		<para>
+		<!-- <para>
 			Feito isso deve-se definir no arquivo <filename>demoiselle.properties</filename>, as classes criadas:
 		</para>
 		<programlisting>
 			frameworkdemoiselle.security.authenticator.class=projeto.MeuAuthenticator 
 			frameworkdemoiselle.security.authorizer.class=projeto.MeuAuthorizer 
-		</programlisting>
+		</programlisting> -->
 		<para>
-			À partir desse momento, a aplicação já possui uma implementação de segurança definida.		
+			Pronto! Sua aplicação já possui uma implementação de segurança definida. Caso sua ela não implemente essas interfaces, no momento em que
+			forem chamadas, o framework lançará uma exceção informando que a aplicação precisa implementá-las.	
 		</para>
+		<para>
+			Se você tem mais de uma implementação de <literal>Authenticator</literal> e/ou <literal>Authorizer</literal> (o que pode acontecer, por exemplo, quando
+			se necessite de uma implementação na aplicação principal, e outra para os testes), deverá definir no arquivo <filename>demoiselle.properties</filename>
+			qual classe será a padrão:
+			<programlisting>
+				frameworkdemoiselle.security.authenticator.class=projeto.MeuAuthenticatorPadrao 
+				frameworkdemoiselle.security.authorizer.class=projeto.MeuAuthorizerPadrao
+			</programlisting>
+ 		</para>
 	</section>
-	<caution> <para>O Demoiselle também oferece o componente <ulink url="http://demoiselle.sourceforge.net/docs/demoiselle-guide-components/1.2.0/html/authorization-master.html">Authorization</ulink> 
-	 que facilita o uso de segurança com JAAS. Obviamente, não é possível utilizá-los ao mesmo tempo. Há arquétipos Maven que já trazem esse componente como dependência, por isso sempre confira o arquivo
-	 POM.XML e se for o caso retire esse dependência.</para> </caution>
+	<caution> <para>O Demoiselle também oferece o componente 
+	<ulink url="http://demoiselle.sourceforge.net/docs/demoiselle-guide-components/1.2.0/html/authorization-master.html">Authorization</ulink> 
+	 que facilita o uso de segurança com JAAS. Obviamente, não é possível utilizá-los ao mesmo tempo. Há arquétipos Maven que já trazem esse componente 
+	 como dependência, por isso sempre confira o arquivo POM.XML e se for o caso retire essa dependência.</para> </caution>
 
 </chapter>
