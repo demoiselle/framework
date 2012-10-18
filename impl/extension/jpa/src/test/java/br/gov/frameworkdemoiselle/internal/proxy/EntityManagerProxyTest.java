@@ -65,7 +65,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.gov.frameworkdemoiselle.internal.producer.EntityManagerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.FakeEntityManager;
-import br.gov.frameworkdemoiselle.internal.proxy.query.QueryProxy;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(PowerMockRunner.class)
@@ -78,14 +77,11 @@ public class EntityManagerProxyTest {
 
 	private EntityManagerProducer entityManagerContext;
 	
-	private EntityTransaction transaction;
-
 	@Before
 	public void setUp() throws Exception {
 		mockStatic(Beans.class);
 		this.entityManager = EasyMock.createMock(EntityManager.class);
 		this.entityManagerContext = EasyMock.createMock(EntityManagerProducer.class);
-		this.transaction = EasyMock.createMock(EntityTransaction.class);
 
 		expect(Beans.getReference(EntityManagerProducer.class)).andReturn(this.entityManagerContext).anyTimes();
 		expect(this.entityManagerContext.getEntityManager("teste")).andReturn(this.entityManager).anyTimes();
@@ -343,7 +339,6 @@ public class EntityManagerProxyTest {
 	public void testCreateQuery() {
 		Query query = EasyMock.createMock(Query.class);
 		expect(this.entityManager.createQuery("teste")).andReturn(query);
-		expect(this.entityManager.getTransaction()).andReturn(transaction);
 		replay(this.entityManager);
 		assertTrue(Query.class.isAssignableFrom(this.entityManagerProxy.createQuery("teste").getClass()) );
 		verify(this.entityManager);
@@ -356,7 +351,6 @@ public class EntityManagerProxyTest {
 
 		CriteriaQuery<Object> criteriaQuery = null;
 		expect(this.entityManager.createQuery(criteriaQuery)).andReturn(typedQuery);
-		expect(this.entityManager.getTransaction()).andReturn(transaction);
 		replay(this.entityManager);
 		assertTrue(TypedQuery.class.isAssignableFrom(this.entityManagerProxy.createQuery(criteriaQuery).getClass()));
 		verify(this.entityManager);
@@ -368,7 +362,6 @@ public class EntityManagerProxyTest {
 		TypedQuery<String> typeQuery = EasyMock.createMock(TypedQuery.class);
 
 		expect(this.entityManager.createQuery("teste", String.class)).andReturn(typeQuery);
-		expect(this.entityManager.getTransaction()).andReturn(transaction);
 		replay(this.entityManager);
 		assertTrue(TypedQuery.class.isAssignableFrom(this.entityManagerProxy.createQuery("teste", String.class).getClass()));
 		verify(this.entityManager);
@@ -378,7 +371,6 @@ public class EntityManagerProxyTest {
 	public void testCreateNamedQuery() {
 		Query query = EasyMock.createMock(Query.class);
 		expect(this.entityManager.createNamedQuery("teste")).andReturn(query);
-		expect(this.entityManager.getTransaction()).andReturn(transaction);
 		replay(this.entityManager);
 		assertTrue(Query.class.isAssignableFrom(this.entityManagerProxy.createNamedQuery("teste").getClass()));
 		verify(this.entityManager);
@@ -389,7 +381,6 @@ public class EntityManagerProxyTest {
 		@SuppressWarnings("unchecked")
 		TypedQuery<String> typedQuery = EasyMock.createMock(TypedQuery.class);
 		expect(this.entityManager.createNamedQuery("teste", String.class)).andReturn(typedQuery);
-		expect(this.entityManager.getTransaction()).andReturn(transaction);
 		replay(this.entityManager);
 		assertEquals(typedQuery, this.entityManagerProxy.createNamedQuery("teste", String.class));
 		verify(this.entityManager);

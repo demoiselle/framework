@@ -29,7 +29,6 @@ import org.powermock.reflect.Whitebox;
 
 import br.gov.frameworkdemoiselle.domain.Client;
 import br.gov.frameworkdemoiselle.internal.producer.EntityManagerProducer;
-import br.gov.frameworkdemoiselle.internal.proxy.query.TypedQueryProxy;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 /**

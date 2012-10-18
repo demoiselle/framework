@@ -1,4 +1,4 @@
-package br.gov.frameworkdemoiselle.internal.proxy.query;
+package br.gov.frameworkdemoiselle.internal.proxy;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -9,205 +9,171 @@ import java.util.Set;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.Parameter;
-import javax.persistence.Query;
 import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
 
-import br.gov.frameworkdemoiselle.internal.proxy.EntityManagerProxy;
-
-public class QueryProxy implements Query {
+public class TypedQueryProxy<X> implements TypedQuery<X> {
 	
-	private Query queryDelegate;
+	private TypedQuery<X> queryDelegate;
 	private EntityManagerProxy entityManagerCaller;
 	
-	public QueryProxy(Query queryDelegate,EntityManagerProxy entityManagerCaller){
+	public TypedQueryProxy(TypedQuery<X> queryDelegate,
+			EntityManagerProxy entityManagerCaller) {
 		this.queryDelegate = queryDelegate;
 		this.entityManagerCaller = entityManagerCaller;
 	}
 
-	@SuppressWarnings("rawtypes")
-	public List getResultList() {
+	public List<X> getResultList() {
 		entityManagerCaller.joinTransactionIfNecessary();
 		return queryDelegate.getResultList();
 	}
 
-	/**
-	 * @see Query.getSingleResult()
-	 */
-	@Override
-	public Object getSingleResult() {
+	public X getSingleResult() {
 		entityManagerCaller.joinTransactionIfNecessary();
 		return queryDelegate.getSingleResult();
 	}
 
-	@Override
 	public int executeUpdate() {
 		entityManagerCaller.joinTransactionIfNecessary();
 		return queryDelegate.executeUpdate();
 	}
 
-	@Override
-	public Query setMaxResults(int maxResult) {
+	public TypedQuery<X> setMaxResults(int maxResult) {
 		queryDelegate.setMaxResults(maxResult);
 		return this;
 	}
 
-	@Override
-	public int getMaxResults() {
-		return queryDelegate.getMaxResults();
-	}
-
-	@Override
-	public Query setFirstResult(int startPosition) {
+	public TypedQuery<X> setFirstResult(int startPosition) {
 		queryDelegate.setFirstResult(startPosition);
 		return this;
 	}
 
-	@Override
-	public int getFirstResult() {
-		return queryDelegate.getFirstResult();
-	}
-
-	@Override
-	public Query setHint(String hintName, Object value) {
+	public TypedQuery<X> setHint(String hintName, Object value) {
 		queryDelegate.setHint(hintName, value);
 		return this;
 	}
 
-	@Override
-	public Map<String, Object> getHints() {
-		return queryDelegate.getHints();
+	public int getMaxResults() {
+		return queryDelegate.getMaxResults();
 	}
 
-	@Override
-	public <T> Query setParameter(Parameter<T> param, T value) {
+	public <T> TypedQuery<X> setParameter(Parameter<T> param, T value) {
 		queryDelegate.setParameter(param, value);
 		return this;
 	}
 
-	@Override
-	public Query setParameter(Parameter<Calendar> param, Calendar value,
+	public int getFirstResult() {
+		return queryDelegate.getFirstResult();
+	}
+
+	public TypedQuery<X> setParameter(Parameter<Calendar> param,
+			Calendar value, TemporalType temporalType) {
+		queryDelegate.setParameter(param, value, temporalType);
+		return this;
+	}
+
+	public TypedQuery<X> setParameter(Parameter<Date> param, Date value,
 			TemporalType temporalType) {
 		queryDelegate.setParameter(param, value, temporalType);
 		return this;
 	}
 
-	@Override
-	public Query setParameter(Parameter<Date> param, Date value,
-			TemporalType temporalType) {
-		queryDelegate.setParameter(param, value, temporalType);
-		return this;
+	public Map<String, Object> getHints() {
+		return queryDelegate.getHints();
 	}
 
-	@Override
-	public Query setParameter(String name, Object value) {
+	public TypedQuery<X> setParameter(String name, Object value) {
 		queryDelegate.setParameter(name, value);
 		return this;
 	}
 
-	@Override
-	public Query setParameter(String name, Calendar value,
+	public TypedQuery<X> setParameter(String name, Calendar value,
 			TemporalType temporalType) {
 		queryDelegate.setParameter(name, value, temporalType);
 		return this;
 	}
 
-	@Override
-	public Query setParameter(String name, Date value, TemporalType temporalType) {
+	public TypedQuery<X> setParameter(String name, Date value,
+			TemporalType temporalType) {
 		queryDelegate.setParameter(name, value, temporalType);
 		return this;
 	}
 
-	@Override
-	public Query setParameter(int position, Object value) {
+	public TypedQuery<X> setParameter(int position, Object value) {
 		queryDelegate.setParameter(position, value);
 		return this;
 	}
 
-	@Override
-	public Query setParameter(int position, Calendar value,
+	public TypedQuery<X> setParameter(int position, Calendar value,
 			TemporalType temporalType) {
 		queryDelegate.setParameter(position, value, temporalType);
 		return this;
 	}
 
-	@Override
-	public Query setParameter(int position, Date value,
+	public TypedQuery<X> setParameter(int position, Date value,
 			TemporalType temporalType) {
 		queryDelegate.setParameter(position, value, temporalType);
 		return this;
 	}
 
-	@Override
-	public Set<Parameter<?>> getParameters() {
-		return queryDelegate.getParameters();
-	}
-
-	@Override
-	public Parameter<?> getParameter(String name) {
-		return queryDelegate.getParameter(name);
-	}
-
-	@Override
-	public <T> Parameter<T> getParameter(String name, Class<T> type) {
-		return queryDelegate.getParameter(name, type);
-	}
-
-	@Override
-	public Parameter<?> getParameter(int position) {
-		return queryDelegate.getParameter(position);
-	}
-
-	@Override
-	public <T> Parameter<T> getParameter(int position, Class<T> type) {
-		return queryDelegate.getParameter(position, type);
-	}
-
-	@Override
-	public boolean isBound(Parameter<?> param) {
-		return queryDelegate.isBound(param);
-	}
-
-	@Override
-	public <T> T getParameterValue(Parameter<T> param) {
-		return queryDelegate.getParameterValue(param);
-	}
-
-	@Override
-	public Object getParameterValue(String name) {
-		return queryDelegate.getParameterValue(name);
-	}
-
-	@Override
-	public Object getParameterValue(int position) {
-		return queryDelegate.getParameterValue(position);
-	}
-
-	@Override
-	public Query setFlushMode(FlushModeType flushMode) {
+	public TypedQuery<X> setFlushMode(FlushModeType flushMode) {
 		queryDelegate.setFlushMode(flushMode);
 		return this;
 	}
 
-	@Override
-	public FlushModeType getFlushMode() {
-		return queryDelegate.getFlushMode();
-	}
-
-	@Override
-	public Query setLockMode(LockModeType lockMode) {
-		entityManagerCaller.joinTransactionIfNecessary();
+	public TypedQuery<X> setLockMode(LockModeType lockMode) {
 		queryDelegate.setLockMode(lockMode);
 		return this;
 	}
 
-	@Override
+	public Set<Parameter<?>> getParameters() {
+		return queryDelegate.getParameters();
+	}
+
+	public Parameter<?> getParameter(String name) {
+		return queryDelegate.getParameter(name);
+	}
+
+	public <T> Parameter<T> getParameter(String name, Class<T> type) {
+		return queryDelegate.getParameter(name, type);
+	}
+
+	public Parameter<?> getParameter(int position) {
+		return queryDelegate.getParameter(position);
+	}
+
+	public <T> Parameter<T> getParameter(int position, Class<T> type) {
+		return queryDelegate.getParameter(position, type);
+	}
+
+	public boolean isBound(Parameter<?> param) {
+		return queryDelegate.isBound(param);
+	}
+
+	public <T> T getParameterValue(Parameter<T> param) {
+		return queryDelegate.getParameterValue(param);
+	}
+
+	public Object getParameterValue(String name) {
+		return queryDelegate.getParameterValue(name);
+	}
+
+	public Object getParameterValue(int position) {
+		return queryDelegate.getParameterValue(position);
+	}
+
+	public FlushModeType getFlushMode() {
+		return queryDelegate.getFlushMode();
+	}
+
 	public LockModeType getLockMode() {
 		return queryDelegate.getLockMode();
 	}
 
-	@Override
 	public <T> T unwrap(Class<T> cls) {
 		return queryDelegate.unwrap(cls);
 	}
+	
+	
 
 }

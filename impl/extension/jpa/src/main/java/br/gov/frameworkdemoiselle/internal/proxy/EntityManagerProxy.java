@@ -317,8 +317,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public Query createQuery(String qlString) {
-		joinTransactionIfNecessary();
-		return /*new QueryProxy(*/getEntityManagerDelegate().createQuery(qlString)/* , this)*/ ;
+		return new QueryProxy(getEntityManagerDelegate().createQuery(qlString) , this) ;
 	}
 
 	/*
@@ -327,8 +326,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public <T> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
-		joinTransactionIfNecessary();
-		return /*new TypedQueryProxy<T>(*/ getEntityManagerDelegate().createQuery(criteriaQuery) /*, this )*/;
+		return new TypedQueryProxy<T>( getEntityManagerDelegate().createQuery(criteriaQuery) , this );
 	}
 
 	/*
@@ -337,8 +335,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public <T> TypedQuery<T> createQuery(String qlString, Class<T> resultClass) {
-		joinTransactionIfNecessary();
-		return /*new TypedQueryProxy<T>(*/getEntityManagerDelegate().createQuery(qlString, resultClass)/*,this)*/;
+		return new TypedQueryProxy<T>(getEntityManagerDelegate().createQuery(qlString, resultClass),this);
 	}
 
 	/*
@@ -347,8 +344,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public Query createNamedQuery(String name) {
-		joinTransactionIfNecessary();
-		return /*new QueryProxy(*/getEntityManagerDelegate().createNamedQuery(name)/*, this)*/;
+		return new QueryProxy(getEntityManagerDelegate().createNamedQuery(name), this);
 	}
 
 	/*
@@ -357,7 +353,6 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public <T> TypedQuery<T> createNamedQuery(String name, Class<T> resultClass) {
-		joinTransactionIfNecessary();
 		return getEntityManagerDelegate().createNamedQuery(name, resultClass);
 	}
 
@@ -367,8 +362,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public Query createNativeQuery(String sqlString) {
-		joinTransactionIfNecessary();
-		return /*new QueryProxy(*/getEntityManagerDelegate().createNativeQuery(sqlString)/*, this)*/;
+		return new QueryProxy(getEntityManagerDelegate().createNativeQuery(sqlString), this);
 	}
 
 	/*
@@ -377,8 +371,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public Query createNativeQuery(String sqlString, @SuppressWarnings("rawtypes") Class resultClass) {
-		joinTransactionIfNecessary();
-		return /*new QueryProxy(*/getEntityManagerDelegate().createNativeQuery(sqlString, resultClass)/*, this)*/;
+		return new QueryProxy(getEntityManagerDelegate().createNativeQuery(sqlString, resultClass), this);
 	}
 
 	/*
@@ -387,8 +380,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public Query createNativeQuery(String sqlString, String resultSetMapping) {
-		joinTransactionIfNecessary();
-		return /*new QueryProxy(*/getEntityManagerDelegate().createNativeQuery(sqlString, resultSetMapping)/*,this)*/;
+		return new QueryProxy(getEntityManagerDelegate().createNativeQuery(sqlString, resultSetMapping),this);
 	}
 
 	/*
@@ -403,7 +395,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	/**
 	 * Attemp to join transaction, if the active transaction is not managed by current EntityManager.
 	 */
-	public final void joinTransactionIfNecessary() {
+	protected final void joinTransactionIfNecessary() {
 		try {
 			getEntityManagerDelegate().getTransaction();
 		} catch (IllegalStateException cause) {
@@ -480,7 +472,6 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public CriteriaBuilder getCriteriaBuilder() {
-		joinTransactionIfNecessary();
 		return getEntityManagerDelegate().getCriteriaBuilder();
 	}
 
