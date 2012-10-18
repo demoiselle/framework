@@ -35,7 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
-import org.junit.Ignore;
+
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.easymock.EasyMock.expect;
@@ -57,7 +57,7 @@ import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.gov.frameworkdemoiselle.annotation.Redirect;
-@Ignore
+
 @RunWith(PowerMockRunner.class)
 public class RedirectExceptionHandlerTest {
 
@@ -66,7 +66,7 @@ public class RedirectExceptionHandlerTest {
 	private ExceptionQueuedEventContext eventContext;
 
 	private Collection<ExceptionQueuedEvent> events;
-	
+
 	@SuppressWarnings("serial")
 	@Redirect
 	class AnnotatedException extends RuntimeException {
@@ -86,18 +86,18 @@ public class RedirectExceptionHandlerTest {
 		expect(handler.getUnhandledExceptionQueuedEvents()).andReturn(events).times(2);
 
 	}
-	
+
 	@Test
 	public void testHandleAnAnnotatedException() {
 
 		AnnotatedException exception = new AnnotatedException();
-		
+
 		expect(eventContext.getException()).andReturn(exception);
-		
+
 		replayAll();
 
 		handler.handle();
-		
+
 		assertTrue(events.isEmpty());
 
 		verifyAll();
@@ -108,16 +108,16 @@ public class RedirectExceptionHandlerTest {
 	public void testHandleAnyException() {
 
 		Exception exception = new Exception();
-		
+
 		expect(eventContext.getException()).andReturn(exception);
-		
+
 		handler.getWrapped().handle();
 		expectLastCall();
-		
+
 		replayAll();
 
 		handler.handle();
-		
+
 		assertFalse(events.isEmpty());
 
 		verifyAll();
