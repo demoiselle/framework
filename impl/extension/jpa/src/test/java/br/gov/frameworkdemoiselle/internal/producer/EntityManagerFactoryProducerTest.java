@@ -58,6 +58,7 @@ public class EntityManagerFactoryProducerTest {
 		Assert.assertEquals(emFactory, producer.create("pu1"));
 	}
 	
+	
 	@Test
 	public void testCreateWithUnitPersistenceNotExisting() {
 		
@@ -69,6 +70,22 @@ public class EntityManagerFactoryProducerTest {
 		Assert.assertEquals(emFactory, producer.create("pu1"));
 	}
 	
+	/**
+	 * Test if after producing an entity manager, the EntityManagerFactory is correctly stored in the
+	 * cache associated with the current class loader.
+	 */
+	@Test
+	public void testStorageCacheAfterCreate(){
+		mockStatic(Persistence.class);
+		expect(Persistence.createEntityManagerFactory("pu1")).andReturn(emFactory);
+		replay(Persistence.class);
+
+		Map<String,EntityManagerFactory> producerCache = producer.getCache();
+		Assert.assertNotNull(producerCache);
+		Assert.assertTrue(producerCache.containsKey("pu1"));
+		Assert.assertTrue(producerCache.containsValue(emFactory));
+	}
+
 	@Test
 	public void testInitWithoutError() {
 		mockStatic(Persistence.class);
@@ -84,15 +101,16 @@ public class EntityManagerFactoryProducerTest {
 		Assert.assertEquals(emFactory, internalCache.get("pu1"));
 	}
 	
-	@Test
+	/*@Test
 	public void testInitWithError() {
 		try {
+			
 			producer.loadPersistenceUnits();
 			Assert.fail();
 		}catch(DemoiselleException cause) {
 			Assert.assertTrue(true);
 		}
-	}
+	}*/
 	
 	@Test
 	public void testGetCache() {
@@ -119,5 +137,42 @@ public class EntityManagerFactoryProducerTest {
 		replay(emFactory);
 		producer.close();
 		verify(emFactory);
+	}
+	
+	/**
+	 * Test if detecting the persistence unit with an empty name throws correct error.
+	 */
+	@Test
+	public void testEmptyPersistenceUnitName(){
+		EntityManagerFactoryProducer.ENTITY_MANAGER_RESOURCE = "persistence-empty-name.xml";
+		
+		try{
+			producer.getCache();
+			Assert.fail();
+		}
+		catch(DemoiselleException de){
+			//
+		}
+	}
+	
+	/**
+	 * Test if asking to create an entity manager still not in the cache will correctly create it and put it in the cache.
+	 */
+	@Test
+	public void testCreatePersistenceUnitNotInCache() {
+		mockStatic(Persistence.class);
+		expect(Persistence.createEntityManagerFactory("pu1")).andReturn(emFactory);
+		replay(Persistence.class);
+		
+		ClassLoader cl = this.getClass().getClassLoader();
+		HashMap<String, EntityManagerFactory> emEntry = new HashMap<String, EntityManagerFactory>();
+		cache.put(cl,emEntry);
+		
+		producer.create("pu1");
+		
+		Map<String,EntityManagerFactory> producerCache = producer.getCache();
+		Assert.assertNotNull(producerCache);
+		Assert.assertTrue(producerCache.containsKey("pu1"));
+		Assert.assertTrue(producerCache.containsValue(emFactory));
 	}
 }
