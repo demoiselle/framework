@@ -45,13 +45,11 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import br.gov.frameworkdemoiselle.internal.bootstrap.TransactionBootstrap;
 import br.gov.frameworkdemoiselle.internal.configuration.TransactionConfig;
