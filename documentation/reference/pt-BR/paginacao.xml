@@ -94,7 +94,7 @@
 			
 			    public Pagination getPagination(Class<?> clazz) { ... }
 			
-			    public Pagination get -->Pagination(Class<?> clazz, boolean create) { ... }
+			    public Pagination getPagination(Class<?> clazz, boolean create) { ... }
 			
 			}
 			
