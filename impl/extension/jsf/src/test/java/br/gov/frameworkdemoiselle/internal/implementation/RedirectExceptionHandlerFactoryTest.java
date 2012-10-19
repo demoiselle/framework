@@ -35,7 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
-import org.junit.Ignore;
+
 import static junit.framework.Assert.assertEquals;
 import static org.easymock.EasyMock.expect;
 import static org.powermock.api.easymock.PowerMock.replayAll;
@@ -48,13 +48,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.modules.junit4.PowerMockRunner;
-@Ignore
+
 @RunWith(PowerMockRunner.class)
 public class RedirectExceptionHandlerFactoryTest {
 
 	@Test
 	public void testGetExceptionHandler() {
-		
+
 		ExceptionHandler jsfExceptionHandler = PowerMock.createMock(ExceptionHandler.class);
 
 		ExceptionHandlerFactory jsfFactory = PowerMock.createMock(ExceptionHandlerFactory.class);
@@ -69,7 +69,7 @@ public class RedirectExceptionHandlerFactoryTest {
 		assertEquals(handler.getWrapped(), jsfExceptionHandler);
 
 		verifyAll();
-		
+
 	}
 
 }

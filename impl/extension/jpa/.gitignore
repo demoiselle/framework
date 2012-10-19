@@ -3,3 +3,5 @@
 /.classpath
 /.settings
 /.externalToolBuilders
+/hsql:..properties
+/hsql:..script
