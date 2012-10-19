@@ -173,7 +173,7 @@
    	<section>
    		<title>Implementação na aplicação</title>
       	<para>
-         	Veremos nessa seção como implementar a paginação em uma aplicação Java. Para esse exmplo tomamos como base a aplicação de Bookmarks 
+         	Veremos nessa seção como implementar a paginação em uma aplicação Java. Para esse exemplo tomamos como base a aplicação de Bookmarks 
          	fornecida pelo arquétipo <emphasis>JSF com JPA</emphasis> do <emphasis>Demoiselle Framework</emphasis> (para maiores detalhes 
          	ver <link linkend="estrutura">Arquétipos</link>). Iremos utilizar o componente <literal>DataTable</literal> do <emphasis>PrimeFaces</emphasis>,
          	que oferece o mecanismo de <emphasis>Lazy Loading</emphasis> conhecido como <literal>LazyDataModel</literal>, muito útil para paginação 
@@ -181,7 +181,7 @@
       	</para>
       	<para>
          	Primeiro é preciso configurar um objeto <literal>LazyDataModel</literal> no construtor do <emphasis>Managed Bean</emphasis> 
-         	(<emphasis>BookmarkList</emphasis> nesse exemplo): instancia-lo e sobrescrever o método abstrado <literal>load</literal>, que recebe
+         	(<emphasis>BookmarkList</emphasis> nesse exemplo): instanciá-lo e sobrescrever o método abstrado <literal>load</literal>, que recebe
          	vários argumentos. Esses argumentos são recuperados na página <literal>jsf</literal> que carrega a instância do objeto <literal>LazyDataModel</literal>.
       	</para>
       	<para>
@@ -189,7 +189,7 @@
       		e ajustar alguns dos seus parâmetros para: indicar a partir de qual item a paginação deve iniciar, e o tamanho (quantidade de itens) de cada página.
       		Esses dados são usados no método  <literal>findAll()</literal>, da classe <literal>JPACrud</literal> (extensão JPA), que utiliza o contexto de 
       		paginação para pegar os parametros e fazer a consulta no banco buscando apenas os itens que estão dentro da pagina que o parametro 
-      		<literal>first</literal> indicar. O resultado é passado para a instancia do <literal>LazyDataModel</literal>, que é responsável por exibir 
+      		<literal>first</literal> indicar. O resultado é passado para a instância do <literal>LazyDataModel</literal>, que é responsável por exibir 
       		os dados de forma apropriada.
       	</para>
       	<para>
