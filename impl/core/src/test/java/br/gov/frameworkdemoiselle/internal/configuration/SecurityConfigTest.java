@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthenticator;
+import br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthorizer;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.Authorizer;
 import br.gov.frameworkdemoiselle.security.User;
@@ -31,50 +33,18 @@ public class SecurityConfigTest {
 
 	@Test
 	public void testSetAuthenticatorClass() {
-		Authenticator authenticator = new TestAuthenticator();
+		Authenticator authenticator = new DefaultAuthenticator();
 		config.setAuthenticatorClass(authenticator.getClass());
-		assertEquals("br.gov.frameworkdemoiselle.internal.configuration.TestAuthenticator", config
+		assertEquals("br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthenticator", config
 				.getAuthenticatorClass().getName());
 	}
 	
 	@Test
 	public void testSetAuthorizerClass() {
-		Authorizer authorizer = new TestAuthorizer();
+		Authorizer authorizer = new DefaultAuthorizer();
 		config.setAuthorizerClass(authorizer.getClass());
-		assertEquals("br.gov.frameworkdemoiselle.internal.configuration.TestAuthorizer", config
+		assertEquals("br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthorizer", config
 				.getAuthorizerClass().getName());
 	}
 
 }
-
-class TestAuthenticator implements Authenticator {
-
-	private static final long serialVersionUID = 1L;
-
-	@Override
-	public boolean authenticate() {
-		return false;
-	}
-
-	@Override
-	public void unAuthenticate() {
-	}
-
-	@Override
-	public User getUser() {
-		return null;
-	}
-}
-
-class TestAuthorizer implements Authorizer{
-
-	@Override
-	public boolean hasRole(String role) {
-		return false;
-	}
-
-	@Override
-	public boolean hasPermission(String resource, String operation) {
-		return false;
-	}
-} 
