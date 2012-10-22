@@ -35,7 +35,6 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.producer;
-import org.junit.Ignore;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -53,7 +52,6 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class })
 public class FacesContextProducerTest {

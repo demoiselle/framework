@@ -87,7 +87,8 @@ public class SecurityObserver implements Serializable {
 		clear();
 		FacesContext facesContext = Beans.getReference(FacesContext.class);
 
-		if (!config.getLoginPage().equals(facesContext.getViewRoot().getViewId())) {
+		if (!config.getLoginPage()
+				.equals(facesContext.getViewRoot().getViewId())) {
 			getSavedParams().putAll(facesContext.getExternalContext().getRequestParameterMap());
 			savedViewId = facesContext.getViewRoot().getViewId();
 		}
