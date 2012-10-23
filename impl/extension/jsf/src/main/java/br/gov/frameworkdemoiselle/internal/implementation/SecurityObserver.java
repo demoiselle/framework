@@ -74,12 +74,12 @@ public class SecurityObserver implements Serializable {
 	public SecurityObserver() {
 		clear();
 	}
-	
-	private Map<String, Object> getSavedParams(){
-		if(this.savedParams == null) {
+
+	private Map<String, Object> getSavedParams() {
+		if (this.savedParams == null) {
 			this.savedParams = new HashMap<String, Object>();
 		}
-		
+
 		return this.savedParams;
 	}
 
@@ -87,8 +87,7 @@ public class SecurityObserver implements Serializable {
 		clear();
 		FacesContext facesContext = Beans.getReference(FacesContext.class);
 
-		if (!config.getLoginPage()
-				.equals(facesContext.getViewRoot().getViewId())) {
+		if (!config.getLoginPage().equals(facesContext.getViewRoot().getViewId())) {
 			getSavedParams().putAll(facesContext.getExternalContext().getRequestParameterMap());
 			savedViewId = facesContext.getViewRoot().getViewId();
 		}
