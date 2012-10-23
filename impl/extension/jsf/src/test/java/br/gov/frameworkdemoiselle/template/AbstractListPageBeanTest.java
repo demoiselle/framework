@@ -162,6 +162,21 @@ public class AbstractListPageBeanTest {
 		verifyAll();
 	}
 
+	@Test
+	public void testClearSelection() {
+		pageBean.clearSelection();
+		assertEquals(true, pageBean.getSelectedList().isEmpty());
+	}
+
+	@Test
+	public void testGetSelectedList() {
+		Map<Long, Boolean> map = new HashMap<Long, Boolean>();
+		map.put(1L, true);
+		map.put(2L, true);
+		pageBean.setSelection(map);
+		assertEquals(2, pageBean.getSelectedList().size());
+	}
+
 }
 
 @SuppressWarnings("serial")

@@ -34,54 +34,89 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.producer;
+package br.gov.frameworkdemoiselle.internal.implementation;
+
 import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
-import static org.powermock.api.easymock.PowerMock.replay;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
+import static org.powermock.api.easymock.PowerMock.replayAll;
 
-import javax.enterprise.context.ContextNotActiveException;
-import javax.faces.context.FacesContext;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.junit.Before;
+import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import br.gov.frameworkdemoiselle.internal.bootstrap.TransactionBootstrap;
+import br.gov.frameworkdemoiselle.internal.configuration.TransactionConfig;
+import br.gov.frameworkdemoiselle.transaction.Transaction;
+import br.gov.frameworkdemoiselle.transaction.TransactionContext;
+import br.gov.frameworkdemoiselle.util.Beans;
+
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ FacesContext.class })
-public class FacesContextProducerTest {
+@PrepareForTest({Beans.class,StrategySelector.class})
+public class TransactionContextImplTest {
 
-	private FacesContextProducer producer;
+	private TransactionContext context;	
+	private Transaction transaction;
+	
+	class TransactionImpl implements Transaction{
 
-	@Before
-	public void before() {
-		this.producer = new FacesContextProducer();
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public boolean isActive() {
+			return false;
+		}
+
+		@Override
+		public boolean isMarkedRollback() {
+			return false;
+		}
+
+		@Override
+		public void begin() {
+		}
+
+		@Override
+		public void commit() {
+		}
+
+		@Override
+		public void rollback() {
+		}
+
+		@Override
+		public void setRollbackOnly() {
+		}
 	}
-
+	
 	@Test
-	public void createOK() {
-		mockStatic(FacesContext.class);
-		FacesContext facesContext = PowerMock.createMock(FacesContext.class);
-		expect(FacesContext.getCurrentInstance()).andReturn(facesContext);
-		replay(facesContext, FacesContext.class);
-		assertEquals(facesContext, producer.create());
-		verifyAll();
-	}
-
-	@Test
-	public void createNOK() {
-		mockStatic(FacesContext.class);
-		expect(FacesContext.getCurrentInstance()).andReturn(null);
-		replay(FacesContext.class);
-		try {
-			this.producer.create();
-			fail();
-		} catch(ContextNotActiveException exception) {}
-		verifyAll();
+	public void testGetTransactionNull() {
+		context = new TransactionContextImpl();
+		
+		Class<? extends Transaction> cache = TransactionImpl.class;					
+		
+		List<Class<? extends Transaction>> cacheList = new ArrayList<Class<? extends Transaction>>();
+		cacheList.add(cache);
+		
+		TransactionBootstrap bootstrap = PowerMock.createMock(TransactionBootstrap.class);
+		TransactionConfig config = PowerMock.createMock(TransactionConfig.class);
+		
+		mockStatic(Beans.class); 
+		expect(Beans.getReference(TransactionBootstrap.class)).andReturn(bootstrap).anyTimes();
+		expect(Beans.getReference(TransactionConfig.class)).andReturn(config);
+		expect(config.getTransactionClass()).andReturn(null).anyTimes();	
+		expect(bootstrap.getCache()).andReturn(cacheList);
+		expect(Beans.getReference(TransactionImpl.class)).andReturn(new TransactionImpl());
+		
+		replayAll(Beans.class);
+		
+		transaction = context.getCurrentTransaction();
+		Assert.assertNotNull(transaction);
 	}
 }
