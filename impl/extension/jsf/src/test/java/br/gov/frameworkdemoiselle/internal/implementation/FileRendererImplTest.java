@@ -35,8 +35,11 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
-import org.junit.Ignore;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletOutputStream;
@@ -57,7 +60,7 @@ import org.slf4j.Logger;
 import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.FileRenderer;
 import br.gov.frameworkdemoiselle.util.FileRenderer.ContentType;
-@Ignore
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Faces.class })
 public class FileRendererImplTest {
@@ -123,7 +126,7 @@ public class FileRendererImplTest {
 	}
 
 	@Test
-	public void testRenderBytesSuccess() {
+	public void testRenderBytesSuccess() throws IOException {
 		byte[] bytes = "Test".getBytes();
 		String fileName = "fileName.pdf";
 
@@ -143,24 +146,183 @@ public class FileRendererImplTest {
 		EasyMock.expectLastCall().times(1);
 
 		ServletOutputStream stream = PowerMock.createMock(ServletOutputStream.class);
-		try {
-			stream.write(bytes, 0, bytes.length);
-			EasyMock.expectLastCall().times(1);
+		stream.write(bytes, 0, bytes.length);
+		EasyMock.expectLastCall().times(1);
 
-			stream.flush();
-			EasyMock.expectLastCall().times(1);
+		stream.flush();
+		EasyMock.expectLastCall().times(1);
 
-			stream.close();
-			EasyMock.expectLastCall().times(1);
+		stream.close();
+		EasyMock.expectLastCall().times(1);
 
-			EasyMock.expect(response.getOutputStream()).andReturn(stream).times(3);
-		} catch (IOException e) {
-			Assert.fail();
-		}
+		EasyMock.expect(response.getOutputStream()).andReturn(stream).times(3);
 
 		PowerMock.replayAll();
 		renderer.render(bytes, ContentType.PDF, fileName);
 		PowerMock.verifyAll();
 	}
 
+	@Test
+	public void testRenderStreamFail() {
+		byte[] bytes = "Test".getBytes();
+		InputStream stream = new ByteArrayInputStream(bytes);
+		String fileName = "fileName.pdf";
+
+		logger.debug(EasyMock.anyObject(String.class));
+		EasyMock.expectLastCall().anyTimes();
+
+		IOException exception = new IOException();
+		logger.info("Erro na geração do relatório. Incluíndo a exceção de erro em um FacesMessage", exception);
+		EasyMock.expectLastCall().anyTimes();
+
+		response.setContentType(ContentType.PDF.getContentType());
+		EasyMock.expectLastCall().times(1);
+
+		response.setContentLength(bytes.length);
+		EasyMock.expectLastCall().times(1);
+
+		response.setHeader("Content-Disposition", "filename=\"" + fileName + "\"");
+		EasyMock.expectLastCall().times(1);
+
+		facesContext.responseComplete();
+		EasyMock.expectLastCall().times(1);
+
+		try {
+			EasyMock.expect(response.getOutputStream()).andThrow(exception);
+		} catch (IOException e) {
+			Assert.fail();
+		}
+
+		PowerMock.mockStatic(Faces.class);
+		Faces.addMessage(exception);
+
+		PowerMock.replayAll();
+		renderer.render(stream, ContentType.PDF, fileName, false);
+		PowerMock.verifyAll();
+	}
+
+	@Test
+	public void testRenderStreamSuccess() throws IOException {
+		byte[] bytes = "Test".getBytes();
+		InputStream inputStream = new ByteArrayInputStream(bytes);
+
+		String fileName = "fileName.pdf";
+
+		logger.debug(EasyMock.anyObject(String.class));
+		EasyMock.expectLastCall().anyTimes();
+
+		facesContext.responseComplete();
+		EasyMock.expectLastCall().times(1);
+
+		response.setContentType(ContentType.PDF.getContentType());
+		EasyMock.expectLastCall().times(1);
+
+		response.setContentLength(bytes.length);
+		EasyMock.expectLastCall().times(1);
+
+		response.setHeader("Content-Disposition", "filename=\"" + fileName + "\"");
+		EasyMock.expectLastCall().times(1);
+
+		ServletOutputStream stream = new ServletOutputStream() {
+
+			@Override
+			public void write(int b) throws IOException {
+				Assert.assertTrue(true);
+			}
+		};
+
+		EasyMock.expect(response.getOutputStream()).andReturn(stream).times(3);
+
+		PowerMock.replayAll();
+		renderer.render(inputStream, ContentType.PDF, fileName);
+		PowerMock.verifyAll();
+	}
+
+	@Test
+	public void testRenderFileFail() throws IOException {
+
+		File file = new File("fileName");
+		file.createNewFile();
+
+		String fileName = "fileName.pdf";
+
+		logger.debug(EasyMock.anyObject(String.class));
+		EasyMock.expectLastCall().anyTimes();
+
+		IOException exception = new IOException();
+		logger.info("Erro na geração do relatório. Incluíndo a exceção de erro em um FacesMessage", exception);
+		EasyMock.expectLastCall().anyTimes();
+
+		response.setContentType(ContentType.PDF.getContentType());
+		EasyMock.expectLastCall().times(1);
+
+		response.setContentLength((int) file.length());
+		EasyMock.expectLastCall().times(1);
+
+		response.setHeader("Content-Disposition", "filename=\"" + fileName + "\"");
+		EasyMock.expectLastCall().times(1);
+
+		facesContext.responseComplete();
+		EasyMock.expectLastCall().times(1);
+
+		try {
+			EasyMock.expect(response.getOutputStream()).andThrow(exception);
+		} catch (IOException e) {
+			Assert.fail();
+		}
+
+		PowerMock.mockStatic(Faces.class);
+		Faces.addMessage(exception);
+
+		PowerMock.replayAll();
+		renderer.render(file, ContentType.PDF, fileName);
+		PowerMock.verifyAll();
+
+		file.delete();
+	}
+
+	@Test
+	public void testRenderFileNotFoundException() throws IOException {
+
+		File file = new File("fileName");
+		file.createNewFile();
+
+		String fileName = "fileName.pdf";
+
+		logger.debug(EasyMock.anyObject(String.class));
+		EasyMock.expectLastCall().anyTimes();
+
+		IOException exception = new IOException();
+		logger.info("Erro na geração do relatório. Incluíndo a exceção de erro em um FacesMessage", exception);
+		EasyMock.expectLastCall().anyTimes();
+
+		response.setContentType(ContentType.PDF.getContentType());
+		EasyMock.expectLastCall().times(1);
+
+		response.setContentLength((int) file.length());
+		EasyMock.expectLastCall().times(1);
+
+		response.setHeader("Content-Disposition", "filename=\"" + fileName + "\"");
+		EasyMock.expectLastCall().times(1);
+
+		facesContext.responseComplete();
+		EasyMock.expectLastCall().times(1);
+
+		try {
+			EasyMock.expect(response.getOutputStream()).andThrow(exception);
+		} catch (IOException e) {
+			Assert.fail();
+		}
+		
+		
+
+		PowerMock.mockStatic(Faces.class);
+		Faces.addMessage(exception);
+
+		PowerMock.replayAll();
+		renderer.render(file, ContentType.PDF, fileName);
+		PowerMock.verifyAll();
+
+		file.delete();
+	}
 }

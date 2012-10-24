@@ -35,7 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.util;
-import org.junit.Ignore;
+
 import static junit.framework.Assert.assertEquals;
 import static org.easymock.EasyMock.expect;
 import static org.powermock.api.easymock.PowerMock.replayAll;
@@ -66,7 +66,7 @@ import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 
 import com.sun.faces.util.Util;
-@Ignore
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Beans.class, Strings.class, Converter.class, Util.class, ResourceBundle.class })
 public class FacesTest {
@@ -184,7 +184,7 @@ public class FacesTest {
 		expect(Beans.getReference(FacesContext.class)).andReturn(facesContext);
 		expect(facesContext.getApplication()).andReturn(application);
 		expect(application.createConverter(getClass())).andReturn(converter);
-		
+
 		replayAll();
 		assertEquals(converter, faces.getConverter(getClass()));
 		verifyAll();

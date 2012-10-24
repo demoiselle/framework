@@ -74,12 +74,12 @@ public class SecurityObserver implements Serializable {
 	public SecurityObserver() {
 		clear();
 	}
-	
-	private Map<String, Object> getSavedParams(){
-		if(this.savedParams == null) {
+
+	private Map<String, Object> getSavedParams() {
+		if (this.savedParams == null) {
 			this.savedParams = new HashMap<String, Object>();
 		}
-		
+
 		return this.savedParams;
 	}
 

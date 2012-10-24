@@ -35,7 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
-import org.junit.Ignore;
+
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.easymock.EasyMock.expect;
@@ -66,7 +66,6 @@ import br.gov.frameworkdemoiselle.internal.configuration.ExceptionHandlerConfig;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Faces;
 
-@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Beans.class, FacesContext.class, Faces.class })
 public class ApplicationExceptionHandlerTest {
@@ -142,10 +141,10 @@ public class ApplicationExceptionHandlerTest {
 	public void testHandleAnApplicationExceptionOnRenderResponse() {
 
 		AnnotatedAppException exception = new AnnotatedAppException();
-//		PhaseId phaseId = PhaseId.RENDER_RESPONSE;
+		// PhaseId phaseId = PhaseId.RENDER_RESPONSE;
 
 		expect(eventContext.getException()).andReturn(exception);
-//		expect(facesContext.getCurrentPhaseId()).andReturn(phaseId);
+		// expect(facesContext.getCurrentPhaseId()).andReturn(phaseId);
 		expect(config.isHandleApplicationException()).andReturn(false);
 
 		handler.getWrapped().handle();
@@ -165,10 +164,10 @@ public class ApplicationExceptionHandlerTest {
 	public void testHandleAnyException() {
 
 		SomeException exception = new SomeException();
-//		PhaseId phaseId = PowerMock.createMock(PhaseId.class);
+		// PhaseId phaseId = PowerMock.createMock(PhaseId.class);
 
 		expect(eventContext.getException()).andReturn(exception);
-//		expect(facesContext.getCurrentPhaseId()).andReturn(phaseId);
+		// expect(facesContext.getCurrentPhaseId()).andReturn(phaseId);
 		expect(config.isHandleApplicationException()).andReturn(true);
 
 		handler.getWrapped().handle();
@@ -204,5 +203,4 @@ public class ApplicationExceptionHandlerTest {
 		verifyAll();
 
 	}
-
 }
