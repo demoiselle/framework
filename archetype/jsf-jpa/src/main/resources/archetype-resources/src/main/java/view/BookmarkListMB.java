@@ -15,8 +15,8 @@ import ${package}.business.BookmarkBC;
 import ${package}.domain.Bookmark;
 
 @ViewController
-@NextView("/bookmark_edit.xhtml")
-@PreviousView("/bookmark_list.xhtml")
+@NextView("./bookmark_edit.xhtml")
+@PreviousView("./bookmark_list.xhtml")
 public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> {
 
 	private static final long serialVersionUID = 1L;
