@@ -1,5 +1,49 @@
+/*
+ * Demoiselle Framework
+ * Copyright (C) 2010 SERPRO
+ * ----------------------------------------------------------------------------
+ * This file is part of Demoiselle Framework.
+ * 
+ * Demoiselle Framework is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License version 3
+ * as published by the Free Software Foundation.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License version 3
+ * along with this program; if not,  see <http://www.gnu.org/licenses/>
+ * or write to the Free Software Foundation, Inc., 51 Franklin Street,
+ * Fifth Floor, Boston, MA  02110-1301, USA.
+ * ----------------------------------------------------------------------------
+ * Este arquivo é parte do Framework Demoiselle.
+ * 
+ * O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
+ * do Software Livre (FSF).
+ * 
+ * Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA
+ * GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou
+ * APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português
+ * para maiores detalhes.
+ * 
+ * Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
+ * "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses/>
+ * ou escreva para a Fundação do Software Livre (FSF) Inc.,
+ * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
+ */
 package br.gov.frameworkdemoiselle.internal.proxy;
 
+import static junit.framework.Assert.assertTrue;
+import static org.easymock.EasyMock.expect;
+import static org.junit.Assert.assertEquals;
+import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,15 +54,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
-import javax.persistence.NoResultException;
+import javax.persistence.Parameter;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
 import org.easymock.EasyMock;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
@@ -32,224 +74,221 @@ import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
  * Test the proxied {@link Query} class, {@link QueryProxy}.
+ * 
  * @author 81986912515
- *
  */
-@Ignore
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Beans.class})
+@PrepareForTest({ Beans.class })
 public class QueryProxyTest {
-	
+
 	private EntityManager manager;
+
 	private EntityManagerProducer producer;
-	
+
+	private QueryProxy queryProxy;
+
 	@Before
-	public void setUp(){
-		
+	public void setUp() {
+
 		Map<String, Object> configOverrides = new HashMap<String, Object>();
 		configOverrides.put("javax.persistence.provider", "org.hibernate.ejb.HibernatePersistence");
-		configOverrides.put("javax.persistence.jdbc.url", "jdbc:hsqldb:hsql:.");
+
+		configOverrides.put("javax.persistence.jdbc.url", "jdbc:hsqldb:mem:.");
+		configOverrides.put("javax.persistence.jdbc.driver", "org.hsqldb.jdbcDriver");
+		configOverrides.put("javax.persistence.jdbc.user", "sa");
+		configOverrides.put("javax.persistence.jdbc.password", "");
+
 		configOverrides.put("hibernate.show_sql", "true");
 		configOverrides.put("hibernate.hbm2ddl.auto", "create-drop");
-		
+
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory("pu1", configOverrides);
 		EntityManager delegate = factory.createEntityManager();
-		
+
 		Map<String, EntityManager> cache = Collections.synchronizedMap(new HashMap<String, EntityManager>());
 		cache.put("pu1", delegate);
-		
+
 		producer = new EntityManagerProducer();
 		Whitebox.setInternalState(producer, "cache", cache);
-		
+
 		PowerMock.mockStatic(Beans.class);
-		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(12);
+		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).anyTimes();
 		PowerMock.replayAll();
 
 		manager = new EntityManagerProxy("pu1");
-		
-		manager.getTransaction().begin();
-		manager.createQuery("delete from Client").executeUpdate();
-		
+	}
+
+	@Test
+	public void testGetResultList() {
+		Query queryDelegate = PowerMock.createMock(Query.class);
+		List<String> result = new ArrayList<String>();
+		result.add("x");
+		EasyMock.expect(queryDelegate.getResultList()).andReturn(result).anyTimes();
+
+		replay(queryDelegate);
+
+		queryProxy = new QueryProxy(queryDelegate, (EntityManagerProxy) manager);
+		queryProxy.getResultList();
+		assertEquals(queryProxy.getResultList().size(), queryDelegate.getResultList().size());
+
+		verifyAll();
+	}
+
+	@Test
+	public void testSingleResult() {
+		Query queryDelegate = PowerMock.createMock(Query.class);
+		String result = "Resultado";
+		EasyMock.expect(queryDelegate.getSingleResult()).andReturn(result).anyTimes();
+
+		replay(queryDelegate);
+
+		queryProxy = new QueryProxy(queryDelegate, (EntityManagerProxy) manager);
+		assertEquals(queryProxy.getSingleResult(), queryDelegate.getSingleResult());
+
+		verifyAll();
+	}
+
+	@Test
+	public void testExecuteUpdate() {
+		Query queryDelegate = PowerMock.createMock(Query.class);
+		EasyMock.expect(queryDelegate.executeUpdate()).andReturn(1).anyTimes();
+
+		replay(queryDelegate);
+
+		queryProxy = new QueryProxy(queryDelegate, (EntityManagerProxy) manager);
+		assertEquals(queryProxy.executeUpdate(), 1);
+
+		verifyAll();
+	}
+
+	@Test
+	public void testPagination() {
+		Query queryDelegate = PowerMock.createMock(Query.class);
+		expect(queryDelegate.getMaxResults()).andReturn(4).times(2);
+		expect(queryDelegate.getFirstResult()).andReturn(2).times(2);
+		expect(queryDelegate.setMaxResults(EasyMock.anyInt())).andReturn(queryDelegate);
+		expect(queryDelegate.setFirstResult(EasyMock.anyInt())).andReturn(queryDelegate);
+		replay(queryDelegate);
+
+		queryProxy = new QueryProxy(queryDelegate, (EntityManagerProxy) manager);
+		queryProxy.setMaxResults(4);
+		queryProxy.setFirstResult(2);
+		assertEquals(queryProxy.getMaxResults(), queryDelegate.getMaxResults());
+		assertEquals(queryProxy.getFirstResult(), queryDelegate.getFirstResult());
+
+		verifyAll();
+	}
+
+	@Test
+	public void testHint() {
+		Query queryDelegate = PowerMock.createMock(Query.class);
+		Map<String, Object> map = new HashMap<String, Object>();
 		Client client = new Client();
-		client.setName("Cliente 1");
-		client.setBirthDate(new Date());
-		manager.persist(client);
-		
-		client = new Client();
-		client.setName("Cliente 2");
-		client.setBirthDate(new Date());
-		manager.persist(client);
-		
-		client = new Client();
-		client.setName("Cliente 3");
-		client.setBirthDate(new Date());
-		manager.persist(client);
-		
-		manager.flush();
-		manager.getTransaction().commit();
-		manager.clear();
-		
-		PowerMock.resetAll();
-	}
-	
-	private QueryProxy getQueryProxy(String jpql,Object... params){
-		Query q = manager.createQuery(jpql);
-		if (!(q instanceof QueryProxy)){
-			Assert.fail("Query não é instância de QueryProxy");
-		}
-		
-		if (params!=null){
-			int count = 1;
-			for (Object param : params){
-				q.setParameter(count++, param);
-			}
-		}
-		
-		return (QueryProxy)q;
-	}
-	
-	@Test
-	public void testResultList(){
-		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(2);
-		PowerMock.replay(Beans.class);
-		
-		List<?> retorno = getQueryProxy("select c from Client c").getResultList();
-		Assert.assertNotNull(retorno);
-		Assert.assertFalse(retorno.isEmpty());
-	}
-	
-	@Test
-	public void testSingleResult(){
-		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(2);
-		PowerMock.replay(Beans.class);
-		
-		Client retorno = (Client)getQueryProxy("select c from Client c where c.name=?1","Cliente 1").getSingleResult();
-		Assert.assertNotNull(retorno);
-	}
-	
-	@Test
-	public void testExecuteUpdate(){
-		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(4);
-		PowerMock.replay(Beans.class);
+		map.put("1", client);
+		expect(queryDelegate.getHints()).andReturn(map).times(2);
+		expect(queryDelegate.setHint(EasyMock.anyObject(String.class), EasyMock.anyObject())).andReturn(queryDelegate);
+		replay(queryDelegate);
 
-		manager.getTransaction().begin();
-		int linesAffected = getQueryProxy("update Client set name=?1 where name=?2","Novo Cliente","Cliente 1").executeUpdate();
-		manager.getTransaction().commit();
-		Assert.assertEquals(1, linesAffected);
-	}
-	
-	@Test
-	public void testPagination(){
-		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(2);
-		PowerMock.replay(Beans.class);
+		queryProxy = new QueryProxy(queryDelegate, (EntityManagerProxy) manager);
+		queryProxy.setHint("1", client);
+		assertEquals(queryProxy.getHints(), queryDelegate.getHints());
 
-		QueryProxy proxy = getQueryProxy("select c from Client c");
-		
-		proxy.setMaxResults(2);
-		Assert.assertEquals(2, proxy.getMaxResults());
-		
-		proxy.setFirstResult(1);
-		Assert.assertEquals(1, proxy.getFirstResult());
-		
-		List<?> result = proxy.getResultList();
-		Assert.assertEquals(2, result.size());
+		verifyAll();
 	}
-	
-	@Test
-	public void testHint(){
-		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(14);
-		PowerMock.replay(Beans.class);
 
-		//Consulta um cliente definindo a hint readOnly, que torna a entidade retornada não atualizável.
-		manager.getTransaction().begin();
-		QueryProxy proxy = getQueryProxy("select c from Client c where c.name=?1","Cliente 1");
-		proxy.setHint("org.hibernate.readOnly", true);
-		Assert.assertFalse( proxy.getHints().isEmpty() );
-		
-		//Tenta atualizar a entidade e limpar o cache de primeiro nível
-		Client c = (Client)proxy.getSingleResult();
-		c.setName("Cliente 1 Alterado");
-		manager.flush();
-		manager.getTransaction().commit();
-		manager.clear();
-		
-		//Reconsultar a entidade tem que retornar 1 resultado, pois o nome "Cliente 1" não deve ter sido alterado.
-		manager.getTransaction().begin();
-		proxy = getQueryProxy("select c from Client c where c.name=?1","Cliente 1");
-		c = (Client)proxy.getSingleResult();
-		Assert.assertNotNull(c);
-		
-		//Mudar a entidade agora tem que funcionar, pois não foi informado o hint
-		c.setName("Cliente 1 Alterado");
-		manager.flush();
-		manager.getTransaction().commit();
-		manager.clear();
-		
-		proxy = getQueryProxy("select c from Client c where c.name=?1","Cliente 1");
-		
-		try{
-			proxy.getSingleResult();
-			Assert.fail();
-		}
-		catch(NoResultException ne){
-		}
-
-		PowerMock.verifyAll();
-	}
-	
+	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
 	@Test
-	public void testParameters(){
-		
-		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(2);
-		PowerMock.replay(Beans.class);
-		
-		QueryProxy proxy = getQueryProxy("select c.name from Client c where 'Named Parameter'=:name and c.birthDate=:dateName and c.name=?1 and c.birthDate=?2");
-		
+	public void testParameters() {
+		Query queryDelegate = PowerMock.createMock(Query.class);
 		Date dateValue = new Date();
-		
-		proxy.setParameter("name", "Named Parameter");
-		proxy.setParameter("dateName", dateValue, TemporalType.DATE);
-		
-		proxy.setParameter(1, "Cliente 1");
-		proxy.setParameter(2, dateValue,TemporalType.DATE);
-		
-		Assert.assertEquals(proxy.getParameterValue("name"),"Named Parameter");
-		Assert.assertEquals(proxy.getParameterValue(1), "Cliente 1");
-		
-		@SuppressWarnings("unchecked")
-		List<Map<String, Object>> result = proxy.getResultList();
-		
-		Assert.assertNotNull(result);
-		Assert.assertFalse(result.isEmpty());
-		
-		PowerMock.verifyAll();
+		Calendar calendar = PowerMock.createMock(Calendar.class);
+		Class<Date> type = Date.class;
+		Parameter parameter = PowerMock.createMock(Parameter.class);
+
+		expect(queryDelegate.setParameter(EasyMock.anyObject(String.class), EasyMock.anyObject(String.class)))
+				.andReturn(queryDelegate);
+		expect(queryDelegate.getParameterValue(EasyMock.anyObject(String.class))).andReturn("Named Parameter")
+				.anyTimes();
+		expect(queryDelegate.setParameter(EasyMock.anyInt(), EasyMock.anyObject(String.class)))
+				.andReturn(queryDelegate);
+		expect(queryDelegate.getParameterValue(EasyMock.anyInt())).andReturn("Client").anyTimes();
+		expect(
+				queryDelegate.setParameter(EasyMock.anyObject(String.class), EasyMock.anyObject(Date.class),
+						EasyMock.anyObject(TemporalType.class))).andReturn(queryDelegate);
+		expect(
+				queryDelegate.setParameter(EasyMock.anyInt(), EasyMock.anyObject(Date.class),
+						EasyMock.anyObject(TemporalType.class))).andReturn(queryDelegate);
+		expect(queryDelegate.setParameter(EasyMock.anyObject(Parameter.class), EasyMock.anyObject())).andReturn(
+				queryDelegate);
+		expect(queryDelegate.getParameterValue(EasyMock.anyObject(Parameter.class))).andReturn(parameter).anyTimes();
+		expect(
+				queryDelegate.setParameter(EasyMock.anyObject(String.class), EasyMock.anyObject(Calendar.class),
+						EasyMock.anyObject(TemporalType.class))).andReturn(queryDelegate);
+		expect(
+				queryDelegate.setParameter(EasyMock.anyInt(), EasyMock.anyObject(Calendar.class),
+						EasyMock.anyObject(TemporalType.class))).andReturn(queryDelegate);
+
+		replay(queryDelegate, parameter, calendar);
+
+		queryProxy = new QueryProxy(queryDelegate, (EntityManagerProxy) manager);
+		queryProxy.setParameter("name", "Named Parameter");
+		assertEquals(queryProxy.getParameterValue("name"), queryDelegate.getParameterValue("name"));
+		queryProxy.setParameter(1, "Client");
+		assertEquals(queryProxy.getParameterValue("1"), queryDelegate.getParameterValue("1"));
+		queryProxy.setParameter("dateName", dateValue, TemporalType.DATE);
+		queryProxy.setParameter(2, dateValue, TemporalType.DATE);
+		queryProxy.setParameter(parameter, "X");
+		queryProxy.getParameterValue(parameter);
+		assertEquals(queryProxy.getParameterValue(parameter), parameter);
+		queryProxy.setParameter("dateName", calendar, TemporalType.DATE);
+		queryProxy.setParameter(2, calendar, TemporalType.DATE);
+
+		verifyAll();
 	}
-	
+
+	@SuppressWarnings("rawtypes")
 	@Test
-	public void testFlushMode(){
-		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(3);
-		PowerMock.replay(Beans.class);
-		
-		manager.getTransaction().begin();
-		QueryProxy proxy = getQueryProxy("update Client set name=?1 where name=?2","Cliente 1 Alterado","Cliente 1");
-		proxy.setFlushMode(FlushModeType.COMMIT);
-		Assert.assertEquals(proxy.getFlushMode(), FlushModeType.COMMIT);
-		manager.getTransaction().commit();
-		
-		PowerMock.verifyAll();
+	public void testIsBound() {
+		Query queryDelegate = PowerMock.createMock(Query.class);
+		Parameter parameter = PowerMock.createMock(Parameter.class);
+		expect(queryDelegate.isBound(EasyMock.anyObject(Parameter.class))).andReturn(true);
+
+		replay(queryDelegate, parameter);
+
+		queryProxy = new QueryProxy(queryDelegate, (EntityManagerProxy) manager);
+		assertTrue(queryProxy.isBound(parameter));
+
+		verifyAll();
 	}
-	
+
 	@Test
-	public void testLockMode(){
-		EasyMock.expect(Beans.getReference(EntityManagerProducer.class)).andReturn(producer).times(4);
-		PowerMock.replay(Beans.class);
-		
-		manager.getTransaction().begin();
-		QueryProxy proxy = getQueryProxy("update Client set name=?1 where name=?2","Cliente 1 Alterado","Cliente 1");
-		proxy.setLockMode(LockModeType.OPTIMISTIC);
-		Assert.assertEquals(proxy.getLockMode(), LockModeType.OPTIMISTIC);
-		manager.getTransaction().commit();
-		
-		PowerMock.verifyAll();
+	public void testFlushMode() {
+		Query queryDelegate = PowerMock.createMock(Query.class);
+		FlushModeType flushModeType = FlushModeType.AUTO;
+
+		expect(queryDelegate.setFlushMode(FlushModeType.AUTO)).andReturn(queryDelegate);
+		expect(queryDelegate.getFlushMode()).andReturn(flushModeType).anyTimes();
+
+		replay(queryDelegate);
+
+		queryProxy = new QueryProxy(queryDelegate, (EntityManagerProxy) manager);
+		queryProxy.setFlushMode(FlushModeType.AUTO);
+		assertEquals(queryProxy.getFlushMode(), queryDelegate.getFlushMode());
+		verifyAll();
+	}
+
+	@Test
+	public void testLockMode() {
+		Query queryDelegate = PowerMock.createMock(Query.class);
+		LockModeType lockModeType = LockModeType.OPTIMISTIC;
+
+		expect(queryDelegate.setLockMode(lockModeType)).andReturn(queryDelegate);
+		expect(queryDelegate.getLockMode()).andReturn(lockModeType).anyTimes();
+
+		replay(queryDelegate);
+
+		queryProxy = new QueryProxy(queryDelegate, (EntityManagerProxy) manager);
+		queryProxy.setLockMode(lockModeType);
+		assertEquals(queryProxy.getLockMode(), queryDelegate.getLockMode());
+		verifyAll();
 	}
 }
