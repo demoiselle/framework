@@ -296,7 +296,7 @@
 		<para>
 			No diretório <filename>/src/main/resources/META-INF/</filename> foi criado o arquivo <filename>persistence.xml</filename> 
 			utilizado para armazenar as configurações de acesso ao banco de dados via JPA (conexões controladas por um <literal>JPA Provider</literal>, ex: Hibernate)
-			ou JTA (conexões controladas pelo  <literal>Application Server</literal>, ex: JBossAS) e como pode ser observado o <emphasis>Demoiselle Framework 2</emphasis>
+			ou JTA (conexões controladas pelo  <literal>Application Server</literal>, ex: JBossAS) e, como pode ser observado, o <emphasis>Demoiselle Framework 2</emphasis>
 			já traz neste arquivo vários exemplos de configurações para os mais distintos <literal>Application Servers</literal>, como: 
 			JBoss AS7, JBoss AS6, GlassFish 3, Tomcat 6 e Tomcat7.  
 		</para>
