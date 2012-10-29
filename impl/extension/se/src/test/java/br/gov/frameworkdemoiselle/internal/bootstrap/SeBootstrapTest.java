@@ -42,12 +42,10 @@ import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replay;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
 
 import junit.framework.Assert;
 
@@ -60,65 +58,45 @@ import org.powermock.reflect.Whitebox;
 
 import br.gov.frameworkdemoiselle.internal.context.Contexts;
 import br.gov.frameworkdemoiselle.internal.context.CustomContext;
-import br.gov.frameworkdemoiselle.internal.context.ViewContext;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Beans.class, Contexts.class })
-public class JsfBootstrapTest {
-
-	private JsfBootstrap bootstrap;
-
+public class SeBootstrapTest {
+	
+	private SeBootstrap seBootstrap;
+	
 	private AfterBeanDiscovery event;
-
+	
 	@Before
 	public void before() {
 		event = createMock(AfterBeanDiscovery.class);
 		mockStatic(Beans.class);
 		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault()).anyTimes();
 		replay(Beans.class);
-		bootstrap = new JsfBootstrap();
+		seBootstrap = new SeBootstrap();
 	}
-
+	
 	@Test
-	public void testStoreContexts() {
-		bootstrap.storeContexts(event);
+	public void testStoreContext() {
+		seBootstrap.storeContexts(event);
 		replay(event);
 		
-		Assert.assertEquals(event, Whitebox.getInternalState(bootstrap, "afterBeanDiscoveryEvent"));
-		List<CustomContext> context = Whitebox.getInternalState(bootstrap, "tempContexts");
-		Assert.assertEquals(1, context.size());
+		Assert.assertEquals(event, Whitebox.getInternalState(seBootstrap, "afterBeanDiscoveryEvent"));
+		List<CustomContext> context = Whitebox.getInternalState(seBootstrap, "tempContexts");
+		Assert.assertEquals(4, context.size());
 		verifyAll();
 	}
-
-	@Test
-	public void testAddContexts() {
-		List<CustomContext> tempContexts = new ArrayList<CustomContext>();
-		CustomContext tempContext = new ViewContext();
-		tempContexts.add(tempContext);
-		Whitebox.setInternalState(bootstrap, "tempContexts", tempContexts);
-		Whitebox.setInternalState(bootstrap, "afterBeanDiscoveryEvent", event);
-
-		AfterDeploymentValidation afterDeploymentValidation = createMock(AfterDeploymentValidation.class);
-
-		event.addContext(tempContext);
-
-		replay(event, afterDeploymentValidation);
-
-		bootstrap.addContexts(afterDeploymentValidation);
-		verifyAll();
-	}
-
+	
 	@Test
 	public void testRemoveContexts() {
-		bootstrap.storeContexts(event);
+		seBootstrap.storeContexts(event);
 		
 		AfterShutdownProccess afterShutdownProccess = createMock(AfterShutdownProccess.class);
 		replay(event, afterShutdownProccess);
-		bootstrap.removeContexts(afterShutdownProccess);
+		seBootstrap.removeContexts(afterShutdownProccess);
 
 		verifyAll();
 	}
-
 }

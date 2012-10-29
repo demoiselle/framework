@@ -64,37 +64,6 @@ public class TransactionContextImplTest {
 	private TransactionContext context;	
 	private Transaction transaction;
 	
-	class TransactionImpl implements Transaction{
-
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public boolean isActive() {
-			return false;
-		}
-
-		@Override
-		public boolean isMarkedRollback() {
-			return false;
-		}
-
-		@Override
-		public void begin() {
-		}
-
-		@Override
-		public void commit() {
-		}
-
-		@Override
-		public void rollback() {
-		}
-
-		@Override
-		public void setRollbackOnly() {
-		}
-	}
-	
 	@Test
 	public void testGetTransactionNull() {
 		context = new TransactionContextImpl();
@@ -117,6 +86,38 @@ public class TransactionContextImplTest {
 		replayAll(Beans.class);
 		
 		transaction = context.getCurrentTransaction();
-		Assert.assertNotNull(transaction);
+		Assert.assertEquals(transaction.getClass(),TransactionImpl.class);
 	}
+	
+	class TransactionImpl implements Transaction{
+		
+		private static final long serialVersionUID = 1L;
+		
+		@Override
+		public boolean isActive() {
+			return false;
+		}
+		
+		@Override
+		public boolean isMarkedRollback() {
+			return false;
+		}
+		
+		@Override
+		public void begin() {
+		}
+		
+		@Override
+		public void commit() {
+		}
+		
+		@Override
+		public void rollback() {
+		}
+		
+		@Override
+		public void setRollbackOnly() {
+		}
+	}
+	
 }

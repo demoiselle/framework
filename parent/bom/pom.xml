@@ -338,7 +338,7 @@
 		<arquillian.junit.version>1.0.0.Alpha4.SP2</arquillian.junit.version>
 		<arquillian.weld.embdedded.version>1.0.0.Alpha2</arquillian.weld.embdedded.version>
 		<powermock.version>1.4.6</powermock.version>
-		<primefaces.version>3.2</primefaces.version>
+		<primefaces.version>3.4</primefaces.version>
 		<slf4j.version>1.6.1</slf4j.version>
 		<weld.version>1.1.8.Final</weld.version>
 		<commons.configuration.version>1.5</commons.configuration.version>

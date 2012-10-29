@@ -108,26 +108,6 @@
 			</dependencies>
 		</profile>
 		<profile>
-			<id>gae</id>
-			<dependencies>
-				<dependency>
-					<groupId>com.sun.faces</groupId>
-					<artifactId>jsf-api</artifactId>
-					<scope>compile</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.sun.faces</groupId>
-					<artifactId>jsf-impl</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.glassfish.web</groupId>
-					<artifactId>el-impl</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
 			<id>glassfish3</id>
 			<dependencies>
 				<dependency>
