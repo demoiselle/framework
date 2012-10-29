@@ -14,7 +14,7 @@
 // * GNU General Public License for more details.
 // * 
 // * You should have received a copy of the GNU Lesser General Public License version 3
-// * along with this program; if not,  see <http://www.gnu.org/licenses/>
+// * along with this program; if not,  see <http:www.gnu.org/licenses/>
 // * or write to the Free Software Foundation, Inc., 51 Franklin Street,
 // * Fifth Floor, Boston, MA  02110-1301, USA.
 // * ----------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 // * para maiores detalhes.
 // * 
 // * Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
-// * "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses/>
+// * "LICENCA.txt", junto com esse programa. Se não, acesse <http:www.gnu.org/licenses/>
 // * ou escreva para a Fundação do Software Livre (FSF) Inc.,
 // * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 // */
