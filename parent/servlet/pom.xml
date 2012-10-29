@@ -190,63 +190,6 @@
 			</dependencies>
 		</profile>
 		<profile>
-			<id>gae</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>net.kindleit</groupId>
-						<artifactId>maven-gae-plugin</artifactId>
-						<version>${kindleit.plugin.version}</version>
-						<configuration>
-							<serverId>appengine.google.com</serverId>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-			<dependencies>
-				<dependency>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.jboss.weld</groupId>
-					<artifactId>weld-core</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.jboss.weld.servlet</groupId>
-					<artifactId>weld-servlet-core</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-validator</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.google.appengine</groupId>
-					<artifactId>appengine-api-1.0-sdk</artifactId>
-					<version>${gae.version}</version>
-				</dependency>
-			</dependencies>
-			<repositories>
-				<repository>
-					<id>objectify-appengine</id>
-					<url>http://objectify-appengine.googlecode.com/svn/maven</url>
-				</repository>
-			</repositories>
-			<properties>
-				<gae.version>1.7.0</gae.version>
-				<kindleit.plugin.version>0.9.4</kindleit.plugin.version>
-			</properties>
-		</profile>
-		<profile>
 			<id>glassfish3</id>
 			<dependencies>
 				<dependency>
