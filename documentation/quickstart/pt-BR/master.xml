@@ -1,41 +1,16 @@
 <?xml version='1.0' encoding="utf-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
-<book lang="pt">
+  <book lang="pt">
+    <xi:include href="bookinfo.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="preface.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="instalacao.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="criacao.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="melhoria.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />    
+ </book>
+	
+<!-- 
+	
+	<xi:include href="avancado.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+-->
 
-	<xi:include href="bookinfo.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-	<preface>
-		<title>Sobre o QuickStart</title>
-		<para>
-			Este documento é um tutorial do tipo "passo a passo" que visa ilustrar de forma rápida, clara e prática
-			a criação de uma aplicação simples utilizando o <emphasis>Demoiselle Framework 2.X</emphasis>.
-		</para>
-		<note>
-			<para>
-				Apesar de o <emphasis>Demoiselle Framework 2.X</emphasis> ser simples de usar, o desenvolvimento de
-				aplicações não triviais requer o conhecimento das diversas tecnologias envolvidas na especificação
-				<emphasis>Java EE</emphasis>, incluindo:
-				<itemizedlist>
-					<listitem>Linguagem Java</listitem>
-					<listitem>Servlets, JSP e Tag Libraries</listitem>
-					<listitem>JavaBeans</listitem>
-					<listitem>HTML e XML</listitem>
-					<listitem>Contêineres e Servidores Web</listitem>
-				</itemizedlist>
-			</para>
-		</note>
-		<note>
-			<para>
-				Esta documentação refere-se à release 2.2.X do <emphasis>Demoiselle Framework</emphasis>
-				e pode diferir significativamente das versões anteriores.
-			</para>
-		</note>
-	</preface>
-
-	<xi:include href="instalacao.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="criacao.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="melhoria.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<!--	<xi:include href="avancado.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />-->
-
-</book>

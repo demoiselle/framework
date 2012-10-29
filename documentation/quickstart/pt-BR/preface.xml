@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE preface PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+	<preface>
+		<title>Sobre o QuickStart</title>
+		<para>
+			Este documento é um tutorial do tipo "passo a passo" que visa ilustrar de forma rápida, clara e prática a criação 
+			de uma aplicação simples utilizando o <emphasis>Demoiselle Framework 2.3</emphasis>.
+		</para>
+		<note>
+			<para>
+				Apesar de o <emphasis>Demoiselle Framework 2.3</emphasis> ser simples de usar, o desenvolvimento de aplicações 
+				não triviais requer o conhecimento das diversas tecnologias envolvidas na especificação 
+				<emphasis>Java EE</emphasis>, incluindo:
+				<itemizedlist>
+					<listitem>Linguagem Java</listitem>
+					<listitem>Servlets, JSP e Tag Libraries</listitem>
+					<listitem>JavaBeans</listitem>
+					<listitem>HTML e XML</listitem>
+					<listitem>Contêineres e Servidores Web</listitem>
+				</itemizedlist>
+			</para>
+		</note>
+		<note>
+  		<para>
+			Esta documentação refere-se à release 2.3 do <emphasis>Demoiselle Framework</emphasis> e pode diferir 
+			significativamente das versões anteriores.
+		</para>
+		</note>
+	</preface>

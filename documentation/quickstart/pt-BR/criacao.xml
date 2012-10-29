@@ -1,14 +1,13 @@
 <?xml version='1.0' encoding="utf-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+
 <chapter id="criacao">
-
 	<title>Criação da aplicação</title>
-
 	<section>
 		<title>Nossa primeira aplicação</title>
 		<para>
-			Para iniciar o uso do <emphasis>Demoiselle Framework 2.X</emphasis>, criaremos uma aplicação
+			Para iniciar o uso do <emphasis>Demoiselle Framework 2.3</emphasis>, criaremos uma aplicação
 			Java do tipo Web utilizando o <ulink url="http://maven.apache.org/"><citetitle>Apache Maven</citetitle></ulink>,
 			através do plugin para IDE Eclipse (M2Eclipse) para gerenciar todo o clico de vida do Projeto,
 			desde a criação até o <emphasis>deploy</emphasis>.
@@ -23,91 +22,57 @@
 	
 	<section>
 		<title>Construindo o projeto usando um arquétipo Maven</title>
-		<important>
+		<para>
+			Para criar esse projeto utilizando a IDE Eclipse, acesse o menu <guimenu>File</guimenu>,
+			<guimenu>New</guimenu>, <guimenu>Other...</guimenu> digite e selecione <guimenu>Maven Project</guimenu>:
+			conforme mostrado na figura abaixo:
+			<mediaobject>
+				<imageobject role="fo">
+					<imagedata fileref="images/newwiz.png" align="center" scalefit="1" width="75%"/>
+				</imageobject>
+				<imageobject role="html">
+					<imagedata fileref="images/newwiz.png" align="center"/>
+				</imageobject>
+			</mediaobject>
+		</para>
+		<para>
+			Na tela seguinte, recomenda-se manter os valores "default":
+			<mediaobject>
+				<imageobject role="fo">
+					<imagedata fileref="images/new-maven-project01.png" align="center" scalefit="1" width="75%"/>
+				</imageobject>
+				<imageobject role="html">
+					<imagedata fileref="images/new-maven-project01.png" align="center"/>
+				</imageobject>
+			</mediaobject>
+		</para>
+		<para>
+	       	Na tela abaixo, no combo-box chamado <literal>Catalog</literal>, selecione o item com o nome <quote>Demoiselle</quote> e
+	       	no campo <literal>Filter</literal> digite <quote>JSF</quote> e em seguida selecione o item <quote>demoiselle-jsf-jpa</quote>:
+			<mediaobject>
+				<imageobject role="fo">
+					<imagedata fileref="images/new-maven-project02.png" align="center" scalefit="1" width="75%"/>
+				</imageobject>
+				<imageobject role="html">
+					<imagedata fileref="images/new-maven-project02.png" align="center"/>
+				</imageobject>
+			</mediaobject>
+		</para>
+		<caution>
 			<para>
-				O procedimento a seguir pode ser comumente executado de forma visual com o auxílio de um
-				assistente (i.e., wizard) de dentro da IDE Eclipse, como será demonstrado logo após o modo linha de comando.
-			</para>
-		</important>
+	        	Se as opções anteriores não aparecem, é porque será necessário incluir o catálogo remoto de arquétipos Maven do Demoiselle.
+	        	Caso contrário pule o subitem <emphasis>Incluindo catálogo remoto</emphasis> e siga as demais instruções.  
+	        </para>
+		</caution>
+		<caution>
+			<para>
+	        	A versão do arquétipo irá variar conforme surjam novas versões do Demoiselle. A imagem deste guia apresenta a versão 2.3, contudo,
+	        	fique sempre atento para as novas versões do Demoiselle em nosso site e sempre utilize a versão do arquétipo mais recente.
+	        </para>
+		</caution>
 		<section>
-			<title>Linha de comando</title>
-			<para>
-				Para criar a aplicação usando o arquétipo em linha de comando, abra um terminal e execute o comando <command>mvn</command>
-				do Maven com os argumentos ilustrados a seguir:
-			</para>
-			<programlisting role="BASH"><![CDATA[mvn archetype:generate \
-  				-DarchetypeGroupId=br.gov.frameworkdemoiselle.archetypes \
-  				-DarchetypeArtifactId=demoiselle-jsf-jpa \
-  				-DarchetypeVersion=2.2.0 \
-  				-DarchetypeRepository=http://demoiselle.sourceforge.net/repository/release/ \
-  				-DgroupId=br.gov.frameworkdemoiselle.sample \
-  				-DartifactId=bookmark \
-  				-Dversion=1.0.0-SNAPSHOT \
-  				-DinteractiveMode=false]]></programlisting>
-<!-- para testar locamente:
-mvn archetype:generate \
-  -DarchetypeGroupId=br.gov.frameworkdemoiselle.archetypes \
-  -DarchetypeArtifactId=demoiselle-jsf-jpa \
-  -DarchetypeVersion=2.0.0-RC1-SNAPSHOT \
-  -DgroupId=br.gov.frameworkdemoiselle.sample \
-  -DartifactId=bookmark \
-  -Dversion=1.0.0-SNAPSHOT \
-  -DinteractiveMode=false
- -->
- 		</section>
- 		<section>
-	 		<title>Modo assistido com Eclipse</title>
-			<para>
-				Para criar esse projeto utilizando a IDE Eclipse, acesse o menu <guimenu>File</guimenu>,
-				<guimenu>New</guimenu>, <guimenu>Other...</guimenu> digite e selecione <guimenu>Maven Project</guimenu>:
-				conforme mostrado na figura abaixo:
-				<mediaobject>
-		            <imageobject role="fo">
-		                <imagedata fileref="images/newwiz.png" align="center" scalefit="1" width="75%"/>
-		            </imageobject>
-		            <imageobject role="html">
-		                <imagedata fileref="images/newwiz.png" align="center"/>
-		            </imageobject>
-		        </mediaobject>
-			</para>
-	        <para>
-	        	Na tela seguinte, recomenda-se manter os valores "default":
-				<mediaobject>
-		            <imageobject role="fo">
-		                <imagedata fileref="images/new-maven-project01.png" align="center" scalefit="1" width="75%"/>
-		            </imageobject>
-		            <imageobject role="html">
-		                <imagedata fileref="images/new-maven-project01.png" align="center"/>
-		            </imageobject>
-		        </mediaobject>
-	        </para>
-	        <para>
-	        	Na tela abaixo, no combo-box chamado <literal>Catalog</literal>, selecione o item com o nome <quote>Demoiselle</quote> e
-	        	no campo <literal>Filter</literal> digite <quote>JSF</quote> e em seguida selecione o item <quote>demoiselle-jsf-jpa</quote>:
-				<mediaobject>
-		            <imageobject role="fo">
-		                <imagedata fileref="images/new-maven-project02.png" align="center" scalefit="1" width="75%"/>
-		            </imageobject>
-		            <imageobject role="html">
-		                <imagedata fileref="images/new-maven-project02.png" align="center"/>
-		            </imageobject>
-		        </mediaobject>
-	        </para>
-	        <caution>
-	        	<para>
-	        		Se as opções anteriores não aparecem, é porque será necessário incluir o catálogo remoto de arquétipos Maven do Demoiselle.
-	        		Caso contrário pule o subitem <emphasis>Incluindo catálogo remoto</emphasis> e siga as demais instruções.  
-	        	</para>
-	        </caution>
-	        <caution>
-	        	<para>
-	        		A versão do arquétipo irá variar conforme surjam novas versões do Demoiselle. A imagem deste guia apresenta a versão 2.0.0, contudo,
-	        		fique sempre atento para as novas versões do Demoiselle em nosso site e sempre utilize a versão do arquétipo mais recente.
-	        	</para>
-	        </caution>
-	        <section>
-	        	<title>Incluindo catálogo remoto</title>
-	           	<para>
+			<title>Incluindo catálogo remoto</title>
+				<para>
 	        		Ainda na tela criação do novo projeto, clique no botão <guibutton>Configure</guibutton> à direita do combo-box
 	        		<literal>Catalog</literal>, para que apareça a tela de configuração de arquétipos Maven no Eclipse.
 	        	</para>
@@ -132,8 +97,8 @@ mvn archetype:generate \
 	        	</mediaobject>
 	        	<para>
 	        		Na campo <literal>Catalog File</literal> coloque este conteúdo:
-	        		<literal>http://demoiselle.sourceforge.net/repository/archetype-catalog.xml</literal>.
-		        	No campo <literal>Description</literal> informe: <quote>Demoiselle</quote>. Em seguida, clique no botão
+	        		<literal>https://oss.sonatype.org/content/repositories/releases</literal>.
+		        	No campo <literal>Description</literal> informe: <quote>Nexus</quote>. Em seguida, clique no botão
 		        	<guibutton>Verify...</guibutton> para certificar-se que o conteúdo está correto.
 					Retorne então ao item anterior e siga as instruções.
 	        	</para>
@@ -154,87 +119,137 @@ mvn archetype:generate \
 			Ao término do processo será criado o projeto <literal>bookmark</literal> gerenciado
 			pelo Maven e com a seguinte estrutura de diretórios: 
 		</para>
-		<programlisting><![CDATA[bookmark/
+		<programlisting>
+<![CDATA[bookmark/
 |-- pom.xml
-`-- src
-    |-- main
-    |   |-- java
-    |   |   `-- br
-    |   |       `-- gov
-    |   |           `-- frameworkdemoiselle
-    |   |               `-- sample
-    |   |                   |-- business
-    |   |                   |-- constant
-    |   |                   |-- domain
-    |   |                   |-- exception
-    |   |                   |-- message
-    |   |                   |-- persistence
-    |   |                   |-- util
-    |   |                   `-- view
-    |   |-- resources
-    |   |   |-- demoiselle.properties
-    |   |   |-- log4j.properties
-    |   |   |-- messages.properties
-    |   |   |-- META-INF
-    |   |   |   |-- beans.xml
-    |   |   |   `-- persistence.xml
-    |   |   `-- ValidationMessages.properties
-    |   `-- webapp
-    |       |-- home.xhtml
-    |       |-- images
-    |       |   `-- logo.png
-    |       |-- index.html
-    |       |-- menu.xhtml
-    |       |-- template
-    |       |   `-- main.xhtml
-    |       `-- WEB-INF
-    |           |-- faces-config.xml
-    |           `-- web.xml
-    `-- test
-        |-- java
-        |   `-- br
-        |       `-- gov
-        |           `-- frameworkdemoiselle
-        |               `-- sample
-        `-- resources]]></programlisting>
-	</section>
+|-- src
+|   |-- main
+|   |   |-- java
+|   |   |   |-- br
+|   |   |       |-- gov
+|   |   |           |-- frameworkdemoiselle
+|   |   |               |-- sample
+|   |   |                   |-- bookmark
+|   |   |                       |-- business
+|   |   |                       |   |-- BookmarkBC.java
+|   |   |                       |-- constant
+|   |   |                       |   |-- readme.txt
+|   |   |                       |-- domain
+|   |   |                       |   |-- Bookmark.java
+|   |   |                       |-- exception
+|   |   |                       |   |-- readme.txt
+|   |   |                       |-- message
+|   |   |                       |   |-- readme.txt
+|   |   |                       |-- persistence
+|   |   |                       |   |-- BookmarkDAO.java
+|   |   |                       |-- util
+|   |   |                       |   |-- readme.txt
+|   |   |                       |-- view
+|   |   |                           |-- BookmarkEditMB.java
+|   |   |                           |-- BookmarkListMB.java
+|   |   |-- resources
+|   |   |   |-- demoiselle.properties
+|   |   |   |-- log4j.properties
+|   |   |   |-- messages.properties
+|   |   |   |-- META-INF
+|   |   |   |   |-- beans.xml
+|   |   |   |   |-- persistence.xml
+|   |   |   |-- ValidationMessages.properties
+|   |   |-- webapp
+|   |       |-- bookmark_edit.xhtml
+|   |       |-- bookmark_list.xhtml
+|   |       |-- images
+|   |       |   |-- logo.png
+|   |       |-- index.html
+|   |       |-- index.xhtml
+|   |       |-- menu.xhtml
+|   |       |-- template
+|   |       |   |-- main.xhtml
+|   |       |-- WEB-INF
+|   |           |-- beans.xml
+|   |           |-- faces-config.xml
+|   |           |-- lib
+|   |           |-- web.xml
+|   |-- test
+|       |-- java
+|       |   |-- br
+|       |       |-- gov
+|       |           |-- frameworkdemoiselle
+|       |               |-- sample
+|       |                   |-- bookmark
+|       |                       |-- business
+|       |                           |-- BookmarkBCTest.java
+|       |-- resources
+|           |-- demoiselle.properties
+|           |-- META-INF
+|               |-- beans.xml
+|               |-- persistence.xml]]>
+		</programlisting>
+
 
 	<section>
-		<title>Criando a entidade de domínio</title>
+		<title>Entidade de Domínio</title>
 		<para>
-			Dentro do pacote <literal>br.gov.frameworkdemoiselle.sample.domain</literal> crie a classe
+			Dentro do pacote <literal>br.gov.frameworkdemoiselle.sample.bookmark.domain</literal> foi criada a classe
 			<literal>Bookmark</literal>, a qual será responsável por representar um objeto de bookmark
 			a ser persistido no banco de dados usando JPA:
 		</para>
-		<programlisting role="JAVA"><![CDATA[@Entity
-public class Bookmark {
-
-	@Id
-	@GeneratedValue
-	private Long id;
-	
-	@Column
-	private String description;
-	
-	@Column
-	private String link;
-	
-	public Bookmark() {
-		super();
-	}
-	
-	public Bookmark(String description, String link) {
-		this.description = description;
-		this.link = link;
-	}
-	
-}]]></programlisting>
-		<note>
-			<para>
-				Lembre-se de criar os respectivos métodos <emphasis>getter</emphasis> e
-				<emphasis>setter</emphasis> para as propriedades dessa classe.
-			</para>
-		</note>
+		<programlisting role="JAVA">
+			<![CDATA[
+				@Entity
+				public class Bookmark implements Serializable {
+				
+					private static final long serialVersionUID = 1L;
+					
+					/*
+					 *  If you are using Glassfish then remove the strategy attribute
+					 */
+					@Id
+					@GeneratedValue(strategy = SEQUENCE)
+					private Long id;
+					
+					@Column
+					private String description;
+					
+					@Column
+					private String link;
+					
+					public Bookmark() {
+						super();
+					}
+					
+					public Bookmark(String description, String link) {
+						this.description = description;
+						this.link = link;
+					}
+					
+					public Long getId() {
+						return id;
+					}
+					
+					public void setId(Long id) {
+						this.id = id;
+					}
+					
+					public String getDescription() {
+						return description;
+					}
+					
+					public void setDescription(String description) {
+						this.description = description;
+					}
+					
+					public String getLink() {
+						return link;
+					}
+					
+					public void setLink(String link) {
+						this.link = link;
+					}
+				
+				}
+			]]>
+		</programlisting>
 		<para>
 			Os dois construtores da classe <literal>Bookmark</literal> serão utilizados posteriormente na aplicação.
 			As anotações <literal>@Entity</literal>, <literal>@Id</literal>, <literal>@GeneratedValue</literal> e
@@ -243,147 +258,182 @@ public class Bookmark {
 	</section>
 
 	<section>
-		<title>Implementando a camada de persistência</title>
+		<title>Camada de Persistência</title>
 		<para>
-			Dentro do pacote <literal>br.gov.frameworkdemoiselle.sample.persistence</literal> crie a classe
+			Dentro do pacote <literal>br.gov.frameworkdemoiselle.sample.bookmark.persistence</literal> foi criada a classe
 			<literal>BookmarkDAO</literal>, a qual será responsável por manipular os dados:
 		</para>
-		<programlisting role="JAVA"><![CDATA[@PersistenceController
-public class BookmarkDAO extends JPACrud<Bookmark, Long> {
-
-	private static final long serialVersionUID = 1L;
-	
-}]]></programlisting>
-		<tip>
+		<programlisting role="JAVA">
+			<![CDATA[
+				@PersistenceController
+				public class BookmarkDAO extends JPACrud<Bookmark, Long> {
+					
+					private static final long serialVersionUID = 1L;
+					
+				}			
+			]]>
+		</programlisting>
+		<note>
 			<para>
 				A anotação <literal>@PersistenceController</literal> trata-se de um estereótipo fornecido
-				pelo <emphasis>Demoiselle Framework 2.X</emphasis> para indicar que uma classe será tratada
+				pelo <emphasis>Demoiselle Framework 2</emphasis> para indicar que uma classe será tratada
 				como controlador da camada de persistência na aplicação.
 			</para>
-		</tip>
+		</note>
 		<para>
 			A classe abstrata <literal>JPACrud</literal> faz parte do código de suporte fornecido pelo
-			<emphasis>Demoiselle Framework 2.X</emphasis> (especificamente na extensão JPA). Ao utilizá-la,
+			<emphasis>Demoiselle Framework 2</emphasis> (especificamente na extensão JPA). Ao utilizá-la,
 			o desenvolvedor não precisará implementar métodos de manipulação de uma entidade, tais como busca,
 			listagem, inclusão, alteração e exclusão de registros. Dessa forma, apenas métodos específicos do
 			caso de uso necessitam ser criados manualmente.
 		</para>
-		<note>
+		<tip>
 			<para>
 				Recomenda-se usar o sufixo <quote>DAO</quote> nessa classe para indicar que se trata de
 				um objeto de acesso a dados (i.e., um <emphasis>DAO - Data Access Object</emphasis>).
 			</para>
-		</note>
+		</tip>
 		<para>
-			No diretório <filename>/src/main/resources/META-INF/</filename>, altere o arquivo
-			<filename>persistence.xml</filename> com o conteúdo seguinte:
-		</para>
-		<programlisting role="XML"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-	<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-		<persistence-unit name="bookmark-ds">
-			<jta-data-source>java:/DefaultDS</jta-data-source>
-			<class>br.gov.frameworkdemoiselle.sample.domain.Bookmark</class>
-			<properties>
-				<property name="hibernate.show_sql" value="true" />
-				<property name="hibernate.format_sql" value="false" />
-				<property name="hibernate.hbm2ddl.auto" value="update" />
-				<property name="hibernate.transaction.factory_class"
-				          value="org.hibernate.transaction.JTATransactionFactory" />
-				<property name="jta.UserTransaction" value="UserTransaction" />
-			</properties>
-		</persistence-unit>
-	</persistence>]]></programlisting>
-		<para>
-			Este arquivo armazenará as configurações de acesso ao banco de dados via JPA. Neste caso, o gerenciamento das conexões
-			ficará a cargo do servidor de aplicações (ex: JBoss AS). Será usada a fonte de dados <literal>java:/DefaultDS</literal>.
+			No diretório <filename>/src/main/resources/META-INF/</filename> foi criado o arquivo <filename>persistence.xml</filename> 
+			utilizado para armazenar as configurações de acesso ao banco de dados via JPA (conexões controladas por um <literal>JPA Provider</literal>, ex: Hibernate)
+			ou JTA (conexões controladas pelo  <literal>Application Server</literal>, ex: JBossAS) e como pode ser observado o <emphasis>Demoiselle Framework 2</emphasis>
+			já traz neste arquivo vários exemplos de configurações para os mais distintos <literal>Application Servers</literal>, como: 
+			JBoss AS7, JBoss AS6, GlassFish 3, Tomcat 6 e Tomcat7.  
 		</para>
 		<para>
-			No diretório <filename>/src/main/resources/</filename>, altere o arquivo
-			<filename>demoiselle.properties</filename> com o conteúdo seguinte:
+			O projeto criado pelo arquétipo <quote>demoiselle-jsf-jpa</quote> já vem configurado para usar conexão JPA com o HSQLDB, conforme código abaixo:
 		</para>
-		<programlisting><![CDATA[frameworkdemoiselle.persistence.unit.name=bookmark-ds]]></programlisting>
-		<para>
-			No diretório <filename>/src/main/resources/META-INF/</filename>, altere o arquivo
-			<filename>beans.xml</filename> com o conteúdo seguinte:
-		</para>
-		<programlisting role="XML"><![CDATA[<?xml version="1.0"?>
-<beans xmlns="http://java.sun.com/xml/ns/javaee"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-	                       http://java.sun.com/xml/ns/javaee/beans_1_1.xsd">
+		<programlisting role="XML">
+			<![CDATA[
+			<?xml version="1.0" encoding="UTF-8"?>
+				<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 
-	<alternatives>
-		<class>br.gov.frameworkdemoiselle.transaction.JTATransaction</class>
-	</alternatives>
+					<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
+						<non-jta-data-source>java:jboss/datasources/ExampleDS</non-jta-data-source>
+				
+						<class>br.gov.frameworkdemoiselle.sample.bookmark.domain.Bookmark</class>
 
-</beans>]]></programlisting>
+						<properties>
+							<property name="hibernate.show_sql" value="true" />
+							<property name="hibernate.format_sql" value="false" />
+							<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+						</properties>
+					</persistence-unit>
+				</persistence>
+			]]>
+		</programlisting>
 	</section>
 
 	<section>
-		<title>Implementando a camada de negócio</title>
+		<title>Camada de Negócio</title>
 		<para>
-			Dentro do pacote <literal>br.gov.frameworkdemoiselle.sample.business</literal> crie a classe
-			<literal>BookmarkBC</literal>, a qual será responsável por gerenciar as regras de negócio
-			referentes aos bookmarks:
+			Dentro do pacote <literal>br.gov.frameworkdemoiselle.sample.bookmark.business</literal> foi criada a classe
+			<literal>BookmarkBC</literal>, a qual será responsável por gerenciar as regras de negócio referentes aos bookmarks:
 		</para>
-		<programlisting role="JAVA"><![CDATA[@BusinessController
-public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
-
-	private static final long serialVersionUID = 1L;
-	
-	@Startup
-	@Transactional
-	public void startup() {
-		if (findAll().isEmpty()) {
-			insert(new Bookmark("Demoiselle Portal", "http://www.frameworkdemoiselle.gov.br"));
-			insert(new Bookmark("Demoiselle SourceForge", "http://sf.net/projects/demoiselle"));
-			insert(new Bookmark("Twitter", "http://twitter.frameworkdemoiselle.gov.br"));
-			insert(new Bookmark("Blog", "http://blog.frameworkdemoiselle.gov.br"));
-			insert(new Bookmark("Wiki", "http://wiki.frameworkdemoiselle.gov.br"));
-			insert(new Bookmark("Bug Tracking", "http://tracker.frameworkdemoiselle.gov.br"));
-			insert(new Bookmark("Forum", "http://forum.frameworkdemoiselle.gov.br"));
-			insert(new Bookmark("SVN", "http://svn.frameworkdemoiselle.gov.br"));
-			insert(new Bookmark("Maven", "http://repository.frameworkdemoiselle.gov.br"));
-			insert(new Bookmark("Downloads", "http://download.frameworkdemoiselle.gov.br"));
-		}
-	}
-	
-}]]></programlisting>
+		<programlisting role="JAVA">
+			<![CDATA[
+				@BusinessController
+				public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
+					
+					private static final long serialVersionUID = 1L;
+					
+					@Startup
+					@Transactional
+					public void load() {
+						if (findAll().isEmpty()) {
+							insert(new Bookmark("Demoiselle Portal", "http://www.frameworkdemoiselle.gov.br"));
+							insert(new Bookmark("Demoiselle SourceForge", "http://sf.net/projects/demoiselle"));
+							insert(new Bookmark("Twitter", "http://twitter.frameworkdemoiselle.gov.br"));
+							insert(new Bookmark("Blog", "http://blog.frameworkdemoiselle.gov.br"));
+							insert(new Bookmark("Wiki", "http://wiki.frameworkdemoiselle.gov.br"));
+							insert(new Bookmark("Bug Tracking", "http://tracker.frameworkdemoiselle.gov.br"));
+							insert(new Bookmark("Forum", "http://forum.frameworkdemoiselle.gov.br"));
+							insert(new Bookmark("SVN", "http://svn.frameworkdemoiselle.gov.br"));
+							insert(new Bookmark("Maven", "http://repository.frameworkdemoiselle.gov.br"));
+							insert(new Bookmark("Downloads", "http://download.frameworkdemoiselle.gov.br"));
+						}
+					}
+					
+				}			
+			]]>
+		</programlisting>
 		<para>
 			O método <function>startup()</function> nessa classe será invocado automaticamente durante a
 			inicialização da aplicação e fará com que a tabela seja populada com dados iniciais de bookmarks.
 		</para>
-		<tip>
+		<note>
 			<para>
 				A anotação <literal>@BusinessController</literal> trata-se de um estereótipo fornecido
-				pelo <emphasis>Demoiselle Framework 2.X</emphasis> para indicar que uma classe será tratada
+				pelo <emphasis>Demoiselle Framework 2</emphasis> para indicar que uma classe será tratada
 				como controlador da camada de negócio na aplicação.
 			</para>
-		</tip>
+		</note>
 		<para>
 			A classe <literal>DelegateCrud</literal> faz parte do código de suporte fornecido pelo
-			<emphasis>Demoiselle Framework 2.0</emphasis>. Ao utilizá-la, o desenvolvedor não precisará
+			<emphasis>Demoiselle Framework 2</emphasis>. Ao utilizá-la, o desenvolvedor não precisará
 			implementar métodos de negócio triviais de uma entidade e tampouco programar a injeção de dependência
 			entre as camadas de negócio e persistência. Tal injeção será realizada de forma implícita.
 		</para>
-		<note>
+		<tip>
 			<para>
 				Recomenda-se usar o sufixo <quote>BC</quote> nessa classe para indicar que se trata de
 				um controlador de negócio (i.e., um <emphasis>BC - Business Controller</emphasis>).
 			</para>
-		</note>
+		</tip>
 	</section>
 
 	<section>
-		<title>Implementando a camada de apresentação</title>
+		<title>Camada de Apresentação</title>
 		<para>
-			Dentro do pacote <literal>br.gov.frameworkdemoiselle.sample.view</literal> crie a classe
-			<literal>BookmarkListMB</literal>, a qual será responsável por exibir as informações sobre
-			os bookmarks para o usuário:
+			Dentro do pacote <literal>package br.gov.frameworkdemoiselle.sample.bookmark.view</literal> foram criadas as
+			classes <literal>BookmarkEditMB</literal> e <literal>BookmarkListMB</literal>, onde a primeira é responsável
+			por controlar as modificações sobre os bookmarks efetuadas pelo usuário e a segunda é responsável por
+			exibir as informações sobre os bookmarks. 
 		</para>
-		<programlisting role="JAVA"><![CDATA[@ViewController
+		
+		<programlisting role="JAVA">
+<![CDATA[@ViewController
+@PreviousView("/bookmark_list.xhtml")
+public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
+
+	private static final long serialVersionUID = 1L;
+
+	@Inject
+	private BookmarkBC bookmarkBC;
+
+	@Override
+	@Transactional
+	public String delete() {
+		this.bookmarkBC.delete(getId());
+		return getPreviousView();
+	}
+
+	@Override
+	@Transactional
+	public String insert() {
+		this.bookmarkBC.insert(getBean());
+		return getPreviousView();
+	}
+
+	@Override
+	@Transactional
+	public String update() {
+		this.bookmarkBC.update(getBean());
+		return getPreviousView();
+	}
+
+	@Override
+	protected void handleLoad() {
+		setBean(this.bookmarkBC.load(getId()));
+	}
+
+}]]>
+		</programlisting>
+		<programlisting role="JAVA">
+<![CDATA[@ViewController
+@NextView("/bookmark_edit.xhtml")
+@PreviousView("/bookmark_list.xhtml")
 public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> {
 
 	private static final long serialVersionUID = 1L;
@@ -393,141 +443,106 @@ public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> {
 
 	@Override
 	protected List<Bookmark> handleResultList() {
-		return bc.findAll();
+		return this.bc.findAll();
 	}
-	
-}]]></programlisting>
-		<tip>
-			<para>
-				A anotação <literal>@ViewController</literal> trata-se de um estereótipo fornecido
-				pelo <emphasis>Demoiselle Framework</emphasis> para indicar que uma classe será tratada
-				como controlador da camada de apresentação (i.e., visão) na aplicação.
-			</para>
-		</tip>
+
+	@Transactional
+	public String deleteSelection() {
+		boolean delete;
+		for (Iterator<Long> iter = getSelection().keySet().iterator(); iter.hasNext();) {
+			Long id = iter.next();
+			delete = getSelection().get(id);
+
+			if (delete) {
+				bc.delete(id);
+				iter.remove();
+			}
+		}
+		return getPreviousView();
+	}
+
+}]]>
+		</programlisting>
+		
 		<para>
-			A classe <literal>AbstractListPageBean</literal> faz parte do código de suporte fornecido pelo
-			<emphasis>Demoiselle Framework</emphasis> (especificamente na extensão JSF). Ao utilizá-la,
-			o desenvolvedor não precisará implementar métodos específicos de navegação para uma tela de
-			cadastro (i.e., do tipo <emphasis>CRUD</emphasis>).
+			A anotação <literal>@ViewController</literal> trata-se de um estereótipo fornecido
+			pelo <emphasis>Demoiselle Framework 2</emphasis> para indicar que uma classe será tratada
+			como controlador da camada de apresentação (i.e., visão) na aplicação.
+		</para>
+		<para>
+			A anotação <literal>@NextView</literal> serve para definir a próxima
+			visão a ser direcionado o fluxo de navegação JSF. De forma semelhante,
+			a anotação <literal>@PreviousView</literal> define a visão anterior
+			de um fluxo.
 		</para>
 		<para>
 			A anotação <literal>@Inject</literal> é fornecida pela especificação CDI. Ela realiza a injeção
 			de dependência da camada de negócio dentro do artefato da camada de apresentação.
+		</para>				
+		<para>
+			A anotação <literal>@Transactional</literal> trata-se de uma anotação fornecida pelo
+			<emphasis>Demoiselle Framework 2</emphasis> para indicar que o método em questão
+			será incluído na sessão transacional. Caso essa anotação esteja vinculada na classe,
+			todos os seus métodos serão considerados transacionais.
 		</para>
-		<note>
+		<para>
+			As classes <literal>AbstractEditPageBean</literal> e <literal>AbstractListPageBean</literal> fazem parte 
+			do código de suporte fornecido pelo <emphasis>Demoiselle Framework 2</emphasis> (especificamente na extensão JSF).
+			Ao utilizá-las, o desenvolvedor não precisará implementar métodos específicos de navegação para uma tela de
+			cadastro (i.e., do tipo <emphasis>CRUD</emphasis>).
+		</para>
+		<tip>
 			<para>
 				Recomenda-se usar o sufixo <quote>MB</quote> nessa classe para indicar que se trata de
 				um bean gerenciado do JSF (i.e., um <emphasis>MB - Managed Bean</emphasis>).
 			</para>
-		</note>
+		</tip>
 		<para>
-			No diretório <filename>/src/main/webapp/</filename>, crie o arquivo
-			<filename>bookmark_list.xhtml</filename> com o conteúdo seguinte:
+			No diretório <filename>/src/main/webapp/</filename> foram criados os arquivos:
+			<itemizedlist>
+					<listitem><emphasis>bookmark_edit.xhtml</emphasis> - página JSF de cadastro e edição de bookmark;</listitem>
+					<listitem><emphasis>bookmark_list.xhtml</emphasis> - página JSF de cadastro e edição de bookmark;</listitem>
+					<listitem><emphasis>index.html</emphasis> - página HTML que redireciona para a página jsf;</listitem>
+					<listitem><emphasis>index.xhtml</emphasis> - página JSF inicial do sistema;</listitem>
+					<listitem><emphasis>menu.xhtml</emphasis> - página JSF que monta o menu de navegação.</listitem>
+				</itemizedlist>
 		</para>
-		<programlisting role="XML"><![CDATA[<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets" template="/template/main.xhtml">
-	<ui:define name="body">
-		<h:form>
-			<p:dataTable id="list" var="bean" value="#{bookmarkListMB.resultList}">
-				<f:facet name="header">#{messages['bookmark.list.table.title']}</f:facet>
-				<p:column style="width:1%;">
-					<h:selectBooleanCheckbox value="#{bookmarkListMB.selection[bean.id]}" />
-				</p:column>
-				<p:column style="width:5%;" sortBy="#{bean.id}">
-					<f:facet name="header">#{messages['bookmark.label.id']}</f:facet>
-					<h:outputText value="#{bean.id}" />
-				</p:column>
-				<p:column sortBy="#{bean.description}">
-					<f:facet name="header">#{messages['bookmark.label.description']}</f:facet>
-					<h:commandLink action="#{bookmarkListMB.getNextView}"
-						actionListener="#{bookmarkListMB.clear}">
-						<h:outputText value="#{bean.description}" />
-						<f:param name="id" value="#{bean.id}" />
-					</h:commandLink>
-				</p:column>
-				<p:column sortBy="#{bean.link}">
-					<f:facet name="header">#{messages['bookmark.label.link']}</f:facet>
-					<h:commandLink action="#{bookmarkListMB.getNextView}"
-						actionListener="#{bookmarkListMB.clear}">
-						<h:outputText value="#{bean.link}" />
-						<f:param name="id" value="#{bean.id}" />
-					</h:commandLink>
-				</p:column>
-			</p:dataTable>
-		</h:form>
-	</ui:define>
-</ui:composition>]]></programlisting>
-		<tip>
+		<para>
+			No diretório <filename>/src/main/webapp/template</filename> foi criado o arquivo:
+			<itemizedlist>
+				<listitem><emphasis>main.xhtml</emphasis> - página JSF que serve de template referenciada na demais páginas JSF.</listitem>
+			</itemizedlist>
+		</para>		
+		<note>
 			<para>
 				Nos arquivos XHTML listados neste exemplo foi empregado o framework
 				<ulink url="http://www.primefaces.org/">PrimeFaces</ulink>, o qual foi um dos primeiros a
 				oferecer suporte completo à especificação JSF 2.0.
 			</para>
-		</tip>
+		</note>
 		<para>
-			No diretório <filename>/src/main/webapp/</filename>, altere o arquivo
-			<filename>menu.xhtml</filename> com o conteúdo seguinte:
+			No diretório <filename>/src/main/resources/</filename> podemos observar que foi criado o arquivo de recursos 
+			<filename>messages.properties</filename>. Ao invés de manter fixas as descrições em rótulos, links, botões e 
+			mensagens em uma aplicação, recomenda-se parametrizar esses textos em arquivos de recursos. Além de ser considerada 
+			boa prática, essa medida facilita uma posterior internacionalização da aplicação para diversos idiomas.  
 		</para>
-		<programlisting role="XML"><![CDATA[<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
-	<h:form>
-		<p:menubar>
-			<p:submenu label="#{messages['menu.bookmark']}">
-				<p:menuitem value="#{messages['menu.menuitem.list']}"
-					url="/bookmark_list.jsf" />
-			</p:submenu>
-			<p:submenu>
-				<f:facet name="label">
-					<p:menuitem value="#{messages['menu.menuitem.quit']}"
-						url="http://www.frameworkdemoiselle.gov.br/" />
-				</f:facet>
-			</p:submenu>
-		</p:menubar>
-	</h:form>
-</ui:composition>]]></programlisting>
-		<para>
-			No diretório <filename>/src/main/resources/</filename>, altere o arquivo
-			<filename>messages.properties</filename> incluindo as linhas a seguir:
-		</para>
-		<programlisting><![CDATA[bookmark.list.table.title=Lista de Links
-bookmark.label.id=ID
-bookmark.label.link=Link
-bookmark.label.description=Descri\u00E7\u00E3o
-bookmark.label=Bookmark
-
-bookmark.alt.id=ID
-bookmark.alt.link=Link
-bookmark.alt.description=Descri\u00E7\u00E3o
-
-menu.bookmark=Bookmarks]]></programlisting>
 		<note>
 			<para>
 				O arquivo de recursos <filename>messages.properties</filename> armazenará textos
 				no idioma default da aplicação (neste caso, em Português do Brasil).
 			</para>
 		</note>
-		<tip>
-			<para>
-				Ao invés de manter fixas as descrições em rótulos, links, botões e mensagens em uma
-				aplicação, recomenda-se parametrizar esses textos em arquivos de recursos. Além de
-				ser considerada boa prática, essa medida facilita uma posterior internacionalização
-				da aplicação para diversos idiomas.
-			</para>
-		</tip>
 	</section>
 
 	<section>
 		<title>Executando no servidor</title>
 		<para>
-			A última etapa consiste na construção da aplicação Java Web e no respectivo deploy em um servidor
-			de aplicações.
+			A última etapa consiste em fazer o deploy da Java Web em um servidor de aplicações.
 		</para>
 		<para>
 			Utilizando a IDE Eclipse, basta clicar com o botão direito no projeto <literal>bookmark</literal> e
 			acessar o menu <guimenu>Run As</guimenu>, <guimenu>Run on Server</guimenu>. Em seguida, escolha um
-			servidor compatível com Java EE 6 (ex: JBoss AS 6) e aguarde a inicialização deste.
+			servidor compatível com Java EE 6 (ex: JBoss AS 7) e aguarde a inicialização deste.
 		</para>
 		<mediaobject>
             <imageobject role="fo">
@@ -555,14 +570,6 @@ menu.bookmark=Bookmarks]]></programlisting>
         		direito no servidor desejado e selecione a opção <guimenu>Debug</guimenu>.
         	</para>
         </tip>
-        <note>
-        	<para>
-        		Também é possível efetuar esses passos em linha de comando. Para isso, execute o comando
-        		<command>mvn package</command>, copie o arquivo <filename>bookmark.war</filename> resultante
-        		para a pasta de deploy do servidor (ex: <filename>JBOSS_HOME/server/default/deploy</filename>) e
-        		inicie este último através de seu comando próprio (ex: <filename>JBOSS_HOME/bin/run.sh</filename>).
-        	</para>
-        </note>
         <para>
         	Em seguida, abra o navegador Web de sua preferência e acesse o endereço
         	<ulink url="http://localhost:8080/bookmark">http://localhost:8080/bookmark</ulink>. Esta é a
@@ -582,6 +589,24 @@ menu.bookmark=Bookmarks]]></programlisting>
 				</textobject>
 	        </mediaobject>
 		</figure>
+		<para>
+			Para cadastrar um novo bookmark basta ir no menu principal: <guimenu>Bookmarks</guimenu>,
+			<guimenu>Novo</guimenu>. Executando-a, será exibida a página a seguir:
+		</para>
+ 		<figure>
+			<title>Tela de cadastro e edição dos dados na aplicação Bookmark</title>
+			<mediaobject>
+	            <imageobject role="fo">
+	                <imagedata fileref="images/appedit.png" align="center" scalefit="1" />
+	            </imageobject>
+	            <imageobject role="html">
+	                <imagedata fileref="images/appedit.png" align="center" />
+	            </imageobject>
+				<textobject>
+					<phrase>Aplicação Bookmark em funcionamento</phrase>
+				</textobject>
+	        </mediaobject>
+		</figure>		
 	</section>
 
 </chapter>
