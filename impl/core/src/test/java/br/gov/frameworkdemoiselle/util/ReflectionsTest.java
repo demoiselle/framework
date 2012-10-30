@@ -38,9 +38,16 @@ package br.gov.frameworkdemoiselle.util;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.util.logging.Logger;
+
 import org.junit.Test;
 
 public class ReflectionsTest {
+
+	private String text;
 
 	@Test
 	public void testGetGenericTypeArgumentClass() {
@@ -48,11 +55,25 @@ public class ReflectionsTest {
 		assertEquals(String.class, Reflections.getGenericTypeArgument(OtherClass.class, 1));
 	}
 
+	@Test
+	public void testGetGenericTypeArgumentMember() throws SecurityException, NoSuchFieldException {
+		Member[] members = OtherClass.class.getFields();
+		assertEquals(Long.class, Reflections.getGenericTypeArgument(members[0], 0));
+		assertEquals(String.class, Reflections.getGenericTypeArgument(members[1], 0));
+	}
 }
 
 class SomeClass<T, I> {
 
+	public void setNumber(T t) {
+		
+	}
 }
 
 class OtherClass extends SomeClass<Long, String> {
+
+	public Class<Long> number;
+
+
+	public Class<String> text;
 }
