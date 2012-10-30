@@ -74,12 +74,8 @@ import br.gov.frameworkdemoiselle.internal.implementation.AnnotatedMethodProcess
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.lifecycle.Startup;
-import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Contexts.class, LoggerProducer.class, ResourceBundle.class, ResourceBundleProducer.class,
-		Beans.class, ConfigurationLoader.class })
 @SuppressWarnings({ "rawtypes", "unchecked", "unused" })
 public class AbstractLifecycleBootstrapTest {
 
