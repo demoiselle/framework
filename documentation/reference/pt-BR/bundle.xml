@@ -6,7 +6,7 @@
 	<title>Resource Bundle</title>
 
 	<para>
-		Um dos requisitos para se construir uma aplicação nos dias de hoje, é o de que seja utilizada por pessoas
+		Um dos requisitos para se construir uma aplicação nos dias de hoje é o de que seja utilizada por pessoas
 		em vários lugares no mundo e em diferentes línguas. Portanto, é preciso que as aplicações sejam facilmente 
 		internacionalizáveis. Para isso, existe um recurso no java chamado de <emphasis>Resource Bundle</emphasis>,
 		que nada mais é do que um esquema de arquivos <filename>properties</filename>, onde cada arquivo representa
@@ -50,7 +50,7 @@ button.save=Salvar]]></programlisting>
 			Na versão 2.X do <emphasis>Demoiselle Framework</emphasis>, existe uma fábrica de Resource Bundle que fica no
 			Core e permite seu uso através da injeção ou através de uma instanciação normal. O grande detalhe é que nessa
 			fábrica é injetado um objeto do tipo <literal>Locale</literal>, isso quer dizer que é necessário criar também
-			uma fabrica de <literal>Locale</literal>. Como a definição de <literal>Locale</literal> varia de acordo com a
+			uma fábrica de <literal>Locale</literal>. Como a definição de <literal>Locale</literal> varia de acordo com a
 			camada de apresentação, essas fábricas foram criadas nas extensões de apresentação:
 			<literal>demoiselle-jsf</literal>, <literal>demoiselle-se</literal> e <literal>demoiselle-vaadin</literal>.
 			Na extensão <literal>demoiselle-se</literal> a definição do <literal>Locale</literal> é dada através do

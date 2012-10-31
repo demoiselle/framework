@@ -21,7 +21,7 @@
 		<para>
 			As Extensões, como o próprio nome sugere, estendem o Core com funcionalidades extras e bem específicas a um domínio ou
 			tecnologia. Neste contexto, caso sua aplicação necessite de persistência com JPA, o framework fornecerá facilidades
-			para você, contudo, estas funcionalidades não estão no Core. Para este propósito existem as extensões como a
+			para você; contudo, estas funcionalidades não estão no Core. Para este propósito existem as extensões como a
 			<literal>demoiselle-jpa</literal>, por exemplo. Cabe destacar que as extensões não possuem vida própria, 
 			pois estão diretamente ligadas ao núcleo do framework, inclusive o ciclo de vida das extensões está 
 			totalmente acoplado ao do Core.
@@ -43,7 +43,7 @@
 			interfaces ou, como alguns costumam dizer, <quote>depender de contratos</quote>.
 			As interfaces existem para isto: definem um contrato, enquanto as implementações deste contrato ficam à parte, de
 			preferência, distante do programador da aplicação. O mecanismo de injeção de dependência fortalece ainda mais esta
-			idéia. Sua aplicação precisará apenas depender das interfaces que o Demoiselle provê. A implementação específica será
+			ideia. Sua aplicação precisará apenas depender das interfaces que o Demoiselle provê. A implementação específica será
 			injetada automaticamente pelo CDI.
 		</para>
 		<tip>
@@ -68,12 +68,12 @@
 		<title>Arquitetura das aplicações</title>
 		<para>
 			É importante reforçar que o Demoiselle não obriga nenhum tipo de arquitetura para as aplicações, que podem ser
-			constituídas com quantas camadas forem necessárias. Contudo, é prudente não exagerar! Para quem não sabe por onde
+			constituídas por quantas camadas forem necessárias. Contudo, é prudente não exagerar! Para quem não sabe por onde
 			começar, sugerimos uma arquitetura e padrões largamente utilizados pelo mercado, de forma a facilitar a manutenção e
 			para melhor modularização de seu projeto.
 		</para>
 		<para>
-			Usualmente, as aplicações são constituídas com pelo menos três camadas, desta forma é comum separar as lógicas de
+			Usualmente, as aplicações são constituídas por pelo menos três camadas, desta forma é comum separar as lógicas de
 			apresentação, regras de negócio e persistência. O Demoiselle já fornece estereótipos que visam tornar esta 
 			separação mais clara, respectivamente:
 			<literal>@ViewController</literal>, <literal>@BusinessController</literal> e <literal>@PersistenceController</literal>. 
