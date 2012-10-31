@@ -142,7 +142,7 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
-				<version>4.2.0.Final</version>
+				<version>${hibernate.validator.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>javax.xml.bind</groupId>
@@ -332,6 +332,7 @@
 		<persistence.version>2.0.0</persistence.version>
 
 		<hibernate.version>4.1.7.Final</hibernate.version>
+		<hibernate.validator.version>4.2.0.Final</hibernate.validator.version>
 
 		<junit.version>4.8.1</junit.version>
 		<easymock.version>3.0</easymock.version>
