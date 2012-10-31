@@ -36,7 +36,7 @@
 			</mediaobject>
 		</para>
 		<para>
-			Na tela seguinte, recomenda-se manter os valores "default":
+			Na tela seguinte, recomenda-se manter os valores padrões:
 			<mediaobject>
 				<imageobject role="fo">
 					<imagedata fileref="images/new-maven-project01.png" align="center" scalefit="1" width="75%"/>
@@ -332,34 +332,32 @@
 			<literal>BookmarkBC</literal>, a qual será responsável por gerenciar as regras de negócio referentes aos bookmarks:
 		</para>
 		<programlisting role="JAVA">
-			<![CDATA[
-				@BusinessController
-				public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
-					
-					private static final long serialVersionUID = 1L;
-					
-					@Startup
-					@Transactional
-					public void load() {
-						if (findAll().isEmpty()) {
-							insert(new Bookmark("Demoiselle Portal", "http://www.frameworkdemoiselle.gov.br"));
-							insert(new Bookmark("Demoiselle SourceForge", "http://sf.net/projects/demoiselle"));
-							insert(new Bookmark("Twitter", "http://twitter.frameworkdemoiselle.gov.br"));
-							insert(new Bookmark("Blog", "http://blog.frameworkdemoiselle.gov.br"));
-							insert(new Bookmark("Wiki", "http://wiki.frameworkdemoiselle.gov.br"));
-							insert(new Bookmark("Bug Tracking", "http://tracker.frameworkdemoiselle.gov.br"));
-							insert(new Bookmark("Forum", "http://forum.frameworkdemoiselle.gov.br"));
-							insert(new Bookmark("SVN", "http://svn.frameworkdemoiselle.gov.br"));
-							insert(new Bookmark("Maven", "http://repository.frameworkdemoiselle.gov.br"));
-							insert(new Bookmark("Downloads", "http://download.frameworkdemoiselle.gov.br"));
-						}
-					}
-					
-				}			
-			]]>
+<![CDATA[@BusinessController
+public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
+		
+	private static final long serialVersionUID = 1L;
+		
+	@Startup
+	@Transactional
+	public void load() {
+		if (findAll().isEmpty()) {
+			insert(new Bookmark("Demoiselle Portal", "http://www.frameworkdemoiselle.gov.br"));
+			insert(new Bookmark("Demoiselle SourceForge", "http://sf.net/projects/demoiselle"));
+			insert(new Bookmark("Twitter", "http://twitter.frameworkdemoiselle.gov.br"));
+			insert(new Bookmark("Blog", "http://blog.frameworkdemoiselle.gov.br"));
+			insert(new Bookmark("Wiki", "http://wiki.frameworkdemoiselle.gov.br"));
+			insert(new Bookmark("Bug Tracking", "http://tracker.frameworkdemoiselle.gov.br"));
+			insert(new Bookmark("Forum", "http://forum.frameworkdemoiselle.gov.br"));
+			insert(new Bookmark("Github", "https://github.com/demoiselle"));
+			insert(new Bookmark("SVN", "http://svn.frameworkdemoiselle.gov.br"));
+			insert(new Bookmark("Maven", "http://repository.frameworkdemoiselle.gov.br"));
+			insert(new Bookmark("Downloads", "http://download.frameworkdemoiselle.gov.br"));
+		}
+	}
+}]]>
 		</programlisting>
 		<para>
-			O método <function>startup()</function> nessa classe será invocado automaticamente durante a
+			O método com a anotação <literal>@startup</literal> nessa classe será invocado automaticamente durante a
 			inicialização da aplicação e fará com que a tabela seja populada com dados iniciais de bookmarks.
 		</para>
 		<note>
