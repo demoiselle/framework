@@ -37,7 +37,7 @@
 			As instruções contidas em um método anotado com <literal>@Startup</literal> serão executadas automaticamente quando a aplicação
 			Java for inicializada, seja ela hospedada em um contêiner Web ou executada através de um método <literal>main()</literal>.
 			Nenhum outro arquivo ou classe precisa ser definido. A anotação <literal>@Startup</literal> pode ser utilizada em conjunto com a anotação 
-			<literal>@Priority</literal>, que recebe como parametro um número inteiro que serve para definir a prioridade de execução do respectivo 
+			<literal>@Priority</literal>, que recebe como parâmetro um número inteiro que serve para definir a prioridade de execução do respectivo 
 			método, na existência de mais de um inicializador para a aplicação.
 		</para>
 		<para>
@@ -75,7 +75,7 @@
 		<title>Um exemplo prático</title>
 		<para>
 			Eis um interessante caso de uso de inicialização e finalização: rodar um servidor de modo standalone em paralelo à
-			execução da aplicação principal. Eis o código referente à essa implementação:
+			execução da aplicação principal. Eis o código referente a essa implementação:
 		</para>
 		<programlisting role="JAVA"><![CDATA[import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
 import br.gov.frameworkdemoiselle.lifecycle.Startup;

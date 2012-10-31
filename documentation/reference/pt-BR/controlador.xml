@@ -21,10 +21,10 @@
 	<para>
 		Além de identificar as camadas, os controllers são pré-requisitos para utilização da funcionalidade de tratamento de exceções,
 		através do uso da anotação <literal>@ExceptionHandler</literal>. Isso quer dizer que para utilizar essa funcionalidade, a classe
-		precisa usar um dos controllers citados acima ou a própria anotação <literal>@Controller</literal> ou ainda um controller criado
+		precisa usar um dos controllers citados acima ou a própria anotação <literal>@Controller</literal>, ou ainda um controller criado
 		exclusivamente para sua aplicação. Todos os controllers criados no framework são estereótipos e podem ser usados também para
 		definição de características como, por exemplo, o escopo. Isso quer dizer que se um controller tem um determinado escopo, todas
-		as classes desse controller, também terão o mesmo escopo. Foi falado que é possível criar um controller para uso exclusivo em sua
+		as classes desse controller também terão o mesmo escopo. Foi falado que é possível criar um controller para uso exclusivo em sua
 		aplicação, mas como fazer isso? Veja na seção abaixo.  
 	</para>
 	<!-- TODO: explicar o que é um "estereótipo" e qual o seu uso na aplicação -->
@@ -43,7 +43,7 @@ public @interface SeuController {
 }]]></programlisting>
 		<para>
 			Neste exemplo foi criado um controlador chamado <literal>SeuController</literal> que tem a característica de ter um escopo de
-			View. Isto quer dizer que toda classe que seja desse tipo de controlador, também terá o escopo de View.
+			View. Isto quer dizer que toda classe que seja desse tipo de controlador também terá o escopo de View.
 		</para>
 		<!-- TODO: qual a vantagem em se criar um controlador customizado? incluir um exemplo possível e prático de utilização disso -->
 	</section>

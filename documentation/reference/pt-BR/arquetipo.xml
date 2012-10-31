@@ -6,7 +6,7 @@
 	<title>Arquétipos</title>
 
 	<para>
-		O projeto Demoiselle recomenda e usa a ferramenta <ulink url="http://maven.apache.org/">Apache-Maven</ulink> , para gerenciamento do ciclo de vida do desenvolvimento
+		O projeto Demoiselle recomenda e usa a ferramenta <ulink url="http://maven.apache.org/">Apache-Maven</ulink>, para gerenciamento do ciclo de vida do desenvolvimento
 		de projeto. Baseada nesta ferramenta, além do fornecimento dos POMs Parentes, também fornece as estruturas chamadas <ulink url="http://maven.apache.org/archetype/maven-archetype-plugin/">arquétipos</ulink>  
 		para facilitar a criação de aplicações, garantido a estrutura recomendada pelo framework e o conceito de gerenciamento do próprio Maven. 
 		Atualmente estão disponíveis os seguintes artefatos: 
@@ -15,7 +15,7 @@
 	<section>
 		<title>Mínimo</title>
 		<para>
-			Fornece um conjunto mínimo de artefatos para criar uma aplicação Java, utiliza o Demoiselle-Minimal-Parent 
+			Fornece um conjunto mínimo de artefatos para criar uma aplicação Java, utiliza o Demoiselle-Minimal-Parent, 
 			sendo útil quando os outros arquétipos disponíveis não se enquadram nas características do projeto a ser criado. 
 		</para>
 	</section>
@@ -24,22 +24,22 @@
 		<title>JSF com JPA</title>
 		<para>
 			Útil para os projetos que precisam de uma arquitetura que utilize as tecnologias JSF e JPA,
-			é baseado no Demoiselle-JSF-Parent,
-			e que já traz uma estrutura padrão de pacotes e todas
+			é baseado no Demoiselle-JSF-Parent
+			e já traz uma estrutura padrão de pacotes e todas
 			as dependências necessárias para rodar a aplicação. Ao usar este
 			arquétipo, você terá uma pequena aplicação de
 			Bookmarks já pronta para rodar. Para isto, basta instalá-la em um
 			servidor da sua preferência! Para mais detalhes
 			sobre esta aplicação de exemplo e em como usar o arquétipo, acesse
-			a sessão de documentação chamada <ulink url="http://demoiselle.sourceforge.net/docs/quickstart/">Quickstart</ulink>.
+			a sessão de documentação chamada <ulink url="http://demoiselle.sourceforge.net/docs/quickstart/">QuickStart</ulink>.
 		</para>
 	</section>
 
 	<section>
 		<title>Vaadin com JPA</title>
 		<para>
-			Uma das principais novidades com relação à esta nova versão do Framework Demoiselle
-			é sua integração mais completa à outras tecnologias de apresentação. Na versão anterior
+			Uma das principais novidades com relação a esta nova versão do Framework Demoiselle
+			é sua integração mais completa com outras tecnologias de apresentação. Na versão anterior,
 			apesar de ser possível a utilização de outra soluções, não havia ainda facilitadores realmente integrados ao Demoiselle.
 			Seguindo este princípio, um dos arquétipos disponibilizados pelo Framework gera uma aplicação de exemplo, nos mesmo moldes
 			que é disponibilizado para a tecnologia JSF, mas com a tecnologia de apresentação chamada  <ulink url="http://vaadin.com">VAADIN</ulink>.			
