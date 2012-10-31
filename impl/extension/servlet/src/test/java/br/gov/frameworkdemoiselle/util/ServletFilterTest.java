@@ -36,65 +36,77 @@
  */
 package br.gov.frameworkdemoiselle.util;
 
-import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.powermock.api.easymock.PowerMock.createMock;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
-import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.replay;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.servlet.ServletContextEvent;
+import java.io.IOException;
 
-import org.easymock.EasyMock;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import br.gov.frameworkdemoiselle.internal.bootstrap.ShutdownBootstrap;
-import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
+import br.gov.frameworkdemoiselle.internal.producer.HttpServletRequestProducer;
+import br.gov.frameworkdemoiselle.internal.producer.HttpServletResponseProducer;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Beans.class)
-public class ServletListenerTest {
+public class ServletFilterTest {
 
-	private ServletListener listener;
+	private ServletFilter filter;
 
 	@Test
-	public void testContextInitialized() {
-		ServletContextEvent event = createMock(ServletContextEvent.class);
-		BeanManager beanManager = PowerMock.createMock(BeanManager.class);
+	public void testInit() throws ServletException {
+		FilterConfig config = createMock(FilterConfig.class);
+		replay(config);
 
-		mockStatic(Beans.class);
-		expect(Beans.getBeanManager()).andReturn(beanManager);
-		beanManager.fireEvent(EasyMock.anyObject(AfterStartupProccess.class));
-		PowerMock.expectLastCall().times(1);
-
-		replayAll();
-
-		listener = new ServletListener();
-		listener.contextInitialized(event);
+		filter = new ServletFilter();
+		filter.init(config);
 
 		verifyAll();
 	}
 
 	@Test
-	public void testContextDestroyed() {
-		ServletContextEvent event = createMock(ServletContextEvent.class);
-		BeanManager beanManager = PowerMock.createMock(BeanManager.class);
+	public void testDoFilter() throws IOException, ServletException {
+		HttpServletRequest request = createMock(HttpServletRequest.class);
+		HttpServletResponse response = createMock(HttpServletResponse.class);
+
+		FilterChain chain = createMock(FilterChain.class);
+		HttpServletRequestProducer requestProducer = createMock(HttpServletRequestProducer.class);
+		HttpServletResponseProducer responseProducer = createMock(HttpServletResponseProducer.class);
 
 		mockStatic(Beans.class);
-		expect(Beans.getBeanManager()).andReturn(beanManager);
-		beanManager.fireEvent(EasyMock.anyObject(ShutdownBootstrap.class));
+		expect(Beans.getReference(HttpServletRequestProducer.class)).andReturn(requestProducer);
+		expect(Beans.getReference(HttpServletResponseProducer.class)).andReturn(responseProducer);
+		requestProducer.setDelegate(request);
+		PowerMock.expectLastCall().times(1);
+		responseProducer.setDelegate(response);
+		PowerMock.expectLastCall().times(1);
+		chain.doFilter(request, response);
 		PowerMock.expectLastCall().times(1);
 
-		replayAll();
+		replay(Beans.class, request, response, chain, requestProducer, responseProducer);
 
-		listener = new ServletListener();
-		listener.contextDestroyed(event);
+		filter = new ServletFilter();
+		filter.doFilter(request, response, chain);
 
 		verifyAll();
 	}
 
+	@Test
+	public void testDestroy() {
+		filter = new ServletFilter();
+		filter.destroy();
+		verifyAll();
+	}
 }

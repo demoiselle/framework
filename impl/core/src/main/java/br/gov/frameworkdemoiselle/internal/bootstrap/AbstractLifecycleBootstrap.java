@@ -128,7 +128,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected synchronized void proccessEvent() {
-		getLogger().debug(getBundle().getString("executing-all", annotationClass.getSimpleName()));
+		getLogger().debug(getBundle().getString("executing-all", getAnnotationClass().getSimpleName()));
 
 		Collections.sort(processors);
 		Throwable failure = null;
