@@ -9,7 +9,7 @@
 		<title>Exibindo mensagens para o usuário</title>
 		<para>
 			Uma vez que o objetivo principal da aplicação foi concluído (i.e., listagem e edição de bookmarks),
-			veremos algumas funcionalidades adicionais fornecidas pelo <emphasis>Demoiselle Framework 2</emphasis>,
+			veremos algumas funcionalidades adicionais fornecidas pelo <emphasis>Demoiselle Framework</emphasis>,
 			iniciando pelo tratamento de mensagens.
 		</para>
 		<para>
@@ -18,14 +18,15 @@
 			exibidas ao usuário:
 		</para>
 		<programlisting role="JAVA">
-		<![CDATA[public interface InfoMessages {
-			final Message BOOKMARK_DELETE_OK = new DefaultMessage("{bookmark-delete-ok}");
-			final Message BOOKMARK_INSERT_OK = new DefaultMessage("{bookmark-insert-ok}");
-			final Message BOOKMARK_UPDATE_OK = new DefaultMessage("{bookmark-update-ok}");
-		}]]></programlisting>
+<![CDATA[public interface InfoMessages {
+	final Message BOOKMARK_DELETE_OK = new DefaultMessage("{bookmark-delete-ok}");
+	final Message BOOKMARK_INSERT_OK = new DefaultMessage("{bookmark-insert-ok}");
+	final Message BOOKMARK_UPDATE_OK = new DefaultMessage("{bookmark-update-ok}");
+}]]>
+		</programlisting>
 		<note>
 		<para>
-			A unidade básica de manipulação de mensagens no <emphasis>Demoiselle Framework 2</emphasis>
+			A unidade básica de manipulação de mensagens no <emphasis>Demoiselle Framework</emphasis>
 			é a interface <literal>Message</literal>. Ou seja, basta que esta última seja implementada na
 			aplicação para que o contexto de mensagens possa manipulá-la.
 			A classe <literal>DefaultMessage</literal> é oferecida como implementação padrão dessa interface.
@@ -56,30 +57,30 @@ bookmark-update-ok=Bookmark atualizado: {0}]]>
 			</areaspec>
 			<programlisting role="JAVA">
 <![CDATA[@BusinessController
-		 public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
+public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 
-		 @Inject
-		 private MessageContext messageContext;
-	
-		 ...
+@Inject
+private MessageContext messageContext;
 
-	 	 @Override
-		 public void insert(Bookmark bookmark) {
-			super.insert(bookmark);
-			messageContext.add(InfoMessages.BOOKMARK_INSERT_OK, bookmark.getDescription());
-		 }
-	
-		 @Override
-		 public void update(Bookmark bookmark) {
-			super.update(bookmark);
-			messageContext.add(InfoMessages.BOOKMARK_UPDATE_OK, bookmark.getDescription());
-		 }
-	
-		 @Override
-		 public void delete(Long id) {
-			super.delete(id);
-			messageContext.add(InfoMessages.BOOKMARK_DELETE_OK, id);
-		 }
+...
+
+@Override
+public void insert(Bookmark bookmark) {
+	super.insert(bookmark);
+	messageContext.add(InfoMessages.BOOKMARK_INSERT_OK, bookmark.getDescription());
+}
+
+@Override
+public void update(Bookmark bookmark) {
+	super.update(bookmark);
+	messageContext.add(InfoMessages.BOOKMARK_UPDATE_OK, bookmark.getDescription());
+}
+
+@Override
+public void delete(Long id) {
+	super.delete(id);
+	messageContext.add(InfoMessages.BOOKMARK_DELETE_OK, id);
+}
 }]]></programlisting>
 			<calloutlist>
 				<callout arearefs="inject-context">
@@ -143,14 +144,14 @@ bookmark-update-ok=Bookmark atualizado: {0}]]>
 				do projeto <literal>bookmark</literal> e inclua nele a seguinte dependência:
 			</para>
 			<programlisting role="XML">
-				<![CDATA[<dependencies>
-					...
-					<dependency>
-						<groupId>org.hibernate</groupId>
-						<artifactId>hibernate-validator</artifactId>
-						<version>4.3.0.Final</version>
-					</dependency>
-				</dependencies>]]>
+<![CDATA[<dependencies>
+	...
+	<dependency>
+		<groupId>org.hibernate</groupId>
+		<artifactId>hibernate-validator</artifactId>
+		<version>4.3.0.Final</version>
+	</dependency>
+</dependencies>]]>
 			</programlisting>
 			<note>
 				<para>
@@ -172,27 +173,27 @@ bookmark-update-ok=Bookmark atualizado: {0}]]>
 					<area id="valid-link" coords="14"/>
 				</areaspec>
 				<programlisting role="JAVA">
-					<![CDATA[@Entity
-					public class Bookmark {
-	
-						@Id
-						@GeneratedValue
-						private Long id;
-	
-						@Column
-						@NotNull
-						@Size(min = 1, max = 30)
-						private String description;
-	
-						@Column
-						@NotNull
-						@NotBlank
-						@Size(max = 255)
-						@URL
-						private String link;
-	
-						...
-					}]]>
+<![CDATA[@Entity
+public class Bookmark {
+
+	@Id
+	@GeneratedValue
+	private Long id;
+
+	@Column
+	@NotNull
+	@Size(min = 1, max = 30)
+	private String description;
+
+	@Column
+	@NotNull
+	@NotBlank
+	@Size(max = 255)
+	@URL
+	private String link;
+
+	...
+}]]>
 				</programlisting>
 				<calloutlist>
 					<callout arearefs="valid-desc">

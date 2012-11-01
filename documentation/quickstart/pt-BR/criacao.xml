@@ -7,7 +7,7 @@
 	<section>
 		<title>Nossa primeira aplicação</title>
 		<para>
-			Para iniciar o uso do <emphasis>Demoiselle Framework 2.3</emphasis>, criaremos uma aplicação
+			Para iniciar o uso do <emphasis>Demoiselle Framework</emphasis>, criaremos uma aplicação
 			Java do tipo Web utilizando o <ulink url="http://maven.apache.org/"><citetitle>Apache Maven</citetitle></ulink>,
 			através do plugin para IDE Eclipse (M2Eclipse) para gerenciar todo o clico de vida do Projeto,
 			desde a criação até o <emphasis>deploy</emphasis>.
@@ -66,7 +66,7 @@
 		</caution>
 		<caution>
 			<para>
-	        	A versão do arquétipo irá variar conforme surjam novas versões do Demoiselle. A imagem deste guia apresenta a versão 2.3, contudo,
+	        	A versão do arquétipo irá variar conforme surjam novas versões do Demoiselle. A imagem deste guia apresenta a versão 2.3.0, contudo,
 	        	fique sempre atento para as novas versões do Demoiselle em nosso site e sempre utilize a versão do arquétipo mais recente.
 	        </para>
 		</caution>
@@ -116,8 +116,7 @@
         	</mediaobject>
         </section>
 		<para>
-			Ao término do processo será criado o projeto <literal>bookmark</literal> gerenciado
-			pelo Maven e com a seguinte estrutura de diretórios: 
+			Ao término do processo será criado o projeto <literal>bookmark</literal> gerenciado pelo Maven e com a seguinte estrutura de diretórios: 
 		</para>
 		<programlisting>
 <![CDATA[bookmark/
@@ -185,70 +184,63 @@
 |               |-- beans.xml
 |               |-- persistence.xml]]>
 		</programlisting>
-
-
 	<section>
-		<title>Entidade de Domínio</title>
+		<title>Entidade de domínio</title>
 		<para>
 			Dentro do pacote <literal>br.gov.frameworkdemoiselle.sample.bookmark.domain</literal> foi criada a classe
 			<literal>Bookmark</literal>, a qual será responsável por representar um objeto de bookmark
 			a ser persistido no banco de dados usando JPA:
 		</para>
 		<programlisting role="JAVA">
-			<![CDATA[
-				@Entity
-				public class Bookmark implements Serializable {
-				
-					private static final long serialVersionUID = 1L;
-					
-					/*
-					 *  If you are using Glassfish then remove the strategy attribute
-					 */
-					@Id
-					@GeneratedValue(strategy = SEQUENCE)
-					private Long id;
-					
-					@Column
-					private String description;
-					
-					@Column
-					private String link;
-					
-					public Bookmark() {
-						super();
-					}
-					
-					public Bookmark(String description, String link) {
-						this.description = description;
-						this.link = link;
-					}
-					
-					public Long getId() {
-						return id;
-					}
-					
-					public void setId(Long id) {
-						this.id = id;
-					}
-					
-					public String getDescription() {
-						return description;
-					}
-					
-					public void setDescription(String description) {
-						this.description = description;
-					}
-					
-					public String getLink() {
-						return link;
-					}
-					
-					public void setLink(String link) {
-						this.link = link;
-					}
-				
-				}
-			]]>
+<![CDATA[@Entity
+public class Bookmark implements Serializable {
+
+private static final long serialVersionUID = 1L;
+
+/*  If you are using Glassfish then remove the strategy attribute */
+@Id
+@GeneratedValue(strategy = SEQUENCE)
+private Long id;
+
+@Column
+private String description;
+
+@Column
+private String link;
+
+public Bookmark() {
+	super();
+}
+
+public Bookmark(String description, String link) {
+	this.description = description;
+	this.link = link;
+}
+
+public Long getId() {
+	return id;
+}
+
+public void setId(Long id) {
+	this.id = id;
+}
+
+public String getDescription() {
+	return description;
+}
+
+public void setDescription(String description) {
+	this.description = description;
+}
+	
+public String getLink() {
+	return link;
+}
+
+public void setLink(String link) {
+	this.link = link;
+}
+}]]>
 		</programlisting>
 		<para>
 			Os dois construtores da classe <literal>Bookmark</literal> serão utilizados posteriormente na aplicação.
@@ -258,31 +250,29 @@
 	</section>
 
 	<section>
-		<title>Camada de Persistência</title>
+		<title>Camada de persistência</title>
 		<para>
 			Dentro do pacote <literal>br.gov.frameworkdemoiselle.sample.bookmark.persistence</literal> foi criada a classe
 			<literal>BookmarkDAO</literal>, a qual será responsável por manipular os dados:
 		</para>
 		<programlisting role="JAVA">
-			<![CDATA[
-				@PersistenceController
-				public class BookmarkDAO extends JPACrud<Bookmark, Long> {
-					
-					private static final long serialVersionUID = 1L;
-					
-				}			
-			]]>
+<![CDATA[@PersistenceController
+public class BookmarkDAO extends JPACrud<Bookmark, Long> {
+
+	private static final long serialVersionUID = 1L;
+
+}]]>
 		</programlisting>
 		<note>
 			<para>
 				A anotação <literal>@PersistenceController</literal> trata-se de um estereótipo fornecido
-				pelo <emphasis>Demoiselle Framework 2</emphasis> para indicar que uma classe será tratada
+				pelo <emphasis>Demoiselle Framework</emphasis> para indicar que uma classe será tratada
 				como controlador da camada de persistência na aplicação.
 			</para>
 		</note>
 		<para>
 			A classe abstrata <literal>JPACrud</literal> faz parte do código de suporte fornecido pelo
-			<emphasis>Demoiselle Framework 2</emphasis> (especificamente na extensão JPA). Ao utilizá-la,
+			<emphasis>Demoiselle Framework</emphasis> (especificamente na extensão JPA). Ao utilizá-la,
 			o desenvolvedor não precisará implementar métodos de manipulação de uma entidade, tais como busca,
 			listagem, inclusão, alteração e exclusão de registros. Dessa forma, apenas métodos específicos do
 			caso de uso necessitam ser criados manualmente.
@@ -296,7 +286,7 @@
 		<para>
 			No diretório <filename>/src/main/resources/META-INF/</filename> foi criado o arquivo <filename>persistence.xml</filename> 
 			utilizado para armazenar as configurações de acesso ao banco de dados via JPA (conexões controladas por um <literal>JPA Provider</literal>, ex: Hibernate)
-			ou JTA (conexões controladas pelo  <literal>Application Server</literal>, ex: JBossAS) e, como pode ser observado, o <emphasis>Demoiselle Framework 2</emphasis>
+			ou JTA (conexões controladas pelo  <literal>Application Server</literal>, ex: JBossAS) e, como pode ser observado, o <emphasis>Demoiselle Framework</emphasis>
 			já traz neste arquivo vários exemplos de configurações para os mais distintos <literal>Application Servers</literal>, como: 
 			JBoss AS7, JBoss AS6, GlassFish 3, Tomcat 6 e Tomcat7.  
 		</para>
@@ -304,29 +294,31 @@
 			O projeto criado pelo arquétipo <quote>demoiselle-jsf-jpa</quote> já vem configurado para usar conexão JPA com o HSQLDB, conforme código abaixo:
 		</para>
 		<programlisting role="XML">
-			<![CDATA[
-			<?xml version="1.0" encoding="UTF-8"?>
-				<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+<![CDATA[<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://java.sun.com/xml/ns/persistence 
+http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 
-					<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
-						<non-jta-data-source>java:jboss/datasources/ExampleDS</non-jta-data-source>
-				
-						<class>br.gov.frameworkdemoiselle.sample.bookmark.domain.Bookmark</class>
+	<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
 
-						<properties>
-							<property name="hibernate.show_sql" value="true" />
-							<property name="hibernate.format_sql" value="false" />
-							<property name="hibernate.hbm2ddl.auto" value="create-drop" />
-						</properties>
-					</persistence-unit>
-				</persistence>
-			]]>
+		<non-jta-data-source>java:jboss/datasources/ExampleDS</non-jta-data-source>
+
+		<class>br.gov.frameworkdemoiselle.sample.bookmark.domain.Bookmark</class>
+
+		<properties>
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+		</properties>
+
+	</persistence-unit>
+
+</persistence>]]>
 		</programlisting>
 	</section>
 
 	<section>
-		<title>Camada de Negócio</title>
+		<title>Camada de negócio</title>
 		<para>
 			Dentro do pacote <literal>br.gov.frameworkdemoiselle.sample.bookmark.business</literal> foi criada a classe
 			<literal>BookmarkBC</literal>, a qual será responsável por gerenciar as regras de negócio referentes aos bookmarks:
@@ -334,9 +326,9 @@
 		<programlisting role="JAVA">
 <![CDATA[@BusinessController
 public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
-		
+
 	private static final long serialVersionUID = 1L;
-		
+
 	@Startup
 	@Transactional
 	public void load() {
@@ -363,13 +355,13 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 		<note>
 			<para>
 				A anotação <literal>@BusinessController</literal> trata-se de um estereótipo fornecido
-				pelo <emphasis>Demoiselle Framework 2</emphasis> para indicar que uma classe será tratada
+				pelo <emphasis>Demoiselle Framework</emphasis> para indicar que uma classe será tratada
 				como controlador da camada de negócio na aplicação.
 			</para>
 		</note>
 		<para>
 			A classe <literal>DelegateCrud</literal> faz parte do código de suporte fornecido pelo
-			<emphasis>Demoiselle Framework 2</emphasis>. Ao utilizá-la, o desenvolvedor não precisará
+			<emphasis>Demoiselle Framework</emphasis>. Ao utilizá-la, o desenvolvedor não precisará
 			implementar métodos de negócio triviais de uma entidade e tampouco programar a injeção de dependência
 			entre as camadas de negócio e persistência. Tal injeção será realizada de forma implícita.
 		</para>
@@ -382,7 +374,7 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 	</section>
 
 	<section>
-		<title>Camada de Apresentação</title>
+		<title>Camada de apresentação</title>
 		<para>
 			Dentro do pacote <literal>package br.gov.frameworkdemoiselle.sample.bookmark.view</literal> foram criadas as
 			classes <literal>BookmarkEditMB</literal> e <literal>BookmarkListMB</literal>, onde a primeira é responsável
@@ -425,7 +417,6 @@ public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 	protected void handleLoad() {
 		setBean(this.bookmarkBC.load(getId()));
 	}
-
 }]]>
 		</programlisting>
 		<programlisting role="JAVA">
@@ -458,13 +449,12 @@ public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> {
 		}
 		return getPreviousView();
 	}
-
 }]]>
 		</programlisting>
 		
 		<para>
 			A anotação <literal>@ViewController</literal> trata-se de um estereótipo fornecido
-			pelo <emphasis>Demoiselle Framework 2</emphasis> para indicar que uma classe será tratada
+			pelo <emphasis>Demoiselle Framework</emphasis> para indicar que uma classe será tratada
 			como controlador da camada de apresentação (i.e., visão) na aplicação.
 		</para>
 		<para>
@@ -479,13 +469,13 @@ public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> {
 		</para>				
 		<para>
 			A anotação <literal>@Transactional</literal> trata-se de uma anotação fornecida pelo
-			<emphasis>Demoiselle Framework 2</emphasis> para indicar que o método em questão
+			<emphasis>Demoiselle Framework</emphasis> para indicar que o método em questão
 			será incluído na sessão transacional. Caso essa anotação esteja vinculada na classe,
 			todos os seus métodos serão considerados transacionais.
 		</para>
 		<para>
 			As classes <literal>AbstractEditPageBean</literal> e <literal>AbstractListPageBean</literal> fazem parte 
-			do código de suporte fornecido pelo <emphasis>Demoiselle Framework 2</emphasis> (especificamente na extensão JSF).
+			do código de suporte fornecido pelo <emphasis>Demoiselle Framework</emphasis> (especificamente na extensão JSF).
 			Ao utilizá-las, o desenvolvedor não precisará implementar métodos específicos de navegação para uma tela de
 			cadastro (i.e., do tipo <emphasis>CRUD</emphasis>).
 		</para>

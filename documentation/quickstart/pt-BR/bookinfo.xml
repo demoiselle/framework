@@ -2,7 +2,7 @@
 <!DOCTYPE bookinfo PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
   <bookinfo>
-    <title>Framework Demoiselle 2.3</title>
+    <title>Framework Demoiselle 2.3.0</title>
     <subtitle>QuickStart</subtitle>
     <xi:include href="authorgroup.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
   </bookinfo>
