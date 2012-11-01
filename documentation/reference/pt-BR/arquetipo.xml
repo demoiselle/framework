@@ -38,7 +38,7 @@
 	<section>
 		<title>Vaadin com JPA</title>
 		<para>
-			Uma das principais novidades com relação à esta nova versão do Framework Demoiselle
+			Uma das principais novidades com relação à esta nova versão do <emphasis>Demoiselle Framework</emphasis>
 			é sua integração mais completa à outras tecnologias de apresentação. Na versão anterior
 			apesar de ser possível a utilização de outra soluções, não havia ainda facilitadores realmente integrados ao Demoiselle.
 			Seguindo este princípio, um dos arquétipos disponibilizados pelo Framework gera uma aplicação de exemplo, nos mesmo moldes

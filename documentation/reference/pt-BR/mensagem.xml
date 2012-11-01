@@ -122,9 +122,7 @@ private MessageContext messageContext;]]></programlisting>
 		<programlisting role="JAVA"><![CDATA[public interface Message {
 
 	String getText();
-	
 	SeverityType getSeverity();
-
 }]]></programlisting>
 		<para>
 			A classe <literal>DefaultMessage</literal> fornecida pelo <emphasis>Demoiselle Framework</emphasis>
@@ -145,7 +143,6 @@ private MessageContext messageContext;]]></programlisting>
 			exemplo disso utilizando a classe <literal>DefaultMessage</literal>:
 		</para>
 		<programlisting role="JAVA"><![CDATA[Message message = new DefaultMessage("Ocorreu um erro ao excluir o aluno!", SeverityType.ERROR);
-		
 messageContext.add(message);]]></programlisting>
 		<para>
 			Uma vez inseridas no contexto em determinada camada da aplicação, as mensagens podem ser posteriormente
@@ -204,14 +201,11 @@ messageContext.add(message);]]></programlisting>
 			da mensagem e ao inseri-la no contexto especificar os parâmetros:
 		</para>
 		<programlisting role="JAVA"><![CDATA[Message message = new DefaultMessage("Aluno {0} inserido com sucesso");
-		
 messageContext.add(message, aluno.getNome());]]></programlisting>
 		<para>
 			Eis um exemplo mais avançado do uso de parametrizações em mensagens:
 		</para>
-		<programlisting role="JAVA"><![CDATA[Message message = new DefaultMessage(
-	"As {1,time} do dia {1,date,short} houve {2} na turma {0}");
-	
+		<programlisting role="JAVA"><![CDATA[Message message = new DefaultMessage("As {1,time} do dia {1,date,short} houve {2} na turma {0}");
 messageContext.add(message, new Integer(502), new Date(), "falta de professor");]]></programlisting>
 		<para>
 			O resultado da execução deste código seria um texto como:
@@ -245,7 +239,6 @@ messageContext.add(message, new Integer(502), new Date(), "falta de professor");
 			chaves, tal como no exemplo a seguir:
 		</para>
 		<programlisting role="JAVA"><![CDATA[Message message = new DefaultMessage("{ALUNO_INSERIR_OK}");
-		
 messageContext.add(message, aluno.getNome());]]></programlisting>
 		<para>
 			Ou seja, ao invés de usar a string literal, passamos o identificador da chave presente no arquivo de propriedades.
@@ -333,7 +326,6 @@ ALUNO_EXCLUIR_OK = L'étudiant {0} a été supprimé avec succès]]></programlis
 	final Message BOOKMARK_DELETE_OK = new DefaultMessage("{BOOKMARK_DELETE_OK}");
 	final Message BOOKMARK_INSERT_OK = new DefaultMessage("{BOOKMARK_INSERT_OK}");
 	final Message BOOKMARK_UPDATE_OK = new DefaultMessage("{BOOKMARK_UPDATE_OK}");
-
 }]]></programlisting>
 		<para>
 			No exemplo em questão, o texto das mensagens será recuperado do arquivo de recursos <filename>messages.properties</filename>
@@ -375,7 +367,6 @@ BOOKMARK_UPDATE_OK = Bookmark atualizado: {0}]]></programlisting>
 	public SeverityType getSeverity() {
 		return msg.getSeverity();
 	}
-
 }]]></programlisting>
 		<para>
 			A fim de adicionar mensagens ao contexto, eis um exemplo de código que faz uso do artefato <literal>InfoMessages</literal>,
@@ -413,7 +404,6 @@ public class BookmarkBC {
 		messageContext.add(InfoMessages.BOOKMARK_DELETE_OK,
 			bookmark.getDescription());
 	}
-
 }]]></programlisting>
 			<calloutlist>
 				<callout arearefs="inject-context">

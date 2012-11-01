@@ -17,12 +17,11 @@
 
 	@Inject
 	private Logger logger;
-	
+
 	public void meuMetodo() {
 		logger.debug("logando meu metodo");
 		logger.warn("mensagem de alerta do meu metodo");
 	}
-		
 }]]></programlisting>
 
 </chapter>

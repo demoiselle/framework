@@ -21,7 +21,11 @@
 		<para>Seguindo esse conceito, foram criados alguns arquivos (pom.xml) e também disponibilizados no repositório Maven do Demoiselle , que facilitam a configuração dos projetos, e inclusive para o desenvolvimento do próprio Demoiselle. 
 Os arquivos gerados foram divididos em perfis, para que o desenvolvedor possa escolher qual usar de acordo com o tipo de aplicação que está desenvolvendo.
 Assim, a alteração no POM.XML da aplicação será a minima possível. Outra vantagem, é que as bibliotecas apontadas como dependências são testadas pela equipe do Demoiselle o que evita eventuais incompatibilidades.</para>
-    <tip>Para excluir uma dependência vinda do Parent, mas não necessária utilize a tag Exclusions </tip>
+    <tip>
+    	<para>
+    		Para excluir uma dependência vinda do Parent, mas não necessária utilize a tag Exclusions
+    	</para>
+    </tip>
 
 	<section>
 		<title>Demoiselle-Minimal-Parent</title>

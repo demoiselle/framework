@@ -48,7 +48,7 @@
 			Eis um exemplo de implementação de inicializador em uma aplicação:
 		</para>
 		<programlisting role="JAVA"><![CDATA[public class BookmarkInitializer {
-	
+
 	@Startup
 	@Priority(1)
 	public void initialize() {	
@@ -60,7 +60,6 @@
 	public void finalize() {
 		...
 	}
-
 }]]></programlisting>
 		<tip>
 			<para>
@@ -106,7 +105,6 @@ public class DatabaseServer {
 	public void shutdown() {
 		server.stop();
 	}
-
 }]]></programlisting>
 	</section>
 

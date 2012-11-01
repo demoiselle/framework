@@ -73,101 +73,77 @@
       		</itemizedlist>
       	</para>
   	  
-  	  	<para>Códigos internos de suporte no Core:</para>      
+  	  	<para>Códigos internos de suporte no Core:</para><programlisting role="JAVA"><![CDATA[public class Pagination {
 
-      	<programlisting role="JAVA"><![CDATA[
-			public class Pagination {
-			
-			    private int currentPage;
-			    private int pageSize;
-			
-			    private Long totalResults;
-			    private Integer totalPages;
-			
-			    // ...
-			}
-			
-			@SessionScoped
-			public class PaginationContext {
-			
-			    private final Map<Class<?>, Pagination> map;
-			
-			    public Pagination getPagination(Class<?> clazz) { ... }
-			
-			    public Pagination getPagination(Class<?> clazz, boolean create) { ... }
-			
-			}
-			
-			@Configuration
-			public class PaginationConfig {
-			
-			    @Key("default_page_size")
-			    private int defaultPageSize = 10;
-			
-			    @Key("max_page_links")
-			    private int maxPageLinks = 5;
-			
-			}
-	  	]]></programlisting>
+	private int currentPage;
+	private int pageSize;
+	private Long totalResults;
+	private Integer totalPages;
+	// ...
+}
 
-      	<para>Códigos internos de suporte em JPA:</para>
+@SessionScoped
+public class PaginationContext {
 
-		  <programlisting role="JAVA"><![CDATA[
-			public class JPACrud<T, I> implements Crud<T, I> {
-			
-			    @Inject
-			    private PaginationContext paginationContext;
-			
-			    // ...
-			
-			    public List<T> findAll() {
-			
-			    	final String jpql = "select this from " + getBeanClass().getSimpleName() + " this";
-			    	final Query query = getEntityManager().createQuery(jpql);
-			        
-			    	final Pagination pagination = paginationContext.getPagination(getBeanClass());
-			        if (pagination != null) {
-			            if (pagination.getTotalPages() == null) {
-			                pagination.setTotalResults(this.countAll());
-			            }
-			            query.setFirstResult(pagination.getFirstResult());
-			            query.setMaxResults(pagination.getPageSize());
-			        }
-			
-			        // ...
-			    }
-			
+	private final Map<Class<?>, Pagination> map;
+	public Pagination getPagination(Class<?> clazz) { ... }
+	public Pagination getPagination(Class<?> clazz, boolean create) { ... }
+}
+
+@Configuration
+public class PaginationConfig {
+
+	@Key("default_page_size")
+	private int defaultPageSize = 10;
+
+	@Key("max_page_links")
+	private int maxPageLinks = 5;
+}]]></programlisting>
+
+      	<para>Códigos internos de suporte em JPA:</para><programlisting role="JAVA"><![CDATA[public class JPACrud<T, I> implements Crud<T, I> {
+
+	@Inject
+	private PaginationContext paginationContext;
+	// ...
+
+	public List<T> findAll() {
+
+		final String jpql = "select this from " + getBeanClass().getSimpleName() + " this";
+		final Query query = getEntityManager().createQuery(jpql);
+    	final Pagination pagination = paginationContext.getPagination(getBeanClass());
+
+        if (pagination != null) {
+			if (pagination.getTotalPages() == null) {
+				pagination.setTotalResults(this.countAll());
 			}
-	  	]]></programlisting>	
+			query.setFirstResult(pagination.getFirstResult());
+			query.setMaxResults(pagination.getPageSize());
+		}
+        // ...
+    }
+}]]></programlisting>	
 
-      	<para>Códigos internos de suporte em JSF:</para>
-    
-		<programlisting role="JAVA"><![CDATA[
-			public abstract class AbstractListPageBean<T, I> extends AbstractPage 
-					implements ListPageBean<T, I> {
-			
-			    @Inject
-			    private PaginationContext paginationContext;
-			
-			    @Inject
-			    private PaginationConfig paginationConfig;
-			
-			    // ...
-			
-			    public Pagination getPagination() {
-			        return paginationContext.getPagination(getBeanClass(), true);
-			    }
-			
-			    public int getPageSize() {
-			        return paginationConfig.getDefaultPageSize();
-			    }
-			
-			    public int getMaxPageLinks() {
-			        return paginationConfig.getMaxPageLinks();
-			    }
-			
-			}         
-	  	]]></programlisting>
+      	<para>Códigos internos de suporte em JSF:</para><programlisting role="JAVA"><![CDATA[public abstract class AbstractListPageBean<T, I> extends AbstractPage implements ListPageBean<T, I> {
+
+	@Inject
+	private PaginationContext paginationContext;
+
+    @Inject
+    private PaginationConfig paginationConfig;
+    // ...
+
+    public Pagination getPagination() {
+	    return paginationContext.getPagination(getBeanClass(), true);
+    }
+
+    public int getPageSize() {
+	    return paginationConfig.getDefaultPageSize();
+    }
+
+    public int getMaxPageLinks() {
+ 	   return paginationConfig.getMaxPageLinks();
+    }
+}]]></programlisting>
    	</section>
    
    	<section>
@@ -194,73 +170,54 @@
       	</para>
       	<para>
       		À classe <emphasis>BookmarkList</emphasis> devem ser adicionados os seguintes trechos de código: 
-      	</para>
-      	
-      	<programlisting role="JAVA"><![CDATA[
-    		// ...
-    		import java.util.Map;
-    		import br.gov.frameworkdemoiselle.pagination.Pagination;
-    		
-    		// ...
-    		private LazyDataModel<Bookmark> lazyModel;
+      	</para><programlisting role="JAVA"><![CDATA[// ...
+import java.util.Map;
+import br.gov.frameworkdemoiselle.pagination.Pagination;
+// ...
 
-			public BookmarkListMB() {
-				lazyModel = new LazyDataModel<Bookmark>() {
+public BookmarkListMB() {
 
-					@Override
-					public List<Bookmark> load (int first, int pageSize, String sortField, 
-							SortOrder sortOrder, Map<String, String> filters){
-				
-						Pagination pagination = getPagination();
-						pagination.setPageSize(pageSize);
-						pagination.setFirstResult(first);
+	private LazyDataModel<Bookmark> lazyModel;
+	lazyModel = new LazyDataModel<Bookmark>() {
 
-						List<Bookmark> itemsList = bc.findAll();
-				
-						lazyModel.setRowCount(pagination.getTotalResults());
-				
-						return itemsList;
-					}
-				};
-			}
-    		
-    		// ...
-    		
-    		public LazyDataModel<Bookmark> getLazyModel() {
-				return lazyModel;
-			}
-			
-			// ...
-		]]></programlisting>
+		@Override
+		public List<Bookmark> load (int first, int pageSize, String sortField, 
+						SortOrder sortOrder, Map<String, String> filters){
+
+			Pagination pagination = getPagination();
+			pagination.setPageSize(pageSize);
+			pagination.setFirstResult(first);
+
+			List<Bookmark> itemsList = bc.findAll();
+
+			lazyModel.setRowCount(pagination.getTotalResults());
+
+			return itemsList;
+		}
+	};
+	// ...
+	public LazyDataModel<Bookmark> getLazyModel() {
+		return lazyModel;
+	}
+	// ...
+}]]></programlisting>
 		
 		<para>
 			No arquivo <literal>messages.properties</literal> adicione as linhas:
-		</para>		
-      	
-      	<programlisting role="JAVA"><![CDATA[
-      		page.first=0
-   	 		page.rows=4
-			page.max.links=3
-		]]></programlisting>
-      	
+		</para><programlisting role="JAVA"><![CDATA[page.first=0
+page.rows=4
+page.max.links=3]]></programlisting>
       	<para>
       		Na página JSF <literal>bookmark_list.xhtml</literal>, substitua a linha:
       	</para>
-      	
-      	<programlisting role="JAVA"><![CDATA[
-   	 		<p:dataTable id="list" var="bean" value="#{bookmarkListMB.resultList}">
-		]]></programlisting>
+      	<programlisting role="JAVA"><![CDATA[<p:dataTable id="list" var="bean" value="#{bookmarkListMB.resultList}">]]></programlisting>
 		
 		<para>
 			por:
-		</para>
-		
-		<programlisting role="JAVA"><![CDATA[
-   	 		<p:dataTable id="list" var="bean" 
-				value="#{bookmarkListMB.lazyModel}" lazy="true" paginator="true" 
-				first="#{messages['page.first']}" rows="#{messages['page.rows']}"
-				pageLinks="#{messages['page.max.links']}">
-		]]></programlisting>
+		</para><programlisting role="JAVA"><![CDATA[<p:dataTable id="list" var="bean" 
+value="#{bookmarkListMB.lazyModel}" lazy="true" paginator="true" 
+first="#{messages['page.first']}" rows="#{messages['page.rows']}"
+pageLinks="#{messages['page.max.links']}">]]></programlisting>
 		
 		<para>
 			Com essas alterações simples, a aplicação Bookmarks passa a utilizar o mecanismo de paginação oferecido pelo <emphasis>Demoiselle Framework</emphasis>.

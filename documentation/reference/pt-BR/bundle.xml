@@ -67,7 +67,7 @@ button.save=Salvar]]></programlisting>
 		<programlisting role="JAVA"><![CDATA[@Inject
 @Name("messages-core")
 private ResourceBundle bundle;
-	
+
 public String metodoQueRetornaOValorDaChavebuttonedit() {
 	return bundle.getString("button.edit");
 }]]></programlisting>
@@ -75,9 +75,8 @@ public String metodoQueRetornaOValorDaChavebuttonedit() {
         	Utilizando Resource Bundle sem uso de injeção:
         </para>
 		<programlisting role="JAVA"><![CDATA[private ResourceBundleFactory bundleFactory = new ResourceBundleFactory(Locale.getDefault());
-
 private ResourceBundle bundle;
-	            
+
 public String metodoQueRetornaOValorDaChavebuttonedit() {
 	bundle = bundleFactory.create("messages-core");
 	return bundle.getString("button.edit");

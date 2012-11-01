@@ -22,19 +22,15 @@
     	<para>
     	Para um correto funcionamento do Demoiselle é necessário inserir os interceptadores de segurança no arquivo <filename>src/main/WEB-INF/beans.xml</filename>.
     	</para>
-		<programlisting role="XML">
-		<![CDATA[
-		<beans xmlns="http://java.sun.com/xml/ns/javaee" 
-		       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
-			                       http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
-			<interceptors>
-				<class>br.gov.frameworkdemoiselle.internal.interceptor.RequiredPermissionInterceptor</class>
-				<class>br.gov.frameworkdemoiselle.internal.interceptor.RequiredRoleInterceptor</class>
-			</interceptors>
-		</beans>
-		]]>
-		</programlisting>
+		<programlisting role="XML"><![CDATA[<beans xmlns="http://java.sun.com/xml/ns/javaee" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+			        http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+	<interceptors>
+		<class>br.gov.frameworkdemoiselle.internal.interceptor.RequiredPermissionInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.internal.interceptor.RequiredRoleInterceptor</class>
+	</interceptors>
+</beans>]]></programlisting>
     </section> 
 	
 	<section>
@@ -66,11 +62,8 @@
 public class Credential { 
 
 	private String login; 
-
 	private String senha; 
-
 	// ...
-
 }]]></programlisting>
 		<para>
 			Feito isso, podemos implementar a classe na qual se deseja adicionar o mecanismo de segurança:
@@ -90,7 +83,6 @@ public class Credential {
 		// codigo do metodo 
 		context.logout(); 
 	} 
-
 }]]></programlisting>
 		<para>
 			Neste caso, a interface SecurityContext e o bean Credential estão sendo injetados na classe utilizando o CDI.
@@ -129,7 +121,6 @@ public class Credential {
    	@RequiredPermission(resource = "contact", operation = "insert") 
    	public void requiredPermissionWithDeclaredResourceAndOperation() { 
    	}
-
 }]]></programlisting>
 		<para>
 			Observe o método cuja anotação não possui parâmetros. Nesse caso serão considerados como recurso e operação o nome da classe e
@@ -158,7 +149,6 @@ public class Credential {
 	@RequiredRole({ "firstRole", "secondRole", "thirdRole", "fourthRole", "fifthRole" }) 
 	public void requiredRoleWithArrayOfRoles() { 
 	} 
-
 }]]></programlisting>
 		<para>
 			As restrições de segurança pode ser utilizadas, ainda, em páginas web, com o auxílio de Expression Language, como no
@@ -183,8 +173,7 @@ public class Credential {
 			a implementação, e torna essa classe a implementação padrão dessas interfaces:<!-- Essas classes devem ser
 			anotadas com @Alternative para que o CDI saiba que se trata de uma estratégia: -->
 		</para>
-		<programlisting role="JAVA"><![CDATA[
-public class MeuAuthenticator implements Authenticator { 
+		<programlisting role="JAVA"><![CDATA[public class MeuAuthenticator implements Authenticator { 
 
 	@Override 
 	public boolean authenticate() { 
@@ -201,12 +190,9 @@ public class MeuAuthenticator implements Authenticator {
 	@Override 
 	public void unAuthenticate() { 
 		// Escreva aqui seu codigo de desautenticacao 
-
 	} 
-
 }]]></programlisting>
-		<programlisting role="JAVA"><![CDATA[
-public class MeuAuthorizer implements Authorizer { 
+		<programlisting role="JAVA"><![CDATA[public class MeuAuthorizer implements Authorizer { 
 
 	@Override 
 	public boolean hasRole(String role) { 
@@ -219,7 +205,6 @@ public class MeuAuthorizer implements Authorizer {
 		// Escreva aqui seu codigo de verificação de permissao 
 		return false; 
 	} 
-
 }]]></programlisting>
 		<!-- <para>
 			Feito isso deve-se definir no arquivo <filename>demoiselle.properties</filename>, as classes criadas:
@@ -236,10 +221,8 @@ public class MeuAuthorizer implements Authorizer {
 			Se você tem mais de uma implementação de <literal>Authenticator</literal> e/ou <literal>Authorizer</literal> (o que pode acontecer, por exemplo, quando
 			se necessite de uma implementação na aplicação principal, e outra para os testes), deverá definir no arquivo <filename>demoiselle.properties</filename>
 			qual classe será a padrão:
-			<programlisting>
-				frameworkdemoiselle.security.authenticator.class=projeto.MeuAuthenticatorPadrao 
-				frameworkdemoiselle.security.authorizer.class=projeto.MeuAuthorizerPadrao
-			</programlisting>
+			<programlisting>frameworkdemoiselle.security.authenticator.class=projeto.MeuAuthenticatorPadrao 
+frameworkdemoiselle.security.authorizer.class=projeto.MeuAuthorizerPadrao</programlisting>
  		</para>
 	</section>
 	<caution> <para>O Demoiselle também oferece o componente 

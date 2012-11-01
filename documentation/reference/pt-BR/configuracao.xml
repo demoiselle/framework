@@ -77,17 +77,13 @@
 public class BookmarkConfig {
 
 	private String applicationTitle;
-
 	private boolean loadInitialData;
-
 	public String getApplicationTitle() {
 		return applicationTitle;
 	}
-
 	public boolean isLoadInitialData() {
 		return loadInitialData;
 	}
-
 }]]></programlisting>
 		<para>
 			Na classe os atributos devem ser tratados como sendo somente de leitura, possuindo apenas seus respectivos métodos
@@ -193,7 +189,6 @@ public class BookmarkConfig {
 	public boolean isLoadInitialData() {
 		return loadInitialData;
 	}
-
 }]]></programlisting>
 			<calloutlist>
 				<callout arearefs="resource-prefix">
@@ -258,7 +253,6 @@ general.load.initial.data = true
 			...
 		}
 	}
-
 }]]></programlisting>
 		<note>
 			<para>
@@ -302,7 +296,6 @@ public class EscolaConfig {
 	public List<String> getPapeis() {
 		return papeis;
 	}
-
 }]]></programlisting>
 	</section>
 
@@ -332,7 +325,6 @@ public class EscolaConfig {
 	public String getJavaDirectory() {
 		return javaDirectory;
 	}
-
 }]]></programlisting>
 	</section>
 

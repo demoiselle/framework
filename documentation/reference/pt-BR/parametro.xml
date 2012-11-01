@@ -20,13 +20,12 @@
         	Captura do parâmetro pelo Page Bean
         </para>
 		<programlisting role="JAVA"><![CDATA[public class Classe {
-		
+
 	public void metodo() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();
 		String param = req.getParameter("parametro");
 	}
-	
 }]]></programlisting>
 
     <section>
@@ -54,16 +53,15 @@ http://localhost:8080/aplicacao/pagina.jsf?parametroString=valorParametroString]
         	Captura do parâmetro pelo Page Bean
         </para>
 		<programlisting role="JAVA"><![CDATA[public class Classe {
-	
+
 	@ViewScoped
 	@Inject
 	private Parameter<Long> parametro;
-	
+
 	@Name("parametroString")
 	@SessionScoped
 	@Inject
 	private Parameter<String> objetoComNomeDiferenteDoParametro;
-	
 }]]></programlisting>
     </section>
     
@@ -78,15 +76,14 @@ http://localhost:8080/aplicacao/pagina.jsf?parametroString=valorParametroString]
 			<function>getValue()</function>, tal como mostrado a seguir:
 		</para>
 		<programlisting role="JAVA"><![CDATA[public class Classe {
-	
+
 	@ViewScoped
 	@Inject
 	private Parameter<Long> parametro;
-		
+
 	public void metodo() {
 		System.out.println("Valor do parâmetro: " + parametro.getValue());
 	}
-	
 }]]></programlisting>
     </section>
     

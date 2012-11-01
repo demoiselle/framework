@@ -9,7 +9,9 @@
 	<abstract>Demoiselle 2.3.0: Framework de Código Aberto para o Desenvolvimento de Aplicações Java EE 6</abstract>
 	<titleabbrev>Demoiselle 2.3.0 - Guia de Referência</titleabbrev>
 	
+	<!--
 	<xi:include href="revhistory.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	 -->
 	<xi:include href="authorgroup.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 	
 </bookinfo>

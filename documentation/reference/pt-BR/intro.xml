@@ -8,7 +8,7 @@
 	<section>
 		<title>O que é o Demoiselle?</title>
 		<para>
-			O framework Demoiselle implementa o conceito de
+			O <emphasis>Demoiselle Framework</emphasis> implementa o conceito de
 			<emphasis>framework integrador</emphasis>. 
 			Seu objetivo é facilitar a construção de aplicações minimizando tempo dedicado à escolha e integração de frameworks
 			especialistas, o que resulta no aumento da produtividade e garante a manutenibilidade dos sistemas. Disponibiliza
@@ -23,7 +23,7 @@
 			técnicas para qualquer pessoa que se interessasse.
 		</para>
 		<para>
-			O <emphasis>framework Demoiselle</emphasis>	usa a mesma filosofia do <quote>Pai da Aviação</quote>, tendo sido 
+			O <emphasis>Demoiselle Framework</emphasis>	usa a mesma filosofia do <quote>Pai da Aviação</quote>, tendo sido 
 			disponibilizado como software livre em abril de 2009, sob a licença livre LGPL version 3. Mais informações no portal
 			<ulink url="http://www.frameworkdemoiselle.gov.br">"www.frameworkdemoiselle.gov.br</ulink>
 		</para>
@@ -33,7 +33,7 @@
 		<title>Sobre a versão 2</title>
 		<para>
 			O principal objetivo da versão 2 do
-			<emphasis>framework Demoiselle</emphasis>
+			<emphasis>Demoiselle Framework</emphasis>
 			é a completa aderência à especificação
 			<ulink url="http://jcp.org/en/jsr/detail?id=316">JSR 316: Java Platform, Enterprise Edition 6</ulink>, ou simplesmente
 			<emphasis>Java EE 6</emphasis>. Para saber mais, recomendamos os links

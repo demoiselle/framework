@@ -39,7 +39,6 @@ public class SuaEntidadeDAO extends JPACrud<SuaEntidade, Long> {
 		query.setParameter("criterio", criterio);
 		return query.getResultList();
 	}
-	
 }]]></programlisting>
 	</section>
 
@@ -65,7 +64,7 @@ public class SuaEntidadeDAO extends JPACrud<SuaEntidade, Long> {
 		</para>
 		<programlisting role="JAVA"><![CDATA[@BusinessController
 public class SuaEntidadeBC extends DelegateCrud<SuaEntidade, Long, SuaEntidadeDAO> {
-			
+
 	private void validateInsert(SuaEntidade se) {
 		// valida os atributos da entidade
 	}
@@ -76,7 +75,6 @@ public class SuaEntidadeBC extends DelegateCrud<SuaEntidade, Long, SuaEntidadeDA
 		validateInsert(se);
 		super.insert(se);
 	}
-					
 }]]></programlisting>
 	</section>
 
@@ -99,14 +97,12 @@ public class SuaEntidadeBC extends DelegateCrud<SuaEntidade, Long, SuaEntidadeDA
 		</para>
 		<programlisting role="JAVA"><![CDATA[@ViewController
 public class SuaEntidadeListMB extends AbstractListPageBean<SuaEntidade, Long> {
-	
 }]]></programlisting>
 		<para>
 			Estendendo o <literal>AbstractEditPageBean</literal>:
 		</para>
 		<programlisting role="JAVA"><![CDATA[@ViewController
 public class SuaEntidadeEditMB extends AbstractEditPageBean<SuaEntidade, Long> {
-					
 }]]></programlisting>
 	</section>
 
