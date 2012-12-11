@@ -9,7 +9,6 @@ import br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthenticator;
 import br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthorizer;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.Authorizer;
-import br.gov.frameworkdemoiselle.security.User;
 
 public class SecurityConfigTest {
 
@@ -38,7 +37,7 @@ public class SecurityConfigTest {
 		assertEquals("br.gov.frameworkdemoiselle.internal.implementation.DefaultAuthenticator", config
 				.getAuthenticatorClass().getName());
 	}
-	
+
 	@Test
 	public void testSetAuthorizerClass() {
 		Authorizer authorizer = new DefaultAuthorizer();
