@@ -38,67 +38,33 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>demoiselle-framework-build</artifactId>
-	<version>2.3.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<artifactId>demoiselle-jaas</artifactId>
+	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-build-parent</artifactId>
-		<version>8</version>
-		<relativePath>../internal/parent/build/demoiselle</relativePath>
+		<artifactId>demoiselle-extension-parent</artifactId>
+		<version>2.3.1-SNAPSHOT</version>
+		<relativePath>../../../parent/extension</relativePath>
 	</parent>
 
-	<name>Demoiselle Framework Build Aggregator</name>
+	<name>Demoiselle Framework JAAS Extension</name>
 	<description>
-		A liberação de versões do framework deve ser feita a partir deste build, que fará automaticamente o build
-		de todos os artefatos com versionamento sincronizado. Jamais gere uma versão do framework sem utilizar este build.
+		JAAS Extension
 	</description>
+	<url>http://www.frameworkdemoiselle.gov.br</url>
 
-	<modules>
-		<module>parent/framework</module>
-		<module>parent/bom</module>
-		<module>parent/minimal</module>
-		<module>parent/extension</module>
-		<module>parent/jsf</module>
-		<module>parent/servlet</module>
-		<module>parent/se</module>
-		<module>parent/archetype</module>
-		<module>impl/core</module>
-		<module>impl/extension/jpa</module>
-		<module>impl/extension/jsf</module>
-		<module>impl/extension/jta</module>
-		<module>impl/extension/se</module>
-		<module>impl/extension/servlet</module>
-		<module>impl/extension/jaas</module>
-		<module>archetype/minimal</module>
-		<module>archetype/jsf-jpa</module>
-		<module>documentation/quickstart</module>
-		<module>documentation/reference</module>
-	</modules>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 3</name>
+			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+		</license>
+	</licenses>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
-	<scm>
-		<connection>scm:git:git@github.com:demoiselle/${project.alias}.git</connection>
-		<developerConnection>scm:git:git@github.com:demoiselle/${project.alias}.git</developerConnection>
-		<url>http://github.com/demoiselle/${project.alias}</url>
-	  <tag>HEAD</tag>
-  </scm>
+	<organization>
+		<name>SERPRO - Serviço Federal de Processamento de Dados</name>
+		<url>http://www.serpro.gov.br</url>
+	</organization>
 
 	<repositories>
 		<repository>
@@ -124,15 +90,4 @@
 			</releases>
 		</repository>
 	</repositories>
-
-	<distributionManagement>
-		<site>
-			<id>demoiselle.sourceforge.net</id>
-			<url>${site.url}</url>
-		</site>
-	</distributionManagement>
-
-	<properties>
-		<project.alias>framework</project.alias>
-	</properties>
 </project>
