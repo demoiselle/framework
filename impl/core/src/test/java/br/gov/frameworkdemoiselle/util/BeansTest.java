@@ -50,6 +50,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.easymock.EasyMock;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
@@ -73,10 +74,9 @@ public class BeansTest {
 
 		expect(beanManager.createCreationalContext(EasyMock.anyObject(Contextual.class))).andReturn(null);
 		expect(beanManager.getBeans(EasyMock.anyObject(Class.class))).andReturn(collection);
-		expect(beanManager.getReference(EasyMock.anyObject(Bean.class), EasyMock.anyObject(Class.class),
+		expect(
+				beanManager.getReference(EasyMock.anyObject(Bean.class), EasyMock.anyObject(Class.class),
 						EasyMock.anyObject(CreationalContext.class))).andReturn(object);
-		
-		expect(bean.getBeanClass()).andReturn(null);
 
 		replayAll(beanManager, bean);
 
@@ -103,7 +103,8 @@ public class BeansTest {
 		expect(bean.getBeanClass()).andReturn(null);
 		expect(beanManager.createCreationalContext(EasyMock.anyObject(Contextual.class))).andReturn(null);
 		expect(beanManager.getBeans("something")).andReturn(collection);
-		expect(beanManager.getReference(EasyMock.anyObject(Bean.class), EasyMock.anyObject(Class.class),
+		expect(
+				beanManager.getReference(EasyMock.anyObject(Bean.class), EasyMock.anyObject(Class.class),
 						EasyMock.anyObject(CreationalContext.class))).andReturn(object);
 
 		replayAll(beanManager, bean);
