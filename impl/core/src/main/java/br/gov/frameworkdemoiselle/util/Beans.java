@@ -74,12 +74,11 @@ public final class Beans {
 		return manager;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T getReference(final Class<T> beanClass, Annotation... qualifiers) {
 		T instance;
 
 		try {
-			instance = (T) getReference(manager.getBeans(beanClass, qualifiers));
+			instance = (T) getReference(manager.getBeans(beanClass, qualifiers), beanClass);
 
 		} catch (NoSuchElementException cause) {
 			StringBuffer buffer = new StringBuffer();
@@ -97,12 +96,11 @@ public final class Beans {
 		return instance;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T getReference(final Class<T> beanClass) {
 		T instance;
 
 		try {
-			instance = (T) getReference(manager.getBeans(beanClass));
+			instance = (T) getReference(manager.getBeans(beanClass), beanClass);
 
 		} catch (NoSuchElementException cause) {
 			String message = getBundle().getString("bean-not-found", beanClass.getCanonicalName());
@@ -128,9 +126,14 @@ public final class Beans {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> T getReference(Set<Bean<?>> beans) {
+	private static <T> T getReference(Set<Bean<?>> beans, Class<T> beanClass) {
 		Bean<?> bean = beans.iterator().next();
-		return (T) manager.getReference(bean, bean.getBeanClass(), manager.createCreationalContext(bean));
+		return (T) manager.getReference(bean, beanClass == null ? bean.getBeanClass() : beanClass,
+				manager.createCreationalContext(bean));
+	}
+
+	private static <T> T getReference(Set<Bean<?>> beans) {
+		return getReference(beans, null);
 	}
 
 	private static ResourceBundle getBundle() {
