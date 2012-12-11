@@ -82,6 +82,7 @@ public class TransactionalInterceptor implements Serializable {
 
 		try {
 			instance = Beans.getReference(TransactionInfo.class);
+			instance.getCounter();
 
 		} catch (ContextNotActiveException cause) {
 			instance = new TransactionInfo() {
