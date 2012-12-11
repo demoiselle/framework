@@ -36,19 +36,21 @@
  */
 package br.gov.frameworkdemoiselle.security;
 
+import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
+
 import java.security.Principal;
 import java.security.acl.Group;
 import java.util.Enumeration;
 
-import javax.security.auth.login.LoginContext;
+import javax.security.auth.Subject;
 
-import br.gov.frameworkdemoiselle.internal.producer.LoginContextFactory;
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.util.Beans;
 
+@Priority(EXTENSIONS_L1_PRIORITY)
 public class JAASAuthorizer implements Authorizer {
 
 	private static final long serialVersionUID = 1L;
-
-	private transient LoginContext loginContext;
 
 	@Override
 	public boolean hasRole(String role) {
@@ -57,8 +59,9 @@ public class JAASAuthorizer implements Authorizer {
 		Group group;
 		Principal member;
 		Enumeration<? extends Principal> enumeration;
+		Subject subject = Beans.getReference(Subject.class);
 
-		for (Principal principal : getLoginContext().getSubject().getPrincipals()) {
+		for (Principal principal : subject.getPrincipals()) {
 
 			if (principal instanceof Group) {
 				group = (Group) principal;
@@ -67,8 +70,6 @@ public class JAASAuthorizer implements Authorizer {
 				while (enumeration.hasMoreElements()) {
 					member = (Principal) enumeration.nextElement();
 
-					System.out.println("xxxxxx: " + member.getName());
-					
 					if (member.getName().equals(role)) {
 						result = true;
 						break;
@@ -78,14 +79,6 @@ public class JAASAuthorizer implements Authorizer {
 		}
 
 		return result;
-	}
-
-	public LoginContext getLoginContext() {
-		if (this.loginContext == null) {
-			this.loginContext = LoginContextFactory.createLoginContext();
-		}
-
-		return this.loginContext;
 	}
 
 	@Override

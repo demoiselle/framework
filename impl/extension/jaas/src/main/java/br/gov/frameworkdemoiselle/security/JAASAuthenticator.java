@@ -36,44 +36,63 @@
  */
 package br.gov.frameworkdemoiselle.security;
 
-import java.security.Principal;
+import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
 
+import java.io.IOException;
+
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.security.auth.Subject;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.NameCallback;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
-import br.gov.frameworkdemoiselle.internal.producer.LoginContextFactory;
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.internal.configuration.JAASConfig;
 
-//@SessionScoped
+@SessionScoped
+@Priority(EXTENSIONS_L1_PRIORITY)
 public class JAASAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
 
-	private transient LoginContext loginContext;
-
 	private User user;
+
+	private final Subject subject;
+
+	@Inject
+	private JAASConfig config;
 
 	@Inject
 	private Credentials credentials;
+
+	public JAASAuthenticator() {
+		this.subject = new Subject();
+	}
 
 	@Override
 	public boolean authenticate() {
 		boolean result = false;
 
 		try {
-			getLoginContext().login();
-			getLoginContext().getSubject().getPrincipals().add(new Principal() {
+			LoginContext loginContext = createLoginContext();
 
-				@Override
-				public String getName() {
-					return credentials.getUsername();
-				}
-			});
+			if (loginContext != null) {
+				loginContext.login();
 
-			this.credentials.clear();
-			result = true;
+				this.user = createUser(this.credentials.getUsername());
+				this.credentials.clear();
+
+				result = true;
+			}
 
 		} catch (LoginException cause) {
+			// TODO Colocar no log
 			result = false;
 		}
 
@@ -82,80 +101,60 @@ public class JAASAuthenticator implements Authenticator {
 
 	@Override
 	public void unAuthenticate() {
-		try {
-			getLoginContext().logout();
-			user = null;
+		this.user = null;
+	}
 
-		} catch (LoginException cause) {
-			cause.printStackTrace();
-		}
+	private User createUser(final String username) {
+		return new User() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public String getId() {
+				return username;
+			}
+
+			@Override
+			public Object getAttribute(Object key) {
+				return null;
+			}
+
+			@Override
+			public void setAttribute(Object key, Object value) {
+			}
+		};
 	}
 
 	@Override
 	public User getUser() {
-		if (this.user == null && getLoginContext().getSubject() != null
-				&& !getLoginContext().getSubject().getPrincipals().isEmpty()) {
-			this.user = new User() {
-
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public String getId() {
-					return getLoginContext().getSubject().getPrincipals().iterator().next().getName();
-				}
-
-				@Override
-				public Object getAttribute(Object key) {
-					return null;
-				}
-
-				@Override
-				public void setAttribute(Object key, Object value) {
-				}
-			};
-		}
-
 		return this.user;
 	}
 
-	public LoginContext getLoginContext() {
-		if (this.loginContext == null) {
-			this.loginContext = LoginContextFactory.createLoginContext();
-		}
-
-		return this.loginContext;
+	@Produces
+	public Subject getSubject() {
+		return this.subject;
 	}
 
-	//
-	// protected LoginContext createLoginContext() {
-	// LoginContext result = null;
-	//
-	// try {
-	// result = new LoginContext(this.config.getLoginModuleName(), createCallbackHandler());
-	//
-	// } catch (LoginException cause) {
-	// throw new SecurityException(cause);
-	// }
-	//
-	// return result;
-	// }
+	public LoginContext createLoginContext() throws LoginException {
+		return new LoginContext(config.getLoginModuleName(), this.subject, createCallbackHandler());
+	}
 
-	// protected CallbackHandler createCallbackHandler() {
-	// return new CallbackHandler() {
-	//
-	// public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-	// for (int i = 0; i < callbacks.length; i++) {
-	// if (callbacks[i] instanceof NameCallback) {
-	// ((NameCallback) callbacks[i]).setName(credentials.getUsername());
-	//
-	// } else if (callbacks[i] instanceof PasswordCallback) {
-	// ((PasswordCallback) callbacks[i]).setPassword(credentials.getPassword().toCharArray());
-	//
-	// } else {
-	// System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXX Unsupported callback " + callbacks[i]);
-	// }
-	// }
-	// }
-	// };
-	// }
+	private CallbackHandler createCallbackHandler() {
+		return new CallbackHandler() {
+
+			public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+				for (int i = 0; i < callbacks.length; i++) {
+					if (callbacks[i] instanceof NameCallback) {
+						((NameCallback) callbacks[i]).setName(credentials.getUsername());
+
+					} else if (callbacks[i] instanceof PasswordCallback) {
+						((PasswordCallback) callbacks[i]).setPassword(credentials.getPassword().toCharArray());
+
+					} else {
+						System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXX Unsupported callback " + callbacks[i]);
+					}
+				}
+			}
+		};
+	}
 }
