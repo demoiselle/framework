@@ -54,12 +54,17 @@ import javax.security.auth.login.LoginException;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.internal.configuration.JAASConfig;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
+import br.gov.frameworkdemoiselle.util.Strings;
 
 @SessionScoped
 @Priority(EXTENSIONS_L1_PRIORITY)
 public class JAASAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
+
+	private ResourceBundle bundle;
 
 	private User user;
 
@@ -136,7 +141,13 @@ public class JAASAuthenticator implements Authenticator {
 	}
 
 	public LoginContext createLoginContext() throws LoginException {
-		return new LoginContext(config.getLoginModuleName(), this.subject, createCallbackHandler());
+		String name = config.getLoginModuleName();
+
+		if (Strings.isEmpty(name)) {
+			throw new SecurityException(getBundle().getString("required-login-module-name"));
+		}
+
+		return new LoginContext(name, this.subject, createCallbackHandler());
 	}
 
 	private CallbackHandler createCallbackHandler() {
@@ -151,10 +162,20 @@ public class JAASAuthenticator implements Authenticator {
 						((PasswordCallback) callbacks[i]).setPassword(credentials.getPassword().toCharArray());
 
 					} else {
-						System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXX Unsupported callback " + callbacks[i]);
+						// TODO Utilizar o logger...
+
+						System.out.println(getBundle().getString("unsupported-callback", callbacks[i]));
 					}
 				}
 			}
 		};
+	}
+
+	private ResourceBundle getBundle() {
+		if (this.bundle == null) {
+			this.bundle = ResourceBundleProducer.create("demoiselle-jaas-bundle");
+		}
+
+		return this.bundle;
 	}
 }

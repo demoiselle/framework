@@ -44,13 +44,18 @@ import java.util.Enumeration;
 
 import javax.security.auth.Subject;
 
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @Priority(EXTENSIONS_L1_PRIORITY)
 public class JAASAuthorizer implements Authorizer {
 
 	private static final long serialVersionUID = 1L;
+
+	private ResourceBundle bundle;
 
 	@Override
 	public boolean hasRole(String role) {
@@ -83,6 +88,15 @@ public class JAASAuthorizer implements Authorizer {
 
 	@Override
 	public boolean hasPermission(String resource, String operation) {
-		return true;
+		throw new DemoiselleException(getBundle().getString("has-permission-not-supported",
+				RequiredPermission.class.getSimpleName()));
+	}
+
+	private ResourceBundle getBundle() {
+		if (this.bundle == null) {
+			this.bundle = ResourceBundleProducer.create("demoiselle-jaas-bundle");
+		}
+
+		return this.bundle;
 	}
 }
