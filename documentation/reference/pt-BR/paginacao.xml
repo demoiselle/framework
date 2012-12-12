@@ -93,10 +93,10 @@ public class PaginationContext {
 @Configuration
 public class PaginationConfig {
 
-	@Key("default_page_size")
+	@Name("default_page_size")
 	private int defaultPageSize = 10;
 
-	@Key("max_page_links")
+	@Name("max_page_links")
 	private int maxPageLinks = 5;
 }]]></programlisting>
 
