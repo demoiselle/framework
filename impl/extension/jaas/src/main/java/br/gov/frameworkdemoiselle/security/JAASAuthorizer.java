@@ -55,7 +55,7 @@ public class JAASAuthorizer implements Authorizer {
 
 	private static final long serialVersionUID = 1L;
 
-	private ResourceBundle bundle;
+	private static ResourceBundle bundle;
 
 	@Override
 	public boolean hasRole(String role) {
@@ -92,11 +92,11 @@ public class JAASAuthorizer implements Authorizer {
 				RequiredPermission.class.getSimpleName()));
 	}
 
-	private ResourceBundle getBundle() {
-		if (this.bundle == null) {
-			this.bundle = ResourceBundleProducer.create("demoiselle-jaas-bundle");
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundleProducer.create("demoiselle-jaas-bundle");
 		}
 
-		return this.bundle;
+		return bundle;
 	}
 }
