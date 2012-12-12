@@ -57,4 +57,14 @@ public class SecurityException extends DemoiselleException {
 	public SecurityException(String message) {
 		super(message);
 	}
+
+	/**
+	 * Constructor with the cause.
+	 * 
+	 * @param cause
+	 *            exception cause
+	 */
+	public SecurityException(Throwable cause) {
+		super(cause);
+	}
 }
