@@ -133,7 +133,7 @@ public final class Beans {
 	}
 
 	private static <T> T getReference(Set<Bean<?>> beans) {
-		return getReference(beans, null);
+		return getReference(beans, (Class<T>) null);
 	}
 
 	private static ResourceBundle getBundle() {
