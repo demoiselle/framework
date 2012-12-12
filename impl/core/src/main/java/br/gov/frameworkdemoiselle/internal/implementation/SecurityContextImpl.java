@@ -202,7 +202,7 @@ public class SecurityContextImpl implements SecurityContext {
 		return Beans.getReference(SecurityConfigImpl.class);
 	}
 
-	private void checkLoggedIn() throws NotLoggedInException {
+	public void checkLoggedIn() throws NotLoggedInException {
 		if (!isLoggedIn()) {
 			ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
 			throw new NotLoggedInException(bundle.getString("user-not-authenticated"));
