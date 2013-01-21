@@ -38,12 +38,17 @@ package br.gov.frameworkdemoiselle.transaction;
 
 import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L2_PRIORITY;
 
+import javax.inject.Inject;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import org.slf4j.Logger;
+
+import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @Priority(EXTENSIONS_L2_PRIORITY)
 public class JTATransaction implements Transaction {
@@ -51,6 +56,13 @@ public class JTATransaction implements Transaction {
 	private static final long serialVersionUID = 1L;
 
 	private UserTransaction delegate;
+	
+	@Inject
+	private Logger logger;
+	
+	@Inject
+	@Name("demoiselle-jta-bundle")
+	private ResourceBundle bundle;
 
 	public UserTransaction getDelegate() {
 
@@ -64,7 +76,27 @@ public class JTATransaction implements Transaction {
 	@Override
 	public boolean isActive() {
 		try {
-			return getDelegate().getStatus() == Status.STATUS_ACTIVE || isMarkedRollback();
+			final int delegateStatus = getDelegate().getStatus();
+			
+			if (delegateStatus!=Status.STATUS_ACTIVE && delegateStatus!=Status.STATUS_NO_TRANSACTION){
+				//Os status mais comuns do UserTransaction são: explicitamente ativa (STATUS_ACTIVE) ou explicitamente
+				//desativada (STATUS_NO_TRANSACTION). Qualquer outro status "intermediário" é registrado em log para análise posterior
+				String status;
+				switch(delegateStatus){
+					case Status.STATUS_COMMITTED: status="COMMITTED"; break;
+					case Status.STATUS_COMMITTING: status="COMMITTING"; break;
+					case Status.STATUS_MARKED_ROLLBACK: status="MARKED_ROLLBACK"; break;
+					case Status.STATUS_PREPARED: status="PREPARED"; break;
+					case Status.STATUS_PREPARING: status="PREPARING"; break;
+					case Status.STATUS_ROLLEDBACK: status="ROLLEDBACK"; break;
+					case Status.STATUS_ROLLING_BACK: status="ROLLING_BACK"; break;
+					case Status.STATUS_UNKNOWN: status="UNKNOWN"; break;
+					default: status="UNKNOWN";
+				}
+				logger.debug(bundle.getString("usertransaction-abnormal-status",status));
+			}
+			
+			return delegateStatus != Status.STATUS_NO_TRANSACTION;
 
 		} catch (SystemException cause) {
 			throw new TransactionException(cause);
