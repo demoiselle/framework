@@ -39,6 +39,7 @@ package br.gov.frameworkdemoiselle.security;
 import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
 
 import java.io.IOException;
+import java.security.SecurityPermission;
 
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
@@ -91,7 +92,7 @@ public class JAASAuthenticator implements Authenticator {
 
 		try {
 			LoginContext loginContext = createLoginContext();
-
+			
 			if (loginContext != null) {
 				loginContext.login();
 
@@ -136,6 +137,29 @@ public class JAASAuthenticator implements Authenticator {
 
 	@Override
 	public User getUser() {
+		try {
+			
+//			LoginContext
+			
+//			AbstractSecurityContext.
+			
+			Object securityContext = System.getSecurityManager().getSecurityContext();
+			
+			System.out.println(securityContext.toString());
+			
+			String name = config.getLoginModuleName();
+			LoginContext loginContext = new LoginContext(name, this.subject);
+			loginContext.login();
+			
+			Subject subject2 = loginContext.getSubject();
+			
+			System.out.println(subject2.toString());
+			
+		} catch (LoginException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return this.user;
 	}
 

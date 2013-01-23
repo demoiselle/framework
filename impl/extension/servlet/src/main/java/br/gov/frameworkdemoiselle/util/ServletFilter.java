@@ -38,6 +38,7 @@ package br.gov.frameworkdemoiselle.util;
 
 import java.io.IOException;
 
+import javax.security.auth.login.LoginContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -46,6 +47,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import br.gov.frameworkdemoiselle.internal.producer.HttpServletRequestProducer;
 import br.gov.frameworkdemoiselle.internal.producer.HttpServletResponseProducer;
@@ -62,6 +64,16 @@ public class ServletFilter implements Filter {
 
 		Beans.getReference(HttpServletRequestProducer.class).setDelegate((HttpServletRequest) request);
 		Beans.getReference(HttpServletResponseProducer.class).setDelegate((HttpServletResponse) response);
+
+		//((HttpServletRequest) request).;
+		
+		LoginContext ctx = null;
+		HttpSession sess = (HttpSession) ((HttpServletRequest) request).getSession(false);
+		if (sess != null) {
+			ctx = (LoginContext) sess.getAttribute("ctx");
+		}
+		
+		System.out.println(ctx);
 
 		chain.doFilter(request, response);
 	}
