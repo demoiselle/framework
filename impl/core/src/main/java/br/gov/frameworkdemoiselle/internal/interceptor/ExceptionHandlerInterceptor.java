@@ -69,11 +69,11 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 	private final Map<Class<?>, Map<Class<?>, Method>> cache = new HashMap<Class<?>, Map<Class<?>, Method>>();
 
-	private final boolean handleException(final Exception cause, final InvocationContext ic) throws Exception {
+	private final boolean handleException(final Exception cause, final Object target) throws Exception {
 		getLogger().info(getBundle().getString("handling-exception", cause.getClass().getCanonicalName()));
 
 		boolean handled = false;
-		Class<?> type = getType(ic);
+		Class<?> type = getType(target);
 
 		if (!isLoaded(type)) {
 			loadHandlers(type);
@@ -81,22 +81,22 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 		Method handler = getMethod(type, cause);
 		if (handler != null) {
-			invoke(handler, ic.getTarget(), cause);
+			invoke(handler, target, cause);
 			handled = true;
 		}
 
 		return handled;
 	}
 
-	private final Class<?> getType(final InvocationContext ic) {
-		Class<?> type = ic.getTarget().getClass();
+	private final Class<?> getType(final Object target) {
+		Class<?> type = target.getClass();
 		CoreBootstrap bootstrap = Beans.getReference(CoreBootstrap.class);
 
 		if (!bootstrap.isAnnotatedType(type)) {
-			type = type.getSuperclass();
 			getLogger().debug(
-					getBundle().getString("proxy-detected", ic.getTarget().getClass(),
-							ic.getTarget().getClass().getSuperclass()));
+					getBundle().getString("proxy-detected", type,
+							type.getSuperclass()));
+			type = type.getSuperclass();
 		}
 
 		return type;
@@ -183,13 +183,15 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 	@AroundInvoke
 	public Object manage(final InvocationContext ic) throws Exception {
+		Object target = null;
 		Object result = null;
 
 		try {
+			target = ic.getTarget();
 			result = ic.proceed();
 
 		} catch (Exception cause) {
-			if (!handleException(cause, ic)) {
+			if (!handleException(cause, target)) {
 				throw cause;
 			}
 		}
