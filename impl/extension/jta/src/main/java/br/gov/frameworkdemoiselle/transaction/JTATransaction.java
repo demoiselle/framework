@@ -37,8 +37,10 @@
 package br.gov.frameworkdemoiselle.transaction;
 
 import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L2_PRIORITY;
+import static javax.transaction.Status.STATUS_MARKED_ROLLBACK;
+import static javax.transaction.Status.STATUS_NO_TRANSACTION;
+import static javax.transaction.Status.STATUS_ROLLEDBACK;
 
-import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
@@ -64,7 +66,7 @@ public class JTATransaction implements Transaction {
 	@Override
 	public boolean isActive() {
 		try {
-			return getDelegate().getStatus() == Status.STATUS_ACTIVE || isMarkedRollback();
+			return getDelegate().getStatus() != STATUS_NO_TRANSACTION;
 
 		} catch (SystemException cause) {
 			throw new TransactionException(cause);
@@ -74,7 +76,8 @@ public class JTATransaction implements Transaction {
 	@Override
 	public boolean isMarkedRollback() {
 		try {
-			return getDelegate().getStatus() == Status.STATUS_MARKED_ROLLBACK;
+			return getDelegate().getStatus() == STATUS_MARKED_ROLLBACK
+					|| getDelegate().getStatus() == STATUS_ROLLEDBACK;
 
 		} catch (SystemException cause) {
 			throw new TransactionException(cause);

@@ -61,8 +61,7 @@ public class SecurityObserver implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	private JsfSecurityConfig config;
+	private transient JsfSecurityConfig config;
 
 	private transient Map<String, Object> savedParams;
 
@@ -83,11 +82,19 @@ public class SecurityObserver implements Serializable {
 		return this.savedParams;
 	}
 
+	public JsfSecurityConfig getConfig() {
+		if (this.config == null) {
+			this.config = Beans.getReference(JsfSecurityConfig.class);
+		}
+
+		return this.config;
+	}
+
 	private void saveCurrentState() {
 		clear();
 		FacesContext facesContext = Beans.getReference(FacesContext.class);
 
-		if (!config.getLoginPage().equals(facesContext.getViewRoot().getViewId())) {
+		if (!getConfig().getLoginPage().equals(facesContext.getViewRoot().getViewId())) {
 			getSavedParams().putAll(facesContext.getExternalContext().getRequestParameterMap());
 			savedViewId = facesContext.getViewRoot().getViewId();
 		}
@@ -97,7 +104,7 @@ public class SecurityObserver implements Serializable {
 		saveCurrentState();
 
 		try {
-			Redirector.redirect(config.getLoginPage());
+			Redirector.redirect(getConfig().getLoginPage());
 
 		} catch (PageNotFoundException cause) {
 			// TODO Colocar a mensagem no bundle
@@ -116,9 +123,9 @@ public class SecurityObserver implements Serializable {
 			if (savedViewId != null) {
 				Redirector.redirect(savedViewId, getSavedParams());
 
-			} else if (config.isRedirectEnabled()) {
+			} else if (getConfig().isRedirectEnabled()) {
 				redirectedFromConfig = true;
-				Redirector.redirect(config.getRedirectAfterLogin(), getSavedParams());
+				Redirector.redirect(getConfig().getRedirectAfterLogin(), getSavedParams());
 			}
 
 		} catch (PageNotFoundException cause) {
@@ -140,8 +147,8 @@ public class SecurityObserver implements Serializable {
 
 	public void onLogoutSuccessful(@Observes final AfterLogoutSuccessful event) {
 		try {
-			if (config.isRedirectEnabled()) {
-				Redirector.redirect(config.getRedirectAfterLogout());
+			if (getConfig().isRedirectEnabled()) {
+				Redirector.redirect(getConfig().getRedirectAfterLogout());
 			}
 
 		} catch (PageNotFoundException cause) {
@@ -165,4 +172,5 @@ public class SecurityObserver implements Serializable {
 		savedViewId = null;
 		getSavedParams().clear();
 	}
+
 }

@@ -39,7 +39,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>demoiselle-framework-build</artifactId>
+<<<<<<< HEAD
 	<version>2.4.0-ALPHA1-SNAPSHOT</version>
+=======
+	<version>2.3.2-SNAPSHOT</version>
+>>>>>>> master
 	<packaging>pom</packaging>
 
 	<parent>

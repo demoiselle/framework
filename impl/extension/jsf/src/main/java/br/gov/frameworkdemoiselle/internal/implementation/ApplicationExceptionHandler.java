@@ -104,4 +104,14 @@ public class ApplicationExceptionHandler extends AbstractExceptionHandler {
 		}
 		return handled;
 	}
+	
+	protected Throwable getRoot(final Throwable throwable) {
+		Throwable root = throwable;
+
+		while (!Exceptions.isApplicationException(root)) {
+			root = root.getCause();
+		}
+
+		return root;
+	}
 }

@@ -45,19 +45,14 @@ import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 import static org.powermock.reflect.Whitebox.setInternalState;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.inject.Instance;
-import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
@@ -80,6 +75,7 @@ import org.powermock.reflect.Whitebox;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
+import br.gov.frameworkdemoiselle.domain.Contact;
 import br.gov.frameworkdemoiselle.internal.implementation.PaginationImpl;
 import br.gov.frameworkdemoiselle.pagination.Pagination;
 import br.gov.frameworkdemoiselle.pagination.PaginationContext;
@@ -108,26 +104,6 @@ public class JPACrudTest {
 		this.contact = new Contact();
 		this.contactDAO = new ContactDAO();
 		setInternalState(this.contactDAO, EntityManager.class, this.entityManager);
-	}
-
-	@Entity
-	class Contact implements Serializable {
-
-		private static final long serialVersionUID = 1L;
-
-		@Id
-		@GeneratedValue
-		@Column
-		private Long id;
-
-		public void setId(Long id) {
-			this.id = id;
-		}
-
-		public Long getId() {
-			return id;
-		}
-
 	}
 
 	@Test
