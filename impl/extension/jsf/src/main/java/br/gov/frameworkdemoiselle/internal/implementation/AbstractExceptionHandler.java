@@ -80,7 +80,7 @@ public abstract class AbstractExceptionHandler extends ExceptionHandlerWrapper {
 
 	protected abstract boolean handleException(final Throwable cause, FacesContext facesContext);
 
-	private Throwable getRoot(final Throwable throwable) {
+	protected Throwable getRoot(final Throwable throwable) {
 		Throwable root = throwable;
 
 		while (root.getCause() != null) {
