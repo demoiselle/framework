@@ -143,9 +143,9 @@ public class JAASAuthenticator implements Authenticator {
 			
 //			AbstractSecurityContext.
 			
-			Object securityContext = System.getSecurityManager().getSecurityContext();
+//			Object securityContext = System.getSecurityManager().getSecurityContext();
 			
-			System.out.println(securityContext.toString());
+//			System.out.println(securityContext.toString());
 			
 			String name = config.getLoginModuleName();
 			LoginContext loginContext = new LoginContext(name, this.subject);
