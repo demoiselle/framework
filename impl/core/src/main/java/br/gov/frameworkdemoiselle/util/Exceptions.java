@@ -26,7 +26,7 @@ public final class Exceptions {
 	}
 
 	public static boolean isApplicationException(final Throwable throwable) {
-		return throwable.getClass().isAnnotationPresent(ApplicationException.class);
+		return throwable != null && throwable.getClass().isAnnotationPresent(ApplicationException.class);
 	}
 
 	public static void handleToRuntimeException(final Throwable throwable) throws RuntimeException {

@@ -68,7 +68,7 @@ public abstract class AbstractExceptionHandler extends ExceptionHandlerWrapper {
 			exceptionContext = (ExceptionQueuedEventContext) iter.next().getSource();
 			root = getRoot(exceptionContext.getException());
 
-			if (handleException(root, facesContext)) {
+			if (root == null || handleException(root, facesContext)) {
 				iter.remove();
 			}
 		}
