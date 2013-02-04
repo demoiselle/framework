@@ -155,6 +155,7 @@ public class ExceptionHandlerInterceptorTest {
 	@Test
 	public void manageSuccessfully() throws Throwable {
 		expect(this.context.proceed()).andReturn(null);
+		expect(this.context.getTarget()).andReturn(null);
 		replayAll();
 		assertEquals(null, this.interceptor.manage(this.context));
 		verify();
