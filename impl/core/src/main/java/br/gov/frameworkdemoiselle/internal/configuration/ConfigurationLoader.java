@@ -434,8 +434,6 @@ public class ConfigurationLoader implements Serializable {
 			this.prefix = type.getAnnotation(Configuration.class).prefix();
 			if (this.prefix == null) {
 				this.prefix = "";
-			} else {
-				this.prefix += ".";
 			}
 
 			if (field.isAnnotationPresent(Name.class)) {
@@ -443,7 +441,7 @@ public class ConfigurationLoader implements Serializable {
 			} else {
 				this.name = getNameByField(field);
 			}
-			
+
 			this.key = this.prefix + this.name;
 		}
 
