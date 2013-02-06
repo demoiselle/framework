@@ -82,9 +82,9 @@ public class ConfigurationLoader implements Serializable {
 	private ResourceBundle bundle;
 
 	private Logger logger;
-	
+
 	private CoreBootstrap bootstrap;
-	
+
 	/**
 	 * Loads a config class filling it with the corresponding values.
 	 * 
@@ -159,6 +159,10 @@ public class ConfigurationLoader implements Serializable {
 
 		Configuration classAnnotation = type.getAnnotation(Configuration.class);
 		if (!Strings.isEmpty(classAnnotation.prefix())) {
+
+			// TODO Verificar se o prefixo foi informado sem o ponto. Se sim, emitir um log do tipo WARN avisando para o
+			// usuário corrigir manualmente e colocar o ponto automaticamente para evitar quebra de compatibilidade.
+
 			prefix = classAnnotation.prefix() + ".";
 		}
 
@@ -195,6 +199,10 @@ public class ConfigurationLoader implements Serializable {
 				matches++;
 			}
 		}
+
+		// TODO Se a variável key estiver diferente de field.getName() neste ponto, emitir um log WARN avisando que o
+		// formato encontrado em key deve ser definido manualmente utilizando a anotação @Name no atributo
+		// correspondente da classe de configuração do usuário.
 
 		if (matches == 0) {
 			getLogger().debug(getBundle().getString("configuration-key-not-found", key, conventions));
@@ -445,12 +453,12 @@ public class ConfigurationLoader implements Serializable {
 
 		return logger;
 	}
-	
-	private CoreBootstrap getBootstrap(){
-		if (bootstrap == null){
+
+	private CoreBootstrap getBootstrap() {
+		if (bootstrap == null) {
 			bootstrap = Beans.getReference(CoreBootstrap.class);
 		}
-		
+
 		return bootstrap;
 	}
 }
