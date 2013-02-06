@@ -217,7 +217,8 @@ public class ConfigurationLoader implements Serializable {
 	private <T> Object getMap(Key key, Field field, org.apache.commons.configuration.Configuration config) {
 		Map<String, Object> value = null;
 
-		Pattern pattern = Pattern.compile("^(" + key.getPrefix() + ")(.+)\\.(" + key.getName() + ")$");
+		String regexp = "^(" + key.getPrefix() + ")((.+)\\.)?(" + key.getName() + ")$";
+		Pattern pattern = Pattern.compile(regexp);
 		Matcher matcher;
 
 		String iterKey;
@@ -230,13 +231,13 @@ public class ConfigurationLoader implements Serializable {
 			matcher = pattern.matcher(iterKey);
 
 			if (matcher.matches()) {
-				mapKey = matcher.group(2);
-				confKey = matcher.group(1) + matcher.group(2) + "." + matcher.group(3);
+				confKey = matcher.group(1) + (matcher.group(2) == null ? "" : matcher.group(2)) + matcher.group(4);
 
 				if (value == null) {
 					value = new HashMap<String, Object>();
 				}
 
+				mapKey = matcher.group(3) == null ? "default" : matcher.group(3);
 				value.put(mapKey, config.getProperty(confKey));
 			}
 		}

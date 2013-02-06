@@ -9,7 +9,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
-import br.gov.frameworkdemoiselle.internal.configuration.DataSourceConfig;
+import br.gov.frameworkdemoiselle.internal.configuration.JdbcConfig;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @ApplicationScoped
@@ -32,8 +32,8 @@ public class DataSourceProducer implements Serializable {
 		DataSource result;
 
 		try {
-			DataSourceConfig config = Beans.getReference(DataSourceConfig.class);
-			String jndi = config.getJndiName();
+			JdbcConfig config = Beans.getReference(JdbcConfig.class);
+			String jndi = config.getJndiName().get("default");
 
 			// TODO Lançar exceção caso o JNDI esteja vazio ou nulo.
 

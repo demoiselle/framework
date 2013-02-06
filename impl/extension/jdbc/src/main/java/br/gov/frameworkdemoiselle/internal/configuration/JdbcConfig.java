@@ -37,19 +37,27 @@
 package br.gov.frameworkdemoiselle.internal.configuration;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
 @Configuration(prefix = "frameworkdemoiselle.jdbc.")
-public class DataSourceConfig implements Serializable {
+public class JdbcConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Name("jndi.name")
-	private String jndiName;
+	private Map<String, String> jndiName;
 
-	public String getJndiName() {
+	@Name("driver.class")
+	private Map<String, String> driverClass;
+
+	public Map<String, String> getJndiName() {
 		return jndiName;
+	}
+
+	public Map<String, String> getDriverClass() {
+		return driverClass;
 	}
 }
