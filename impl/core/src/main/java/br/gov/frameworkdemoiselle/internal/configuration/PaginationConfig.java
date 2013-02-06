@@ -47,7 +47,7 @@ import br.gov.frameworkdemoiselle.configuration.Configuration;
  * 
  * @author SERPRO
  */
-@Configuration(prefix = "frameworkdemoiselle.pagination")
+@Configuration(prefix = "frameworkdemoiselle.pagination.")
 public class PaginationConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;

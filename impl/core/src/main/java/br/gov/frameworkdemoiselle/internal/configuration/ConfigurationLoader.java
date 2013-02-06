@@ -82,9 +82,9 @@ public class ConfigurationLoader implements Serializable {
 	private ResourceBundle bundle;
 
 	private Logger logger;
-	
+
 	private CoreBootstrap bootstrap;
-	
+
 	/**
 	 * Loads a config class filling it with the corresponding values.
 	 * 
@@ -159,7 +159,17 @@ public class ConfigurationLoader implements Serializable {
 
 		Configuration classAnnotation = type.getAnnotation(Configuration.class);
 		if (!Strings.isEmpty(classAnnotation.prefix())) {
-			prefix = classAnnotation.prefix() + ".";
+
+			prefix = classAnnotation.prefix();
+
+			if (prefix.charAt(prefix.length() - 1) != '.') {
+				getLogger().warn(
+						"ATENÇÃO!!! Informe o ponto (.) ao final da declaração do atributo prefix = \"" + prefix
+								+ "\" da anotação @Configuration da classe " + type.getCanonicalName()
+								+ " para evitar incompatibilidade com as próximas versões do Demoiselle.");
+
+				prefix += ".";
+			}
 		}
 
 		return prefix;
@@ -194,6 +204,13 @@ public class ConfigurationLoader implements Serializable {
 				key = convention;
 				matches++;
 			}
+		}
+
+		if (!field.getName().equals(key)) {
+			getLogger().warn(
+					"ATENÇÃO!!! Anote o atributo " + field.getName() + " da classe "
+							+ field.getDeclaringClass().getCanonicalName() + " com @Name(\"" + key
+							+ "\") para evitar incompatibilidade com as próximas versões do Demoiselle.");
 		}
 
 		if (matches == 0) {
@@ -445,12 +462,12 @@ public class ConfigurationLoader implements Serializable {
 
 		return logger;
 	}
-	
-	private CoreBootstrap getBootstrap(){
-		if (bootstrap == null){
+
+	private CoreBootstrap getBootstrap() {
+		if (bootstrap == null) {
 			bootstrap = Beans.getReference(CoreBootstrap.class);
 		}
-		
+
 		return bootstrap;
 	}
 }

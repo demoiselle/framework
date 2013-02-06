@@ -133,7 +133,7 @@ public class ConfigurationLoaderTest {
 
 	}
 
-	@Configuration(prefix = "frameworkdemoiselle.configurationtest")
+	@Configuration(prefix = "frameworkdemoiselle.configurationtest.")
 	public class ConfigurationWithPrefix {
 
 		@Name("nameConfiguration")
@@ -282,7 +282,7 @@ public class ConfigurationLoaderTest {
 
 	}
 
-	@Configuration(prefix = "br.gov.frameworkdemoiselle")
+	@Configuration(prefix = "br.gov.frameworkdemoiselle.")
 	public class ConfigurationPropertiesSuccessWithPrefixNonAmbiguous {
 
 		protected String success;

@@ -61,7 +61,6 @@ import javax.enterprise.util.Nonbinding;
  * 
  * @author SERPRO
  */
-// @Singleton
 @Stereotype
 @Inherited
 @Target(TYPE)

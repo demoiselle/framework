@@ -108,7 +108,7 @@ public class ApplicationExceptionHandler extends AbstractExceptionHandler {
 	protected Throwable getRoot(final Throwable throwable) {
 		Throwable root = throwable;
 
-		while (!Exceptions.isApplicationException(root)) {
+		while (root != null && !Exceptions.isApplicationException(root)) {
 			root = root.getCause();
 		}
 

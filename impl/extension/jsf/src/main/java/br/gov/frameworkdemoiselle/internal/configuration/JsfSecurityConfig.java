@@ -41,7 +41,7 @@ import java.io.Serializable;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(prefix = "frameworkdemoiselle.security")
+@Configuration(prefix = "frameworkdemoiselle.security.")
 public class JsfSecurityConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -49,7 +49,6 @@ public class JsfSecurityConfig implements Serializable {
 	@Name("login.page")
 	private String loginPage = "/login";
 
-	//	@Name("welcome.page")
 	@Name("redirect.after.login")
 	private String redirectAfterLogin = "/index";
 
