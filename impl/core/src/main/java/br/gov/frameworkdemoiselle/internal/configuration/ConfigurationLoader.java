@@ -160,10 +160,16 @@ public class ConfigurationLoader implements Serializable {
 		Configuration classAnnotation = type.getAnnotation(Configuration.class);
 		if (!Strings.isEmpty(classAnnotation.prefix())) {
 
-			// TODO Verificar se o prefixo foi informado sem o ponto. Se sim, emitir um log do tipo WARN avisando para o
-			// usuário corrigir manualmente e colocar o ponto automaticamente para evitar quebra de compatibilidade.
+			prefix = classAnnotation.prefix();
 
-			prefix = classAnnotation.prefix() + ".";
+			if (prefix.charAt(prefix.length() - 1) != '.') {
+				getLogger().warn(
+						"ATENÇÃO!!! Informe o ponto (.) ao final da declaração do atributo prefix = \"" + prefix
+								+ "\" da anotação @Configuration da classe " + type.getCanonicalName()
+								+ " para evitar incompatibilidade com as próximas versões do Demoiselle.");
+
+				prefix += ".";
+			}
 		}
 
 		return prefix;
@@ -200,9 +206,12 @@ public class ConfigurationLoader implements Serializable {
 			}
 		}
 
-		// TODO Se a variável key estiver diferente de field.getName() neste ponto, emitir um log WARN avisando que o
-		// formato encontrado em key deve ser definido manualmente utilizando a anotação @Name no atributo
-		// correspondente da classe de configuração do usuário.
+		if (!field.getName().equals(key)) {
+			getLogger().warn(
+					"ATENÇÃO!!! Anote o atributo " + field.getName() + " da classe "
+							+ field.getDeclaringClass().getCanonicalName() + " com @Name(\"" + key
+							+ "\") para evitar incompatibilidade com as próximas versões do Demoiselle.");
+		}
 
 		if (matches == 0) {
 			getLogger().debug(getBundle().getString("configuration-key-not-found", key, conventions));

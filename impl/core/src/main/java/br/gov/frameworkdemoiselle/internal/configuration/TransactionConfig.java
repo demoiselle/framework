@@ -42,7 +42,7 @@ import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 
-@Configuration(prefix = "frameworkdemoiselle.transaction")
+@Configuration(prefix = "frameworkdemoiselle.transaction.")
 public class TransactionConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;

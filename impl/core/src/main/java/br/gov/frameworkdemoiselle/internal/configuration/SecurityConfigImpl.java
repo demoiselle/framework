@@ -38,19 +38,23 @@ package br.gov.frameworkdemoiselle.internal.configuration;
 
 import java.io.Serializable;
 
+import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.Authorizer;
 
-@Configuration(prefix = "frameworkdemoiselle.security")
+@Configuration(prefix = "frameworkdemoiselle.security.")
 public class SecurityConfigImpl implements Serializable, SecurityConfig {
 
 	private static final long serialVersionUID = 1L;
 
+	@Name("enabled")
 	private boolean enabled = true;
 
+	@Name("authenticator.class")
 	private Class<? extends Authenticator> authenticatorClass;
 
+	@Name("authorizer.class")
 	private Class<? extends Authorizer> authorizerClass;
 
 	/*
