@@ -15,6 +15,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
@@ -109,12 +110,26 @@ public class DataSourceProducer implements Serializable {
 
 		try {
 			JdbcConfig config = Beans.getReference(JdbcConfig.class);
-			String jndi = config.getJndiName().get(dataSourceName);
+			Map<String, String> jndiMap = config.getJndiName();
 
-			// TODO Lançar exceção caso o JNDI esteja vazio ou nulo.
+			if (jndiMap != null) {
+				Context context = new InitialContext();
+				result = (DataSource) context.lookup(jndiMap.get(dataSourceName));
 
-			Context context = new InitialContext();
-			result = (DataSource) context.lookup(jndi);
+			} else {
+				String driver = config.getDriverClass().get(dataSourceName);
+				String url = config.getUrl().get(dataSourceName);
+				String username = config.getUsername().get(dataSourceName);
+				String password = config.getPassword().get(dataSourceName);
+
+				BasicDataSource dataSource = new BasicDataSource();
+				dataSource.setDriverClassName(driver);
+				dataSource.setUrl(url);
+				dataSource.setUsername(username);
+				dataSource.setPassword(password);
+
+				result = dataSource;
+			}
 
 		} catch (Exception cause) {
 			// TODO Colocar uma mensagem amigável

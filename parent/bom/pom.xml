@@ -262,11 +262,16 @@
 				<version>${slf4j.version}</version>
 			</dependency>
 
-			<!-- configuration api+impl -->
+			<!-- apache commons -->
 			<dependency>
 				<groupId>commons-configuration</groupId>
 				<artifactId>commons-configuration</artifactId>
 				<version>${commons.configuration.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-dbcp</groupId>
+				<artifactId>commons-dbcp</artifactId>
+				<version>${commons.dbcp.version}</version>
 			</dependency>
 
 			<!-- embedded database -->
@@ -353,6 +358,7 @@
 		<slf4j.version>1.6.1</slf4j.version>
 		<weld.version>1.1.8.Final</weld.version>
 		<commons.configuration.version>1.5</commons.configuration.version>
+		<commons.dbcp.version>1.4</commons.dbcp.version>
 		<hsqldb.version>1.8.0.10</hsqldb.version>
 		<jasperreports.version>4.0.1</jasperreports.version>
 		<mail.version>1.4.4</mail.version>

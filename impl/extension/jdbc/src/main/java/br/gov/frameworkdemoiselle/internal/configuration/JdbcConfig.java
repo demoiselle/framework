@@ -56,6 +56,15 @@ public class JdbcConfig implements Serializable {
 	@Name("driver.class")
 	private Map<String, String> driverClass;
 
+	@Name("url")
+	private Map<String, String> url;
+
+	@Name("username")
+	private Map<String, String> username;
+
+	@Name("password")
+	private Map<String, String> password;
+
 	public String getDefaultDataDourceName() {
 		return defaultDataDourceName;
 	}
@@ -66,5 +75,17 @@ public class JdbcConfig implements Serializable {
 
 	public Map<String, String> getDriverClass() {
 		return driverClass;
+	}
+
+	public Map<String, String> getUrl() {
+		return url;
+	}
+
+	public Map<String, String> getUsername() {
+		return username;
+	}
+
+	public Map<String, String> getPassword() {
+		return password;
 	}
 }
