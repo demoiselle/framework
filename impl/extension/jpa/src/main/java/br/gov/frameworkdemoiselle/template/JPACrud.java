@@ -203,7 +203,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	 *            - structure CriteriaQuery
 	 * @return a list of entities
 	 */
-	public List<T> findByCriteriaQuery(CriteriaQuery<T> criteriaQuery) {
+	protected List<T> findByCriteriaQuery(CriteriaQuery<T> criteriaQuery) {
 		TypedQuery<T> listQuery = getEntityManager().createQuery(criteriaQuery);
 
 		if (getPagination() != null) {
