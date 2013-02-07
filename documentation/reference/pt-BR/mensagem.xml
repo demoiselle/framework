@@ -176,7 +176,7 @@ messageContext.add(message);]]></programlisting>
 		<note>
 			<para>
 				O contexto de mensagens, representado pela interface <literal>MessageContext</literal>, é capaz de
-				armazenar diversas mensagens em uma mesma requisição. Ele não é restrito à aplicações do tipo Web,
+				armazenar diversas mensagens em uma mesma requisição. Ele não é restrito a aplicações do tipo Web,
 				isto é, pode ser usado também para aplicações do tipo desktop (i.e., Swing).
 			</para>
 		</note>

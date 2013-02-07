@@ -8,7 +8,7 @@
 	<section>
 		<title>Configurações em uma aplicação</title>
 		<para>
-			Em aplicações no modelo Java EE, as quais são executadas hospedadas em um servidor de aplicações ou contêiner Web,
+			Em aplicações no modelo Java EE, as quais são hospedadas em um servidor de aplicações ou contêiner Web,
 			existem diversos papéis além do desenvolvedor, tais como assembler e deployer. É comum nestas aplicações que informações
 			de configuração de ambiente, especialmente por questões de segurança, sejam de conhecimento restrito. Por exemplo,
 			o usuário e senha de um banco de dados ou o nome de uma fila de mensagens são informações que o desenvolvedor não deve

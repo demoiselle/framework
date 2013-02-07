@@ -11,7 +11,7 @@
 		persistência. Tais classes podem ser encontradas no pacote
 		<literal>br.gov.frameworkdemoiselle.template</literal>
 		e auxiliam o desenvolvedor ao disponibilizar métodos comuns à maioria das
-		aplicações. À seguir iremos exemplificar o uso de cada uma delas.
+		aplicações. A seguir iremos exemplificar o uso de cada uma delas.
 	</para>
 
 	<section>
@@ -60,7 +60,7 @@ public class SuaEntidadeDAO extends JPACrud<SuaEntidade, Long> {
 			Segue abaixo um exemplo da utilização do <emphasis>DelegateCrud</emphasis>.
 			Neste caso, foi implementado um método para validar a entidade antes
 			de proceder com a inclusão no banco de dados. Para isso, o método
-			<function>insert()</function> fornecido pela classe foi sobreescrito.
+			<function>insert()</function> fornecido pela classe foi sobrescrito.
 		</para>
 		<programlisting role="JAVA"><![CDATA[@BusinessController
 public class SuaEntidadeBC extends DelegateCrud<SuaEntidade, Long, SuaEntidadeDAO> {
