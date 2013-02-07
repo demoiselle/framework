@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.internal.configuration.JdbcConfig;
+import br.gov.frameworkdemoiselle.internal.configuration.JDBCConfig;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -58,7 +58,7 @@ public class DataSourceProducer implements Serializable {
 	private Set<String> getDataSourceNames(ClassLoader classLoader) {
 		Set<String> result = new HashSet<String>();
 
-		JdbcConfig config = Beans.getReference(JdbcConfig.class);
+		JDBCConfig config = Beans.getReference(JDBCConfig.class);
 
 		if (config.getJndiName() != null) {
 			result.addAll(config.getJndiName().keySet());
@@ -109,7 +109,7 @@ public class DataSourceProducer implements Serializable {
 		DataSource result;
 
 		try {
-			JdbcConfig config = Beans.getReference(JdbcConfig.class);
+			JDBCConfig config = Beans.getReference(JDBCConfig.class);
 			Map<String, String> jndiMap = config.getJndiName();
 
 			if (jndiMap != null) {

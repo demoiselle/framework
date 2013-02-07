@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.internal.configuration.JdbcConfig;
+import br.gov.frameworkdemoiselle.internal.configuration.JDBCConfig;
 import br.gov.frameworkdemoiselle.internal.proxy.ConnectionProxy;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -49,7 +49,7 @@ public class ConnectionProducer implements Serializable {
 
 	@Default
 	@Produces
-	public Connection create(InjectionPoint ip, JdbcConfig config) {
+	public Connection create(InjectionPoint ip, JDBCConfig config) {
 		String name = getName(ip, config);
 		return new ConnectionProxy(name);
 	}
@@ -63,6 +63,7 @@ public class ConnectionProducer implements Serializable {
 		} else {
 			try {
 				result = producer.create(name).getConnection();
+				result.setAutoCommit(false);
 
 				cache.put(name, result);
 				this.logger.info(bundle.getString("connection-was-created", name));
@@ -77,7 +78,7 @@ public class ConnectionProducer implements Serializable {
 		return result;
 	}
 
-	private String getName(InjectionPoint ip, JdbcConfig config) {
+	private String getName(InjectionPoint ip, JDBCConfig config) {
 		String result;
 
 		if (ip != null && ip.getAnnotated() != null && ip.getAnnotated().isAnnotationPresent(Name.class)) {
@@ -96,7 +97,7 @@ public class ConnectionProducer implements Serializable {
 		return result;
 	}
 
-	private String getNameFromProperties(JdbcConfig config) {
+	private String getNameFromProperties(JDBCConfig config) {
 		String result = config.getDefaultDataDourceName();
 
 		if (result != null) {
