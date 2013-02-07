@@ -65,15 +65,13 @@ public class ServletFilter implements Filter {
 		Beans.getReference(HttpServletRequestProducer.class).setDelegate((HttpServletRequest) request);
 		Beans.getReference(HttpServletResponseProducer.class).setDelegate((HttpServletResponse) response);
 
-		//((HttpServletRequest) request).;
-		
 		LoginContext ctx = null;
 		HttpSession sess = (HttpSession) ((HttpServletRequest) request).getSession(false);
 		if (sess != null) {
 			ctx = (LoginContext) sess.getAttribute("ctx");
 		}
-		
-		System.out.println(ctx);
+
+		// System.out.println(ctx);
 
 		chain.doFilter(request, response);
 	}

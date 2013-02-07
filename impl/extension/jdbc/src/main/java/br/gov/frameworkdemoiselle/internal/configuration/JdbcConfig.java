@@ -67,5 +67,4 @@ public class JdbcConfig implements Serializable {
 	public Map<String, String> getDriverClass() {
 		return driverClass;
 	}
-
 }
