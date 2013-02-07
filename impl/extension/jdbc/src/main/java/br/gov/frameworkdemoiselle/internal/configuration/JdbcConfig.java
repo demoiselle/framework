@@ -42,16 +42,23 @@ import java.util.Map;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(prefix = "frameworkdemoiselle.jdbc.")
+@Configuration(prefix = "frameworkdemoiselle.persistence.")
 public class JdbcConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	@Name("default.datasource.name")
+	private String defaultDataDourceName;
 
 	@Name("jndi.name")
 	private Map<String, String> jndiName;
 
 	@Name("driver.class")
 	private Map<String, String> driverClass;
+
+	public String getDefaultDataDourceName() {
+		return defaultDataDourceName;
+	}
 
 	public Map<String, String> getJndiName() {
 		return jndiName;
@@ -60,4 +67,5 @@ public class JdbcConfig implements Serializable {
 	public Map<String, String> getDriverClass() {
 		return driverClass;
 	}
+
 }
