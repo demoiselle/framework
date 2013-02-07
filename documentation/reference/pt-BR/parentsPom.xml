@@ -7,8 +7,8 @@
 
 	<para>
 		O Demoiselle faz uso da solução proposta pelo Apache Maven para diversas fases do desenvolvimento de software. 
-		O artefato principal do Maven é o POM.XML que é o arquivo XML que contém todas as informações necessárias para a ferramenta gerenciar o projeto, 
-		entre as quais está o gerenciamento de dependências(bibliotecas), build do projeto, etc. 
+		O artefato principal do Maven é o POM.XML, que é o arquivo XML que contém todas as informações necessárias para a ferramenta gerenciar o projeto, 
+		entre as quais está o gerenciamento de dependências (bibliotecas), build do projeto, etc. 
 		Mas é muito comum que vários projetos, vinculados ou não, utilizem muitas configurações em comum. 
 		Para o “reaproveitamento” dessas configurações, evitando a cópia de texto, o Maven provê dois tipos de estratégia:
 		</para>
@@ -18,12 +18,12 @@
 		<para> 
 		No Demoiselle 2 a estratégia adota foi também o da herança. E o termo usado no Demoiselle para identificar essa estratégia é que chamamos de Parent POM. 
 	</para>
-		<para>Seguindo esse conceito, foram criados alguns arquivos (pom.xml) e também disponibilizados no repositório Maven do Demoiselle , que facilitam a configuração dos projetos, e inclusive para o desenvolvimento do próprio Demoiselle. 
+		<para>Seguindo esse conceito, foram criados alguns arquivos (pom.xml) e também disponibilizados no repositório Maven do Demoiselle, que facilitam a configuração dos projetos, e inclusive para o desenvolvimento do próprio Demoiselle. 
 Os arquivos gerados foram divididos em perfis, para que o desenvolvedor possa escolher qual usar de acordo com o tipo de aplicação que está desenvolvendo.
-Assim, a alteração no POM.XML da aplicação será a minima possível. Outra vantagem, é que as bibliotecas apontadas como dependências são testadas pela equipe do Demoiselle o que evita eventuais incompatibilidades.</para>
+Assim, a alteração no POM.XML da aplicação será a minima possível. Outra vantagem é que as bibliotecas apontadas como dependências são testadas pela equipe do Demoiselle, o que evita eventuais incompatibilidades.</para>
     <tip>
     	<para>
-    		Para excluir uma dependência vinda do Parent, mas não necessária utilize a tag Exclusions
+    		Para excluir uma dependência desnecessária vinda do Parent, utilize a tag Exclusions.
     	</para>
     </tip>
 

@@ -8,7 +8,7 @@
 	<para>
 		Esta funcionalidade foi feita para você que acha muito verboso encher o código de <literal>try/catch</literal>.
 		E o que dizer de repetir o tratamento de exceções em vários métodos da mesma classe na base do copiar/colar?
-		Oferecemos à você uma alternativa para resolver estes problemas, mas você estará livre para usá-la: isoladamente,
+		Oferecemos a você uma alternativa para resolver estes problemas, mas você estará livre para usá-la: isoladamente,
 		misturando com a forma verbosa ou até mesmo não usá-la.
 	</para>
 	
@@ -105,7 +105,7 @@ public class Simples {
 	<section>
 		<title>Exceção de Aplicação</title>
 		<para>
-			Imagine que você precise informar que caso um determinado tipo de exceção seja lançado através do seu método, a transação atual sofrerá um 
+			Imagine que você precise informar que, caso um determinado tipo de exceção seja lançado através do seu método, a transação atual sofrerá um 
 			<emphasis>rollback</emphasis>. Ou, então, que haja necessidade de informar o grau de severidade da exceção, de forma que uma camada de apresentação
 			específica a trate de forma diferenciada. Estas duas opções são possíveis através do uso da anotação <literal>@ApplicationException</literal>. 
 			Utilize-a em suas exceções e informe os atributos <literal>rollback</literal> e <literal>severity</literal> para alcançar os objetivos acima. 
@@ -124,13 +124,13 @@ public class MinhaException extends Exception {
 	<section>
 		<title>Tratamento Padrão</title>
 		<para>
-			As exceções lançadas a partir da camada de negócio, ou de persistência, não causam a interrupção de sua aplicação. Muito menos, apresentam a tela 
-			padrão de erro do JSF ou de outra tecnologia de visão. Qualquer exceção lançada, e que chega até a camada de apresentação, recebe um tratamento 
+			As exceções lançadas a partir da camada de negócio, ou de persistência, não causam a interrupção de sua aplicação, muito menos apresentam a tela 
+			padrão de erro do JSF ou de outra tecnologia de visão. Qualquer exceção lançada que chega até a camada de apresentação recebe um tratamento 
 			especial. Inicialmente, ela é encapsulada de forma que possa ser exibida de forma elegante para o usuário. No caso do JSF, é utilizado o mecanismo
 			de Messages próprio desta tecnologia.
 		</para>
 		<para>
-			No caso do Vaadin, o tratamento é bem semelhante, contudo, a exceção é tratada de forma que possa ser exibida adotando os mecanismos próprios da 
+			No caso do Vaadin, o tratamento é bem semelhante, contudo a exceção é tratada de forma que possa ser exibida adotando os mecanismos próprios da 
 			tecnologia. No caso de exceções que não usam a anotação <literal>@ApplicationException</literal>, um <emphasis>rollback</emphasis> é realizado 
 			de forma automática. Por último, sem o uso desta anotação, toda exceção é vista como tendo nível de gravidade igual a <literal>ERROR</literal>.
 		</para>

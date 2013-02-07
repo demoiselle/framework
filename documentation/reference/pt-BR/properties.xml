@@ -46,7 +46,7 @@
 					<para>
 						<literal>frameworkdemoiselle.security.enabled</literal> - Configura a habilitação das funcionalidades do 
 						<emphasis>Demoiselle</emphasis> relacionadas a segurança (como autenticação de usuário e verificação de
-						permissão de acesso à recursos). Por padrão, essas funcionalidades ficam habilitadas.   						
+						permissão de acesso a recursos). Por padrão, essas funcionalidades ficam habilitadas.   						
 					</para>
 					<para>
 						Exemplo de configuração: <literal>frameworkdemoiselle.security.enabled = false</literal>, desabilita as 
@@ -138,7 +138,7 @@
 					<para>
 						<literal>frameworkdemoiselle.persistence.unit.name</literal> - Quando é definida mais de uma unidade de persitencia 
 						no arquivo <literal>persistence.xml</literal>, muitas vezes é conveniente escolher uma unidade padrão, ao invés de 
-						definir as unidades	individualmente em cada <emphasis>Entity Manager</emphasis>. Esse parametro é utilizado para 
+						definir as unidades	individualmente em cada <emphasis>Entity Manager</emphasis>. Esse parâmetro é utilizado para 
 						indicar qual é a unidade de persistência que deve ser utilizada quando no <emphasis>Entity Manager</emphasis> não 
 						houver essa definição.
 					</para>
