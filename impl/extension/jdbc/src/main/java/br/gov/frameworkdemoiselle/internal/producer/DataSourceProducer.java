@@ -15,12 +15,12 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.configuration.JDBCConfig;
+import br.gov.frameworkdemoiselle.transaction.BasicDataSourceProxy;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -117,18 +117,7 @@ public class DataSourceProducer implements Serializable {
 				result = (DataSource) context.lookup(jndiMap.get(dataSourceName));
 
 			} else {
-				String driver = config.getDriverClass().get(dataSourceName);
-				String url = config.getUrl().get(dataSourceName);
-				String username = config.getUsername().get(dataSourceName);
-				String password = config.getPassword().get(dataSourceName);
-
-				BasicDataSource dataSource = new BasicDataSource();
-				dataSource.setDriverClassName(driver);
-				dataSource.setUrl(url);
-				dataSource.setUsername(username);
-				dataSource.setPassword(password);
-
-				result = dataSource;
+				result = new BasicDataSourceProxy(dataSourceName, config);
 			}
 
 		} catch (Exception cause) {
