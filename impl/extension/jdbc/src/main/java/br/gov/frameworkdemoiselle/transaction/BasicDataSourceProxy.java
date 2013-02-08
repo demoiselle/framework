@@ -8,11 +8,15 @@ import java.util.Collection;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.configuration.JDBCConfig;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 public class BasicDataSourceProxy extends BasicDataSource implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	private ResourceBundle bundle;
 
 	private String dataSourceName;
 
@@ -20,23 +24,30 @@ public class BasicDataSourceProxy extends BasicDataSource implements Serializabl
 
 	private transient BasicDataSource delegate;
 
-	public BasicDataSourceProxy(String dataSourceName, JDBCConfig config) {
+	public BasicDataSourceProxy(String dataSourceName, JDBCConfig config, ResourceBundle bundle) {
 		this.dataSourceName = dataSourceName;
 		this.config = config;
+		this.bundle = bundle;
 	}
 
 	private BasicDataSource getDelegate() {
 		if (this.delegate == null) {
-			String driver = config.getDriverClass().get(dataSourceName);
-			String url = config.getUrl().get(dataSourceName);
-			String username = config.getUsername().get(dataSourceName);
-			String password = config.getPassword().get(dataSourceName);
-
 			BasicDataSource dataSource = new BasicDataSource();
-			dataSource.setDriverClassName(driver);
-			dataSource.setUrl(url);
-			dataSource.setUsername(username);
-			dataSource.setPassword(password);
+
+			try {
+				String driver = config.getDriverClass().get(dataSourceName);
+				String url = config.getUrl().get(dataSourceName);
+				String username = config.getUsername().get(dataSourceName);
+				String password = config.getPassword().get(dataSourceName);
+
+				dataSource.setDriverClassName(driver);
+				dataSource.setUrl(url);
+				dataSource.setUsername(username);
+				dataSource.setPassword(password);
+
+			} catch (ClassCastException cause) {
+				throw new DemoiselleException(bundle.getString("load-duplicated-configuration-failed"), cause);
+			}
 
 			delegate = dataSource;
 		}

@@ -13,6 +13,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
@@ -108,22 +109,33 @@ public class DataSourceProducer implements Serializable {
 	private DataSource initDataSource(String dataSourceName) {
 		DataSource result;
 
+		JDBCConfig config = Beans.getReference(JDBCConfig.class);
+		Map<String, String> jndiMap = config.getJndiName();
+
+		if (jndiMap != null) {
+			result = initJNDIDataSource(dataSourceName, config);
+
+		} else {
+			result = new BasicDataSourceProxy(dataSourceName, config, bundle);
+		}
+
+		return result;
+	}
+
+	private DataSource initJNDIDataSource(String dataSourceName, JDBCConfig config) {
+		DataSource result = null;
+
 		try {
-			JDBCConfig config = Beans.getReference(JDBCConfig.class);
-			Map<String, String> jndiMap = config.getJndiName();
+			Context context = new InitialContext();
+			String jndi = config.getJndiName().get(dataSourceName);
 
-			if (jndiMap != null) {
-				Context context = new InitialContext();
-				result = (DataSource) context.lookup(jndiMap.get(dataSourceName));
+			result = (DataSource) context.lookup(jndi);
 
-			} else {
-				result = new BasicDataSourceProxy(dataSourceName, config);
-			}
+		} catch (NamingException cause) {
+			throw new DemoiselleException(bundle.getString("load-jndi-datasource-failed", dataSourceName), cause);
 
-		} catch (Exception cause) {
-			// TODO Colocar uma mensagem amigável
-
-			throw new DemoiselleException("", cause);
+		} catch (ClassCastException cause) {
+			throw new DemoiselleException(bundle.getString("load-duplicated-configuration-failed"), cause);
 		}
 
 		return result;
