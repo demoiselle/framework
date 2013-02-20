@@ -71,8 +71,7 @@ public class ConnectionProducer implements Serializable {
 
 			} catch (Exception cause) {
 				// TODO Colocar uma mensagem amigável
-
-				throw new DemoiselleException("", cause);
+				throw new DemoiselleException(cause);
 			}
 		}
 
@@ -131,20 +130,23 @@ public class ConnectionProducer implements Serializable {
 
 	@PreDestroy
 	public void close() {
-		for (Connection connection : cache.values()) {
+		Connection connection;
+
+		for (String key : cache.keySet()) {
+			connection = cache.get(key);
+
 			try {
 				if (connection.isClosed()) {
-					// TODO Logar um warning informando que a conexão já havia sido finalizada.
+					logger.warn(bundle.getString("connection-has-already-been-closed", key));
 
 				} else {
 					connection.close();
-					// TODO Logar um info informando que a conexão foi finalizada.
+
+					logger.info(bundle.getString("connection-was-closed", key));
 				}
 
 			} catch (Exception cause) {
-				// TODO Colocar uma mensagem amigável
-
-				throw new DemoiselleException("", cause);
+				throw new DemoiselleException(bundle.getString("connection-close-failed", key), cause);
 			}
 		}
 
