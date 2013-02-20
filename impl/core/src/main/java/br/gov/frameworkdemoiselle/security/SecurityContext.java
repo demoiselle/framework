@@ -65,6 +65,8 @@ public interface SecurityContext extends Serializable {
 	 * @return {@code true} if the user is logged in
 	 */
 	boolean isLoggedIn();
+	
+	void checkLoggedIn() throws NotLoggedInException;
 
 	/**
 	 * Checks if the logged user has permission to execute an specific operation on a specific resource.

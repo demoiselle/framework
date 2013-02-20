@@ -40,7 +40,7 @@
 
 	<artifactId>demoiselle-framework-quickstart</artifactId>
 	<packaging>jdocbook</packaging>
-	<version>2.3.2-SNAPSHOT</version>
+	<version>2.4.0-ALPHA1-SNAPSHOT</version>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>

@@ -35,7 +35,7 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
-import org.junit.Ignore;
+
 import static junit.framework.Assert.assertEquals;
 import static org.easymock.EasyMock.expect;
 import static org.powermock.api.easymock.PowerMock.replayAll;
@@ -54,7 +54,7 @@ public class AuthorizationExceptionHandlerFactoryTest {
 
 	@Test
 	public void testGetExceptionHandler() {
-		
+
 		ExceptionHandler jsfExceptionHandler = PowerMock.createMock(ExceptionHandler.class);
 
 		ExceptionHandlerFactory jsfFactory = PowerMock.createMock(ExceptionHandlerFactory.class);
@@ -69,7 +69,7 @@ public class AuthorizationExceptionHandlerFactoryTest {
 		assertEquals(handler.getWrapped(), jsfExceptionHandler);
 
 		verifyAll();
-		
+
 	}
 
 }

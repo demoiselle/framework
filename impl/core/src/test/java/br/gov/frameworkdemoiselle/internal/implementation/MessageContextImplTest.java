@@ -38,7 +38,6 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 
 import static org.easymock.EasyMock.expect;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
-import static org.powermock.api.easymock.PowerMock.replay;
 import static org.powermock.api.easymock.PowerMock.replayAll;
 
 import java.util.Locale;
@@ -51,10 +50,8 @@ import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.MessageContext;
 import br.gov.frameworkdemoiselle.message.SeverityType;
@@ -68,19 +65,19 @@ public class MessageContextImplTest {
 	MessageContext messageContext;
 
 	Message m1;
-	
+
 	private ResourceBundle bundle;
 
 	@SuppressWarnings("unused")
 	@Before
 	public void before() {
 		messageContext = new MessageContextImpl();
-		
+
 		Locale locale = Locale.getDefault();
-		
+
 		mockStatic(Beans.class);
 		expect(Beans.getReference(Locale.class)).andReturn(locale).anyTimes();
-				
+
 		expect(Beans.getReference(ResourceBundle.class)).andReturn(bundle).anyTimes();
 		replayAll(Beans.class);
 
@@ -150,20 +147,20 @@ public class MessageContextImplTest {
 		messageContext.add(m1);
 		Assert.assertTrue(messageContext.getMessages().size() == 1);
 		Assert.assertTrue(messageContext.getMessages().get(0).getText().equals(m1.getText()));
-		Assert.assertTrue(messageContext.getMessages().get(0).getSeverity().equals(m1.getSeverity()));		
+		Assert.assertTrue(messageContext.getMessages().get(0).getSeverity().equals(m1.getSeverity()));
 	}
-	
+
 	@Test
 	public void testClearMessages() {
 		Assert.assertTrue(messageContext.getMessages().isEmpty());
 
 		messageContext.add(m1);
-		messageContext.add(m1, null);
-		
+		messageContext.add(m1, (Object[]) null);
+
 		Assert.assertTrue(messageContext.getMessages().size() == 2);
-		
+
 		messageContext.clear();
-		
+
 		Assert.assertTrue(messageContext.getMessages().isEmpty());
 	}
 
@@ -171,88 +168,87 @@ public class MessageContextImplTest {
 	public void testGetMessages() {
 		Assert.assertNotNull(messageContext.getMessages());
 		Assert.assertTrue(messageContext.getMessages().isEmpty());
-		
+
 		messageContext.add("key1");
 		Assert.assertTrue(messageContext.getMessages().size() == 1);
-		
+
 		messageContext.add("key2");
 		Assert.assertTrue(messageContext.getMessages().size() == 2);
-		
+
 		Assert.assertTrue(messageContext.getMessages().get(0).getText().equals("key1"));
 		Assert.assertTrue(messageContext.getMessages().get(1).getText().equals("key2"));
 	}
 
-//	@Test
-//	public void testAddMessageObjectArray() {
-//		Object[] param = { "1", "2" };
-//		messageContext.add(m1, param);
+	// @Test
+	// public void testAddMessageObjectArray() {
+	// Object[] param = { "1", "2" };
+	// messageContext.add(m1, param);
 
-//		Assert.assertTrue(messageContext.getMessages().size() == 1);
-//		Assert.assertTrue(messageContext.getMessages().contains(m1));
-//		Assert.assertNotNull(messageContext.getMessages().get(0).getParameters());
-//		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[0] == param[0]);
-//		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[1] == param[1]);
-//	}
+	// Assert.assertTrue(messageContext.getMessages().size() == 1);
+	// Assert.assertTrue(messageContext.getMessages().contains(m1));
+	// Assert.assertNotNull(messageContext.getMessages().get(0).getParameters());
+	// Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[0] == param[0]);
+	// Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[1] == param[1]);
+	// }
 
-//	@Test
-//	public void testAddStringObjectArray() {
-//		String key = "my.key";
-//		Object[] param = { "1", "2" };
-//		messageContext.add(key, param);
-//
-//		Assert.assertTrue(messageContext.getMessages().size() == 1);
-//		Assert.assertTrue(messageContext.getMessages().get(0).getText().equals(key));
-//		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[0] == param[0]);
-//		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[1] == param[1]);
-//	}
-//
-//	@Test
-//	public void testAddStringLocaleObjectArray() {
-//		String key = "my.key";
-//		Object[] param = { "1", "2" };
-//		Locale locale = Locale.CANADA_FRENCH;
-//		messageContext.add(key, locale, param);
-//
-//		Assert.assertTrue(messageContext.getMessages().size() == 1);
-//		Assert.assertTrue(messageContext.getMessages().get(0).getText().equals(key));
-//		Assert.assertTrue(messageContext.getMessages().get(0).getLocale().equals(locale));
-//		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[0] == param[0]);
-//		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[1] == param[1]);
-//	}
-//
-//	@Test
-//	public void testAddStringLocaleSeverityTypeObjectArray() {
-//		String key = "my.key";
-//		Object[] param = { "1", "2" };
-//		Locale locale = Locale.CANADA_FRENCH;
-//		SeverityType severity = SeverityType.ERROR;
-//		messageContext.add(key, locale, severity, param);
-//
-//		Assert.assertTrue(messageContext.getMessages().size() == 1);
-//		Assert.assertTrue(messageContext.getMessages().get(0).getText().equals(key));
-//		Assert.assertTrue(messageContext.getMessages().get(0).getLocale().equals(locale));
-//		Assert.assertTrue(messageContext.getMessages().get(0).getSeverity().equals(severity));
-//		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[0] == param[0]);
-//		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[1] == param[1]);
-//	}
-//
-//	@Test
-//	public void testAddStringLocaleSeverityTypeStringObjectArray() {
-//		String key = "my.key";
-//		Object[] param = { "1", "2" };
-//		Locale locale = Locale.CANADA_FRENCH;
-//		SeverityType severity = SeverityType.ERROR;
-//		String resource = "myresourcename";
-//		messageContext.add(key, locale, severity, resource, param);
-//
-//		Assert.assertTrue(messageContext.getMessages().size() == 1);
-//		Assert.assertTrue(messageContext.getMessages().get(0).getText().equals(key));
-//		Assert.assertTrue(messageContext.getMessages().get(0).getLocale().equals(locale));
-//		Assert.assertTrue(messageContext.getMessages().get(0).getSeverity().equals(severity));
-//		Assert.assertTrue(messageContext.getMessages().get(0).getResourceName().equals(resource));
-//		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[0] == param[0]);
-//		Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[1] == param[1]);
-//	}
-
+	// @Test
+	// public void testAddStringObjectArray() {
+	// String key = "my.key";
+	// Object[] param = { "1", "2" };
+	// messageContext.add(key, param);
+	//
+	// Assert.assertTrue(messageContext.getMessages().size() == 1);
+	// Assert.assertTrue(messageContext.getMessages().get(0).getText().equals(key));
+	// Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[0] == param[0]);
+	// Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[1] == param[1]);
+	// }
+	//
+	// @Test
+	// public void testAddStringLocaleObjectArray() {
+	// String key = "my.key";
+	// Object[] param = { "1", "2" };
+	// Locale locale = Locale.CANADA_FRENCH;
+	// messageContext.add(key, locale, param);
+	//
+	// Assert.assertTrue(messageContext.getMessages().size() == 1);
+	// Assert.assertTrue(messageContext.getMessages().get(0).getText().equals(key));
+	// Assert.assertTrue(messageContext.getMessages().get(0).getLocale().equals(locale));
+	// Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[0] == param[0]);
+	// Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[1] == param[1]);
+	// }
+	//
+	// @Test
+	// public void testAddStringLocaleSeverityTypeObjectArray() {
+	// String key = "my.key";
+	// Object[] param = { "1", "2" };
+	// Locale locale = Locale.CANADA_FRENCH;
+	// SeverityType severity = SeverityType.ERROR;
+	// messageContext.add(key, locale, severity, param);
+	//
+	// Assert.assertTrue(messageContext.getMessages().size() == 1);
+	// Assert.assertTrue(messageContext.getMessages().get(0).getText().equals(key));
+	// Assert.assertTrue(messageContext.getMessages().get(0).getLocale().equals(locale));
+	// Assert.assertTrue(messageContext.getMessages().get(0).getSeverity().equals(severity));
+	// Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[0] == param[0]);
+	// Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[1] == param[1]);
+	// }
+	//
+	// @Test
+	// public void testAddStringLocaleSeverityTypeStringObjectArray() {
+	// String key = "my.key";
+	// Object[] param = { "1", "2" };
+	// Locale locale = Locale.CANADA_FRENCH;
+	// SeverityType severity = SeverityType.ERROR;
+	// String resource = "myresourcename";
+	// messageContext.add(key, locale, severity, resource, param);
+	//
+	// Assert.assertTrue(messageContext.getMessages().size() == 1);
+	// Assert.assertTrue(messageContext.getMessages().get(0).getText().equals(key));
+	// Assert.assertTrue(messageContext.getMessages().get(0).getLocale().equals(locale));
+	// Assert.assertTrue(messageContext.getMessages().get(0).getSeverity().equals(severity));
+	// Assert.assertTrue(messageContext.getMessages().get(0).getResourceName().equals(resource));
+	// Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[0] == param[0]);
+	// Assert.assertTrue(messageContext.getMessages().get(0).getParameters()[1] == param[1]);
+	// }
 
 }

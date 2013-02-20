@@ -43,10 +43,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.validation.constraints.NotNull;
 
@@ -114,7 +116,7 @@ public class ConfigurationLoader implements Serializable {
 			org.apache.commons.configuration.Configuration config = getConfiguration(resource, type);
 
 			if (config != null) {
-				String key = getKey(field, clazz, config);
+				Key key = new Key(field, clazz, config);
 				Object value = getValue(key, field, config);
 
 				validate(field, key, value, resource);
@@ -123,104 +125,19 @@ public class ConfigurationLoader implements Serializable {
 		}
 	}
 
-	private void setValue(Field field, String key, Object object, Object value) {
+	private void setValue(Field field, Key key, Object object, Object value) {
 		if (value != null) {
 			Reflections.setFieldValue(field, object, value);
-			getLogger().debug(getBundle().getString("configuration-field-loaded", key, field.getName(), value));
+			getLogger().debug(
+					getBundle().getString("configuration-field-loaded", key.toString(), field.getName(), value));
 		}
 	}
 
-	private void validate(Field field, String key, Object value, String resource) {
+	private void validate(Field field, Key key, Object value, String resource) {
 		if (field.isAnnotationPresent(NotNull.class) && value == null) {
-			throw new ConfigurationException(getBundle().getString("configuration-attribute-is-mandatory", key,
-					resource));
+			throw new ConfigurationException(getBundle().getString("configuration-attribute-is-mandatory",
+					key.toString(), resource));
 		}
-	}
-
-	private String getKey(final Field field, final Class<?> clazz,
-			final org.apache.commons.configuration.Configuration config) {
-
-		final String prefix = getPrefix(field, clazz);
-		final StringBuffer key = new StringBuffer();
-
-		key.append(prefix);
-
-		if (field.isAnnotationPresent(Name.class)) {
-			key.append(getKeyByAnnotation(field));
-		} else {
-			key.append(getKeyByConvention(field, prefix, config));
-		}
-
-		return key.toString();
-	}
-
-	private String getPrefix(Field field, Class<?> type) {
-		String prefix = "";
-
-		Configuration classAnnotation = type.getAnnotation(Configuration.class);
-		if (!Strings.isEmpty(classAnnotation.prefix())) {
-
-			prefix = classAnnotation.prefix();
-
-			if (prefix.charAt(prefix.length() - 1) != '.') {
-				getLogger().warn(
-						"ATENÇÃO!!! Informe o ponto (.) ao final da declaração do atributo prefix = \"" + prefix
-								+ "\" da anotação @Configuration da classe " + type.getCanonicalName()
-								+ " para evitar incompatibilidade com as próximas versões do Demoiselle.");
-
-				prefix += ".";
-			}
-		}
-
-		return prefix;
-	}
-
-	private String getKeyByAnnotation(Field field) {
-		String key = null;
-
-		Name nameAnnotation = field.getAnnotation(Name.class);
-		if (Strings.isEmpty(nameAnnotation.value())) {
-			throw new ConfigurationException(getBundle().getString("configuration-name-attribute-cant-be-empty"));
-		} else {
-			key = nameAnnotation.value();
-		}
-
-		return key;
-	}
-
-	private String getKeyByConvention(Field field, String prefix, org.apache.commons.configuration.Configuration config) {
-
-		Set<String> conventions = new HashSet<String>();
-		conventions.add(field.getName());
-		conventions.add(Strings.camelCaseToSymbolSeparated(field.getName(), "."));
-		conventions.add(Strings.camelCaseToSymbolSeparated(field.getName(), "_"));
-		conventions.add(field.getName().toLowerCase());
-		conventions.add(field.getName().toUpperCase());
-
-		int matches = 0;
-		String key = field.getName();
-		for (String convention : conventions) {
-			if (config.containsKey(prefix + convention)) {
-				key = convention;
-				matches++;
-			}
-		}
-
-		if (!field.getName().equals(key)) {
-			getLogger().warn(
-					"ATENÇÃO!!! Anote o atributo " + field.getName() + " da classe "
-							+ field.getDeclaringClass().getCanonicalName() + " com @Name(\"" + key
-							+ "\") para evitar incompatibilidade com as próximas versões do Demoiselle.");
-		}
-
-		if (matches == 0) {
-			getLogger().debug(getBundle().getString("configuration-key-not-found", key, conventions));
-		} else if (matches > 1) {
-			throw new ConfigurationException(getBundle().getString("ambiguous-key", field.getName(),
-					field.getDeclaringClass()));
-		}
-
-		return key;
 	}
 
 	/**
@@ -273,13 +190,16 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> T getValue(String key, Field field, org.apache.commons.configuration.Configuration config) {
+	private <T> T getValue(Key key, Field field, org.apache.commons.configuration.Configuration config) {
 		Object value;
 
 		Class<?> fieldClass = (Class<?>) field.getType();
 
 		if (fieldClass.isArray()) {
 			value = getArray(key, field, config);
+
+		} else if (fieldClass.equals(Map.class)) {
+			value = getMap(key, field, config);
 
 		} else if (fieldClass.equals(Properties.class)) {
 			value = getProperty(key, config);
@@ -294,7 +214,38 @@ public class ConfigurationLoader implements Serializable {
 		return (T) value;
 	}
 
-	private <T> Object getArray(String key, Field field, org.apache.commons.configuration.Configuration config) {
+	private <T> Object getMap(Key key, Field field, org.apache.commons.configuration.Configuration config) {
+		Map<String, Object> value = null;
+
+		String regexp = "^(" + key.getPrefix() + ")((.+)\\.)?(" + key.getName() + ")$";
+		Pattern pattern = Pattern.compile(regexp);
+		Matcher matcher;
+
+		String iterKey;
+		String mapKey;
+		String confKey;
+
+		for (@SuppressWarnings("unchecked")
+		Iterator<String> iter = config.getKeys(); iter.hasNext();) {
+			iterKey = iter.next();
+			matcher = pattern.matcher(iterKey);
+
+			if (matcher.matches()) {
+				confKey = matcher.group(1) + (matcher.group(2) == null ? "" : matcher.group(2)) + matcher.group(4);
+
+				if (value == null) {
+					value = new HashMap<String, Object>();
+				}
+
+				mapKey = matcher.group(3) == null ? "default" : matcher.group(3);
+				value.put(mapKey, config.getProperty(confKey));
+			}
+		}
+
+		return value;
+	}
+
+	private <T> Object getArray(Key key, Field field, org.apache.commons.configuration.Configuration config) {
 		Object value = null;
 
 		Class<?> fieldClass = (Class<?>) field.getType();
@@ -309,7 +260,7 @@ public class ConfigurationLoader implements Serializable {
 			methodName += "Array";
 
 			method = config.getClass().getMethod(methodName, String.class);
-			value = method.invoke(config, key);
+			value = method.invoke(config, key.toString());
 
 		} catch (Throwable cause) {
 			throw new ConfigurationException(getBundle().getString("error-converting-to-type", fieldClass.getName()),
@@ -319,7 +270,7 @@ public class ConfigurationLoader implements Serializable {
 		return value;
 	}
 
-	private <T> Object getBasic(String key, Field field, org.apache.commons.configuration.Configuration config) {
+	private <T> Object getBasic(Key key, Field field, org.apache.commons.configuration.Configuration config) {
 		Object value = null;
 
 		Class<?> fieldClass = (Class<?>) field.getType();
@@ -333,11 +284,11 @@ public class ConfigurationLoader implements Serializable {
 
 			if (!fieldClass.isPrimitive()) {
 				method = config.getClass().getMethod(methodName, String.class, fieldClass);
-				value = method.invoke(config, key, null);
+				value = method.invoke(config, key.toString(), null);
 
-			} else if (config.containsKey(key)) {
+			} else if (config.containsKey(key.toString())) {
 				method = config.getClass().getMethod(methodName, String.class);
-				value = method.invoke(config, key);
+				value = method.invoke(config, key.toString());
 			}
 
 		} catch (Throwable cause) {
@@ -348,11 +299,11 @@ public class ConfigurationLoader implements Serializable {
 		return value;
 	}
 
-	private <T> Object getClass(String key, Field field, org.apache.commons.configuration.Configuration config) {
+	private <T> Object getClass(Key key, Field field, org.apache.commons.configuration.Configuration config) {
 		Object value = null;
 
 		try {
-			String canonicalName = config.getString(key);
+			String canonicalName = config.getString(key.toString());
 
 			if (canonicalName != null) {
 				ClassLoader classLoader = getClassLoaderForClass(canonicalName);
@@ -395,17 +346,17 @@ public class ConfigurationLoader implements Serializable {
 		return "";
 	}
 
-	private Object getProperty(String key, org.apache.commons.configuration.Configuration config) {
+	private Object getProperty(Key key, org.apache.commons.configuration.Configuration config) {
 		Object value = null;
 
 		@SuppressWarnings("unchecked")
-		Iterator<String> iterator = config.getKeys(key);
+		Iterator<String> iterator = config.getKeys(key.toString());
 		if (iterator.hasNext()) {
 			Properties props = new Properties();
 
 			while (iterator.hasNext()) {
 				String fullKey = iterator.next();
-				String prefix = key + ".";
+				String prefix = key.toString() + ".";
 				String unprefixedKey = fullKey.substring(prefix.length());
 				props.put(unprefixedKey, config.getString(fullKey));
 			}
@@ -469,5 +420,60 @@ public class ConfigurationLoader implements Serializable {
 		}
 
 		return bootstrap;
+	}
+
+	private class Key {
+
+		private String prefix;
+
+		private String name;
+
+		private String key;
+
+		private Key(final Field field, final Class<?> type, final org.apache.commons.configuration.Configuration config) {
+
+			this.prefix = type.getAnnotation(Configuration.class).prefix();
+			if (this.prefix == null) {
+				this.prefix = "";
+			}
+
+			if (field.isAnnotationPresent(Name.class)) {
+				this.name = getNameByAnnotation(field);
+			} else {
+				this.name = getNameByField(field);
+			}
+
+			this.key = this.prefix + this.name;
+		}
+
+		private String getNameByAnnotation(Field field) {
+			String key = null;
+
+			Name nameAnnotation = field.getAnnotation(Name.class);
+			if (Strings.isEmpty(nameAnnotation.value())) {
+				throw new ConfigurationException(getBundle().getString("configuration-name-attribute-cant-be-empty"));
+			} else {
+				key = nameAnnotation.value();
+			}
+
+			return key;
+		}
+
+		private String getNameByField(Field field) {
+			return field.getName();
+		}
+
+		public String getPrefix() {
+			return prefix;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		@Override
+		public String toString() {
+			return this.key;
+		}
 	}
 }

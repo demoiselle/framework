@@ -39,7 +39,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>demoiselle-framework-build</artifactId>
-	<version>2.3.2-SNAPSHOT</version>
+	<version>2.4.0-ALPHA1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -65,11 +65,13 @@
 		<module>parent/se</module>
 		<module>parent/archetype</module>
 		<module>impl/core</module>
+		<module>impl/extension/jdbc</module>
 		<module>impl/extension/jpa</module>
 		<module>impl/extension/jsf</module>
 		<module>impl/extension/jta</module>
 		<module>impl/extension/se</module>
 		<module>impl/extension/servlet</module>
+		<module>impl/extension/jaas</module>
 		<module>archetype/minimal</module>
 		<module>archetype/jsf-jpa</module>
 		<module>documentation/quickstart</module>
