@@ -228,6 +228,6 @@ frameworkdemoiselle.security.authorizer.class=projeto.MeuAuthorizerPadrao</progr
 	<caution> <para>O Demoiselle também oferece o componente 
 	<ulink url="http://demoiselle.sourceforge.net/docs/demoiselle-guide-components/1.2.0/html/authorization-master.html">Authorization</ulink> 
 	 que facilita o uso de segurança com JAAS. Obviamente, não é possível utilizá-los ao mesmo tempo. Há arquétipos Maven que já trazem esse componente 
-	 como dependência, por isso sempre confira o arquivo POM.XML e se for o caso retire essa dependência.</para> </caution>
+	 como dependência, por isso sempre confira o arquivo pom.xml e se for o caso retire essa dependência.</para> </caution>
 
 </chapter>
