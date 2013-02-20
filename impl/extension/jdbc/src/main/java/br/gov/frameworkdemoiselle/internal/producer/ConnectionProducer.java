@@ -2,6 +2,7 @@ package br.gov.frameworkdemoiselle.internal.producer;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,18 +56,18 @@ public class ConnectionProducer implements Serializable {
 	}
 
 	public Connection getConnection(String name) {
-		Connection result = null;
+		Connection connection = null;
 
 		if (cache.containsKey(name)) {
-			result = cache.get(name);
+			connection = cache.get(name);
 
 		} else {
 			try {
-				result = producer.create(name).getConnection();
-				result.setAutoCommit(false);
+				connection = producer.create(name).getConnection();
+				disableAutoCommit(connection);
 
-				cache.put(name, result);
-				this.logger.info(bundle.getString("connection-was-created", name));
+				cache.put(name, connection);
+				logger.info(bundle.getString("connection-was-created", name));
 
 			} catch (Exception cause) {
 				// TODO Colocar uma mensagem amigável
@@ -75,15 +76,22 @@ public class ConnectionProducer implements Serializable {
 			}
 		}
 
-		return result;
+		return connection;
+	}
+
+	private void disableAutoCommit(Connection connection) {
+		try {
+			connection.setAutoCommit(false);
+
+		} catch (SQLException cause) {
+			logger.debug(bundle.getString("set-autocommit-failed"));
+		}
 	}
 
 	private String getName(InjectionPoint ip, JDBCConfig config) {
 		String result;
 
 		if (ip != null && ip.getAnnotated() != null && ip.getAnnotated().isAnnotationPresent(Name.class)) {
-			// TODO Quando o comando Beans.getReference é usado para simular injeção, não existe
-			// anotação @Inject então precisamos testar se #getAnnotated() retorna nulo aqui.
 			result = ip.getAnnotated().getAnnotation(Name.class).value();
 
 		} else {
@@ -101,7 +109,7 @@ public class ConnectionProducer implements Serializable {
 		String result = config.getDefaultDataDourceName();
 
 		if (result != null) {
-			this.logger.debug(bundle.getString("getting-default-datasource-name-from-properties", result));
+			logger.debug(bundle.getString("getting-default-datasource-name-from-properties", result));
 		}
 
 		return result;
