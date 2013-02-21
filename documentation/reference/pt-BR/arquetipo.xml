@@ -34,16 +34,4 @@
 			a sessão de documentação chamada <ulink url="http://demoiselle.sourceforge.net/docs/quickstart/">QuickStart</ulink>.
 		</para>
 	</section>
-
-	<section>
-		<title>Vaadin com JPA</title>
-		<para>
-			Uma das principais novidades com relação a esta nova versão do Framework Demoiselle
-			é sua integração mais completa com outras tecnologias de apresentação. Na versão anterior,
-			apesar de ser possível a utilização de outra soluções, não havia ainda facilitadores realmente integrados ao Demoiselle.
-			Seguindo este princípio, um dos arquétipos disponibilizados pelo Framework gera uma aplicação de exemplo, nos mesmo moldes
-			que é disponibilizado para a tecnologia JSF, mas com a tecnologia de apresentação chamada  <ulink url="http://vaadin.com">VAADIN</ulink>.			
-		</para>
-	</section>
-
 </chapter>

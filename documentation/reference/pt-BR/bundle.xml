@@ -47,15 +47,15 @@ button.save=Salvar]]></programlisting>
 	<section>
 		<title>Utilizando Resource Bundle no Demoiselle</title>
 		<para>
-			Na versão 2.X do <emphasis>Demoiselle Framework</emphasis>, existe uma fábrica de Resource Bundle que fica no
+			Na versão 2 do <emphasis>Demoiselle Framework</emphasis>, existe uma fábrica de Resource Bundle que fica no
 			Core e permite seu uso através da injeção ou através de uma instanciação normal. O grande detalhe é que nessa
 			fábrica é injetado um objeto do tipo <literal>Locale</literal>, isso quer dizer que é necessário criar também
 			uma fábrica de <literal>Locale</literal>. Como a definição de <literal>Locale</literal> varia de acordo com a
 			camada de apresentação, essas fábricas foram criadas nas extensões de apresentação:
-			<literal>demoiselle-jsf</literal>, <literal>demoiselle-se</literal> e <literal>demoiselle-vaadin</literal>.
+			<literal>demoiselle-servlet</literal>, <literal>demoiselle-jsf</literal> e <literal>demoiselle-se</literal>.
 			Na extensão <literal>demoiselle-se</literal> a definição do <literal>Locale</literal> é dada através do
 			<literal>Locale</literal> definido na máquina do usuário, enquanto que nas extensões
-			<literal>demoiselle-jsf</literal> e <literal>demoiselle-vaadin</literal> essa definição
+			<literal>demoiselle-servlet</literal> e <literal>demoiselle-jsf</literal> essa definição
 			acontece através do <literal>Locale</literal> do browser do usuário, por se tratarem de extensões para camada
 			de apresentação Web. Por default, a fábrica de Resource Bundle vai injetar um bundle apontando para o arquivo
 			<filename>messages</filename>, mas isso pode ser facilmente alterado através da anotação
