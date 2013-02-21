@@ -201,6 +201,11 @@ public class AbacaxiException {
 	</persistence-unit>
 </persistence>]]></programlisting>
 
+		<para>
+			Caso você esteja persistindo os dados com JDBC, é preciso também informar no arquivo <filename>demoiselle.properties</filename>
+			o endereço da conexão JTA gerenciada. Veja um exemplo utilizando o servidor de aplicações JBoss AS7:
+		</para>
+
 	<tip><para>Caso não esteja utilizando o arquétipo JSF-JPA fornecidos pelo Demoiselle, confira se a dependência para a 
 	extensão está indicada corretamente, no arquivo pom.xml.</para>  
 	<programlisting role="XML"><![CDATA[<dependency>
@@ -208,11 +213,6 @@ public class AbacaxiException {
 	<artifactId>demoiselle-jta</artifactId>
 	<scope>compile</scope>
 </dependency>]]></programlisting></tip>
-
-		<para>
-			Caso você esteja persistindo os dados com JDBC, é preciso também informar no arquivo <filename>demoiselle.properties</filename>
-			o endereço da conexão JTA gerenciada. Veja um exemplo utilizando o servidor de aplicações JBoss AS7:
-		</para>
 		
 <programlisting role="XML"><![CDATA[frameworkdemoiselle.persistence.jndi.name=java:jboss/datasources/ExampleDS]]></programlisting>
 	</section>

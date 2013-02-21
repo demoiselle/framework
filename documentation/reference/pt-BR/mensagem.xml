@@ -234,7 +234,7 @@ messageContext.add(message, new Integer(502), new Date(), "falta de professor");
 		<para>
 			Como já foi citado anteriormente, a implementação <literal>DefaultMessage</literal> busca os textos das mensagens
 			no arquivo de recursos <filename>messages.properties</filename>, o qual possui entradas no conhecido formato
-			<literal>chave = valor</literal>. Todavia, para fazer uso desses textos, é preciso passar a chave da mensagem
+			<literal>chave=valor</literal>. Todavia, para fazer uso desses textos, é preciso passar a chave da mensagem
 			desejada como argumento na invocação do construtor da classe. Este identificador precisa estar entre sinais de
 			chaves, tal como no exemplo a seguir:
 		</para>
@@ -254,23 +254,23 @@ messageContext.add(message, aluno.getNome());]]></programlisting>
 			textos no idioma português brasileiro (i.e., <literal>pt-BR</literal>). Veja que ele contém a chave
 			<literal>ALUNO_INSERIR_OK</literal> usada no exemplo anterior:
 		</para>
-		<programlisting><![CDATA[ALUNO_INSERIR_OK = Aluno {0} inserido com sucesso
-ALUNO_ALTERAR_OK = Aluno {0} alterado com sucesso
-ALUNO_EXCLUIR_OK = Aluno {0} excluído com sucesso]]></programlisting>
+		<programlisting><![CDATA[ALUNO_INSERIR_OK=Aluno {0} inserido com sucesso
+ALUNO_ALTERAR_OK=Aluno {0} alterado com sucesso
+ALUNO_EXCLUIR_OK=Aluno {0} excluído com sucesso]]></programlisting>
 		<para>
 			A fim de prover internacionalização para o idioma inglês americano (i.e., <literal>en-US</literal>) no exemplo
 			em questão, eis o conteúdo do arquivo <filename>messages_en_US.properties</filename>:
 		</para>
-		<programlisting><![CDATA[ALUNO_INSERIR_OK = Student {0} was successfully added
-ALUNO_ALTERAR_OK = Student {0} was successfully modified
-ALUNO_EXCLUIR_OK = Student {0} was successfully removed]]></programlisting>
+		<programlisting><![CDATA[ALUNO_INSERIR_OK=Student {0} was successfully added
+ALUNO_ALTERAR_OK=Student {0} was successfully modified
+ALUNO_EXCLUIR_OK=Student {0} was successfully removed]]></programlisting>
 		<para>
 			Similarmente, o arquivo <filename>messages_fr.properties</filename> se destina a prover as mensagens no idioma
 			francês (independente do país), contendo as linhas a seguir:
 		</para>
-		<programlisting><![CDATA[ALUNO_INSERIR_OK = L'étudiant {0} a été ajouté avec succès
-ALUNO_ALTERAR_OK = L'étudiant {0} a été modifié avec succès
-ALUNO_EXCLUIR_OK = L'étudiant {0} a été supprimé avec succès]]></programlisting>
+		<programlisting><![CDATA[ALUNO_INSERIR_OK=L'étudiant {0} a été ajouté avec succès
+ALUNO_ALTERAR_OK=L'étudiant {0} a été modifié avec succès
+ALUNO_EXCLUIR_OK=L'étudiant {0} a été supprimé avec succès]]></programlisting>
 		<note>
 			<para>
 				As chaves das mensagens (ex: <literal>ALUNO_INSERIR_OK</literal>) devem ser as mesmas em todos os arquivos de
@@ -331,9 +331,9 @@ ALUNO_EXCLUIR_OK = L'étudiant {0} a été supprimé avec succès]]></programlis
 			No exemplo em questão, o texto das mensagens será recuperado do arquivo de recursos <filename>messages.properties</filename>
 			presente no diretório <filename>/src/main/resources/</filename>. Eis o conteúdo desse arquivo:
 		</para>
-		<programlisting><![CDATA[BOOKMARK_DELETE_OK = Bookmark exclu\u00EDdo\: {0}
-BOOKMARK_INSERT_OK = Bookmark inserido: {0}
-BOOKMARK_UPDATE_OK = Bookmark atualizado: {0}]]></programlisting>
+		<programlisting><![CDATA[BOOKMARK_DELETE_OK=Bookmark exclu\u00EDdo\: {0}
+BOOKMARK_INSERT_OK=Bookmark inserido: {0}
+BOOKMARK_UPDATE_OK=Bookmark atualizado: {0}]]></programlisting>
 		<tip>
 			<para>
 				Recomenda-se criar uma interface para cada tipo de severidade (ex: <literal>InfoMessages</literal>,

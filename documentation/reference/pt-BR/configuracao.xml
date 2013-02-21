@@ -27,7 +27,7 @@
 			<itemizedlist>
 				<listitem>
 					<emphasis>arquivo de propriedades</emphasis>: tratam-se de simples arquivos de texto nomeados com a extensão
-					<filename>.properties</filename> e que internamente são escritos com a sintaxe <literal>chave = valor</literal>,
+					<filename>.properties</filename> e que internamente são escritos com a sintaxe <literal>chave=valor</literal>,
 					armazenando uma única chave por linha;
 				</listitem>
 				<listitem>
@@ -88,7 +88,7 @@ public class BookmarkConfig {
 		<para>
 			Na classe os atributos devem ser tratados como sendo somente de leitura, possuindo apenas seus respectivos métodos
 			<emphasis>getter</emphasis>. Valores default podem ser especificados com literais na própria declaração do atributo
-			(ex: <literal>boolean loadInitialData = true</literal>).
+			(ex: <literal>boolean loadInitialData=true</literal>).
 		</para>
 		<note>
 			<para>
@@ -103,8 +103,8 @@ public class BookmarkConfig {
 			No exemplo em questão, será buscado um arquivo de propriedades com o nome <filename>bookmark.properties</filename>
 			contendo as seguintes chaves:
 		</para>
-		<programlisting><![CDATA[application.title = Título da Aplicação
-load.initial.data = true
+		<programlisting><![CDATA[application.title=Título da Aplicação
+load.initial.data=true
 ]]></programlisting>
 		<note>
 			<para>
@@ -223,8 +223,8 @@ public class BookmarkConfig {
 			Neste caso, será buscado um arquivo de propriedades com o nome <filename>bookmark.properties</filename>
 			contendo as seguintes chaves:
 		</para>
-		<programlisting><![CDATA[general.app.title = Título da Aplicação
-general.load.initial.data = true
+		<programlisting><![CDATA[general.app.title=Título da Aplicação
+general.load.initial.data=true
 ]]></programlisting>
 		<tip>
 			<para>
