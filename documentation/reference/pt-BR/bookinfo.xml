@@ -3,11 +3,11 @@
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
 <bookinfo>
 
-	<title>Framework Demoiselle 2.3.0</title>
+	<title>Framework Demoiselle &version;</title>
 	<subtitle>Guia de Referência</subtitle>
 	
-	<abstract>Demoiselle 2.3.0: Framework de Código Aberto para o Desenvolvimento de Aplicações Java EE 6</abstract>
-	<titleabbrev>Demoiselle 2.3.0 - Guia de Referência</titleabbrev>
+	<abstract>Demoiselle &version;: Framework de Código Aberto para o Desenvolvimento de Aplicações Java EE 6</abstract>
+	<titleabbrev>Demoiselle &version; - Guia de Referência</titleabbrev>
 	
 	<xi:include href="authorgroup.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 	
