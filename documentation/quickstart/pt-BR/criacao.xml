@@ -66,7 +66,7 @@
 		</caution>
 		<caution>
 			<para>
-	        	A versão do arquétipo irá variar conforme surjam novas versões do Demoiselle. A imagem deste guia apresenta a versão 2.3.0, contudo,
+	        	A versão do arquétipo irá variar conforme surjam novas versões do Demoiselle. A imagem deste guia apresenta a versão &version;, contudo,
 	        	fique sempre atento para as novas versões do Demoiselle em nosso site e sempre utilize a versão do arquétipo mais recente.
 	        </para>
 		</caution>
