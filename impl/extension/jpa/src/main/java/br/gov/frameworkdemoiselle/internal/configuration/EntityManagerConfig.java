@@ -38,8 +38,12 @@ package br.gov.frameworkdemoiselle.internal.configuration;
 
 import java.io.Serializable;
 
+import org.slf4j.Logger;
+
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.Strings;
 
 /**
  * Configuration class responsible for retrieving specific entity manager parameter values from properties file.
@@ -49,13 +53,37 @@ public class EntityManagerConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	// TODO Implementação apenas para manter a compatibilidade entre a versão 2.3 com a 2.4.
 	@Name("unit.name")
 	private String persistenceUnitName;
+
+	@Name("default.unit.name")
+	private String defaultPersistenceUnitName;
 
 	/**
 	 * Getter for persistence unit name.
 	 */
+	// TODO Implementação apenas para manter a compatibilidade entre a versão 2.3 com a 2.4.
 	public String getPersistenceUnitName() {
 		return persistenceUnitName;
+	}
+
+	/**
+	 * Getter for persistence unit name.
+	 */
+	public String getDefaultPersistenceUnitName() {
+		// TODO Implementação apenas para manter a compatibilidade entre a versão 2.3 com a 2.4.
+		String persistenceUnitName = getPersistenceUnitName();
+		if (!Strings.isEmpty(persistenceUnitName)) {
+			Logger logger = Beans.getReference(Logger.class);
+			logger.info("A propriedade frameworkdemoiselle.persistence.unit.name="
+					+ persistenceUnitName
+					+ " não será suportada nas próximas versões do framework. Para evitar futuros problemas atualize a propriedade para frameworkdemoiselle.persistence.default.unit.name="
+					+ persistenceUnitName);
+
+			return persistenceUnitName;
+		}
+
+		return defaultPersistenceUnitName;
 	}
 }

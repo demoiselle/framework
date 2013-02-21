@@ -157,7 +157,7 @@ public class EntityManagerProducerTest {
 	public void testCreateWithPersistenceUnitNameFromDemoiselleProperties() {
 		expect(annotated.isAnnotationPresent(Name.class)).andReturn(false);
 		expect(ip.getAnnotated()).andReturn(annotated).anyTimes();
-		expect(config.getPersistenceUnitName()).andReturn("pu1");
+		expect(config.getDefaultPersistenceUnitName()).andReturn("pu1");
 
 		replay(annotated, ip, config);
 
@@ -179,7 +179,7 @@ public class EntityManagerProducerTest {
 
 		expect(annotated.isAnnotationPresent(Name.class)).andReturn(false);
 		expect(ip.getAnnotated()).andReturn(annotated).anyTimes();
-		expect(config.getPersistenceUnitName()).andReturn(null);
+		expect(config.getDefaultPersistenceUnitName()).andReturn(null);
 
 		replay(annotated, ip, config, entityManagerFactoryProducer);
 

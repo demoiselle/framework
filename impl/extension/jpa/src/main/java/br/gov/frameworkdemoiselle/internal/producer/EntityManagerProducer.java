@@ -149,7 +149,7 @@ public class EntityManagerProducer implements Serializable {
 	 * @return Persistence unit name.
 	 */
 	private String getFromProperties(EntityManagerConfig config) {
-		String persistenceUnit = config.getPersistenceUnitName();
+		String persistenceUnit = config.getDefaultPersistenceUnitName();
 
 		if (persistenceUnit != null) {
 			this.logger.debug(bundle.getString("getting-persistence-unit-from-properties",

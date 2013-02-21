@@ -93,10 +93,10 @@ public class EntityManagerConfigTest {
 
 	/**
 	 * Test method for
-	 * {@link br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig#getPersistenceUnitName()}.
+	 * {@link br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig#getDefaultPersistenceUnitName()}.
 	 */
 	@Test
-	public void testGetPersistenceUnitName() {
-		assertEquals("PersistenceUnitName", config.getPersistenceUnitName());
+	public void testGetDefaultPersistenceUnitName() {
+		assertEquals("PersistenceUnitName", config.getDefaultPersistenceUnitName());
 	}
 }
