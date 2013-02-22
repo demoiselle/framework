@@ -84,16 +84,6 @@
 		</plugins>
 	</build>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>javax.servlet-api</artifactId>
-				<version>3.0.1</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
 		<dependency>
 			<groupId>br.gov.frameworkdemoiselle</groupId>
@@ -102,7 +92,7 @@
 			<exclusions>
 				<exclusion>
 					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
+					<artifactId>javax.servlet-api</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
