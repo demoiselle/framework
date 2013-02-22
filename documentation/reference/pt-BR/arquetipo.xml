@@ -13,7 +13,7 @@
 	</para>
 
 	<section>
-		<title>Mínimo</title>
+		<title>demoiselle-minimal</title>
 		<para>
 			Fornece um conjunto mínimo de artefatos para criar uma aplicação Java, utiliza o Demoiselle-Minimal-Parent, 
 			sendo útil quando os outros arquétipos disponíveis não se enquadram nas características do projeto a ser criado. 
@@ -21,10 +21,10 @@
 	</section>
 
 	<section>
-		<title>JSF com JPA</title>
+		<title>demoiselle-jsf-jpa</title>
 		<para>
 			Útil para os projetos que precisam de uma arquitetura que utilize as tecnologias JSF e JPA,
-			é baseado no Demoiselle-JSF-Parent
+			é baseado no <emphasis>demoiselle-jsf-parent</emphasis>
 			e já traz uma estrutura padrão de pacotes e todas
 			as dependências necessárias para rodar a aplicação. Ao usar este
 			arquétipo, você terá uma pequena aplicação de

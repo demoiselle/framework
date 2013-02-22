@@ -3,7 +3,7 @@
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
 <chapter id="parentpom">
 
-	<title>Super POM</title>
+	<title>Parent POM</title>
 
 	<para>
 		O Demoiselle faz uso da solução proposta pelo Apache Maven para diversas fases do desenvolvimento de software. 
@@ -28,7 +28,7 @@ Assim, a alteração no pom.xml da aplicação será a minima possível. Outra v
     </tip>
 
 	<section>
-		<title>Demoiselle-Minimal-Parent</title>
+		<title>demoiselle-minimal-parent</title>
 		<para>
 			 Configurações úteis para todas as aplicações que utilizam o framework. 
 			 O ideal é que toda aplicação que utiliza o Demoiselle herde deste POM ou de uma de suas especializações.
@@ -36,7 +36,7 @@ Assim, a alteração no pom.xml da aplicação será a minima possível. Outra v
 	</section>
 
 	<section>
-		<title>Demoiselle-SE-Parent</title>
+		<title>demoiselle-se-parent</title>
 		<para>
 			Especialização do POM mínimo, contendo configurações úteis para todas as aplicações <!-- SE -->Desktop que utilizam o framework, mas sem definição da
 			camada de apresentação que será utilizada.
@@ -44,24 +44,24 @@ Assim, a alteração no pom.xml da aplicação será a minima possível. Outra v
 	</section>
 
 	<section>
-		<title>Demoiselle-Servlet-Parent</title>
+		<title>demoiselle-servlet-parent</title>
 		<para>
 			Especialização do POM mínimo, contendo profiles para Tomcat 6, Tomcat 7, GAE, Glassfish 3, JBoss 6 e JBoss 7, e outras configurações úteis para todas 
-			as aplicações JEE6/Web que utilizam o Demoiselle, mas sem a definição de qual camada de apresentação utilizará. Entre as dependências referênciadas 
-			por este POM está a extensão Demoiselle-Servlet.
+			as aplicações JEE6/Web que utilizam o Demoiselle, mas sem a definição de qual camada de apresentação utilizará. Entre as dependências referenciadas 
+			por este POM está a extensão <emphasis>demoiselle-servlet</emphasis>.
 		</para>
 	</section>
 
 	<section>
-		<title>Demoiselle-JSF-Parent</title>
+		<title>demoiselle-jsf-parent</title>
 		<para>
 			Especialização do POM demoiselle-servlet-parent, contendo configurações úteis e necessárias para todas as aplicações que utilizarão a tecnologia JSF2
-			para camada de apresentação. Entre as dependências referênciadas por este POM está obviamente a extensão Demoiselle-JSF.			
+			para camada de apresentação. Entre as dependências referênciadas por este POM está obviamente a extensão <emphasis>demoiselle-jsf</emphasis>.			
 		</para>
 	</section>
 	
 	<section>
-		<title>Demoiselle-Archetype-Parent</title>
+		<title>demoiselle-archetype-parent</title>
 		<para>
 			Contém configurações comuns a todos os projetos geradores de arquétipos.			
 		</para>

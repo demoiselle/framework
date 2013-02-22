@@ -82,7 +82,7 @@ http://localhost:8080/aplicacao/pagina.jsf?parametroString=valorParametroString]
 	private Parameter<Long> parametro;
 
 	public void metodo() {
-		System.out.println("Valor do parâmetro: " + parametro.getValue());
+		System.out.println("Valor do parametro: " + parametro.getValue());
 	}
 }]]></programlisting>
     </section>
