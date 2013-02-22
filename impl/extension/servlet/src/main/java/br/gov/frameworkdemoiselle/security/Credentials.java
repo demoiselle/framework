@@ -34,39 +34,41 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.util;
+package br.gov.frameworkdemoiselle.security;
 
-import java.io.IOException;
+import java.io.Serializable;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-import br.gov.frameworkdemoiselle.internal.producer.HttpServletRequestProducer;
-import br.gov.frameworkdemoiselle.internal.producer.HttpServletResponseProducer;
+@Named
+@RequestScoped
+public class Credentials implements Serializable {
 
-public class ServletFilter implements Filter {
+	private static final long serialVersionUID = 1L;
 
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
+	private String username;
+
+	private String password;
+
+	public void clear() {
+		this.username = null;
+		this.password = null;
 	}
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-			ServletException {
-
-		Beans.getReference(HttpServletRequestProducer.class).setDelegate((HttpServletRequest) request);
-		Beans.getReference(HttpServletResponseProducer.class).setDelegate((HttpServletResponse) response);
-
-		chain.doFilter(request, response);
+	public String getUsername() {
+		return username;
 	}
 
-	@Override
-	public void destroy() {
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }

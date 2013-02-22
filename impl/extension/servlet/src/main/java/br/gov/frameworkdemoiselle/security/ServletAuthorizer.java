@@ -34,39 +34,45 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.util;
+package br.gov.frameworkdemoiselle.security;
 
-import java.io.IOException;
+import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import br.gov.frameworkdemoiselle.internal.producer.HttpServletRequestProducer;
-import br.gov.frameworkdemoiselle.internal.producer.HttpServletResponseProducer;
+import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
-public class ServletFilter implements Filter {
+@Priority(EXTENSIONS_L1_PRIORITY)
+public class ServletAuthorizer implements Authorizer {
+
+	private static final long serialVersionUID = 1L;
+
+	private static ResourceBundle bundle;
 
 	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
+	public boolean hasRole(String role) {
+		return getRequest().isUserInRole(role);
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-			ServletException {
-
-		Beans.getReference(HttpServletRequestProducer.class).setDelegate((HttpServletRequest) request);
-		Beans.getReference(HttpServletResponseProducer.class).setDelegate((HttpServletResponse) response);
-
-		chain.doFilter(request, response);
+	public boolean hasPermission(String resource, String operation) {
+		throw new DemoiselleException(getBundle().getString("has-permission-not-supported",
+				RequiredPermission.class.getSimpleName()));
 	}
 
-	@Override
-	public void destroy() {
+	private HttpServletRequest getRequest() {
+		return Beans.getReference(HttpServletRequest.class);
+	}
+
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundleProducer.create("demoiselle-servlet-bundle");
+		}
+
+		return bundle;
 	}
 }
