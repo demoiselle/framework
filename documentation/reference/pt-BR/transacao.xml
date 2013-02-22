@@ -218,7 +218,7 @@ public class AbacaxiException {
 	</section>
 		
 	<section>
-		<title>Crie a sua estratégia</title>
+		<title>Criando sua própria estratégia</title>
 		<para>
 			Caso nenhuma das estratégias oferecidas sirva para você, crie a sua. Basta escrever uma
 			classe não-final que implemente a interface <literal>Transaction</literal> do pacote

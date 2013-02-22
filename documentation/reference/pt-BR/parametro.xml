@@ -30,7 +30,7 @@
 
     <section>
         <title>
-        	Como passar parâmetro no Demoiselle 2.
+        	Passagem de parâmetros
         </title>
 		<para>
 			Visando facilitar essa recuperação do parâmetro passado através da URL, foi disponibilizada na versão 2.X do
@@ -45,12 +45,12 @@
 			respectivamente. Veja abaixo como ficaria essa passagem de parâmetros na versão 2.X do Demoiselle.
 		</para>
 		<para>
-			Passagem do parâmetro
+			Passagem do parâmetro:
 		</para>
 		<programlisting><![CDATA[http://localhost:8080/aplicacao/pagina.jsf?parametro=1
 http://localhost:8080/aplicacao/pagina.jsf?parametroString=valorParametroString]]></programlisting>
         <para>
-        	Captura do parâmetro pelo Page Bean
+        	Captura do parâmetro pelo Page Bean:
         </para>
 		<programlisting role="JAVA"><![CDATA[public class Classe {
 
