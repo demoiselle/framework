@@ -70,7 +70,7 @@ public class ServletAuthenticator implements Authenticator {
 			result = true;
 
 		} catch (ServletException cause) {
-			getLogger().debug(getBundle().getString(cause.getLocalizedMessage()));
+			getLogger().debug(getBundle().getString("authentication-failed") + cause.getLocalizedMessage());
 
 			result = false;
 		}

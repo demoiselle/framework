@@ -35,7 +35,10 @@
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
 <web-fragment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd" version="3.0">
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd" version="3.0"
+	id="demoiselle-servlet">
+
+	<name>demoiselle_servlet</name>
 
 	<listener>
 		<listener-class>br.gov.frameworkdemoiselle.util.ServletListener</listener-class>
@@ -50,4 +53,9 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+	<ordering>
+		<before>
+			<others />
+		</before>
+	</ordering>
 </web-fragment>
