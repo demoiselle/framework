@@ -70,8 +70,7 @@ public class ConnectionProducer implements Serializable {
 				logger.info(bundle.getString("connection-was-created", name));
 
 			} catch (Exception cause) {
-				// TODO Colocar uma mensagem amigável
-				throw new DemoiselleException(cause);
+				throw new DemoiselleException(bundle.getString("connection-creation-failed", name), cause);
 			}
 		}
 

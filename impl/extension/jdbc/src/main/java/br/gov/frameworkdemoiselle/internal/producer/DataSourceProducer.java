@@ -110,25 +110,27 @@ public class DataSourceProducer implements Serializable {
 		DataSource result;
 
 		JDBCConfig config = Beans.getReference(JDBCConfig.class);
-		Map<String, String> jndiMap = config.getJndiName();
+		String jndi = config.getJndiName() == null ? null : config.getJndiName().get(dataSourceName);
+		String url = config.getUrl() == null ? null : config.getUrl().get(dataSourceName);
 
-		if (jndiMap != null) {
-			result = initJNDIDataSource(dataSourceName, config);
+		if (jndi != null) {
+			result = initJNDIDataSource(dataSourceName, jndi);
 
-		} else {
+		} else if (url != null) {
 			result = new BasicDataSourceProxy(dataSourceName, config, bundle);
+			
+		} else {
+			throw new DemoiselleException(bundle.getString("uncompleted-datasource-configuration", dataSourceName));
 		}
 
 		return result;
 	}
 
-	private DataSource initJNDIDataSource(String dataSourceName, JDBCConfig config) {
+	private DataSource initJNDIDataSource(String dataSourceName, String jndi) {
 		DataSource result = null;
 
 		try {
 			Context context = new InitialContext();
-			String jndi = config.getJndiName().get(dataSourceName);
-
 			result = (DataSource) context.lookup(jndi);
 
 		} catch (NamingException cause) {
