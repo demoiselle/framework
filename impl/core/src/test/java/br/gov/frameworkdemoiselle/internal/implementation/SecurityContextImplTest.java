@@ -47,12 +47,11 @@ import static org.easymock.EasyMock.expect;
 import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replay;
 import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.reflect.Whitebox.setInternalState;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import static org.powermock.reflect.Whitebox.setInternalState;
 
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -64,13 +63,13 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import br.gov.frameworkdemoiselle.security.Authenticator;
-import br.gov.frameworkdemoiselle.security.User;
-import br.gov.frameworkdemoiselle.security.Authorizer;
-import br.gov.frameworkdemoiselle.security.NotLoggedInException;
 import br.gov.frameworkdemoiselle.internal.bootstrap.AuthenticatorBootstrap;
 import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfigImpl;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.security.Authenticator;
+import br.gov.frameworkdemoiselle.security.Authorizer;
+import br.gov.frameworkdemoiselle.security.NotLoggedInException;
+import br.gov.frameworkdemoiselle.security.User;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -79,7 +78,9 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 public class SecurityContextImplTest {
 
 	private SecurityContextImpl context;
+
 	private SecurityConfigImpl config;
+
 	private ResourceBundle bundle;
 
 	@Before
@@ -94,7 +95,7 @@ public class SecurityContextImplTest {
 	@Test
 	public void testHasPermissionWithSecurityDisabled() {
 		expect(config.isEnabled()).andReturn(false);
-		replayAll(Beans.class,config);
+		replayAll(Beans.class, config);
 
 		try {
 			assertTrue(context.hasPermission(null, null));
@@ -107,23 +108,23 @@ public class SecurityContextImplTest {
 		Class<? extends Authenticator> cache = AuthenticatorImpl.class;
 		List<Class<? extends Authenticator>> cacheList = new ArrayList<Class<? extends Authenticator>>();
 		cacheList.add(cache);
-		
+
 		AuthenticatorBootstrap bootstrap = PowerMock.createMock(AuthenticatorBootstrap.class);
-		
+
 		expect(Beans.getReference(AuthenticatorBootstrap.class)).andReturn(bootstrap).anyTimes();
 		expect(config.getAuthenticatorClass()).andReturn(null).anyTimes();
 		expect(bootstrap.getCache()).andReturn(cacheList);
 		expect(Beans.getReference(AuthenticatorImpl.class)).andReturn(new AuthenticatorImpl());
 		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault()).anyTimes();
 	}
-	
+
 	@Test
 	public void testHasPermissionWithSecurityEnabledAndNotLoggedIn() {
 		mockGetAuthenticator();
 
 		expect(config.isEnabled()).andReturn(true).anyTimes();
-		replayAll(Beans.class,config);
-		
+		replayAll(Beans.class, config);
+
 		bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
 
 		try {
@@ -154,10 +155,10 @@ public class SecurityContextImplTest {
 			fail();
 		}
 	}
-	
+
 	private void loginSuccessfully() {
 		Authenticator authenticator = createMock(Authenticator.class);
-		expect(authenticator.authenticate()).andReturn(true);
+		// expect(authenticator.authenticate()).andReturn(true);
 
 		BeanManager manager = createMock(BeanManager.class);
 		expect(Beans.getBeanManager()).andReturn(manager);
@@ -165,20 +166,20 @@ public class SecurityContextImplTest {
 		PowerMock.expectLastCall();
 
 		User user = createMock(User.class);
-	 	expect(authenticator.getUser()).andReturn(user).anyTimes();
+		expect(authenticator.getUser()).andReturn(user).anyTimes();
 
-	 	setInternalState(context, "authenticator", authenticator);
+		setInternalState(context, "authenticator", authenticator);
 
-	 	replayAll(authenticator, user, Beans.class, manager);
+		replayAll(authenticator, user, Beans.class, manager);
 
-	 	context.login();
-	 	assertTrue(context.isLoggedIn());
+		context.login();
+		assertTrue(context.isLoggedIn());
 	}
 
 	@Test
 	public void testHasRoleWithSecurityDisabled() {
 		expect(config.isEnabled()).andReturn(false);
-		replayAll(Beans.class,config);
+		replayAll(Beans.class, config);
 
 		try {
 			assertTrue(context.hasRole(null));
@@ -190,10 +191,10 @@ public class SecurityContextImplTest {
 	@Test
 	public void testHasRoleWithSecurityEnabledAndNotLoggedIn() {
 		mockGetAuthenticator();
-		
+
 		expect(config.isEnabled()).andReturn(true).anyTimes();
-		replayAll(Beans.class,config);
-		
+		replayAll(Beans.class, config);
+
 		bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
 
 		try {
@@ -241,7 +242,7 @@ public class SecurityContextImplTest {
 	@Test
 	public void testIsLoggedInWithSecurityDisabled() {
 		expect(config.isEnabled()).andReturn(false);
-		replayAll(config,Beans.class);
+		replayAll(config, Beans.class);
 
 		assertTrue(context.isLoggedIn());
 	}
@@ -249,7 +250,7 @@ public class SecurityContextImplTest {
 	@Test
 	public void testLoginWithSecurityDisabled() {
 		expect(config.isEnabled()).andReturn(false).times(2);
-		replayAll(config,Beans.class);
+		replayAll(config, Beans.class);
 		context.login();
 
 		assertTrue(context.isLoggedIn());
@@ -258,9 +259,9 @@ public class SecurityContextImplTest {
 	@Test
 	public void testLoginWithAuthenticationFail() {
 		Authenticator authenticator = createMock(Authenticator.class);
-		
+
 		expect(config.isEnabled()).andReturn(true).anyTimes();
-		expect(authenticator.authenticate()).andReturn(false);
+		// expect(authenticator.authenticate()).andReturn(false);
 		expect(authenticator.getUser()).andReturn(null).anyTimes();
 
 		setInternalState(context, "authenticator", authenticator);
@@ -275,7 +276,7 @@ public class SecurityContextImplTest {
 	public void testLogOutWithSecurityDisabled() {
 		expect(config.isEnabled()).andReturn(false).times(2);
 
-		replayAll(config,Beans.class);
+		replayAll(config, Beans.class);
 
 		try {
 			context.logout();
@@ -288,7 +289,7 @@ public class SecurityContextImplTest {
 	@Test
 	public void testLogOutWithoutPreviousLogin() {
 		Authenticator authenticator = createMock(Authenticator.class);
-		
+
 		expect(authenticator.getUser()).andReturn(null).anyTimes();
 		expect(Beans.getReference(Locale.class)).andReturn(Locale.getDefault()).anyTimes();
 		expect(config.isEnabled()).andReturn(true).anyTimes();
@@ -296,7 +297,7 @@ public class SecurityContextImplTest {
 		setInternalState(context, "authenticator", authenticator);
 
 		replayAll(config, authenticator, Beans.class);
-		
+
 		bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
 
 		try {
@@ -312,7 +313,7 @@ public class SecurityContextImplTest {
 		expect(config.isEnabled()).andReturn(true).anyTimes();
 
 		Authenticator authenticator = createMock(Authenticator.class);
-		expect(authenticator.authenticate()).andReturn(true);
+		// expect(authenticator.authenticate()).andReturn(true);
 		authenticator.unAuthenticate();
 		PowerMock.expectLastCall();
 
@@ -381,8 +382,7 @@ public class SecurityContextImplTest {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public boolean authenticate() {
-			return false;
+		public void authenticate() {
 		}
 
 		@Override

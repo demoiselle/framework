@@ -37,7 +37,7 @@
 package br.gov.frameworkdemoiselle.security;
 
 import java.io.Serializable;
-
+import java.security.Principal;
 
 /**
  * Structure used to handle both authentication and authorizations mechanisms.
@@ -48,8 +48,11 @@ public interface SecurityContext extends Serializable {
 
 	/**
 	 * Executes the login of a user to the application.
+	 * 
+	 * @throws AuthorizationException
+	 *             When the logon process fails, this exception is thrown.
 	 */
-	void login();
+	void login() throws AuthorizationException;
 
 	/**
 	 * Executes the logout of a user.
@@ -65,7 +68,7 @@ public interface SecurityContext extends Serializable {
 	 * @return {@code true} if the user is logged in
 	 */
 	boolean isLoggedIn();
-	
+
 	void checkLoggedIn() throws NotLoggedInException;
 
 	/**
@@ -95,7 +98,15 @@ public interface SecurityContext extends Serializable {
 	/**
 	 * Return the user logged in the session.
 	 * 
+	 * @deprecated See {@link #getCurrentUser()}
 	 * @return the user logged in a specific session. If there is no active session returns {@code null}
 	 */
 	User getUser();
+
+	/**
+	 * Return the user logged in the authenticated session.
+	 * 
+	 * @return the user logged in a specific session. If there is no active authenticated session returns {@code null}
+	 */
+	Principal getCurrentUser();
 }

@@ -39,7 +39,7 @@ package br.gov.frameworkdemoiselle.security;
 import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
 
 import java.io.IOException;
-import java.security.SecurityPermission;
+import java.security.Principal;
 
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
@@ -72,7 +72,7 @@ public class JAASAuthenticator implements Authenticator {
 
 	private static Logger logger;
 
-	private User user;
+	private Principal user;
 
 	private final Subject subject;
 
@@ -87,26 +87,20 @@ public class JAASAuthenticator implements Authenticator {
 	}
 
 	@Override
-	public boolean authenticate() {
-		boolean result = false;
-
+	public void authenticate() throws AuthenticationException {
 		try {
 			LoginContext loginContext = createLoginContext();
-			
+
 			if (loginContext != null) {
 				loginContext.login();
 
 				this.user = createUser(this.credentials.getUsername());
 				this.credentials.clear();
-
-				result = true;
 			}
 
 		} catch (LoginException cause) {
-			getLogger().info(cause.getMessage());
+			throw new AuthenticationException(cause);
 		}
-
-		return result;
 	}
 
 	@Override
@@ -114,52 +108,46 @@ public class JAASAuthenticator implements Authenticator {
 		this.user = null;
 	}
 
-	private User createUser(final String username) {
-		return new User() {
+	private Principal createUser(final String username) {
+		return new Principal() {
 
-			private static final long serialVersionUID = 1L;
+			// TODO Tornar esta classe serializável
+			// private static final long serialVersionUID = 1L;
 
 			@Override
-			public String getId() {
+			public String getName() {
 				return username;
-			}
-
-			@Override
-			public Object getAttribute(Object key) {
-				return null;
-			}
-
-			@Override
-			public void setAttribute(Object key, Object value) {
 			}
 		};
 	}
 
 	@Override
-	public User getUser() {
+	public Principal getUser() {
 		try {
-			
-//			LoginContext
-			
-//			AbstractSecurityContext.
-			
-//			Object securityContext = System.getSecurityManager().getSecurityContext();
-			
-//			System.out.println(securityContext.toString());
-			
+
+			// LoginContext
+
+			// AbstractSecurityContext.
+
+			// Object securityContext = System.getSecurityManager().getSecurityContext();
+
+			// System.out.println(securityContext.toString());
+
 			String name = config.getLoginModuleName();
 			LoginContext loginContext = new LoginContext(name, this.subject);
 			loginContext.login();
-			
+
 			Subject subject2 = loginContext.getSubject();
 			
-			System.out.println(subject2.toString());
-			
+			//subject2.get
+
+			//System.out.println(subject2.toString());
+
 		} catch (LoginException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return this.user;
 	}
 

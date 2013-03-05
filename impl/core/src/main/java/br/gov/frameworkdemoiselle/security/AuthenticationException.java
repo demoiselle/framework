@@ -36,59 +36,44 @@
  */
 package br.gov.frameworkdemoiselle.security;
 
-import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
-
-import java.security.Principal;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-
-import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
-import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
-
-@Priority(EXTENSIONS_L1_PRIORITY)
-public class ServletAuthenticator implements Authenticator {
+/**
+ * Thrown when the authorization process fails.
+ * 
+ * @author SERPRO
+ */
+public class AuthenticationException extends SecurityException {
 
 	private static final long serialVersionUID = 1L;
 
-	private static ResourceBundle bundle;
-
-	@Override
-	public void authenticate() throws AuthenticationException {
-		try {
-			getRequest().login(getCredentials().getUsername(), getCredentials().getPassword());
-
-		} catch (ServletException cause) {
-			throw new AuthenticationException(getBundle().getString("authentication-failed"), cause);
-		}
+	/**
+	 * Constructor with message.
+	 * 
+	 * @param message
+	 *            exception message
+	 */
+	public AuthenticationException(String message) {
+		super(message);
 	}
 
-	@Override
-	public void unAuthenticate() {
-		getCredentials().clear();
-		getRequest().getSession().invalidate();
+	/**
+	 * Constructor with the cause.
+	 * 
+	 * @param cause
+	 *            exception cause
+	 */
+	public AuthenticationException(Throwable cause) {
+		super(cause);
 	}
 
-	@Override
-	public Principal getUser() {
-		return getRequest().getUserPrincipal();
-	}
-
-	protected Credentials getCredentials() {
-		return Beans.getReference(Credentials.class);
-	}
-
-	private HttpServletRequest getRequest() {
-		return Beans.getReference(HttpServletRequest.class);
-	}
-
-	private static ResourceBundle getBundle() {
-		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-servlet-bundle");
-		}
-
-		return bundle;
+	/**
+	 * Constructor with message and cause.
+	 * 
+	 * @param message
+	 *            exception message
+	 * @param cause
+	 *            exception cause
+	 */
+	public AuthenticationException(String message, Throwable cause) {
+		super(message, cause);
 	}
 }

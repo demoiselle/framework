@@ -36,8 +36,12 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import java.io.Serializable;
+import java.security.Principal;
+
 import javax.inject.Named;
 
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.bootstrap.AuthenticatorBootstrap;
 import br.gov.frameworkdemoiselle.internal.bootstrap.AuthorizerBootstrap;
 import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfig;
@@ -45,6 +49,7 @@ import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfigImpl;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
 import br.gov.frameworkdemoiselle.security.AfterLogoutSuccessful;
+import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.Authorizer;
 import br.gov.frameworkdemoiselle.security.NotLoggedInException;
@@ -58,6 +63,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * 
  * @author SERPRO
  */
+@SuppressWarnings("deprecation")
 @Named("securityContext")
 public class SecurityContextImpl implements SecurityContext {
 
@@ -116,13 +122,14 @@ public class SecurityContextImpl implements SecurityContext {
 	 */
 	@Override
 	public boolean hasRole(String role) throws NotLoggedInException {
+		boolean result = true;
+
 		if (getConfig().isEnabled()) {
 			checkLoggedIn();
-			return getAuthorizer().hasRole(role);
-
-		} else {
-			return true;
+			result = getAuthorizer().hasRole(role);
 		}
+
+		return result;
 	}
 
 	/**
@@ -130,24 +137,34 @@ public class SecurityContextImpl implements SecurityContext {
 	 */
 	@Override
 	public boolean isLoggedIn() {
+		boolean result = true;
+
 		if (getConfig().isEnabled()) {
-			return getUser() != null;
-		} else {
-			return true;
+			result = getCurrentUser() != null;
 		}
+
+		return result;
 	}
 
 	/**
 	 * @see br.gov.frameworkdemoiselle.security.SecurityContext#login()
 	 */
 	@Override
-	public void login() {
-		if (getConfig().isEnabled() && getAuthenticator().authenticate()) {
-			Beans.getBeanManager().fireEvent(new AfterLoginSuccessful() {
-
-				private static final long serialVersionUID = 1L;
-
-			});
+	public void login() throws AuthenticationException {
+		if (getConfig().isEnabled()) {
+			
+			try {
+				getAuthenticator().authenticate();
+				
+				Beans.getBeanManager().fireEvent(new AfterLoginSuccessful() {
+					
+					private static final long serialVersionUID = 1L;
+					
+				});
+				
+			} catch (AuthenticationException cause) {
+				throw cause;
+			}
 		}
 	}
 
@@ -168,31 +185,20 @@ public class SecurityContextImpl implements SecurityContext {
 	}
 
 	/**
+	 * @deprecated Use {@link #getCurrentUser()} instead.
 	 * @see br.gov.frameworkdemoiselle.security.SecurityContext#getUser()
 	 */
 	@Override
 	public User getUser() {
-		User user = getAuthenticator().getUser();
+		throw new DemoiselleException("Utilize o método getCurrentUser() ao invés do getUser()");
+	}
+
+	@Override
+	public Principal getCurrentUser() {
+		Principal user = getAuthenticator().getUser();
 
 		if (!getConfig().isEnabled() && user == null) {
-			user = new User() {
-
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void setAttribute(Object key, Object value) {
-				}
-
-				@Override
-				public String getId() {
-					return "demoiselle";
-				}
-
-				@Override
-				public Object getAttribute(Object key) {
-					return null;
-				}
-			};
+			user = new EmptyUser();
 		}
 
 		return user;
@@ -206,6 +212,16 @@ public class SecurityContextImpl implements SecurityContext {
 		if (!isLoggedIn()) {
 			ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
 			throw new NotLoggedInException(bundle.getString("user-not-authenticated"));
+		}
+	}
+
+	private class EmptyUser implements Principal, Serializable {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public String getName() {
+			return "demoiselle";
 		}
 	}
 }

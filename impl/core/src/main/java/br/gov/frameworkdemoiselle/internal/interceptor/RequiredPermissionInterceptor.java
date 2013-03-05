@@ -37,6 +37,7 @@
 package br.gov.frameworkdemoiselle.internal.interceptor;
 
 import java.io.Serializable;
+import java.security.Principal;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -50,7 +51,6 @@ import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.AuthorizationException;
 import br.gov.frameworkdemoiselle.security.RequiredPermission;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
-import br.gov.frameworkdemoiselle.security.User;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
@@ -112,10 +112,10 @@ public class RequiredPermissionInterceptor implements Serializable {
 	 */
 	private String getUsername() {
 		String username = "";
-		User user = getSecurityContext().getUser();
+		Principal user = getSecurityContext().getCurrentUser();
 
-		if (user != null && user.getId() != null) {
-			username = user.getId();
+		if (user != null && user.getName() != null) {
+			username = user.getName();
 		}
 
 		return username;

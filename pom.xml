@@ -49,7 +49,7 @@
 		<relativePath>../internal/parent/build/demoiselle</relativePath>
 	</parent>
 
-	<name>Demoiselle Framework Build Aggregator</name>
+	<name>Demoiselle Framework</name>
 	<description>
 		A liberação de versões do framework deve ser feita a partir deste build, que fará automaticamente o build
 		de todos os artefatos com versionamento sincronizado. Jamais gere uma versão do framework sem utilizar este build.
