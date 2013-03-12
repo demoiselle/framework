@@ -64,7 +64,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import br.gov.frameworkdemoiselle.internal.bootstrap.AuthenticatorBootstrap;
-import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfigImpl;
+import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfig;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.Authorizer;
@@ -79,17 +79,17 @@ public class SecurityContextImplTest {
 
 	private SecurityContextImpl context;
 
-	private SecurityConfigImpl config;
+	private SecurityConfig config;
 
 	private ResourceBundle bundle;
 
 	@Before
 	public void setUpConfig() {
 		context = new SecurityContextImpl();
-		config = createMock(SecurityConfigImpl.class);
+		config = createMock(SecurityConfig.class);
 
 		mockStatic(Beans.class);
-		expect(Beans.getReference(SecurityConfigImpl.class)).andReturn(config).anyTimes();
+		expect(Beans.getReference(SecurityConfig.class)).andReturn(config).anyTimes();
 	}
 
 	@Test

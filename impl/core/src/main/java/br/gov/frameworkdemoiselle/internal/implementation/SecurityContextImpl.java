@@ -45,7 +45,6 @@ import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.bootstrap.AuthenticatorBootstrap;
 import br.gov.frameworkdemoiselle.internal.bootstrap.AuthorizerBootstrap;
 import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfig;
-import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfigImpl;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
 import br.gov.frameworkdemoiselle.security.AfterLogoutSuccessful;
@@ -205,7 +204,7 @@ public class SecurityContextImpl implements SecurityContext {
 	}
 
 	private SecurityConfig getConfig() {
-		return Beans.getReference(SecurityConfigImpl.class);
+		return Beans.getReference(SecurityConfig.class);
 	}
 
 	public void checkLoggedIn() throws NotLoggedInException {

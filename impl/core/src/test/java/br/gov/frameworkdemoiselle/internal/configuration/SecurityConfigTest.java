@@ -16,7 +16,7 @@ public class SecurityConfigTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.config = new SecurityConfigImpl();
+		this.config = new SecurityConfig();
 	}
 
 	@Test
