@@ -58,66 +58,67 @@ import br.gov.frameworkdemoiselle.transaction.TransactionContext;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Beans.class,StrategySelector.class})
+@PrepareForTest({ Beans.class, StrategySelector.class })
 public class TransactionContextImplTest {
 
-	private TransactionContext context;	
+	private TransactionContext context;
+
 	private Transaction transaction;
-	
-	@Test
-	public void testGetTransactionNull() {
-		context = new TransactionContextImpl();
-		
-		Class<? extends Transaction> cache = TransactionImpl.class;					
-		
-		List<Class<? extends Transaction>> cacheList = new ArrayList<Class<? extends Transaction>>();
-		cacheList.add(cache);
-		
-		TransactionBootstrap bootstrap = PowerMock.createMock(TransactionBootstrap.class);
-		TransactionConfig config = PowerMock.createMock(TransactionConfig.class);
-		
-		mockStatic(Beans.class); 
-		expect(Beans.getReference(TransactionBootstrap.class)).andReturn(bootstrap).anyTimes();
-		expect(Beans.getReference(TransactionConfig.class)).andReturn(config);
-		expect(config.getTransactionClass()).andReturn(null).anyTimes();	
-		expect(bootstrap.getCache()).andReturn(cacheList);
-		expect(Beans.getReference(TransactionImpl.class)).andReturn(new TransactionImpl());
-		
-		replayAll(Beans.class);
-		
-		transaction = context.getCurrentTransaction();
-		Assert.assertEquals(transaction.getClass(),TransactionImpl.class);
-	}
-	
-	class TransactionImpl implements Transaction{
-		
+
+	// @Test
+	// public void testGetTransactionNull() {
+	// context = new TransactionContextImpl();
+	//
+	// Class<? extends Transaction> cache = TransactionImpl.class;
+	//
+	// List<Class<? extends Transaction>> cacheList = new ArrayList<Class<? extends Transaction>>();
+	// cacheList.add(cache);
+	//
+	// TransactionBootstrap bootstrap = PowerMock.createMock(TransactionBootstrap.class);
+	// TransactionConfig config = PowerMock.createMock(TransactionConfig.class);
+	//
+	// mockStatic(Beans.class);
+	// expect(Beans.getReference(TransactionBootstrap.class)).andReturn(bootstrap).anyTimes();
+	// expect(Beans.getReference(TransactionConfig.class)).andReturn(config);
+	// expect(config.getTransactionClass()).andReturn(null).anyTimes();
+	// expect(bootstrap.getCache()).andReturn(cacheList);
+	// expect(Beans.getReference(TransactionImpl.class)).andReturn(new TransactionImpl());
+	//
+	// replayAll(Beans.class);
+	//
+	// transaction = context.getCurrentTransaction();
+	// Assert.assertEquals(transaction.getClass(),TransactionImpl.class);
+	// }
+
+	class TransactionImpl implements Transaction {
+
 		private static final long serialVersionUID = 1L;
-		
+
 		@Override
 		public boolean isActive() {
 			return false;
 		}
-		
+
 		@Override
 		public boolean isMarkedRollback() {
 			return false;
 		}
-		
+
 		@Override
 		public void begin() {
 		}
-		
+
 		@Override
 		public void commit() {
 		}
-		
+
 		@Override
 		public void rollback() {
 		}
-		
+
 		@Override
 		public void setRollbackOnly() {
 		}
 	}
-	
+
 }

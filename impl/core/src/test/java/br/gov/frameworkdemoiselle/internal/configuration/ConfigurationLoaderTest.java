@@ -60,7 +60,6 @@ import br.gov.frameworkdemoiselle.annotation.Ignore;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.ConfigType;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
-import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.internal.bootstrap.CoreBootstrap;
 import br.gov.frameworkdemoiselle.util.Beans;
 
@@ -206,55 +205,6 @@ public class ConfigurationLoaderTest {
 	}
 
 	@Configuration
-	public class ConfigurationPropertiesWithTwoAmbiguousKey {
-
-		protected String twoConfiguration;
-
-	}
-
-	@Configuration
-	public class ConfigurationPropertiesWithThreeAmbiguousKey {
-
-		protected String threeConfiguration;
-
-	}
-
-	@Configuration
-	public class ConfigurationPropertiesWithFourAmbiguousKey {
-
-		protected String fourConfiguration;
-
-	}
-
-	@Configuration
-	public class ConfigurationWithConventionUnderline {
-
-		protected String conventionUnderline;
-
-	}
-
-	@Configuration(type = ConfigType.XML)
-	public class ConfigurationXMLWithConventionUnderline {
-
-		protected String conventionUnderline;
-
-	}
-
-	@Configuration
-	public class ConfigurationWithConventionDot {
-
-		protected String conventionDot;
-
-	}
-
-	@Configuration(type = ConfigType.XML)
-	public class ConfigurationXMLWithConventionDot {
-
-		protected String conventionDot;
-
-	}
-
-	@Configuration
 	public class ConfigurationWithConventionAllUpperCase {
 
 		protected String conventionAllUpperCase;
@@ -354,7 +304,7 @@ public class ConfigurationLoaderTest {
 	// ConfigurationPropertiesWithAbsentFile config = new ConfigurationPropertiesWithAbsentFile();
 	//
 	// expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-	// PowerMock.replayAll(CoreBootstrap.class,Beans.class);
+	// PowerMock.replayAll(CoreBootstrap.class, Beans.class);
 	//
 	// try {
 	// configurationLoader.load(config);
@@ -492,54 +442,6 @@ public class ConfigurationLoaderTest {
 	}
 
 	@Test
-	public void testConfigurationWithTwoAmbiguousKey() {
-		ConfigurationPropertiesWithTwoAmbiguousKey config = new ConfigurationPropertiesWithTwoAmbiguousKey();
-
-		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
-
-		try {
-			configurationLoader.load(config);
-			fail();
-		} catch (Exception e) {
-			assertTrue(e instanceof ConfigurationException);
-		}
-
-	}
-
-	@Test
-	public void testConfigurationWithThreeAmbiguousKey() {
-		ConfigurationPropertiesWithThreeAmbiguousKey config = new ConfigurationPropertiesWithThreeAmbiguousKey();
-
-		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
-
-		try {
-			configurationLoader.load(config);
-			fail();
-		} catch (Exception e) {
-			assertTrue(e instanceof ConfigurationException);
-		}
-
-	}
-
-	@Test
-	public void testConfigurationWithFourAmbiguousKey() {
-		ConfigurationPropertiesWithFourAmbiguousKey config = new ConfigurationPropertiesWithFourAmbiguousKey();
-
-		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
-
-		try {
-			configurationLoader.load(config);
-			fail();
-		} catch (Exception e) {
-			assertTrue(e instanceof ConfigurationException);
-		}
-
-	}
-
-	@Test
 	public void testConfigurationWithPrefixNotAmbiguous() {
 		ConfigurationPropertiesSuccessWithPrefixNonAmbiguous config = new ConfigurationPropertiesSuccessWithPrefixNonAmbiguous();
 
@@ -550,49 +452,27 @@ public class ConfigurationLoaderTest {
 		assertEquals("Success", config.success);
 	}
 
-	@Test
-	public void testConfigurationWithConventionUnderline() {
-		ConfigurationWithConventionUnderline config = new ConfigurationWithConventionUnderline();
+	// @Test
+	// public void testConfigurationWithConventionAllLowerCase() {
+	// ConfigurationWithConventionAllLowerCase config = new ConfigurationWithConventionAllLowerCase();
+	//
+	// expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
+	// PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+	//
+	// configurationLoader.load(config);
+	// assertEquals("All LowerCase", config.conventionAllLowerCase);
+	// }
 
-		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
-
-		configurationLoader.load(config);
-		assertEquals("Convention Underline", config.conventionUnderline);
-	}
-
-	@Test
-	public void testConfigurationWithConventionDot() {
-		ConfigurationWithConventionDot config = new ConfigurationWithConventionDot();
-
-		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
-
-		configurationLoader.load(config);
-		assertEquals("Convention Dot", config.conventionDot);
-	}
-
-	@Test
-	public void testConfigurationWithConventionAllLowerCase() {
-		ConfigurationWithConventionAllLowerCase config = new ConfigurationWithConventionAllLowerCase();
-
-		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
-
-		configurationLoader.load(config);
-		assertEquals("All LowerCase", config.conventionAllLowerCase);
-	}
-
-	@Test
-	public void testConfigurationWithConventionAllUpperCase() {
-		ConfigurationWithConventionAllUpperCase config = new ConfigurationWithConventionAllUpperCase();
-
-		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
-
-		configurationLoader.load(config);
-		assertEquals("ALL UPPERCASE", config.conventionAllUpperCase);
-	}
+	// @Test
+	// public void testConfigurationWithConventionAllUpperCase() {
+	// ConfigurationWithConventionAllUpperCase config = new ConfigurationWithConventionAllUpperCase();
+	//
+	// expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
+	// PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+	//
+	// configurationLoader.load(config);
+	// assertEquals("ALL UPPERCASE", config.conventionAllUpperCase);
+	// }
 
 	@Test
 	public void testConfigurationPropertiesErrorWithComplexObject() {
@@ -608,59 +488,36 @@ public class ConfigurationLoaderTest {
 		}
 	}
 
-	@Test
-	public void testConfigurationFromXMLWithPrefix() {
-		ConfigurationFromXMLWithPrefix config = new ConfigurationFromXMLWithPrefix();
+	// @Test
+	// public void testConfigurationFromXMLWithPrefix() {
+	// ConfigurationFromXMLWithPrefix config = new ConfigurationFromXMLWithPrefix();
+	//
+	// expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
+	// PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+	//
+	// configurationLoader.load(config);
+	// assertEquals("ConfigurationTest", config.nameConfiguration);
+	// }
 
-		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+	// @Test
+	// public void testConfigurationXMLWithConventionAllUpperCase() {
+	// ConfigurationXMLWithConventionAllUpperCase config = new ConfigurationXMLWithConventionAllUpperCase();
+	//
+	// expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
+	// PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+	//
+	// configurationLoader.load(config);
+	// assertEquals("ALL UPPERCASE", config.conventionAllUpperCase);
+	// }
 
-		configurationLoader.load(config);
-		assertEquals("ConfigurationTest", config.nameConfiguration);
-	}
-
-	@Test
-	public void testConfigurationXMLWithConventionDot() {
-		ConfigurationXMLWithConventionDot config = new ConfigurationXMLWithConventionDot();
-
-		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
-
-		configurationLoader.load(config);
-		assertEquals("convention.dot", config.conventionDot);
-	}
-
-	@Test
-	public void testConfigurationXMLWithConventionUnderline() {
-		ConfigurationXMLWithConventionUnderline config = new ConfigurationXMLWithConventionUnderline();
-
-		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
-
-		configurationLoader.load(config);
-		assertEquals("Convention_Underline", config.conventionUnderline);
-	}
-
-	@Test
-	public void testConfigurationXMLWithConventionAllUpperCase() {
-		ConfigurationXMLWithConventionAllUpperCase config = new ConfigurationXMLWithConventionAllUpperCase();
-
-		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
-
-		configurationLoader.load(config);
-		assertEquals("ALL UPPERCASE", config.conventionAllUpperCase);
-	}
-
-	@Test
-	public void testConfigurationXMLWithConventionAllLowerCase() {
-		ConfigurationXMLWithConventionAllLowerCase config = new ConfigurationXMLWithConventionAllLowerCase();
-
-		expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
-		PowerMock.replayAll(CoreBootstrap.class, Beans.class);
-
-		configurationLoader.load(config);
-		assertEquals("All LowerCase", config.conventionAllLowerCase);
-	}
-
+	// @Test
+	// public void testConfigurationXMLWithConventionAllLowerCase() {
+	// ConfigurationXMLWithConventionAllLowerCase config = new ConfigurationXMLWithConventionAllLowerCase();
+	//
+	// expect(coreBootstrap.isAnnotatedType(config.getClass())).andReturn(true);
+	// PowerMock.replayAll(CoreBootstrap.class, Beans.class);
+	//
+	// configurationLoader.load(config);
+	// assertEquals("All LowerCase", config.conventionAllLowerCase);
+	// }
 }

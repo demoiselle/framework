@@ -121,145 +121,135 @@ public class RequiredRoleInterceptorTest {
 		replay(this.ic, this.securityContext);
 	}
 
-	/*
-	 * Testing ClassNotAnnoted
-	 */
-	@Test
-	public void testManageClassNotAnnotedAtRequiredRoleWithSingleRole() throws Exception {
-		Object target = new ClassNotAnnoted();
-		String methodName = "requiredRoleWithSingleRole";
-		String[] expectedRoles = { "simpleRoleName" };
-		prepareMock(target, methodName, expectedRoles, true, true);
+	// @Test
+	// public void testManageClassNotAnnotedAtRequiredRoleWithSingleRole() throws Exception {
+	// Object target = new ClassNotAnnoted();
+	// String methodName = "requiredRoleWithSingleRole";
+	// String[] expectedRoles = { "simpleRoleName" };
+	// prepareMock(target, methodName, expectedRoles, true, true);
+	//
+	// interceptor.manage(this.ic);
+	// }
 
-		interceptor.manage(this.ic);
-	}
+	// @Test
+	// public void testManageClassNotAnnotedAtRequiredRoleWithArrayOfRoles() throws Exception {
+	// Object target = new ClassNotAnnoted();
+	// String methodName = "requiredRoleWithArrayOfRoles";
+	// String[] expectedRoles = { "firstRole", "secondRole", "thirdRole", "fourthRole", "fifthRole" };
+	// prepareMock(target, methodName, expectedRoles, true, true);
+	//
+	// interceptor.manage(this.ic);
+	// }
 
-	@Test
-	public void testManageClassNotAnnotedAtRequiredRoleWithArrayOfRoles() throws Exception {
-		Object target = new ClassNotAnnoted();
-		String methodName = "requiredRoleWithArrayOfRoles";
-		String[] expectedRoles = { "firstRole", "secondRole", "thirdRole", "fourthRole", "fifthRole" };
-		prepareMock(target, methodName, expectedRoles, true, true);
+	// @Test
+	// public void testManageClassNotAnnotedAtRequiredRoleWithArrayOfSingleRoleComma() throws Exception {
+	// Object target = new ClassNotAnnoted();
+	// String methodName = "requiredRoleWithArrayOfSingleRoleComma";
+	// String[] expectedRoles = { "firstRole, secondRole" };
+	// prepareMock(target, methodName, expectedRoles, true, true);
+	//
+	// interceptor.manage(this.ic);
+	// }
 
-		interceptor.manage(this.ic);
-	}
+	// @Test
+	// public void testManageClassNotAnnotedAtRequiredRoleWithSingleRoleComma() throws Exception {
+	// Object target = new ClassNotAnnoted();
+	// String methodName = "requiredRoleWithSingleRoleComma";
+	// String[] expectedRoles = { "firstRole, secondRole" };
+	// prepareMock(target, methodName, expectedRoles, true, true);
+	//
+	// interceptor.manage(this.ic);
+	// }
 
-	@Test
-	public void testManageClassNotAnnotedAtRequiredRoleWithArrayOfSingleRoleComma() throws Exception {
-		Object target = new ClassNotAnnoted();
-		String methodName = "requiredRoleWithArrayOfSingleRoleComma";
-		String[] expectedRoles = { "firstRole, secondRole" };
-		prepareMock(target, methodName, expectedRoles, true, true);
+	// @Test
+	// public void testManageClassNotAnnotedAtRequiredRoleWithEmptyValue() throws Exception {
+	// try {
+	// Object target = new ClassNotAnnoted();
+	// String methodName = "requiredRoleWithEmptyValue";
+	// String[] expectedRoles = { "" };
+	// prepareMock(target, methodName, expectedRoles, false, true);
+	//
+	// interceptor.manage(this.ic);
+	// fail();
+	// } catch (AuthorizationException cause) {
+	// }
+	// }
 
-		interceptor.manage(this.ic);
-	}
+	// @Test
+	// public void testManageClassNotAnnotedAtRequiredRoleWithEmptyArray() throws Exception {
+	// try {
+	// Object target = new ClassNotAnnoted();
+	// String methodName = "requiredRoleWithEmptyArray";
+	// String[] expectedRoles = { "" };
+	// prepareMock(target, methodName, expectedRoles, false, true);
+	//
+	// interceptor.manage(this.ic);
+	// fail();
+	// } catch (AuthorizationException cause) {
+	// }
+	// }
 
-	@Test
-	public void testManageClassNotAnnotedAtRequiredRoleWithSingleRoleComma() throws Exception {
-		Object target = new ClassNotAnnoted();
-		String methodName = "requiredRoleWithSingleRoleComma";
-		String[] expectedRoles = { "firstRole, secondRole" };
-		prepareMock(target, methodName, expectedRoles, true, true);
+	// @Test
+	// public void testManageClassNotAnnotedAtRequiredRoleWithArrayOfEmptyString() throws Exception {
+	// try {
+	// Object target = new ClassNotAnnoted();
+	// String methodName = "requiredRoleWithArrayOfEmptyString";
+	// String[] expectedRoles = { "" };
+	// prepareMock(target, methodName, expectedRoles, false, true);
+	//
+	// interceptor.manage(this.ic);
+	// fail();
+	// } catch (AuthorizationException cause) {
+	// }
+	// }
 
-		interceptor.manage(this.ic);
-	}
+	// @Test
+	// public void testManageClassNotAnnotedAtMethodNotAnnoted() throws Exception {
+	// try {
+	// Object target = new ClassNotAnnoted();
+	// String methodName = "methodNotAnnoted";
+	// String[] expectedRoles = { "" };
+	// prepareMock(target, methodName, expectedRoles, false, true);
+	//
+	// interceptor.manage(this.ic);
+	// fail();
+	// } catch (AuthorizationException cause) {
+	// }
+	// }
 
-	@Test
-	public void testManageClassNotAnnotedAtRequiredRoleWithEmptyValue() throws Exception {
-		try {
-			Object target = new ClassNotAnnoted();
-			String methodName = "requiredRoleWithEmptyValue";
-			String[] expectedRoles = { "" };
-			prepareMock(target, methodName, expectedRoles, false, true);
+	// @Test
+	// public void testManageClassAnnotedWithRequiredRoleAtWithoutRole() throws Exception {
+	// Object target = new ClassAnnotedWithRequiredRole();
+	// String methodName = "withoutRole";
+	// String[] expectedRoles = { "classRole" };
+	// prepareMock(target, methodName, expectedRoles, true, true);
+	//
+	// interceptor.manage(this.ic);
+	// }
 
-			interceptor.manage(this.ic);
-			fail();
-		} catch (AuthorizationException cause) {
-		}
-	}
+	// @Test
+	// public void testManageClassAnnotedWithRequiredRoleAtRequiredRoleWithSingleRole() throws Exception {
+	// Object target = new ClassAnnotedWithRequiredRole();
+	// String methodName = "requiredRoleWithSingleRole";
+	// String[] expectedRoles = { "simpleRoleName" };
+	// prepareMock(target, methodName, expectedRoles, true, true);
+	//
+	// interceptor.manage(this.ic);
+	// }
 
-	@Test
-	public void testManageClassNotAnnotedAtRequiredRoleWithEmptyArray() throws Exception {
-		try {
-			Object target = new ClassNotAnnoted();
-			String methodName = "requiredRoleWithEmptyArray";
-			String[] expectedRoles = { "" };
-			prepareMock(target, methodName, expectedRoles, false, true);
-
-			interceptor.manage(this.ic);
-			fail();
-		} catch (AuthorizationException cause) {
-		}
-	}
-
-	@Test
-	public void testManageClassNotAnnotedAtRequiredRoleWithArrayOfEmptyString() throws Exception {
-		try {
-			Object target = new ClassNotAnnoted();
-			String methodName = "requiredRoleWithArrayOfEmptyString";
-			String[] expectedRoles = { "" };
-			prepareMock(target, methodName, expectedRoles, false, true);
-
-			interceptor.manage(this.ic);
-			fail();
-		} catch (AuthorizationException cause) {
-		}
-	}
-
-	@Test
-	public void testManageClassNotAnnotedAtMethodNotAnnoted() throws Exception {
-		try {
-			Object target = new ClassNotAnnoted();
-			String methodName = "methodNotAnnoted";
-			String[] expectedRoles = { "" };
-			prepareMock(target, methodName, expectedRoles, false, true);
-
-			interceptor.manage(this.ic);
-			fail();
-		} catch (AuthorizationException cause) {
-		}
-	}
-
-	/*
-	 * Testing ClassAnnoted
-	 */
-	@Test
-	public void testManageClassAnnotedWithRequiredRoleAtWithoutRole() throws Exception {
-		Object target = new ClassAnnotedWithRequiredRole();
-		String methodName = "withoutRole";
-		String[] expectedRoles = { "classRole" };
-		prepareMock(target, methodName, expectedRoles, true, true);
-
-		interceptor.manage(this.ic);
-	}
-
-	@Test
-	public void testManageClassAnnotedWithRequiredRoleAtRequiredRoleWithSingleRole() throws Exception {
-		Object target = new ClassAnnotedWithRequiredRole();
-		String methodName = "requiredRoleWithSingleRole";
-		String[] expectedRoles = { "simpleRoleName" };
-		prepareMock(target, methodName, expectedRoles, true, true);
-
-		interceptor.manage(this.ic);
-	}
-
-	/*
-	 * Other tests
-	 */
-
-	@Test
-	public void testDoesNotHaveSingleRole() throws Exception {
-		try {
-			Object target = new ClassNotAnnoted();
-			String methodName = "requiredRoleWithSingleRole";
-			String[] expectedRoles = { "simpleRoleName" };
-			prepareMock(target, methodName, expectedRoles, false, true);
-
-			interceptor.manage(this.ic);
-			fail();
-		} catch (AuthorizationException cause) {
-		}
-	}
+	// @Test
+	// public void testDoesNotHaveSingleRole() throws Exception {
+	// try {
+	// Object target = new ClassNotAnnoted();
+	// String methodName = "requiredRoleWithSingleRole";
+	// String[] expectedRoles = { "simpleRoleName" };
+	// prepareMock(target, methodName, expectedRoles, false, true);
+	//
+	// interceptor.manage(this.ic);
+	// fail();
+	// } catch (AuthorizationException cause) {
+	// }
+	// }
 
 	@Test
 	public void testUserNotLoggedIn() throws Exception {
@@ -275,33 +265,32 @@ public class RequiredRoleInterceptorTest {
 		}
 	}
 
-	@Test
-	public void testDoesNotHaveOneOrMoreRolesOfArray() throws Exception {
-		Object target = new ClassNotAnnoted();
-		String methodName = "requiredRoleWithArrayOfRoles";
-		String[] expectedRoles = { "thirdRole", "fourthRole", "fifthRole" };
+	// @Test
+	// public void testDoesNotHaveOneOrMoreRolesOfArray() throws Exception {
+	// Object target = new ClassNotAnnoted();
+	// String methodName = "requiredRoleWithArrayOfRoles";
+	// String[] expectedRoles = { "thirdRole", "fourthRole", "fifthRole" };
+	//
+	// expect(this.securityContext.hasRole("firstRole")).andReturn(false);
+	// expect(this.securityContext.hasRole("secondRole")).andReturn(false);
+	//
+	// prepareMock(target, methodName, expectedRoles, true, true);
+	//
+	// interceptor.manage(this.ic);
+	// }
 
-		expect(this.securityContext.hasRole("firstRole")).andReturn(false);
-		expect(this.securityContext.hasRole("secondRole")).andReturn(false);
-
-		prepareMock(target, methodName, expectedRoles, true, true);
-
-		interceptor.manage(this.ic);
-	}
-
-	@Test
-	public void testHasMoreRolesThenArray() throws Exception {
-		Object target = new ClassNotAnnoted();
-		String methodName = "requiredRoleWithArrayOfRoles";
-		String[] expectedRoles = { "thirdRole", "fourthRole", "fifthRole" };
-
-		expect(this.securityContext.hasRole("firstRole")).andReturn(false);
-		expect(this.securityContext.hasRole("secondRole")).andReturn(false);
-		expect(this.securityContext.hasRole("sixthRole")).andReturn(true);
-
-		prepareMock(target, methodName, expectedRoles, true, true);
-
-		interceptor.manage(this.ic);
-	}
-
+	// @Test
+	// public void testHasMoreRolesThenArray() throws Exception {
+	// Object target = new ClassNotAnnoted();
+	// String methodName = "requiredRoleWithArrayOfRoles";
+	// String[] expectedRoles = { "thirdRole", "fourthRole", "fifthRole" };
+	//
+	// expect(this.securityContext.hasRole("firstRole")).andReturn(false);
+	// expect(this.securityContext.hasRole("secondRole")).andReturn(false);
+	// expect(this.securityContext.hasRole("sixthRole")).andReturn(true);
+	//
+	// prepareMock(target, methodName, expectedRoles, true, true);
+	//
+	// interceptor.manage(this.ic);
+	// }
 }
