@@ -46,8 +46,6 @@ import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verify;
 import static org.powermock.reflect.Whitebox.setInternalState;
 
-import java.util.Locale;
-
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
@@ -62,11 +60,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Beans.class })
@@ -76,21 +71,12 @@ public class JTATransactionTest {
 
 	private JTATransaction jtaTransaction;
 	
-	private Logger logger;
-	
-	private ResourceBundle bundle;
-
 	@Before
 	public void setUp() {
-
 		userTransaction = createMock(UserTransaction.class);
 		jtaTransaction = new JTATransaction();
-		logger = LoggerFactory.getLogger(JTATransaction.class);
-		bundle = new ResourceBundle("demoiselle-jta-bundle",Locale.getDefault());
 
 		setInternalState(jtaTransaction, UserTransaction.class, userTransaction);
-		setInternalState(jtaTransaction, Logger.class, logger);
-		setInternalState(jtaTransaction, ResourceBundle.class, bundle);
 	}
 
 	@Test

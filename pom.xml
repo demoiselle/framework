@@ -71,7 +71,9 @@
 		<module>impl/extension/jta</module>
 		<module>impl/extension/se</module>
 		<module>impl/extension/servlet</module>
+<!--
 		<module>impl/extension/jaas</module>
+-->
 		<module>archetype/minimal</module>
 		<module>archetype/jsf-jpa</module>
 		<module>documentation/quickstart</module>
