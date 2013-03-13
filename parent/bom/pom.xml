@@ -104,11 +104,13 @@
 				<artifactId>demoiselle-se</artifactId>
 				<version>2.4.0-BETA1-SNAPSHOT</version>
 			</dependency>
+<!--
 			<dependency>
 				<groupId>br.gov.frameworkdemoiselle</groupId>
 				<artifactId>demoiselle-jaas</artifactId>
 				<version>2.4.0-BETA1-SNAPSHOT</version>
 			</dependency>
+-->
 
 			<!-- jsr-299 api -->
 			<dependency>
