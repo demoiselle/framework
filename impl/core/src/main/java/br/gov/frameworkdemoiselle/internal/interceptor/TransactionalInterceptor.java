@@ -36,168 +36,32 @@
  */
 package br.gov.frameworkdemoiselle.internal.interceptor;
 
-import java.io.Serializable;
-
-import javax.enterprise.context.ContextNotActiveException;
+import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 import org.slf4j.Logger;
 
-import br.gov.frameworkdemoiselle.exception.ApplicationException;
-import br.gov.frameworkdemoiselle.internal.implementation.TransactionInfo;
-import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
-import br.gov.frameworkdemoiselle.transaction.Transaction;
-import br.gov.frameworkdemoiselle.transaction.TransactionContext;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
-import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
+/**
+ * @author 80342167553
+ */
+@Deprecated
 @Interceptor
 @Transactional
-public class TransactionalInterceptor implements Serializable {
+public class TransactionalInterceptor extends br.gov.frameworkdemoiselle.transaction.TransactionalInterceptor {
 
 	private static final long serialVersionUID = 1L;
 
-	private TransactionContext transactionContext;
+	@Inject
+	private Logger logger;
 
-	private TransactionInfo transactionInfo;
-
-	private static ResourceBundle bundle;
-
-	private static Logger logger;
-
-	private TransactionContext getTransactionContext() {
-		if (this.transactionContext == null) {
-			this.transactionContext = Beans.getReference(TransactionContext.class);
-		}
-
-		return this.transactionContext;
-	}
-
-	private TransactionInfo newTransactionInfo() {
-		TransactionInfo instance;
-
-		try {
-			instance = Beans.getReference(TransactionInfo.class);
-			instance.getCounter();
-
-		} catch (ContextNotActiveException cause) {
-			instance = new TransactionInfo() {
-
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public boolean isOwner() {
-					return false;
-				}
-			};
-		}
-
-		return instance;
-	}
-
-	private TransactionInfo getTransactionInfo() {
-		if (this.transactionInfo == null) {
-			this.transactionInfo = newTransactionInfo();
-		}
-
-		return this.transactionInfo;
-	}
-
+	@Override
 	@AroundInvoke
-	public Object manage(final InvocationContext ic) throws Exception {
-		initiate(ic);
-
-		Object result = null;
-		try {
-			getLogger().debug(getBundle().getString("transactional-execution", ic.getMethod().toGenericString()));
-			result = ic.proceed();
-
-		} catch (Exception cause) {
-			handleException(cause);
-			throw cause;
-
-		} finally {
-			complete(ic);
-		}
-
-		return result;
-	}
-
-	private void initiate(final InvocationContext ic) {
-		Transaction transaction = getTransactionContext().getCurrentTransaction();
-		TransactionInfo transactionInfo = getTransactionInfo();
-
-		if (!transaction.isActive()) {
-			transaction.begin();
-			transactionInfo.markAsOwner();
-			getLogger().info(getBundle().getString("begin-transaction"));
-		}
-
-		transactionInfo.incrementCounter();
-	}
-
-	private void handleException(final Exception cause) {
-		Transaction transaction = getTransactionContext().getCurrentTransaction();
-
-		if (!transaction.isMarkedRollback()) {
-			boolean rollback = false;
-			ApplicationException annotation = cause.getClass().getAnnotation(ApplicationException.class);
-
-			if (annotation == null || annotation.rollback()) {
-				rollback = true;
-			}
-
-			if (rollback) {
-				transaction.setRollbackOnly();
-				getLogger().info(getBundle().getString("transaction-marked-rollback", cause.getMessage()));
-			}
-		}
-	}
-
-	private void complete(final InvocationContext ic) {
-		Transaction transaction = getTransactionContext().getCurrentTransaction();
-		TransactionInfo transactionInfo = getTransactionInfo();
-		transactionInfo.decrementCounter();
-
-		if (transactionInfo.getCounter() == 0 && transaction.isActive()) {
-
-			if (transactionInfo.isOwner()) {
-				if (transaction.isMarkedRollback()) {
-					transaction.rollback();
-					transactionInfo.clear();
-
-					getLogger().info(getBundle().getString("transaction-rolledback"));
-
-				} else {
-					transaction.commit();
-					transactionInfo.clear();
-
-					getLogger().info(getBundle().getString("transaction-commited"));
-				}
-			}
-
-		} else if (transactionInfo.getCounter() == 0 && !transaction.isActive()) {
-			getLogger().info(getBundle().getString("transaction-already-finalized"));
-		}
-	}
-
-	private static ResourceBundle getBundle() {
-		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
-		}
-
-		return bundle;
-	}
-
-	private static Logger getLogger() {
-		if (logger == null) {
-			logger = LoggerProducer.create(TransactionalInterceptor.class);
-		}
-
-		return logger;
+	public Object manage(InvocationContext ic) throws Exception {
+		logger.warn("ATENÇÃO! Substitua a entrada \"br.gov.frameworkdemoiselle.internal.interceptor.TransactionalInterceptor\" no beans.xml por \"br.gov.frameworkdemoiselle.transaction.TransactionalInterceptor\" para garantir a compatibilidade com futuras versões.");
+		return super.manage(ic);
 	}
 }

@@ -44,7 +44,6 @@ import javax.enterprise.context.RequestScoped;
 
 import org.slf4j.Logger;
 
-import br.gov.frameworkdemoiselle.internal.interceptor.ExceptionHandlerInterceptor;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.message.DefaultMessage;
@@ -114,7 +113,7 @@ public class MessageContextImpl implements Serializable, MessageContext {
 
 	private static Logger getLogger() {
 		if (logger == null) {
-			logger = LoggerProducer.create(ExceptionHandlerInterceptor.class);
+			logger = LoggerProducer.create(MessageContext.class);
 		}
 
 		return logger;
