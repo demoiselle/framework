@@ -41,6 +41,7 @@ import java.util.ListIterator;
 
 import br.gov.frameworkdemoiselle.internal.implementation.DefaultTransaction;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
+import br.gov.frameworkdemoiselle.transaction.TransactionContext;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
@@ -142,6 +143,8 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 		} else {
 			nonTransactionalInsert(bean);
 		}
+		
+		System.out.println();
 	}
 
 	@Transactional
@@ -188,6 +191,7 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	}
 
 	private boolean isRunningTransactionalOperations() {
-		return !(Beans.getReference(Transaction.class) instanceof DefaultTransaction);
+		Transaction transaction = Beans.getReference(TransactionContext.class).getCurrentTransaction();
+		return !(transaction instanceof DefaultTransaction);
 	}
 }
