@@ -73,26 +73,27 @@ public class ResourceBundleProducer implements Serializable {
 	 *            baseName
 	 */
 	public static ResourceBundle create(String baseName, Locale locale) {
-		ResourceBundle bundle = null;
-		bundle = new ResourceBundle(baseName, locale);
-		return bundle;
+		return new ResourceBundle(baseName, locale);
 	}
 
 	/**
 	 * This method is the factory default for ResourceBundle. It creates the ResourceBundle based on a file called
 	 * messages.properties.
 	 */
-	@Produces
 	@Default
-	public ResourceBundle create(InjectionPoint ip) {
-		String baseName;
+	@Produces
+	public ResourceBundle createDefault(InjectionPoint ip) {
+		return create("messages", Beans.getReference(Locale.class));
+	}
 
-		if (ip != null && ip.getAnnotated().isAnnotationPresent(Name.class)) {
-			baseName = ip.getAnnotated().getAnnotation(Name.class).value();
-		} else {
-			baseName = "messages";
-		}
-
+	/**
+	 * This method is the factory default for ResourceBundle. It creates the ResourceBundle based on a file called
+	 * messages.properties.
+	 */
+	@Name("")
+	@Produces
+	public ResourceBundle createNamed(InjectionPoint ip) {
+		String baseName = ip.getAnnotated().getAnnotation(Name.class).value();
 		return create(baseName, Beans.getReference(Locale.class));
 	}
 }

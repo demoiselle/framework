@@ -94,7 +94,7 @@ public class ResourceBundleProducerTest {
 	 @Test
 	 public void testCreateNullInjectionPoint() {
 		 ResourceBundleProducer factory = new ResourceBundleProducer();
-		 ResourceBundle resourceBundle = factory.create((InjectionPoint) null); 
+		 ResourceBundle resourceBundle = factory.createDefault((InjectionPoint) null); 
 		 Assert.assertNotNull(resourceBundle);
 	 }
 
@@ -114,7 +114,7 @@ public class ResourceBundleProducerTest {
 		replay(ip);
 
 		ResourceBundleProducer factory = new ResourceBundleProducer();
-		Assert.assertNotNull(factory.create(ip));
+		Assert.assertNotNull(factory.createDefault(ip));
 	}
 
 	// @Test
