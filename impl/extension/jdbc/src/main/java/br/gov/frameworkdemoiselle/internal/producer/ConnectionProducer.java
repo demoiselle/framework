@@ -50,8 +50,20 @@ public class ConnectionProducer implements Serializable {
 
 	@Default
 	@Produces
-	public Connection create(InjectionPoint ip, JDBCConfig config) {
-		String name = getName(ip, config);
+	public Connection createDefault(InjectionPoint ip, JDBCConfig config) {
+		String name = getNameFromProperties(config);
+
+		if (name == null) {
+			name = getNameFromCache();
+		}
+
+		return new ConnectionProxy(name);
+	}
+
+	@Name("")
+	@Produces
+	public Connection createNamed(InjectionPoint ip, JDBCConfig config) {
+		String name = ip.getAnnotated().getAnnotation(Name.class).value();
 		return new ConnectionProxy(name);
 	}
 
@@ -84,23 +96,6 @@ public class ConnectionProducer implements Serializable {
 		} catch (SQLException cause) {
 			logger.debug(bundle.getString("set-autocommit-failed"));
 		}
-	}
-
-	private String getName(InjectionPoint ip, JDBCConfig config) {
-		String result;
-
-		if (ip != null && ip.getAnnotated() != null && ip.getAnnotated().isAnnotationPresent(Name.class)) {
-			result = ip.getAnnotated().getAnnotation(Name.class).value();
-
-		} else {
-			result = getNameFromProperties(config);
-
-			if (result == null) {
-				result = getNameFromCache();
-			}
-		}
-
-		return result;
 	}
 
 	private String getNameFromProperties(JDBCConfig config) {

@@ -99,8 +99,20 @@ public class EntityManagerProducer implements Serializable {
 	 */
 	@Default
 	@Produces
-	public EntityManager create(InjectionPoint ip, EntityManagerConfig config) {
-		String persistenceUnit = getPersistenceUnit(ip, config);
+	public EntityManager createDefault(InjectionPoint ip, EntityManagerConfig config) {
+		String persistenceUnit = getFromProperties(config);
+
+		if (persistenceUnit == null) {
+			persistenceUnit = getFromXML();
+		}
+
+		return new EntityManagerProxy(persistenceUnit);
+	}
+
+	@Name("")
+	@Produces
+	public EntityManager createNamed(InjectionPoint ip, EntityManagerConfig config) {
+		String persistenceUnit = ip.getAnnotated().getAnnotation(Name.class).value();
 		return new EntityManagerProxy(persistenceUnit);
 	}
 
@@ -122,25 +134,6 @@ public class EntityManagerProducer implements Serializable {
 		return entityManager;
 	}
 
-	private String getPersistenceUnit(InjectionPoint ip, EntityManagerConfig config) {
-		String persistenceUnitName;
-
-		if (ip != null && ip.getAnnotated()!=null && ip.getAnnotated().isAnnotationPresent(Name.class)) {
-			//Quando o comando Beans.getReference é usado para simular injeção, não existe
-			//anotação @Inject então precisamos testar se #getAnnotated() retorna nulo aqui.
-			persistenceUnitName = ip.getAnnotated().getAnnotation(Name.class).value();
-
-		} else {
-			persistenceUnitName = getFromProperties(config);
-
-			if (persistenceUnitName == null) {
-				persistenceUnitName = getFromXML();
-			}
-		}
-
-		return persistenceUnitName;
-	}
-
 	/**
 	 * Tries to get persistence unit name from demoiselle.properties.
 	 * 
@@ -160,8 +153,8 @@ public class EntityManagerProducer implements Serializable {
 	}
 
 	/**
-	 * Uses persistence.xml to get informations about which persistence unit to use. Throws DemoiselleException if
-	 * more than one Persistence Unit is defined.
+	 * Uses persistence.xml to get informations about which persistence unit to use. Throws DemoiselleException if more
+	 * than one Persistence Unit is defined.
 	 * 
 	 * @return Persistence Unit Name
 	 */
