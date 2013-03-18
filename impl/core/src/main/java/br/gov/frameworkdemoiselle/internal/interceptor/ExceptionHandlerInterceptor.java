@@ -65,3 +65,4 @@ public class ExceptionHandlerInterceptor extends br.gov.frameworkdemoiselle.exce
 		return super.manage(ic);
 	}
 }
+
