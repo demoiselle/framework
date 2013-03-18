@@ -93,9 +93,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 		CoreBootstrap bootstrap = Beans.getReference(CoreBootstrap.class);
 
 		if (!bootstrap.isAnnotatedType(type)) {
-			getLogger().debug(
-					getBundle().getString("proxy-detected", type,
-							type.getSuperclass()));
+			getLogger().debug(getBundle().getString("proxy-detected", type, type.getSuperclass()));
 			type = type.getSuperclass();
 		}
 
@@ -103,8 +101,8 @@ public class ExceptionHandlerInterceptor implements Serializable {
 	}
 
 	/**
-	 * If there is an handler in the current class or superClass for the expected exception, then this method will be returned; Else
-	 * returns null;
+	 * If there is an handler in the current class or superClass for the expected exception, then this method will be
+	 * returned; Else returns null;
 	 * 
 	 * @param type
 	 * @param causeClass
@@ -112,17 +110,15 @@ public class ExceptionHandlerInterceptor implements Serializable {
 	 */
 	private final Method getMethod(final Class<?> type, final Class<?> causeClass) {
 		Method handler = null;
+		Map<Class<?>, Method> map = cache.get(type);
 
-		if (cache.containsKey(type) ){
-			Map<Class<?>, Method> map = cache.get(type);
-			if(Throwable.class.isAssignableFrom(causeClass)){
-				if(map.containsKey(causeClass)){
-					handler = map.get(causeClass);
-				}else{
-					handler = getMethod(type, causeClass.getSuperclass());
-				}
-			}			
-		}		
+		if (map != null && Throwable.class.isAssignableFrom(causeClass)) {
+			if (map.containsKey(causeClass)) {
+				handler = map.get(causeClass);
+			} else {
+				handler = getMethod(type, causeClass.getSuperclass());
+			}
+		}
 
 		return handler;
 	}

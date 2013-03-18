@@ -210,19 +210,6 @@ public class ExceptionHandlerInterceptorTest {
 	}
 
 	@Test
-	public void manageWithClassThatContainsParentExceptionHandleMethod() throws Exception {
-		ClassWithMethodsAnnotatedWithExceptionHandler classWithException = new ClassWithMethodsAnnotatedWithExceptionHandler();
-		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
-		expect(this.context.proceed()).andThrow(new DemoiselleException(""));
-		expect(this.coreBootstrap.isAnnotatedType(ClassWithMethodsAnnotatedWithExceptionHandler.class)).andReturn(true);
-		replayAll(this.context, this.coreBootstrap, Beans.class);
-
-		assertNull(this.interceptor.manage(this.context));
-		assertEquals(1, classWithException.times);
-		verifyAll();
-	}
-
-	@Test
 	public void manageWithClassThatContainsHandleMethodWithDiferentException() throws Exception {
 		ClassWithMethodsAnnotatedWithExceptionHandler classWithException = new ClassWithMethodsAnnotatedWithExceptionHandler();
 		expect(this.context.getTarget()).andReturn(classWithException).anyTimes();
@@ -352,4 +339,3 @@ public class ExceptionHandlerInterceptorTest {
 		}
 	}
 }
-
