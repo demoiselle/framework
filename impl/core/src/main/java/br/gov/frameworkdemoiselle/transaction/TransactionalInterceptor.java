@@ -105,7 +105,7 @@ public class TransactionalInterceptor implements Serializable {
 
 	@AroundInvoke
 	public Object manage(final InvocationContext ic) throws Exception {
-		initiate(ic);
+		initiate();
 
 		Object result = null;
 		try {
@@ -117,13 +117,13 @@ public class TransactionalInterceptor implements Serializable {
 			throw cause;
 
 		} finally {
-			complete(ic);
+			complete();
 		}
 
 		return result;
 	}
 
-	private void initiate(final InvocationContext ic) {
+	private void initiate() {
 		Transaction transaction = getTransactionContext().getCurrentTransaction();
 		TransactionInfo transactionInfo = getTransactionInfo();
 
@@ -154,7 +154,7 @@ public class TransactionalInterceptor implements Serializable {
 		}
 	}
 
-	private void complete(final InvocationContext ic) {
+	private void complete() {
 		Transaction transaction = getTransactionContext().getCurrentTransaction();
 		TransactionInfo transactionInfo = getTransactionInfo();
 		transactionInfo.decrementCounter();
