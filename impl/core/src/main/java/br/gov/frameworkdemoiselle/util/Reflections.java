@@ -43,6 +43,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class Reflections {
@@ -129,6 +130,17 @@ public final class Reflections {
 		}
 
 		return fields.toArray(new Field[0]);
+	}
+
+	public static List<Field> getNonStaticFields(Class<?> type) {
+		List<Field> fields = new ArrayList<Field>();
+
+		if (type != null) {
+			fields.addAll(Arrays.asList(getNonStaticDeclaredFields(type)));
+			fields.addAll(getNonStaticFields(type.getSuperclass()));
+		}
+
+		return fields;
 	}
 
 	public static <T> T instantiate(Class<T> clasz) {
