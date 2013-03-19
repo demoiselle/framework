@@ -184,8 +184,7 @@ public class ConfigurationLoader implements Serializable {
 					if (url != null) {
 						result = new DataConfiguration(new PropertiesConfiguration(url));
 					}else{
-						throw new ConfigurationException(
-								getBundle().getString("resource-not-found", resource + ".properties"));
+						getLogger().warn(getBundle().getString("resource-not-found", resource + ".properties"));
 					}
 
 					break;
@@ -196,8 +195,7 @@ public class ConfigurationLoader implements Serializable {
 					if (url != null) {
 						result = new DataConfiguration(new XMLConfiguration(url));
 					}else{
-						throw new ConfigurationException(
-								getBundle().getString("resource-not-found", resource + ".xml"));
+						getLogger().warn(getBundle().getString("resource-not-found", resource + ".xml"));
 					}
 
 					break;
