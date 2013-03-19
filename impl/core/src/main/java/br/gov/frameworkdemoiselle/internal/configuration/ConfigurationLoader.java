@@ -1,4 +1,5 @@
 /*
+/*
  * Demoiselle Framework
  * Copyright (C) 2010 SERPRO
  * ----------------------------------------------------------------------------
@@ -63,8 +64,10 @@ import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.ConfigType;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
+import br.gov.frameworkdemoiselle.internal.bootstrap.CoreBootstrap;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
@@ -83,6 +86,8 @@ public class ConfigurationLoader implements Serializable {
 
 	private Logger logger;
 
+	private CoreBootstrap bootstrap;
+
 	/**
 	 * Loads a config class filling it with the corresponding values.
 	 * 
@@ -93,9 +98,14 @@ public class ConfigurationLoader implements Serializable {
 	public void load(Object object) throws ConfigurationException {
 		Class<?> config = object.getClass();
 
+		if (!getBootstrap().isAnnotatedType(config)) {
+			config = config.getSuperclass();
+			getLogger().debug(getBundle().getString("proxy-detected", config, config.getClass().getSuperclass()));
+		}
+
 		getLogger().debug(getBundle().getString("loading-configuration-class", config.getName()));
 
-		for (Field field : Reflections.getNonStaticFields(config)) {
+		for (Field field : Reflections.getNonStaticDeclaredFields(config)) {
 			loadField(field, object, config);
 		}
 	}
@@ -108,10 +118,11 @@ public class ConfigurationLoader implements Serializable {
 
 			if (config != null) {
 				Key key = new Key(field, clazz, config);
-				Object value = getValue(key, field, config);
-
-				validate(field, key, value, resource);
-				setValue(field, key, object, value);
+				if(validateKey(resource, key, type, config)){
+					Object value = getValue(key, field, config);
+					validate(field, key, value, resource);
+					setValue(field, key, object, value);
+				}
 			}
 		}
 	}
@@ -131,6 +142,24 @@ public class ConfigurationLoader implements Serializable {
 		}
 	}
 
+	private boolean validateKey(String resource, Key key, ConfigType type, org.apache.commons.configuration.Configuration config){
+		if(!config.containsKey(key.toString())){
+			if(type.toString().equals("PROPERTIES")){
+				getLogger().info(getBundle().getString("key-not-found-in-file", key, resource + ".properties"));
+			}else{
+				if(type.toString().equals("XML")){
+					getLogger().info(getBundle().getString("key-not-found-in-file", key, resource + ".xml"));
+				}else{
+					if(type.toString().equals("SYSTEM")){
+						getLogger().info(getBundle().getString("key-not-found-in-system", key));
+					}
+				}
+			}
+			return false;
+		}
+		return true;
+	}
+	
 	/**
 	 * Returns the configuration class according to specified resource name and configuration type.
 	 * 
@@ -154,6 +183,9 @@ public class ConfigurationLoader implements Serializable {
 
 					if (url != null) {
 						result = new DataConfiguration(new PropertiesConfiguration(url));
+					}else{
+						throw new ConfigurationException(
+								getBundle().getString("resource-not-found", resource + ".properties"));
 					}
 
 					break;
@@ -163,6 +195,9 @@ public class ConfigurationLoader implements Serializable {
 
 					if (url != null) {
 						result = new DataConfiguration(new XMLConfiguration(url));
+					}else{
+						throw new ConfigurationException(
+								getBundle().getString("resource-not-found", resource + ".xml"));
 					}
 
 					break;
@@ -403,6 +438,14 @@ public class ConfigurationLoader implements Serializable {
 		}
 
 		return logger;
+	}
+
+	private CoreBootstrap getBootstrap() {
+		if (bootstrap == null) {
+			bootstrap = Beans.getReference(CoreBootstrap.class);
+		}
+
+		return bootstrap;
 	}
 
 	private class Key {
