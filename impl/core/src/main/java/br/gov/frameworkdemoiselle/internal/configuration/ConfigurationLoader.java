@@ -118,11 +118,9 @@ public class ConfigurationLoader implements Serializable {
 
 			if (config != null) {
 				Key key = new Key(field, clazz, config);
-				if(validateKey(resource, key, type, config)){
-					Object value = getValue(key, field, config);
-					validate(field, key, value, resource);
-					setValue(field, key, object, value);
-				}
+				Object value = getValue(key, field, config);
+				validate(field, key, value, resource);
+				setValue(field, key, object, value);
 			}
 		}
 	}
@@ -142,24 +140,6 @@ public class ConfigurationLoader implements Serializable {
 		}
 	}
 
-	private boolean validateKey(String resource, Key key, ConfigType type, org.apache.commons.configuration.Configuration config){
-		if(!config.containsKey(key.toString())){
-			if(type.toString().equals("PROPERTIES")){
-				getLogger().info(getBundle().getString("key-not-found-in-file", key, resource + ".properties"));
-			}else{
-				if(type.toString().equals("XML")){
-					getLogger().info(getBundle().getString("key-not-found-in-file", key, resource + ".xml"));
-				}else{
-					if(type.toString().equals("SYSTEM")){
-						getLogger().info(getBundle().getString("key-not-found-in-system", key));
-					}
-				}
-			}
-			return false;
-		}
-		return true;
-	}
-	
 	/**
 	 * Returns the configuration class according to specified resource name and configuration type.
 	 * 
@@ -468,6 +448,10 @@ public class ConfigurationLoader implements Serializable {
 			}
 
 			this.key = this.prefix + this.name;
+			
+			if(!config.containsKey(key.toString())){
+				getLogger().debug(getBundle().getString("key-not-found", key));
+			}
 		}
 
 		private String getNameByAnnotation(Field field) {
