@@ -49,9 +49,6 @@ import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
-import br.gov.frameworkdemoiselle.security.AuthorizationException;
-import br.gov.frameworkdemoiselle.security.RequiredRole;
-import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -90,7 +87,8 @@ public class RequiredRoleInterceptor implements Serializable {
 
 		if (getSecurityContext().isLoggedIn()) {
 			getLogger().info(
-					getBundle().getString("has-role-verification", getSecurityContext().getCurrentUser().getName(), roles));
+					getBundle().getString("has-role-verification", getSecurityContext().getCurrentUser().getName(),
+							roles));
 		}
 
 		List<String> userRoles = new ArrayList<String>();
@@ -102,15 +100,16 @@ public class RequiredRoleInterceptor implements Serializable {
 		}
 
 		if (userRoles.isEmpty()) {
-			getLogger().error(
-					getBundle().getString("does-not-have-role", getSecurityContext().getCurrentUser().getName(), roles));
+			getLogger()
+					.error(getBundle().getString("does-not-have-role", getSecurityContext().getCurrentUser().getName(),
+							roles));
 
-			@SuppressWarnings("unused")
-			AuthorizationException a = new AuthorizationException(null);
+			// AuthorizationException a = new AuthorizationException(null);
 			throw new AuthorizationException(getBundle().getString("does-not-have-role-ui", roles));
 		}
 
-		getLogger().debug(getBundle().getString("user-has-role", getSecurityContext().getCurrentUser().getName(), userRoles));
+		getLogger().debug(
+				getBundle().getString("user-has-role", getSecurityContext().getCurrentUser().getName(), userRoles));
 
 		return ic.proceed();
 	}

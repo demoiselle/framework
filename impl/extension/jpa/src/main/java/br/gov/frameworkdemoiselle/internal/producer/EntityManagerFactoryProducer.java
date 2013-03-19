@@ -113,8 +113,8 @@ public class EntityManagerFactoryProducer implements Serializable {
 
 			try {
 				create(persistenceUnit);
-			} catch (Throwable t) {
-				throw new DemoiselleException(t);
+			} catch (Exception cause) {
+				throw new DemoiselleException(cause);
 			}
 
 			logger.debug(bundle.getString("persistence-unit-name-found", persistenceUnit));

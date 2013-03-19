@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.faces.FacesException;
 import javax.faces.application.ViewHandler;
@@ -81,10 +82,10 @@ public class Redirector implements Serializable {
 			ArrayList<String> list;
 			result = new HashMap<String, List<String>>();
 
-			for (String key : map.keySet()) {
+			for (Entry<String, Object> entry : map.entrySet()) {
 				list = new ArrayList<String>();
-				list.add(map.get(key).toString());
-				result.put(key, list);
+				list.add(entry.getValue().toString());
+				result.put(entry.getKey(), list);
 			}
 		}
 

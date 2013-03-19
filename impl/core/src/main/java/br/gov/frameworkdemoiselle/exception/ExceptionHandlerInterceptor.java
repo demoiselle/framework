@@ -49,7 +49,6 @@ import javax.interceptor.InvocationContext;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
 import br.gov.frameworkdemoiselle.internal.bootstrap.CoreBootstrap;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
@@ -186,11 +185,10 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 	@AroundInvoke
 	public Object manage(final InvocationContext ic) throws Exception {
-		Object target = null;
 		Object result = null;
+		Object target = ic.getTarget();
 
 		try {
-			target = ic.getTarget();
 			result = ic.proceed();
 
 		} catch (Exception cause) {

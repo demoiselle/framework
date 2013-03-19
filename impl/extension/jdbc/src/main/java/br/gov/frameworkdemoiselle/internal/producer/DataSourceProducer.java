@@ -48,8 +48,8 @@ public class DataSourceProducer implements Serializable {
 
 			try {
 				create(dataBaseName);
-			} catch (Throwable t) {
-				throw new DemoiselleException(t);
+			} catch (Exception cause) {
+				throw new DemoiselleException(cause);
 			}
 
 			logger.debug(bundle.getString("datasource-name-found", dataBaseName));

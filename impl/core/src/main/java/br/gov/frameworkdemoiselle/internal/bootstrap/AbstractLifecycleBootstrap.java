@@ -131,7 +131,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		getLogger().debug(getBundle().getString("executing-all", getAnnotationClass().getSimpleName()));
 
 		Collections.sort(processors);
-		Throwable failure = null;
+		Exception failure = null;
 
 		if (!registered) {
 			for (CustomContext tempContext : tempContexts) {
@@ -153,7 +153,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 					iter.remove();
 				}
 
-			} catch (Throwable cause) {
+			} catch (Exception cause) {
 				failure = cause;
 			}
 		}

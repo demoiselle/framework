@@ -85,7 +85,7 @@ public class AnnotatedMethodProcessor<T> implements Comparable<AnnotatedMethodPr
 		return orderThis.compareTo(orderOther);
 	}
 
-	public boolean process(Object... args) throws Throwable {
+	public boolean process(Object... args) throws Exception {
 		getLogger().info(getBundle().getString("processing", getAnnotatedMethod().getJavaMember().toGenericString()));
 
 		try {
@@ -98,11 +98,11 @@ public class AnnotatedMethodProcessor<T> implements Comparable<AnnotatedMethodPr
 		return true;
 	}
 
-	private void handleException(Throwable cause) throws Throwable {
+	private void handleException(Throwable cause) throws Exception {
 		ApplicationException ann = cause.getClass().getAnnotation(ApplicationException.class);
 
 		if (ann == null || SeverityType.FATAL == ann.severity()) {
-			throw cause;
+			throw (cause instanceof Exception ? (Exception) cause : new Exception(cause));
 
 		} else {
 			switch (ann.severity()) {
