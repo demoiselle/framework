@@ -37,7 +37,6 @@
 package br.gov.frameworkdemoiselle.util;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,9 +47,10 @@ import javax.faces.FacesException;
 import javax.faces.application.ViewHandler;
 import javax.faces.context.FacesContext;
 
-public class Redirector implements Serializable {
+public class Redirector {
 
-	private static final long serialVersionUID = 1L;
+	private Redirector() {
+	}
 
 	public static void redirect(String viewId) {
 		redirect(viewId, null);

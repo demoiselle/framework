@@ -39,14 +39,6 @@ public class EntityManagerFactoryProducer implements Serializable {
 	@Name("demoiselle-jpa-bundle")
 	private ResourceBundle bundle;
 
-	// private final Map<String, EntityManagerFactory> cache = Collections
-	// .synchronizedMap(new HashMap<String, EntityManagerFactory>());
-
-	/*
-	 * private final Map<Key, EntityManagerFactory> cache = Collections .synchronizedMap(new HashMap<Key,
-	 * EntityManagerFactory>());
-	 */
-
 	private final Map<ClassLoader, Map<String, EntityManagerFactory>> factoryCache = Collections
 			.synchronizedMap(new HashMap<ClassLoader, Map<String, EntityManagerFactory>>());
 
@@ -90,9 +82,6 @@ public class EntityManagerFactoryProducer implements Serializable {
 				} else {
 					persistenceUnits.add(persistenceUnit);
 				}
-				// logger.debug(bundle.getString("persistence-unit-name-found",
-				// persistenceUnit));
-
 			}
 
 			return persistenceUnits.toArray(new String[0]);

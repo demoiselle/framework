@@ -132,12 +132,6 @@ public class AnnotatedMethodProcessor<T> implements Comparable<AnnotatedMethodPr
 		return priority;
 	}
 
-	// @Override
-	// public String toString() {
-	// return getBundle().getString("for", getClass().getSimpleName(),
-	// getAnnotatedMethod().getJavaMember().toGenericString());
-	// }
-
 	protected ResourceBundle getBundle() {
 		if (this.bundle == null) {
 			this.bundle = ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());

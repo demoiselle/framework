@@ -426,7 +426,7 @@ public class ConfigurationLoader implements Serializable {
 		return bootstrap;
 	}
 
-	private class Key {
+	private final class Key {
 
 		private String prefix;
 
@@ -455,16 +455,16 @@ public class ConfigurationLoader implements Serializable {
 		}
 
 		private String getNameByAnnotation(Field field) {
-			String key = null;
+			String result;
 
 			Name nameAnnotation = field.getAnnotation(Name.class);
 			if (Strings.isEmpty(nameAnnotation.value())) {
 				throw new ConfigurationException(getBundle().getString("configuration-name-attribute-cant-be-empty"));
 			} else {
-				key = nameAnnotation.value();
+				result = nameAnnotation.value();
 			}
 
-			return key;
+			return result;
 		}
 
 		private String getNameByField(Field field) {

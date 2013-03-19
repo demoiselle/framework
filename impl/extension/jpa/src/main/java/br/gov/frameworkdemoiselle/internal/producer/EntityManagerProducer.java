@@ -125,7 +125,6 @@ public class EntityManagerProducer implements Serializable {
 		} else {
 			entityManager = factory.create(persistenceUnit).createEntityManager();
 			entityManager.setFlushMode(FlushModeType.AUTO);
-			// entityManager.setFlushMode(FlushModeType.COMMIT);
 
 			cache.put(persistenceUnit, entityManager);
 			this.logger.info(bundle.getString("entity-manager-was-created", persistenceUnit));

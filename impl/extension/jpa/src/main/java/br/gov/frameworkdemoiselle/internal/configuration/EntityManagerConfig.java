@@ -53,6 +53,9 @@ public class EntityManagerConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @deprecated
+	 */
 	// TODO Implementação apenas para manter a compatibilidade entre a versão 2.3 com a 2.4.
 	@Name("unit.name")
 	private String persistenceUnitName;
@@ -64,6 +67,10 @@ public class EntityManagerConfig implements Serializable {
 	 * Getter for persistence unit name.
 	 */
 	// TODO Implementação apenas para manter a compatibilidade entre a versão 2.3 com a 2.4.
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public String getPersistenceUnitName() {
 		return persistenceUnitName;
 	}
@@ -73,15 +80,14 @@ public class EntityManagerConfig implements Serializable {
 	 */
 	public String getDefaultPersistenceUnitName() {
 		// TODO Implementação apenas para manter a compatibilidade entre a versão 2.3 com a 2.4.
-		String persistenceUnitName = getPersistenceUnitName();
-		if (!Strings.isEmpty(persistenceUnitName)) {
+		if (!Strings.isEmpty(getPersistenceUnitName())) {
 			Logger logger = Beans.getReference(Logger.class);
-			logger.info("A propriedade frameworkdemoiselle.persistence.unit.name="
-					+ persistenceUnitName
+			logger.warn("A propriedade frameworkdemoiselle.persistence.unit.name="
+					+ getPersistenceUnitName()
 					+ " não será suportada nas próximas versões do framework. Para evitar futuros problemas atualize a propriedade para frameworkdemoiselle.persistence.default.unit.name="
-					+ persistenceUnitName);
+					+ getPersistenceUnitName());
 
-			return persistenceUnitName;
+			return getPersistenceUnitName();
 		}
 
 		return defaultPersistenceUnitName;

@@ -60,7 +60,7 @@ public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean implem
 	private Class<T> beanClass;
 
 	private Class<I> idClass;
-	
+
 	@Inject
 	@Name("demoiselle-jsf-bundle")
 	private ResourceBundle bundle;
@@ -106,13 +106,13 @@ public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean implem
 	@SuppressWarnings("unchecked")
 	public I getId() {
 		Converter converter = getIdConverter();
-		
-		if(converter == null && String.class.equals(getIdClass())) {
+
+		if (converter == null && String.class.equals(getIdClass())) {
 			return (I) id.getValue();
 
 		} else if (converter == null) {
 			throw new DemoiselleException(bundle.getString("id-converter-not-found", getIdClass().getCanonicalName()));
-		
+
 		} else {
 			return (I) converter.getAsObject(facesContext, facesContext.getViewRoot(), id.getValue());
 		}
@@ -145,11 +145,4 @@ public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean implem
 	protected void setBean(final T bean) {
 		this.bean = bean;
 	}
-
-	// protected void setId(final I id) {
-	// clear();
-	// String value = getIdConverter().getAsString(getFacesContext(), getFacesContext().getViewRoot(), id);
-	// this.id.setValue(value);
-	// }
-
 }

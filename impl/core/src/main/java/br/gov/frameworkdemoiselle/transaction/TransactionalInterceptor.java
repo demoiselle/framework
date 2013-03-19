@@ -125,15 +125,14 @@ public class TransactionalInterceptor implements Serializable {
 
 	private void initiate() {
 		Transaction transaction = getTransactionContext().getCurrentTransaction();
-		TransactionInfo transactionInfo = getTransactionInfo();
 
 		if (!transaction.isActive()) {
 			transaction.begin();
-			transactionInfo.markAsOwner();
+			getTransactionInfo().markAsOwner();
 			getLogger().info(getBundle().getString("begin-transaction"));
 		}
 
-		transactionInfo.incrementCounter();
+		getTransactionInfo().incrementCounter();
 	}
 
 	private void handleException(final Exception cause) {
@@ -156,27 +155,26 @@ public class TransactionalInterceptor implements Serializable {
 
 	private void complete() {
 		Transaction transaction = getTransactionContext().getCurrentTransaction();
-		TransactionInfo transactionInfo = getTransactionInfo();
-		transactionInfo.decrementCounter();
+		getTransactionInfo().decrementCounter();
 
-		if (transactionInfo.getCounter() == 0 && transaction.isActive()) {
+		if (getTransactionInfo().getCounter() == 0 && transaction.isActive()) {
 
-			if (transactionInfo.isOwner()) {
+			if (getTransactionInfo().isOwner()) {
 				if (transaction.isMarkedRollback()) {
 					transaction.rollback();
-					transactionInfo.clear();
+					getTransactionInfo().clear();
 
 					getLogger().info(getBundle().getString("transaction-rolledback"));
 
 				} else {
 					transaction.commit();
-					transactionInfo.clear();
+					getTransactionInfo().clear();
 
 					getLogger().info(getBundle().getString("transaction-commited"));
 				}
 			}
 
-		} else if (transactionInfo.getCounter() == 0 && !transaction.isActive()) {
+		} else if (getTransactionInfo().getCounter() == 0 && !transaction.isActive()) {
 			getLogger().info(getBundle().getString("transaction-already-finalized"));
 		}
 	}

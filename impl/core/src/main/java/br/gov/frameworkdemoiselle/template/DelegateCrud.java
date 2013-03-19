@@ -143,8 +143,6 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 		} else {
 			nonTransactionalInsert(bean);
 		}
-		
-		System.out.println();
 	}
 
 	@Transactional

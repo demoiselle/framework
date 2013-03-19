@@ -50,7 +50,7 @@ import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
-public class Contexts {
+public final class Contexts {
 
 	private static List<CustomContext> activeContexts = Collections.synchronizedList(new ArrayList<CustomContext>());
 
@@ -59,6 +59,9 @@ public class Contexts {
 	private static Logger logger;
 
 	private static ResourceBundle bundle;
+
+	private Contexts() {
+	}
 
 	private static Logger getLogger() {
 		if (logger == null) {
@@ -74,9 +77,6 @@ public class Contexts {
 		}
 
 		return bundle;
-	}
-
-	private Contexts() {
 	}
 
 	public static synchronized void add(CustomContext context, AfterBeanDiscovery event) {
