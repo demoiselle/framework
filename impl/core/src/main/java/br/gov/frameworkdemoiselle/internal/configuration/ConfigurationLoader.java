@@ -163,7 +163,7 @@ public class ConfigurationLoader implements Serializable {
 
 					if (url != null) {
 						result = new DataConfiguration(new PropertiesConfiguration(url));
-					}else{
+					} else {
 						getLogger().warn(getBundle().getString("resource-not-found", resource + ".properties"));
 					}
 
@@ -174,7 +174,7 @@ public class ConfigurationLoader implements Serializable {
 
 					if (url != null) {
 						result = new DataConfiguration(new XMLConfiguration(url));
-					}else{
+					} else {
 						getLogger().warn(getBundle().getString("resource-not-found", resource + ".xml"));
 					}
 
@@ -448,9 +448,9 @@ public class ConfigurationLoader implements Serializable {
 			}
 
 			this.key = this.prefix + this.name;
-			
-			if(!config.containsKey(key.toString())){
-				getLogger().debug(getBundle().getString("key-not-found", key));
+
+			if (!config.containsKey(this.key)) {
+				getLogger().debug(getBundle().getString("key-not-found", this.key));
 			}
 		}
 
