@@ -176,7 +176,7 @@ public class JAASAuthenticator implements Authenticator {
 
 					} else if (callbacks[i] instanceof PasswordCallback) {
 						((PasswordCallback) callbacks[i]).setPassword(credentials.getPassword().toCharArray());
-
+						
 					} else {
 						getLogger().error(getBundle().getString("unsupported-callback", callbacks[i]));
 					}

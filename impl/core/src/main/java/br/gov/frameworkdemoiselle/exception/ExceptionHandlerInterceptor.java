@@ -49,11 +49,9 @@ import javax.interceptor.InvocationContext;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.internal.bootstrap.CoreBootstrap;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.stereotype.Controller;
-import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @Interceptor
@@ -72,7 +70,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 		getLogger().info(getBundle().getString("handling-exception", cause.getClass().getCanonicalName()));
 
 		boolean handled = false;
-		Class<?> type = getType(target);
+		Class<?> type = target.getClass();
 
 		if (!isLoaded(type)) {
 			loadHandlers(type);
@@ -85,18 +83,6 @@ public class ExceptionHandlerInterceptor implements Serializable {
 		}
 
 		return handled;
-	}
-
-	private final Class<?> getType(final Object target) {
-		Class<?> type = target.getClass();
-		CoreBootstrap bootstrap = Beans.getReference(CoreBootstrap.class);
-
-		if (!bootstrap.isAnnotatedType(type)) {
-			getLogger().debug(getBundle().getString("proxy-detected", type, type.getSuperclass()));
-			type = type.getSuperclass();
-		}
-
-		return type;
 	}
 
 	/**

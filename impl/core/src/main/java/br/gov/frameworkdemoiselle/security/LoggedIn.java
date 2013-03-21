@@ -34,46 +34,26 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.util;
+package br.gov.frameworkdemoiselle.security;
 
-import java.io.IOException;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import br.gov.frameworkdemoiselle.internal.producer.HttpServletRequestProducer;
-import br.gov.frameworkdemoiselle.internal.producer.HttpServletResponseProducer;
+import javax.interceptor.InterceptorBinding;
 
-public class ServletFilter implements Filter {
-
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-	}
-
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-			ServletException {
-
-		Beans.getReference(HttpServletRequestProducer.class).setDelegate((HttpServletRequest) request);
-		Beans.getReference(HttpServletResponseProducer.class).setDelegate((HttpServletResponse) response);
-
-		// X509Certificate[] certificates = (X509Certificate[]) ((HttpServletRequest) request)
-		// .getAttribute("javax.servlet.request.X509Certificate");
-		//
-		// for (X509Certificate certificate : certificates) {
-		// System.out.println(certificate.toString());
-		// }
-
-		chain.doFilter(request, response);
-	}
-
-	@Override
-	public void destroy() {
-	}
+/**
+ * Indicates that a specific permission is required in order to invocate the annotated method or class.
+ * 
+ * @author SERPRO
+ */
+@Inherited
+@InterceptorBinding
+@Target({ METHOD, TYPE })
+@Retention(RUNTIME)
+public @interface LoggedIn {
 }

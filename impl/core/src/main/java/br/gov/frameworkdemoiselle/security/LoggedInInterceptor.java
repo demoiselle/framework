@@ -34,46 +34,32 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.util;
+package br.gov.frameworkdemoiselle.security;
 
-import java.io.IOException;
+import java.io.Serializable;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.inject.Inject;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 
-import br.gov.frameworkdemoiselle.internal.producer.HttpServletRequestProducer;
-import br.gov.frameworkdemoiselle.internal.producer.HttpServletResponseProducer;
+/**
+ * Intercepts calls with {@code @LoggedIn} annotations.
+ * 
+ * @author SERPRO
+ */
+@LoggedIn
+@Interceptor
+public class LoggedInInterceptor implements Serializable {
 
-public class ServletFilter implements Filter {
+	private static final long serialVersionUID = 1L;
 
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-	}
+	@Inject
+	private SecurityContext securityContext;
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-			ServletException {
-
-		Beans.getReference(HttpServletRequestProducer.class).setDelegate((HttpServletRequest) request);
-		Beans.getReference(HttpServletResponseProducer.class).setDelegate((HttpServletResponse) response);
-
-		// X509Certificate[] certificates = (X509Certificate[]) ((HttpServletRequest) request)
-		// .getAttribute("javax.servlet.request.X509Certificate");
-		//
-		// for (X509Certificate certificate : certificates) {
-		// System.out.println(certificate.toString());
-		// }
-
-		chain.doFilter(request, response);
-	}
-
-	@Override
-	public void destroy() {
+	@AroundInvoke
+	public Object manage(final InvocationContext ic) throws Exception {
+		securityContext.checkLoggedIn();
+		return ic.proceed();
 	}
 }

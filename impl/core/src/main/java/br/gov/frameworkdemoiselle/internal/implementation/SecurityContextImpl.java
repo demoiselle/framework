@@ -151,19 +151,13 @@ public class SecurityContextImpl implements SecurityContext {
 	@Override
 	public void login() throws AuthenticationException {
 		if (getConfig().isEnabled()) {
-			
-			try {
-				getAuthenticator().authenticate();
-				
-				Beans.getBeanManager().fireEvent(new AfterLoginSuccessful() {
-					
-					private static final long serialVersionUID = 1L;
-					
-				});
-				
-			} catch (AuthenticationException cause) {
-				throw cause;
-			}
+			getAuthenticator().authenticate();
+
+			Beans.getBeanManager().fireEvent(new AfterLoginSuccessful() {
+
+				private static final long serialVersionUID = 1L;
+
+			});
 		}
 	}
 
