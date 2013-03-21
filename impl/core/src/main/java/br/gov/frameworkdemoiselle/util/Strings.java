@@ -54,10 +54,10 @@ public final class Strings {
 
 	public static String removeChars(String string, char... chars) {
 		String result = string;
-		
+
 		if (result != null) {
 			for (char ch : chars) {
-				result = string.replace(String.valueOf(ch), "");
+				result = result.replace(String.valueOf(ch), "");
 			}
 		}
 		return result;
