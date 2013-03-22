@@ -34,9 +34,9 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<definitions>
+<configuration>
 	<primitiveInteger>1</primitiveInteger>
 	<wrappedInteger>2</wrappedInteger>
 	<stringWithSpace>demoiselle framework</stringWithSpace>
 	<stringWithComma>demoiselle,framework</stringWithComma>
-</definitions>
+</configuration>
