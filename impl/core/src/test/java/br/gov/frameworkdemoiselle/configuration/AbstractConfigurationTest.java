@@ -43,9 +43,6 @@ public abstract class AbstractConfigurationTest {
 				.create(JavaArchive.class)
 				.addClasses(getConfigurationClasses())
 				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-				.addAsResource(
-						new FileAsset(new File("src/test/resources/configuration/fields/basic/demoiselle.properties")),
-						"demoiselle.properties")
 				.addAsManifestResource(
 						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
 						"services/javax.enterprise.inject.spi.Extension");

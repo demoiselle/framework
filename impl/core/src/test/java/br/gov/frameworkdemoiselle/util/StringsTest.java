@@ -199,5 +199,4 @@ public class StringsTest {
 		assertEquals("0" + string, Strings.insertZeros(string, string.length() + 1));
 		assertEquals("00" + string, Strings.insertZeros(string, string.length() + 2));
 	}
-
 }
