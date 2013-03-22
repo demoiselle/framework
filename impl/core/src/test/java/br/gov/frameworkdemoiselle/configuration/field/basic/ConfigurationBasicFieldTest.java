@@ -10,12 +10,10 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
-import br.gov.frameworkdemoiselle.configuration.field.array.ConfigurationArrayFieldTest;
 
 @RunWith(Arquillian.class)
 public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
