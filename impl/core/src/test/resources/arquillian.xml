@@ -14,7 +14,7 @@
  GNU General Public License for more details.
  
  You should have received a copy of the GNU Lesser General Public License version 3
- along with this program; if not,  see <http://www.gnu.org/licenses/>
+ along with this program; if not,  see <http://www.gnu.org/licenses />
  or write to the Free Software Foundation, Inc., 51 Franklin Street,
  Fifth Floor, Boston, MA  02110-1301, USA.
  ============================================================================
@@ -30,17 +30,17 @@
  para maiores detalhes.
  
  Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
- "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses/>
+ "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses />
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<configuration>
-	<framework>
-		<stringValue>value</stringValue>
-		<integerValue>10</integerValue>
-		<intValue>10</intValue>
-		<listValue>value1</listValue>
-		<listValue>value2</listValue>
-		<listValue>value3</listValue>
-	</framework>
-</configuration>
+<arquillian xmlns="http://jboss.org/schema/arquillian" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+	<!--
+	<engine>
+		<property name="deploymentExportPath">target/arquillian</property>
+	</engine>
+	-->
+
+</arquillian>

@@ -37,6 +37,7 @@
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +48,7 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.LoaderClassPath;
+import javassist.NotFoundException;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -83,6 +85,17 @@ public class ConfigurationBootstrap implements Extension {
 		}
 	}
 
+	private static List<CtMethod> getMethods(CtClass type) throws NotFoundException {
+		List<CtMethod> fields = new ArrayList<CtMethod>();
+
+		if (type != null && !type.getName().equals(Object.class.getName())) {
+			fields.addAll(Arrays.asList(type.getDeclaredMethods()));
+			fields.addAll(getMethods(type.getSuperclass()));
+		}
+
+		return fields;
+	}
+
 	@SuppressWarnings("unchecked")
 	private Class<Object> createProxy(Class<Object> type) throws Exception {
 		String superClassName = type.getCanonicalName();
@@ -112,7 +125,7 @@ public class ConfigurationBootstrap implements Extension {
 			ctChieldClass.setSuperclass(ctSuperClass);
 
 			CtMethod ctChieldMethod;
-			for (CtMethod ctSuperMethod : ctSuperClass.getDeclaredMethods()) {
+			for (CtMethod ctSuperMethod : getMethods(ctSuperClass)) {
 				ctChieldMethod = CtNewMethod.delegator(ctSuperMethod, ctChieldClass);
 				ctChieldMethod.insertBefore("load(this);");
 

@@ -34,7 +34,8 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -76,6 +77,15 @@
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
+			<!--
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<version>${arquillian.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			-->
 		</dependencies>
 	</dependencyManagement>
 
@@ -152,25 +162,30 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<version>${arquillian.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
+			<groupId>org.jboss.arquillian.container</groupId>
+			<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
+			<version>${arquillian.weld.se.embedded.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-easymock</artifactId>
+			<groupId>org.jboss.weld.se</groupId>
+			<artifactId>weld-se-core</artifactId>
+			<version>${weld.se.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>javax.el</groupId>
 			<artifactId>el-api</artifactId>
 			<scope>test</scope>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
@@ -202,4 +217,10 @@
 			</releases>
 		</repository>
 	</repositories>
+
+	<properties>
+		<arquillian.version>1.0.3.Final</arquillian.version>
+		<arquillian.weld.se.embedded.version>1.0.0.CR6</arquillian.weld.se.embedded.version>
+		<weld.se.version>1.1.8.Final</weld.se.version>
+	</properties>
 </project>

@@ -36,11 +36,11 @@
  */
 
 package br.gov.frameworkdemoiselle.util;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import org.junit.Test;
 
@@ -141,10 +141,7 @@ public class StringsTest {
 		}
 
 		String result = Strings.toString(new Test());
-
 		assertTrue(result.contains("Test [name=myName, lastname=myLastname, nullField=null, this"));
-
-		verifyAll();
 	}
 
 	private void testEqualsGetString(String in, String expected, Object... params) {

@@ -1,3 +1,4 @@
+package br.gov.frameworkdemoiselle.util;
 ///*
 // * Demoiselle Framework
 // * Copyright (C) 2010 SERPRO
