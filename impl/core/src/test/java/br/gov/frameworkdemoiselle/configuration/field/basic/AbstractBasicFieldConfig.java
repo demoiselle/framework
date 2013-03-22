@@ -1,6 +1,6 @@
-package br.gov.frameworkdemoiselle.configuration.fields.basic;
+package br.gov.frameworkdemoiselle.configuration.field.basic;
 
-public abstract class AbstractBasicFieldsConfig {
+public abstract class AbstractBasicFieldConfig {
 
 	private int primitiveInteger;
 

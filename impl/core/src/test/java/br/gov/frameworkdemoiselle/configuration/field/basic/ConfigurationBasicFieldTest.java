@@ -1,4 +1,4 @@
-package br.gov.frameworkdemoiselle.configuration.fields.basic;
+package br.gov.frameworkdemoiselle.configuration.field.basic;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -13,14 +13,17 @@ import org.junit.runner.RunWith;
 import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
 
 @RunWith(Arquillian.class)
-public class ConfigurationBasicFieldsTest extends AbstractConfigurationTest {
+public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
 
 	@Inject
-	private PropertiesBasicFieldsConfig propertiesConfig;
+	private PropertiesBasicFieldConfig propertiesConfig;
+	
+	@Inject
+	private XMLBasicFieldConfig xmlConfig;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		return createConfigurationDeployment().addPackages(true, ConfigurationBasicFieldsTest.class.getPackage());
+		return createConfigurationDeployment().addPackages(true, ConfigurationBasicFieldTest.class.getPackage());
 	}
 
 	@Test
@@ -28,6 +31,7 @@ public class ConfigurationBasicFieldsTest extends AbstractConfigurationTest {
 		int expected = 1;
 
 		assertEquals(expected, propertiesConfig.getPrimitiveInteger());
+		assertEquals(expected, xmlConfig.getPrimitiveInteger());
 	}
 
 	@Test
@@ -35,6 +39,7 @@ public class ConfigurationBasicFieldsTest extends AbstractConfigurationTest {
 		Integer expected = 2;
 
 		assertEquals(expected, propertiesConfig.getWrappedInteger());
+		assertEquals(expected, xmlConfig.getWrappedInteger());
 	}
 
 	@Test
@@ -42,6 +47,7 @@ public class ConfigurationBasicFieldsTest extends AbstractConfigurationTest {
 		String expected = "demoiselle framework";
 
 		assertEquals(expected, propertiesConfig.getStringWithSpace());
+		assertEquals(expected, xmlConfig.getStringWithSpace());
 	}
 
 //	@Test
@@ -49,5 +55,6 @@ public class ConfigurationBasicFieldsTest extends AbstractConfigurationTest {
 		String expected = "demoiselle,framework";
 
 		assertEquals(expected, propertiesConfig.getStringWithComma());
+		assertEquals(expected, xmlConfig.getStringWithComma());
 	}
 }
