@@ -10,6 +10,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,20 +41,23 @@ public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
 
 		return deployment;
 	}
-
+	
 	@Test
 	public void loadPrimitiveInteger() {
 		int expected = 1;
+		System.setProperty("primitiveInteger", String.valueOf(expected));
 
+		assertEquals(expected, systemConfig.getPrimitiveInteger());
 		assertEquals(expected, propertiesConfig.getPrimitiveInteger());
 		assertEquals(expected, xmlConfig.getPrimitiveInteger());
-		//assertEquals("01748913506", systemConfig.getUserName());
 	}
 
 	@Test
 	public void loadWrappedInteger() {
 		Integer expected = 2;
+		System.setProperty("wrappedInteger", String.valueOf(expected));
 
+		assertEquals(expected, systemConfig.getWrappedInteger());
 		assertEquals(expected, propertiesConfig.getWrappedInteger());
 		assertEquals(expected, xmlConfig.getWrappedInteger());
 	}
@@ -61,15 +65,19 @@ public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
 	@Test
 	public void loadStringWithSpace() {
 		String expected = "demoiselle framework";
+		System.setProperty("stringWithSpace", String.valueOf(expected));
 
+		assertEquals(expected, systemConfig.getStringWithSpace());
 		assertEquals(expected, propertiesConfig.getStringWithSpace());
 		assertEquals(expected, xmlConfig.getStringWithSpace());
 	}
 
-//	@Test
+	//@Test
 	public void loadStringWithComma() {
 		String expected = "demoiselle,framework";
+		System.setProperty("stringWithComma", String.valueOf(expected));
 
+		assertEquals(expected, systemConfig.getStringWithComma());
 		assertEquals(expected, propertiesConfig.getStringWithComma());
 		assertEquals(expected, xmlConfig.getStringWithComma());
 	}
