@@ -2,15 +2,19 @@ package br.gov.frameworkdemoiselle.configuration.field.basic;
 
 import static junit.framework.Assert.assertEquals;
 
+import java.io.File;
+
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
+import br.gov.frameworkdemoiselle.configuration.field.array.ConfigurationArrayFieldTest;
 
 @RunWith(Arquillian.class)
 public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
@@ -20,10 +24,21 @@ public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
 	
 	@Inject
 	private XMLBasicFieldConfig xmlConfig;
+	
+	@Inject
+	private SystemBasicFieldConfig systemConfig;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		return createConfigurationDeployment().addPackages(true, ConfigurationBasicFieldTest.class.getPackage());
+		JavaArchive deployment = createConfigurationDeployment();
+
+		deployment.addPackages(true, ConfigurationBasicFieldTest.class.getPackage());
+		deployment.addAsResource(new FileAsset(new File(
+				"src/test/resources/configuration/field/basic/demoiselle.properties")), "demoiselle.properties").
+				addAsResource(new FileAsset(new File(
+						"src/test/resources/configuration/field/basic/demoiselle.xml")), "demoiselle.xml");
+
+		return deployment;
 	}
 
 	@Test
@@ -32,6 +47,7 @@ public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
 
 		assertEquals(expected, propertiesConfig.getPrimitiveInteger());
 		assertEquals(expected, xmlConfig.getPrimitiveInteger());
+		//assertEquals("01748913506", systemConfig.getUserName());
 	}
 
 	@Test
