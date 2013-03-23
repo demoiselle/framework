@@ -3,5 +3,4 @@
 /.classpath
 /.settings
 /.externalToolBuilders
-/hsql:..properties
-/hsql:..script
+/.DS_Store
