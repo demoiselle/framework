@@ -36,60 +36,26 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
-import java.lang.annotation.Annotation;
 import java.util.Map;
-
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
 
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.util.Faces;
 
-public class ViewContext implements CustomContext {
-
-	private boolean active;
+public class ViewContext extends AbstractCustomContext {
 
 	public ViewContext() {
-		this.active = true;
+		super(ViewScoped.class, true);
 	}
 
 	@Override
-	public <T> T get(final Contextual<T> contextual) {
-		return get(contextual, null);
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T get(final Contextual<T> contextual, final CreationalContext<T> creationalContext) {
-		T instance = null;
-
-		Bean<T> bean = (Bean<T>) contextual;
+	protected Store getStore() {
 		Map<String, Object> viewMap = Faces.getViewMap();
+		String key = Store.class.getName();
 
-		if (viewMap.containsKey(bean.getName())) {
-			instance = (T) viewMap.get(bean.getName());
-
-		} else if (creationalContext != null) {
-			instance = bean.create(creationalContext);
-			viewMap.put(bean.getName(), instance);
+		if (!viewMap.containsKey(key)) {
+			viewMap.put(key, new Store());
 		}
 
-		return instance;
-	}
-
-	@Override
-	public Class<? extends Annotation> getScope() {
-		return ViewScoped.class;
-	}
-
-	@Override
-	public boolean isActive() {
-		return this.active;
-	}
-
-	@Override
-	public void setActive(boolean active) {
-		this.active = active;
+		return (Store) viewMap.get(key);
 	}
 }
