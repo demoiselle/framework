@@ -51,7 +51,6 @@ import javassist.LoaderClassPath;
 import javassist.NotFoundException;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
@@ -62,26 +61,17 @@ import br.gov.frameworkdemoiselle.internal.implementation.ConfigurationImpl;
 
 public class ConfigurationBootstrap implements Extension {
 
-	private final List<Class<Object>> cache = Collections.synchronizedList(new ArrayList<Class<Object>>());
-
 	private static final Map<ClassLoader, Map<String, Class<Object>>> cacheClassLoader = Collections
 			.synchronizedMap(new HashMap<ClassLoader, Map<String, Class<Object>>>());
 
-	public void processAnnotatedType(@Observes final ProcessAnnotatedType<Object> event) {
+	public void processAnnotatedType(@Observes final ProcessAnnotatedType<Object> event, BeanManager beanManager)
+			throws Exception {
 		final AnnotatedType<Object> annotatedType = event.getAnnotatedType();
 
 		if (annotatedType.getJavaClass().isAnnotationPresent(Configuration.class)) {
-			cache.add(annotatedType.getJavaClass());
-			event.veto();
-		}
-	}
-
-	public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) throws Exception {
-		Class<Object> proxy;
-
-		for (Class<Object> config : cache) {
-			proxy = createProxy(config);
-			event.addBean(new CustomBean(proxy, beanManager));
+			Class<Object> proxyClass = createProxy(annotatedType.getJavaClass());
+			AnnotatedType<Object> proxyAnnotatedType = beanManager.createAnnotatedType(proxyClass);
+			event.setAnnotatedType(proxyAnnotatedType);
 		}
 	}
 
