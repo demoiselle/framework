@@ -1,3 +1,39 @@
+/*
+ * Demoiselle Framework
+ * Copyright (C) 2010 SERPRO
+ * ----------------------------------------------------------------------------
+ * This file is part of Demoiselle Framework.
+ * 
+ * Demoiselle Framework is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License version 3
+ * as published by the Free Software Foundation.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License version 3
+ * along with this program; if not,  see <http://www.gnu.org/licenses/>
+ * or write to the Free Software Foundation, Inc., 51 Franklin Street,
+ * Fifth Floor, Boston, MA  02110-1301, USA.
+ * ----------------------------------------------------------------------------
+ * Este arquivo é parte do Framework Demoiselle.
+ * 
+ * O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
+ * do Software Livre (FSF).
+ * 
+ * Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA
+ * GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou
+ * APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português
+ * para maiores detalhes.
+ * 
+ * Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
+ * "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses/>
+ * ou escreva para a Fundação do Software Livre (FSF) Inc.,
+ * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
+ */
 package br.gov.frameworkdemoiselle.configuration.resource;
 
 import static junit.framework.Assert.assertEquals;
@@ -16,29 +52,29 @@ import org.junit.runner.RunWith;
 import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
 
 @RunWith(Arquillian.class)
-public class ConfigurationResourceTest extends AbstractConfigurationTest{
-	
+public class ConfigurationResourceTest extends AbstractConfigurationTest {
+
 	@Inject
 	private PropertiesDefaultFileConfig propDefault;
-	
+
 	@Inject
 	private PropertiesNamedDefaultFileConfig propNamedDefault;
-	
+
 	@Inject
 	private PropertiesNotDefaultFileConfig propNotDefault;
-	
+
 	@Inject
 	private PropertiesWithoutFileConfig propWithoutFile;
-	
+
 	@Inject
 	private XMLDefaultFileConfig xmlDefault;
-	
+
 	@Inject
 	private XMLNamedDefaultFileConfig xmlNamedDefault;
-	
+
 	@Inject
 	private XMLNotDefaultFileConfig xmlNotDefault;
-	
+
 	@Inject
 	private XMLWithoutFileConfig xmlWithoutFile;
 
@@ -47,61 +83,50 @@ public class ConfigurationResourceTest extends AbstractConfigurationTest{
 		JavaArchive deployment = createConfigurationDeployment();
 
 		deployment.addPackages(true, ConfigurationResourceTest.class.getPackage());
-		deployment.addAsResource(new FileAsset(new File(
-				"src/test/resources/configuration/resource/demoiselle.properties")), "demoiselle.properties").
-				addAsResource(new FileAsset(new File(
-						"src/test/resources/configuration/resource/demoiselle.xml")), "demoiselle.xml").
-				addAsResource(new FileAsset(new File(
-						"src/test/resources/configuration/resource/resource.properties")), "resource.properties").
-				addAsResource(new FileAsset(new File(
-						"src/test/resources/configuration/resource/resource.xml")), "resource.xml");
-		
+		deployment
+				.addAsResource(
+						new FileAsset(new File("src/test/resources/configuration/resource/demoiselle.properties")),
+						"demoiselle.properties")
+				.addAsResource(new FileAsset(new File("src/test/resources/configuration/resource/demoiselle.xml")),
+						"demoiselle.xml")
+				.addAsResource(
+						new FileAsset(new File("src/test/resources/configuration/resource/resource.properties")),
+						"resource.properties")
+				.addAsResource(new FileAsset(new File("src/test/resources/configuration/resource/resource.xml")),
+						"resource.xml");
+
 		return deployment;
 	}
-	
+
 	@Test
-	public void loadFromDefaultFile(){
-		int expectedInt = 1;
-		String expectedString = "demoiselle framework";
-		
-		assertEquals(expectedInt, propDefault.getPrimitiveInteger());
-		assertEquals(expectedString, propDefault.getStringWithComma());
-		
-		assertEquals(expectedInt, xmlDefault.getPrimitiveInteger());
-		assertEquals(expectedString, xmlDefault.getStringWithComma());
+	public void loadFromDefaultFile() {
+		String expected = "demoiselle";
+
+		assertEquals(expected, propDefault.getStringWithComma());
+		assertEquals(expected, xmlDefault.getStringWithComma());
 	}
-	
+
 	@Test
-	public void loadFromNamedDefaultFile(){
-		int expectedInt = 1;
-		String expectedString = "demoiselle framework";
-		
-		assertEquals(expectedInt, propNamedDefault.getPrimitiveInteger());
-		assertEquals(expectedString, propNamedDefault.getStringWithComma());
-		
-		assertEquals(expectedInt, xmlNamedDefault.getPrimitiveInteger());
-		assertEquals(expectedString, xmlNamedDefault.getStringWithComma());
+	public void loadFromNamedDefaultFile() {
+		String expected = "demoiselle";
+
+		assertEquals(expected, propNamedDefault.getStringWithComma());
+		assertEquals(expected, xmlNamedDefault.getStringWithComma());
 	}
-	
+
 	@Test
-	public void loadFromNotDefaultFile(){
-		int expectedInt = 2;
-		String expectedString = "demoiselle framework from resource";
-		
-		assertEquals(expectedInt, propNotDefault.getPrimitiveInteger());
-		assertEquals(expectedString, propNotDefault.getStringWithComma());
-		
-		assertEquals(expectedInt, xmlNotDefault.getPrimitiveInteger());
-		assertEquals(expectedString, xmlNotDefault.getStringWithComma());
+	public void loadFromNotDefaultFile() {
+		String expected = "demoiselle";
+
+		assertEquals(expected, propNotDefault.getStringWithComma());
+		assertEquals(expected, xmlNotDefault.getStringWithComma());
 	}
-	
+
 	@Test
-	public void loadFromNonexistentFile(){
-		assertEquals(0, propWithoutFile.getPrimitiveInteger());
-		assertEquals(null, propWithoutFile.getStringWithComma());
-		
-		assertEquals(0, xmlWithoutFile.getPrimitiveInteger());
-		assertEquals(null, xmlWithoutFile.getStringWithComma());
+	public void loadFromNonexistentFile() {
+		String expected = null;
+
+		assertEquals(expected, propWithoutFile.getStringWithComma());
+		assertEquals(expected, xmlWithoutFile.getStringWithComma());
 	}
-	
 }
