@@ -53,7 +53,7 @@ public class ViewContext extends AbstractCustomContext {
 		String key = Store.class.getName();
 
 		if (!viewMap.containsKey(key)) {
-			viewMap.put(key, new Store());
+			viewMap.put(key, createStore());
 		}
 
 		return (Store) viewMap.get(key);

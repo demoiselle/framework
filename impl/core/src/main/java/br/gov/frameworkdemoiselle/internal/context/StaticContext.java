@@ -52,7 +52,7 @@ import br.gov.frameworkdemoiselle.annotation.StaticScoped;
 
 public class StaticContext extends AbstractCustomContext {
 
-	private final static Store store = new Store();
+	private final static Store store = createStore();
 
 	public StaticContext() {
 		super(StaticScoped.class, true);

@@ -44,30 +44,30 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Extension;
 
-import br.gov.frameworkdemoiselle.internal.context.AbstractCustomContext;
 import br.gov.frameworkdemoiselle.internal.context.Contexts;
+import br.gov.frameworkdemoiselle.internal.context.CustomContext;
 import br.gov.frameworkdemoiselle.internal.context.ViewContext;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 
 public class JsfBootstrap implements Extension {
 
-	private List<AbstractCustomContext> tempContexts = new ArrayList<AbstractCustomContext>();
+	private List<CustomContext> customContexts = new ArrayList<CustomContext>();
 
 	private AfterBeanDiscovery afterBeanDiscoveryEvent;
 
 	public void storeContexts(@Observes final AfterBeanDiscovery event) {
-		this.tempContexts.add(new ViewContext());
+		this.customContexts.add(new ViewContext());
 		this.afterBeanDiscoveryEvent = event;
 	}
 
 	public void addContexts(@Observes final AfterDeploymentValidation event) {
-		for (AbstractCustomContext tempContext : this.tempContexts) {
+		for (CustomContext tempContext : this.customContexts) {
 			Contexts.add(tempContext, this.afterBeanDiscoveryEvent);
 		}
 	}
 
 	public void removeContexts(@Observes AfterShutdownProccess event) {
-		for (AbstractCustomContext tempContext : this.tempContexts) {
+		for (CustomContext tempContext : this.customContexts) {
 			Contexts.remove(tempContext);
 		}
 	}

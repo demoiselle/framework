@@ -46,6 +46,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -77,10 +78,17 @@ public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
 		return deployment;
 	}
 
+	@BeforeClass
+	public static void afterClass() {
+		System.setProperty("primitiveInteger", String.valueOf(1));
+		System.setProperty("wrappedInteger", String.valueOf(2));
+		System.setProperty("stringWithSpace", String.valueOf("demoiselle framework"));
+		System.setProperty("stringWithComma", String.valueOf("demoiselle,framework"));
+	}
+
 	@Test
 	public void loadPrimitiveInteger() {
 		int expected = 1;
-		System.setProperty("primitiveInteger", String.valueOf(expected));
 
 		assertEquals(expected, systemConfig.getPrimitiveInteger());
 		assertEquals(expected, propertiesConfig.getPrimitiveInteger());
@@ -90,7 +98,6 @@ public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
 	@Test
 	public void loadWrappedInteger() {
 		Integer expected = 2;
-		System.setProperty("wrappedInteger", String.valueOf(expected));
 
 		assertEquals(expected, systemConfig.getWrappedInteger());
 		assertEquals(expected, propertiesConfig.getWrappedInteger());
@@ -100,7 +107,6 @@ public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
 	@Test
 	public void loadStringWithSpace() {
 		String expected = "demoiselle framework";
-		System.setProperty("stringWithSpace", String.valueOf(expected));
 
 		assertEquals(expected, systemConfig.getStringWithSpace());
 		assertEquals(expected, propertiesConfig.getStringWithSpace());
@@ -110,7 +116,6 @@ public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
 	// @Test
 	public void loadStringWithComma() {
 		String expected = "demoiselle,framework";
-		System.setProperty("stringWithComma", String.valueOf(expected));
 
 		assertEquals(expected, systemConfig.getStringWithComma());
 		assertEquals(expected, propertiesConfig.getStringWithComma());

@@ -46,6 +46,8 @@ import java.lang.annotation.Target;
 import javax.enterprise.inject.Stereotype;
 import javax.enterprise.util.Nonbinding;
 
+import br.gov.frameworkdemoiselle.annotation.StaticScoped;
+
 /**
  * Identifies a <b>configuration class</b>, that is, a structure reserved to store configuration values retrieved from a
  * given resource file or system variables.
@@ -63,7 +65,7 @@ import javax.enterprise.util.Nonbinding;
  */
 @Inherited
 @Stereotype
-// @StaticScoped
+@StaticScoped
 @Target(TYPE)
 @Retention(RUNTIME)
 public @interface Configuration {

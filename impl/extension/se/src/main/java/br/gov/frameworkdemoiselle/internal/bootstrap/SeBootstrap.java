@@ -49,13 +49,13 @@ import javax.enterprise.inject.spi.Extension;
 
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.internal.context.Contexts;
-import br.gov.frameworkdemoiselle.internal.context.AbstractCustomContext;
+import br.gov.frameworkdemoiselle.internal.context.CustomContext;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 
 public class SeBootstrap implements Extension {
 
-	private List<AbstractCustomContext> tempContexts = new ArrayList<AbstractCustomContext>();
+	private List<CustomContext> tempContexts = new ArrayList<CustomContext>();
 
 	private AfterBeanDiscovery afterBeanDiscoveryEvent;
 
@@ -69,13 +69,13 @@ public class SeBootstrap implements Extension {
 	}
 
 	public void addContexts(@Observes final AfterDeploymentValidation event) {
-		for (AbstractCustomContext tempContext : this.tempContexts) {
+		for (CustomContext tempContext : this.tempContexts) {
 			Contexts.add(tempContext, this.afterBeanDiscoveryEvent);
 		}
 	}
 
 	public void removeContexts(@Observes AfterShutdownProccess event) {
-		for (AbstractCustomContext tempContext : this.tempContexts) {
+		for (CustomContext tempContext : this.tempContexts) {
 			Contexts.remove(tempContext);
 		}
 	}

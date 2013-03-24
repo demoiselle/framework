@@ -42,12 +42,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
-public abstract class AbstractCustomContext implements Context {
+public abstract class AbstractCustomContext implements CustomContext {
 
 	private boolean active;
 
@@ -96,7 +95,7 @@ public abstract class AbstractCustomContext implements Context {
 		return this.active;
 	}
 
-	public void setActive(final boolean active) {
+	public void setActive(boolean active) {
 		this.active = active;
 	}
 
@@ -105,41 +104,27 @@ public abstract class AbstractCustomContext implements Context {
 		return this.scope;
 	}
 
-	// static class Store {
-	//
-	// private Map<Class<?>, Object> cache = Collections.synchronizedMap(new HashMap<Class<?>, Object>());
-	//
-	// public boolean contains(final Class<?> type) {
-	// return this.getMap().containsKey(type);
-	// }
-	//
-	// public Object get(final Class<?> type) {
-	// return this.getMap().get(type);
-	// }
-	//
-	// public void put(final Class<?> type, final Object instance) {
-	// this.getMap().put(type, instance);
-	// }
-	//
-	// private Map<Class<?>, Object> getMap() {
-	// return cache;
-	// }
-	// }
+	protected static Store createStore() {
+		return new Store();
+	}
 
 	static class Store {
 
 		private Map<ClassLoader, Map<Class<?>, Object>> cache = Collections
 				.synchronizedMap(new HashMap<ClassLoader, Map<Class<?>, Object>>());
 
-		public boolean contains(final Class<?> type) {
+		private Store() {
+		}
+
+		private boolean contains(final Class<?> type) {
 			return this.getMap().containsKey(type);
 		}
 
-		public Object get(final Class<?> type) {
+		private Object get(final Class<?> type) {
 			return this.getMap().get(type);
 		}
 
-		public void put(final Class<?> type, final Object instance) {
+		private void put(final Class<?> type, final Object instance) {
 			this.getMap().put(type, instance);
 		}
 

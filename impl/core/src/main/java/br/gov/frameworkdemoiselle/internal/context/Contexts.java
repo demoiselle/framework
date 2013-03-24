@@ -52,9 +52,9 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 public final class Contexts {
 
-	private static List<AbstractCustomContext> activeContexts = Collections.synchronizedList(new ArrayList<AbstractCustomContext>());
+	private static List<CustomContext> activeContexts = Collections.synchronizedList(new ArrayList<CustomContext>());
 
-	private static List<AbstractCustomContext> inactiveContexts = Collections.synchronizedList(new ArrayList<AbstractCustomContext>());
+	private static List<CustomContext> inactiveContexts = Collections.synchronizedList(new ArrayList<CustomContext>());
 
 	private static Logger logger;
 
@@ -79,7 +79,7 @@ public final class Contexts {
 		return bundle;
 	}
 
-	public static synchronized void add(AbstractCustomContext context, AfterBeanDiscovery event) {
+	public static synchronized void add(CustomContext context, AfterBeanDiscovery event) {
 		Class<? extends Annotation> scope = context.getScope();
 
 		getLogger()
@@ -99,10 +99,10 @@ public final class Contexts {
 		}
 	}
 
-	private static AbstractCustomContext get(Class<? extends Annotation> scope, List<AbstractCustomContext> contexts) {
-		AbstractCustomContext result = null;
+	private static CustomContext get(Class<? extends Annotation> scope, List<CustomContext> contexts) {
+		CustomContext result = null;
 
-		for (AbstractCustomContext context : contexts) {
+		for (CustomContext context : contexts) {
 			if (scope.equals(context.getScope())) {
 				result = context;
 				break;
@@ -112,7 +112,7 @@ public final class Contexts {
 		return result;
 	}
 
-	public static synchronized void remove(AbstractCustomContext context) {
+	public static synchronized void remove(CustomContext context) {
 		getLogger().trace(
 				getBundle().getString("custom-context-was-unregistered", context.getScope().getCanonicalName()));
 
@@ -120,7 +120,7 @@ public final class Contexts {
 			activeContexts.remove(context);
 			context.setActive(false);
 
-			AbstractCustomContext inactive = get(context.getScope(), inactiveContexts);
+			CustomContext inactive = get(context.getScope(), inactiveContexts);
 			if (inactive != null) {
 				activeContexts.add(inactive);
 				inactive.setActive(true);
@@ -133,8 +133,8 @@ public final class Contexts {
 	}
 
 	public static synchronized void clear() {
-		AbstractCustomContext context;
-		for (Iterator<AbstractCustomContext> iter = activeContexts.iterator(); iter.hasNext();) {
+		CustomContext context;
+		for (Iterator<CustomContext> iter = activeContexts.iterator(); iter.hasNext();) {
 			context = iter.next();
 			context.setActive(false);
 			iter.remove();
@@ -144,11 +144,11 @@ public final class Contexts {
 		inactiveContexts.clear();
 	}
 
-	public static synchronized List<AbstractCustomContext> getActiveContexts() {
+	public static synchronized List<CustomContext> getActiveContexts() {
 		return activeContexts;
 	}
 
-	public static synchronized List<AbstractCustomContext> getInactiveContexts() {
+	public static synchronized List<CustomContext> getInactiveContexts() {
 		return inactiveContexts;
 	}
 }
