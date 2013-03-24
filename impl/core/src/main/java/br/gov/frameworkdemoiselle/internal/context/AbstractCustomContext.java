@@ -105,6 +105,27 @@ public abstract class AbstractCustomContext implements Context {
 		return this.scope;
 	}
 
+	// static class Store {
+	//
+	// private Map<Class<?>, Object> cache = Collections.synchronizedMap(new HashMap<Class<?>, Object>());
+	//
+	// public boolean contains(final Class<?> type) {
+	// return this.getMap().containsKey(type);
+	// }
+	//
+	// public Object get(final Class<?> type) {
+	// return this.getMap().get(type);
+	// }
+	//
+	// public void put(final Class<?> type, final Object instance) {
+	// this.getMap().put(type, instance);
+	// }
+	//
+	// private Map<Class<?>, Object> getMap() {
+	// return cache;
+	// }
+	// }
+
 	static class Store {
 
 		private Map<ClassLoader, Map<Class<?>, Object>> cache = Collections

@@ -46,6 +46,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -68,6 +69,7 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 		return deployment;
 	}
 
+	@Ignore
 	@Test
 	public void loadPrimitiveInteger() {
 		int[] expected = { 1, 20, 0 };
