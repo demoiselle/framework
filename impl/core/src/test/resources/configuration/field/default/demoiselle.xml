@@ -35,8 +35,5 @@
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
 <configuration>
-	<primitiveInteger>1</primitiveInteger>
-	<wrappedInteger>2</wrappedInteger>
-	<stringWithSpace>demoiselle framework</stringWithSpace>
-	<stringWithComma>demoiselle,framework</stringWithComma>
+	<stringDefaultWithKey></stringDefaultWithKey>
 </configuration>
