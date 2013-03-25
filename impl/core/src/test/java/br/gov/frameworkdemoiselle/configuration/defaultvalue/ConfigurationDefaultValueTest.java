@@ -50,6 +50,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
+import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 
 @RunWith(Arquillian.class)
 public class ConfigurationDefaultValueTest extends AbstractConfigurationTest {
@@ -69,9 +70,9 @@ public class ConfigurationDefaultValueTest extends AbstractConfigurationTest {
 
 		deployment.addPackages(true, ConfigurationDefaultValueTest.class.getPackage());
 		deployment.addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/basic/demoiselle.properties")),
+				new FileAsset(new File("src/test/resources/configuration/field/default/demoiselle.properties")),
 				"demoiselle.properties").addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/basic/demoiselle.xml")),
+				new FileAsset(new File("src/test/resources/configuration/field/default/demoiselle.xml")),
 				"demoiselle.xml");
 
 		return deployment;
@@ -86,7 +87,7 @@ public class ConfigurationDefaultValueTest extends AbstractConfigurationTest {
 		assertEquals(expected, noFileConfig.getStringDefaultWithoutKey());
 	}
 	
-	//@Test(expected = ConfigurationException.class)
+	@Test//(expected = ConfigurationException.class)
 	/*TODO: Lançar exceção quando uma chave adicionada em arquivo de configuração não
 	 * tiver valor associado*/	
 	public void loadDefaultValueWithKey(){
@@ -95,6 +96,6 @@ public class ConfigurationDefaultValueTest extends AbstractConfigurationTest {
 		
 		assertEquals(expectedFilled, filledFieldConfig.getStringDefaultWithKey());
 		assertEquals(expectedNoFile, noFileConfig.getStringDefaultWithKey());
-		emptyFieldsConfig.getStringDefaultWithKey();
+		//emptyFieldsConfig.getStringDefaultWithKey();
 	}
 }
