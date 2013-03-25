@@ -54,7 +54,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.faces.convert.Converter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.swing.text.View;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -155,7 +154,7 @@ public class ParameterImplTest {
 	public void testGetValueWhenSessionScopedAndParameterValueNotNull() {
 		this.prepareForTestWithKeyFromNameAnnotation();
 		expect(Faces.getConverter(EasyMock.anyObject(Class.class))).andReturn(converter);
-		
+
 		mockStatic(Beans.class);
 		expect(Beans.getReference(HttpServletRequest.class)).andReturn(request).anyTimes();
 
@@ -179,7 +178,7 @@ public class ParameterImplTest {
 	@Test
 	public void testGetValueWhenSessionScopedAndParameterValueNull() {
 		this.prepareForTestWithKeyFromNameAnnotation();
-		
+
 		mockStatic(Beans.class);
 		expect(Beans.getReference(HttpServletRequest.class)).andReturn(request).anyTimes();
 
@@ -200,17 +199,17 @@ public class ParameterImplTest {
 	public void testGetValueWhenRequestScoped() {
 		this.prepareForTestWithKeyFromNameAnnotation();
 		expect(Faces.getConverter(EasyMock.anyObject(Class.class))).andReturn(converter);
-		
+
 		mockStatic(Beans.class);
 		expect(Beans.getReference(HttpServletRequest.class)).andReturn(request).anyTimes();
-		
+
 		expect(annotated.isAnnotationPresent(SessionScoped.class)).andReturn(false);
 		expect(annotated.isAnnotationPresent(RequestScoped.class)).andReturn(true);
 		expect(annotated.isAnnotationPresent(ViewScoped.class)).andReturn(false);
 		expect(request.getParameter(EasyMock.anyObject(String.class))).andReturn("1");
 		expect(request.getSession()).andReturn(session).anyTimes();
 		expect(Faces.convert("1", converter)).andReturn("return");
-		
+
 		replayAll();
 		param = new ParameterImpl<Long>(ip);
 		assertEquals("return", param.getValue());
@@ -221,11 +220,11 @@ public class ParameterImplTest {
 	public void testGetValueWhenViewScopedWithParamValueNotNull() {
 		this.prepareForTestWithKeyFromNameAnnotation();
 		expect(Faces.getConverter(EasyMock.anyObject(Class.class))).andReturn(converter);
-		Map<String, Object> map = new HashMap<String,Object>();
-		
+		Map<String, Object> map = new HashMap<String, Object>();
+
 		mockStatic(Beans.class);
 		expect(Beans.getReference(HttpServletRequest.class)).andReturn(request).anyTimes();
-		
+
 		expect(annotated.isAnnotationPresent(SessionScoped.class)).andReturn(false);
 		expect(annotated.isAnnotationPresent(RequestScoped.class)).andReturn(false);
 		expect(annotated.isAnnotationPresent(ViewScoped.class)).andReturn(true);
@@ -243,12 +242,12 @@ public class ParameterImplTest {
 	@Test
 	public void testGetValueWhenViewScopedWithParamValueNull() {
 		this.prepareForTestWithKeyFromNameAnnotation();
-		Map<String, Object> map = new HashMap<String,Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("name", "ops");
 
 		mockStatic(Beans.class);
 		expect(Beans.getReference(HttpServletRequest.class)).andReturn(request).anyTimes();
-		
+
 		expect(annotated.isAnnotationPresent(SessionScoped.class)).andReturn(false);
 		expect(annotated.isAnnotationPresent(RequestScoped.class)).andReturn(false);
 		expect(annotated.isAnnotationPresent(ViewScoped.class)).andReturn(true);
@@ -269,13 +268,13 @@ public class ParameterImplTest {
 
 		mockStatic(Beans.class);
 		expect(Beans.getReference(HttpServletRequest.class)).andReturn(request).anyTimes();
-		
+
 		expect(annotated.isAnnotationPresent(SessionScoped.class)).andReturn(false);
 		expect(annotated.isAnnotationPresent(RequestScoped.class)).andReturn(false);
 		expect(annotated.isAnnotationPresent(ViewScoped.class)).andReturn(false);
 		expect(request.getParameter(EasyMock.anyObject(String.class))).andReturn("1");
 		expect(Faces.convert("1", converter)).andReturn("return");
-		
+
 		replayAll();
 		param = new ParameterImpl<Long>(ip);
 		assertEquals("return", param.getValue());
@@ -288,7 +287,7 @@ public class ParameterImplTest {
 
 		mockStatic(Beans.class);
 		expect(Beans.getReference(HttpServletRequest.class)).andReturn(request).anyTimes();
-		
+
 		expect(annotated.isAnnotationPresent(SessionScoped.class)).andReturn(false);
 		expect(annotated.isAnnotationPresent(RequestScoped.class)).andReturn(false);
 		expect(annotated.isAnnotationPresent(ViewScoped.class)).andReturn(false);
@@ -307,7 +306,7 @@ public class ParameterImplTest {
 
 		mockStatic(Beans.class);
 		expect(Beans.getReference(HttpServletRequest.class)).andReturn(request).anyTimes();
-		
+
 		expect(annotated.isAnnotationPresent(SessionScoped.class)).andReturn(true);
 		expect(annotated.isAnnotationPresent(RequestScoped.class)).andReturn(false);
 		expect(annotated.isAnnotationPresent(ViewScoped.class)).andReturn(false);

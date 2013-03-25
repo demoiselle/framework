@@ -64,7 +64,7 @@ public class LoggerProducer implements Serializable {
 
 	@Produces
 	@Default
-	public static Logger create(final InjectionPoint ip) {
+	public Logger create(final InjectionPoint ip) {
 		Class<?> type;
 
 		if (ip != null) {

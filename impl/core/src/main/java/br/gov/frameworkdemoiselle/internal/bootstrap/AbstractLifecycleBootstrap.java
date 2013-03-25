@@ -59,7 +59,7 @@ import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
 import br.gov.frameworkdemoiselle.internal.context.Contexts;
-import br.gov.frameworkdemoiselle.internal.context.CustomContext;
+import br.gov.frameworkdemoiselle.internal.context.AbstractCustomContext;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.internal.implementation.AnnotatedMethodProcessor;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
@@ -74,7 +74,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 	private List<AnnotatedMethodProcessor> processors = Collections
 			.synchronizedList(new ArrayList<AnnotatedMethodProcessor>());
 
-	private List<CustomContext> tempContexts = new ArrayList<CustomContext>();
+	private List<AbstractCustomContext> tempContexts = new ArrayList<AbstractCustomContext>();
 
 	private AfterBeanDiscovery afterBeanDiscoveryEvent;
 
@@ -131,10 +131,10 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		getLogger().debug(getBundle().getString("executing-all", getAnnotationClass().getSimpleName()));
 
 		Collections.sort(processors);
-		Throwable failure = null;
+		Exception failure = null;
 
 		if (!registered) {
-			for (CustomContext tempContext : tempContexts) {
+			for (AbstractCustomContext tempContext : tempContexts) {
 				Contexts.add(tempContext, afterBeanDiscoveryEvent);
 			}
 
@@ -153,7 +153,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 					iter.remove();
 				}
 
-			} catch (Throwable cause) {
+			} catch (Exception cause) {
 				failure = cause;
 			}
 		}
@@ -168,7 +168,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 	}
 
 	private void unloadTempContexts() {
-		for (CustomContext tempContext : tempContexts) {
+		for (AbstractCustomContext tempContext : tempContexts) {
 			Contexts.remove(tempContext);
 		}
 	}

@@ -37,20 +37,16 @@
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.slf4j.Logger;
 
@@ -63,8 +59,6 @@ import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 public class CoreBootstrap implements Extension {
-
-	private final Map<Class<?>, AnnotatedType<?>> beans = new HashMap<Class<?>, AnnotatedType<?>>();
 
 	private Logger logger;
 
@@ -90,25 +84,11 @@ public class CoreBootstrap implements Extension {
 		return this.bundle;
 	}
 
-	public boolean isAnnotatedType(Class<?> type) {
-		return beans.containsKey(type);
-	}
-
 	public void engineOn(@Observes final BeforeBeanDiscovery event, BeanManager beanManager) {
-		String description;
-		Logger log = getLogger();
-
-		description = getBundle().getString("engine-on");
-		log.info(description);
+		getLogger().info(getBundle().getString("engine-on"));
 
 		Beans.setBeanManager(beanManager);
-
-		description = getBundle().getString("setting-up-bean-manager", Beans.class.getCanonicalName());
-		log.info(description);
-	}
-
-	protected <T> void detectAnnotation(@Observes final ProcessAnnotatedType<T> event) {
-		beans.put(event.getAnnotatedType().getJavaClass(), event.getAnnotatedType());
+		getLogger().info(getBundle().getString("setting-up-bean-manager", Beans.class.getCanonicalName()));
 	}
 
 	public void storeContexts(@Observes final AfterBeanDiscovery event) {

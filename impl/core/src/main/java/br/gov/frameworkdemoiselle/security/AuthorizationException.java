@@ -36,19 +36,14 @@
  */
 package br.gov.frameworkdemoiselle.security;
 
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
-
 /**
- * Thrown when trying to access some resource and/or execute an operation without the proper authorization.
+ * Thrown when a fail on trying to access some resource and/or execute an operation without the proper authorization.
  * 
  * @author SERPRO
  */
 public class AuthorizationException extends SecurityException {
 
 	private static final long serialVersionUID = 1L;
-
-	private static ResourceBundle bundle;
 
 	/**
 	 * Constructor with message.
@@ -58,17 +53,5 @@ public class AuthorizationException extends SecurityException {
 	 */
 	public AuthorizationException(String message) {
 		super(message);
-	}
-
-	public AuthorizationException(String resource, String operation) {
-		super(getBundle().getString("access-denied-ui", resource, operation));
-	}
-
-	private static ResourceBundle getBundle() {
-		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
-		}
-
-		return bundle;
 	}
 }

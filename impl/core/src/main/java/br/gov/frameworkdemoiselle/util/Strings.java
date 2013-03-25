@@ -53,12 +53,14 @@ public final class Strings {
 	}
 
 	public static String removeChars(String string, char... chars) {
-		if (string != null) {
+		String result = string;
+
+		if (result != null) {
 			for (char ch : chars) {
-				string = string.replace(String.valueOf(ch), "");
+				result = result.replace(String.valueOf(ch), "");
 			}
 		}
-		return string;
+		return result;
 	}
 
 	public static String insertZeros(String string, int howMuchZeros) {

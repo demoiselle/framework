@@ -51,23 +51,23 @@ import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 
 public class JsfBootstrap implements Extension {
 
-	private List<CustomContext> tempContexts = new ArrayList<CustomContext>();
+	private List<CustomContext> customContexts = new ArrayList<CustomContext>();
 
 	private AfterBeanDiscovery afterBeanDiscoveryEvent;
 
 	public void storeContexts(@Observes final AfterBeanDiscovery event) {
-		this.tempContexts.add(new ViewContext());
+		this.customContexts.add(new ViewContext());
 		this.afterBeanDiscoveryEvent = event;
 	}
 
 	public void addContexts(@Observes final AfterDeploymentValidation event) {
-		for (CustomContext tempContext : this.tempContexts) {
+		for (CustomContext tempContext : this.customContexts) {
 			Contexts.add(tempContext, this.afterBeanDiscoveryEvent);
 		}
 	}
 
 	public void removeContexts(@Observes AfterShutdownProccess event) {
-		for (CustomContext tempContext : this.tempContexts) {
+		for (CustomContext tempContext : this.customContexts) {
 			Contexts.remove(tempContext);
 		}
 	}

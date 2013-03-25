@@ -13,7 +13,7 @@
 	</para>
 
 	<section>
-		<title>Mínimo</title>
+		<title>demoiselle-minimal</title>
 		<para>
 			Fornece um conjunto mínimo de artefatos para criar uma aplicação Java, utiliza o Demoiselle-Minimal-Parent, 
 			sendo útil quando os outros arquétipos disponíveis não se enquadram nas características do projeto a ser criado. 
@@ -21,10 +21,10 @@
 	</section>
 
 	<section>
-		<title>JSF com JPA</title>
+		<title>demoiselle-jsf-jpa</title>
 		<para>
 			Útil para os projetos que precisam de uma arquitetura que utilize as tecnologias JSF e JPA,
-			é baseado no Demoiselle-JSF-Parent
+			é baseado no <emphasis>demoiselle-jsf-parent</emphasis>
 			e já traz uma estrutura padrão de pacotes e todas
 			as dependências necessárias para rodar a aplicação. Ao usar este
 			arquétipo, você terá uma pequena aplicação de
@@ -34,16 +34,4 @@
 			a sessão de documentação chamada <ulink url="http://demoiselle.sourceforge.net/docs/quickstart/">QuickStart</ulink>.
 		</para>
 	</section>
-
-	<section>
-		<title>Vaadin com JPA</title>
-		<para>
-			Uma das principais novidades com relação a esta nova versão do Framework Demoiselle
-			é sua integração mais completa com outras tecnologias de apresentação. Na versão anterior,
-			apesar de ser possível a utilização de outra soluções, não havia ainda facilitadores realmente integrados ao Demoiselle.
-			Seguindo este princípio, um dos arquétipos disponibilizados pelo Framework gera uma aplicação de exemplo, nos mesmo moldes
-			que é disponibilizado para a tecnologia JSF, mas com a tecnologia de apresentação chamada  <ulink url="http://vaadin.com">VAADIN</ulink>.			
-		</para>
-	</section>
-
 </chapter>

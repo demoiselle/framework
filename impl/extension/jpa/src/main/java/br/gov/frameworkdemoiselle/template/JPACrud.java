@@ -227,23 +227,24 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	 * @return
 	 */
 	private String createCountQuery(String query) {
-		Matcher matcher = Pattern.compile("[Ss][Ee][Ll][Ee][Cc][Tt](.+)[Ff][Rr][Oo][Mm]").matcher(query);
+		String result = query;
+		Matcher matcher = Pattern.compile("[Ss][Ee][Ll][Ee][Cc][Tt](.+)[Ff][Rr][Oo][Mm]").matcher(result);
 
 		if (matcher.find()) {
 			String group = matcher.group(1).trim();
-			query = query.replaceFirst(group, "COUNT(" + group + ")");
-			matcher = Pattern.compile("[Oo][Rr][Dd][Ee][Rr](.+)").matcher(query);
+			result = result.replaceFirst(group, "COUNT(" + group + ")");
+			matcher = Pattern.compile("[Oo][Rr][Dd][Ee][Rr](.+)").matcher(result);
 
 			if (matcher.find()) {
 				group = matcher.group(0);
-				query = query.replaceFirst(group, "");
+				result = result.replaceFirst(group, "");
 			}
-
-			return query;
 
 		} else {
 			throw new DemoiselleException(bundle.get().getString("malformed-jpql"));
 		}
+
+		return result;
 	}
 
 	/**

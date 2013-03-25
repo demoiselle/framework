@@ -44,8 +44,8 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-extension-parent</artifactId>
-		<version>2.3.3-SNAPSHOT</version>
-		<relativePath>../../../parent/extension</relativePath>
+		<version>2.4.0-BETA2-SNAPSHOT</version>
+		<relativePath>../extension</relativePath>
 	</parent>
 
 	<name>Demoiselle Framework SE Parent</name>

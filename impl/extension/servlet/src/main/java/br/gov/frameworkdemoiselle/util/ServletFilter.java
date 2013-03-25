@@ -63,6 +63,13 @@ public class ServletFilter implements Filter {
 		Beans.getReference(HttpServletRequestProducer.class).setDelegate((HttpServletRequest) request);
 		Beans.getReference(HttpServletResponseProducer.class).setDelegate((HttpServletResponse) response);
 
+		// X509Certificate[] certificates = (X509Certificate[]) ((HttpServletRequest) request)
+		// .getAttribute("javax.servlet.request.X509Certificate");
+		//
+		// for (X509Certificate certificate : certificates) {
+		// System.out.println(certificate.toString());
+		// }
+
 		chain.doFilter(request, response);
 	}
 

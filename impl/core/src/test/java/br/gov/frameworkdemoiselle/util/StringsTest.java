@@ -34,13 +34,12 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-
 package br.gov.frameworkdemoiselle.util;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import org.junit.Test;
 
@@ -141,10 +140,7 @@ public class StringsTest {
 		}
 
 		String result = Strings.toString(new Test());
-
 		assertTrue(result.contains("Test [name=myName, lastname=myLastname, nullField=null, this"));
-
-		verifyAll();
 	}
 
 	private void testEqualsGetString(String in, String expected, Object... params) {
@@ -202,5 +198,4 @@ public class StringsTest {
 		assertEquals("0" + string, Strings.insertZeros(string, string.length() + 1));
 		assertEquals("00" + string, Strings.insertZeros(string, string.length() + 2));
 	}
-
 }

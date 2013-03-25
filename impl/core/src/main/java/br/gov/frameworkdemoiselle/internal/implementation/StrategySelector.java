@@ -132,41 +132,4 @@ public final class StrategySelector implements Serializable {
 
 		return result;
 	}
-
-	// public static <T> T getExplicitReference(String configKey, Class<T> strategyType, Class<T> defaultType) {
-	// Class<T> selectedType = loadSelected(configKey, strategyType, defaultType);
-	// return Beans.getReference(selectedType);
-	// }
-	//
-	// @SuppressWarnings("unchecked")
-	// private static <T> Class<T> loadSelected(String configKey, Class<T> strategyType, Class<T> defaultType) {
-	// ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-core-bundle",
-	// Beans.getReference(Locale.class));
-	// Class<T> result = null;
-	// String canonicalName = null;
-	// String typeName = strategyType.getSimpleName().toLowerCase();
-	// String key = null;
-	// try {
-	// URL url = ConfigurationLoader.getResourceAsURL("demoiselle.properties");
-	// Configuration config = new PropertiesConfiguration(url);
-	// canonicalName = config.getString(configKey, defaultType.getCanonicalName());
-	// ClassLoader classLoader = ConfigurationLoader.getClassLoaderForClass(canonicalName);
-	// if (classLoader == null) {
-	// classLoader = Thread.currentThread().getContextClassLoader();
-	// }
-	// result = (Class<T>) Class.forName(canonicalName, false, classLoader);
-	// result.asSubclass(strategyType);
-	// } catch (org.apache.commons.configuration.ConfigurationException cause) {
-	// throw new ConfigurationException(bundle.getString("file-not-found", "demoiselle.properties"));
-	// } catch (ClassNotFoundException cause) {
-	// key = Strings.getString("{0}-class-not-found", typeName);
-	// throw new ConfigurationException(bundle.getString(key, canonicalName));
-	// } catch (FileNotFoundException e) {
-	// throw new ConfigurationException(bundle.getString("file-not-found", "demoiselle.properties"));
-	// } catch (ClassCastException cause) {
-	// key = Strings.getString("{0}-class-must-be-of-type", typeName);
-	// throw new ConfigurationException(bundle.getString(key, canonicalName, strategyType));
-	// }
-	// return result;
-	// }
 }

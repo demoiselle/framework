@@ -36,158 +36,34 @@
  */
 package br.gov.frameworkdemoiselle.internal.interceptor;
 
-import java.io.Serializable;
-
+import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 import org.slf4j.Logger;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
-import br.gov.frameworkdemoiselle.security.AuthorizationException;
 import br.gov.frameworkdemoiselle.security.RequiredPermission;
-import br.gov.frameworkdemoiselle.security.SecurityContext;
-import br.gov.frameworkdemoiselle.security.User;
-import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
-import br.gov.frameworkdemoiselle.util.Strings;
 
 /**
  * Intercepts calls with {@code @RequiredPermission} annotations.
  * 
  * @author SERPRO
  */
+@Deprecated
 @Interceptor
 @RequiredPermission
-public class RequiredPermissionInterceptor implements Serializable {
+public class RequiredPermissionInterceptor extends br.gov.frameworkdemoiselle.security.RequiredPermissionInterceptor {
 
 	private static final long serialVersionUID = 1L;
 
-	private SecurityContext securityContext;
+	@Inject
+	private Logger logger;
 
-	private static ResourceBundle bundle;
-
-	private static Logger logger;
-
-	/**
-	 * Gets the values for both resource and operation properties of {@code @RequiredPermission}. Delegates to
-	 * {@code SecurityContext} check permissions. If the user has the required permission it executes the mehtod,
-	 * otherwise throws an exception. Returns what is returned from the intercepted method. If the method's return type
-	 * is {@code void} returns {@code null}.
-	 * 
-	 * @param ic
-	 *            the {@code InvocationContext} in which the method is being called
-	 * @return what is returned from the intercepted method. If the method's return type is {@code void} returns
-	 *         {@code null}
-	 * @throws Exception
-	 *             if there is an error during the permission check or during the method's processing
-	 */
+	@Override
 	@AroundInvoke
-	public Object manage(final InvocationContext ic) throws Exception {
-		String resource = getResource(ic);
-		String operation = getOperation(ic);
-		String username = null;
-
-		if (getSecurityContext().isLoggedIn()) {
-			username = getUsername();
-			getLogger().trace(getBundle().getString("access-checking", username, operation, resource));
-		}
-
-		if (!getSecurityContext().hasPermission(resource, operation)) {
-			getLogger().error(getBundle().getString("access-denied", username, operation, resource));
-			throw new AuthorizationException(getBundle().getString("access-denied-ui", resource, operation));
-		}
-
-		getLogger().debug(getBundle().getString("access-allowed", username, operation, resource));
-		return ic.proceed();
-	}
-
-	/**
-	 * Returns the id of the currently logged in user.
-	 * 
-	 * @return the id of the currently logged in user
-	 */
-	private String getUsername() {
-		String username = "";
-		User user = getSecurityContext().getUser();
-
-		if (user != null && user.getId() != null) {
-			username = user.getId();
-		}
-
-		return username;
-	}
-
-	/**
-	 * Returns the resource defined in {@code @RequiredPermission} annotation, the name defined in {@code @Name}
-	 * annotation or the class name itself
-	 * 
-	 * @param ic
-	 *            the {@code InvocationContext} in which the method is being called
-	 * @return the resource defined in {@code @RequiredPermission} annotation, the name defined in {@code @Name}
-	 *         annotation or the class name itself
-	 */
-	private String getResource(InvocationContext ic) {
-		RequiredPermission requiredPermission = ic.getMethod().getAnnotation(RequiredPermission.class);
-
-		if (requiredPermission == null || Strings.isEmpty(requiredPermission.resource())) {
-			if (ic.getTarget().getClass().getAnnotation(Name.class) == null) {
-				return ic.getTarget().getClass().getSimpleName();
-			} else {
-				return ic.getTarget().getClass().getAnnotation(Name.class).value();
-			}
-		} else {
-			return requiredPermission.resource();
-		}
-	}
-
-	/**
-	 * Returns the operation defined in {@code @RequiredPermission} annotation, the name defined in {@code @Name}
-	 * annotation or the method's name itself
-	 * 
-	 * @param ic
-	 *            the {@code InvocationContext} in which the method is being called
-	 * @return the operation defined in {@code @RequiredPermission} annotation, the name defined in {@code @Name}
-	 *         annotation or the method's name itself
-	 */
-	private String getOperation(InvocationContext ic) {
-		RequiredPermission requiredPermission = ic.getMethod().getAnnotation(RequiredPermission.class);
-
-		if (requiredPermission == null || Strings.isEmpty(requiredPermission.operation())) {
-			if (ic.getMethod().getAnnotation(Name.class) == null) {
-				return ic.getMethod().getName();
-			} else {
-				return ic.getMethod().getAnnotation(Name.class).value();
-			}
-		} else {
-			return requiredPermission.operation();
-		}
-	}
-
-	private SecurityContext getSecurityContext() {
-		if (securityContext == null) {
-			securityContext = Beans.getReference(SecurityContext.class);
-		}
-
-		return securityContext;
-	}
-
-	private static ResourceBundle getBundle() {
-		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
-		}
-
-		return bundle;
-	}
-
-	private static Logger getLogger() {
-		if (logger == null) {
-			logger = LoggerProducer.create(RequiredPermissionInterceptor.class);
-		}
-
-		return logger;
+	public Object manage(InvocationContext ic) throws Exception {
+		logger.warn("ATENÇÃO! Substitua a entrada \"br.gov.frameworkdemoiselle.internal.interceptor.RequiredPermissionInterceptor\" no beans.xml por \"br.gov.frameworkdemoiselle.security.RequiredPermissionInterceptor\" para garantir a compatibilidade com futuras versões.");
+		return super.manage(ic);
 	}
 }

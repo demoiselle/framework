@@ -49,14 +49,18 @@
 package br.gov.frameworkdemoiselle.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.internal.bootstrap.CustomInjectionPoint;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 
 public final class Beans {
@@ -78,7 +82,7 @@ public final class Beans {
 		T instance;
 
 		try {
-			instance = (T) getReference(manager.getBeans(beanClass, qualifiers), beanClass);
+			instance = (T) getReference(manager.getBeans(beanClass, qualifiers), beanClass, qualifiers);
 
 		} catch (NoSuchElementException cause) {
 			StringBuffer buffer = new StringBuffer();
@@ -126,10 +130,13 @@ public final class Beans {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> T getReference(Set<Bean<?>> beans, Class<T> beanClass) {
+	private static <T> T getReference(Set<Bean<?>> beans, Class<T> beanClass, Annotation... qualifiers) {
 		Bean<?> bean = beans.iterator().next();
-		return (T) manager.getReference(bean, beanClass == null ? bean.getBeanClass() : beanClass,
-				manager.createCreationalContext(bean));
+		CreationalContext<?> context = manager.createCreationalContext(bean);
+		Type beanType = beanClass == null ? bean.getBeanClass() : beanClass;
+		InjectionPoint injectionPoint = new CustomInjectionPoint(bean, beanType, qualifiers);
+
+		return (T) manager.getInjectableReference(injectionPoint, context);
 	}
 
 	private static <T> T getReference(Set<Bean<?>> beans) {
