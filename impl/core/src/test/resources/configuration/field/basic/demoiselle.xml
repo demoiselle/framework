@@ -39,4 +39,5 @@
 	<wrappedInteger>2</wrappedInteger>
 	<stringWithSpace>demoiselle framework</stringWithSpace>
 	<stringWithComma>demoiselle,framework</stringWithComma>
+	<stringDefaultWithKey></stringDefaultWithKey>
 </configuration>
