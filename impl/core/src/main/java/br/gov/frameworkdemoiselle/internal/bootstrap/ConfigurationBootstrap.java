@@ -37,6 +37,7 @@
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -47,9 +48,9 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.LoaderClassPath;
+import javassist.NotFoundException;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
@@ -60,27 +61,29 @@ import br.gov.frameworkdemoiselle.internal.implementation.ConfigurationImpl;
 
 public class ConfigurationBootstrap implements Extension {
 
-	private final List<Class<Object>> cache = Collections.synchronizedList(new ArrayList<Class<Object>>());
-
 	private static final Map<ClassLoader, Map<String, Class<Object>>> cacheClassLoader = Collections
 			.synchronizedMap(new HashMap<ClassLoader, Map<String, Class<Object>>>());
 
-	public void processAnnotatedType(@Observes final ProcessAnnotatedType<Object> event) {
+	public void processAnnotatedType(@Observes final ProcessAnnotatedType<Object> event, BeanManager beanManager)
+			throws Exception {
 		final AnnotatedType<Object> annotatedType = event.getAnnotatedType();
 
 		if (annotatedType.getJavaClass().isAnnotationPresent(Configuration.class)) {
-			cache.add(annotatedType.getJavaClass());
-			event.veto();
+			Class<Object> proxyClass = createProxy(annotatedType.getJavaClass());
+			AnnotatedType<Object> proxyAnnotatedType = beanManager.createAnnotatedType(proxyClass);
+			event.setAnnotatedType(proxyAnnotatedType);
 		}
 	}
 
-	public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) throws Exception {
-		Class<Object> proxy;
+	private static List<CtMethod> getMethods(CtClass type) throws NotFoundException {
+		List<CtMethod> fields = new ArrayList<CtMethod>();
 
-		for (Class<Object> config : cache) {
-			proxy = createProxy(config);
-			event.addBean(new CustomBean(proxy, beanManager));
+		if (type != null && !type.getName().equals(Object.class.getName())) {
+			fields.addAll(Arrays.asList(type.getDeclaredMethods()));
+			fields.addAll(getMethods(type.getSuperclass()));
 		}
+
+		return fields;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -112,7 +115,7 @@ public class ConfigurationBootstrap implements Extension {
 			ctChieldClass.setSuperclass(ctSuperClass);
 
 			CtMethod ctChieldMethod;
-			for (CtMethod ctSuperMethod : ctSuperClass.getDeclaredMethods()) {
+			for (CtMethod ctSuperMethod : getMethods(ctSuperClass)) {
 				ctChieldMethod = CtNewMethod.delegator(ctSuperMethod, ctChieldClass);
 				ctChieldMethod.insertBefore("load(this);");
 

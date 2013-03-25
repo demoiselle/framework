@@ -34,24 +34,23 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.context;
+package br.gov.frameworkdemoiselle.annotation;
 
-import java.util.Map;
-import java.util.TreeMap;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-public class ContextStore {
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-	private Map<String, Object> map = new TreeMap<String, Object>();
+import javax.enterprise.context.NormalScope;
 
-	public boolean contains(final String name) {
-		return this.map.containsKey(name);
-	}
+@Inherited
+@Target({ METHOD, TYPE, FIELD })
+@Retention(RUNTIME)
+@NormalScope
+public @interface StaticScoped {
 
-	public Object get(final String name) {
-		return this.map.get(name);
-	}
-
-	public void put(final String name, final Object instance) {
-		this.map.put(name, instance);
-	}
 }

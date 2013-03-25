@@ -50,81 +50,24 @@ package br.gov.frameworkdemoiselle.internal.context;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
+public class ThreadLocalContext extends AbstractCustomContext {
 
-public class ThreadLocalContext implements CustomContext {
-
-	private final ThreadLocal<ContextStore> threadLocal = new ThreadLocal<ContextStore>();
-
-	private boolean active;
-
-	private final Class<? extends Annotation> scope;
+	private final ThreadLocal<Store> threadLocal = new ThreadLocal<Store>();
 
 	public ThreadLocalContext(final Class<? extends Annotation> scope) {
-		this(scope, true);
+		super(scope, true);
 	}
 
-	public ThreadLocalContext(final Class<? extends Annotation> scope,
-			boolean active) {
-		this.scope = scope;
-		this.active = active;
-	}
+//	public ThreadLocalContext(final Class<? extends Annotation> scope, boolean active) {
+//		super(scope, active);
+//	}
 
 	@Override
-	public <T> T get(final Contextual<T> contextual) {
-		return get(contextual, null);
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T get(final Contextual<T> contextual,
-			final CreationalContext<T> creationalContext) {
-		T instance = null;
-
-		if (!isActive()) {
-			throw new ContextNotActiveException();
-		}
-
-		String id = getId(contextual);
-		if (getStore().contains(id)) {
-			instance = (T) getStore().get(id);
-
-		} else if (creationalContext != null) {
-			instance = contextual.create(creationalContext);
-			getStore().put(id, instance);
-		}
-
-		return instance;
-	}
-
-	private <T> String getId(final Contextual<T> contextual) {
-		Bean<T> bean = (Bean<T>) contextual;
-		return bean.getBeanClass().getCanonicalName();
-	}
-
-	@Override
-	public Class<? extends Annotation> getScope() {
-		return this.scope;
-	}
-
-	private ContextStore getStore() {
+	protected Store getStore() {
 		if (this.threadLocal.get() == null) {
-			this.threadLocal.set(new ContextStore());
+			this.threadLocal.set(createStore());
 		}
 
 		return this.threadLocal.get();
 	}
-
-	@Override
-	public boolean isActive() {
-		return this.active;
-	}
-
-	public void setActive(final boolean active) {
-		this.active = active;
-	}
-
 }
