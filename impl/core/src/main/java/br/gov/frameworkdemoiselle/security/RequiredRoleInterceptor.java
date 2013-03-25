@@ -63,8 +63,6 @@ public class RequiredRoleInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private SecurityContext securityContext;
-
 	private static ResourceBundle bundle;
 
 	private static Logger logger;
@@ -136,11 +134,7 @@ public class RequiredRoleInterceptor implements Serializable {
 	}
 
 	private SecurityContext getSecurityContext() {
-		if (securityContext == null) {
-			securityContext = Beans.getReference(SecurityContext.class);
-		}
-
-		return securityContext;
+		return Beans.getReference(SecurityContext.class);
 	}
 
 	private static ResourceBundle getBundle() {

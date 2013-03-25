@@ -48,9 +48,6 @@ import org.slf4j.Logger;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
-import br.gov.frameworkdemoiselle.security.AuthorizationException;
-import br.gov.frameworkdemoiselle.security.RequiredPermission;
-import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
@@ -65,8 +62,6 @@ import br.gov.frameworkdemoiselle.util.Strings;
 public class RequiredPermissionInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	private SecurityContext securityContext;
 
 	private static ResourceBundle bundle;
 
@@ -168,11 +163,7 @@ public class RequiredPermissionInterceptor implements Serializable {
 	}
 
 	private SecurityContext getSecurityContext() {
-		if (securityContext == null) {
-			securityContext = Beans.getReference(SecurityContext.class);
-		}
-
-		return securityContext;
+		return Beans.getReference(SecurityContext.class);
 	}
 
 	private static ResourceBundle getBundle() {
