@@ -208,7 +208,7 @@ public class SecurityContextImpl implements SecurityContext {
 		}
 	}
 
-	private class EmptyUser implements Principal, Serializable {
+	private static class EmptyUser implements Principal, Serializable {
 
 		private static final long serialVersionUID = 1L;
 
