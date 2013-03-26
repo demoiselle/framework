@@ -40,11 +40,11 @@ import java.io.Serializable;
 
 public interface PageBean extends Serializable {
 
-	public String getCurrentView();
+	String getCurrentView();
 
-	public String getNextView();
+	String getNextView();
 
-	public String getPreviousView();
+	String getPreviousView();
 
-	public String getTitle();
+	String getTitle();
 }

@@ -38,15 +38,15 @@ package br.gov.frameworkdemoiselle.template;
 
 public interface EditPageBean<T> extends PageBean {
 
-	public String delete();
+	String delete();
 
-	public T getBean();
+	T getBean();
 
-	public Object getId();
+	Object getId();
 
-	public String insert();
+	String insert();
 
-	public boolean isUpdateMode();
+	boolean isUpdateMode();
 
-	public String update();
+	String update();
 }
