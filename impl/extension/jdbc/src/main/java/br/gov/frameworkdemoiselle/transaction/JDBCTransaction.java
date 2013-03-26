@@ -126,12 +126,12 @@ public class JDBCTransaction implements Transaction {
 	public boolean isActive() {
 		Status status;
 		boolean result = true;
-		
+
 		for (Connection connection : getDelegate()) {
 			status = cache.get(connection);
 			result = result && status.isActive();
 		}
-		
+
 		return result;
 	}
 
@@ -139,16 +139,16 @@ public class JDBCTransaction implements Transaction {
 	public boolean isMarkedRollback() {
 		Status status;
 		boolean result = true;
-		
+
 		for (Connection connection : getDelegate()) {
 			status = cache.get(connection);
 			result = result && status.isMarkedRollback();
 		}
-		
+
 		return result;
 	}
 
-	private class Status implements Serializable {
+	private static class Status implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 

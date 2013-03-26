@@ -81,15 +81,7 @@ public class TransactionalInterceptor implements Serializable {
 			instance.getCounter();
 
 		} catch (ContextNotActiveException cause) {
-			instance = new TransactionInfo() {
-
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public boolean isOwner() {
-					return false;
-				}
-			};
+			instance = new VoidTransactionInfo();
 		}
 
 		return instance;
@@ -193,5 +185,15 @@ public class TransactionalInterceptor implements Serializable {
 		}
 
 		return logger;
+	}
+
+	private static class VoidTransactionInfo extends TransactionInfo {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public boolean isOwner() {
+			return false;
+		}
 	}
 }

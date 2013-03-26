@@ -43,14 +43,12 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import br.gov.frameworkdemoiselle.stereotype.BusinessController;
-import br.gov.frameworkdemoiselle.stereotype.PersistenceController;
-import br.gov.frameworkdemoiselle.stereotype.ViewController;
-
 /**
  * <p>
- * Should be used exclusively with controller objects, i.e., classes annotated with {@link ViewController},
- * {@link BusinessController}, or {@link PersistenceController}.
+ * Should be used exclusively with controller objects, i.e., classes annotated with
+ * {@link br.gov.frameworkdemoiselle.stereotype.ViewController},
+ * {@link br.gov.frameworkdemoiselle.stereotype.BusinessController}, or
+ * {@link br.gov.frameworkdemoiselle.stereotype.PersistenceController}.
  * </p>
  * <p>
  * Methods that use this annotation will automatically handle all exceptions of a specific type thrown by the method

@@ -30,7 +30,7 @@ public class EntityManagerFactoryProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static String ENTITY_MANAGER_RESOURCE = "META-INF/persistence.xml";
+	private static final String ENTITY_MANAGER_RESOURCE = "META-INF/persistence.xml";
 
 	@Inject
 	private Logger logger;
