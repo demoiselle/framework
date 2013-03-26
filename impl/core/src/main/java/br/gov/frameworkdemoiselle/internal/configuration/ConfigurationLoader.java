@@ -209,6 +209,7 @@ public class ConfigurationLoader implements Serializable {
 		return (T) value;
 	}
 
+	@SuppressWarnings("unchecked")
 	private <T> Object getMap(Key key, Field field, org.apache.commons.configuration.Configuration config) {
 		Map<String, Object> value = null;
 
@@ -220,8 +221,7 @@ public class ConfigurationLoader implements Serializable {
 		String mapKey;
 		String confKey;
 
-		for (@SuppressWarnings("unchecked")
-		Iterator<String> iter = config.getKeys(); iter.hasNext();) {
+		for (Iterator<String> iter = config.getKeys(); iter.hasNext();) {
 			iterKey = iter.next();
 			matcher = pattern.matcher(iterKey);
 
