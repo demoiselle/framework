@@ -66,7 +66,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 	private final Map<Class<?>, Map<Class<?>, Method>> cache = new HashMap<Class<?>, Map<Class<?>, Method>>();
 
-	private final boolean handleException(final Exception cause, final Object target) throws Exception {
+	private boolean handleException(final Exception cause, final Object target) throws Exception {
 		getLogger().info(getBundle().getString("handling-exception", cause.getClass().getCanonicalName()));
 
 		boolean handled = false;
@@ -93,7 +93,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 	 * @param causeClass
 	 * @return
 	 */
-	private final Method getMethod(final Class<?> type, final Class<?> causeClass) {
+	private Method getMethod(final Class<?> type, final Class<?> causeClass) {
 		Method handler = null;
 		Map<Class<?>, Method> map = cache.get(type);
 
@@ -113,7 +113,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 	 * 
 	 * @param type
 	 */
-	private final void loadHandlers(final Class<?> type) {
+	private void loadHandlers(final Class<?> type) {
 		Map<Class<?>, Method> mapHandlers = new HashMap<Class<?>, Method>();
 		Method[] methods = type.getMethods();
 
@@ -132,7 +132,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 	 * 
 	 * @param method
 	 */
-	private final void validateHandler(final Method method) {
+	private void validateHandler(final Method method) {
 		if (method.getParameterTypes().length != 1) {
 			throw new DemoiselleException(getBundle().getString("must-declare-one-single-parameter",
 					method.toGenericString()));
@@ -145,11 +145,11 @@ public class ExceptionHandlerInterceptor implements Serializable {
 	 * @param type
 	 * @return
 	 */
-	private final boolean isLoaded(final Class<?> type) {
+	private boolean isLoaded(final Class<?> type) {
 		return cache.containsKey(type);
 	}
 
-	private final void invoke(final Method method, final Object object, final Exception param) throws Exception {
+	private void invoke(final Method method, final Object object, final Exception param) throws Exception {
 		boolean accessible = method.isAccessible();
 		method.setAccessible(true);
 
