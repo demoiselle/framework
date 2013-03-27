@@ -39,6 +39,8 @@ package br.gov.frameworkdemoiselle.transaction;
 import java.io.Serializable;
 
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.New;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -187,6 +189,7 @@ public class TransactionalInterceptor implements Serializable {
 		return logger;
 	}
 
+	@Any
 	static class VoidTransactionInfo extends TransactionInfo {
 
 		private static final long serialVersionUID = 1L;
