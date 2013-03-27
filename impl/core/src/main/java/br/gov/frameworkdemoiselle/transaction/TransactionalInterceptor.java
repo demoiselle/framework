@@ -187,7 +187,7 @@ public class TransactionalInterceptor implements Serializable {
 		return logger;
 	}
 
-	private static class VoidTransactionInfo extends TransactionInfo {
+	static class VoidTransactionInfo extends TransactionInfo {
 
 		private static final long serialVersionUID = 1L;
 
