@@ -46,6 +46,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -87,15 +88,13 @@ public class ConfigurationDefaultValueTest extends AbstractConfigurationTest {
 		assertEquals(expected, noFileConfig.getStringDefaultWithoutKey());
 	}
 	
-	@Test//(expected = ConfigurationException.class)
+	@Ignore
+	@Test(expected = ConfigurationException.class)
 	/*TODO: Lançar exceção quando uma chave adicionada em arquivo de configuração não
 	 * tiver valor associado*/	
 	public void loadDefaultValueWithKey(){
-		String expectedFilled = "Valor inicializado do arquivo de propriedade";
-		String expectedNoFile = "Valor inicializado e com chave em arquivo de propriedade";
-		
-		assertEquals(expectedFilled, filledFieldConfig.getStringDefaultWithKey());
-		assertEquals(expectedNoFile, noFileConfig.getStringDefaultWithKey());
-		//emptyFieldsConfig.getStringDefaultWithKey();
+		assertEquals("Valor inicializado do arquivo de propriedade", filledFieldConfig.getStringDefaultWithKey());
+		assertEquals("Valor inicializado e com chave em arquivo de propriedade", noFileConfig.getStringDefaultWithKey());
+		emptyFieldsConfig.getStringDefaultWithKey();
 	}
 }
