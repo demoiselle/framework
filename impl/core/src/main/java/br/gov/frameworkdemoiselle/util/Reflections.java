@@ -36,7 +36,6 @@
  */
 package br.gov.frameworkdemoiselle.util;
 
-import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -163,33 +162,33 @@ public final class Reflections {
 		return type.isAssignableFrom(clazz) && clazz != type;
 	}
 
-	public static ClassLoader getClassLoaderForClass(final String canonicalName) throws FileNotFoundException {
+	public static ClassLoader getClassLoaderForClass(final String canonicalName) {
 		return Reflections.getClassLoaderForResource(canonicalName.replaceAll("\\.", "/") + ".class");
 	}
 
-	public static ClassLoader getClassLoaderForResource(final String resource) throws FileNotFoundException {
+	public static ClassLoader getClassLoaderForResource(final String resource) {
 		final String stripped = resource.startsWith("/") ? resource.substring(1) : resource;
-	
+
 		URL url = null;
 		ClassLoader result = Thread.currentThread().getContextClassLoader();
-	
+
 		if (result != null) {
 			url = result.getResource(stripped);
 		}
-	
+
 		if (url == null) {
 			result = ConfigurationLoader.class.getClassLoader();
 			url = ConfigurationLoader.class.getClassLoader().getResource(stripped);
 		}
-	
+
 		if (url == null) {
 			result = null;
 		}
-	
+
 		return result;
 	}
 
-	public static URL getResourceAsURL(final String resource) throws FileNotFoundException {
+	public static URL getResourceAsURL(final String resource) {
 		ClassLoader classLoader = getClassLoaderForResource(resource);
 		return classLoader != null ? classLoader.getResource(resource) : null;
 	}
