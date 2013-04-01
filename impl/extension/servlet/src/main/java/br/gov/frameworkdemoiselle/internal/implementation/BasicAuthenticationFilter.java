@@ -34,9 +34,10 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.util;
+package br.gov.frameworkdemoiselle.internal.implementation;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -44,27 +45,69 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
-public class ServletFilter implements Filter {
+import org.apache.commons.codec.binary.Base64;
+
+import br.gov.frameworkdemoiselle.security.AuthenticationException;
+import br.gov.frameworkdemoiselle.security.Credentials;
+import br.gov.frameworkdemoiselle.security.SecurityContext;
+import br.gov.frameworkdemoiselle.util.Beans;
+
+public class BasicAuthenticationFilter implements Filter {
 
 	@Override
-	public void init(FilterConfig config) throws ServletException {
-		Beans.getReference(InternalProcessorFilter.class).init(config);
+	public void init(FilterConfig filterConfig) throws ServletException {
 	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
-		Beans.getReference(InternalProcessorFilter.class).doFilter(request, response, chain);
+
+		String[] basicCredentials = getCredentials((HttpServletRequest) request);
+
+		if (basicCredentials != null) {
+			Credentials credentials = Beans.getReference(Credentials.class);
+			credentials.setUsername(basicCredentials[0]);
+			credentials.setPassword(basicCredentials[1]);
+
+			try {
+				Beans.getReference(SecurityContext.class).login();
+
+			} catch (AuthenticationException cause) {
+				// TODO Informar via logger que a autenticação não foi bem sucedida.
+			}
+		}
 
 		chain.doFilter(request, response);
 	}
 
-	@Override
-	public void destroy() {
-		Beans.getReference(InternalProcessorFilter.class).destroy();
+	private String getAuthHeader(HttpServletRequest request) {
+		String result = request.getHeader("Authorization");
+		result = (result == null ? request.getHeader("authorization") : result);
+
+		return result;
 	}
 
-	public interface InternalProcessorFilter extends Filter {
+	private String[] getCredentials(HttpServletRequest request) {
+		String[] result = null;
+		String header = getAuthHeader(request);
+
+		if (header != null) {
+			byte[] decoded = Base64.decodeBase64(header.substring(6));
+			result = new String(decoded).split(":");
+		}
+
+		if (result != null && Arrays.asList(result).size() != 2) {
+			result = null;
+
+			// TODO Informar via logger que o header Authorization não contém as informações de username e password
+		}
+
+		return result;
+	}
+
+	@Override
+	public void destroy() {
 	}
 }
