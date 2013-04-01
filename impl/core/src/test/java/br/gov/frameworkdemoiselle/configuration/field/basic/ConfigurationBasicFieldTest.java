@@ -113,7 +113,7 @@ public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
 		assertEquals(expected, xmlConfig.getStringWithSpace());
 	}
 
-	// @Test
+	@Test
 	public void loadStringWithComma() {
 		String expected = "demoiselle,framework";
 
