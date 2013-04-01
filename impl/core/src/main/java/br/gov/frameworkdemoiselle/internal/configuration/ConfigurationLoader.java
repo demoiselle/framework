@@ -48,6 +48,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.configuration.AbstractConfiguration;
+import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
@@ -79,7 +80,7 @@ public class ConfigurationLoader implements Serializable {
 
 	private String prefix;
 
-	private org.apache.commons.configuration.Configuration configuration;
+	private DataConfiguration configuration;
 
 	private List<Field> fields;
 
@@ -137,7 +138,7 @@ public class ConfigurationLoader implements Serializable {
 			}
 		}
 
-		this.configuration = conf;
+		this.configuration = new DataConfiguration(conf);
 	}
 
 	private void loadResource() {
@@ -172,16 +173,84 @@ public class ConfigurationLoader implements Serializable {
 			return;
 		}
 
+		String key = getKey(field);
+
+		// if (field.getType() == String.class) {
+		// loadStringField(field, key);
+		// } else {
+		// loadBasicField(field, key);
+		// }
+
+		// if (field.getType().isArray()) {
+		// loadArrayField(field, key);
+		// } else {
+		loadBasicField(field, key);
+		// }
+	}
+
+	// private void loadStringField(Field field, String key) {
+	// try {
+	// String value = (String) Reflections.getFieldValue(field, this.object);
+	//
+	// for (String string : this.configuration.getStringArray(key)) {
+	// if (value == null) {
+	// value = "";
+	// this.configuration.get(String.class, key);
+	// } else {
+	// value += ",";
+	// }
+	//
+	// value += string;
+	// }
+	// // this.configuration.setDelimiterParsingDisabled(true);
+	//
+	// Reflections.setFieldValue(field, this.object, value);
+	//
+	// } catch (SecurityException cause) {
+	// cause.printStackTrace();
+	// } catch (IllegalArgumentException cause) {
+	// cause.printStackTrace();
+	// }
+	// }
+
+	private void loadArrayField(Field field, String key) {
 		try {
-			String key = getKey(field);
-			Class<?> fieldType = field.getType();
-			String methodName = "get" + Strings.firstToUpper(fieldType.getSimpleName());
+			@SuppressWarnings("unused")
+			Object array = this.configuration.getArray(Integer.class, key);
 
-			Method method = this.configuration.getClass().getMethod(methodName, String.class, fieldType);
+			String methodName = "get" + Strings.firstToUpper(field.getType().getSimpleName());
+
+			if (field.getType().isArray()) {
+				methodName = Strings.removeChars(methodName, '[', ']') + "Array";
+			}
+
+			Method method = this.configuration.getClass().getMethod(methodName, String.class, field.getType());
 			Object value = method.invoke(this.configuration, key, Reflections.getFieldValue(field, this.object));
-			// TODO Se não achar no arquivo de configuração vai dar a falsa sensação que o valor padrão foi carregado de
-			// lá. Corrigir isso!
+			Reflections.setFieldValue(field, this.object, value);
 
+		} catch (SecurityException cause) {
+			cause.printStackTrace();
+		} catch (NoSuchMethodException cause) {
+			cause.printStackTrace();
+		} catch (IllegalArgumentException cause) {
+			cause.printStackTrace();
+		} catch (IllegalAccessException cause) {
+			cause.printStackTrace();
+		} catch (InvocationTargetException cause) {
+			cause.printStackTrace();
+		}
+	}
+
+	private void loadBasicField(Field field, String key) {
+		try {
+			String methodName = "get" + Strings.firstToUpper(field.getType().getSimpleName());
+
+			if (field.getType().isArray()) {
+				methodName = Strings.removeChars(methodName, '[', ']') + "Array";
+			}
+
+			Method method = this.configuration.getClass().getMethod(methodName, String.class, field.getType());
+			Object value = method.invoke(this.configuration, key, Reflections.getFieldValue(field, this.object));
 			Reflections.setFieldValue(field, this.object, value);
 
 		} catch (SecurityException cause) {
