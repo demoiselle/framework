@@ -57,7 +57,6 @@ import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
-import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
 import br.gov.frameworkdemoiselle.internal.context.Contexts;
 import br.gov.frameworkdemoiselle.internal.context.AbstractCustomContext;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
@@ -145,7 +144,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 			AnnotatedMethodProcessor<?> processor = iter.next();
 
 			try {
-				ClassLoader classLoader = ConfigurationLoader.getClassLoaderForClass(processor.getAnnotatedMethod()
+				ClassLoader classLoader = Reflections.getClassLoaderForClass(processor.getAnnotatedMethod()
 						.getDeclaringType().getJavaClass().getCanonicalName());
 
 				if (Thread.currentThread().getContextClassLoader().equals(classLoader)) {

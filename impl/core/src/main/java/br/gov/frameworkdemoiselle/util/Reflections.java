@@ -36,15 +36,19 @@
  */
 package br.gov.frameworkdemoiselle.util;
 
+import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
 
 public final class Reflections {
 
@@ -157,5 +161,36 @@ public final class Reflections {
 
 	public static boolean isOfType(Class<?> clazz, Class<?> type) {
 		return type.isAssignableFrom(clazz) && clazz != type;
+	}
+
+	public static ClassLoader getClassLoaderForClass(final String canonicalName) throws FileNotFoundException {
+		return Reflections.getClassLoaderForResource(canonicalName.replaceAll("\\.", "/") + ".class");
+	}
+
+	public static ClassLoader getClassLoaderForResource(final String resource) throws FileNotFoundException {
+		final String stripped = resource.startsWith("/") ? resource.substring(1) : resource;
+	
+		URL url = null;
+		ClassLoader result = Thread.currentThread().getContextClassLoader();
+	
+		if (result != null) {
+			url = result.getResource(stripped);
+		}
+	
+		if (url == null) {
+			result = ConfigurationLoader.class.getClassLoader();
+			url = ConfigurationLoader.class.getClassLoader().getResource(stripped);
+		}
+	
+		if (url == null) {
+			result = null;
+		}
+	
+		return result;
+	}
+
+	public static URL getResourceAsURL(final String resource) throws FileNotFoundException {
+		ClassLoader classLoader = getClassLoaderForResource(resource);
+		return classLoader != null ? classLoader.getResource(resource) : null;
 	}
 }
