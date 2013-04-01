@@ -39,12 +39,13 @@ package br.gov.frameworkdemoiselle.internal.configuration;
 
 import static br.gov.frameworkdemoiselle.configuration.ConfigType.SYSTEM;
 
-import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.commons.configuration.FileConfiguration;
@@ -89,9 +90,12 @@ public class ConfigurationLoader implements Serializable {
 
 		loadType();
 		loadResource();
-		loadPrefix();
 		loadConfiguration();
-		loadFields();
+
+		if (this.configuration != null) {
+			loadPrefix();
+			loadFields();
+		}
 
 		validateValues();
 	}
@@ -104,37 +108,36 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private void loadConfiguration() {
-		try {
-			AbstractConfiguration conf;
+		AbstractConfiguration conf;
 
-			switch (this.type) {
-				case SYSTEM:
-					conf = new SystemConfiguration();
-					break;
+		switch (this.type) {
+			case SYSTEM:
+				conf = new SystemConfiguration();
+				break;
 
-				case XML:
-					conf = new XMLConfiguration();
-					break;
+			case XML:
+				conf = new XMLConfiguration();
+				break;
 
-				default:
-					conf = new PropertiesConfiguration();
-					break;
-			}
-
-			conf.setDelimiterParsingDisabled(true);
-
-			if (conf instanceof FileConfiguration) {
-				((FileConfiguration) conf).setURL(Reflections.getResourceAsURL(this.resource));
-				((FileConfiguration) conf).load();
-			}
-
-			this.configuration = conf;
-
-		} catch (FileNotFoundException cause) {
-			cause.printStackTrace();
-		} catch (org.apache.commons.configuration.ConfigurationException e) {
-			e.printStackTrace();
+			default:
+				conf = new PropertiesConfiguration();
+				break;
 		}
+
+		conf.setDelimiterParsingDisabled(true);
+
+		if (conf instanceof FileConfiguration) {
+			((FileConfiguration) conf).setURL(Reflections.getResourceAsURL(this.resource));
+
+			try {
+				((FileConfiguration) conf).load();
+
+			} catch (org.apache.commons.configuration.ConfigurationException cause) {
+				conf = null;
+			}
+		}
+
+		this.configuration = conf;
 	}
 
 	private void loadResource() {
@@ -211,5 +214,15 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private void validateValues() {
+		for (Field field : getFields()) {
+			validateValue(field);
+		}
+	}
+
+	private void validateValue(Field field) {
+		if (field.isAnnotationPresent(NotNull.class) && Reflections.getFieldValue(field, this.object) == null) {
+			throw new ConfigurationException("");
+			// TODO: Pegar mensagem do Bundle e verificar como as mensagens de log estão implementadas
+		}
 	}
 }
