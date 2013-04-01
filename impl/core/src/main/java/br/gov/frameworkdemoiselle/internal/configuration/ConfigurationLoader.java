@@ -44,6 +44,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.commons.configuration.FileConfiguration;
@@ -69,6 +70,8 @@ public class ConfigurationLoader implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private Object object;
+
 	private ConfigType type;
 
 	private String resource;
@@ -77,15 +80,26 @@ public class ConfigurationLoader implements Serializable {
 
 	private org.apache.commons.configuration.Configuration configuration;
 
+	private List<Field> fields;
+
 	public void load(Object object) throws ConfigurationException {
-		loadType(object);
-		loadResource(object);
-		loadPrefix(object);
+		this.object = object;
+
+		validateFields();
+
+		loadType();
+		loadResource();
+		loadPrefix();
 		loadConfiguration();
-		loadFields(object);
+		loadFields();
+
+		validateValues();
 	}
 
-	private void loadType(Object object) {
+	private void validateFields() {
+	}
+
+	private void loadType() {
 		this.type = object.getClass().getAnnotation(Configuration.class).type();
 	}
 
@@ -123,26 +137,34 @@ public class ConfigurationLoader implements Serializable {
 		}
 	}
 
-	private void loadResource(Object object) {
+	private void loadResource() {
 		if (this.type != SYSTEM) {
-			String name = object.getClass().getAnnotation(Configuration.class).resource();
+			String name = this.object.getClass().getAnnotation(Configuration.class).resource();
 			String extension = this.type.toString().toLowerCase();
 
 			this.resource = name + "." + extension;
 		}
 	}
 
-	private void loadPrefix(Object object) {
-		this.prefix = object.getClass().getAnnotation(Configuration.class).prefix();
+	private void loadPrefix() {
+		this.prefix = this.object.getClass().getAnnotation(Configuration.class).prefix();
 	}
 
-	private void loadFields(Object object) {
-		for (Field field : Reflections.getNonStaticFields(object.getClass())) {
-			loadField(field, object);
+	private void loadFields() {
+		for (Field field : getFields()) {
+			loadField(field);
 		}
 	}
 
-	private void loadField(Field field, Object object) {
+	private List<Field> getFields() {
+		if (this.fields == null) {
+			this.fields = Reflections.getNonStaticFields(this.object.getClass());
+		}
+
+		return this.fields;
+	}
+
+	private void loadField(Field field) {
 		if (hasIgnore(field)) {
 			return;
 		}
@@ -152,12 +174,12 @@ public class ConfigurationLoader implements Serializable {
 			Class<?> fieldType = field.getType();
 			String methodName = "get" + Strings.firstToUpper(fieldType.getSimpleName());
 
-			Method method = configuration.getClass().getMethod(methodName, String.class, fieldType);
-			Object value = method.invoke(configuration, key, Reflections.getFieldValue(field, object));
+			Method method = this.configuration.getClass().getMethod(methodName, String.class, fieldType);
+			Object value = method.invoke(this.configuration, key, Reflections.getFieldValue(field, this.object));
 			// TODO Se não achar no arquivo de configuração vai dar a falsa sensação que o valor padrão foi carregado de
 			// lá. Corrigir isso!
 
-			Reflections.setFieldValue(field, object, value);
+			Reflections.setFieldValue(field, this.object, value);
 
 		} catch (SecurityException cause) {
 			cause.printStackTrace();
@@ -177,7 +199,7 @@ public class ConfigurationLoader implements Serializable {
 
 		if (field.isAnnotationPresent(Name.class)) {
 			key += field.getAnnotation(Name.class).value();
-		}else{
+		} else {
 			key += field.getName();
 		}
 
@@ -186,5 +208,8 @@ public class ConfigurationLoader implements Serializable {
 
 	private boolean hasIgnore(Field field) {
 		return field.isAnnotationPresent(Ignore.class);
+	}
+
+	private void validateValues() {
 	}
 }
