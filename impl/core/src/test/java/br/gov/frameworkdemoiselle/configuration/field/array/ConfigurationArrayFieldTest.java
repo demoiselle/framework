@@ -46,7 +46,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -69,7 +68,6 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 		return deployment;
 	}
 
-	@Ignore
 	@Test
 	public void loadPrimitiveInteger() {
 		int[] expected = { 1, 20, 0 };
@@ -77,13 +75,31 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 		assertArrayEquals(expected, propertiesConfig.getPrimitiveIntegers());
 	}
 
-	// private int[] primitiveIntegers;
+	@Test
+	public void loadWrappedIntegers() {
+		Integer[] expected = { -99, 0, 1 };
 
-	// private Integer[] wrappedIntegers;
-	//
-	// private String[] strings;
-	//
-	// private double[] primitiveDoubles;
-	//
-	// private Double[] wrappedDoubles;
+		assertArrayEquals(expected, propertiesConfig.getWrappedIntegers());
+	}
+
+	@Test
+	public void loadString() {
+		String[] expected = { "demoisele", "demoiselle framework", "demoiselle,framework", "demoiselle, framework" };
+		
+		assertArrayEquals(expected, propertiesConfig.getStrings());
+	}
+	
+	@Test
+	public void loadPrimitiveDoubles(){
+		double[] expected = { -10, 200000.99999, 0 };
+
+		assertArrayEquals(expected, propertiesConfig.getPrimitiveDoubles(), 0);
+	}
+	
+	@Test
+	public void loadWrappedDoubles() {
+		Double[] expected = { -456.123456789, 0.0, 52.2 };
+
+		assertArrayEquals(expected, propertiesConfig.getWrappedDoubles());
+	}
 }
