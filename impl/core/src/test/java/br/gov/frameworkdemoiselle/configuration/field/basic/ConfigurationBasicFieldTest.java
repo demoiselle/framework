@@ -83,7 +83,7 @@ public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
 		System.setProperty("primitiveInteger", String.valueOf(1));
 		System.setProperty("wrappedInteger", String.valueOf(2));
 		System.setProperty("stringWithSpace", String.valueOf("demoiselle framework"));
-		System.setProperty("stringWithComma", String.valueOf("demoiselle,framework"));
+		System.setProperty("stringWithComma", String.valueOf("demoiselle, framework"));
 	}
 
 	@Test
@@ -115,7 +115,7 @@ public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
 
 	@Test
 	public void loadStringWithComma() {
-		String expected = "demoiselle,framework";
+		String expected = "demoiselle, framework";
 
 		assertEquals(expected, systemConfig.getStringWithComma());
 		assertEquals(expected, propertiesConfig.getStringWithComma());
