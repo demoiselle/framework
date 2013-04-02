@@ -46,8 +46,4 @@ public abstract class AbstractNotNullFieldConfig {
 	public Integer getIntegerNotNull() {
 		return integerNotNull;
 	}
-
-	public void setIntegerNotNull(Integer integerNotNull) {
-		this.integerNotNull = integerNotNull;
-	}
 }

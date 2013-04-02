@@ -57,54 +57,55 @@ public class ConfigurationNotNullFieldTest extends AbstractConfigurationTest {
 
 	@Inject
 	private PropertyWithFilledFieldConfig filledFieldConfig;
-	
+
 	@Inject
 	private PropertyWithEmptyFieldConfig emptyFieldsConfig;
-	
+
 	@Inject
 	private PropertyWithoutNotNullField withoutNotNullField;
 
 	@Inject
 	private PropertyWithoutFileConfig noFileConfig;
-	
+
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = createConfigurationDeployment();
 
 		deployment.addPackages(true, ConfigurationNotNullFieldTest.class.getPackage());
-		deployment.addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/notnull/demoiselle.properties")),
-				"demoiselle.properties").addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/notnull/empty-field.properties")),
-				"empty-field.properties").addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/notnull/without-field.properties")),
-				"without-field.properties");
+		deployment
+				.addAsResource(
+						new FileAsset(new File("src/test/resources/configuration/field/notnull/demoiselle.properties")),
+						"demoiselle.properties")
+				.addAsResource(
+						new FileAsset(new File("src/test/resources/configuration/field/notnull/empty-field.properties")),
+						"empty-field.properties")
+				.addAsResource(
+						new FileAsset(new File(
+								"src/test/resources/configuration/field/notnull/without-field.properties")),
+						"without-field.properties");
 
 		return deployment;
 	}
-	
+
 	@Test
-	public void loadFieldNotNullFromFilledProperty(){
+	public void loadFieldNotNullFromFilledProperty() {
 		Integer expected = 1;
-		
+
 		assertEquals(expected, filledFieldConfig.getIntegerNotNull());
 	}
-	
+
 	@Test(expected = ConfigurationException.class)
-	public void loadFieldNotNullFromEmptyProperty(){
+	public void loadFieldNotNullFromEmptyProperty() {
 		emptyFieldsConfig.getIntegerNotNull();
 	}
-	
+
 	@Test(expected = ConfigurationException.class)
-	public void loadFieldFromPropertyFileWithoutNotNullField(){
+	public void loadFieldFromPropertyFileWithoutNotNullField() {
 		withoutNotNullField.getIntegerNotNull();
 	}
-	
-	@Test//(expected = ConfigurationException.class)
-	/*TODO: Lançar exceção quando o arquivo de propriedade declarado pela 
-	 * classe de configuração que contenha um atributo anotado com @NotNull
-	 * não existir */
-	public void loadFieldNotNullFromInexistentPropertyFile(){
+
+	@Test(expected = ConfigurationException.class)
+	public void loadFieldNotNullFromInexistentPropertyFile() {
 		noFileConfig.getIntegerNotNull();
-	}	
+	}
 }
