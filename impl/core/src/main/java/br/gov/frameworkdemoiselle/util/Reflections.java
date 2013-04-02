@@ -93,13 +93,14 @@ public final class Reflections {
 		return (Class<T>) method.getGenericParameterTypes()[pos];
 	}
 
-	public static Object getFieldValue(Field field, Object object) {
-		Object result = null;
+	@SuppressWarnings("unchecked")
+	public static <T> T getFieldValue(Field field, Object object) {
+		T result = null;
 
 		try {
 			boolean acessible = field.isAccessible();
 			field.setAccessible(true);
-			result = field.get(object);
+			result = (T) field.get(object);
 			field.setAccessible(acessible);
 
 		} catch (Exception e) {
