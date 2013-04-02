@@ -52,6 +52,7 @@ import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.lang.ClassUtils;
 
 import br.gov.frameworkdemoiselle.annotation.Ignore;
 import br.gov.frameworkdemoiselle.annotation.Name;
@@ -178,37 +179,36 @@ public class ConfigurationLoader implements Serializable {
 		}
 
 		String key = getKey(field);
-
-		if (field.getType().isArray()) {
-			loadArrayField(field, key);
-		} else if (field.getType() == String.class) {
-			loadStringField(field, key);
-		} else {
-			loadBasicField(field, key);
-		}
-	}
-
-	private void loadArrayField(Field field, String key) {
-		Object value = this.configuration.getArray(field.getType().getComponentType(), key,
-				Reflections.getFieldValue(field, this.object));
-		Reflections.setFieldValue(field, this.object, value);
-	}
-
-	private void loadStringField(Field field, String key) {
-		Object value = this.configuration.getString(key, (String) Reflections.getFieldValue(field, this.object));
-		Reflections.setFieldValue(field, this.object, value);
-	}
-
-	private void loadBasicField(Field field, String key) {
 		Object value;
 
-		try {
-			value = this.configuration.get(field.getType(), key, Reflections.getFieldValue(field, this.object));
-		} catch (ConversionException cause) {
-			value = null;
+		if (field.getType().isArray()) {
+			value = getArrayValue(field, key);
+		} else {
+			value = getPrimitiveOrWrappedValue(field, key);
 		}
 
 		Reflections.setFieldValue(field, this.object, value);
+	}
+
+	private Object getArrayValue(Field field, String key) {
+		return this.configuration.getArray(field.getType().getComponentType(), key,
+				Reflections.getFieldValue(field, this.object));
+	}
+
+	@SuppressWarnings("unchecked")
+	private Object getPrimitiveOrWrappedValue(Field field, String key) {
+		Object value;
+		Object defaultValue = Reflections.getFieldValue(field, this.object);
+
+		try {
+			Class<Object> type = ClassUtils.primitiveToWrapper(field.getType());
+			value = this.configuration.get(type, key, defaultValue);
+
+		} catch (ConversionException cause) {
+			value = defaultValue;
+		}
+
+		return value;
 	}
 
 	private String getKey(Field field) {
