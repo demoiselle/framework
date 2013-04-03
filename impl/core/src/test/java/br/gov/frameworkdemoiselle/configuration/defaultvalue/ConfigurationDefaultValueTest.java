@@ -81,20 +81,17 @@ public class ConfigurationDefaultValueTest extends AbstractConfigurationTest {
 	
 	@Test
 	public void loadDefaultValueWithoutKey(){
-		String expected = "Valor inicializado e sem chave em arquivo de propriedade";
+		String expected = "Initialized value and without key in the property file";
 		
 		assertEquals(expected, filledFieldConfig.getStringDefaultWithoutKey());
 		assertEquals(expected, emptyFieldsConfig.getStringDefaultWithoutKey());
 		assertEquals(expected, noFileConfig.getStringDefaultWithoutKey());
 	}
 	
-	@Ignore
-	@Test(expected = ConfigurationException.class)
-	/*TODO: Lançar exceção quando uma chave adicionada em arquivo de configuração não
-	 * tiver valor associado*/	
+	@Test
 	public void loadDefaultValueWithKey(){
-		assertEquals("Valor inicializado do arquivo de propriedade", filledFieldConfig.getStringDefaultWithKey());
-		assertEquals("Valor inicializado e com chave em arquivo de propriedade", noFileConfig.getStringDefaultWithKey());
-		emptyFieldsConfig.getStringDefaultWithKey();
+		assertEquals("Initialized value of the property file", filledFieldConfig.getStringDefaultWithKey());
+		assertEquals("Initialized value and key in the property file", noFileConfig.getStringDefaultWithKey());
+		assertEquals("", emptyFieldsConfig.getStringDefaultWithKey());
 	}
 }
