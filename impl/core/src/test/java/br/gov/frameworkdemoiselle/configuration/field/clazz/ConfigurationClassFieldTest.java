@@ -62,9 +62,6 @@ public class ConfigurationClassFieldTest extends AbstractConfigurationTest {
 	@Inject
 	private PropertiesClassNotFoundFieldConfig propertiesNotFoundConfig;
 
-	@Inject
-	private PropertiesClassCastFieldConfig propertiesCastConfig;
-
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = createConfigurationDeployment();
@@ -81,16 +78,12 @@ public class ConfigurationClassFieldTest extends AbstractConfigurationTest {
 
 	@Test
 	public void loadExistentTypedClass() {
-		Class<MyClass> expected = MyClass.class;
-
-		assertEquals(expected, propertiesExistentConfig.getExistentTypedClass());
+		assertEquals(MyClass.class, propertiesExistentConfig.getExistentTypedClass());
 	}
 
 	@Test
 	public void loadExistentUntypedClass() {
-		Class<?> expected = MyClass.class;
-
-		assertEquals(expected, propertiesExistentConfig.getExistentUntypedClass());
+		assertEquals(MyClass.class, propertiesExistentConfig.getExistentUntypedClass());
 	}
 
 	@Test
@@ -111,13 +104,5 @@ public class ConfigurationClassFieldTest extends AbstractConfigurationTest {
 		} catch (ConfigurationException cause) {
 			assertEquals(ClassNotFoundException.class, cause.getCause().getClass());
 		}
-	}
-
-	@Test(expected = ClassCastException.class)
-	public void loadForcingClassCastException() throws IllegalAccessException, InstantiationException {
-		Class<MyClass> clazz = propertiesCastConfig.getForcingClassCastException();
-
-		@SuppressWarnings("unused")
-		MyClass myClass = clazz.newInstance();
 	}
 }
