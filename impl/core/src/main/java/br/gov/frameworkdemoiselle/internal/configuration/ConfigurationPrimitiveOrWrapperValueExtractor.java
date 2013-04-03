@@ -36,6 +36,8 @@
  */
 package br.gov.frameworkdemoiselle.internal.configuration;
 
+import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
+
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,8 +46,10 @@ import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.lang.ClassUtils;
 
+import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 
+@Priority(EXTENSIONS_L1_PRIORITY)
 public class ConfigurationPrimitiveOrWrapperValueExtractor implements ConfigurationValueExtractor {
 
 	private static final Set<Object> wrappers = new HashSet<Object>();
@@ -64,8 +68,7 @@ public class ConfigurationPrimitiveOrWrapperValueExtractor implements Configurat
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Object getValue(String prefix, String key, Field field, DataConfiguration configuration,
-			Object defaultValue) {
+	public Object getValue(String prefix, String key, Field field, DataConfiguration configuration, Object defaultValue) {
 		Object value;
 
 		try {

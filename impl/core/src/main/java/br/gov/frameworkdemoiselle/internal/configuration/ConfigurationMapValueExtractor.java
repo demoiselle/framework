@@ -36,6 +36,8 @@
  */
 package br.gov.frameworkdemoiselle.internal.configuration;
 
+import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,13 +47,14 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.configuration.DataConfiguration;
 
+import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 
+@Priority(EXTENSIONS_L1_PRIORITY)
 public class ConfigurationMapValueExtractor implements ConfigurationValueExtractor {
 
 	@Override
-	public Object getValue(String prefix, String key, Field field, DataConfiguration configuration,
-			Object defaultValue) {
+	public Object getValue(String prefix, String key, Field field, DataConfiguration configuration, Object defaultValue) {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> value = (Map<String, Object>) defaultValue;
 

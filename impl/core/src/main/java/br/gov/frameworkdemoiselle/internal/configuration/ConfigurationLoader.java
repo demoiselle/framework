@@ -41,8 +41,9 @@ import static br.gov.frameworkdemoiselle.configuration.ConfigType.SYSTEM;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -61,6 +62,7 @@ import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 import br.gov.frameworkdemoiselle.internal.bootstrap.ConfigurationBootstrap;
+import br.gov.frameworkdemoiselle.internal.implementation.StrategySelector;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
@@ -84,9 +86,9 @@ public class ConfigurationLoader implements Serializable {
 
 	private DataConfiguration configuration;
 
-	private List<Field> fields;
+	private Set<Field> fields;
 
-	private List<ConfigurationValueExtractor> extractors;
+	private Set<ConfigurationValueExtractor> extractors;
 
 	@Inject
 	private ConfigurationBootstrap bootstrap;
@@ -165,7 +167,7 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private void loadExtractors() {
-		this.extractors = new ArrayList<ConfigurationValueExtractor>();
+		this.extractors = new HashSet<ConfigurationValueExtractor>();
 
 		for (Class<? extends ConfigurationValueExtractor> extractorClass : this.bootstrap.getCache()) {
 			this.extractors.add(Beans.getReference(extractorClass));
@@ -191,9 +193,9 @@ public class ConfigurationLoader implements Serializable {
 		}
 	}
 
-	private List<Field> getFields() {
+	private Set<Field> getFields() {
 		if (this.fields == null) {
-			this.fields = Reflections.getNonStaticFields(this.object.getClass());
+			this.fields = new HashSet<Field>(Reflections.getNonStaticFields(this.object.getClass()));
 		}
 
 		return this.fields;
@@ -211,16 +213,23 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private Object getValue(Field field, Class<?> type, String key, Object defaultValue) {
-		Object value = null;
+		Collection<ConfigurationValueExtractor> candidates = new HashSet<ConfigurationValueExtractor>();
 
 		for (ConfigurationValueExtractor extractor : this.extractors) {
 			if (extractor.isSupported(field)) {
-				value = extractor.getValue(this.prefix, key, field, configuration, defaultValue);
-				break;
+				candidates.add(extractor);
 			}
 		}
 
-		return value;
+		ConfigurationValueExtractor elected = StrategySelector.getInstance(ConfigurationValueExtractor.class,
+				candidates);
+
+		if (elected == null) {
+			// TODO lançar exceção informando que nenhum extrator foi encontrado para o field e ensinar como implementar
+			// um extrator personalizado.
+		}
+
+		return elected.getValue(this.prefix, key, field, configuration, defaultValue);
 	}
 
 	private String getKey(Field field) {

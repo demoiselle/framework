@@ -36,19 +36,22 @@
  */
 package br.gov.frameworkdemoiselle.internal.configuration;
 
+import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
+
 import java.lang.reflect.Field;
 
 import org.apache.commons.configuration.DataConfiguration;
 
+import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
+@Priority(EXTENSIONS_L1_PRIORITY)
 public class ConfigurationClassValueExtractor implements ConfigurationValueExtractor {
 
 	@Override
-	public Object getValue(String prefix, String key, Field field, DataConfiguration configuration,
-			Object defaultValue) {
+	public Object getValue(String prefix, String key, Field field, DataConfiguration configuration, Object defaultValue) {
 		Object value = defaultValue;
 		String canonicalName = configuration.getString(prefix + key);
 

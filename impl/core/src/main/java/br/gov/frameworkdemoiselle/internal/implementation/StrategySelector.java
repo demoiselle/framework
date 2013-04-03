@@ -40,7 +40,10 @@ import static br.gov.frameworkdemoiselle.annotation.Priority.MIN_PRIORITY;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
@@ -72,7 +75,22 @@ public final class StrategySelector implements Serializable {
 		return bundle;
 	}
 
-	public static <T> Class<? extends T> getClass(Class<T> type, List<Class<? extends T>> options)
+	@SuppressWarnings("unchecked")
+	public static <T> T getInstance(Class<T> type, Collection<? extends T> options) throws ConfigurationException {
+
+		Map<Class<? extends T>, T> map = new HashMap<Class<? extends T>, T>();
+
+		for (T instance : options) {
+			if (instance != null) {
+				map.put((Class<T>) instance.getClass(), instance);
+			}
+		}
+
+		Class<? extends T> elected = getClass(type, map.keySet());
+		return map.get(elected);
+	}
+
+	public static <T> Class<? extends T> getClass(Class<T> type, Collection<Class<? extends T>> options)
 			throws ConfigurationException {
 		Class<? extends T> selected = null;
 
@@ -88,7 +106,7 @@ public final class StrategySelector implements Serializable {
 	}
 
 	private static <T> void checkForAmbiguity(Class<T> type, Class<? extends T> selected,
-			List<Class<? extends T>> options) throws ConfigurationException {
+			Collection<Class<? extends T>> options) throws ConfigurationException {
 		int selectedPriority = getPriority(selected);
 
 		List<Class<? extends T>> ambiguous = new ArrayList<Class<? extends T>>();
