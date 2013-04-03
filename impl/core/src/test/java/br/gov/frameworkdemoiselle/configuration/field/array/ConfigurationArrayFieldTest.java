@@ -56,6 +56,9 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 
 	@Inject
 	private PropertiesArrayFieldConfig propertiesConfig;
+	
+	@Inject
+	private XMLArrayFieldConfig xmlConfig;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
@@ -63,7 +66,9 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 
 		deployment.addPackages(true, ConfigurationArrayFieldTest.class.getPackage());
 		deployment.addAsResource(new FileAsset(new File(
-				"src/test/resources/configuration/field/array/demoiselle.properties")), "demoiselle.properties");
+				"src/test/resources/configuration/field/array/demoiselle.properties")), "demoiselle.properties")
+				.addAsResource(new FileAsset(new File("src/test/resources/configuration/field/array/demoiselle.xml")),
+						"demoiselle.xml");
 
 		return deployment;
 	}
@@ -73,6 +78,7 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 		int[] expected = { 1, 20, 0 };
 
 		assertArrayEquals(expected, propertiesConfig.getPrimitiveIntegers());
+		assertArrayEquals(expected, xmlConfig.getPrimitiveIntegers());
 	}
 
 	@Test
@@ -80,6 +86,7 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 		Integer[] expected = { -99, 0, 1 };
 
 		assertArrayEquals(expected, propertiesConfig.getWrappedIntegers());
+		assertArrayEquals(expected, xmlConfig.getWrappedIntegers());
 	}
 
 	@Test
@@ -87,6 +94,7 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 		String[] expected = { "demoisele", "demoiselle framework", "demoiselle,framework", "demoiselle, framework" };
 		
 		assertArrayEquals(expected, propertiesConfig.getStrings());
+		assertArrayEquals(expected, xmlConfig.getStrings());
 	}
 	
 	@Test
@@ -94,6 +102,7 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 		double[] expected = { -10, 200000.99999, 0 };
 
 		assertArrayEquals(expected, propertiesConfig.getPrimitiveDoubles(), 0);
+		assertArrayEquals(expected, xmlConfig.getPrimitiveDoubles(), 0);
 	}
 	
 	@Test
@@ -101,5 +110,6 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 		Double[] expected = { -456.123456789, 0.0, 52.2 };
 
 		assertArrayEquals(expected, propertiesConfig.getWrappedDoubles());
+		assertArrayEquals(expected, xmlConfig.getWrappedDoubles());
 	}
 }
