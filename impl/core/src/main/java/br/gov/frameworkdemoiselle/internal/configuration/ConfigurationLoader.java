@@ -41,29 +41,27 @@ import static br.gov.frameworkdemoiselle.configuration.ConfigType.SYSTEM;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.configuration.AbstractConfiguration;
-import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.lang.ClassUtils;
 
 import br.gov.frameworkdemoiselle.annotation.Ignore;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.ConfigType;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
+import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
+import br.gov.frameworkdemoiselle.internal.bootstrap.ConfigurationBootstrap;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
 /**
@@ -88,6 +86,11 @@ public class ConfigurationLoader implements Serializable {
 
 	private List<Field> fields;
 
+	private List<ConfigurationValueExtractor> extractors;
+
+	@Inject
+	private ConfigurationBootstrap bootstrap;
+
 	public void load(Object object) throws ConfigurationException {
 		this.object = object;
 
@@ -96,6 +99,7 @@ public class ConfigurationLoader implements Serializable {
 		loadType();
 		loadResource();
 		loadConfiguration();
+		loadExtractors();
 
 		if (this.configuration != null) {
 			loadPrefix();
@@ -116,6 +120,15 @@ public class ConfigurationLoader implements Serializable {
 
 	private void loadType() {
 		this.type = object.getClass().getAnnotation(Configuration.class).type();
+	}
+
+	private void loadResource() {
+		if (this.type != SYSTEM) {
+			String name = this.object.getClass().getAnnotation(Configuration.class).resource();
+			String extension = this.type.toString().toLowerCase();
+
+			this.resource = name + "." + extension;
+		}
 	}
 
 	private void loadConfiguration() {
@@ -151,12 +164,11 @@ public class ConfigurationLoader implements Serializable {
 		this.configuration = (conf == null ? null : new DataConfiguration(conf));
 	}
 
-	private void loadResource() {
-		if (this.type != SYSTEM) {
-			String name = this.object.getClass().getAnnotation(Configuration.class).resource();
-			String extension = this.type.toString().toLowerCase();
+	private void loadExtractors() {
+		this.extractors = new ArrayList<ConfigurationValueExtractor>();
 
-			this.resource = name + "." + extension;
+		for (Class<? extends ConfigurationValueExtractor> extractorClass : this.bootstrap.getCache()) {
+			this.extractors.add(Beans.getReference(extractorClass));
 		}
 	}
 
@@ -193,88 +205,19 @@ public class ConfigurationLoader implements Serializable {
 		}
 
 		Object defaultValue = Reflections.getFieldValue(field, this.object);
-		Object finalValue = getValue(field.getType(), getKey(field), defaultValue);
+		Object finalValue = getValue(field, field.getType(), getKey(field), defaultValue);
 
 		Reflections.setFieldValue(field, this.object, finalValue);
 	}
 
-	private Object getValue(Class<?> type, String key, Object defaultValue) {
-		Object value;
+	private Object getValue(Field field, Class<?> type, String key, Object defaultValue) {
+		Object value = null;
 
-		if (type.isArray()) {
-			value = getArrayValue(type, key, defaultValue);
-
-		} else if (type == Map.class) {
-			value = getMapValue(type, key, defaultValue);
-
-		} else if (type == Class.class) {
-			value = getClassValue(type, key, defaultValue);
-
-		} else {
-			value = getPrimitiveOrWrappedValue(type, key, defaultValue);
-		}
-
-		return value;
-	}
-
-	private Object getArrayValue(Class<?> type, String key, Object defaultValue) {
-		return this.configuration.getArray(type.getComponentType(), this.prefix + key, defaultValue);
-	}
-
-	private Object getMapValue(Class<?> type, String key, Object defaultValue) {
-		@SuppressWarnings("unchecked")
-		Map<String, Object> value = (Map<String, Object>) defaultValue;
-
-		String regexp = "^(" + this.prefix + ")((.+)\\.)?(" + key + ")$";
-		Pattern pattern = Pattern.compile(regexp);
-
-		for (Iterator<String> iter = this.configuration.getKeys(); iter.hasNext();) {
-			String iterKey = iter.next();
-			Matcher matcher = pattern.matcher(iterKey);
-
-			if (matcher.matches()) {
-				String confKey = matcher.group(1) + (matcher.group(2) == null ? "" : matcher.group(2))
-						+ matcher.group(4);
-
-				if (value == null) {
-					value = new HashMap<String, Object>();
-				}
-
-				String mapKey = matcher.group(3) == null ? "default" : matcher.group(3);
-				value.put(mapKey, this.configuration.getString(confKey));
+		for (ConfigurationValueExtractor extractor : this.extractors) {
+			if (extractor.isSupported(field)) {
+				value = extractor.getValue(this.prefix, key, field, configuration, defaultValue);
+				break;
 			}
-		}
-
-		return value;
-	}
-
-	private Object getClassValue(Class<?> type, String key, Object defaultValue) {
-		Object value = defaultValue;
-		String canonicalName = this.configuration.getString(this.prefix + key);
-
-		if (canonicalName != null) {
-			ClassLoader classLoader = Reflections.getClassLoaderForClass(canonicalName);
-
-			try {
-				value = Class.forName(canonicalName, true, classLoader);
-			} catch (ClassNotFoundException cause) {
-				// TODO Lançar a mensagem correta
-				throw new ConfigurationException(null, cause);
-			}
-		}
-
-		return value;
-	}
-
-	@SuppressWarnings("unchecked")
-	private Object getPrimitiveOrWrappedValue(Class<?> type, String key, Object defaultValue) {
-		Object value;
-
-		try {
-			value = this.configuration.get(ClassUtils.primitiveToWrapper(type), this.prefix + key, defaultValue);
-
-		} catch (ConversionException cause) {
-			value = defaultValue;
 		}
 
 		return value;

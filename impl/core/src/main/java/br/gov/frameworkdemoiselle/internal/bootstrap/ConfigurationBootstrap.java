@@ -53,13 +53,18 @@ import javassist.NotFoundException;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
-import br.gov.frameworkdemoiselle.configuration.Configuration;
-import br.gov.frameworkdemoiselle.internal.implementation.ConfigurationImpl;
+import org.slf4j.Logger;
 
-public class ConfigurationBootstrap implements Extension {
+import br.gov.frameworkdemoiselle.configuration.Configuration;
+import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
+import br.gov.frameworkdemoiselle.internal.implementation.ConfigurationImpl;
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
+
+public class ConfigurationBootstrap extends AbstractStrategyBootstrap<ConfigurationValueExtractor> {
+
+	private Logger logger;
 
 	private static final Map<ClassLoader, Map<String, Class<Object>>> cacheClassLoader = Collections
 			.synchronizedMap(new HashMap<ClassLoader, Map<String, Class<Object>>>());
@@ -129,5 +134,14 @@ public class ConfigurationBootstrap implements Extension {
 		}
 
 		return clazzProxy;
+	}
+
+	@Override
+	protected Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(TransactionBootstrap.class);
+		}
+
+		return logger;
 	}
 }
