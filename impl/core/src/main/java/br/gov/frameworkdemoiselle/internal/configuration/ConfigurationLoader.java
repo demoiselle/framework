@@ -41,9 +41,12 @@ import static br.gov.frameworkdemoiselle.configuration.ConfigType.SYSTEM;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.validation.constraints.NotNull;
 
@@ -158,7 +161,16 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private void loadPrefix() {
-		this.prefix = this.object.getClass().getAnnotation(Configuration.class).prefix();
+		String prefix = this.object.getClass().getAnnotation(Configuration.class).prefix();
+
+		if (prefix.endsWith(".")) {
+			// prefix = prefix.substring(0, prefix.length() - 1);
+			// TODO Lançar warning pedindo para retirar o ponto (.)?
+		} else if (!prefix.isEmpty()) {
+			prefix += ".";
+		}
+
+		this.prefix = prefix;
 	}
 
 	private void loadFields() {
@@ -180,29 +192,65 @@ public class ConfigurationLoader implements Serializable {
 			return;
 		}
 
-		String key = getKey(field);
+		Object defaultValue = Reflections.getFieldValue(field, this.object);
+		Object finalValue = getValue(field.getType(), getKey(field), defaultValue);
+
+		Reflections.setFieldValue(field, this.object, finalValue);
+	}
+
+	private Object getValue(Class<?> type, String key, Object defaultValue) {
 		Object value;
 
-		if (field.getType().isArray()) {
-			value = getArrayValue(field, key);
-		} else if (field.getType() == Class.class) {
-			value = getClassValue(field, key);
+		if (type.isArray()) {
+			value = getArrayValue(type, key, defaultValue);
+
+		} else if (type == Map.class) {
+			value = getMapValue(type, key, defaultValue);
+
+		} else if (type == Class.class) {
+			value = getClassValue(type, key, defaultValue);
+
 		} else {
-			value = getPrimitiveOrWrappedValue(field, key);
+			value = getPrimitiveOrWrappedValue(type, key, defaultValue);
 		}
 
-		Reflections.setFieldValue(field, this.object, value);
+		return value;
 	}
 
-	private Object getArrayValue(Field field, String key) {
-		return this.configuration.getArray(field.getType().getComponentType(), key,
-				Reflections.getFieldValue(field, this.object));
+	private Object getArrayValue(Class<?> type, String key, Object defaultValue) {
+		return this.configuration.getArray(type.getComponentType(), this.prefix + key, defaultValue);
 	}
 
-	private Object getClassValue(Field field, String key) {
-		Object value = null;
+	private Object getMapValue(Class<?> type, String key, Object defaultValue) {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> value = (Map<String, Object>) defaultValue;
 
-		String canonicalName = this.configuration.getString(key.toString());
+		String regexp = "^(" + this.prefix + ")((.+)\\.)?(" + key + ")$";
+		Pattern pattern = Pattern.compile(regexp);
+
+		for (Iterator<String> iter = this.configuration.getKeys(); iter.hasNext();) {
+			String iterKey = iter.next();
+			Matcher matcher = pattern.matcher(iterKey);
+
+			if (matcher.matches()) {
+				String confKey = matcher.group(1) + (matcher.group(2) == null ? "" : matcher.group(2))
+						+ matcher.group(4);
+
+				if (value == null) {
+					value = new HashMap<String, Object>();
+				}
+
+				String mapKey = matcher.group(3) == null ? "default" : matcher.group(3);
+				value.put(mapKey, this.configuration.getString(confKey));
+			}
+		}
+
+		return value;
+	}
+
+	private Object getClassValue(Class<?> type, String key, Object defaultValue) {
+		Object value = defaultValue;
+		String canonicalName = this.configuration.getString(this.prefix + key);
 
 		if (canonicalName != null) {
 			ClassLoader classLoader = Reflections.getClassLoaderForClass(canonicalName);
@@ -219,13 +267,11 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Object getPrimitiveOrWrappedValue(Field field, String key) {
+	private Object getPrimitiveOrWrappedValue(Class<?> type, String key, Object defaultValue) {
 		Object value;
-		Object defaultValue = Reflections.getFieldValue(field, this.object);
 
 		try {
-			Class<Object> type = ClassUtils.primitiveToWrapper(field.getType());
-			value = this.configuration.get(type, key, defaultValue);
+			value = this.configuration.get(ClassUtils.primitiveToWrapper(type), this.prefix + key, defaultValue);
 
 		} catch (ConversionException cause) {
 			value = defaultValue;
@@ -235,7 +281,7 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private String getKey(Field field) {
-		String key = this.prefix;
+		String key = "";
 
 		if (field.isAnnotationPresent(Name.class)) {
 			key += field.getAnnotation(Name.class).value();
