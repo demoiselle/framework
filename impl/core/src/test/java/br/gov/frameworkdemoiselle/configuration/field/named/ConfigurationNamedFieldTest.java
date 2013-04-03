@@ -55,8 +55,11 @@ import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
 public class ConfigurationNamedFieldTest extends AbstractConfigurationTest {
 
 	@Inject
-	private PropertyDefault propertyDefault;
-	
+	private PropertyNamed propertyNamed;
+
+	@Inject
+	private XMLNamed xmlNamed;
+
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = createConfigurationDeployment();
@@ -64,23 +67,28 @@ public class ConfigurationNamedFieldTest extends AbstractConfigurationTest {
 		deployment.addPackages(true, ConfigurationNamedFieldTest.class.getPackage());
 		deployment.addAsResource(
 				new FileAsset(new File("src/test/resources/configuration/field/named/demoiselle.properties")),
-				"demoiselle.properties");
+				"demoiselle.properties").addAsResource(
+				new FileAsset(new File("src/test/resources/configuration/field/named/demoiselle.xml")),
+				"demoiselle.xml");
 
 		return deployment;
 	}
-	
+
 	@Test
-	public void loadNamedConfigFromPropertyWithName(){
-		assertEquals(1, propertyDefault.getIntUniqueName());
+	public void loadNamedConfigFromPropertyWithName() {
+		assertEquals(1, propertyNamed.getIntUniqueName());
+		assertEquals(1, xmlNamed.getIntUniqueName());
 	}
 
 	@Test
-	public void loadNamedConfigFromNonexistentProperty(){
-		assertEquals(0, propertyDefault.getIntNotPresent());
+	public void loadNamedConfigFromNonexistentProperty() {
+		assertEquals(0, propertyNamed.getIntNotPresent());
+		assertEquals(0, xmlNamed.getIntNotPresent());
 	}
-	
+
 	@Test
-	public void loadNamedConfigFromPropertyWithoutField(){
-		assertEquals(0, propertyDefault.getIntNamedWithoutFile());
+	public void loadNamedConfigFromPropertyWithoutField() {
+		assertEquals(0, propertyNamed.getIntNamedWithoutFile());
+		assertEquals(0, xmlNamed.getIntNamedWithoutFile());
 	}
 }

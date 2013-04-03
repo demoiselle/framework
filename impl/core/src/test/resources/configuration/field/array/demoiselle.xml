@@ -35,6 +35,25 @@
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
 
-<configuration>
-	<ignoredInt>1</ignoredInt>
-</configuration>
+<ArrayValues>
+	<primitiveIntegers>1</primitiveIntegers>
+    <primitiveIntegers>20</primitiveIntegers>
+    <primitiveIntegers>0</primitiveIntegers>
+    
+	<wrappedIntegers>-99</wrappedIntegers>
+	<wrappedIntegers>0</wrappedIntegers>
+	<wrappedIntegers>1</wrappedIntegers>
+	
+	<strings>demoisele</strings>
+	<strings>demoiselle framework</strings>
+	<strings>demoiselle,framework</strings>
+	<strings>demoiselle, framework</strings>
+	
+	<primitiveDoubles>-10</primitiveDoubles>
+	<primitiveDoubles>200000.99999</primitiveDoubles>
+	<primitiveDoubles>0</primitiveDoubles>
+	
+	<wrappedDoubles>-456.123456789</wrappedDoubles>
+	<wrappedDoubles>0.0</wrappedDoubles>
+	<wrappedDoubles>52.2</wrappedDoubles>
+</ArrayValues>

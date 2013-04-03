@@ -34,55 +34,11 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.configuration.field.ignored;
+package br.gov.frameworkdemoiselle.configuration.field.array;
 
-import static junit.framework.Assert.assertEquals;
+import static br.gov.frameworkdemoiselle.configuration.ConfigType.XML;
+import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-import java.io.File;
-
-import javax.inject.Inject;
-
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
-
-@RunWith(Arquillian.class)
-public class ConfigurationIgnoredFieldTest extends AbstractConfigurationTest {
-
-	@Inject
-	private FilledIgnoredFieldConfig filledFieldConfig;
-	
-	@Inject
-	private EmptyIgnoredFieldConfig emptyFieldsConfig;
-	
-	@Inject
-	private PropertyWithoutFileConfig noFileConfig;
-	
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = createConfigurationDeployment();
-
-		deployment.addPackages(true, ConfigurationIgnoredFieldTest.class.getPackage());
-		deployment.addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/ignored/demoiselle.properties")),
-				"demoiselle.properties").addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/ignored/demoiselle.xml")),
-				"demoiselle.xml");
-
-		return deployment;
-	}
-	
-	@Test
-	public void loadIgnoredInt(){
-		int expected = 0;
-		
-		assertEquals(expected, filledFieldConfig.getIgnoredInt());
-		assertEquals(expected, noFileConfig.getIgnoredInt());
-		assertEquals(expected, emptyFieldsConfig.getIgnoredInt());
-	}
+@Configuration(resource = "demoiselle", type = XML)
+public class XMLArrayFieldConfig extends AbstractArrayFieldConfig {
 }

@@ -34,7 +34,9 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-
-<configuration>
-	<ignoredInt>1</ignoredInt>
-</configuration>
+<configurations>
+	<main>
+		<int>1</int>
+	</main>
+	<intNamedWithoutFile>1</intNamedWithoutFile>
+</configurations>
