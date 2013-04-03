@@ -37,12 +37,11 @@
 package br.gov.frameworkdemoiselle.configuration.field.clazz;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 
 import java.io.File;
 
 import javax.inject.Inject;
-
-import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -53,13 +52,18 @@ import org.junit.runner.RunWith;
 
 import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
-import br.gov.frameworkdemoiselle.configuration.field.clazz.AbstractClassFieldConfig.MyClass;
 
 @RunWith(Arquillian.class)
 public class ConfigurationClassFieldTest extends AbstractConfigurationTest {
 
 	@Inject
-	private PropertiesClassFieldConfig propertiesConfig;
+	private PropertiesExistentClassFieldConfig propertiesExistentConfig;
+
+	@Inject
+	private PropertiesClassNotFoundFieldConfig propertiesNotFoundConfig;
+
+	@Inject
+	private PropertiesClassCastFieldConfig propertiesCastConfig;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
@@ -79,40 +83,41 @@ public class ConfigurationClassFieldTest extends AbstractConfigurationTest {
 	public void loadExistentTypedClass() {
 		Class<MyClass> expected = MyClass.class;
 
-		assertEquals(expected, propertiesConfig.getExistentTypedClass());
+		assertEquals(expected, propertiesExistentConfig.getExistentTypedClass());
 	}
 
 	@Test
 	public void loadExistentUntypedClass() {
 		Class<?> expected = MyClass.class;
 
-		assertEquals(expected, propertiesConfig.getExistentUntypedClass());
+		assertEquals(expected, propertiesExistentConfig.getExistentUntypedClass());
 	}
 
 	@Test
 	public void loadNonExistentTypedClass() {
 		try {
-			propertiesConfig.getNonExistentTypedClass();
+			propertiesNotFoundConfig.getNonExistentTypedClass();
+			fail();
 		} catch (ConfigurationException cause) {
-			Assert.assertEquals(ClassNotFoundException.class, cause.getCause());
+			assertEquals(ClassNotFoundException.class, cause.getCause().getClass());
 		}
 	}
 
 	@Test
 	public void loadNonExistentUntypedClass() {
 		try {
-			propertiesConfig.getNonExistentUntypedClass();
+			propertiesNotFoundConfig.getNonExistentUntypedClass();
+			fail();
 		} catch (ConfigurationException cause) {
-			Assert.assertEquals(ClassNotFoundException.class, cause.getCause());
+			assertEquals(ClassNotFoundException.class, cause.getCause().getClass());
 		}
 	}
 
-	@Test
-	public void loadForcingClassCastException() {
-		try {
-			propertiesConfig.getForcingClassCastException();
-		} catch (ConfigurationException cause) {
-			Assert.assertEquals(ClassCastException.class, cause.getCause());
-		}
+	@Test(expected = ClassCastException.class)
+	public void loadForcingClassCastException() throws IllegalAccessException, InstantiationException {
+		Class<MyClass> clazz = propertiesCastConfig.getForcingClassCastException();
+
+		@SuppressWarnings("unused")
+		MyClass myClass = clazz.newInstance();
 	}
 }

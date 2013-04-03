@@ -41,6 +41,8 @@ import static br.gov.frameworkdemoiselle.configuration.ConfigType.SYSTEM;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -183,6 +185,8 @@ public class ConfigurationLoader implements Serializable {
 
 		if (field.getType().isArray()) {
 			value = getArrayValue(field, key);
+		} else if (field.getType() == Class.class) {
+			value = getClassValue(field, key);
 		} else {
 			value = getPrimitiveOrWrappedValue(field, key);
 		}
@@ -193,6 +197,25 @@ public class ConfigurationLoader implements Serializable {
 	private Object getArrayValue(Field field, String key) {
 		return this.configuration.getArray(field.getType().getComponentType(), key,
 				Reflections.getFieldValue(field, this.object));
+	}
+
+	private Object getClassValue(Field field, String key) {
+		Object value = null;
+
+		String canonicalName = this.configuration.getString(key.toString());
+
+		if (canonicalName != null) {
+			ClassLoader classLoader = Reflections.getClassLoaderForClass(canonicalName);
+
+			try {
+				value = Class.forName(canonicalName, true, classLoader);
+			} catch (ClassNotFoundException cause) {
+				// TODO Lançar a mensagem correta
+				throw new ConfigurationException(null, cause);
+			}
+		}
+
+		return value;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -235,7 +258,7 @@ public class ConfigurationLoader implements Serializable {
 
 	private void validateValue(Field field) {
 		if (field.isAnnotationPresent(NotNull.class) && Reflections.getFieldValue(field, this.object) == null) {
-			throw new ConfigurationException("");
+			throw new ConfigurationException("", new NullPointerException());
 			// TODO: Pegar mensagem do Bundle e verificar como as mensagens de log estão implementadas
 		}
 	}

@@ -37,10 +37,13 @@
 package br.gov.frameworkdemoiselle.configuration.field.notnull;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 
 import java.io.File;
 
 import javax.inject.Inject;
+
+import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -94,18 +97,33 @@ public class ConfigurationNotNullFieldTest extends AbstractConfigurationTest {
 		assertEquals(expected, filledFieldConfig.getIntegerNotNull());
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void loadFieldNotNullFromEmptyProperty() {
-		emptyFieldsConfig.getIntegerNotNull();
+		try {
+			emptyFieldsConfig.getIntegerNotNull();
+			fail();
+		} catch (ConfigurationException cause) {
+			Assert.assertEquals(NullPointerException.class, cause.getCause().getClass());
+		}
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void loadFieldFromPropertyFileWithoutNotNullField() {
-		withoutNotNullField.getIntegerNotNull();
+		try {
+			withoutNotNullField.getIntegerNotNull();
+			fail();
+		} catch (ConfigurationException cause) {
+			Assert.assertEquals(NullPointerException.class, cause.getCause().getClass());
+		}
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void loadFieldNotNullFromInexistentPropertyFile() {
-		noFileConfig.getIntegerNotNull();
+		try {
+			noFileConfig.getIntegerNotNull();
+			fail();
+		} catch (ConfigurationException cause) {
+			Assert.assertEquals(NullPointerException.class, cause.getCause().getClass());
+		}
 	}
 }

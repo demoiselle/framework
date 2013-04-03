@@ -36,6 +36,17 @@
  */
 package br.gov.frameworkdemoiselle.configuration.field.clazz;
 
-public class PropertiesClassFieldConfig extends AbstractClassFieldConfig {
+public abstract class AbstractExistentClassFieldConfig {
 
+	private Class<MyClass> existentTypedClass;
+
+	private Class<?> existentUntypedClass;
+
+	public Class<MyClass> getExistentTypedClass() {
+		return existentTypedClass;
+	}
+
+	public Class<?> getExistentUntypedClass() {
+		return existentUntypedClass;
+	}
 }

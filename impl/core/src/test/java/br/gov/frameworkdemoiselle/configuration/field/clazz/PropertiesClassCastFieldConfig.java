@@ -36,38 +36,10 @@
  */
 package br.gov.frameworkdemoiselle.configuration.field.clazz;
 
-public abstract class AbstractClassFieldConfig {
+import static br.gov.frameworkdemoiselle.configuration.ConfigType.PROPERTIES;
+import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-	private Class<MyClass> existentTypedClass;
+@Configuration(type = PROPERTIES)
+public class PropertiesClassCastFieldConfig extends AbstractClassCastFieldConfig {
 
-	private Class<?> existentUntypedClass;
-
-	private Class<MyClass> nonExistentTypedClass;
-
-	private Class<?> nonExistentUntypedClass;
-
-	private Class<MyClass> forcingClassCastException;
-
-	public Class<MyClass> getExistentTypedClass() {
-		return existentTypedClass;
-	}
-
-	public Class<?> getExistentUntypedClass() {
-		return existentUntypedClass;
-	}
-
-	public Class<MyClass> getNonExistentTypedClass() {
-		return nonExistentTypedClass;
-	}
-
-	public Class<?> getNonExistentUntypedClass() {
-		return nonExistentUntypedClass;
-	}
-	
-	public Class<MyClass> getForcingClassCastException() {
-		return forcingClassCastException;
-	}
-
-	public static class MyClass {
-	}
 }
