@@ -41,13 +41,9 @@ import br.gov.frameworkdemoiselle.annotation.Ignore;
 public abstract class AbstractIgnoredFieldConfig {
 
 	@Ignore
-	private int ignoredInt;
+	private int ignoredAttribute;
 
-	public int getIgnoredInt() {
-		return ignoredInt;
-	}
-
-	public void setIgnoredInt(int ignoredInt) {
-		this.ignoredInt = ignoredInt;
+	public int getIgnoredAttribute() {
+		return ignoredAttribute;
 	}
 }

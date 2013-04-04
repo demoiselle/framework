@@ -78,11 +78,11 @@ public class ConfigurationIgnoredFieldTest extends AbstractConfigurationTest {
 	}
 
 	@Test
-	public void loadIgnoredInt() {
+	public void loadIgnoredAttribute() {
 		int expected = 0;
 
-		assertEquals(expected, filledFieldConfig.getIgnoredInt());
-		assertEquals(expected, noFileConfig.getIgnoredInt());
-		assertEquals(expected, emptyFieldsConfig.getIgnoredInt());
+		assertEquals(expected, filledFieldConfig.getIgnoredAttribute());
+		assertEquals(expected, noFileConfig.getIgnoredAttribute());
+		assertEquals(expected, emptyFieldsConfig.getIgnoredAttribute());
 	}
 }
