@@ -40,7 +40,6 @@ import java.io.Serializable;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.New;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
