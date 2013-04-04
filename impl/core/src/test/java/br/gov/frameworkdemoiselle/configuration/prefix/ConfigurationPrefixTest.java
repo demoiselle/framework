@@ -56,7 +56,7 @@ import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
 public class ConfigurationPrefixTest extends AbstractConfigurationTest {
 
 	@Inject
-	private ExistentPrefix existentPrefix;
+	private PrefixEndindWithoutDot endingWithoutDotPrefix;
 
 	@Inject
 	private MissingPrefix missingPrefix;
@@ -77,7 +77,7 @@ public class ConfigurationPrefixTest extends AbstractConfigurationTest {
 
 	@Test
 	public void loadFromPrefixedExistentProperty() {
-		assertEquals("with prefix", existentPrefix.getPrefixedAttribute());
+		assertEquals("prefix ending without dot", endingWithoutDotPrefix.getPrefixedAttribute());
 	}
 
 	@Test
