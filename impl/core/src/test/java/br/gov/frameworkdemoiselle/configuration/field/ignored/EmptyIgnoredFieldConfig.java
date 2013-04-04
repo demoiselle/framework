@@ -40,5 +40,5 @@ import static br.gov.frameworkdemoiselle.configuration.ConfigType.XML;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
 @Configuration(resource = "demoiselle", type = XML)
-public class EmptyIgnoredFieldConfig extends AbstractIgnoredFieldConfig{
+public class EmptyIgnoredFieldConfig extends AbstractIgnoredFieldConfig {
 }

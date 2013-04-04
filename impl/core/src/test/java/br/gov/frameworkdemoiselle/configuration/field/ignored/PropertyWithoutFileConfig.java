@@ -39,5 +39,5 @@ package br.gov.frameworkdemoiselle.configuration.field.ignored;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
 @Configuration(resource = "nofile")
-public class PropertyWithoutFileConfig extends AbstractIgnoredFieldConfig{
+public class PropertyWithoutFileConfig extends AbstractIgnoredFieldConfig {
 }

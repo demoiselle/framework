@@ -36,6 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.configuration.prefix;
 
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -56,29 +57,36 @@ public class ConfigurationPrefixTest extends AbstractConfigurationTest {
 
 	@Inject
 	private ExistentPrefix existentPrefix;
-	
+
 	@Inject
 	private MissingPrefix missingPrefix;
-	
+
+	@Inject
+	private PrefixEndingWithDot endingWithDotPrefix;
+
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = createConfigurationDeployment();
 
 		deployment.addPackages(true, ConfigurationPrefixTest.class.getPackage());
-		deployment.addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/prefix/demoiselle.properties")),
-				"demoiselle.properties");
+		deployment.addAsResource(new FileAsset(
+				new File("src/test/resources/configuration/prefix/demoiselle.properties")), "demoiselle.properties");
 
 		return deployment;
 	}
-	
+
 	@Test
-	public void loadFromPrefixedExistentProperty(){
-		assertEquals("Atributo com prefixo", existentPrefix.getPrefixedAttribute());
+	public void loadFromPrefixedExistentProperty() {
+		assertEquals("with prefix", existentPrefix.getPrefixedAttribute());
 	}
-	
+
 	@Test
-	public void loadFromPrefixedWithouPrefixOnProperty(){
-		assertEquals(null, missingPrefix.getPrefixedAttribute());
+	public void loadFromPrefixedWithouPrefixOnProperty() {
+		assertNull(missingPrefix.getPrefixedAttribute());
+	}
+
+	@Test
+	public void loadPrefixEndingWithDot() {
+		assertEquals("prefix ending with dot", endingWithDotPrefix.getPrefixedAttribute());
 	}
 }

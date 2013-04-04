@@ -40,5 +40,5 @@ import static br.gov.frameworkdemoiselle.configuration.ConfigType.PROPERTIES;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
 @Configuration(resource = "empty-field", type = PROPERTIES)
-public class PropertyWithEmptyFieldConfig extends AbstractNotNullFieldConfig{
+public class PropertyWithEmptyFieldConfig extends AbstractNotNullFieldConfig {
 }

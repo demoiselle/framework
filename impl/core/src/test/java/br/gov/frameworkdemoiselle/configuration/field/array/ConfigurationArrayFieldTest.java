@@ -56,7 +56,7 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 
 	@Inject
 	private PropertiesArrayFieldConfig propertiesConfig;
-	
+
 	@Inject
 	private XMLArrayFieldConfig xmlConfig;
 
@@ -65,10 +65,11 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 		JavaArchive deployment = createConfigurationDeployment();
 
 		deployment.addPackages(true, ConfigurationArrayFieldTest.class.getPackage());
-		deployment.addAsResource(new FileAsset(new File(
-				"src/test/resources/configuration/field/array/demoiselle.properties")), "demoiselle.properties")
-				.addAsResource(new FileAsset(new File("src/test/resources/configuration/field/array/demoiselle.xml")),
-						"demoiselle.xml");
+		deployment.addAsResource(
+				new FileAsset(new File("src/test/resources/configuration/field/array/demoiselle.properties")),
+				"demoiselle.properties").addAsResource(
+				new FileAsset(new File("src/test/resources/configuration/field/array/demoiselle.xml")),
+				"demoiselle.xml");
 
 		return deployment;
 	}
@@ -92,19 +93,19 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 	@Test
 	public void loadString() {
 		String[] expected = { "demoisele", "demoiselle framework", "demoiselle,framework", "demoiselle, framework" };
-		
+
 		assertArrayEquals(expected, propertiesConfig.getStrings());
 		assertArrayEquals(expected, xmlConfig.getStrings());
 	}
-	
+
 	@Test
-	public void loadPrimitiveDoubles(){
+	public void loadPrimitiveDoubles() {
 		double[] expected = { -10, 200000.99999, 0 };
 
 		assertArrayEquals(expected, propertiesConfig.getPrimitiveDoubles(), 0);
 		assertArrayEquals(expected, xmlConfig.getPrimitiveDoubles(), 0);
 	}
-	
+
 	@Test
 	public void loadWrappedDoubles() {
 		Double[] expected = { -456.123456789, 0.0, 52.2 };

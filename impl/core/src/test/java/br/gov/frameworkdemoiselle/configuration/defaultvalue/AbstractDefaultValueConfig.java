@@ -36,17 +36,16 @@
  */
 package br.gov.frameworkdemoiselle.configuration.defaultvalue;
 
-
 public abstract class AbstractDefaultValueConfig {
 
 	private String stringDefaultWithoutKey = "Initialized value and without key in the property file";
-	
+
 	private String stringDefaultWithKey = "Initialized value and key in the property file";
-	
+
 	public String getStringDefaultWithoutKey() {
 		return stringDefaultWithoutKey;
 	}
-	
+
 	public String getStringDefaultWithKey() {
 		return stringDefaultWithKey;
 	}

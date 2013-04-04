@@ -58,13 +58,13 @@ public class ConfigurationDefaultValueTest extends AbstractConfigurationTest {
 
 	@Inject
 	private FilledDefaultValueConfig filledFieldConfig;
-	
+
 	@Inject
 	private EmptyDefaultValueConfig emptyFieldsConfig;
-	
+
 	@Inject
 	private PropertyWithInexistenceFileConfig noFileConfig;
-	
+
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = createConfigurationDeployment();
@@ -78,18 +78,18 @@ public class ConfigurationDefaultValueTest extends AbstractConfigurationTest {
 
 		return deployment;
 	}
-	
+
 	@Test
-	public void loadDefaultValueWithoutKey(){
+	public void loadDefaultValueWithoutKey() {
 		String expected = "Initialized value and without key in the property file";
-		
+
 		assertEquals(expected, filledFieldConfig.getStringDefaultWithoutKey());
 		assertEquals(expected, emptyFieldsConfig.getStringDefaultWithoutKey());
 		assertEquals(expected, noFileConfig.getStringDefaultWithoutKey());
 	}
-	
+
 	@Test
-	public void loadDefaultValueWithKey(){
+	public void loadDefaultValueWithKey() {
 		assertEquals("Initialized value of the property file", filledFieldConfig.getStringDefaultWithKey());
 		assertEquals("Initialized value and key in the property file", noFileConfig.getStringDefaultWithKey());
 		assertEquals("", emptyFieldsConfig.getStringDefaultWithKey());

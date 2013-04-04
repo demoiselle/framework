@@ -39,5 +39,5 @@ package br.gov.frameworkdemoiselle.configuration.defaultvalue;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
 @Configuration(resource = "nofile")
-public class PropertyWithInexistenceFileConfig extends AbstractDefaultValueConfig{
+public class PropertyWithInexistenceFileConfig extends AbstractDefaultValueConfig {
 }

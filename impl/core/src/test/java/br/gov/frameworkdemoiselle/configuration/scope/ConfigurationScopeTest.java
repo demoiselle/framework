@@ -65,12 +65,12 @@ public class ConfigurationScopeTest extends AbstractConfigurationTest {
 
 		assertSame(config1, config2);
 	}
-	
+
 	@Test
 	public void twoInvocationsDifferentInstances() {
 		DependentScopeWithoutSuperClassConfig config1 = Beans.getReference(DependentScopeWithoutSuperClassConfig.class);
 		DependentScopeWithoutSuperClassConfig config2 = Beans.getReference(DependentScopeWithoutSuperClassConfig.class);
-		
+
 		assertNotSame(config1, config2);
 	}
 }

@@ -42,7 +42,7 @@ public abstract class AbstractNotNullFieldConfig {
 
 	@NotNull
 	private Integer integerNotNull;
-	
+
 	public Integer getIntegerNotNull() {
 		return integerNotNull;
 	}

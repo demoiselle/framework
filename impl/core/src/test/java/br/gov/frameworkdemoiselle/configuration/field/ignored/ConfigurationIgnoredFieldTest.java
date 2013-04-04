@@ -56,13 +56,13 @@ public class ConfigurationIgnoredFieldTest extends AbstractConfigurationTest {
 
 	@Inject
 	private FilledIgnoredFieldConfig filledFieldConfig;
-	
+
 	@Inject
 	private EmptyIgnoredFieldConfig emptyFieldsConfig;
-	
+
 	@Inject
 	private PropertyWithoutFileConfig noFileConfig;
-	
+
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = createConfigurationDeployment();
@@ -76,11 +76,11 @@ public class ConfigurationIgnoredFieldTest extends AbstractConfigurationTest {
 
 		return deployment;
 	}
-	
+
 	@Test
-	public void loadIgnoredInt(){
+	public void loadIgnoredInt() {
 		int expected = 0;
-		
+
 		assertEquals(expected, filledFieldConfig.getIgnoredInt());
 		assertEquals(expected, noFileConfig.getIgnoredInt());
 		assertEquals(expected, emptyFieldsConfig.getIgnoredInt());

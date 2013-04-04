@@ -39,5 +39,5 @@ package br.gov.frameworkdemoiselle.configuration.field.notnull;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
 @Configuration(resource = "nofile")
-public class PropertyWithoutFileConfig extends AbstractNotNullFieldConfig{
+public class PropertyWithoutFileConfig extends AbstractNotNullFieldConfig {
 }

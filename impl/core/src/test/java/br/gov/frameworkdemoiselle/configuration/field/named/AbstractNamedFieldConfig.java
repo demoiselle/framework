@@ -38,18 +38,17 @@ package br.gov.frameworkdemoiselle.configuration.field.named;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
 
-
 public abstract class AbstractNamedFieldConfig {
 
 	@Name("main.int")
 	private int intUniqueName;
-	
+
 	@Name("nonexistent.property")
 	private int intNotPresent;
-	
+
 	@Name("attribute.without.file")
 	private int intNamedWithoutFile;
-	
+
 	public int getIntUniqueName() {
 		return intUniqueName;
 	}

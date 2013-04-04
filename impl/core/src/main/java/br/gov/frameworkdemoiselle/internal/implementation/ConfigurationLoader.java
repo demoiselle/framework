@@ -220,12 +220,12 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private String getKey(Field field) {
-		String key = "";
+		String key;
 
 		if (field.isAnnotationPresent(Name.class)) {
-			key += field.getAnnotation(Name.class).value();
+			key = field.getAnnotation(Name.class).value();
 		} else {
-			key += field.getName();
+			key = field.getName();
 		}
 
 		return key;

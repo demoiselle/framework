@@ -42,7 +42,7 @@ public abstract class AbstractIgnoredFieldConfig {
 
 	@Ignore
 	private int ignoredInt;
-	
+
 	public int getIgnoredInt() {
 		return ignoredInt;
 	}
