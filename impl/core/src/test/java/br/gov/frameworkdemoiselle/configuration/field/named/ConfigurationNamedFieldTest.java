@@ -76,19 +76,19 @@ public class ConfigurationNamedFieldTest extends AbstractConfigurationTest {
 
 	@Test
 	public void loadNamedConfigFromPropertyWithName() {
-		assertEquals(1, propertyNamed.getIntUniqueName());
-		assertEquals(1, xmlNamed.getIntUniqueName());
+		assertEquals(1, propertyNamed.intUniqueNameAttribute());
+		assertEquals(1, xmlNamed.intUniqueNameAttribute());
 	}
 
 	@Test
 	public void loadNamedConfigFromNonexistentProperty() {
-		assertEquals(0, propertyNamed.getIntNotPresent());
-		assertEquals(0, xmlNamed.getIntNotPresent());
+		assertEquals(0, propertyNamed.intNotPresentAttribute());
+		assertEquals(0, xmlNamed.intNotPresentAttribute());
 	}
 
 	@Test
 	public void loadNamedConfigFromPropertyWithoutField() {
-		assertEquals(0, propertyNamed.getIntNamedWithoutFile());
-		assertEquals(0, xmlNamed.getIntNamedWithoutFile());
+		assertEquals(0, propertyNamed.intNamedWithoutFileAttribute());
+		assertEquals(0, xmlNamed.intNamedWithoutFileAttribute());
 	}
 }
