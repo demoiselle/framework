@@ -38,11 +38,11 @@ package br.gov.frameworkdemoiselle.configuration;
 
 import java.lang.reflect.Field;
 
-import org.apache.commons.configuration.DataConfiguration;
+import org.apache.commons.configuration.Configuration;
 
 public interface ConfigurationValueExtractor {
 
-	Object getValue(String prefix, String key, Field field, DataConfiguration configuration, Object defaultValue);
+	Object getValue(String prefix, String key, Field field, Configuration configuration, Object defaultValue);
 
 	boolean isSupported(Field field);
 }

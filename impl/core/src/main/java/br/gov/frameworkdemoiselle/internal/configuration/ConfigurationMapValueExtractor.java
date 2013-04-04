@@ -45,7 +45,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.configuration.DataConfiguration;
+import org.apache.commons.configuration.Configuration;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
@@ -54,7 +54,7 @@ import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 public class ConfigurationMapValueExtractor implements ConfigurationValueExtractor {
 
 	@Override
-	public Object getValue(String prefix, String key, Field field, DataConfiguration configuration, Object defaultValue) {
+	public Object getValue(String prefix, String key, Field field, Configuration configuration, Object defaultValue) {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> value = (Map<String, Object>) defaultValue;
 

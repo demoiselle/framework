@@ -49,7 +49,6 @@ import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.configuration.AbstractConfiguration;
-import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
@@ -84,7 +83,7 @@ public class ConfigurationLoader implements Serializable {
 
 	private String prefix;
 
-	private DataConfiguration configuration;
+	private org.apache.commons.configuration.Configuration configuration;
 
 	private Set<Field> fields;
 
@@ -163,7 +162,7 @@ public class ConfigurationLoader implements Serializable {
 			}
 		}
 
-		this.configuration = (conf == null ? null : new DataConfiguration(conf));
+		this.configuration = conf;
 	}
 
 	private void loadExtractors() {

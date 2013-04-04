@@ -40,6 +40,7 @@ import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelecto
 
 import java.lang.reflect.Field;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.DataConfiguration;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
@@ -49,8 +50,9 @@ import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 public class ConfigurationArrayValueExtractor implements ConfigurationValueExtractor {
 
 	@Override
-	public Object getValue(String prefix, String key, Field field, DataConfiguration configuration, Object defaultValue) {
-		return configuration.getArray(field.getType().getComponentType(), prefix + key, defaultValue);
+	public Object getValue(String prefix, String key, Field field, Configuration configuration, Object defaultValue) {
+		return new DataConfiguration(configuration).getArray(field.getType().getComponentType(), prefix + key,
+				defaultValue);
 	}
 
 	@Override

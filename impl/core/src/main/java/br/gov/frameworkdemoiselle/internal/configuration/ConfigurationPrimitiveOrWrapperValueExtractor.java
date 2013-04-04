@@ -42,6 +42,7 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.lang.ClassUtils;
@@ -68,11 +69,11 @@ public class ConfigurationPrimitiveOrWrapperValueExtractor implements Configurat
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Object getValue(String prefix, String key, Field field, DataConfiguration configuration, Object defaultValue) {
+	public Object getValue(String prefix, String key, Field field, Configuration configuration, Object defaultValue) {
 		Object value;
 
 		try {
-			value = configuration.get(ClassUtils.primitiveToWrapper(field.getType()), prefix + key, defaultValue);
+			value = new DataConfiguration(configuration).get(ClassUtils.primitiveToWrapper(field.getType()), prefix + key, defaultValue);
 
 		} catch (ConversionException cause) {
 			value = defaultValue;
