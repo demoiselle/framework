@@ -34,7 +34,8 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -274,6 +275,28 @@
 				<groupId>commons-configuration</groupId>
 				<artifactId>commons-configuration</artifactId>
 				<version>${commons.configuration.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>commons-digester</artifactId>
+						<groupId>commons-digester</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>log4j</artifactId>
+						<groupId>log4j</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>servlet-api</artifactId>
+						<groupId>javax.servlet</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>logkit</artifactId>
+						<groupId>logkit</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>avalon-framework</artifactId>
+						<groupId>avalon-framework</groupId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>commons-dbcp</groupId>
@@ -314,6 +337,21 @@
 				<groupId>org.easymock</groupId>
 				<artifactId>easymock</artifactId>
 				<version>${easymock.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.junit</groupId>
+				<artifactId>arquillian-junit-container</artifactId>
+				<version>${arquillian.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
+				<version>${arquillian.weld.se.embedded.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.weld.se</groupId>
+				<artifactId>weld-se-core</artifactId>
+				<version>${weld.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -358,8 +396,10 @@
 
 		<junit.version>4.8.1</junit.version>
 		<easymock.version>3.0</easymock.version>
-		<arquillian.junit.version>1.0.0.Alpha4.SP2</arquillian.junit.version>
-		<arquillian.weld.embdedded.version>1.0.0.Alpha2</arquillian.weld.embdedded.version>
+
+		<arquillian.version>1.0.3.Final</arquillian.version>
+		<arquillian.weld.se.embedded.version>1.0.0.CR6</arquillian.weld.se.embedded.version>
+
 		<powermock.version>1.4.6</powermock.version>
 		<primefaces.version>3.4</primefaces.version>
 		<slf4j.version>1.6.1</slf4j.version>
