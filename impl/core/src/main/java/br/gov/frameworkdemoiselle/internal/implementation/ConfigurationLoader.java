@@ -129,36 +129,42 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private void loadConfiguration() {
-		AbstractConfiguration conf;
+		org.apache.commons.configuration.Configuration config = createConfiguration();
 
-		switch (this.type) {
-			case SYSTEM:
-				conf = new SystemConfiguration();
-				break;
-
-			case XML:
-				conf = new XMLConfiguration();
-				break;
-
-			default:
-				conf = new PropertiesConfiguration();
-				break;
-		}
-
-		conf.setDelimiterParsingDisabled(true);
-
-		if (conf instanceof FileConfiguration) {
-			((FileConfiguration) conf).setURL(Reflections.getResourceAsURL(this.resource));
+		if (config instanceof FileConfiguration) {
+			((FileConfiguration) config).setURL(Reflections.getResourceAsURL(this.resource));
 
 			try {
-				((FileConfiguration) conf).load();
+				((FileConfiguration) config).load();
 
 			} catch (org.apache.commons.configuration.ConfigurationException cause) {
-				conf = null;
+				// TODO Logar como warning.
+				config = null;
 			}
 		}
 
-		this.configuration = conf;
+		this.configuration = config;
+	}
+
+	private org.apache.commons.configuration.Configuration createConfiguration() {
+		AbstractConfiguration config;
+
+		switch (this.type) {
+			case SYSTEM:
+				config = new SystemConfiguration();
+				break;
+
+			case XML:
+				config = new XMLConfiguration();
+				break;
+
+			default:
+				config = new PropertiesConfiguration();
+				break;
+		}
+
+		config.setDelimiterParsingDisabled(true);
+		return config;
 	}
 
 	private void loadPrefix() {
