@@ -35,7 +35,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.configuration;
+package br.gov.frameworkdemoiselle.internal.implementation;
 
 import static br.gov.frameworkdemoiselle.configuration.ConfigType.SYSTEM;
 
@@ -59,7 +59,6 @@ import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 import br.gov.frameworkdemoiselle.internal.bootstrap.ConfigurationBootstrap;
-import br.gov.frameworkdemoiselle.internal.implementation.StrategySelector;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
 

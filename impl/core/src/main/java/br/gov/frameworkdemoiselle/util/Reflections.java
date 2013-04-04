@@ -47,8 +47,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
-
 public final class Reflections {
 
 	private Reflections() {
@@ -178,8 +176,8 @@ public final class Reflections {
 		}
 
 		if (url == null) {
-			result = ConfigurationLoader.class.getClassLoader();
-			url = ConfigurationLoader.class.getClassLoader().getResource(stripped);
+			result = Reflections.class.getClassLoader();
+			url = Reflections.class.getClassLoader().getResource(stripped);
 		}
 
 		if (url == null) {

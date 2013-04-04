@@ -3,7 +3,6 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 import java.io.Serializable;
 
 import br.gov.frameworkdemoiselle.annotation.Ignore;
-import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 public class ConfigurationImpl implements Serializable {
