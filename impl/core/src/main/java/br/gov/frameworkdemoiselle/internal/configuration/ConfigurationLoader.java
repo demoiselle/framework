@@ -43,9 +43,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
-import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.configuration.AbstractConfiguration;
@@ -85,33 +83,32 @@ public class ConfigurationLoader implements Serializable {
 
 	private org.apache.commons.configuration.Configuration configuration;
 
-	private Set<Field> fields;
-
-	private Set<ConfigurationValueExtractor> extractors;
-
-	@Inject
-	private ConfigurationBootstrap bootstrap;
+	private Collection<Field> fields;
 
 	public void load(Object object) throws ConfigurationException {
 		this.object = object;
 
+		loadFields();
 		validateFields();
 
 		loadType();
 		loadResource();
 		loadConfiguration();
-		loadExtractors();
 
 		if (this.configuration != null) {
 			loadPrefix();
-			loadFields();
+			loadValues();
 		}
 
 		validateValues();
 	}
 
+	private void loadFields() {
+		this.fields = Reflections.getNonStaticFields(this.object.getClass());
+	}
+
 	private void validateFields() {
-		for (Field field : getFields()) {
+		for (Field field : this.fields) {
 			validateField(field);
 		}
 	}
@@ -165,14 +162,6 @@ public class ConfigurationLoader implements Serializable {
 		this.configuration = conf;
 	}
 
-	private void loadExtractors() {
-		this.extractors = new HashSet<ConfigurationValueExtractor>();
-
-		for (Class<? extends ConfigurationValueExtractor> extractorClass : this.bootstrap.getCache()) {
-			this.extractors.add(Beans.getReference(extractorClass));
-		}
-	}
-
 	private void loadPrefix() {
 		String prefix = this.object.getClass().getAnnotation(Configuration.class).prefix();
 
@@ -186,21 +175,13 @@ public class ConfigurationLoader implements Serializable {
 		this.prefix = prefix;
 	}
 
-	private void loadFields() {
-		for (Field field : getFields()) {
-			loadField(field);
+	private void loadValues() {
+		for (Field field : this.fields) {
+			loadValue(field);
 		}
 	}
 
-	private Set<Field> getFields() {
-		if (this.fields == null) {
-			this.fields = new HashSet<Field>(Reflections.getNonStaticFields(this.object.getClass()));
-		}
-
-		return this.fields;
-	}
-
-	private void loadField(Field field) {
+	private void loadValue(Field field) {
 		if (hasIgnore(field)) {
 			return;
 		}
@@ -212,9 +193,17 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private Object getValue(Field field, Class<?> type, String key, Object defaultValue) {
-		Collection<ConfigurationValueExtractor> candidates = new HashSet<ConfigurationValueExtractor>();
+		ConfigurationValueExtractor extractor = getValueExtractor(field);
+		return extractor.getValue(this.prefix, key, field, this.configuration, defaultValue);
+	}
 
-		for (ConfigurationValueExtractor extractor : this.extractors) {
+	private ConfigurationValueExtractor getValueExtractor(Field field) {
+		Collection<ConfigurationValueExtractor> candidates = new HashSet<ConfigurationValueExtractor>();
+		ConfigurationBootstrap bootstrap = Beans.getReference(ConfigurationBootstrap.class);
+
+		for (Class<? extends ConfigurationValueExtractor> extractorClass : bootstrap.getCache()) {
+			ConfigurationValueExtractor extractor = Beans.getReference(extractorClass);
+
 			if (extractor.isSupported(field)) {
 				candidates.add(extractor);
 			}
@@ -228,7 +217,7 @@ public class ConfigurationLoader implements Serializable {
 			// um extrator personalizado.
 		}
 
-		return elected.getValue(this.prefix, key, field, configuration, defaultValue);
+		return elected;
 	}
 
 	private String getKey(Field field) {
@@ -248,7 +237,7 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private void validateValues() {
-		for (Field field : getFields()) {
+		for (Field field : this.fields) {
 			validateValue(field);
 		}
 	}

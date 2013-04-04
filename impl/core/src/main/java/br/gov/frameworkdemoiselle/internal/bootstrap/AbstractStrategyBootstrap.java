@@ -1,8 +1,8 @@
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -17,7 +17,7 @@ public abstract class AbstractStrategyBootstrap<I> implements Extension {
 
 	private Class<? extends I> strategyClass;
 
-	private List<Class<? extends I>> cache;
+	private Collection<Class<? extends I>> cache;
 
 	protected abstract Logger getLogger();
 
@@ -29,9 +29,9 @@ public abstract class AbstractStrategyBootstrap<I> implements Extension {
 		return this.strategyClass;
 	}
 
-	public List<Class<? extends I>> getCache() {
+	public Collection<Class<? extends I>> getCache() {
 		if (this.cache == null) {
-			this.cache = Collections.synchronizedList(new ArrayList<Class<? extends I>>());
+			this.cache = Collections.synchronizedSet(new HashSet<Class<? extends I>>());
 		}
 
 		return this.cache;
