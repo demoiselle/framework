@@ -237,12 +237,12 @@ public class ConfigurationLoader implements Serializable {
 
 	private void validateValues() {
 		for (Field field : this.fields) {
-			validateValue(field);
+			validateValue(field, Reflections.getFieldValue(field, this.object));
 		}
 	}
 
-	private void validateValue(Field field) {
-		if (field.isAnnotationPresent(NotNull.class) && Reflections.getFieldValue(field, this.object) == null) {
+	private void validateValue(Field field, Object value) {
+		if (field.isAnnotationPresent(NotNull.class) && value == null) {
 			throw new ConfigurationException("", new NullPointerException());
 			// TODO: Pegar mensagem do Bundle e verificar como as mensagens de log estão implementadas
 		}
