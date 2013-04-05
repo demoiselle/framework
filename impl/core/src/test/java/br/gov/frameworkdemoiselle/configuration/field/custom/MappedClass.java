@@ -34,41 +34,8 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.implementation;
+package br.gov.frameworkdemoiselle.configuration.field.custom;
 
-import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
+public class MappedClass {
 
-import java.lang.reflect.Field;
-
-import org.apache.commons.configuration.Configuration;
-
-import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
-import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
-import br.gov.frameworkdemoiselle.util.Reflections;
-
-@Priority(EXTENSIONS_L1_PRIORITY)
-public class ConfigurationClassValueExtractor implements ConfigurationValueExtractor {
-
-	@Override
-	public Object getValue(String prefix, String key, Field field, Configuration configuration, Object defaultValue) {
-		Object value = defaultValue;
-		String canonicalName = configuration.getString(prefix + key);
-
-		if (canonicalName != null) {
-			try {
-				value = Reflections.forName(canonicalName);
-			} catch (ClassNotFoundException cause) {
-				// TODO Lançar a mensagem correta
-				throw new ConfigurationException(null, cause);
-			}
-		}
-
-		return value;
-	}
-
-	@Override
-	public boolean isSupported(Field field) {
-		return field.getType() == Class.class;
-	}
 }

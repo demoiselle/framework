@@ -56,21 +56,42 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.proxy.Slf4jLoggerProxy;
+import br.gov.frameworkdemoiselle.util.Reflections;
 
 public class LoggerProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Produces
 	@Default
+	@Produces
 	public Logger create(final InjectionPoint ip) {
 		Class<?> type;
 
-		if (ip != null) {
+		if (ip.getMember() != null) {
 			type = ip.getMember().getDeclaringClass();
 		} else {
 			type = LoggerProducer.class;
+		}
+
+		return create(type);
+	}
+
+	@Name("")
+	@Produces
+	public Logger createNamed(final InjectionPoint ip) throws ClassNotFoundException {
+		Class<?> type;
+
+		try {
+			String canonicalName = ip.getAnnotated().getAnnotation(Name.class).value();
+			type = Reflections.forName(canonicalName);
+
+		} catch (ClassCastException cause) {
+			// TODO Colocar a mensgaem apropriada mostrando como utilizar a anotação @Name corretamente com a injeção de
+			// Logger.
+			throw new DemoiselleException(null, cause);
 		}
 
 		return create(type);

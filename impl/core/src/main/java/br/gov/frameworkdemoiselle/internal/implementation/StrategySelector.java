@@ -100,7 +100,9 @@ public final class StrategySelector implements Serializable {
 			}
 		}
 
-		checkForAmbiguity(type, selected, options);
+		if (selected != null) {
+			checkForAmbiguity(type, selected, options);
+		}
 
 		return selected;
 	}

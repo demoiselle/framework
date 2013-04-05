@@ -34,41 +34,56 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.implementation;
+package br.gov.frameworkdemoiselle.configuration.field.custom;
 
-import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.fail;
 
-import java.lang.reflect.Field;
+import java.io.File;
 
-import org.apache.commons.configuration.Configuration;
+import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.annotation.Priority;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
-import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
-import br.gov.frameworkdemoiselle.util.Reflections;
 
-@Priority(EXTENSIONS_L1_PRIORITY)
-public class ConfigurationClassValueExtractor implements ConfigurationValueExtractor {
+@RunWith(Arquillian.class)
+public class ConfigurationCustomFieldTest extends AbstractConfigurationTest {
 
-	@Override
-	public Object getValue(String prefix, String key, Field field, Configuration configuration, Object defaultValue) {
-		Object value = defaultValue;
-		String canonicalName = configuration.getString(prefix + key);
+	@Inject
+	private CustomMappedFieldConfig mappedField;
 
-		if (canonicalName != null) {
-			try {
-				value = Reflections.forName(canonicalName);
-			} catch (ClassNotFoundException cause) {
-				// TODO Lançar a mensagem correta
-				throw new ConfigurationException(null, cause);
-			}
-		}
+	@Inject
+	private CustomUnmappedFieldConfig unmappedField;
 
-		return value;
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = createConfigurationDeployment();
+
+		deployment.addPackages(true, ConfigurationCustomFieldTest.class.getPackage());
+		deployment.addAsResource(new FileAsset(new File(
+				"src/test/resources/configuration/field/custom/demoiselle.properties")), "demoiselle.properties");
+
+		return deployment;
 	}
 
-	@Override
-	public boolean isSupported(Field field) {
-		return field.getType() == Class.class;
+	@Test
+	public void loadMappedClass() {
+		assertNotNull(mappedField.getMappedClass());
+	}
+
+	@Test
+	public void loadUnmappedClass() {
+		try {
+			unmappedField.getUnmappedClass();
+			fail();
+		} catch (ConfigurationException cause) {
+		}
 	}
 }

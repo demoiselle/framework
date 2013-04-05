@@ -51,6 +51,7 @@ import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
+import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.Ignore;
 import br.gov.frameworkdemoiselle.annotation.Name;
@@ -60,7 +61,9 @@ import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 import br.gov.frameworkdemoiselle.internal.bootstrap.ConfigurationBootstrap;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.Reflections;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
  * This component loads a config class annotated with {@link Configuration} by filling its attributes with {@link Param}
@@ -71,6 +74,10 @@ import br.gov.frameworkdemoiselle.util.Reflections;
 public class ConfigurationLoader implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	private static ResourceBundle bundle;
+
+	private static Logger logger;
 
 	private Object object;
 
@@ -85,6 +92,8 @@ public class ConfigurationLoader implements Serializable {
 	private Collection<Field> fields;
 
 	public void load(Object object) throws ConfigurationException {
+		getLogger().debug(getBundle().getString("loading-configuration-class", object.getClass().getName()));
+
 		this.object = object;
 
 		loadFields();
@@ -220,6 +229,7 @@ public class ConfigurationLoader implements Serializable {
 		if (elected == null) {
 			// TODO lançar exceção informando que nenhum extrator foi encontrado para o field e ensinar como implementar
 			// um extrator personalizado.
+			throw new ConfigurationException("");
 		}
 
 		return elected;
@@ -252,5 +262,21 @@ public class ConfigurationLoader implements Serializable {
 			throw new ConfigurationException("", new NullPointerException());
 			// TODO: Pegar mensagem do Bundle e verificar como as mensagens de log estão implementadas
 		}
+	}
+
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
+		}
+
+		return bundle;
+	}
+
+	private static Logger getLogger() {
+		if (logger == null) {
+			logger = Beans.getReference(Logger.class, new NameQualifier(ConfigurationLoader.class.getName()));
+		}
+
+		return logger;
 	}
 }

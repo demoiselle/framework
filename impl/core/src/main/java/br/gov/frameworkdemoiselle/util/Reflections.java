@@ -191,4 +191,10 @@ public final class Reflections {
 		ClassLoader classLoader = getClassLoaderForResource(resource);
 		return classLoader != null ? classLoader.getResource(resource) : null;
 	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> Class<T> forName(final String className) throws ClassNotFoundException {
+		ClassLoader classLoader = getClassLoaderForClass(className);
+		return (Class<T>) Class.forName(className, true, classLoader);
+	}
 }
