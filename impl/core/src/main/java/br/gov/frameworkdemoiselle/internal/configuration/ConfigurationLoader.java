@@ -163,11 +163,6 @@ public class ConfigurationLoader implements Serializable {
 			prefix = classAnnotation.prefix();
 
 			if (prefix.charAt(prefix.length() - 1) != '.') {
-				getLogger().warn(
-						"ATENÇÃO!!! Informe o ponto (.) ao final da declaração do atributo prefix = \"" + prefix
-								+ "\" da anotação @Configuration da classe " + type.getCanonicalName()
-								+ " para evitar incompatibilidade com as próximas versões do Demoiselle.");
-
 				prefix += ".";
 			}
 		}
