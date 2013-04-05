@@ -69,14 +69,14 @@ public class ConfigurationPrimitiveOrWrapperValueExtractor implements Configurat
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Object getValue(String prefix, String key, Field field, Configuration configuration, Object defaultValue) {
+	public Object getValue(String prefix, String key, Field field, Configuration configuration) {
 		Object value;
 
 		try {
-			value = new DataConfiguration(configuration).get(ClassUtils.primitiveToWrapper(field.getType()), prefix + key, defaultValue);
+			value = new DataConfiguration(configuration).get(ClassUtils.primitiveToWrapper(field.getType()), prefix + key);
 
 		} catch (ConversionException cause) {
-			value = defaultValue;
+			value = null;
 		}
 
 		return value;

@@ -9,7 +9,7 @@ import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 public class MyValueExtractor implements ConfigurationValueExtractor {
 
 	@Override
-	public Object getValue(String prefix, String key, Field field, Configuration configuration, Object defaultValue) {
+	public Object getValue(String prefix, String key, Field field, Configuration configuration) {
 		return new MappedClass();
 	}
 

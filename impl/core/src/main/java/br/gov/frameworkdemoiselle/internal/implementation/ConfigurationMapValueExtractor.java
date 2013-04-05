@@ -54,9 +54,8 @@ import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 public class ConfigurationMapValueExtractor implements ConfigurationValueExtractor {
 
 	@Override
-	public Object getValue(String prefix, String key, Field field, Configuration configuration, Object defaultValue) {
-		@SuppressWarnings("unchecked")
-		Map<String, Object> value = (Map<String, Object>) defaultValue;
+	public Object getValue(String prefix, String key, Field field, Configuration configuration) {
+		Map<String, Object> value = null;
 
 		String regexp = "^(" + prefix + ")((.+)\\.)?(" + key + ")$";
 		Pattern pattern = Pattern.compile(regexp);

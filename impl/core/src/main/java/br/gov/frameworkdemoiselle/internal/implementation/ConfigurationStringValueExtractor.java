@@ -49,8 +49,8 @@ import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 public class ConfigurationStringValueExtractor implements ConfigurationValueExtractor {
 
 	@Override
-	public Object getValue(String prefix, String key, Field field, Configuration configuration, Object defaultValue) {
-		return configuration.getString(prefix + key, (String) defaultValue);
+	public Object getValue(String prefix, String key, Field field, Configuration configuration) {
+		return configuration.getString(prefix + key);
 	}
 
 	@Override

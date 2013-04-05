@@ -51,8 +51,8 @@ import br.gov.frameworkdemoiselle.util.Reflections;
 public class ConfigurationClassValueExtractor implements ConfigurationValueExtractor {
 
 	@Override
-	public Object getValue(String prefix, String key, Field field, Configuration configuration, Object defaultValue) {
-		Object value = defaultValue;
+	public Object getValue(String prefix, String key, Field field, Configuration configuration) {
+		Object value = null;
 		String canonicalName = configuration.getString(prefix + key);
 
 		if (canonicalName != null) {
@@ -60,7 +60,7 @@ public class ConfigurationClassValueExtractor implements ConfigurationValueExtra
 				value = Reflections.forName(canonicalName);
 			} catch (ClassNotFoundException cause) {
 				// TODO Lançar a mensagem correta
-				throw new ConfigurationException(null, cause);
+				throw new ConfigurationException("", cause);
 			}
 		}
 

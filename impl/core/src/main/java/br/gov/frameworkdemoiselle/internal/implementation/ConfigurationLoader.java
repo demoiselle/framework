@@ -64,6 +64,7 @@ import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
+import br.gov.frameworkdemoiselle.util.Strings;
 
 /**
  * This component loads a config class annotated with {@link Configuration} by filling its attributes with {@link Param}
@@ -122,6 +123,11 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private void validateField(Field field) {
+		Name annotation = field.getAnnotation(Name.class);
+
+		if (annotation != null && Strings.isEmpty(annotation.value())) {
+			throw new ConfigurationException(getBundle().getString("configuration-name-attribute-cant-be-empty"));
+		}
 	}
 
 	private void loadType() {
@@ -147,7 +153,7 @@ public class ConfigurationLoader implements Serializable {
 				((FileConfiguration) config).load();
 
 			} catch (org.apache.commons.configuration.ConfigurationException cause) {
-				// TODO Logar como warning.
+				getLogger().warn(getBundle().getString("file-not-found", this.resource));
 				config = null;
 			}
 		}
@@ -159,17 +165,21 @@ public class ConfigurationLoader implements Serializable {
 		AbstractConfiguration config;
 
 		switch (this.type) {
-			case SYSTEM:
-				config = new SystemConfiguration();
+			case PROPERTIES:
+				config = new PropertiesConfiguration();
 				break;
 
 			case XML:
 				config = new XMLConfiguration();
 				break;
 
-			default:
-				config = new PropertiesConfiguration();
+			case SYSTEM:
+				config = new SystemConfiguration();
 				break;
+
+			default:
+				throw new ConfigurationException(getBundle().getString("configuration-type-not-implemented-yet",
+						type.name()));
 		}
 
 		config.setDelimiterParsingDisabled(true);
@@ -201,14 +211,22 @@ public class ConfigurationLoader implements Serializable {
 		}
 
 		Object defaultValue = Reflections.getFieldValue(field, this.object);
-		Object finalValue = getValue(field, field.getType(), getKey(field), defaultValue);
+		Object loadedValue = getValue(field, field.getType(), getKey(field), defaultValue);
+		Object finalValue = (loadedValue == null ? defaultValue : loadedValue);
+
+		if (loadedValue == null) {
+			getLogger().debug(getBundle().getString("configuration-key-not-found", this.prefix + getKey(field)));
+		}
 
 		Reflections.setFieldValue(field, this.object, finalValue);
+		getLogger().debug(
+				getBundle().getString("configuration-field-loaded", this.prefix + getKey(field), field.getName(),
+						finalValue == null ? "null" : finalValue));
 	}
 
 	private Object getValue(Field field, Class<?> type, String key, Object defaultValue) {
 		ConfigurationValueExtractor extractor = getValueExtractor(field);
-		return extractor.getValue(this.prefix, key, field, this.configuration, defaultValue);
+		return extractor.getValue(this.prefix, key, field, this.configuration);
 	}
 
 	private ConfigurationValueExtractor getValueExtractor(Field field) {
@@ -259,8 +277,8 @@ public class ConfigurationLoader implements Serializable {
 
 	private void validateValue(Field field, Object value) {
 		if (field.isAnnotationPresent(NotNull.class) && value == null) {
-			throw new ConfigurationException("", new NullPointerException());
-			// TODO: Pegar mensagem do Bundle e verificar como as mensagens de log estão implementadas
+			throw new ConfigurationException(getBundle().getString("configuration-attribute-is-mandatory",
+					this.prefix + getKey(field), this.resource), new NullPointerException());
 		}
 	}
 
