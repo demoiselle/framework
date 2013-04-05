@@ -41,9 +41,9 @@ import javax.validation.constraints.NotNull;
 public abstract class AbstractNotNullFieldConfig {
 
 	@NotNull
-	private Integer integerNotNull;
+	private Integer attibuteNotNull;
 
-	public Integer getIntegerNotNull() {
-		return integerNotNull;
+	public Integer getAttributeNotNull() {
+		return attibuteNotNull;
 	}
 }

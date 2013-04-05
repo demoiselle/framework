@@ -59,16 +59,28 @@ import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 public class ConfigurationNotNullFieldTest extends AbstractConfigurationTest {
 
 	@Inject
-	private PropertyWithFilledFieldConfig filledFieldConfig;
+	private PropertyWithFilledFieldConfig propertyFilledFieldConfig;
 
 	@Inject
-	private PropertyWithEmptyFieldConfig emptyFieldsConfig;
+	private PropertyWithEmptyFieldConfig propertyEmptyFieldsConfig;
 
 	@Inject
-	private PropertyWithoutNotNullField withoutNotNullField;
+	private PropertyWithoutNotNullField propertyWithoutNotNullField;
 
 	@Inject
-	private PropertyWithoutFileConfig noFileConfig;
+	private PropertyWithoutFileConfig propertyNoFileConfig;
+
+	@Inject
+	private XMLWithFilledFieldConfig xmlFilledFieldConfig;
+
+	@Inject
+	private XMLWithEmptyFieldConfig xmlEmptyFieldsConfig;
+
+	@Inject
+	private XMLWithoutNotNullField xmlWithoutNotNullField;
+
+	@Inject
+	private XMLWithoutFileConfig xmlNoFileConfig;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
@@ -85,22 +97,40 @@ public class ConfigurationNotNullFieldTest extends AbstractConfigurationTest {
 				.addAsResource(
 						new FileAsset(new File(
 								"src/test/resources/configuration/field/notnull/without-field.properties")),
-						"without-field.properties");
+						"without-field.properties")
+				.addAsResource(
+						new FileAsset(new File("src/test/resources/configuration/field/notnull/demoiselle.xml")),
+						"demoiselle.xml")
+				.addAsResource(
+						new FileAsset(new File("src/test/resources/configuration/field/notnull/empty-field.xml")),
+						"empty-field.xml")
+				.addAsResource(
+						new FileAsset(new File(
+								"src/test/resources/configuration/field/notnull/without-field.xml")),
+						"without-field.xml");
 
 		return deployment;
 	}
 
 	@Test
-	public void loadFieldNotNullFromFilledProperty() {
+	public void loadFieldNotNullFromFilledFile() {
 		Integer expected = 1;
 
-		assertEquals(expected, filledFieldConfig.getIntegerNotNull());
+		assertEquals(expected, propertyFilledFieldConfig.getAttributeNotNull());
+		assertEquals(expected, xmlFilledFieldConfig.getAttributeNotNull());
 	}
 
 	@Test
 	public void loadFieldNotNullFromEmptyProperty() {
 		try {
-			emptyFieldsConfig.getIntegerNotNull();
+			propertyEmptyFieldsConfig.getAttributeNotNull();
+			fail();
+		} catch (ConfigurationException cause) {
+			Assert.assertEquals(NullPointerException.class, cause.getCause().getClass());
+		}
+
+		try {
+			xmlEmptyFieldsConfig.getAttributeNotNull();
 			fail();
 		} catch (ConfigurationException cause) {
 			Assert.assertEquals(NullPointerException.class, cause.getCause().getClass());
@@ -110,7 +140,14 @@ public class ConfigurationNotNullFieldTest extends AbstractConfigurationTest {
 	@Test
 	public void loadFieldFromPropertyFileWithoutNotNullField() {
 		try {
-			withoutNotNullField.getIntegerNotNull();
+			propertyWithoutNotNullField.getAttributeNotNull();
+			fail();
+		} catch (ConfigurationException cause) {
+			Assert.assertEquals(NullPointerException.class, cause.getCause().getClass());
+		}
+
+		try {
+			xmlWithoutNotNullField.getAttributeNotNull();
 			fail();
 		} catch (ConfigurationException cause) {
 			Assert.assertEquals(NullPointerException.class, cause.getCause().getClass());
@@ -120,7 +157,14 @@ public class ConfigurationNotNullFieldTest extends AbstractConfigurationTest {
 	@Test
 	public void loadFieldNotNullFromInexistentPropertyFile() {
 		try {
-			noFileConfig.getIntegerNotNull();
+			propertyNoFileConfig.getAttributeNotNull();
+			fail();
+		} catch (ConfigurationException cause) {
+			Assert.assertEquals(NullPointerException.class, cause.getCause().getClass());
+		}
+		
+		try {
+			xmlNoFileConfig.getAttributeNotNull();
 			fail();
 		} catch (ConfigurationException cause) {
 			Assert.assertEquals(NullPointerException.class, cause.getCause().getClass());

@@ -41,35 +41,23 @@ import br.gov.frameworkdemoiselle.annotation.Name;
 public abstract class AbstractNamedFieldConfig {
 
 	@Name("main.int")
-	private int intUniqueName;
+	private int uniqueNameAttribute;
 
 	@Name("nonexistent.property")
-	private int intNotPresent;
+	private int notPresentAttribute;
 
 	@Name("attribute.without.file")
-	private int intNamedWithoutFile;
+	private int namedWithoutFileAttribute;
 
-	public int getIntUniqueName() {
-		return intUniqueName;
+	public int intUniqueNameAttribute() {
+		return uniqueNameAttribute;
 	}
 
-	public void setIntUniqueName(int intUniqueName) {
-		this.intUniqueName = intUniqueName;
+	public int intNotPresentAttribute() {
+		return notPresentAttribute;
 	}
 
-	public int getIntNotPresent() {
-		return intNotPresent;
-	}
-
-	public void setIntNotPresent(int intNotPresent) {
-		this.intNotPresent = intNotPresent;
-	}
-
-	public int getIntNamedWithoutFile() {
-		return intNamedWithoutFile;
-	}
-
-	public void setIntNamedWithoutFile(int intNamedWithoutFile) {
-		this.intNamedWithoutFile = intNamedWithoutFile;
+	public int intNamedWithoutFileAttribute() {
+		return namedWithoutFileAttribute;
 	}
 }

@@ -56,37 +56,57 @@ import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
 public class ConfigurationPrefixTest extends AbstractConfigurationTest {
 
 	@Inject
-	private ExistentPrefix existentPrefix;
+	private PropertyPrefixEndingWithoutDot propertyEndingWithoutDotPrefix;
 
 	@Inject
-	private MissingPrefix missingPrefix;
+	private PropertyMissingPrefix propertyMissingPrefix;
 
 	@Inject
-	private PrefixEndingWithDot endingWithDotPrefix;
+	private PropertyPrefixEndingWithDot propertyEndingWithDotPrefix;
+	
+	
+	@Inject
+	private XMLPrefixEndingWithoutDot xmlEndingWithoutDotPrefix;
+
+	@Inject
+	private XMLMissingPrefix xmlMissingPrefix;
+
+	@Inject
+	private XMLPrefixEndingWithDot xmlEndingWithDotPrefix;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = createConfigurationDeployment();
 
 		deployment.addPackages(true, ConfigurationPrefixTest.class.getPackage());
-		deployment.addAsResource(new FileAsset(
-				new File("src/test/resources/configuration/prefix/demoiselle.properties")), "demoiselle.properties");
+		deployment.addAsResource(
+				new FileAsset(new File("src/test/resources/configuration/prefix/demoiselle.properties")),
+				"demoiselle.properties").addAsResource(
+				new FileAsset(new File("src/test/resources/configuration/prefix/demoiselle.xml")),
+				"demoiselle.xml");
 
 		return deployment;
 	}
 
 	@Test
 	public void loadFromPrefixedExistentProperty() {
-		assertEquals("with prefix", existentPrefix.getPrefixedAttribute());
+		String expected = "prefix ending without dot";
+		
+		assertEquals(expected, propertyEndingWithoutDotPrefix.getPrefixedAttribute());
+		assertEquals(expected, xmlEndingWithoutDotPrefix.getPrefixedAttribute());
 	}
 
 	@Test
 	public void loadFromPrefixedWithouPrefixOnProperty() {
-		assertNull(missingPrefix.getPrefixedAttribute());
+		assertNull(propertyMissingPrefix.getPrefixedAttribute());
+		assertNull(xmlMissingPrefix.getPrefixedAttribute());
 	}
 
 	@Test
 	public void loadPrefixEndingWithDot() {
-		assertEquals("prefix ending with dot", endingWithDotPrefix.getPrefixedAttribute());
+		String expected = "prefix ending with dot";
+		
+		assertEquals(expected, propertyEndingWithDotPrefix.getPrefixedAttribute());
+		assertEquals(expected, propertyEndingWithDotPrefix.getPrefixedAttribute());
 	}
 }
