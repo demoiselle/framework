@@ -83,7 +83,7 @@ public class ConfigurationBootstrap extends AbstractStrategyBootstrap<Configurat
 	private static List<CtMethod> getMethods(CtClass type) throws NotFoundException {
 		List<CtMethod> fields = new ArrayList<CtMethod>();
 
-		if (type != null && !type.getName().equals(Object.class.getName())) {
+		if (!type.getName().equals(Object.class.getName())) {
 			fields.addAll(Arrays.asList(type.getDeclaredMethods()));
 			fields.addAll(getMethods(type.getSuperclass()));
 		}
