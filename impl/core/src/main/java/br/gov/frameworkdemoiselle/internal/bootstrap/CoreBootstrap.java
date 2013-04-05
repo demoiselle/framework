@@ -36,11 +36,14 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
@@ -51,6 +54,9 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.internal.context.Contexts;
+import br.gov.frameworkdemoiselle.internal.context.CustomContext;
+import br.gov.frameworkdemoiselle.internal.context.StaticContext;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -63,6 +69,10 @@ public class CoreBootstrap implements Extension {
 	private Logger logger;
 
 	private ResourceBundle bundle;
+
+	private AfterBeanDiscovery afterBeanDiscoveryEvent;
+
+	private List<CustomContext> customContexts = new ArrayList<CustomContext>();
 
 	private Logger getLogger() {
 		if (this.logger == null) {
@@ -101,17 +111,24 @@ public class CoreBootstrap implements Extension {
 		beans.put(event.getAnnotatedType().getJavaClass(), event.getAnnotatedType());
 	}
 
-	public void takeOff(@Observes final AfterDeploymentValidation event) {
-		String description = getBundle().getString("taking-off");
+	public void storeContexts(@Observes final AfterBeanDiscovery event) {
+		this.customContexts.add(new StaticContext());
+		this.afterBeanDiscoveryEvent = event;
+	}
 
-		Logger log = getLogger();
-		log.info(description);
+	public void takeOff(@Observes final AfterDeploymentValidation event) {
+		for (CustomContext tempContext : this.customContexts) {
+			Contexts.add(tempContext, this.afterBeanDiscoveryEvent);
+		}
+
+		getLogger().info(getBundle().getString("taking-off"));
 	}
 
 	public void engineOff(@Observes final BeforeShutdown event) {
-		String description = getBundle().getString("engine-off");
+		for (CustomContext tempContext : this.customContexts) {
+			Contexts.remove(tempContext);
+		}
 
-		Logger log = getLogger();
-		log.info(description);
+		getLogger().info(getBundle().getString("engine-off"));
 	}
 }
