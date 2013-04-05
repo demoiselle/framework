@@ -94,7 +94,7 @@ public class ConfigurationBootstrap extends AbstractStrategyBootstrap<Configurat
 	@SuppressWarnings("unchecked")
 	private Class<Object> createProxy(Class<Object> type) throws Exception {
 		String superClassName = type.getCanonicalName();
-		String chieldClassName = superClassName + "__DemoiselleProxy";
+		String chieldClassName = superClassName + "_$$_DemoiselleProxy";
 
 		Map<String, Class<Object>> cacheProxy = Collections.synchronizedMap(new HashMap<String, Class<Object>>());;
 
