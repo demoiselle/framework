@@ -34,12 +34,12 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.configuration.field.basic;
+package br.gov.frameworkdemoiselle.configuration.field.primitiveorwrapper;
 
 import static br.gov.frameworkdemoiselle.configuration.ConfigType.SYSTEM;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
 @Configuration(type = SYSTEM)
-public class SystemBasicFieldConfig extends AbstractBasicFieldConfig {
+public class SystemPrimitiveOrWrapperFieldConfig extends AbstractPrimitiveOrWrapperFieldConfig {
 
 }

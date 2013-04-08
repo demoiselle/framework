@@ -34,25 +34,13 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.configuration.field.basic;
+package br.gov.frameworkdemoiselle.configuration.field.string;
 
-public abstract class AbstractBasicFieldConfig {
-
-	private int primitiveInteger;
-
-	private Integer wrappedInteger;
+public abstract class AbstractStringFieldConfig {
 
 	private String stringWithSpace;
 
 	private String stringWithComma;
-
-	public Integer getWrappedInteger() {
-		return wrappedInteger;
-	}
-
-	public int getPrimitiveInteger() {
-		return primitiveInteger;
-	}
 
 	public String getStringWithSpace() {
 		return stringWithSpace;

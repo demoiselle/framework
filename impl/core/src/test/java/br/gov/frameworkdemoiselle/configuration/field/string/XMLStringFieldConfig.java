@@ -34,11 +34,12 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.configuration.field.basic;
+package br.gov.frameworkdemoiselle.configuration.field.string;
 
-import static br.gov.frameworkdemoiselle.configuration.ConfigType.PROPERTIES;
+import static br.gov.frameworkdemoiselle.configuration.ConfigType.XML;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(type = PROPERTIES)
-public class PropertiesBasicFieldConfig extends AbstractBasicFieldConfig {
+@Configuration(type = XML)
+public class XMLStringFieldConfig extends AbstractStringFieldConfig {
+
 }

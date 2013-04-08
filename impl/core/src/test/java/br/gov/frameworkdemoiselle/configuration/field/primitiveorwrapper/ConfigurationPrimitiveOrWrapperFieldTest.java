@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.configuration.field.basic;
+package br.gov.frameworkdemoiselle.configuration.field.primitiveorwrapper;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -53,26 +53,26 @@ import org.junit.runner.RunWith;
 import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
 
 @RunWith(Arquillian.class)
-public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
+public class ConfigurationPrimitiveOrWrapperFieldTest extends AbstractConfigurationTest {
 
 	@Inject
-	private PropertiesBasicFieldConfig propertiesConfig;
+	private PropertiesPrimitiveOrWrapperFieldConfig propertiesConfig;
 
 	@Inject
-	private XMLBasicFieldConfig xmlConfig;
+	private XMLPrimitiveOrWrapperFieldConfig xmlConfig;
 
 	@Inject
-	private SystemBasicFieldConfig systemConfig;
+	private SystemPrimitiveOrWrapperFieldConfig systemConfig;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = createConfigurationDeployment();
 
-		deployment.addPackages(true, ConfigurationBasicFieldTest.class.getPackage());
+		deployment.addPackages(true, ConfigurationPrimitiveOrWrapperFieldTest.class.getPackage());
 		deployment.addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/basic/demoiselle.properties")),
+				new FileAsset(new File("src/test/resources/configuration/field/primitiveorwrapper/demoiselle.properties")),
 				"demoiselle.properties").addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/basic/demoiselle.xml")),
+				new FileAsset(new File("src/test/resources/configuration/field/primitiveorwrapper/demoiselle.xml")),
 				"demoiselle.xml");
 
 		return deployment;
@@ -82,8 +82,6 @@ public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
 	public static void afterClass() {
 		System.setProperty("primitiveInteger", String.valueOf(1));
 		System.setProperty("wrappedInteger", String.valueOf(2));
-		System.setProperty("stringWithSpace", String.valueOf("demoiselle framework"));
-		System.setProperty("stringWithComma", String.valueOf("demoiselle, framework"));
 	}
 
 	@Test
@@ -102,23 +100,5 @@ public class ConfigurationBasicFieldTest extends AbstractConfigurationTest {
 		assertEquals(expected, systemConfig.getWrappedInteger());
 		assertEquals(expected, propertiesConfig.getWrappedInteger());
 		assertEquals(expected, xmlConfig.getWrappedInteger());
-	}
-
-	@Test
-	public void loadStringWithSpace() {
-		String expected = "demoiselle framework";
-
-		assertEquals(expected, systemConfig.getStringWithSpace());
-		assertEquals(expected, propertiesConfig.getStringWithSpace());
-		assertEquals(expected, xmlConfig.getStringWithSpace());
-	}
-
-	@Test
-	public void loadStringWithComma() {
-		String expected = "demoiselle, framework";
-
-		assertEquals(expected, systemConfig.getStringWithComma());
-		assertEquals(expected, propertiesConfig.getStringWithComma());
-		assertEquals(expected, xmlConfig.getStringWithComma());
 	}
 }
