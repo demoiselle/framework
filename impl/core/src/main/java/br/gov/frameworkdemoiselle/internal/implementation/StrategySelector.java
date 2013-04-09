@@ -45,8 +45,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.AmbiguousResolutionException;
+
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -76,7 +78,7 @@ public final class StrategySelector implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T getInstance(Class<T> type, Collection<? extends T> options) throws ConfigurationException {
+	public static <T> T selectInstance(Class<T> type, Collection<? extends T> options) {
 
 		Map<Class<? extends T>, T> map = new HashMap<Class<? extends T>, T>();
 
@@ -86,12 +88,11 @@ public final class StrategySelector implements Serializable {
 			}
 		}
 
-		Class<? extends T> elected = getClass(type, map.keySet());
+		Class<? extends T> elected = selectClass(type, map.keySet());
 		return map.get(elected);
 	}
 
-	public static <T> Class<? extends T> getClass(Class<T> type, Collection<Class<? extends T>> options)
-			throws ConfigurationException {
+	public static <T> Class<? extends T> selectClass(Class<T> type, Collection<Class<? extends T>> options) {
 		Class<? extends T> selected = null;
 
 		for (Class<? extends T> option : options) {
@@ -108,7 +109,7 @@ public final class StrategySelector implements Serializable {
 	}
 
 	private static <T> void checkForAmbiguity(Class<T> type, Class<? extends T> selected,
-			Collection<Class<? extends T>> options) throws ConfigurationException {
+			Collection<Class<? extends T>> options) {
 		int selectedPriority = getPriority(selected);
 
 		List<Class<? extends T>> ambiguous = new ArrayList<Class<? extends T>>();
@@ -123,7 +124,7 @@ public final class StrategySelector implements Serializable {
 			ambiguous.add(selected);
 
 			String message = getExceptionMessage(type, ambiguous);
-			throw new ConfigurationException(message);
+			throw new DemoiselleException(message, new AmbiguousResolutionException());
 		}
 	}
 
