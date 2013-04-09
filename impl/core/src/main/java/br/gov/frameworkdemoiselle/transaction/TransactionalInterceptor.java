@@ -39,6 +39,7 @@ package br.gov.frameworkdemoiselle.transaction;
 import java.io.Serializable;
 
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -186,6 +187,45 @@ public class TransactionalInterceptor implements Serializable {
 		}
 
 		return logger;
+	}
+
+	@RequestScoped
+	static class TransactionInfo implements Serializable {
+
+		private static final long serialVersionUID = 1L;
+
+		private int counter = 0;
+
+		private boolean owner;
+
+		public TransactionInfo() {
+			clear();
+		}
+
+		public void clear() {
+			this.owner = false;
+			this.counter = 0;
+		}
+
+		public int getCounter() {
+			return counter;
+		}
+
+		public void incrementCounter() {
+			this.counter++;
+		}
+
+		public void decrementCounter() {
+			this.counter--;
+		}
+
+		public void markAsOwner() {
+			this.owner = true;
+		}
+
+		public boolean isOwner() {
+			return owner;
+		}
 	}
 
 	@Any
