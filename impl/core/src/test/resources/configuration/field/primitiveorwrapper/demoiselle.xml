@@ -37,5 +37,9 @@
 
 <configuration>
 	<primitiveInteger>1</primitiveInteger>
+	<nullPrimitiveInteger></nullPrimitiveInteger>
+	<errorPrimitiveInteger>a</errorPrimitiveInteger>
 	<wrappedInteger>2</wrappedInteger>
+	<nullWrappedInteger></nullWrappedInteger>
+	<errorWrappedInteger>a</errorWrappedInteger>
 </configuration>
