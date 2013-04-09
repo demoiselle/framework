@@ -37,10 +37,13 @@
 package br.gov.frameworkdemoiselle.configuration.field.named;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 
 import java.io.File;
 
 import javax.inject.Inject;
+
+import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -50,6 +53,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
+import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 
 @RunWith(Arquillian.class)
 public class ConfigurationNamedFieldTest extends AbstractConfigurationTest {
@@ -59,6 +63,12 @@ public class ConfigurationNamedFieldTest extends AbstractConfigurationTest {
 
 	@Inject
 	private XMLNamed xmlNamed;
+
+	@Inject
+	private PropertyEmptyNamed propertyEmptyNamed;
+
+	@Inject
+	private XMLEmptyNamed xmlEmptyNamed;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
@@ -76,19 +86,37 @@ public class ConfigurationNamedFieldTest extends AbstractConfigurationTest {
 
 	@Test
 	public void loadNamedConfigFromPropertyWithName() {
-		assertEquals(1, propertyNamed.intUniqueNameAttribute());
-		assertEquals(1, xmlNamed.intUniqueNameAttribute());
+		assertEquals(1, propertyNamed.getUniqueNameAttribute());
+		assertEquals(1, xmlNamed.getUniqueNameAttribute());
 	}
 
 	@Test
 	public void loadNamedConfigFromNonexistentProperty() {
-		assertEquals(0, propertyNamed.intNotPresentAttribute());
-		assertEquals(0, xmlNamed.intNotPresentAttribute());
+		assertEquals(0, propertyNamed.getNotPresentAttribute());
+		assertEquals(0, xmlNamed.getNotPresentAttribute());
 	}
 
 	@Test
 	public void loadNamedConfigFromPropertyWithoutField() {
-		assertEquals(0, propertyNamed.intNamedWithoutFileAttribute());
-		assertEquals(0, xmlNamed.intNamedWithoutFileAttribute());
+		assertEquals(0, propertyNamed.getNamedWithoutFileAttribute());
+		assertEquals(0, xmlNamed.getNamedWithoutFileAttribute());
+	}
+
+	@Test
+	public void loadEmptyNameConfig() {
+		try {
+			xmlEmptyNamed.getNoNameAttribute();
+			fail();
+		} catch (ConfigurationException cause) {
+			assertEquals(IllegalArgumentException.class, cause.getCause().getClass());
+		}
+
+		try {
+			propertyEmptyNamed.getNoNameAttribute();
+			fail();
+		} catch (ConfigurationException cause) {
+			assertEquals(IllegalArgumentException.class, cause.getCause().getClass());
+		}
+
 	}
 }
