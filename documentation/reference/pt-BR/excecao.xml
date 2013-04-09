@@ -22,7 +22,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
 			        http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 	<interceptors>
-		<class>br.gov.frameworkdemoiselle.internal.interceptor.ExceptionHandlerInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.exception.ExceptionHandlerInterceptor</class>
 	</interceptors>
 </beans>]]></programlisting>
     </section>
