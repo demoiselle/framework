@@ -50,7 +50,13 @@ public class ConfigurationStringValueExtractor implements ConfigurationValueExtr
 
 	@Override
 	public Object getValue(String prefix, String key, Field field, Configuration configuration) {
-		return configuration.getString(prefix + key);
+		Object value = configuration.getString(prefix + key);
+
+		if (value.equals("")) {
+			value = null;
+		}
+
+		return value;
 	}
 
 	@Override
