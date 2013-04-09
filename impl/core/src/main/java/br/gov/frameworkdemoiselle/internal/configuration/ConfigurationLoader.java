@@ -43,8 +43,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -102,9 +105,20 @@ public class ConfigurationLoader implements Serializable {
 
 		getLogger().debug(getBundle().getString("loading-configuration-class", config.getName()));
 
-		for (Field field : Reflections.getNonStaticDeclaredFields(config)) {
+		for (Field field : getNonStaticFields(config)) {
 			loadField(field, object, config);
 		}
+	}
+
+	private List<Field> getNonStaticFields(Class<?> type) {
+		List<Field> fields = new ArrayList<Field>();
+
+		if (type != null) {
+			fields.addAll(Arrays.asList(Reflections.getNonStaticDeclaredFields(type)));
+			fields.addAll(getNonStaticFields(type.getSuperclass()));
+		}
+
+		return fields;
 	}
 
 	private void loadField(Field field, Object object, Class<?> clazz) {
