@@ -44,15 +44,16 @@ import org.apache.commons.configuration.Configuration;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
+import br.gov.frameworkdemoiselle.util.Strings;
 
 @Priority(EXTENSIONS_L1_PRIORITY)
 public class ConfigurationStringValueExtractor implements ConfigurationValueExtractor {
 
 	@Override
-	public Object getValue(String prefix, String key, Field field, Configuration configuration) {
-		Object value = configuration.getString(prefix + key);
+	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
+		String value = configuration.getString(prefix + key);
 
-		if ((value !=null) && (value.equals(""))) {
+		if (Strings.isEmpty(value)) {
 			value = null;
 		}
 

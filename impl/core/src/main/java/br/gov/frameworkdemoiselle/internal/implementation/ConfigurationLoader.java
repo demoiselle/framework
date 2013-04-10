@@ -226,8 +226,21 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private Object getValue(Field field, Class<?> type, String key, Object defaultValue) {
-		ConfigurationValueExtractor extractor = getValueExtractor(field);
-		return extractor.getValue(this.prefix, key, field, this.configuration);
+		Object value = null;
+
+		try {
+			ConfigurationValueExtractor extractor = getValueExtractor(field);
+			value = extractor.getValue(this.prefix, key, field, this.configuration);
+			
+		} catch (ConfigurationException cause) {
+			throw cause;
+
+		} catch (Exception cause) {
+			// TODO Lançar mensagem informando que houve erro ao tentar extrair o valor com o extrator tal.
+			throw new ConfigurationException("", cause);
+		}
+
+		return value;
 	}
 
 	private ConfigurationValueExtractor getValueExtractor(Field field) {

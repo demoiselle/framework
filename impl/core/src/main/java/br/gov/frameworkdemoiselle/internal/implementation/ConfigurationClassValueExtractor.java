@@ -43,25 +43,20 @@ import java.lang.reflect.Field;
 import org.apache.commons.configuration.Configuration;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 import br.gov.frameworkdemoiselle.util.Reflections;
+import br.gov.frameworkdemoiselle.util.Strings;
 
 @Priority(EXTENSIONS_L1_PRIORITY)
 public class ConfigurationClassValueExtractor implements ConfigurationValueExtractor {
 
 	@Override
-	public Object getValue(String prefix, String key, Field field, Configuration configuration) {
+	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
 		Object value = null;
 		String canonicalName = configuration.getString(prefix + key);
 
-		if (!canonicalName.equals("")) {
-			try {
-				value = Reflections.forName(canonicalName);
-			} catch (ClassNotFoundException cause) {
-				// TODO Lançar a mensagem correta
-				throw new ConfigurationException("", cause);
-			}
+		if (!Strings.isEmpty(canonicalName)) {
+			value = Reflections.forName(canonicalName);
 		}
 
 		return value;

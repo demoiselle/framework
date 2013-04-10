@@ -50,7 +50,7 @@ import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 public class ConfigurationArrayValueExtractor implements ConfigurationValueExtractor {
 
 	@Override
-	public Object getValue(String prefix, String key, Field field, Configuration configuration) {
+	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
 		return new DataConfiguration(configuration).getArray(field.getType().getComponentType(), prefix + key);
 	}
 
