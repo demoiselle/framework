@@ -55,7 +55,7 @@ public class ConfigurationClassValueExtractor implements ConfigurationValueExtra
 		Object value = null;
 		String canonicalName = configuration.getString(prefix + key);
 
-		if (canonicalName != null) {
+		if (!canonicalName.equals("")) {
 			try {
 				value = Reflections.forName(canonicalName);
 			} catch (ClassNotFoundException cause) {
