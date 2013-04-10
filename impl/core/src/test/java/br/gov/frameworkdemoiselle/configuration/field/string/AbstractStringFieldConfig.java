@@ -42,11 +42,17 @@ public abstract class AbstractStringFieldConfig {
 
 	private String stringWithComma;
 
+	private String emptyString;
+
 	public String getStringWithSpace() {
 		return stringWithSpace;
 	}
 
 	public String getStringWithComma() {
 		return stringWithComma;
+	}
+
+	public String getEmptyString() {
+		return emptyString;
 	}
 }

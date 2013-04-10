@@ -36,29 +36,10 @@
  */
 package br.gov.frameworkdemoiselle.configuration.field.primitiveorwrapper;
 
-public abstract class AbstractPrimitiveOrWrapperFieldConfig {
+import static br.gov.frameworkdemoiselle.configuration.ConfigType.XML;
+import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-	private int primitiveInteger;
+@Configuration(type = XML)
+public class XMLPrimitiveOrWrapperErrorFieldConfig extends AbstractPrimitiveOrWrapperErrorFieldConfig {
 
-	private int nullPrimitiveInteger;
-
-	private Integer wrappedInteger;
-
-	private Integer nullWrappedInteger;
-
-	public Integer getWrappedInteger() {
-		return wrappedInteger;
-	}
-
-	public int getPrimitiveInteger() {
-		return primitiveInteger;
-	}
-
-	public int getNullPrimitiveInteger() {
-		return nullPrimitiveInteger;
-	}
-
-	public Integer getNullWrappedInteger() {
-		return nullWrappedInteger;
-	}
 }

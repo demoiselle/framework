@@ -69,6 +69,15 @@ public class ConfigurationPrimitiveOrWrapperFieldTest extends AbstractConfigurat
 
 	@Inject
 	private SystemPrimitiveOrWrapperFieldConfig systemConfig;
+	
+	@Inject
+	private PropertiesPrimitiveOrWrapperErrorFieldConfig propertiesErrorConfig;
+
+	@Inject
+	private XMLPrimitiveOrWrapperErrorFieldConfig xmlErrorConfig;
+
+	@Inject
+	private SystemPrimitiveOrWrapperErrorFieldConfig systemErrorConfig;	
 
 	@Deployment
 	public static JavaArchive createDeployment() {
@@ -136,21 +145,21 @@ public class ConfigurationPrimitiveOrWrapperFieldTest extends AbstractConfigurat
 		int expected = 0;
 
 		try {
-			assertEquals(expected, propertiesConfig.getErrorPrimitiveInteger());
+			assertEquals(expected, propertiesErrorConfig.getErrorPrimitiveInteger());
 			fail();
 		} catch (ConversionException cause) {
 			Assert.assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
 
 		try {
-			assertEquals(expected, propertiesConfig.getErrorPrimitiveInteger());
+			assertEquals(expected, propertiesErrorConfig.getErrorPrimitiveInteger());
 			fail();
 		} catch (ConversionException cause) {
 			Assert.assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
 
 		try {
-			assertEquals(expected, xmlConfig.getErrorPrimitiveInteger());
+			assertEquals(expected, xmlErrorConfig.getErrorPrimitiveInteger());
 			fail();
 		} catch (ConversionException cause) {
 			Assert.assertEquals(ConversionException.class, cause.getCause().getClass());
@@ -163,21 +172,21 @@ public class ConfigurationPrimitiveOrWrapperFieldTest extends AbstractConfigurat
 		Integer expected = 2;
 
 		try {
-			assertEquals(expected, propertiesConfig.getErrorWrappedInteger());
+			assertEquals(expected, propertiesErrorConfig.getErrorWrappedInteger());
 			fail();
 		} catch (ConversionException cause) {
 			Assert.assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
 
 		try {
-			assertEquals(expected, propertiesConfig.getErrorWrappedInteger());
+			assertEquals(expected, propertiesErrorConfig.getErrorWrappedInteger());
 			fail();
 		} catch (ConversionException cause) {
 			Assert.assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
 
 		try {
-			assertEquals(expected, xmlConfig.getErrorWrappedInteger());
+			assertEquals(expected, xmlErrorConfig.getErrorWrappedInteger());
 			fail();
 		} catch (ConversionException cause) {
 			Assert.assertEquals(ConversionException.class, cause.getCause().getClass());

@@ -36,15 +36,19 @@
  */
 package br.gov.frameworkdemoiselle.configuration.field.primitiveorwrapper;
 
-public abstract class AbstractPrimitiveOrWrapperFieldConfig {
+public abstract class AbstractPrimitiveOrWrapperErrorFieldConfig {
 
 	private int primitiveInteger;
 
 	private int nullPrimitiveInteger;
 
+	private int errorPrimitiveInteger;
+
 	private Integer wrappedInteger;
 
 	private Integer nullWrappedInteger;
+
+	private Integer errorWrappedInteger;
 
 	public Integer getWrappedInteger() {
 		return wrappedInteger;
@@ -60,5 +64,13 @@ public abstract class AbstractPrimitiveOrWrapperFieldConfig {
 
 	public Integer getNullWrappedInteger() {
 		return nullWrappedInteger;
+	}
+
+	public int getErrorPrimitiveInteger() {
+		return errorPrimitiveInteger;
+	}
+
+	public Integer getErrorWrappedInteger() {
+		return errorWrappedInteger;
 	}
 }

@@ -38,4 +38,5 @@
 <configuration>
 	<stringWithSpace>demoiselle framework</stringWithSpace>
 	<stringWithComma>demoiselle, framework</stringWithComma>
+	<emptyString></emptyString>
 </configuration>

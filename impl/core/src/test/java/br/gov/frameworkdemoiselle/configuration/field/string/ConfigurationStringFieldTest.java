@@ -82,6 +82,7 @@ public class ConfigurationStringFieldTest extends AbstractConfigurationTest {
 	public static void afterClass() {
 		System.setProperty("stringWithSpace", String.valueOf("demoiselle framework"));
 		System.setProperty("stringWithComma", String.valueOf("demoiselle, framework"));
+		System.setProperty("emptyString", String.valueOf(""));
 	}
 
 	@Test
@@ -101,4 +102,12 @@ public class ConfigurationStringFieldTest extends AbstractConfigurationTest {
 		assertEquals(expected, propertiesConfig.getStringWithComma());
 		assertEquals(expected, xmlConfig.getStringWithComma());
 	}
+	
+	@Test
+	public void loadEmptyString() {
+		String expected = "";
+		assertEquals(expected, systemConfig.getEmptyString());
+		assertEquals(expected, propertiesConfig.getEmptyString());
+		assertEquals(expected, xmlConfig.getEmptyString());
+	}	
 }
