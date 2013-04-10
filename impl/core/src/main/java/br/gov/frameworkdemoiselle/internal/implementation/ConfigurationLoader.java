@@ -126,7 +126,8 @@ public class ConfigurationLoader implements Serializable {
 		Name annotation = field.getAnnotation(Name.class);
 
 		if (annotation != null && Strings.isEmpty(annotation.value())) {
-			throw new ConfigurationException(getBundle().getString("configuration-name-attribute-cant-be-empty"));
+			throw new ConfigurationException(getBundle().getString("configuration-name-attribute-cant-be-empty"),
+					new IllegalArgumentException());
 		}
 	}
 
@@ -179,7 +180,7 @@ public class ConfigurationLoader implements Serializable {
 
 			default:
 				throw new ConfigurationException(getBundle().getString("configuration-type-not-implemented-yet",
-						type.name()));
+						type.name()), new IllegalArgumentException());
 		}
 
 		config.setDelimiterParsingDisabled(true);
@@ -241,13 +242,12 @@ public class ConfigurationLoader implements Serializable {
 			}
 		}
 
-		ConfigurationValueExtractor elected = StrategySelector.getInstance(ConfigurationValueExtractor.class,
+		ConfigurationValueExtractor elected = StrategySelector.selectInstance(ConfigurationValueExtractor.class,
 				candidates);
 
 		if (elected == null) {
-			// TODO lançar exceção informando que nenhum extrator foi encontrado para o field e ensinar como implementar
-			// um extrator personalizado.
-			throw new ConfigurationException("");
+			throw new ConfigurationException(getBundle().getString("configuration-extractor-not-found",
+					field.toGenericString(), ConfigurationValueExtractor.class.getName()), new ClassNotFoundException());
 		}
 
 		return elected;

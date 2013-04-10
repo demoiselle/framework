@@ -36,6 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.configuration.field.custom;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
 
@@ -84,6 +85,7 @@ public class ConfigurationCustomFieldTest extends AbstractConfigurationTest {
 			unmappedField.getUnmappedClass();
 			fail();
 		} catch (ConfigurationException cause) {
+			assertEquals(ClassNotFoundException.class, cause.getCause().getClass());
 		}
 	}
 }
