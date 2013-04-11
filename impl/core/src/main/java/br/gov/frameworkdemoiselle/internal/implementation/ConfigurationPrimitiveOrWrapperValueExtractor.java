@@ -43,13 +43,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.lang.ClassUtils;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
+import br.gov.frameworkdemoiselle.util.Strings;
 
 @Priority(EXTENSIONS_L1_PRIORITY)
 public class ConfigurationPrimitiveOrWrapperValueExtractor implements ConfigurationValueExtractor {
@@ -70,19 +70,25 @@ public class ConfigurationPrimitiveOrWrapperValueExtractor implements Configurat
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Object getValue(String prefix, String key, Field field, Configuration configuration) {
+	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
 		Object value;
+
 		try {
 			value = new DataConfiguration(configuration).get(ClassUtils.primitiveToWrapper(field.getType()), prefix
 					+ key);
-		} catch (ConversionException e) {
-			value = new DataConfiguration(configuration).get(ClassUtils.primitiveToWrapper(String.class), prefix + key);
-			if (value.equals("")) {
-				value = null;
-			} else
-				throw e;
+
+		} catch (ConversionException cause) {
+			validate(prefix, key, configuration, cause);
+			value = null;
 		}
+
 		return value;
+	}
+
+	private void validate(String prefix, String key, Configuration configuration, ConversionException cause) {
+		if (!Strings.isEmpty(configuration.getString(prefix + key))) {
+			throw cause;
+		}
 	}
 
 	@Override

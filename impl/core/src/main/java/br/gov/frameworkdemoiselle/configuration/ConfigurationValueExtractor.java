@@ -42,7 +42,7 @@ import org.apache.commons.configuration.Configuration;
 
 public interface ConfigurationValueExtractor {
 
-	Object getValue(String prefix, String key, Field field, Configuration configuration);
+	Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception;
 
 	boolean isSupported(Field field);
 }

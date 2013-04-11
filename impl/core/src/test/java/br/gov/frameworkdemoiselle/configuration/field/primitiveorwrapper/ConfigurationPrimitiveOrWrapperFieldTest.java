@@ -43,8 +43,6 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import junit.framework.Assert;
-
 import org.apache.commons.configuration.ConversionException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -52,7 +50,6 @@ import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.internal.runners.statements.Fail;
 import org.junit.runner.RunWith;
 
 import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
@@ -69,7 +66,7 @@ public class ConfigurationPrimitiveOrWrapperFieldTest extends AbstractConfigurat
 
 	@Inject
 	private SystemPrimitiveOrWrapperFieldConfig systemConfig;
-	
+
 	@Inject
 	private PropertiesPrimitiveOrWrapperErrorFieldConfig propertiesErrorConfig;
 
@@ -77,7 +74,7 @@ public class ConfigurationPrimitiveOrWrapperFieldTest extends AbstractConfigurat
 	private XMLPrimitiveOrWrapperErrorFieldConfig xmlErrorConfig;
 
 	@Inject
-	private SystemPrimitiveOrWrapperErrorFieldConfig systemErrorConfig;	
+	private SystemPrimitiveOrWrapperErrorFieldConfig systemErrorConfig;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
@@ -147,24 +144,23 @@ public class ConfigurationPrimitiveOrWrapperFieldTest extends AbstractConfigurat
 		try {
 			assertEquals(expected, propertiesErrorConfig.getErrorPrimitiveInteger());
 			fail();
-		} catch (ConversionException cause) {
-			Assert.assertEquals(ConversionException.class, cause.getCause().getClass());
+		} catch (ConfigurationException cause) {
+			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
 
 		try {
 			assertEquals(expected, propertiesErrorConfig.getErrorPrimitiveInteger());
 			fail();
-		} catch (ConversionException cause) {
-			Assert.assertEquals(ConversionException.class, cause.getCause().getClass());
+		} catch (ConfigurationException cause) {
+			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
 
 		try {
 			assertEquals(expected, xmlErrorConfig.getErrorPrimitiveInteger());
 			fail();
-		} catch (ConversionException cause) {
-			Assert.assertEquals(ConversionException.class, cause.getCause().getClass());
+		} catch (ConfigurationException cause) {
+			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
-
 	}
 
 	@Test
@@ -174,22 +170,22 @@ public class ConfigurationPrimitiveOrWrapperFieldTest extends AbstractConfigurat
 		try {
 			assertEquals(expected, propertiesErrorConfig.getErrorWrappedInteger());
 			fail();
-		} catch (ConversionException cause) {
-			Assert.assertEquals(ConversionException.class, cause.getCause().getClass());
+		} catch (ConfigurationException cause) {
+			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
 
 		try {
 			assertEquals(expected, propertiesErrorConfig.getErrorWrappedInteger());
 			fail();
-		} catch (ConversionException cause) {
-			Assert.assertEquals(ConversionException.class, cause.getCause().getClass());
+		} catch (ConfigurationException cause) {
+			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
 
 		try {
 			assertEquals(expected, xmlErrorConfig.getErrorWrappedInteger());
 			fail();
-		} catch (ConversionException cause) {
-			Assert.assertEquals(ConversionException.class, cause.getCause().getClass());
+		} catch (ConfigurationException cause) {
+			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
 	}
 }
