@@ -51,13 +51,7 @@ public class ConfigurationStringValueExtractor implements ConfigurationValueExtr
 
 	@Override
 	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
-		String value = configuration.getString(prefix + key);
-
-		if (Strings.isEmpty(value)) {
-			value = null;
-		}
-
-		return value;
+		return configuration.getString(prefix + key);
 	}
 
 	@Override

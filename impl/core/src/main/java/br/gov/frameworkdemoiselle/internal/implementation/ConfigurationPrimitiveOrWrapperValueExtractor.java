@@ -78,17 +78,10 @@ public class ConfigurationPrimitiveOrWrapperValueExtractor implements Configurat
 					+ key);
 
 		} catch (ConversionException cause) {
-			validate(prefix, key, configuration, cause);
-			value = null;
+			throw cause;
 		}
 
 		return value;
-	}
-
-	private void validate(String prefix, String key, Configuration configuration, ConversionException cause) {
-		if (!Strings.isEmpty(configuration.getString(prefix + key))) {
-			throw cause;
-		}
 	}
 
 	@Override
