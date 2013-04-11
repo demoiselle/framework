@@ -42,11 +42,17 @@ public abstract class AbstractArrayEmptyFieldConfig {
 	
 	private Integer[] emptyWrapperIntegers;
 	
+	private Integer[] errorTypeWrapperIntegers;
+	
 	public Integer[] getEmptyWrapperIntegers() {
 		return emptyWrapperIntegers;
 	}
 
 	public int[] getEmptyPrimitiveIntegers() {
 		return emptyPrimitiveIntegers;
+	}
+
+	public Integer[] getErrorTypeWrapperIntegers() {
+		return errorTypeWrapperIntegers;
 	}
 }

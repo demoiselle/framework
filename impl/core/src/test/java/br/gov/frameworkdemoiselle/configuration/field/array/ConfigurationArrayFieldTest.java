@@ -146,5 +146,15 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 		} catch (ConfigurationException cause) {
 			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
-	}	
+	}
+	
+	@Test
+	public void loadErrorTypeWrapper() {	
+		try {
+			propertiesNullConfig.getErrorTypeWrapperIntegers();
+			Assert.fail();
+		} catch (ConfigurationException cause) {
+			assertEquals(ConversionException.class, cause.getCause().getClass());
+		}
+	}		
 }
