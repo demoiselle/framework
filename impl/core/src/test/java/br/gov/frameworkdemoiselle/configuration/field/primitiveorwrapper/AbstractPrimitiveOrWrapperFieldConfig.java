@@ -40,11 +40,7 @@ public abstract class AbstractPrimitiveOrWrapperFieldConfig {
 
 	private int primitiveInteger;
 
-	private int nullPrimitiveInteger;
-
 	private Integer wrappedInteger;
-
-	private Integer nullWrappedInteger;
 
 	public Integer getWrappedInteger() {
 		return wrappedInteger;
@@ -52,13 +48,5 @@ public abstract class AbstractPrimitiveOrWrapperFieldConfig {
 
 	public int getPrimitiveInteger() {
 		return primitiveInteger;
-	}
-
-	public int getNullPrimitiveInteger() {
-		return nullPrimitiveInteger;
-	}
-
-	public Integer getNullWrappedInteger() {
-		return nullWrappedInteger;
 	}
 }

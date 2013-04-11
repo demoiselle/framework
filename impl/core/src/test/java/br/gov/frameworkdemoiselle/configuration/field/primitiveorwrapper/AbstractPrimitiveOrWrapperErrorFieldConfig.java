@@ -38,32 +38,20 @@ package br.gov.frameworkdemoiselle.configuration.field.primitiveorwrapper;
 
 public abstract class AbstractPrimitiveOrWrapperErrorFieldConfig {
 
-	private int primitiveInteger;
-
-	private int nullPrimitiveInteger;
+	private int emptyPrimitiveInteger;
 
 	private int errorPrimitiveInteger;
 
-	private Integer wrappedInteger;
-
-	private Integer nullWrappedInteger;
+	private Integer emptyWrappedInteger;
 
 	private Integer errorWrappedInteger;
 
-	public Integer getWrappedInteger() {
-		return wrappedInteger;
+	public int getEmptyPrimitiveInteger() {
+		return emptyPrimitiveInteger;
 	}
 
-	public int getPrimitiveInteger() {
-		return primitiveInteger;
-	}
-
-	public int getNullPrimitiveInteger() {
-		return nullPrimitiveInteger;
-	}
-
-	public Integer getNullWrappedInteger() {
-		return nullWrappedInteger;
+	public Integer getEmptyWrappedInteger() {
+		return emptyWrappedInteger;
 	}
 
 	public int getErrorPrimitiveInteger() {

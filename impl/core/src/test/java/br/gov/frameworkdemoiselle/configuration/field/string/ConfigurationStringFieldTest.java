@@ -105,7 +105,7 @@ public class ConfigurationStringFieldTest extends AbstractConfigurationTest {
 	
 	@Test
 	public void loadEmptyString() {
-		String expected = null;
+		String expected = "";
 		assertEquals(expected, systemConfig.getEmptyString());
 		assertEquals(expected, propertiesConfig.getEmptyString());
 		assertEquals(expected, xmlConfig.getEmptyString());
