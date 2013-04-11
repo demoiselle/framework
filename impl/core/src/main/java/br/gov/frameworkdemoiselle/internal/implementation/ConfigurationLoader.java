@@ -43,8 +43,14 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.commons.configuration.FileConfiguration;
@@ -275,10 +281,22 @@ public class ConfigurationLoader implements Serializable {
 		}
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void validateValue(Field field, Object value) {
-		if (field.isAnnotationPresent(NotNull.class) && value == null) {
-			throw new ConfigurationException(getBundle().getString("configuration-attribute-is-mandatory",
-					this.prefix + getKey(field), this.resource), new NullPointerException());
+		ValidatorFactory dfv = Validation.buildDefaultValidatorFactory();
+		Validator validator = dfv.getValidator();
+
+		Set violations = validator.validateProperty(this.object, field.getName());
+		
+		StringBuffer message = new StringBuffer();
+
+		if (!violations.isEmpty()) {
+			for (Iterator iter = violations.iterator(); iter.hasNext();) {
+				ConstraintViolation violation = (ConstraintViolation)iter.next();
+				message.append(field.toGenericString() + " " + violation.getMessage() + "\n");
+			}
+			
+			throw new ConfigurationException(message.toString(), new ConstraintViolationException(violations));
 		}
 	}
 
