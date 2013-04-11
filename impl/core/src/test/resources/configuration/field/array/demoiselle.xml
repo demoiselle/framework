@@ -56,4 +56,8 @@
 	<wrappedDoubles>-456.123456789</wrappedDoubles>
 	<wrappedDoubles>0.0</wrappedDoubles>
 	<wrappedDoubles>52.2</wrappedDoubles>
+	
+	<emptyIntegers></emptyIntegers>
+	<emptyIntegers></emptyIntegers>
+	<emptyIntegers></emptyIntegers>	
 </ArrayValues>

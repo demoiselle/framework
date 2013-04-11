@@ -34,43 +34,43 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.configuration.field.array;
+package br.gov.frameworkdemoiselle.configuration.field.primitiveorwrapper;
 
-public abstract class AbstractArrayFieldConfig {
+public abstract class AbstractPrimitiveOrWrapperEmptyFieldConfig {
 
-	private int[] primitiveIntegers;
+	private int primitiveInteger;
 
-	private Integer[] wrappedIntegers;
+	private int nullPrimitiveInteger;
 
-	private String[] strings;
+	private int errorPrimitiveInteger;
 
-	private double[] primitiveDoubles;
+	private Integer wrappedInteger;
 
-	private Double[] wrappedDoubles;
+	private Integer nullWrappedInteger;
 
-	private String[] emptyStrings;
+	private Integer errorWrappedInteger;
 
-	public int[] getPrimitiveIntegers() {
-		return primitiveIntegers;
+	public Integer getWrappedInteger() {
+		return wrappedInteger;
 	}
 
-	public Integer[] getWrappedIntegers() {
-		return wrappedIntegers;
+	public int getPrimitiveInteger() {
+		return primitiveInteger;
 	}
 
-	public String[] getStrings() {
-		return strings;
+	public int getNullPrimitiveInteger() {
+		return nullPrimitiveInteger;
 	}
 
-	public double[] getPrimitiveDoubles() {
-		return primitiveDoubles;
+	public Integer getNullWrappedInteger() {
+		return nullWrappedInteger;
 	}
 
-	public Double[] getWrappedDoubles() {
-		return wrappedDoubles;
+	public int getErrorPrimitiveInteger() {
+		return errorPrimitiveInteger;
 	}
 
-	public String[] getEmptyStrings() {
-		return emptyStrings;
+	public Integer getErrorWrappedInteger() {
+		return errorWrappedInteger;
 	}
 }

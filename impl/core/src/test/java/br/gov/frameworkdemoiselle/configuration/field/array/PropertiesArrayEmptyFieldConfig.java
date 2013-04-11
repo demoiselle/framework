@@ -36,41 +36,9 @@
  */
 package br.gov.frameworkdemoiselle.configuration.field.array;
 
-public abstract class AbstractArrayFieldConfig {
+import static br.gov.frameworkdemoiselle.configuration.ConfigType.PROPERTIES;
+import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-	private int[] primitiveIntegers;
-
-	private Integer[] wrappedIntegers;
-
-	private String[] strings;
-
-	private double[] primitiveDoubles;
-
-	private Double[] wrappedDoubles;
-
-	private String[] emptyStrings;
-
-	public int[] getPrimitiveIntegers() {
-		return primitiveIntegers;
-	}
-
-	public Integer[] getWrappedIntegers() {
-		return wrappedIntegers;
-	}
-
-	public String[] getStrings() {
-		return strings;
-	}
-
-	public double[] getPrimitiveDoubles() {
-		return primitiveDoubles;
-	}
-
-	public Double[] getWrappedDoubles() {
-		return wrappedDoubles;
-	}
-
-	public String[] getEmptyStrings() {
-		return emptyStrings;
-	}
+@Configuration(type = PROPERTIES)
+public class PropertiesArrayEmptyFieldConfig extends AbstractArrayEmptyFieldConfig {
 }
