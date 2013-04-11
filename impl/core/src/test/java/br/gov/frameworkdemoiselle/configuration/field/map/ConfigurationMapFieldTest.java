@@ -60,13 +60,19 @@ public class ConfigurationMapFieldTest extends AbstractConfigurationTest {
 	@Inject
 	private PropertiesMapFieldConfig propertiesConfig;
 
+	@Inject
+	private XMLMapFieldConfig xmlConfig;
+
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = createConfigurationDeployment();
 
 		deployment.addPackages(true, ConfigurationMapFieldTest.class.getPackage());
-		deployment.addAsResource(new FileAsset(new File(
-				"src/test/resources/configuration/field/map/demoiselle.properties")), "demoiselle.properties");
+		deployment
+			.addAsResource(
+					new FileAsset(new File("src/test/resources/configuration/field/map/demoiselle.properties")), "demoiselle.properties")
+			.addAsResource(
+					new FileAsset(new File("src/test/resources/configuration/field/map/demoiselle.xml")), "demoiselle.xml");
 
 		return deployment;
 	}
@@ -78,6 +84,7 @@ public class ConfigurationMapFieldTest extends AbstractConfigurationTest {
 		expected.put("item2", "framework");
 
 		assertEquals(expected, propertiesConfig.getStringWithDefinedKeyMap());
+		assertEquals(expected, xmlConfig.getStringWithDefinedKeyMap());
 	}
 
 	@Test
@@ -86,13 +93,15 @@ public class ConfigurationMapFieldTest extends AbstractConfigurationTest {
 		expected.put("default", "undefined");
 
 		assertEquals(expected, propertiesConfig.getStringWithUndefinedKeyMap());
+		assertEquals(expected, xmlConfig.getStringWithUndefinedKeyMap());
 	}
-	
+
 	@Test
 	public void loadEmptyKeyMapString() {
 		Map<String, String> expected = new HashMap<String, String>();
-	
+
 		assertEquals(expected, propertiesConfig.getEmptyValueMap());
-	}	
-	
+		assertEquals(expected, xmlConfig.getEmptyValueMap());
+	}
+
 }
