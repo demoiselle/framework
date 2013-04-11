@@ -36,12 +36,16 @@
  */
 package br.gov.frameworkdemoiselle.configuration.field.array;
 
+import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
 import java.io.File;
 
 import javax.inject.Inject;
 
+import junit.framework.Assert;
+
+import org.apache.commons.configuration.ConversionException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
@@ -50,12 +54,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import br.gov.frameworkdemoiselle.configuration.AbstractConfigurationTest;
+import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 
 @RunWith(Arquillian.class)
 public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 
 	@Inject
 	private PropertiesArrayFieldConfig propertiesConfig;
+	
+	@Inject
+	private PropertiesArrayEmptyFieldConfig propertiesNullConfig;	
 
 	@Inject
 	private XMLArrayFieldConfig xmlConfig;
@@ -113,4 +121,30 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 		assertArrayEquals(expected, propertiesConfig.getWrappedDoubles());
 		assertArrayEquals(expected, xmlConfig.getWrappedDoubles());
 	}
+	
+	@Test
+	public void loadEmptyString() {	
+		String[] expected = { "demoisele", "" };
+		assertArrayEquals(expected, propertiesConfig.getEmptyStrings());
+	}
+	
+	@Test
+	public void loadEmptyPrimitive() {
+		try {
+			propertiesNullConfig.getEmptyPrimitiveIntegers();
+			Assert.fail();
+		} catch (ConfigurationException cause) {
+			assertEquals(ConversionException.class, cause.getCause().getClass());
+		}
+	}
+	
+	@Test
+	public void loadEmptyWrapper() {	
+		try {
+			propertiesNullConfig.getEmptyWrapperIntegers();
+			Assert.fail();
+		} catch (ConfigurationException cause) {
+			assertEquals(ConversionException.class, cause.getCause().getClass());
+		}
+	}	
 }

@@ -61,7 +61,7 @@ public class ConfigurationClassFieldTest extends AbstractConfigurationTest {
 
 	@Inject
 	private PropertiesClassNotFoundFieldConfig propertiesNotFoundConfig;
-	
+
 	@Inject
 	private PropertiesNullClassFieldConfig propertiesNullFieldConfig;
 
@@ -70,9 +70,8 @@ public class ConfigurationClassFieldTest extends AbstractConfigurationTest {
 		JavaArchive deployment = createConfigurationDeployment();
 
 		deployment.addPackages(true, ConfigurationClassFieldTest.class.getPackage());
-		deployment.addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/class/demoiselle.properties")),
-				"demoiselle.properties");
+		deployment.addAsResource(new FileAsset(new File(
+				"src/test/resources/configuration/field/class/demoiselle.properties")), "demoiselle.properties");
 
 		return deployment;
 	}
@@ -106,16 +105,25 @@ public class ConfigurationClassFieldTest extends AbstractConfigurationTest {
 			assertEquals(ClassNotFoundException.class, cause.getCause().getClass());
 		}
 	}
-	
+
 	@Test
 	public void loadNullTypedClass() {
-		assertEquals(null, propertiesNullFieldConfig.getNullTypedClass());
+		try {
+			propertiesNullFieldConfig.getNullTypedClass();
+			fail();
+		} catch (ConfigurationException cause) {
+			assertEquals(ClassNotFoundException.class, cause.getCause().getClass());
+		}
 	}
 
 	@Test
 	public void loadNullUntypedClass() {
-		assertEquals(null, propertiesNullFieldConfig.getNullUntypedClass());
+		try {
+			propertiesNullFieldConfig.getNullUntypedClass();
+			fail();
+		} catch (ConfigurationException cause) {
+			assertEquals(ClassNotFoundException.class, cause.getCause().getClass());
+		}
 	}
 
-	
 }

@@ -52,14 +52,8 @@ public class ConfigurationClassValueExtractor implements ConfigurationValueExtra
 
 	@Override
 	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
-		Object value = null;
 		String canonicalName = configuration.getString(prefix + key);
-
-		if (!Strings.isEmpty(canonicalName)) {
-			value = Reflections.forName(canonicalName);
-		}
-
-		return value;
+		return Reflections.forName(canonicalName);
 	}
 
 	@Override
