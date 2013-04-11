@@ -42,13 +42,19 @@ public abstract class AbstractMapFieldConfig {
 
 	private Map<String, String> stringWithDefinedKeyMap;
 
-	private Map<String, Integer> stringWithUndefinedKeyMap;
+	private Map<String, String> stringWithUndefinedKeyMap;
 
-	public Map<String, Integer> getStringWithUndefinedKeyMap() {
+	private Map<String, String> emptyValueMap;
+
+	public Map<String, String> getStringWithUndefinedKeyMap() {
 		return stringWithUndefinedKeyMap;
 	}
 
 	public Map<String, String> getStringWithDefinedKeyMap() {
 		return stringWithDefinedKeyMap;
+	}
+
+	public Map<String, String> getEmptyValueMap() {
+		return emptyValueMap;
 	}
 }

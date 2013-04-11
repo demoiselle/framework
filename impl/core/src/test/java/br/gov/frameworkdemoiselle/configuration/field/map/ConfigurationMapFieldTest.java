@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.validation.constraints.Size;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -86,4 +87,12 @@ public class ConfigurationMapFieldTest extends AbstractConfigurationTest {
 
 		assertEquals(expected, propertiesConfig.getStringWithUndefinedKeyMap());
 	}
+	
+	@Test
+	public void loadEmptyKeyMapString() {
+		Map<String, String> expected = new HashMap<String, String>();
+	
+		assertEquals(expected, propertiesConfig.getEmptyValueMap());
+	}	
+	
 }
