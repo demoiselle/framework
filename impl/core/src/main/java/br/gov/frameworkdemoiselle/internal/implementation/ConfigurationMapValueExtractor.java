@@ -49,6 +49,7 @@ import org.apache.commons.configuration.Configuration;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
+import br.gov.frameworkdemoiselle.util.Strings;
 
 @Priority(EXTENSIONS_L1_PRIORITY)
 public class ConfigurationMapValueExtractor implements ConfigurationValueExtractor {
@@ -73,7 +74,10 @@ public class ConfigurationMapValueExtractor implements ConfigurationValueExtract
 				}
 
 				String mapKey = matcher.group(3) == null ? "default" : matcher.group(3);
-				value.put(mapKey, configuration.getString(confKey));
+				Object mapValue = configuration.getString(confKey);
+				if (!Strings.isEmpty((String) mapValue)){
+					value.put(mapKey, mapValue);
+				}
 			}
 		}
 
