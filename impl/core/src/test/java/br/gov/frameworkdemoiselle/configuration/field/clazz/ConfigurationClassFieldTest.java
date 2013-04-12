@@ -92,6 +92,7 @@ public class ConfigurationClassFieldTest extends AbstractConfigurationTest {
 			propertiesNotFoundConfig.getNonExistentTypedClass();
 			fail();
 		} catch (ConfigurationException cause) {
+			cause.printStackTrace();
 			assertEquals(ClassNotFoundException.class, cause.getCause().getClass());
 		}
 	}
@@ -112,6 +113,7 @@ public class ConfigurationClassFieldTest extends AbstractConfigurationTest {
 			propertiesNullFieldConfig.getNullTypedClass();
 			fail();
 		} catch (ConfigurationException cause) {
+			cause.printStackTrace();
 			assertEquals(ClassNotFoundException.class, cause.getCause().getClass());
 		}
 	}

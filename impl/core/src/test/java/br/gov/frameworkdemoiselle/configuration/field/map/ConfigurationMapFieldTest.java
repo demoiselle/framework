@@ -68,11 +68,10 @@ public class ConfigurationMapFieldTest extends AbstractConfigurationTest {
 		JavaArchive deployment = createConfigurationDeployment();
 
 		deployment.addPackages(true, ConfigurationMapFieldTest.class.getPackage());
-		deployment
-			.addAsResource(
-					new FileAsset(new File("src/test/resources/configuration/field/map/demoiselle.properties")), "demoiselle.properties")
-			.addAsResource(
-					new FileAsset(new File("src/test/resources/configuration/field/map/demoiselle.xml")), "demoiselle.xml");
+		deployment.addAsResource(
+				new FileAsset(new File("src/test/resources/configuration/field/map/demoiselle.properties")),
+				"demoiselle.properties").addAsResource(
+				new FileAsset(new File("src/test/resources/configuration/field/map/demoiselle.xml")), "demoiselle.xml");
 
 		return deployment;
 	}
@@ -99,9 +98,10 @@ public class ConfigurationMapFieldTest extends AbstractConfigurationTest {
 	@Test
 	public void loadEmptyKeyMapString() {
 		Map<String, String> expected = new HashMap<String, String>();
+		expected.put("item1", "");
+		expected.put("item2", "");
 
 		assertEquals(expected, propertiesConfig.getEmptyValueMap());
 		assertEquals(expected, xmlConfig.getEmptyValueMap());
 	}
-
 }
