@@ -53,6 +53,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import org.apache.commons.configuration.AbstractConfiguration;
+import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
@@ -241,7 +242,11 @@ public class ConfigurationLoader implements Serializable {
 		} catch (ConfigurationException cause) {
 			throw cause;
 
-		} catch (Exception cause) {
+		} catch (ConversionException cause) {
+			throw new ConfigurationException(getBundle().getString("configuration-not-conversion" , this.prefix + getKey(field), field.getType().toString()) , cause);
+		} 
+		
+		catch (Exception cause) {
 			// TODO Lançar mensagem informando que houve erro ao tentar extrair o valor com o extrator tal.
 			throw new ConfigurationException("", cause);
 		}

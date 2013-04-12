@@ -74,10 +74,7 @@ public class ConfigurationMapValueExtractor implements ConfigurationValueExtract
 				}
 
 				String mapKey = matcher.group(3) == null ? "default" : matcher.group(3);
-				Object mapValue = configuration.getString(confKey);
-				if (!Strings.isEmpty((String) mapValue)){
-					value.put(mapKey, mapValue);
-				}
+				value.put(mapKey, configuration.getString(confKey));
 			}
 		}
 
