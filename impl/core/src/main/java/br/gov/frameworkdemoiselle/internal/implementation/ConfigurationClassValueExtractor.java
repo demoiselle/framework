@@ -45,15 +45,20 @@ import org.apache.commons.configuration.Configuration;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 import br.gov.frameworkdemoiselle.util.Reflections;
-import br.gov.frameworkdemoiselle.util.Strings;
 
 @Priority(EXTENSIONS_L1_PRIORITY)
 public class ConfigurationClassValueExtractor implements ConfigurationValueExtractor {
 
 	@Override
 	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
+		Object value = null;
 		String canonicalName = configuration.getString(prefix + key);
-		return Reflections.forName(canonicalName);
+
+		if (canonicalName != null) {
+			value = Reflections.forName(canonicalName);
+		}
+
+		return value;
 	}
 
 	@Override
