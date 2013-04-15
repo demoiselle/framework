@@ -38,22 +38,21 @@ package configuration.field.string;
 
 import static junit.framework.Assert.assertEquals;
 
-import java.io.File;
-
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import configuration.ConfigurationTests;
+import util.Tests;
 
 @RunWith(Arquillian.class)
 public class ConfigurationStringFieldTest {
+
+	private static final String PATH = "src/test/resources/configuration/field/string";
 
 	@Inject
 	private PropertiesStringFieldConfig propertiesConfig;
@@ -66,13 +65,9 @@ public class ConfigurationStringFieldTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment(ConfigurationStringFieldTest.class);
-		deployment.addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/string/demoiselle.properties")),
-				"demoiselle.properties").addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/string/demoiselle.xml")),
-				"demoiselle.xml");
-
+		JavaArchive deployment = Tests.createDeployment(ConfigurationStringFieldTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.xml"), "demoiselle.xml");
 		return deployment;
 	}
 

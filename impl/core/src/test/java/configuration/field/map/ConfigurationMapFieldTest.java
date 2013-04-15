@@ -38,7 +38,6 @@ package configuration.field.map;
 
 import static junit.framework.Assert.assertEquals;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,15 +45,16 @@ import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import configuration.ConfigurationTests;
+import util.Tests;
 
 @RunWith(Arquillian.class)
 public class ConfigurationMapFieldTest {
+
+	private static final String PATH = "src/test/resources/configuration/field/map";
 
 	@Inject
 	private PropertiesMapFieldConfig propertiesConfig;
@@ -64,12 +64,9 @@ public class ConfigurationMapFieldTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment(ConfigurationMapFieldTest.class);
-		deployment.addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/map/demoiselle.properties")),
-				"demoiselle.properties").addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/map/demoiselle.xml")), "demoiselle.xml");
-
+		JavaArchive deployment = Tests.createDeployment(ConfigurationMapFieldTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.xml"), "demoiselle.xml");
 		return deployment;
 	}
 

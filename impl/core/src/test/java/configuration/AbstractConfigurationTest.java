@@ -36,25 +36,21 @@
  */
 package configuration;
 
-import java.io.File;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import javax.inject.Inject;
+
+import junit.framework.Assert;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public final class ConfigurationTests {
+import util.Tests;
+import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 
-	private ConfigurationTests() {
-	}
-
-	public static JavaArchive createDeployment(Class<?> baseClass) {
-		return ShrinkWrap
-				.create(JavaArchive.class)
-				.addPackages(true, "br")
-				.addPackages(true, baseClass.getPackage())
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-				.addAsManifestResource(
-						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-						"services/javax.enterprise.inject.spi.Extension");
-	}
+public class AbstractConfigurationTest {
 }

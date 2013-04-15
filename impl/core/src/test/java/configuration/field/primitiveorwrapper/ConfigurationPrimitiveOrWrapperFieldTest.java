@@ -39,24 +39,23 @@ package configuration.field.primitiveorwrapper;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
 
-import java.io.File;
-
 import javax.inject.Inject;
 
 import org.apache.commons.configuration.ConversionException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import util.Tests;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
-import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
 public class ConfigurationPrimitiveOrWrapperFieldTest {
+
+	private static final String PATH = "src/test/resources/configuration/field/primitiveorwrapper";
 
 	@Inject
 	private PropertiesPrimitiveOrWrapperFieldConfig propertiesConfig;
@@ -78,14 +77,9 @@ public class ConfigurationPrimitiveOrWrapperFieldTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment(ConfigurationPrimitiveOrWrapperFieldTest.class);
-		deployment.addAsResource(
-				new FileAsset(new File(
-						"src/test/resources/configuration/field/primitiveorwrapper/demoiselle.properties")),
-				"demoiselle.properties").addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/primitiveorwrapper/demoiselle.xml")),
-				"demoiselle.xml");
-
+		JavaArchive deployment = Tests.createDeployment(ConfigurationPrimitiveOrWrapperFieldTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.xml"), "demoiselle.xml");
 		return deployment;
 	}
 

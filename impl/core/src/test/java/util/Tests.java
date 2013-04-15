@@ -34,41 +34,32 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package configuration.scope;
+package util;
 
-import static junit.framework.Assert.assertNotSame;
-import static junit.framework.Assert.assertSame;
+import java.io.File;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import util.Tests;
-import br.gov.frameworkdemoiselle.util.Beans;
+public final class Tests {
 
-@RunWith(Arquillian.class)
-public class ConfigurationScopeTest {
-
-	@Deployment
-	public static JavaArchive createDeployment() {
-		return Tests.createDeployment(ConfigurationScopeTest.class);
+	private Tests() {
 	}
 
-	@Test
-	public void twoInvocationsSameInstance() {
-		DefaultScopeWithoutSuperClassConfig config1 = Beans.getReference(DefaultScopeWithoutSuperClassConfig.class);
-		DefaultScopeWithoutSuperClassConfig config2 = Beans.getReference(DefaultScopeWithoutSuperClassConfig.class);
-
-		assertSame(config1, config2);
+	public static JavaArchive createDeployment(Class<?> baseClass) {
+		return ShrinkWrap
+				.create(JavaArchive.class)
+				.addPackages(true, "br")
+				.addPackages(true, baseClass.getPackage())
+				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+				.addAsManifestResource(
+						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
+						"services/javax.enterprise.inject.spi.Extension");
 	}
 
-	@Test
-	public void twoInvocationsDifferentInstances() {
-		DependentScopeWithoutSuperClassConfig config1 = Beans.getReference(DependentScopeWithoutSuperClassConfig.class);
-		DependentScopeWithoutSuperClassConfig config2 = Beans.getReference(DependentScopeWithoutSuperClassConfig.class);
-
-		assertNotSame(config1, config2);
+	public static FileAsset createFileAsset(String pathname) {
+		return new FileAsset(new File(pathname));
 	}
 }

@@ -39,24 +39,23 @@ package configuration.field.notnull;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
 
-import java.io.File;
-
 import javax.inject.Inject;
 
 import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import util.Tests;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
-import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
 public class ConfigurationNotNullFieldTest {
+
+	private static final String PATH = "src/test/resources/configuration/field/notnull";
 
 	@Inject
 	private PropertyWithFilledFieldConfig propertyFilledFieldConfig;
@@ -84,28 +83,13 @@ public class ConfigurationNotNullFieldTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment(ConfigurationNotNullFieldTest.class);
-		deployment
-				.addAsResource(
-						new FileAsset(new File("src/test/resources/configuration/field/notnull/demoiselle.properties")),
-						"demoiselle.properties")
-				.addAsResource(
-						new FileAsset(new File("src/test/resources/configuration/field/notnull/empty-field.properties")),
-						"empty-field.properties")
-				.addAsResource(
-						new FileAsset(new File(
-								"src/test/resources/configuration/field/notnull/without-field.properties")),
-						"without-field.properties")
-				.addAsResource(
-						new FileAsset(new File("src/test/resources/configuration/field/notnull/demoiselle.xml")),
-						"demoiselle.xml")
-				.addAsResource(
-						new FileAsset(new File("src/test/resources/configuration/field/notnull/empty-field.xml")),
-						"empty-field.xml")
-				.addAsResource(
-						new FileAsset(new File("src/test/resources/configuration/field/notnull/without-field.xml")),
-						"without-field.xml");
-
+		JavaArchive deployment = Tests.createDeployment(ConfigurationNotNullFieldTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/empty-field.properties"), "empty-field.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/without-field.properties"), "without-field.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.xml"), "demoiselle.xml");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/empty-field.xml"), "empty-field.xml");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/without-field.xml"), "without-field.xml");
 		return deployment;
 	}
 
