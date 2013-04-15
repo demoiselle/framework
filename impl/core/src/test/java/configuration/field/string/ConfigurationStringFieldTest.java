@@ -47,7 +47,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import util.Tests;
+import test.Tests;
 
 @RunWith(Arquillian.class)
 public class ConfigurationStringFieldTest {

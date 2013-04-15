@@ -48,7 +48,7 @@ import org.junit.runner.RunWith;
 
 import security.athentication.ambiguity.DuplicatedCustomAuthenticator;
 import security.athentication.custom.CustomAuthenticator;
-import util.Tests;
+import test.Tests;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import configuration.resource.ConfigurationResourceTest;
 

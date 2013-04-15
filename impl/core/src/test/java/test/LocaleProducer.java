@@ -34,35 +34,18 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util;
+package test;
 
-import java.io.File;
+import java.util.Locale;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Produces;
 
-public final class Tests {
+public class LocaleProducer {
 
-	private Tests() {
-	}
-
-	public static JavaArchive createDeployment(Class<?> baseClass) {
-		return createDeployment().addPackages(true, baseClass.getPackage());
-	}
-
-	public static JavaArchive createDeployment() {
-		return ShrinkWrap
-				.create(JavaArchive.class)
-				.addPackages(true, "br")
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-				.addAsManifestResource(
-						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-						"services/javax.enterprise.inject.spi.Extension");
-	}
-
-	public static FileAsset createFileAsset(String pathname) {
-		return new FileAsset(new File(pathname));
+	@Default
+	@Produces
+	public Locale create() {
+		return Locale.getDefault();
 	}
 }
