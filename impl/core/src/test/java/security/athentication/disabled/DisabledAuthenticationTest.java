@@ -34,14 +34,14 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package security.athentication.custom;
+package security.athentication.disabled;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -50,46 +50,55 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import security.athentication.custom.CustomAuthenticator;
 import test.Tests;
+import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import configuration.resource.ConfigurationResourceTest;
 
+@RequestScoped
 @RunWith(Arquillian.class)
-public class CustomAuthenticatorTest {
+public class DisabledAuthenticationTest {
+
+	private static final String PATH = "src/test/resources/security/authenticator/disabled";
 
 	@Inject
 	private SecurityContext context;
 
-	@Inject
-	private EventObserver observer;
+	private AfterLoginSuccessful event;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = Tests.createDeployment(ConfigurationResourceTest.class);
 		deployment.addClass(CustomAuthenticator.class);
-		deployment.addClass(EventObserver.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
 		return deployment;
+	}
+
+	public void observer(@Observes AfterLoginSuccessful event) {
+		this.event = event;
 	}
 
 	@Test
 	public void unauthenticated() {
-		assertFalse(context.isLoggedIn());
-		assertNull(context.getCurrentUser());
+		assertTrue(context.isLoggedIn());
+		assertEquals("demoiselle", context.getCurrentUser().getName());
 	}
 
 	@Test
 	public void loginProcess() {
 		context.login();
 		assertTrue(context.isLoggedIn());
-		assertNotNull(observer.getEvent());
+		assertNull(event);
 		assertEquals("demoiselle", context.getCurrentUser().getName());
 	}
 
-	@Test
-	public void logoutProcess() {
-		context.login();
-		context.logout();
-		assertFalse(context.isLoggedIn());
-		assertNull(context.getCurrentUser());
-	}
+	//
+	// @Test
+	// public void logoutProcess() {
+	// context.login();
+	// context.logout();
+	// assertFalse(context.isLoggedIn());
+	// assertNull(context.getCurrentUser());
+	// }
 }
