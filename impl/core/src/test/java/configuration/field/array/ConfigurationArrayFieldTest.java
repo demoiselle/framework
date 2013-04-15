@@ -54,10 +54,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
-import configuration.AbstractConfigurationTest;
+import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
+public class ConfigurationArrayFieldTest  {
 
 	@Inject
 	private PropertiesArrayFieldConfig propertiesConfig;
@@ -70,7 +70,7 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = createConfigurationDeployment();
+		JavaArchive deployment = ConfigurationTests.createDeployment();
 
 		deployment.addPackages(true, ConfigurationArrayFieldTest.class.getPackage());
 		deployment.addAsResource(

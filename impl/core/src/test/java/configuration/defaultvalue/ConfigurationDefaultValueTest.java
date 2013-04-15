@@ -49,10 +49,10 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import configuration.AbstractConfigurationTest;
+import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationDefaultValueTest extends AbstractConfigurationTest {
+public class ConfigurationDefaultValueTest  {
 
 	@Inject
 	private FilledDefaultValueConfig filledFieldConfig;
@@ -65,7 +65,7 @@ public class ConfigurationDefaultValueTest extends AbstractConfigurationTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = createConfigurationDeployment();
+		JavaArchive deployment = ConfigurationTests.createDeployment();
 
 		deployment.addPackages(true, ConfigurationDefaultValueTest.class.getPackage());
 		deployment.addAsResource(

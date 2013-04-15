@@ -50,10 +50,10 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import configuration.AbstractConfigurationTest;
+import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationPrefixTest extends AbstractConfigurationTest {
+public class ConfigurationPrefixTest  {
 
 	@Inject
 	private PropertyPrefixEndingWithoutDot propertyEndingWithoutDotPrefix;
@@ -75,7 +75,7 @@ public class ConfigurationPrefixTest extends AbstractConfigurationTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = createConfigurationDeployment();
+		JavaArchive deployment = ConfigurationTests.createDeployment();
 
 		deployment.addPackages(true, ConfigurationPrefixTest.class.getPackage());
 		deployment.addAsResource(

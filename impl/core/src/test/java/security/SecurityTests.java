@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package configuration;
+package security;
 
 import java.io.File;
 
@@ -42,7 +42,10 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
-public abstract class AbstractConfigurationTest {
+public final class SecurityTests {
+
+	private SecurityTests() {
+	}
 
 	public static JavaArchive createConfigurationDeployment() {
 		return ShrinkWrap

@@ -52,10 +52,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
-import configuration.AbstractConfigurationTest;
+import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationCustomFieldTest extends AbstractConfigurationTest {
+public class ConfigurationCustomFieldTest  {
 
 	@Inject
 	private CustomMappedFieldConfig mappedField;
@@ -65,7 +65,7 @@ public class ConfigurationCustomFieldTest extends AbstractConfigurationTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = createConfigurationDeployment();
+		JavaArchive deployment = ConfigurationTests.createDeployment();
 
 		deployment.addPackages(true, ConfigurationCustomFieldTest.class.getPackage());
 		deployment.addAsResource(new FileAsset(new File(

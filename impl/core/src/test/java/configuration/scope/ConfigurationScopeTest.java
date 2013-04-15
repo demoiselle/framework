@@ -46,14 +46,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import br.gov.frameworkdemoiselle.util.Beans;
-import configuration.AbstractConfigurationTest;
+import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationScopeTest extends AbstractConfigurationTest {
+public class ConfigurationScopeTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = createConfigurationDeployment();
+		JavaArchive deployment = ConfigurationTests.createDeployment();
 		deployment.addPackages(true, ConfigurationScopeTest.class.getPackage());
 		return deployment;
 	}

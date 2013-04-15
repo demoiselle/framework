@@ -50,10 +50,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import configuration.AbstractConfigurationTest;
+import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationStringFieldTest extends AbstractConfigurationTest {
+public class ConfigurationStringFieldTest  {
 
 	@Inject
 	private PropertiesStringFieldConfig propertiesConfig;
@@ -66,7 +66,7 @@ public class ConfigurationStringFieldTest extends AbstractConfigurationTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = createConfigurationDeployment();
+		JavaArchive deployment = ConfigurationTests.createDeployment();
 
 		deployment.addPackages(true, ConfigurationStringFieldTest.class.getPackage());
 		deployment.addAsResource(
