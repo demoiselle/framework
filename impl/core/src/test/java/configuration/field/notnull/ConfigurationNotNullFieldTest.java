@@ -52,9 +52,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import configuration.AbstractConfigurationTest;
-
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
+import configuration.AbstractConfigurationTest;
 
 @RunWith(Arquillian.class)
 public class ConfigurationNotNullFieldTest extends AbstractConfigurationTest {
@@ -106,8 +105,7 @@ public class ConfigurationNotNullFieldTest extends AbstractConfigurationTest {
 						new FileAsset(new File("src/test/resources/configuration/field/notnull/empty-field.xml")),
 						"empty-field.xml")
 				.addAsResource(
-						new FileAsset(new File(
-								"src/test/resources/configuration/field/notnull/without-field.xml")),
+						new FileAsset(new File("src/test/resources/configuration/field/notnull/without-field.xml")),
 						"without-field.xml");
 
 		return deployment;
@@ -163,7 +161,7 @@ public class ConfigurationNotNullFieldTest extends AbstractConfigurationTest {
 		} catch (ConfigurationException cause) {
 			Assert.assertEquals(NullPointerException.class, cause.getCause().getClass());
 		}
-		
+
 		try {
 			xmlNoFileConfig.getAttributeNotNull();
 			fail();

@@ -52,9 +52,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import configuration.AbstractConfigurationTest;
-
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
+import configuration.AbstractConfigurationTest;
 
 @RunWith(Arquillian.class)
 public class ConfigurationPrimitiveOrWrapperFieldTest extends AbstractConfigurationTest {
@@ -127,18 +126,18 @@ public class ConfigurationPrimitiveOrWrapperFieldTest extends AbstractConfigurat
 		} catch (ConfigurationException cause) {
 			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
-		
+
 		try {
 			propertiesErrorConfig.getEmptyPrimitiveInteger();
 		} catch (ConfigurationException cause) {
 			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
-		
+
 		try {
 			propertiesErrorConfig.getEmptyPrimitiveInteger();
 		} catch (ConfigurationException cause) {
 			assertEquals(ConversionException.class, cause.getCause().getClass());
-		}		
+		}
 	}
 
 	@Test
@@ -148,13 +147,13 @@ public class ConfigurationPrimitiveOrWrapperFieldTest extends AbstractConfigurat
 		} catch (ConfigurationException cause) {
 			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
-		
+
 		try {
 			propertiesErrorConfig.getEmptyWrappedInteger();
 		} catch (ConfigurationException cause) {
 			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
-		
+
 		try {
 			propertiesErrorConfig.getEmptyWrappedInteger();
 		} catch (ConfigurationException cause) {

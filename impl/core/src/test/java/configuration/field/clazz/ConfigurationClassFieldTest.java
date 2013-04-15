@@ -50,9 +50,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import configuration.AbstractConfigurationTest;
-
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
+import configuration.AbstractConfigurationTest;
 
 @RunWith(Arquillian.class)
 public class ConfigurationClassFieldTest extends AbstractConfigurationTest {

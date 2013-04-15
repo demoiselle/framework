@@ -43,8 +43,6 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import junit.framework.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
@@ -52,9 +50,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import configuration.AbstractConfigurationTest;
-
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
+import configuration.AbstractConfigurationTest;
 
 @RunWith(Arquillian.class)
 public class ConfigurationNamedFieldTest extends AbstractConfigurationTest {

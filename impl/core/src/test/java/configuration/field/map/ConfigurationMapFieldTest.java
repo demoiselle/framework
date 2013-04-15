@@ -43,7 +43,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.validation.constraints.Size;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -53,7 +52,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import configuration.AbstractConfigurationTest;
-
 
 @RunWith(Arquillian.class)
 public class ConfigurationMapFieldTest extends AbstractConfigurationTest {

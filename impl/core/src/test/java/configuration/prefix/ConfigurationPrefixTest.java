@@ -52,7 +52,6 @@ import org.junit.runner.RunWith;
 
 import configuration.AbstractConfigurationTest;
 
-
 @RunWith(Arquillian.class)
 public class ConfigurationPrefixTest extends AbstractConfigurationTest {
 
@@ -64,8 +63,7 @@ public class ConfigurationPrefixTest extends AbstractConfigurationTest {
 
 	@Inject
 	private PropertyPrefixEndingWithDot propertyEndingWithDotPrefix;
-	
-	
+
 	@Inject
 	private XMLPrefixEndingWithoutDot xmlEndingWithoutDotPrefix;
 
@@ -83,8 +81,7 @@ public class ConfigurationPrefixTest extends AbstractConfigurationTest {
 		deployment.addAsResource(
 				new FileAsset(new File("src/test/resources/configuration/prefix/demoiselle.properties")),
 				"demoiselle.properties").addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/prefix/demoiselle.xml")),
-				"demoiselle.xml");
+				new FileAsset(new File("src/test/resources/configuration/prefix/demoiselle.xml")), "demoiselle.xml");
 
 		return deployment;
 	}
@@ -92,7 +89,7 @@ public class ConfigurationPrefixTest extends AbstractConfigurationTest {
 	@Test
 	public void loadFromPrefixedExistentProperty() {
 		String expected = "prefix ending without dot";
-		
+
 		assertEquals(expected, propertyEndingWithoutDotPrefix.getPrefixedAttribute());
 		assertEquals(expected, xmlEndingWithoutDotPrefix.getPrefixedAttribute());
 	}
@@ -106,7 +103,7 @@ public class ConfigurationPrefixTest extends AbstractConfigurationTest {
 	@Test
 	public void loadPrefixEndingWithDot() {
 		String expected = "prefix ending with dot";
-		
+
 		assertEquals(expected, propertyEndingWithDotPrefix.getPrefixedAttribute());
 		assertEquals(expected, propertyEndingWithDotPrefix.getPrefixedAttribute());
 	}

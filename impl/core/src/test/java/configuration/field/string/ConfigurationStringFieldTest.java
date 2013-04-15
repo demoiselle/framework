@@ -52,7 +52,6 @@ import org.junit.runner.RunWith;
 
 import configuration.AbstractConfigurationTest;
 
-
 @RunWith(Arquillian.class)
 public class ConfigurationStringFieldTest extends AbstractConfigurationTest {
 
@@ -103,12 +102,12 @@ public class ConfigurationStringFieldTest extends AbstractConfigurationTest {
 		assertEquals(expected, propertiesConfig.getStringWithComma());
 		assertEquals(expected, xmlConfig.getStringWithComma());
 	}
-	
+
 	@Test
 	public void loadEmptyString() {
 		String expected = "";
 		assertEquals(expected, systemConfig.getEmptyString());
 		assertEquals(expected, propertiesConfig.getEmptyString());
 		assertEquals(expected, xmlConfig.getEmptyString());
-	}	
+	}
 }

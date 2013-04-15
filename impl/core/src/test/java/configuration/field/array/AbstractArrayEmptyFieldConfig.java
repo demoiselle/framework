@@ -39,11 +39,11 @@ package configuration.field.array;
 public abstract class AbstractArrayEmptyFieldConfig {
 
 	private int[] emptyPrimitiveIntegers;
-	
+
 	private Integer[] emptyWrapperIntegers;
-	
+
 	private Integer[] errorTypeWrapperIntegers;
-	
+
 	public Integer[] getEmptyWrapperIntegers() {
 		return emptyWrapperIntegers;
 	}

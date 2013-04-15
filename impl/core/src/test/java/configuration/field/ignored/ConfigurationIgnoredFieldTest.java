@@ -51,7 +51,6 @@ import org.junit.runner.RunWith;
 
 import configuration.AbstractConfigurationTest;
 
-
 @RunWith(Arquillian.class)
 public class ConfigurationIgnoredFieldTest extends AbstractConfigurationTest {
 

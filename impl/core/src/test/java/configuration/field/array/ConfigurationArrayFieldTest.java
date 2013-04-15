@@ -53,18 +53,17 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import configuration.AbstractConfigurationTest;
-
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
+import configuration.AbstractConfigurationTest;
 
 @RunWith(Arquillian.class)
 public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 
 	@Inject
 	private PropertiesArrayFieldConfig propertiesConfig;
-	
+
 	@Inject
-	private PropertiesArrayEmptyFieldConfig propertiesNullConfig;	
+	private PropertiesArrayEmptyFieldConfig propertiesNullConfig;
 
 	@Inject
 	private XMLArrayFieldConfig xmlConfig;
@@ -122,13 +121,13 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 		assertArrayEquals(expected, propertiesConfig.getWrappedDoubles());
 		assertArrayEquals(expected, xmlConfig.getWrappedDoubles());
 	}
-	
+
 	@Test
-	public void loadEmptyString() {	
+	public void loadEmptyString() {
 		String[] expected = { "demoisele", "" };
 		assertArrayEquals(expected, propertiesConfig.getEmptyStrings());
 	}
-	
+
 	@Test
 	public void loadEmptyPrimitive() {
 		try {
@@ -138,9 +137,9 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
 	}
-	
+
 	@Test
-	public void loadEmptyWrapper() {	
+	public void loadEmptyWrapper() {
 		try {
 			propertiesNullConfig.getEmptyWrapperIntegers();
 			Assert.fail();
@@ -148,14 +147,14 @@ public class ConfigurationArrayFieldTest extends AbstractConfigurationTest {
 			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
 	}
-	
+
 	@Test
-	public void loadErrorTypeWrapper() {	
+	public void loadErrorTypeWrapper() {
 		try {
 			propertiesNullConfig.getErrorTypeWrapperIntegers();
 			Assert.fail();
 		} catch (ConfigurationException cause) {
 			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
-	}		
+	}
 }
