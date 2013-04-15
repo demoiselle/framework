@@ -34,35 +34,36 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util;
+package security.athentication.custom;
 
-import java.io.File;
+import java.security.Principal;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import br.gov.frameworkdemoiselle.security.AuthenticationException;
+import br.gov.frameworkdemoiselle.security.Authenticator;
 
-public final class Tests {
+public class CustomAuthenticator implements Authenticator {
 
-	private Tests() {
+	private static final long serialVersionUID = 1L;
+
+	private Principal currentUser;
+
+	@Override
+	public void authenticate() throws AuthenticationException {
+		this.currentUser = new Principal() {
+
+			public String getName() {
+				return "demoiselle";
+			}
+		};
 	}
 
-	public static JavaArchive createDeployment(Class<?> baseClass) {
-		return createDeployment().addPackages(true, baseClass.getPackage());
+	@Override
+	public void unAuthenticate() {
+		this.currentUser = null;
 	}
 
-	public static JavaArchive createDeployment() {
-		return ShrinkWrap
-				.create(JavaArchive.class)
-				.addPackages(true, "br")
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-				.addAsManifestResource(
-						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-						"services/javax.enterprise.inject.spi.Extension");
-	}
-
-	public static FileAsset createFileAsset(String pathname) {
-		return new FileAsset(new File(pathname));
+	@Override
+	public Principal getUser() {
+		return this.currentUser;
 	}
 }

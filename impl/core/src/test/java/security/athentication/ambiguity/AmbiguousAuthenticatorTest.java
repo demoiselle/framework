@@ -34,35 +34,45 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util;
+package security.athentication.ambiguity;
 
-import java.io.File;
+import static junit.framework.Assert.assertEquals;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
+import javax.enterprise.inject.AmbiguousResolutionException;
+import javax.inject.Inject;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public final class Tests {
+import security.athentication.custom.CustomAuthenticator;
+import util.Tests;
+import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.security.SecurityContext;
+import configuration.resource.ConfigurationResourceTest;
 
-	private Tests() {
-	}
+@RunWith(Arquillian.class)
+public class AmbiguousAuthenticatorTest {
 
-	public static JavaArchive createDeployment(Class<?> baseClass) {
-		return createDeployment().addPackages(true, baseClass.getPackage());
-	}
+	@Inject
+	private SecurityContext context;
 
+	@Deployment
 	public static JavaArchive createDeployment() {
-		return ShrinkWrap
-				.create(JavaArchive.class)
-				.addPackages(true, "br")
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-				.addAsManifestResource(
-						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-						"services/javax.enterprise.inject.spi.Extension");
+		JavaArchive deployment = Tests.createDeployment(ConfigurationResourceTest.class);
+		deployment.addClass(CustomAuthenticator.class);
+		deployment.addClass(DuplicatedCustomAuthenticator.class);
+		return deployment;
 	}
 
-	public static FileAsset createFileAsset(String pathname) {
-		return new FileAsset(new File(pathname));
+	@Test
+	public void ambiguousAuthenticatorStrategy() {
+		try {
+			context.isLoggedIn();
+		} catch (DemoiselleException cause) {
+			assertEquals(AmbiguousResolutionException.class, cause.getCause().getClass());
+		}
 	}
 }

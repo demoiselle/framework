@@ -34,27 +34,39 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package security;
+package security.athentication.undefined;
 
-import java.io.File;
+import static junit.framework.Assert.assertEquals;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import javax.inject.Inject;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public final class SecurityTests {
+import util.Tests;
+import br.gov.frameworkdemoiselle.security.AuthenticationException;
+import br.gov.frameworkdemoiselle.security.SecurityContext;
 
-	private SecurityTests() {
+@RunWith(Arquillian.class)
+public class UndefinedAuthenticatorTest {
+
+	@Inject
+	private SecurityContext context;
+
+	@Deployment
+	public static JavaArchive createDeployment() {
+		return Tests.createDeployment();
 	}
 
-	public static JavaArchive createDeployment(Class<?> baseClass) {
-		return ShrinkWrap
-				.create(JavaArchive.class)
-				.addPackages(true, "br")
-				.addPackages(true, baseClass.getPackage())
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-				.addAsManifestResource(
-						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-						"services/javax.enterprise.inject.spi.Extension");
+	@Test
+	public void undefinedAuthenticatorStrategy() {
+		try {
+			context.isLoggedIn();
+		} catch (AuthenticationException cause) {
+			assertEquals(ClassNotFoundException.class, cause.getCause().getClass());
+		}
 	}
 }

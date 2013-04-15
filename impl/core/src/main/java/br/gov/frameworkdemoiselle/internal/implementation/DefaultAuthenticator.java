@@ -85,8 +85,8 @@ public class DefaultAuthenticator implements Authenticator {
 	}
 
 	private DemoiselleException getException() {
-		return new DemoiselleException(getBundle().getString("authenticator-not-defined",
-				SecurityContext.class.getSimpleName()));
+		return new AuthenticationException(getBundle().getString("authenticator-not-defined",
+				SecurityContext.class.getSimpleName()), new ClassNotFoundException());
 	}
 
 	private static ResourceBundle getBundle() {
