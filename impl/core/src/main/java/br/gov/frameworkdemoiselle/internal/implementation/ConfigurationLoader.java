@@ -173,10 +173,6 @@ public class ConfigurationLoader implements Serializable {
 		AbstractConfiguration config;
 
 		switch (this.type) {
-			case PROPERTIES:
-				config = new PropertiesConfiguration();
-				break;
-
 			case XML:
 				config = new XMLConfiguration();
 				break;
@@ -186,8 +182,7 @@ public class ConfigurationLoader implements Serializable {
 				break;
 
 			default:
-				throw new ConfigurationException(getBundle().getString("configuration-type-not-implemented-yet",
-						type.name()), new IllegalArgumentException());
+				config = new PropertiesConfiguration();
 		}
 
 		config.setDelimiterParsingDisabled(true);
@@ -238,14 +233,15 @@ public class ConfigurationLoader implements Serializable {
 		try {
 			ConfigurationValueExtractor extractor = getValueExtractor(field);
 			value = extractor.getValue(this.prefix, key, field, this.configuration);
-			
+
 		} catch (ConfigurationException cause) {
 			throw cause;
 
 		} catch (ConversionException cause) {
-			throw new ConfigurationException(getBundle().getString("configuration-not-conversion" , this.prefix + getKey(field), field.getType().toString()) , cause);
-		} 
-		
+			throw new ConfigurationException(getBundle().getString("configuration-not-conversion",
+					this.prefix + getKey(field), field.getType().toString()), cause);
+		}
+
 		catch (Exception cause) {
 			// TODO Lançar mensagem informando que houve erro ao tentar extrair o valor com o extrator tal.
 			throw new ConfigurationException("", cause);
@@ -305,15 +301,15 @@ public class ConfigurationLoader implements Serializable {
 		Validator validator = dfv.getValidator();
 
 		Set violations = validator.validateProperty(this.object, field.getName());
-		
+
 		StringBuffer message = new StringBuffer();
 
 		if (!violations.isEmpty()) {
 			for (Iterator iter = violations.iterator(); iter.hasNext();) {
-				ConstraintViolation violation = (ConstraintViolation)iter.next();
+				ConstraintViolation violation = (ConstraintViolation) iter.next();
 				message.append(field.toGenericString() + " " + violation.getMessage() + "\n");
 			}
-			
+
 			throw new ConfigurationException(message.toString(), new ConstraintViolationException(violations));
 		}
 	}
