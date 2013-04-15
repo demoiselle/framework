@@ -40,22 +40,21 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
 
-import java.io.File;
-
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import util.Tests;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
-import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationCustomFieldTest  {
+public class ConfigurationCustomFieldTest {
+
+	private static final String PATH = "src/test/resources/configuration/field/custom";
 
 	@Inject
 	private CustomMappedFieldConfig mappedField;
@@ -65,12 +64,8 @@ public class ConfigurationCustomFieldTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-
-		deployment.addPackages(true, ConfigurationCustomFieldTest.class.getPackage());
-		deployment.addAsResource(new FileAsset(new File(
-				"src/test/resources/configuration/field/custom/demoiselle.properties")), "demoiselle.properties");
-
+		JavaArchive deployment = Tests.createDeployment(ConfigurationCustomFieldTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
 		return deployment;
 	}
 

@@ -34,26 +34,32 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package configuration;
+package util;
 
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
-public final class ConfigurationTests {
+public final class Tests {
 
-	private ConfigurationTests() {
+	private Tests() {
 	}
 
-	public static JavaArchive createDeployment() {
+	public static JavaArchive createDeployment(Class<?> baseClass) {
 		return ShrinkWrap
 				.create(JavaArchive.class)
 				.addPackages(true, "br")
+				.addPackages(true, baseClass.getPackage())
 				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
 				.addAsManifestResource(
 						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
 						"services/javax.enterprise.inject.spi.Extension");
+	}
+
+	public static FileAsset createFileAsset(String pathname) {
+		return new FileAsset(new File(pathname));
 	}
 }

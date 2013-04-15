@@ -39,21 +39,20 @@ package configuration.prefix;
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import configuration.ConfigurationTests;
+import util.Tests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationPrefixTest  {
+public class ConfigurationPrefixTest {
+
+	private static final String PATH = "src/test/resources/configuration/prefix";
 
 	@Inject
 	private PropertyPrefixEndingWithoutDot propertyEndingWithoutDotPrefix;
@@ -75,14 +74,9 @@ public class ConfigurationPrefixTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-
-		deployment.addPackages(true, ConfigurationPrefixTest.class.getPackage());
-		deployment.addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/prefix/demoiselle.properties")),
-				"demoiselle.properties").addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/prefix/demoiselle.xml")), "demoiselle.xml");
-
+		JavaArchive deployment = Tests.createDeployment(ConfigurationPrefixTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.xml"), "demoiselle.xml");
 		return deployment;
 	}
 

@@ -39,8 +39,6 @@ package configuration.field.array;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 
-import java.io.File;
-
 import javax.inject.Inject;
 
 import junit.framework.Assert;
@@ -48,16 +46,17 @@ import junit.framework.Assert;
 import org.apache.commons.configuration.ConversionException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import util.Tests;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
-import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationArrayFieldTest  {
+public class ConfigurationArrayFieldTest {
+
+	private static final String PATH = "src/test/resources/configuration/field/array";
 
 	@Inject
 	private PropertiesArrayFieldConfig propertiesConfig;
@@ -70,15 +69,9 @@ public class ConfigurationArrayFieldTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-
-		deployment.addPackages(true, ConfigurationArrayFieldTest.class.getPackage());
-		deployment.addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/array/demoiselle.properties")),
-				"demoiselle.properties").addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/array/demoiselle.xml")),
-				"demoiselle.xml");
-
+		JavaArchive deployment = Tests.createDeployment(ConfigurationArrayFieldTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.xml"), "demoiselle.xml");
 		return deployment;
 	}
 

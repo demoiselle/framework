@@ -39,22 +39,21 @@ package configuration.field.clazz;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
 
-import java.io.File;
-
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import util.Tests;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
-import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationClassFieldTest  {
+public class ConfigurationClassFieldTest {
+
+	private static final String PATH = "src/test/resources/configuration/field/class";
 
 	@Inject
 	private PropertiesExistentClassFieldConfig propertiesExistentConfig;
@@ -67,12 +66,8 @@ public class ConfigurationClassFieldTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-
-		deployment.addPackages(true, ConfigurationClassFieldTest.class.getPackage());
-		deployment.addAsResource(new FileAsset(new File(
-				"src/test/resources/configuration/field/class/demoiselle.properties")), "demoiselle.properties");
-
+		JavaArchive deployment = Tests.createDeployment(ConfigurationClassFieldTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
 		return deployment;
 	}
 

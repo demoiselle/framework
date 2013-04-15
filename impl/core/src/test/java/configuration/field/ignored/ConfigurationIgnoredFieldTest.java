@@ -38,21 +38,20 @@ package configuration.field.ignored;
 
 import static junit.framework.Assert.assertEquals;
 
-import java.io.File;
-
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import configuration.ConfigurationTests;
+import util.Tests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationIgnoredFieldTest  {
+public class ConfigurationIgnoredFieldTest {
+
+	private static final String PATH = "src/test/resources/configuration/field/ignored";
 
 	@Inject
 	private FilledIgnoredFieldConfig filledFieldConfig;
@@ -65,16 +64,9 @@ public class ConfigurationIgnoredFieldTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-
-		deployment.addPackages(true, "br");
-		deployment.addPackages(true, ConfigurationIgnoredFieldTest.class.getPackage());
-		deployment.addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/ignored/demoiselle.properties")),
-				"demoiselle.properties").addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/ignored/demoiselle.xml")),
-				"demoiselle.xml");
-
+		JavaArchive deployment = Tests.createDeployment(ConfigurationIgnoredFieldTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.xml"), "demoiselle.xml");
 		return deployment;
 	}
 

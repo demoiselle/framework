@@ -38,21 +38,20 @@ package configuration.defaultvalue;
 
 import static junit.framework.Assert.assertEquals;
 
-import java.io.File;
-
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import configuration.ConfigurationTests;
+import util.Tests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationDefaultValueTest  {
+public class ConfigurationDefaultValueTest {
+
+	private static final String PATH = "src/test/resources/configuration/field/default";
 
 	@Inject
 	private FilledDefaultValueConfig filledFieldConfig;
@@ -65,15 +64,9 @@ public class ConfigurationDefaultValueTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-
-		deployment.addPackages(true, ConfigurationDefaultValueTest.class.getPackage());
-		deployment.addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/default/demoiselle.properties")),
-				"demoiselle.properties").addAsResource(
-				new FileAsset(new File("src/test/resources/configuration/field/default/demoiselle.xml")),
-				"demoiselle.xml");
-
+		JavaArchive deployment = Tests.createDeployment(ConfigurationDefaultValueTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.xml"), "demoiselle.xml");
 		return deployment;
 	}
 

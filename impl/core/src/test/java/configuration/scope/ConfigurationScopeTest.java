@@ -45,17 +45,15 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import util.Tests;
 import br.gov.frameworkdemoiselle.util.Beans;
-import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationScopeTest  {
+public class ConfigurationScopeTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-		deployment.addPackages(true, ConfigurationScopeTest.class.getPackage());
-		return deployment;
+		return Tests.createDeployment(ConfigurationScopeTest.class);
 	}
 
 	@Test
