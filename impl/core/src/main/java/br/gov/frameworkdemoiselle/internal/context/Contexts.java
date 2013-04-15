@@ -36,25 +36,26 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 public final class Contexts {
 
-	private static List<CustomContext> activeContexts = Collections.synchronizedList(new ArrayList<CustomContext>());
-
-	private static List<CustomContext> inactiveContexts = Collections.synchronizedList(new ArrayList<CustomContext>());
+	private static List<CustomContext> contexts = Collections.synchronizedList(new ArrayList<CustomContext>());
 
 	private static Logger logger;
 
@@ -73,13 +74,140 @@ public final class Contexts {
 
 	private static ResourceBundle getBundle() {
 		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+			bundle = ResourceBundleProducer.create("demoiselle-core-bundle",Locale.getDefault());
 		}
 
 		return bundle;
 	}
+	
+	/**
+	 * Adds a custom context to the list of managed contexts. If the {@link CustomContext#isActive()} returns
+	 * <code>true</code> the moment this method is called, it will be activated by calling {@link #activate(Class contextClass)} immediately.
+	 * Otherwise the context will remain inactive until activated.
+	 * 
+	 * @param context Context to be addedd
+	 * @param event Captured CDI event for adding the context
+	 */
+	public static synchronized void add(CustomContext context , AfterBeanDiscovery event){
+		getLogger().trace(getBundle().getString("custom-context-was-registered", context.getClass().getCanonicalName(),context.getScope().getCanonicalName()));
+		contexts.add(context);
+		
+		boolean mustActivate = context.isActive();
+		context.setActive(false);
+		event.addContext(context);
+			
+		if(mustActivate){
+			activate(context.getClass());
+		}
+	}
+	
+	/**
+	 * Activates a custom context. If there's already another context registered for this custom context's scope then it will not be activated
+	 * and this method returns <code>false</code>. It will also fail and return <code>false</code> if the custom context was
+	 * not registered with {@link #add(CustomContext context, AfterBeanDiscovery event)}.
+	 * 
+	 * @param contextClass Class of the contexto to activate
+	 * @return <code>true</code> if the context was activated, <code>false</code> if it was not registered prior to activation or if there's already
+	 * another context active for this context's scope.
+	 */
+	public static synchronized boolean activate(Class<? extends CustomContext> contextClass){
+		for(CustomContext ctx : contexts){
+			if (contextClass.getCanonicalName().equals(ctx.getClass().getCanonicalName()) ){
+				activate(ctx);
+			}
+		}
+		
+		return false;
+	}
+	
+	public static synchronized boolean activate(CustomContext context){
+		try{
+			Beans.getBeanManager().getContext(context.getScope());
+			return false;
+		}
+		catch(ContextNotActiveException ce){
+			context.setActive(true);
+			getLogger().trace(getBundle().getString("custom-context-was-activated", context.getClass().getCanonicalName(),context.getScope().getCanonicalName()));
+			return true;
+		}
+	}
+	
+	/**
+	 * Deactivates a custom context previously activated by {@link #activate(Class)}.
+	 * 
+	 * @param contextClass Class of context to be deactivated
+	 * 
+	 * @return <code>true</code> if this context was active and is now deactivated. <code>false</code> if no context
+	 * matching contextClass is active at the moment.
+	 */
+	public static synchronized boolean deactivate(Class<? extends CustomContext> contextClass){
+		for(CustomContext ctx : contexts){
+			if (contextClass.getCanonicalName().equals(ctx.getClass().getCanonicalName()) && ctx.isActive()){
+				return deactivate(ctx);
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean deactivate(CustomContext ctx){
+		try{
+			Context activeContext = Beans.getBeanManager().getContext(ctx.getScope());
+			ctx.setActive(false);
+			if (activeContext == ctx){
+				getLogger().trace(getBundle().getString("custom-context-was-deactivated", ctx.getClass().getCanonicalName(),ctx.getScope().getCanonicalName()));
+				return true;
+			}
+		}
+		catch(ContextNotActiveException ce){
+		}
 
-	public static synchronized void add(CustomContext context, AfterBeanDiscovery event) {
+		return false;
+	}
+	
+	/**
+	 * Unregister all custom contexts of the provided class. If they are active the moment they're being removed, they will first be deactivated.
+	 * 
+	 * @param contextClass Custom context's class to me removed
+	 */
+	public static void remove(Class<? extends CustomContext> contextClass){
+		for (Iterator<CustomContext> it = contexts.iterator();it.hasNext();){
+			CustomContext ctx = it.next();
+			if (contextClass.getCanonicalName().equals(ctx.getClass().getCanonicalName()) ){
+				deactivate(ctx);
+				it.remove();
+				getLogger().trace(getBundle().getString("custom-context-was-unregistered", ctx.getClass().getCanonicalName(),ctx.getScope().getCanonicalName()));
+			}
+		}
+	}
+	
+	/**
+	 * Unregister a custom context. If it is active the moment it's being removed, it will first be deactivated.
+	 * 
+	 * @param ctx Custom context to remove
+	 */
+	public static void remove(CustomContext ctx){
+		if (contexts.indexOf(ctx)>-1){
+			deactivate(ctx);
+			contexts.remove(ctx);
+			getLogger().trace(getBundle().getString("custom-context-was-unregistered", ctx.getClass().getCanonicalName(),ctx.getScope().getCanonicalName()));
+		}
+	}
+	
+	/**
+	 * Remove all registered custom contexts. All removed contexts are deactivated.
+	 */
+	public static synchronized void clear(){
+		for (Iterator<CustomContext> it = contexts.iterator(); it.hasNext();){
+			CustomContext ctx = it.next();
+			deactivate(ctx);
+			it.remove();
+			
+			getLogger().trace(getBundle().getString("custom-context-was-unregistered", ctx.getClass().getCanonicalName(),ctx.getScope().getCanonicalName()));
+		}
+	}
+
+	/*public static synchronized void add(CustomContext context, AfterBeanDiscovery event) {
 		Class<? extends Annotation> scope = context.getScope();
 
 		getLogger()
@@ -150,5 +278,5 @@ public final class Contexts {
 
 	public static synchronized List<CustomContext> getInactiveContexts() {
 		return inactiveContexts;
-	}
+	}*/
 }
