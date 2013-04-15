@@ -54,7 +54,7 @@ import org.junit.runner.RunWith;
 import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationMapFieldTest  {
+public class ConfigurationMapFieldTest {
 
 	@Inject
 	private PropertiesMapFieldConfig propertiesConfig;
@@ -64,9 +64,7 @@ public class ConfigurationMapFieldTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-
-		deployment.addPackages(true, ConfigurationMapFieldTest.class.getPackage());
+		JavaArchive deployment = ConfigurationTests.createDeployment(ConfigurationMapFieldTest.class);
 		deployment.addAsResource(
 				new FileAsset(new File("src/test/resources/configuration/field/map/demoiselle.properties")),
 				"demoiselle.properties").addAsResource(

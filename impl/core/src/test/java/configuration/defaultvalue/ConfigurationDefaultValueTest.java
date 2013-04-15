@@ -52,7 +52,7 @@ import org.junit.runner.RunWith;
 import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationDefaultValueTest  {
+public class ConfigurationDefaultValueTest {
 
 	@Inject
 	private FilledDefaultValueConfig filledFieldConfig;
@@ -65,9 +65,8 @@ public class ConfigurationDefaultValueTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
+		JavaArchive deployment = ConfigurationTests.createDeployment(ConfigurationDefaultValueTest.class);
 
-		deployment.addPackages(true, ConfigurationDefaultValueTest.class.getPackage());
 		deployment.addAsResource(
 				new FileAsset(new File("src/test/resources/configuration/field/default/demoiselle.properties")),
 				"demoiselle.properties").addAsResource(

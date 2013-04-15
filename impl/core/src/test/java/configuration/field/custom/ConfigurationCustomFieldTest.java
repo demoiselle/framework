@@ -55,7 +55,7 @@ import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationCustomFieldTest  {
+public class ConfigurationCustomFieldTest {
 
 	@Inject
 	private CustomMappedFieldConfig mappedField;
@@ -65,9 +65,7 @@ public class ConfigurationCustomFieldTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-
-		deployment.addPackages(true, ConfigurationCustomFieldTest.class.getPackage());
+		JavaArchive deployment = ConfigurationTests.createDeployment(ConfigurationCustomFieldTest.class);
 		deployment.addAsResource(new FileAsset(new File(
 				"src/test/resources/configuration/field/custom/demoiselle.properties")), "demoiselle.properties");
 

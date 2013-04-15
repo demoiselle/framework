@@ -52,7 +52,7 @@ import org.junit.runner.RunWith;
 import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationIgnoredFieldTest  {
+public class ConfigurationIgnoredFieldTest {
 
 	@Inject
 	private FilledIgnoredFieldConfig filledFieldConfig;
@@ -65,10 +65,7 @@ public class ConfigurationIgnoredFieldTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-
-		deployment.addPackages(true, "br");
-		deployment.addPackages(true, ConfigurationIgnoredFieldTest.class.getPackage());
+		JavaArchive deployment = ConfigurationTests.createDeployment(ConfigurationIgnoredFieldTest.class);
 		deployment.addAsResource(
 				new FileAsset(new File("src/test/resources/configuration/field/ignored/demoiselle.properties")),
 				"demoiselle.properties").addAsResource(

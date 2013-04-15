@@ -52,7 +52,7 @@ import org.junit.runner.RunWith;
 import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationResourceTest  {
+public class ConfigurationResourceTest {
 
 	@Inject
 	private PropertiesDefaultFileConfig propDefault;
@@ -80,9 +80,7 @@ public class ConfigurationResourceTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-
-		deployment.addPackages(true, ConfigurationResourceTest.class.getPackage());
+		JavaArchive deployment = ConfigurationTests.createDeployment(ConfigurationResourceTest.class);
 		deployment
 				.addAsResource(
 						new FileAsset(new File("src/test/resources/configuration/resource/demoiselle.properties")),

@@ -47,10 +47,11 @@ public final class SecurityTests {
 	private SecurityTests() {
 	}
 
-	public static JavaArchive createConfigurationDeployment() {
+	public static JavaArchive createDeployment(Class<?> baseClass) {
 		return ShrinkWrap
 				.create(JavaArchive.class)
 				.addPackages(true, "br")
+				.addPackages(true, baseClass.getPackage())
 				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
 				.addAsManifestResource(
 						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),

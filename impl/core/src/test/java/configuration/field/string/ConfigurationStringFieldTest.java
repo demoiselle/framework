@@ -53,7 +53,7 @@ import org.junit.runner.RunWith;
 import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationStringFieldTest  {
+public class ConfigurationStringFieldTest {
 
 	@Inject
 	private PropertiesStringFieldConfig propertiesConfig;
@@ -66,9 +66,7 @@ public class ConfigurationStringFieldTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-
-		deployment.addPackages(true, ConfigurationStringFieldTest.class.getPackage());
+		JavaArchive deployment = ConfigurationTests.createDeployment(ConfigurationStringFieldTest.class);
 		deployment.addAsResource(
 				new FileAsset(new File("src/test/resources/configuration/field/string/demoiselle.properties")),
 				"demoiselle.properties").addAsResource(

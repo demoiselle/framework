@@ -54,7 +54,7 @@ import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationNamedFieldTest  {
+public class ConfigurationNamedFieldTest {
 
 	@Inject
 	private PropertyNamed propertyNamed;
@@ -70,9 +70,7 @@ public class ConfigurationNamedFieldTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-
-		deployment.addPackages(true, ConfigurationNamedFieldTest.class.getPackage());
+		JavaArchive deployment = ConfigurationTests.createDeployment(ConfigurationNamedFieldTest.class);
 		deployment.addAsResource(
 				new FileAsset(new File("src/test/resources/configuration/field/named/demoiselle.properties")),
 				"demoiselle.properties").addAsResource(

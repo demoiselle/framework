@@ -53,7 +53,7 @@ import org.junit.runner.RunWith;
 import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationPrefixTest  {
+public class ConfigurationPrefixTest {
 
 	@Inject
 	private PropertyPrefixEndingWithoutDot propertyEndingWithoutDotPrefix;
@@ -75,9 +75,7 @@ public class ConfigurationPrefixTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-
-		deployment.addPackages(true, ConfigurationPrefixTest.class.getPackage());
+		JavaArchive deployment = ConfigurationTests.createDeployment(ConfigurationPrefixTest.class);
 		deployment.addAsResource(
 				new FileAsset(new File("src/test/resources/configuration/prefix/demoiselle.properties")),
 				"demoiselle.properties").addAsResource(

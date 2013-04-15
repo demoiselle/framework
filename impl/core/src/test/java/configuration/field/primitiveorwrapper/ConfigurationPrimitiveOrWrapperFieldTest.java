@@ -56,7 +56,7 @@ import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationPrimitiveOrWrapperFieldTest  {
+public class ConfigurationPrimitiveOrWrapperFieldTest {
 
 	@Inject
 	private PropertiesPrimitiveOrWrapperFieldConfig propertiesConfig;
@@ -78,9 +78,7 @@ public class ConfigurationPrimitiveOrWrapperFieldTest  {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-
-		deployment.addPackages(true, ConfigurationPrimitiveOrWrapperFieldTest.class.getPackage());
+		JavaArchive deployment = ConfigurationTests.createDeployment(ConfigurationPrimitiveOrWrapperFieldTest.class);
 		deployment.addAsResource(
 				new FileAsset(new File(
 						"src/test/resources/configuration/field/primitiveorwrapper/demoiselle.properties")),

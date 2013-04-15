@@ -49,12 +49,11 @@ import br.gov.frameworkdemoiselle.util.Beans;
 import configuration.ConfigurationTests;
 
 @RunWith(Arquillian.class)
-public class ConfigurationScopeTest  {
+public class ConfigurationScopeTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = ConfigurationTests.createDeployment();
-		deployment.addPackages(true, ConfigurationScopeTest.class.getPackage());
+		JavaArchive deployment = ConfigurationTests.createDeployment(ConfigurationScopeTest.class);
 		return deployment;
 	}
 
