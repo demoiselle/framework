@@ -58,9 +58,9 @@ public class ThreadLocalContext extends AbstractCustomContext {
 		super(scope, true);
 	}
 
-//	public ThreadLocalContext(final Class<? extends Annotation> scope, boolean active) {
-//		super(scope, active);
-//	}
+	public ThreadLocalContext(final Class<? extends Annotation> scope, boolean active) {
+		super(scope, active);
+	}
 
 	@Override
 	protected Store getStore() {
