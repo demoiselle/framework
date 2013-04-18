@@ -70,7 +70,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 		getLogger().info(getBundle().getString("handling-exception", cause.getClass().getCanonicalName()));
 
 		boolean handled = false;
-		Class<?> type = target.getClass();
+		Class<?> type = target.getClass().getSuperclass();
 
 		if (!isLoaded(type)) {
 			loadHandlers(type);
