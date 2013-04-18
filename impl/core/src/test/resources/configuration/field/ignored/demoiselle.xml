@@ -36,5 +36,5 @@
 -->
 
 <configuration>
-	<ignoredInt>1</ignoredInt>
+	<ignoredInt></ignoredInt>
 </configuration>
