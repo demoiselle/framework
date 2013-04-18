@@ -34,11 +34,55 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package configuration.defaultvalue;
+package configuration.field.defaultvalue;
 
-import static br.gov.frameworkdemoiselle.configuration.ConfigType.PROPERTIES;
-import br.gov.frameworkdemoiselle.configuration.Configuration;
+import static junit.framework.Assert.assertEquals;
 
-@Configuration(resource = "demoiselle", type = PROPERTIES)
-public class FilledDefaultValueConfig extends AbstractDefaultValueConfig {
+import javax.inject.Inject;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import test.Tests;
+
+@RunWith(Arquillian.class)
+public class ConfigurationDefaultValueTest {
+
+	private static final String PATH = "src/test/resources/configuration/field/default";
+
+	@Inject
+	private FilledDefaultValueConfig filledFieldConfig;
+
+	@Inject
+	private EmptyDefaultValueConfig emptyFieldsConfig;
+
+	@Inject
+	private PropertyWithInexistenceFileConfig noFileConfig;
+
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(ConfigurationDefaultValueTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.xml"), "demoiselle.xml");
+		return deployment;
+	}
+
+	@Test
+	public void loadDefaultValueWithoutKey() {
+		String expected = "Initialized value and without key in the property file";
+
+		assertEquals(expected, filledFieldConfig.getStringDefaultWithoutKey());
+		assertEquals(expected, emptyFieldsConfig.getStringDefaultWithoutKey());
+		assertEquals(expected, noFileConfig.getStringDefaultWithoutKey());
+	}
+
+	@Test
+	public void loadDefaultValueWithKey() {
+		assertEquals("Initialized value of the property file", filledFieldConfig.getStringDefaultWithKey());
+		assertEquals("Initialized value and key in the property file", noFileConfig.getStringDefaultWithKey());
+		assertEquals("", emptyFieldsConfig.getStringDefaultWithKey());
+	}
 }
