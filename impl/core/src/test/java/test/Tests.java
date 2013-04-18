@@ -57,7 +57,7 @@ public final class Tests {
 				.create(JavaArchive.class)
 				.addClass(LocaleProducer.class)
 				.addPackages(true, "br")
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+				.addAsResource(Tests.createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")
 				.addAsManifestResource(
 						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
 						"services/javax.enterprise.inject.spi.Extension");
