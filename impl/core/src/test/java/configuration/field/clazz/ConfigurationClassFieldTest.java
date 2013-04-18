@@ -37,6 +37,7 @@
 package configuration.field.clazz;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.fail;
 
 import javax.inject.Inject;
@@ -62,7 +63,10 @@ public class ConfigurationClassFieldTest {
 	private PropertiesClassNotFoundFieldConfig propertiesNotFoundConfig;
 
 	@Inject
-	private PropertiesNullClassFieldConfig propertiesNullFieldConfig;
+	private PropertiesEmptyClassFieldConfig propertiesEmptyFieldConfig;
+
+	@Inject
+	private PropertiesNullClassFieldConfig propertiesNullFieldClassConfig;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
@@ -87,7 +91,6 @@ public class ConfigurationClassFieldTest {
 			propertiesNotFoundConfig.getNonExistentTypedClass();
 			fail();
 		} catch (ConfigurationException cause) {
-			cause.printStackTrace();
 			assertEquals(ClassNotFoundException.class, cause.getCause().getClass());
 		}
 	}
@@ -103,24 +106,27 @@ public class ConfigurationClassFieldTest {
 	}
 
 	@Test
-	public void loadNullTypedClass() {
+	public void loadTypedClassFromEmptyKey() {
 		try {
-			propertiesNullFieldConfig.getNullTypedClass();
+			propertiesEmptyFieldConfig.getEmptyTypedClass();
 			fail();
 		} catch (ConfigurationException cause) {
-			cause.printStackTrace();
 			assertEquals(ClassNotFoundException.class, cause.getCause().getClass());
 		}
 	}
 
 	@Test
-	public void loadNullUntypedClass() {
+	public void loadUntypedClassFromEmptyKey() {
 		try {
-			propertiesNullFieldConfig.getNullUntypedClass();
+			propertiesEmptyFieldConfig.getEmptyUntypedClass();
 			fail();
 		} catch (ConfigurationException cause) {
 			assertEquals(ClassNotFoundException.class, cause.getCause().getClass());
 		}
 	}
 
+	@Test
+	public void loadNullClass() {
+		assertNull(propertiesNullFieldClassConfig.getNullClass());
+	}
 }

@@ -36,17 +36,10 @@
  */
 package configuration.field.clazz;
 
-public abstract class AbstractClassNotFoundFieldConfig {
+import static br.gov.frameworkdemoiselle.configuration.ConfigType.PROPERTIES;
+import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-	private Class<MyClass> nonExistentTypedClass;
+@Configuration(type = PROPERTIES)
+public class PropertiesEmptyClassFieldConfig extends AbstractEmptyClassFieldConfig {
 
-	private Class<?> nonExistentUntypedClass;
-	
-	public Class<MyClass> getNonExistentTypedClass() {
-		return nonExistentTypedClass;
-	}
-
-	public Class<?> getNonExistentUntypedClass() {
-		return nonExistentUntypedClass;
-	}
 }

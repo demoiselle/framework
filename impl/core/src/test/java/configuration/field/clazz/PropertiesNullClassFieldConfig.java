@@ -36,10 +36,14 @@
  */
 package configuration.field.clazz;
 
-import static br.gov.frameworkdemoiselle.configuration.ConfigType.PROPERTIES;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(type = PROPERTIES)
-public class PropertiesNullClassFieldConfig extends AbstractNullClassFieldConfig {
-
+@Configuration
+public class PropertiesNullClassFieldConfig {
+	
+	private Class<MyClass> nullClass;
+	
+	public Class<MyClass> getNullClass() {
+		return nullClass;
+	}
 }

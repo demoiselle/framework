@@ -36,17 +36,17 @@
  */
 package configuration.field.clazz;
 
-public abstract class AbstractNullClassFieldConfig {
+public abstract class AbstractEmptyClassFieldConfig {
 
-	private Class<MyClass> nullTypedClass;
+	private Class<MyClass> emptyTypedClass;
 
-	private Class<?> nullUntypedClass;
+	private Class<?> emptyUntypedClass;
 
-	public Class<MyClass> getNullTypedClass() {
-		return nullTypedClass;
+	public Class<MyClass> getEmptyTypedClass() {
+		return emptyTypedClass;
 	}
 
-	public Class<?> getNullUntypedClass() {
-		return nullUntypedClass;
+	public Class<?> getEmptyUntypedClass() {
+		return emptyUntypedClass;
 	}
 }
