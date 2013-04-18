@@ -37,6 +37,7 @@
 package configuration.field.string;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import javax.inject.Inject;
 
@@ -61,7 +62,16 @@ public class ConfigurationStringFieldTest {
 	private XMLStringFieldConfig xmlConfig;
 
 	@Inject
-	private SystemBasicFieldConfig systemConfig;
+	private SystemStringFieldConfig systemConfig;
+	
+	@Inject
+	private PropertiesNullStringFieldConfig propertiesNullConfig;
+
+	@Inject
+	private XMLNullStringFieldConfig xmlNullConfig;
+
+	@Inject
+	private SystemNullStringFieldConfig systemNullConfig;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
@@ -102,5 +112,12 @@ public class ConfigurationStringFieldTest {
 		assertEquals(expected, systemConfig.getEmptyString());
 		assertEquals(expected, propertiesConfig.getEmptyString());
 		assertEquals(expected, xmlConfig.getEmptyString());
+	}
+	
+	@Test
+	public void loadNullString(){
+		assertNull(propertiesNullConfig.getNullString());
+		assertNull(xmlNullConfig.getNullString());
+		assertNull(systemNullConfig.getNullString());
 	}
 }
