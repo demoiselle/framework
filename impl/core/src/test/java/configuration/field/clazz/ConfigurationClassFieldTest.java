@@ -54,7 +54,7 @@ import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 @RunWith(Arquillian.class)
 public class ConfigurationClassFieldTest {
 
-	private static final String PATH = "src/test/resources/configuration/field/class";
+	private static final String PATH = "src/test/resources/configuration/field/clazz";
 
 	@Inject
 	private PropertiesExistentClassFieldConfig propertiesExistentConfig;
