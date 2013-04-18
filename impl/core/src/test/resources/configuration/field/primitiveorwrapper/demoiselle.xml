@@ -36,10 +36,10 @@
 -->
 
 <configuration>
-	<primitiveInteger>1</primitiveInteger>
-	<nullPrimitiveInteger></nullPrimitiveInteger>
-	<errorPrimitiveInteger>a</errorPrimitiveInteger>
-	<wrappedInteger>2</wrappedInteger>
-	<nullWrappedInteger></nullWrappedInteger>
-	<errorWrappedInteger>a</errorWrappedInteger>
+	<primitiveField>1</primitiveField>
+	<emptyPrimitiveField></emptyPrimitiveField>
+	<conversionErrorPrimitiveField>a</conversionErrorPrimitiveField>
+	<wrappedField>2</wrappedField>
+	<emptyWrappedField></emptyWrappedField>
+	<conversionErrorWrappedField>a</conversionErrorWrappedField>
 </configuration>

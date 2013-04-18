@@ -38,27 +38,27 @@ package configuration.field.primitiveorwrapper;
 
 public abstract class AbstractPrimitiveOrWrapperErrorFieldConfig {
 
-	private int emptyPrimitiveInteger;
+	private int emptyPrimitiveField;
 
-	private int errorPrimitiveInteger;
+	private int conversionErrorPrimitiveField;
 
-	private Integer emptyWrappedInteger;
+	private Integer emptyWrappedField;
 
-	private Integer errorWrappedInteger;
-
-	public int getEmptyPrimitiveInteger() {
-		return emptyPrimitiveInteger;
+	private Integer conversionErrorWrappedField;
+	
+	public int getEmptyPrimitiveField() {
+		return emptyPrimitiveField;
 	}
 
-	public Integer getEmptyWrappedInteger() {
-		return emptyWrappedInteger;
+	public Integer getEmptyWrappedField() {
+		return emptyWrappedField;
 	}
 
-	public int getErrorPrimitiveInteger() {
-		return errorPrimitiveInteger;
+	public int getConversionErrorPrimitiveField() {
+		return conversionErrorPrimitiveField;
 	}
 
-	public Integer getErrorWrappedInteger() {
-		return errorWrappedInteger;
+	public Integer getConversionErrorWrappedField() {
+		return conversionErrorWrappedField;
 	}
 }

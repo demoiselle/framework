@@ -38,15 +38,15 @@ package configuration.field.primitiveorwrapper;
 
 public abstract class AbstractPrimitiveOrWrapperFieldConfig {
 
-	private int primitiveInteger;
+	private int primitiveField;
 
-	private Integer wrappedInteger;
+	private Integer wrappedField;
 
-	public Integer getWrappedInteger() {
-		return wrappedInteger;
+	public Integer getWrappedField() {
+		return wrappedField;
 	}
 
-	public int getPrimitiveInteger() {
-		return primitiveInteger;
+	public int getPrimitiveField() {
+		return primitiveField;
 	}
 }
