@@ -82,7 +82,7 @@ public class ConfigurationDefaultValueTest {
 	@Test
 	public void loadDefaultValueWithKey() {
 		assertEquals("Initialized value of the property file", filledFieldConfig.getStringDefaultWithKey());
-		assertEquals("Initialized value and key in the property file", noFileConfig.getStringDefaultWithKey());
 		assertEquals("", emptyFieldsConfig.getStringDefaultWithKey());
+		assertEquals("Initialized value and key in the property file", noFileConfig.getStringDefaultWithKey());
 	}
 }
