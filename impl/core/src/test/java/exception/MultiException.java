@@ -1,5 +1,7 @@
 package exception;
 
+import java.awt.geom.IllegalPathStateException;
+
 import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
 import br.gov.frameworkdemoiselle.stereotype.Controller;
 
@@ -9,7 +11,7 @@ public class MultiException {
 	private boolean nullPointerExceptionHandler = false;
 
 	private boolean arithmeticExceptionHandler = false;
-
+	
 	public boolean isNullPointerExceptionHandler() {
 		return nullPointerExceptionHandler;
 	}
@@ -17,15 +19,15 @@ public class MultiException {
 	public boolean isArithmeticExceptionHandler() {
 		return arithmeticExceptionHandler;
 	}
-
-	public void throwExceptionNullPointer() {
+	
+	public void throwNullPointerException() {
 		throw new NullPointerException();
 	}
 
-	public void throwExceptionArithmetic() {
+	public void throwArithmeticException() {
 		throw new ArithmeticException();
 	}
-
+	
 	@SuppressWarnings({ "null", "unused" })
 	public void throwTwoException() {
 		String txt = null;
@@ -41,5 +43,5 @@ public class MultiException {
 	@ExceptionHandler
 	public void handler(ArithmeticException cause) {
 		arithmeticExceptionHandler = true;
-	}
+	}	
 }
