@@ -99,6 +99,6 @@ public class ConfigurationPrefixTest {
 		String expected = "prefix ending with dot";
 
 		assertEquals(expected, propertyEndingWithDotPrefix.getPrefixedAttribute());
-		assertEquals(expected, propertyEndingWithDotPrefix.getPrefixedAttribute());
+		assertEquals(expected, xmlEndingWithDotPrefix.getPrefixedAttribute());
 	}
 }
