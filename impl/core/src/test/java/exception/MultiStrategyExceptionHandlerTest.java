@@ -32,16 +32,9 @@ public class MultiStrategyExceptionHandlerTest {
 	}
 	
 	@Test
-	public void testExceptionMultiStrategyHandlerInTry() {
-		handlerTest.exceptionMultiStrategyHandlerInTry();
-		assertEquals(true, handlerTest.isExceptionTryCacth());
-		assertEquals(true, handlerTest.isExceptionHandler());
-	}
-	
-	@Test
 	public void testExceptionMultiStrategyHandlerAndTry() {
 		handlerTest.exceptionMultiStrategyHandlerAndTry();
-		assertEquals(true, handlerTest.isExceptionTryCacth());
+		assertEquals(false, handlerTest.isExceptionTryCacth());
 		assertEquals(true, handlerTest.isExceptionHandler());
 	}	
 	

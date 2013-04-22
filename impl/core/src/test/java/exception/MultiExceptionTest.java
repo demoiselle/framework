@@ -46,7 +46,7 @@ public class MultiExceptionTest {
 	public void testMultiExceptionHandler() {
 		multiException.throwTwoException();
 		assertEquals(true, multiException.isNullPointerExceptionHandler());
-		assertEquals(true, multiException.isArithmeticExceptionHandler());
+		assertEquals(false, multiException.isArithmeticExceptionHandler());
 	}
 	
 	@Test

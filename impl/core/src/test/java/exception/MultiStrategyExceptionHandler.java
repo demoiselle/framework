@@ -31,16 +31,6 @@ public class MultiStrategyExceptionHandler {
 	}
 	
 	@SuppressWarnings("unused")
-	public void exceptionMultiStrategyHandlerInTry() {
-		try {
-			txt.toString();
-			int result = 4 / 0;
-		} catch (ArithmeticException e) {
-			exceptionTryCacth = true;
-		}
-	}
-	
-	@SuppressWarnings("unused")
 	public void exceptionMultiStrategyHandlerAndTry() {
 		txt.toString();
 		try {
