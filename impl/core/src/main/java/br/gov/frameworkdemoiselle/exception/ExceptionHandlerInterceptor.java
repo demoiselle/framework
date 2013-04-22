@@ -39,7 +39,10 @@ package br.gov.frameworkdemoiselle.exception;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.interceptor.AroundInvoke;
@@ -70,7 +73,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 		getLogger().info(getBundle().getString("handling-exception", cause.getClass().getCanonicalName()));
 
 		boolean handled = false;
-		Class<?> type = target.getClass().getSuperclass();
+		Class<?> type = target.getClass();
 
 		if (!isLoaded(type)) {
 			loadHandlers(type);
@@ -115,7 +118,14 @@ public class ExceptionHandlerInterceptor implements Serializable {
 	 */
 	private void loadHandlers(final Class<?> type) {
 		Map<Class<?>, Method> mapHandlers = new HashMap<Class<?>, Method>();
-		Method[] methods = type.getMethods();
+
+		List<Method> methods = new ArrayList<Method>();
+		Class<?> tempType = type;
+
+		while (tempType != null) {
+			methods.addAll(Arrays.asList(tempType.getMethods()));
+			tempType = tempType.getSuperclass();
+		}
 
 		for (Method method : methods) {
 			if (method.isAnnotationPresent(ExceptionHandler.class)) {
@@ -123,6 +133,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 				mapHandlers.put(method.getParameterTypes()[0], method);
 			}
 		}
+
 		cache.put(type, mapHandlers);
 	}
 
