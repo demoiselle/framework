@@ -43,9 +43,20 @@ public class OneExceptionTest {
 	
 	@Test
 	public void testExceptionWithMultiHandler() {
-		oneException.throwExceptionIllegalArgument();
+		oneException.throwIllegalArgumentException();
 		assertEquals(false, oneException.isExceptionHandlerIllegalArgument1());
 		assertEquals(true, oneException.isExceptionHandlerIllegalArgument2());
 		assertEquals(false, oneException.isExceptionHandlerIllegalArgument3());
 	}	
+	
+	@Test
+	public void testExceptionHandlerWithException() {
+		try {
+			oneException.throwNoSuchElementException();
+		} catch (Exception e) {
+			assertEquals(ArithmeticException.class, e.getClass());
+		}
+		
+		
+	}		
 }

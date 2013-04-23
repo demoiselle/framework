@@ -1,5 +1,7 @@
 package exception;
 
+import java.util.NoSuchElementException;
+
 import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
 import br.gov.frameworkdemoiselle.stereotype.Controller;
 
@@ -41,15 +43,18 @@ public class OneException {
 		int result = 4/0;
 	}
 	
-	public void throwExceptionIllegalArgument() {
+	public void throwIllegalArgumentException() {
 		throw new IllegalArgumentException();
 	}
+	
+	public void throwNoSuchElementException() {
+		throw new NoSuchElementException();
+	}	
 
 	@ExceptionHandler
 	public void handler(NullPointerException cause) {
 		exceptionHandler = true;
 	}
-
 
 	@ExceptionHandler
 	public void handler1(IllegalArgumentException cause) {
@@ -64,5 +69,10 @@ public class OneException {
 	@ExceptionHandler
 	public void handler2(IllegalArgumentException cause) {
 		exceptionHandlerIllegalArgument2 = true;
+	}
+	
+	@ExceptionHandler
+	public void handlerWithError(NoSuchElementException cause) {
+		int a = 2/0;
 	}
 }

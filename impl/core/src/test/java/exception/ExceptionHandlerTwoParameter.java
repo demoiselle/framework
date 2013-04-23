@@ -6,7 +6,7 @@ import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
 import br.gov.frameworkdemoiselle.stereotype.Controller;
 
 @Controller
-public class MultiExceptionOneHandler {
+public class ExceptionHandlerTwoParameter {
 
 	public void throwIllegalPathException() {
 		throw new IllegalPathStateException();

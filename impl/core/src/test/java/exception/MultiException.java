@@ -1,7 +1,5 @@
 package exception;
 
-import java.awt.geom.IllegalPathStateException;
-
 import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
 import br.gov.frameworkdemoiselle.stereotype.Controller;
 

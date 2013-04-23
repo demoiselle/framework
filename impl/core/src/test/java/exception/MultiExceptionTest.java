@@ -22,7 +22,7 @@ public class MultiExceptionTest {
 	private MultiException multiException;
 	
 	@Inject
-	private MultiExceptionOneHandler multiExceptionOneHandler;
+	private ExceptionHandlerTwoParameter exceptionTwoParameter;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
@@ -31,28 +31,24 @@ public class MultiExceptionTest {
 	}
 
 	@Test
-	public void testNullPointerExceptionHandler() {
-		multiException.throwNullPointerException();
-		assertEquals(true, multiException.isNullPointerExceptionHandler());
-	}
-	
-	@Test
-	public void testArithmeticExceptionHandler() {
+	public void testTwoExceptionTwoMethod() {
 		multiException.throwArithmeticException();
+		multiException.throwNullPointerException();
+		assertEquals(true, multiException.isArithmeticExceptionHandler());
 		assertEquals(true, multiException.isArithmeticExceptionHandler());
 	}
 	
 	@Test
-	public void testMultiExceptionHandler() {
+	public void testTwoExceptionOneMethod() {
 		multiException.throwTwoException();
 		assertEquals(true, multiException.isNullPointerExceptionHandler());
 		assertEquals(false, multiException.isArithmeticExceptionHandler());
 	}
 	
 	@Test
-	public void testExceptionHandlerWithTwoException() {
+	public void testExceptionHandlerWithTwoParameter() {
 		try {
-			multiExceptionOneHandler.throwIllegalPathException();
+			exceptionTwoParameter.throwIllegalPathException();
 			fail();
 		} catch (Exception e) {
 			assertEquals(DemoiselleException.class, e.getClass());
