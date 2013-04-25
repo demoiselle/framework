@@ -57,8 +57,7 @@ import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
-import br.gov.frameworkdemoiselle.internal.context.Contexts;
-import br.gov.frameworkdemoiselle.internal.context.AbstractCustomContext;
+import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.internal.implementation.AnnotatedMethodProcessor;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
@@ -72,10 +71,6 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 	@SuppressWarnings("rawtypes")
 	private List<AnnotatedMethodProcessor> processors = Collections
 			.synchronizedList(new ArrayList<AnnotatedMethodProcessor>());
-
-	private List<AbstractCustomContext> tempContexts = new ArrayList<AbstractCustomContext>();
-
-	private AfterBeanDiscovery afterBeanDiscoveryEvent;
 
 	private boolean registered = false;
 
@@ -116,13 +111,15 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 	}
 
 	public void loadTempContexts(@Observes final AfterBeanDiscovery event) {
+		//Caso este bootstrap rode antes do CoreBootstrap. Não há problemas em chamar este método várias vezes, ele
+		//ignora chamadas adicionais.
+		ContextManager.initialize(event);
+		
 		// Não registrar o contexto de aplicação pq ele já é registrado pela implementação do CDI
-		tempContexts.add(new ThreadLocalContext(ViewScoped.class));
-		tempContexts.add(new ThreadLocalContext(SessionScoped.class));
-		tempContexts.add(new ThreadLocalContext(ConversationScoped.class));
-		tempContexts.add(new ThreadLocalContext(RequestScoped.class));
-
-		afterBeanDiscoveryEvent = event;
+		ContextManager.add(new ThreadLocalContext(ViewScoped.class), event);
+		ContextManager.add(new ThreadLocalContext(SessionScoped.class), event);
+		ContextManager.add(new ThreadLocalContext(ConversationScoped.class), event);
+		ContextManager.add(new ThreadLocalContext(RequestScoped.class), event);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -133,9 +130,10 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		Exception failure = null;
 
 		if (!registered) {
-			for (AbstractCustomContext tempContext : tempContexts) {
-				Contexts.add(tempContext, afterBeanDiscoveryEvent);
-			}
+			ContextManager.activate(ThreadLocalContext.class, ViewScoped.class);
+			ContextManager.activate(ThreadLocalContext.class, SessionScoped.class);
+			ContextManager.activate(ThreadLocalContext.class, ConversationScoped.class);
+			ContextManager.activate(ThreadLocalContext.class, RequestScoped.class);
 
 			registered = true;
 		}
@@ -158,17 +156,14 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		}
 
 		if (processors.isEmpty()) {
-			unloadTempContexts();
+			ContextManager.deactivate(ThreadLocalContext.class, ViewScoped.class);
+			ContextManager.deactivate(ThreadLocalContext.class, SessionScoped.class);
+			ContextManager.deactivate(ThreadLocalContext.class, ConversationScoped.class);
+			ContextManager.deactivate(ThreadLocalContext.class, RequestScoped.class);
 		}
 
 		if (failure != null) {
 			throw new DemoiselleException(failure);
-		}
-	}
-
-	private void unloadTempContexts() {
-		for (AbstractCustomContext tempContext : tempContexts) {
-			Contexts.remove(tempContext);
 		}
 	}
 }

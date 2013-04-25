@@ -36,9 +36,6 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
@@ -48,35 +45,32 @@ import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Extension;
 
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
-import br.gov.frameworkdemoiselle.internal.context.Contexts;
-import br.gov.frameworkdemoiselle.internal.context.CustomContext;
+import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 
 public class SeBootstrap implements Extension {
 
-	private List<CustomContext> tempContexts = new ArrayList<CustomContext>();
-
-	private AfterBeanDiscovery afterBeanDiscoveryEvent;
-
 	public void storeContexts(@Observes final AfterBeanDiscovery event) {
-		this.tempContexts.add(new ThreadLocalContext(ViewScoped.class));
-		this.tempContexts.add(new ThreadLocalContext(SessionScoped.class));
-		this.tempContexts.add(new ThreadLocalContext(ConversationScoped.class));
-		this.tempContexts.add(new ThreadLocalContext(RequestScoped.class));
-
-		this.afterBeanDiscoveryEvent = event;
+		ContextManager.initialize(event);
+		
+		ContextManager.add(new ThreadLocalContext(ViewScoped.class), event);
+		ContextManager.add(new ThreadLocalContext(SessionScoped.class), event);
+		ContextManager.add(new ThreadLocalContext(ConversationScoped.class), event);
+		ContextManager.add(new ThreadLocalContext(RequestScoped.class), event);
 	}
 
 	public void addContexts(@Observes final AfterDeploymentValidation event) {
-		for (CustomContext tempContext : this.tempContexts) {
-			Contexts.add(tempContext, this.afterBeanDiscoveryEvent);
-		}
+		ContextManager.activate(ThreadLocalContext.class, ViewScoped.class);
+		ContextManager.activate(ThreadLocalContext.class, SessionScoped.class);
+		ContextManager.activate(ThreadLocalContext.class, ConversationScoped.class);
+		ContextManager.activate(ThreadLocalContext.class, RequestScoped.class);
 	}
 
 	public void removeContexts(@Observes AfterShutdownProccess event) {
-		for (CustomContext tempContext : this.tempContexts) {
-			Contexts.remove(tempContext);
-		}
+		ContextManager.deactivate(ThreadLocalContext.class, ViewScoped.class);
+		ContextManager.deactivate(ThreadLocalContext.class, SessionScoped.class);
+		ContextManager.deactivate(ThreadLocalContext.class, ConversationScoped.class);
+		ContextManager.deactivate(ThreadLocalContext.class, RequestScoped.class);
 	}
 }

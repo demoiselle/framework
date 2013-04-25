@@ -96,6 +96,10 @@ public abstract class AbstractCustomContext implements CustomContext {
 	}
 
 	public void setActive(boolean active) {
+		if (!active && this.active){
+			//Limpando contexto
+			getStore().clear();
+		}
 		this.active = active;
 	}
 
@@ -116,6 +120,7 @@ public abstract class AbstractCustomContext implements CustomContext {
 		private Store() {
 		}
 
+
 		private boolean contains(final Class<?> type) {
 			return this.getMap().containsKey(type);
 		}
@@ -128,6 +133,10 @@ public abstract class AbstractCustomContext implements CustomContext {
 			this.getMap().put(type, instance);
 		}
 
+		public void clear() {
+			cache.clear();
+		}
+		
 		private Map<Class<?>, Object> getMap() {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
