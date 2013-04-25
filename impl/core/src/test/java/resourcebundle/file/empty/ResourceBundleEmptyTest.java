@@ -34,12 +34,13 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
-
-import javax.inject.Inject;
+package resourcebundle.file.empty;
 
 import static junit.framework.Assert.fail;
-import static junit.framework.Assert.assertEquals;
+
+import java.util.MissingResourceException;
+
+import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -48,50 +49,32 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
-public class OneExceptionTest {
+public class ResourceBundleEmptyTest {
 
-	@Inject
-	private OneException oneException;
+	private ResourceBundleEmpty bundleDefault;
+
+	private static final String PATH = "src/test/resources/resourcebundle/file/empty/";
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(OneExceptionTest.class);
+		JavaArchive deployment = Tests.createDeployment(ResourceBundleEmptyTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "messages.properties"), "messages.properties");
+
 		return deployment;
 	}
 
 	@Test
-	public void testExceptionWithHandler() {
-		oneException.throwExceptionWithHandler();
-		assertEquals(true, oneException.isExceptionHandler());
-	}
-
-	@Test
-	public void testExceptionWithoutHandler() {
+	public void testResourceEmpty() {
+		bundleDefault = Beans.getReference(ResourceBundleEmpty.class);
 		try {
-			oneException.throwExceptionWithoutHandler();
+			bundleDefault.getMessage();
 			fail();
-		} catch (Exception cause) {
-			assertEquals(ArithmeticException.class, cause.getClass());
-		}
-	}
-
-	@Test
-	public void testExceptionWithMultiHandler() {
-		oneException.throwIllegalArgumentException();
-		assertEquals(false, oneException.isExceptionHandlerIllegalArgument1());
-		assertEquals(true, oneException.isExceptionHandlerIllegalArgument2());
-		assertEquals(false, oneException.isExceptionHandlerIllegalArgument3());
-	}
-
-	@Test
-	public void testExceptionHandlerWithException() {
-		try {
-			oneException.throwNoSuchElementException();
 		} catch (Exception e) {
-			assertEquals(ArithmeticException.class, e.getClass());
+			Assert.assertEquals(MissingResourceException.class, e.getClass());
 		}
-
 	}
+
 }

@@ -34,64 +34,35 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package lifecycle;
 
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
 
-import static junit.framework.Assert.fail;
-import static junit.framework.Assert.assertEquals;
+import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
+import br.gov.frameworkdemoiselle.lifecycle.Startup;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+@ApplicationScoped
+public class LifecycleSimple {
 
-import test.Tests;
+	private boolean startup = false;
 
-@RunWith(Arquillian.class)
-public class OneExceptionTest {
+	private boolean shutdown = false;
 
-	@Inject
-	private OneException oneException;
-
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(OneExceptionTest.class);
-		return deployment;
+	public boolean isStartup() {
+		return startup;
 	}
 
-	@Test
-	public void testExceptionWithHandler() {
-		oneException.throwExceptionWithHandler();
-		assertEquals(true, oneException.isExceptionHandler());
+	public boolean isShutdown() {
+		return shutdown;
 	}
 
-	@Test
-	public void testExceptionWithoutHandler() {
-		try {
-			oneException.throwExceptionWithoutHandler();
-			fail();
-		} catch (Exception cause) {
-			assertEquals(ArithmeticException.class, cause.getClass());
-		}
+	@Startup
+	public void load() {
+		startup = true;
 	}
 
-	@Test
-	public void testExceptionWithMultiHandler() {
-		oneException.throwIllegalArgumentException();
-		assertEquals(false, oneException.isExceptionHandlerIllegalArgument1());
-		assertEquals(true, oneException.isExceptionHandlerIllegalArgument2());
-		assertEquals(false, oneException.isExceptionHandlerIllegalArgument3());
-	}
-
-	@Test
-	public void testExceptionHandlerWithException() {
-		try {
-			oneException.throwNoSuchElementException();
-		} catch (Exception e) {
-			assertEquals(ArithmeticException.class, e.getClass());
-		}
-
+	@Shutdown
+	public void unload() {
+		shutdown = true;
 	}
 }

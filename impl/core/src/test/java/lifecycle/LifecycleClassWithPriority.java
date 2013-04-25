@@ -34,64 +34,56 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package lifecycle;
 
-import javax.inject.Inject;
+import static br.gov.frameworkdemoiselle.annotation.Priority.MAX_PRIORITY;
+import static br.gov.frameworkdemoiselle.annotation.Priority.MIN_PRIORITY;
 
-import static junit.framework.Assert.fail;
-import static junit.framework.Assert.assertEquals;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import javax.enterprise.context.ApplicationScoped;
 
-import test.Tests;
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
+import br.gov.frameworkdemoiselle.lifecycle.Startup;
 
-@RunWith(Arquillian.class)
-public class OneExceptionTest {
+@ApplicationScoped
+public class LifecycleClassWithPriority {
 
-	@Inject
-	private OneException oneException;
+	private List<Integer> priorityStartup = new ArrayList<Integer>();
 
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(OneExceptionTest.class);
-		return deployment;
+	private List<Integer> priorityShutdown = new ArrayList<Integer>();
+
+	public List<Integer> getPriorityStartup() {
+		return priorityStartup;
 	}
 
-	@Test
-	public void testExceptionWithHandler() {
-		oneException.throwExceptionWithHandler();
-		assertEquals(true, oneException.isExceptionHandler());
+	public List<Integer> getPriorityShutdown() {
+		return priorityShutdown;
 	}
 
-	@Test
-	public void testExceptionWithoutHandler() {
-		try {
-			oneException.throwExceptionWithoutHandler();
-			fail();
-		} catch (Exception cause) {
-			assertEquals(ArithmeticException.class, cause.getClass());
-		}
+	@Startup
+	@Priority(MIN_PRIORITY)
+	public void loadWithMinPriority() {
+		priorityStartup.add(2);
 	}
 
-	@Test
-	public void testExceptionWithMultiHandler() {
-		oneException.throwIllegalArgumentException();
-		assertEquals(false, oneException.isExceptionHandlerIllegalArgument1());
-		assertEquals(true, oneException.isExceptionHandlerIllegalArgument2());
-		assertEquals(false, oneException.isExceptionHandlerIllegalArgument3());
+	@Startup
+	@Priority(MAX_PRIORITY)
+	public void loadWithMaxPriority() {
+		priorityStartup.add(1);
 	}
 
-	@Test
-	public void testExceptionHandlerWithException() {
-		try {
-			oneException.throwNoSuchElementException();
-		} catch (Exception e) {
-			assertEquals(ArithmeticException.class, e.getClass());
-		}
+	@Shutdown
+	@Priority(MIN_PRIORITY)
+	public void unloadWithMinPriority() {
+		priorityShutdown.add(1);
+	}
 
+	@Shutdown
+	@Priority(MAX_PRIORITY)
+	public void unloadWithMaxPriority() {
+		priorityShutdown.add(2);
 	}
 }

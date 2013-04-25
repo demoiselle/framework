@@ -34,12 +34,11 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package resourcebundle.file.defaultfile;
 
-import javax.inject.Inject;
+import java.util.Locale;
 
-import static junit.framework.Assert.fail;
-import static junit.framework.Assert.assertEquals;
+import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -48,50 +47,35 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
-public class OneExceptionTest {
+public class ResourceBundleDefaultTest {
 
-	@Inject
-	private OneException oneException;
+	private ResourceBundleDefault bundleDefault;
+
+	private static final String PATH = "src/test/resources/resourcebundle/file/default/";
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(OneExceptionTest.class);
+		JavaArchive deployment = Tests.createDeployment(ResourceBundleDefaultTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "messages.properties"), "messages.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "messages_en.properties"), "messages_en.properties");
+
 		return deployment;
 	}
 
 	@Test
-	public void testExceptionWithHandler() {
-		oneException.throwExceptionWithHandler();
-		assertEquals(true, oneException.isExceptionHandler());
+	public void testResourceDefault() {
+		bundleDefault = Beans.getReference(ResourceBundleDefault.class);
+		Assert.assertEquals("mensagem em Portugues", bundleDefault.getMessage());
 	}
 
 	@Test
-	public void testExceptionWithoutHandler() {
-		try {
-			oneException.throwExceptionWithoutHandler();
-			fail();
-		} catch (Exception cause) {
-			assertEquals(ArithmeticException.class, cause.getClass());
-		}
+	public void testResourceDefaultEnglish() {
+		Locale.setDefault(Locale.ENGLISH);
+		bundleDefault = Beans.getReference(ResourceBundleDefault.class);
+		Assert.assertEquals("message in English", bundleDefault.getMessage());
 	}
 
-	@Test
-	public void testExceptionWithMultiHandler() {
-		oneException.throwIllegalArgumentException();
-		assertEquals(false, oneException.isExceptionHandlerIllegalArgument1());
-		assertEquals(true, oneException.isExceptionHandlerIllegalArgument2());
-		assertEquals(false, oneException.isExceptionHandlerIllegalArgument3());
-	}
-
-	@Test
-	public void testExceptionHandlerWithException() {
-		try {
-			oneException.throwNoSuchElementException();
-		} catch (Exception e) {
-			assertEquals(ArithmeticException.class, e.getClass());
-		}
-
-	}
 }
