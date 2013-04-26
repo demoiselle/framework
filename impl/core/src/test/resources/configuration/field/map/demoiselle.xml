@@ -42,13 +42,11 @@
 	<item2>
 		<stringWithDefinedKeyMap>framework</stringWithDefinedKeyMap>
 	</item2>
-	<stringWithUndefinedKeyMap>undefined</stringWithUndefinedKeyMap>
+		<stringWithUndefinedKeyMap>undefined</stringWithUndefinedKeyMap>
 	<item1>
 		<emptyValueMap></emptyValueMap>
 	</item1>
 	<item2>
 		<emptyValueMap></emptyValueMap>
-	</item2>
-	
-	
+	</item2>	
 </configuration>
