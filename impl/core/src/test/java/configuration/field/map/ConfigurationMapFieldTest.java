@@ -37,6 +37,7 @@
 package configuration.field.map;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -97,5 +98,11 @@ public class ConfigurationMapFieldTest {
 
 		assertEquals(expected, propertiesConfig.getEmptyValueMap());
 		assertEquals(expected, xmlConfig.getEmptyValueMap());
+	}
+	
+	@Test
+	public void loadNullMap(){
+		assertNull(propertiesConfig.getNullMapValue());
+		assertNull(xmlConfig.getNullMapValue());
 	}
 }
