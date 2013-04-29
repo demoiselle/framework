@@ -43,7 +43,7 @@ public class StaticContext extends AbstractCustomContext {
 	private final static Store store = createStore();
 
 	public StaticContext() {
-		super(StaticScoped.class, true);
+		super(StaticScoped.class);
 	}
 
 	@Override

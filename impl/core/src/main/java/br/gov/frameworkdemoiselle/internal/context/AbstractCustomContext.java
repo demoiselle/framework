@@ -52,9 +52,9 @@ public abstract class AbstractCustomContext implements CustomContext {
 
 	private final Class<? extends Annotation> scope;
 
-	public AbstractCustomContext(final Class<? extends Annotation> scope, boolean active) {
+	public AbstractCustomContext(final Class<? extends Annotation> scope) {
 		this.scope = scope;
-		this.active = active;
+		this.active = false;
 	}
 
 	protected abstract Store getStore();

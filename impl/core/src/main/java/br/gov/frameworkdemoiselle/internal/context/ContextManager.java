@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Context;
@@ -36,15 +37,13 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  */
 public class ContextManager {
 	
-	private static List<CustomContext> contexts = Collections.synchronizedList(new ArrayList<CustomContext>());
-	
-	private static List<CustomContext> activatedCustomContexts = Collections.synchronizedList(new ArrayList<CustomContext>());
+	private static List<CustomContextCounter> contexts = Collections.synchronizedList(new ArrayList<CustomContextCounter>());
 	
 	private static boolean initialized = false;
 	
-	private static ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+	private static ResourceBundle bundle;
 	
-	private static Logger logger = LoggerProducer.create(ContextManager.class);
+	private static Logger logger;
 	
 	/**
 	 * <p>Initializes this manager and adds the {@link StaticContext} context to the list of managed contexts. Other
@@ -75,8 +74,15 @@ public class ContextManager {
 	 * @param event The CDI event indicating all beans have been discovered.
 	 */
 	public static void add(CustomContext context,AfterBeanDiscovery event){
-		context.setActive(true);
+		for (CustomContextCounter contextCounter : contexts){
+			if (contextCounter.isSame(context.getClass(), context.getScope())){
+				return;
+			}
+		}
+
+		context.setActive(false);
 		event.addContext(context);
+		contexts.add(new CustomContextCounter(context));
 	}
 	
 	/**
@@ -98,17 +104,15 @@ public class ContextManager {
 	 * 
 	 * @throws DemoiselleException if there is no managed context of the provided type and scope. 
 	 */
-	public static boolean activate(Class<? extends CustomContext> customContextClass , Class<? extends Annotation> scope){
+	public static synchronized void activate(Class<? extends CustomContext> customContextClass , Class<? extends Annotation> scope){
 		if (!initialized){
 			throw new DemoiselleException(getBundle().getString("custom-context-manager-not-initialized"));
 		}
 		
-		for (CustomContext context : contexts){
-			if (context.getClass().getCanonicalName().equals( customContextClass.getCanonicalName() )
-					&& context.getScope().equals(scope)){
-				if (!context.isActive()){
-					return activate(context);
-				}
+		for (CustomContextCounter context : contexts){
+			if ( context.isSame(customContextClass, scope) ){
+				context.activate();
+				return;
 			}
 		}
 
@@ -135,53 +139,22 @@ public class ContextManager {
 	 * 
 	 * @throws DemoiselleException if there is no managed context of the provided type and scope. 
 	 */
-	public static boolean deactivate(Class<? extends CustomContext> customContextClass,Class<? extends Annotation> scope){
+	public static synchronized void deactivate(Class<? extends CustomContext> customContextClass,Class<? extends Annotation> scope){
 		if (!initialized){
 			throw new DemoiselleException(getBundle().getString("custom-context-manager-not-initialized"));
 		}
 		
-		for (CustomContext context : activatedCustomContexts){
-			if (context.getClass().getCanonicalName().equals( customContextClass.getCanonicalName() )
-					&& context.getScope().equals(scope)){
-
-				if (context.isActive()){
-					return deactivate(context);
-				}
+		for (CustomContextCounter context : contexts){
+			if (context.isSame(customContextClass, scope)){
+				context.deactivate();
+				return;
 			}
 		}
 
 		throw new DemoiselleException(getBundle().getString("custom-context-not-found",customContextClass.getCanonicalName(),scope.getSimpleName()));
 	}
-	
-	private static boolean activate(CustomContext context){
-		try{
-			Beans.getBeanManager().getContext(context.getScope());
-			return false;
-		}
-		catch(ContextNotActiveException ce){
-			context.setActive(true);
-			activatedCustomContexts.add(context);
-			getLogger().trace(getBundle().getString("custom-context-was-activated", context.getClass().getCanonicalName(),context.getScope().getCanonicalName()));
-			return true;
-		}
-	}
-	
-	private static boolean  deactivate(CustomContext context){
-		try{
-			Context activeContext = Beans.getBeanManager().getContext(context.getScope());
-			if (activeContext.equals(context)){
-				context.setActive(false);
-				activatedCustomContexts.remove(context);
-				return true;
-			}
-		}
-		catch(ContextNotActiveException e){
-		}
-		
-		return false;
-	}
-	
-	private static Logger getLogger(){
+
+	static Logger getLogger(){
 		if (logger==null){
 			logger = LoggerProducer.create(ContextManager.class);
 		}
@@ -189,12 +162,76 @@ public class ContextManager {
 		return logger;
 	}
 	
-	private static ResourceBundle getBundle(){
+	static ResourceBundle getBundle(){
 		if (bundle==null){
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+			bundle = ResourceBundleProducer.create("demoiselle-core-bundle",Locale.getDefault());
 		}
 		
 		return bundle;
 	}
-
+}
+/**
+ * Class that counts how many attemps to activate and deactivate this context received, avoiding cases
+ * where one client activates given context and another one deactivates it, leaving the first client
+ * with no active context before completion.
+ * 
+ * @author serpro
+ *
+ */
+class CustomContextCounter{
+	private CustomContext context;
+	private int activationCounter = 0;
+	
+	public CustomContextCounter(CustomContext customContext) {
+		this.context = customContext;
+	}
+	
+	public boolean isSame(Class<? extends CustomContext> customContextClass,Class<? extends Annotation> scope){
+		if (context.getClass().getCanonicalName().equals( customContextClass.getCanonicalName() )
+				&& context.getScope().equals(scope)){
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public CustomContext getInternalContext(){
+		return this.context;
+	}
+	
+	public synchronized void activate(){
+		try{
+			Context c = Beans.getBeanManager().getContext(context.getScope());
+			if (c==context){
+				activationCounter++;
+			}
+		}
+		catch(ContextNotActiveException ce){
+			context.setActive(true);
+			activationCounter++;
+			ContextManager.getLogger().trace(
+					ContextManager.getBundle().getString("custom-context-was-activated"
+							, context.getClass().getCanonicalName()
+							,context.getScope().getCanonicalName()
+						));
+		}
+	}
+	
+	public synchronized void deactivate(){
+		try{
+			Context c = Beans.getBeanManager().getContext(context.getScope());
+			if (c==context){
+				activationCounter--;
+				if (activationCounter==0){
+					context.setActive(false);
+					ContextManager.getLogger().trace(
+							ContextManager.getBundle().getString("custom-context-was-deactivated"
+									, context.getClass().getCanonicalName()
+									,context.getScope().getCanonicalName()
+								));
+				}
+			}
+		}
+		catch(ContextNotActiveException ce){}
+	}
 }
