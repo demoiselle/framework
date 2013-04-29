@@ -49,7 +49,6 @@ import org.apache.commons.lang.ClassUtils;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
-import br.gov.frameworkdemoiselle.util.Strings;
 
 @Priority(EXTENSIONS_L1_PRIORITY)
 public class ConfigurationPrimitiveOrWrapperValueExtractor implements ConfigurationValueExtractor {
