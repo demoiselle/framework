@@ -34,35 +34,53 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package lifecycle;
+package lifecycle.startup.simple;
 
-import javax.enterprise.context.ApplicationScoped;
+import java.util.ArrayList;
+import java.util.List;
 
-import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
-import br.gov.frameworkdemoiselle.lifecycle.Startup;
+import javax.inject.Inject;
 
-@ApplicationScoped
-public class LifecycleSimple {
+import junit.framework.Assert;
 
-	private boolean startup = false;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	private boolean shutdown = false;
+import test.Tests;
+import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
+import br.gov.frameworkdemoiselle.util.Beans;
 
-	public boolean isStartup() {
-		return startup;
+@RunWith(Arquillian.class)
+public class StartupSimpleTest {
+
+	@Inject
+	private StartupSimple startupSimple;
+	
+	List<Integer> expected = new ArrayList<Integer>();
+	
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(StartupSimpleTest.class);
+		return deployment;
 	}
 
-	public boolean isShutdown() {
-		return shutdown;
+	@Before
+	public void fireEvent() {
+		Beans.getBeanManager().fireEvent(new AfterStartupProccess() {
+		});
 	}
+	
+	@Test
+	public void startup() {
+		expected.add(1);
+		expected.add(3);
+		expected.add(2);
 
-	@Startup
-	public void load() {
-		startup = true;
-	}
-
-	@Shutdown
-	public void unload() {
-		shutdown = true;
+		Assert.assertEquals(expected, startupSimple.getListStartup());
 	}
 }
+

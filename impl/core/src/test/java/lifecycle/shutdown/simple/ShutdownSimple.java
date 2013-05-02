@@ -34,58 +34,36 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package lifecycle;
+package lifecycle.shutdown.simple;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
 
-import junit.framework.Assert;
+import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+@ApplicationScoped
+public class ShutdownSimple {
 
-import test.Tests;
-import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
-import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
-import br.gov.frameworkdemoiselle.util.Beans;
-
-@RunWith(Arquillian.class)
-public class LifecycleWithPriorityTest {
-
-	@Inject
-	private LifecycleClassWithPriority lifecycleClassWithPriority;
-
-	List<Integer> expected = new ArrayList<Integer>();
-
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(LifecycleWithPriorityTest.class);
-		return deployment;
+	private List<Integer> listShutdown = new ArrayList<Integer>();
+	
+	public List<Integer> getListShutdown() {
+		return listShutdown;
+	}
+	
+	@Shutdown
+	public void unloadWithoutPriorityFirst() {
+		listShutdown.add(3);
 	}
 
-	@Test
-	public void testStartup() {
-		Beans.getBeanManager().fireEvent(new AfterStartupProccess() {
-		});
-		expected.add(1);
-		expected.add(2);
-
-		Assert.assertEquals(expected, lifecycleClassWithPriority.getPriorityStartup());
+	@Shutdown
+	public void unloadWithoutPrioritySecond() {
+		listShutdown.add(2);
 	}
 
-	@Test
-	public void testShutdown() {
-		Beans.getBeanManager().fireEvent(new AfterShutdownProccess() {
-		});
-		expected.clear();
-		expected.add(2);
-		expected.add(1);
-
-		Assert.assertEquals(expected, lifecycleClassWithPriority.getPriorityShutdown());
+	@Shutdown
+	public void unloadWithoutPriorityThird() {
+		listShutdown.add(1);
 	}
 }

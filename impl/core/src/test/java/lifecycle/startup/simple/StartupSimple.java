@@ -34,50 +34,36 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package lifecycle;
+package lifecycle.startup.simple;
 
-import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
-import junit.framework.Assert;
+import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import br.gov.frameworkdemoiselle.lifecycle.Startup;
 
-import test.Tests;
-import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
-import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
-import br.gov.frameworkdemoiselle.util.Beans;
+@ApplicationScoped
+public class StartupSimple {
 
-@RunWith(Arquillian.class)
-public class LifecycleSimpleTest {
+	private List<Integer> listStartup = new ArrayList<Integer>();
 
-	@Inject
-	private LifecycleSimple simpleClass;
-	
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(LifecycleSimpleTest.class);
-		return deployment;
+	public List<Integer> getListStartup() {
+		return listStartup;
 	}
 
-	@Test
-	public void testStartup() {
-		Beans.getBeanManager().fireEvent(new AfterStartupProccess() {
-		});
-		
-		Assert.assertEquals(true, simpleClass.isStartup());
+	@Startup
+	public void loadWithoutPriorityFirst() {
+		listStartup.add(1);
 	}
 
-	@Test
-	public void testShutdown() {
-		Beans.getBeanManager().fireEvent(new AfterShutdownProccess() {
-		});
-		
-		Assert.assertEquals(true, simpleClass.isShutdown());
+	@Startup
+	public void loadWithoutPrioritySecond() {
+		listStartup.add(3);
 	}
 
+	@Startup
+	public void loadWithoutPriorityThird() {
+		listStartup.add(2);
+	}	
 }
-

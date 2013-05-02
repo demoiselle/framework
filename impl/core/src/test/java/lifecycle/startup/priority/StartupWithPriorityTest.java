@@ -34,59 +34,52 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package lifecycle;
+package lifecycle.startup.priority;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
-import br.gov.frameworkdemoiselle.lifecycle.Startup;
+import junit.framework.Assert;
 
-@ApplicationScoped
-public class LifecycleWithoutPriority {
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	private List<Integer> priorityStartup = new ArrayList<Integer>();
+import test.Tests;
+import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
+import br.gov.frameworkdemoiselle.util.Beans;
 
-	private List<Integer> priorityShutdown = new ArrayList<Integer>();
+@RunWith(Arquillian.class)
+public class StartupWithPriorityTest {
 
-	public List<Integer> getPriorityStartup() {
-		return priorityStartup;
+	@Inject
+	private StartupWithPriority stratupWithPriority;
+
+	List<Integer> expected = new ArrayList<Integer>();
+
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(StartupWithPriorityTest.class);
+		return deployment;
 	}
 
-	public List<Integer> getPriorityShutdown() {
-		return priorityShutdown;
+	@Before
+	public void fireEvent() {
+		Beans.getBeanManager().fireEvent(new AfterStartupProccess() {
+		});
 	}
+	
+	@Test
+	public void startupWithPriority() {
+		expected.add(1);
+		expected.add(2);
+		expected.add(3);
 
-	@Startup
-	public void loadWithoutPriorityFirst() {
-		priorityStartup.add(1);
+		Assert.assertEquals(expected, stratupWithPriority.getPriorityStartup());
 	}
-
-	@Startup
-	public void loadWithoutPrioritySecond() {
-		priorityStartup.add(3);
-	}
-
-	@Startup
-	public void loadWithoutPriorityThird() {
-		priorityStartup.add(2);
-	}
-
-	@Shutdown
-	public void unloadWithoutPriorityFirst() {
-		priorityShutdown.add(3);
-	}
-
-	@Shutdown
-	public void unloadWithoutPrioritySecond() {
-		priorityShutdown.add(2);
-	}
-
-	@Shutdown
-	public void unloadWithoutPriorityThird() {
-		priorityShutdown.add(1);
-	}
-
 }

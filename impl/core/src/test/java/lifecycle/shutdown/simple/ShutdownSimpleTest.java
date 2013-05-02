@@ -34,56 +34,52 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package lifecycle;
-
-import static br.gov.frameworkdemoiselle.annotation.Priority.MAX_PRIORITY;
-import static br.gov.frameworkdemoiselle.annotation.Priority.MIN_PRIORITY;
+package lifecycle.shutdown.simple;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
-import br.gov.frameworkdemoiselle.lifecycle.Startup;
+import junit.framework.Assert;
 
-@ApplicationScoped
-public class LifecycleClassWithPriority {
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	private List<Integer> priorityStartup = new ArrayList<Integer>();
+import test.Tests;
+import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
+import br.gov.frameworkdemoiselle.util.Beans;
 
-	private List<Integer> priorityShutdown = new ArrayList<Integer>();
+@RunWith(Arquillian.class)
+public class ShutdownSimpleTest {
 
-	public List<Integer> getPriorityStartup() {
-		return priorityStartup;
+	@Inject
+	private ShutdownSimple shutdownSimple;
+
+	List<Integer> expected = new ArrayList<Integer>();
+
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(ShutdownSimpleTest.class);
+		return deployment;
 	}
 
-	public List<Integer> getPriorityShutdown() {
-		return priorityShutdown;
+	@Before
+	public void fireEvent() {
+		Beans.getBeanManager().fireEvent(new AfterShutdownProccess() {
+		});
 	}
 
-	@Startup
-	@Priority(MIN_PRIORITY)
-	public void loadWithMinPriority() {
-		priorityStartup.add(2);
-	}
+	@Test
+	public void testShutdown() {
+		expected.add(3);
+		expected.add(2);
+		expected.add(1);
 
-	@Startup
-	@Priority(MAX_PRIORITY)
-	public void loadWithMaxPriority() {
-		priorityStartup.add(1);
-	}
-
-	@Shutdown
-	@Priority(MIN_PRIORITY)
-	public void unloadWithMinPriority() {
-		priorityShutdown.add(1);
-	}
-
-	@Shutdown
-	@Priority(MAX_PRIORITY)
-	public void unloadWithMaxPriority() {
-		priorityShutdown.add(2);
+		Assert.assertEquals(expected, shutdownSimple.getListShutdown());
 	}
 }
