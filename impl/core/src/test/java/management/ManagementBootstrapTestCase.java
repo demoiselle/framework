@@ -1,0 +1,124 @@
+package management;
+
+import java.io.File;
+import java.util.List;
+
+import management.testclasses.DummyManagedClass;
+import management.testclasses.DummyManagedClassPropertyError;
+import management.testclasses.DummyManagementExtension;
+
+import org.jboss.arquillian.container.test.api.Deployer;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import test.LocaleProducer;
+import br.gov.frameworkdemoiselle.management.extension.ManagementExtension;
+import br.gov.frameworkdemoiselle.management.internal.ManagedType;
+import br.gov.frameworkdemoiselle.util.Beans;
+
+@RunWith(Arquillian.class)
+public class ManagementBootstrapTestCase {
+
+	@ArquillianResource
+	private Deployer deployer;
+
+	/**
+	 * Deployment to test normal deployment behaviour 
+	 * 
+	 */
+	@Deployment(name = "default",managed=false,testable=false)
+	public static JavaArchive createDeployment() {
+		return ShrinkWrap
+				.create(JavaArchive.class)
+				.addClass(LocaleProducer.class)
+				.addPackages(true, "br")
+				.addAsResource(new FileAsset(new File("src/test/resources/test/beans.xml")), "beans.xml")
+				.addAsManifestResource(
+						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
+						"services/javax.enterprise.inject.spi.Extension")
+				.addPackages(false, ManagementBootstrapTestCase.class.getPackage())
+				.addClasses(DummyManagementExtension.class,DummyManagedClass.class);
+	}
+	
+	/**
+	 * Deployment containing a malformed managed class. Tests using this deployment will
+	 * check if deployment fails (it has to).
+	 * 
+	 */
+	@Deployment(name = "wrong_annotation",managed=false,testable=false)
+	public static JavaArchive createWrongAnnotationDeployment() {
+		return ShrinkWrap
+				.create(JavaArchive.class)
+				.addClass(LocaleProducer.class)
+				.addPackages(true, "br")
+				.addAsResource(new FileAsset(new File("src/test/resources/test/beans.xml")), "beans.xml")
+				.addAsManifestResource(
+						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
+						"services/javax.enterprise.inject.spi.Extension")
+				.addPackages(false, ManagementBootstrapTestCase.class.getPackage())
+				.addClasses(DummyManagementExtension.class,DummyManagedClassPropertyError.class);
+	}
+
+	/**
+	 * Test if a a management extension (a library that implements {@link ManagementExtension}) is correctly detected.
+	 */
+	@Test
+	public void testManagementExtensionRegistration() {
+		deployer.deploy("default");
+
+		// "store" é application scoped e é usado pelo DummyManagementExtension para
+		// armazenar todos os beans anotados com @Managed. Se o bootstrap rodou corretamente,
+		// ele chamou DummyManagementExtension.initialize e este store conterá o bean de teste que anotamos.
+		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
+
+		Assert.assertEquals(1, store.getManagedTypes().size());
+
+		deployer.undeploy("default");
+	}
+
+	/**
+	 * Test if a a management extension's shutdown method is
+	 * correctly called upon application shutdown.
+	 */
+	@Test
+	public void testManagementExtensionShutdown() {
+		deployer.deploy("default");
+		
+		// "store" é application scoped e é usado pelo DummyManagementExtension para
+		// armazenar todos os beans anotados com @Managed. Se o bootstrap rodou corretamente,
+		// ele chamou DummyManagementExtension.initialize e este store conterá o bean de teste que anotamos.
+		// Nós então disparamos o evento de shutdown onde ele deverá limpar o store.
+		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
+		
+		//Detecta se a classe anotada foi detectada
+		List<ManagedType> managedTypes = store.getManagedTypes();
+		Assert.assertEquals(1, managedTypes.size());
+
+		deployer.undeploy("default");
+		
+		//Após o "undeploy", o ciclo de vida precisa ter removido a classe gerenciada da lista.
+		Assert.assertEquals(0, managedTypes.size());
+	}
+	
+	@Test
+	public void testWrongAnnotation(){
+		
+		try{
+			deployer.deploy("wrong_annotation");
+			
+			//O processo de deploy precisa falhar, pois temos uma classe anotada com falhas.
+			Assert.fail();
+		}
+		catch(Exception e){
+			deployer.undeploy("wrong_annotation");
+		}
+	}
+	
+}
