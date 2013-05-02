@@ -64,7 +64,7 @@ public class ResourceBundleFileNotExistTest {
 	}
 
 	@Test
-	public void testResourceFileCustom() {
+	public void loadResourceFileNotExist() {
 		bundleFileNotExist = Beans.getReference(ResourceBundleFileNotExist.class);
 		try {
 			bundleFileNotExist.getMessage();

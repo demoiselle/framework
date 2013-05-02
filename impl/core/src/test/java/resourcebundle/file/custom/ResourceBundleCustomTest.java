@@ -66,13 +66,13 @@ public class ResourceBundleCustomTest {
 	}
 
 	@Test
-	public void testResourceFileCustom() {
+	public void loadResourceFileCustom() {
 		bundleCustom = Beans.getReference(ResourceBundleCustom.class);
 		Assert.assertEquals("mensagem em Portugues", bundleCustom.getMessage());
 	}
 
 	@Test
-	public void testResourceDefaultEnglish() {
+	public void loadResourceFileCustomEnglish() {
 		Locale.setDefault(Locale.ENGLISH);
 		bundleCustom = Beans.getReference(ResourceBundleCustom.class);
 		Assert.assertEquals("message in English", bundleCustom.getMessage());
