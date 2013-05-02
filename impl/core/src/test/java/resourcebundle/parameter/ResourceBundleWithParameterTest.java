@@ -34,9 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package resourcebundle.file.defaultfile;
-
-import java.util.Locale;
+package resourcebundle.parameter;
 
 import junit.framework.Assert;
 
@@ -50,39 +48,68 @@ import test.Tests;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
-public class ResourceBundleDefaultTest {
+public class ResourceBundleWithParameterTest {
 
-	private ResourceBundleDefault bundleDefault;
+	private ResourceBundleWithParameter bundleCustom;
 
-	private static final String PATH = "src/test/resources/resourcebundle/file/default/";
+	private static final String PATH = "src/test/resources/resourcebundle/parameter/";
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(ResourceBundleDefaultTest.class);
+		JavaArchive deployment = Tests.createDeployment(ResourceBundleWithParameterTest.class);
 		deployment.addAsResource(Tests.createFileAsset(PATH + "messages.properties"), "messages.properties");
-		deployment.addAsResource(Tests.createFileAsset(PATH + "messages_en.properties"), "messages_en.properties");
 
 		return deployment;
 	}
 
 	@Test
-	public void loadResourceDefault() {
-		bundleDefault = Beans.getReference(ResourceBundleDefault.class);
-		Assert.assertEquals("mensagem em Portugues", bundleDefault.getMessage());
+	public void loadKeyWithOneParameter() {
+		bundleCustom = Beans.getReference(ResourceBundleWithParameter.class);
+		String expected = "Mensagem número 1";
+		String value = bundleCustom.getBundle().getString("messageOneParameter", "1");
+		Assert.assertEquals(expected, value);
 	}
 
 	@Test
-	public void loadResourceDefaultEnglish() {
-		Locale.setDefault(Locale.ENGLISH);
-		bundleDefault = Beans.getReference(ResourceBundleDefault.class);
-		Assert.assertEquals("message in English", bundleDefault.getMessage());
+	public void loadKeyWithTwoParameter() {
+		bundleCustom = Beans.getReference(ResourceBundleWithParameter.class);
+		String expected = "Mensagem número 1 com 2 parâmetros";
+		String value = bundleCustom.getBundle().getString("messageTwoParameter", "1", "2");
+		Assert.assertEquals(expected, value);
 	}
 	
 	@Test
-	public void loadResourceWithLocaleNotExist() {
-		Locale.setDefault(Locale.ITALY);
-		bundleDefault = Beans.getReference(ResourceBundleDefault.class);
-		Assert.assertEquals("mensagem em Portugues", bundleDefault.getMessage());
-	}	
+	public void loadKeyWithoutParameter() {
+		bundleCustom = Beans.getReference(ResourceBundleWithParameter.class);
+		String expected = "Mensagem";
+		String value = bundleCustom.getBundle().getString("messageWithoutParameter", "1", "2", "3");
+		Assert.assertEquals(expected, value);
+	}
+	
+	@Test
+	public void loadKeyWithStringParameter() {
+		bundleCustom = Beans.getReference(ResourceBundleWithParameter.class);
+		String expected = "Mensagem número 1";
+		String value = bundleCustom.getBundle().getString("messageParameterString", "1");
+		Assert.assertNotSame(expected, value);
+		
+		expected = "Mensagem número {numero}";	
+		Assert.assertEquals(expected, value);
+	}
 
+	@Test
+	public void loadKeyWithMoreParameter() {
+		bundleCustom = Beans.getReference(ResourceBundleWithParameter.class);
+		String expected = "Mensagem número 1";
+		String value = bundleCustom.getBundle().getString("messageOneParameter", "1", "2", "3");
+		Assert.assertEquals(expected, value);
+	}
+
+	@Test
+	public void loadKeyWithLessParameter() {
+		bundleCustom = Beans.getReference(ResourceBundleWithParameter.class);
+		String expected = "Mensagem número 1 com {1} parâmetros";
+		String value = bundleCustom.getBundle().getString("messageTwoParameter", "1");
+		Assert.assertEquals(expected, value);
+	}
 }
