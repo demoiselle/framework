@@ -34,64 +34,53 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package lifecycle.startup.simple;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
-import static junit.framework.Assert.fail;
-import static junit.framework.Assert.assertEquals;
+import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
+import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
-public class OneExceptionTest {
+public class StartupSimpleTest {
 
 	@Inject
-	private OneException oneException;
-
+	private StartupSimple startupSimple;
+	
+	List<Integer> expected = new ArrayList<Integer>();
+	
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(OneExceptionTest.class);
+		JavaArchive deployment = Tests.createDeployment(StartupSimpleTest.class);
 		return deployment;
 	}
 
-	@Test
-	public void testExceptionWithHandler() {
-		oneException.throwExceptionWithHandler();
-		assertEquals(true, oneException.isExceptionHandler());
+	@Before
+	public void fireEvent() {
+		Beans.getBeanManager().fireEvent(new AfterStartupProccess() {
+		});
 	}
-
+	
 	@Test
-	public void testExceptionWithoutHandler() {
-		try {
-			oneException.throwExceptionWithoutHandler();
-			fail();
-		} catch (Exception cause) {
-			assertEquals(ArithmeticException.class, cause.getClass());
-		}
-	}
+	public void startup() {
+		expected.add(1);
+		expected.add(3);
+		expected.add(2);
 
-	@Test
-	public void testExceptionWithMultiHandler() {
-		oneException.throwIllegalArgumentException();
-		assertEquals(false, oneException.isExceptionHandlerIllegalArgument1());
-		assertEquals(true, oneException.isExceptionHandlerIllegalArgument2());
-		assertEquals(false, oneException.isExceptionHandlerIllegalArgument3());
-	}
-
-	@Test
-	public void testExceptionHandlerWithException() {
-		try {
-			oneException.throwNoSuchElementException();
-		} catch (Exception e) {
-			assertEquals(ArithmeticException.class, e.getClass());
-		}
-
+		Assert.assertEquals(expected, startupSimple.getListStartup());
 	}
 }
+

@@ -13,6 +13,7 @@ import javax.management.ReflectionException;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
 import br.gov.frameworkdemoiselle.management.annotation.Managed;
@@ -38,12 +39,14 @@ public class MonitoringManager {
 	private Logger logger;
 
 	@Inject
+	@Name("demoiselle-core-bundle")
 	private ResourceBundle bundle;
 
 	private final List<ManagedType> managedTypes = new ArrayList<ManagedType>();
 
 	public void addManagedType(ManagedType managedType) {
 		managedTypes.add(managedType);
+		logger.debug(bundle.getString("management-debug-registering-managed-type",managedType.getType().getCanonicalName()));
 	}
 
 	/**
@@ -189,8 +192,13 @@ public class MonitoringManager {
 					//Manda uma notificação de mudança de atributo 
 					NotificationManager notificationManager = Beans.getReference(NotificationManager.class);
 					Class<? extends Object> attributeType = newValue!=null ? newValue.getClass() : null;
-					AttributeChangeNotification notification = new AttributeChangeNotification(bundle.getString(""), propertyName, attributeType, oldValue, newValue);
-					notificationManager.sendAttributeChangedMessage(notification);
+					
+					AttributeChangeNotification notification = new AttributeChangeNotification(bundle.getString("management-notification-attribute-changed",propertyName,managedType.getType().getCanonicalName())
+							, propertyName
+							, attributeType
+							, oldValue
+							, newValue);
+					notificationManager.sendNotification(notification);
 
 				} catch (Exception e) {
 					throw new DemoiselleException(bundle.getString(
@@ -233,6 +241,8 @@ public class MonitoringManager {
 			ManagementExtension monitoringExtension = Beans.getReference(monitoringExtensionClass);
 
 			monitoringExtension.shutdown(this.getManagedTypes());
+			
+			logger.debug( bundle.getString("management-debug-removing-management-extension",monitoringExtension.getClass().getCanonicalName()) );
 
 		}
 
@@ -246,6 +256,8 @@ public class MonitoringManager {
 					.getReference(monitoringExtensionClass);
 
 			monitoringExtension.initialize(this.getManagedTypes());
+			
+			logger.debug( bundle.getString("management-debug-processing-management-extension",monitoringExtension.getClass().getCanonicalName()) );
 
 		}
 

@@ -34,82 +34,36 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package lifecycle.shutdown.simple;
 
-import java.util.NoSuchElementException;
+import java.util.ArrayList;
+import java.util.List;
 
-import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
-import br.gov.frameworkdemoiselle.stereotype.Controller;
+import javax.enterprise.context.ApplicationScoped;
 
-@Controller
-public class OneException {
+import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
 
-	private boolean exceptionHandler = false;
+@ApplicationScoped
+public class ShutdownSimple {
 
-	private boolean exceptionHandlerIllegalArgument1 = false;
-
-	private boolean exceptionHandlerIllegalArgument2 = false;
-
-	private boolean exceptionHandlerIllegalArgument3 = false;
-
-	public boolean isExceptionHandler() {
-		return exceptionHandler;
+	private List<Integer> listShutdown = new ArrayList<Integer>();
+	
+	public List<Integer> getListShutdown() {
+		return listShutdown;
+	}
+	
+	@Shutdown
+	public void unloadWithoutPriorityFirst() {
+		listShutdown.add(3);
 	}
 
-	public boolean isExceptionHandlerIllegalArgument1() {
-		return exceptionHandlerIllegalArgument1;
+	@Shutdown
+	public void unloadWithoutPrioritySecond() {
+		listShutdown.add(2);
 	}
 
-	public boolean isExceptionHandlerIllegalArgument2() {
-		return exceptionHandlerIllegalArgument2;
-	}
-
-	public boolean isExceptionHandlerIllegalArgument3() {
-		return exceptionHandlerIllegalArgument3;
-	}
-
-	@SuppressWarnings("null")
-	public void throwExceptionWithHandler() {
-		String txt = null;
-		txt.toString();
-	}
-
-	@SuppressWarnings("unused")
-	public void throwExceptionWithoutHandler() {
-		int result = 4 / 0;
-	}
-
-	public void throwIllegalArgumentException() {
-		throw new IllegalArgumentException();
-	}
-
-	public void throwNoSuchElementException() {
-		throw new NoSuchElementException();
-	}
-
-	@ExceptionHandler
-	public void handler(NullPointerException cause) {
-		exceptionHandler = true;
-	}
-
-	@ExceptionHandler
-	public void handler1(IllegalArgumentException cause) {
-		exceptionHandlerIllegalArgument1 = true;
-	}
-
-	@ExceptionHandler
-	public void handler3(IllegalArgumentException cause) {
-		exceptionHandlerIllegalArgument3 = true;
-	}
-
-	@ExceptionHandler
-	public void handler2(IllegalArgumentException cause) {
-		exceptionHandlerIllegalArgument2 = true;
-	}
-
-	@ExceptionHandler
-	@SuppressWarnings("unused")
-	public void handlerWithError(NoSuchElementException cause) {
-		int a = 2 / 0;
+	@Shutdown
+	public void unloadWithoutPriorityThird() {
+		listShutdown.add(1);
 	}
 }

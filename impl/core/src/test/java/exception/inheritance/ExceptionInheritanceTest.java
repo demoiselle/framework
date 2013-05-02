@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package exception.inheritance;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -61,13 +61,13 @@ public class ExceptionInheritanceTest {
 	}
 
 	@Test
-	public void testExceptionInheritanceSuperClass() {
+	public void exceptionHandlerSuperClass() {
 		exceptionInheritance.throwNullPointerException();
 		assertEquals(true, exceptionInheritance.isHandlerSuperClass());
 	}
 
 	@Test
-	public void testExceptionInheritanceClass() {
+	public void exceptionHandlerClass() {
 		exceptionInheritance.throwArithmeticException();
 		assertEquals(false, exceptionInheritance.isHandlerSuperClass());
 		assertEquals(true, exceptionInheritance.isHandlerClass());

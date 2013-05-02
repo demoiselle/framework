@@ -34,9 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package lifecycle;
-
-import javax.inject.Inject;
+package resourcebundle.parameter;
 
 import junit.framework.Assert;
 
@@ -47,37 +45,71 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
-import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
-public class LifecycleSimpleTest {
+public class ResourceBundleWithParameterTest {
 
-	@Inject
-	private LifecycleSimple simpleClass;
-	
+	private ResourceBundleWithParameter bundleCustom;
+
+	private static final String PATH = "src/test/resources/resourcebundle/parameter/";
+
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(LifecycleSimpleTest.class);
+		JavaArchive deployment = Tests.createDeployment(ResourceBundleWithParameterTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "messages.properties"), "messages.properties");
+
 		return deployment;
 	}
 
 	@Test
-	public void testStartup() {
-		Beans.getBeanManager().fireEvent(new AfterStartupProccess() {
-		});
-		
-		Assert.assertEquals(true, simpleClass.isStartup());
+	public void loadKeyWithOneParameter() {
+		bundleCustom = Beans.getReference(ResourceBundleWithParameter.class);
+		String expected = "Mensagem número 1";
+		String value = bundleCustom.getBundle().getString("messageOneParameter", "1");
+		Assert.assertEquals(expected, value);
 	}
 
 	@Test
-	public void testShutdown() {
-		Beans.getBeanManager().fireEvent(new AfterShutdownProccess() {
-		});
+	public void loadKeyWithTwoParameter() {
+		bundleCustom = Beans.getReference(ResourceBundleWithParameter.class);
+		String expected = "Mensagem número 1 com 2 parâmetros";
+		String value = bundleCustom.getBundle().getString("messageTwoParameter", "1", "2");
+		Assert.assertEquals(expected, value);
+	}
+	
+	@Test
+	public void loadKeyWithoutParameter() {
+		bundleCustom = Beans.getReference(ResourceBundleWithParameter.class);
+		String expected = "Mensagem";
+		String value = bundleCustom.getBundle().getString("messageWithoutParameter", "1", "2", "3");
+		Assert.assertEquals(expected, value);
+	}
+	
+	@Test
+	public void loadKeyWithStringParameter() {
+		bundleCustom = Beans.getReference(ResourceBundleWithParameter.class);
+		String expected = "Mensagem número 1";
+		String value = bundleCustom.getBundle().getString("messageParameterString", "1");
+		Assert.assertNotSame(expected, value);
 		
-		Assert.assertEquals(true, simpleClass.isShutdown());
+		expected = "Mensagem número {numero}";	
+		Assert.assertEquals(expected, value);
 	}
 
-}
+	@Test
+	public void loadKeyWithMoreParameter() {
+		bundleCustom = Beans.getReference(ResourceBundleWithParameter.class);
+		String expected = "Mensagem número 1";
+		String value = bundleCustom.getBundle().getString("messageOneParameter", "1", "2", "3");
+		Assert.assertEquals(expected, value);
+	}
 
+	@Test
+	public void loadKeyWithLessParameter() {
+		bundleCustom = Beans.getReference(ResourceBundleWithParameter.class);
+		String expected = "Mensagem número 1 com {1} parâmetros";
+		String value = bundleCustom.getBundle().getString("messageTwoParameter", "1");
+		Assert.assertEquals(expected, value);
+	}
+}

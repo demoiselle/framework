@@ -34,35 +34,18 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
-
-import static junit.framework.Assert.assertEquals;
+package resourcebundle.parameter;
 
 import javax.inject.Inject;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
-import test.Tests;
-
-@RunWith(Arquillian.class)
-public class CustomExceptionTest {
+public class ResourceBundleWithParameter {
 
 	@Inject
-	private CustomExceptionHandler exception;
+	private ResourceBundle bundle;
 
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(CustomExceptionTest.class);
-		return deployment;
-	}
-
-	@Test
-	public void testCustomExceptionHandler() {
-		exception.throwExceptionWithMessage();
-		assertEquals(true, exception.isExceptionHandler());
+	public ResourceBundle getBundle() {
+		return bundle;
 	}
 }

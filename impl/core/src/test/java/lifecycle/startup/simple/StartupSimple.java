@@ -34,57 +34,36 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package lifecycle.startup.simple;
 
-import static junit.framework.Assert.assertEquals;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import br.gov.frameworkdemoiselle.lifecycle.Startup;
 
-import test.Tests;
+@ApplicationScoped
+public class StartupSimple {
 
-@RunWith(Arquillian.class)
-public class MultiStrategyExceptionHandlerTest {
+	private List<Integer> listStartup = new ArrayList<Integer>();
 
-	@Inject
-	private MultiStrategyExceptionHandler handlerTest;
-
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(OneExceptionTest.class);
-		return deployment;
+	public List<Integer> getListStartup() {
+		return listStartup;
 	}
 
-	@Test
-	public void testExceptionMultiStrategyTryAndHandler() {
-		handlerTest.exceptionMultiStrategyTryAndHandler();
-		assertEquals(true, handlerTest.isExceptionTryCacth());
-		assertEquals(true, handlerTest.isExceptionHandler());
+	@Startup
+	public void loadWithoutPriorityFirst() {
+		listStartup.add(1);
 	}
 
-	@Test
-	public void testExceptionMultiStrategyHandlerAndTry() {
-		handlerTest.exceptionMultiStrategyHandlerAndTry();
-		assertEquals(false, handlerTest.isExceptionTryCacth());
-		assertEquals(true, handlerTest.isExceptionHandler());
+	@Startup
+	public void loadWithoutPrioritySecond() {
+		listStartup.add(3);
 	}
 
-	@Test
-	public void testSameExceptionTwoStrategyHandler() {
-		handlerTest.exceptionTwoHandler();
-		assertEquals(true, handlerTest.isExceptionTryCacth());
-		assertEquals(false, handlerTest.isExceptionHandler());
-	}
-
-	@Test
-	public void testExceptionOneStrategyHandler() {
-		handlerTest.exceptionHandler();
-		assertEquals(false, handlerTest.isExceptionTryCacth());
-		assertEquals(true, handlerTest.isExceptionHandler());
-	}
+	@Startup
+	public void loadWithoutPriorityThird() {
+		listStartup.add(2);
+	}	
 }

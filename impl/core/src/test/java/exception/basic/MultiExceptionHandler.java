@@ -34,59 +34,68 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package lifecycle;
+package exception.basic;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.NoSuchElementException;
 
-import javax.enterprise.context.ApplicationScoped;
+import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
+import br.gov.frameworkdemoiselle.stereotype.Controller;
 
-import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
-import br.gov.frameworkdemoiselle.lifecycle.Startup;
+@Controller
+public class MultiExceptionHandler {
 
-@ApplicationScoped
-public class LifecycleWithoutPriority {
+	private boolean exceptionHandlerIllegalArgument1 = false;
 
-	private List<Integer> priorityStartup = new ArrayList<Integer>();
+	private boolean exceptionHandlerIllegalArgument2 = false;
 
-	private List<Integer> priorityShutdown = new ArrayList<Integer>();
+	private boolean exceptionHandlerIllegalArgument3 = false;
 
-	public List<Integer> getPriorityStartup() {
-		return priorityStartup;
+	public boolean isExceptionHandlerIllegalArgument1() {
+		return exceptionHandlerIllegalArgument1;
 	}
 
-	public List<Integer> getPriorityShutdown() {
-		return priorityShutdown;
+	public boolean isExceptionHandlerIllegalArgument2() {
+		return exceptionHandlerIllegalArgument2;
 	}
 
-	@Startup
-	public void loadWithoutPriorityFirst() {
-		priorityStartup.add(1);
+	public boolean isExceptionHandlerIllegalArgument3() {
+		return exceptionHandlerIllegalArgument3;
 	}
 
-	@Startup
-	public void loadWithoutPrioritySecond() {
-		priorityStartup.add(3);
+	@SuppressWarnings("null")
+	public void throwExceptionWithHandler() {
+		String txt = null;
+		txt.toString();
 	}
 
-	@Startup
-	public void loadWithoutPriorityThird() {
-		priorityStartup.add(2);
+
+
+	public void throwIllegalArgumentException() {
+		throw new IllegalArgumentException();
 	}
 
-	@Shutdown
-	public void unloadWithoutPriorityFirst() {
-		priorityShutdown.add(3);
+	public void throwNoSuchElementException() {
+		throw new NoSuchElementException();
 	}
 
-	@Shutdown
-	public void unloadWithoutPrioritySecond() {
-		priorityShutdown.add(2);
+	@ExceptionHandler
+	public void handler1(IllegalArgumentException cause) {
+		exceptionHandlerIllegalArgument1 = true;
 	}
 
-	@Shutdown
-	public void unloadWithoutPriorityThird() {
-		priorityShutdown.add(1);
+	@ExceptionHandler
+	public void handler3(IllegalArgumentException cause) {
+		exceptionHandlerIllegalArgument3 = true;
 	}
 
+	@ExceptionHandler
+	public void handler2(IllegalArgumentException cause) {
+		exceptionHandlerIllegalArgument2 = true;
+	}
+
+	@ExceptionHandler
+	@SuppressWarnings("unused")
+	public void handlerWithError(NoSuchElementException cause) {
+		int a = 2 / 0;
+	}
 }

@@ -34,56 +34,35 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package lifecycle;
+package exception.custom;
 
-import static br.gov.frameworkdemoiselle.annotation.Priority.MAX_PRIORITY;
-import static br.gov.frameworkdemoiselle.annotation.Priority.MIN_PRIORITY;
+import static junit.framework.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.inject.Inject;
 
-import javax.enterprise.context.ApplicationScoped;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
-import br.gov.frameworkdemoiselle.lifecycle.Startup;
+import test.Tests;
 
-@ApplicationScoped
-public class LifecycleClassWithPriority {
+@RunWith(Arquillian.class)
+public class CustomExceptionTest {
 
-	private List<Integer> priorityStartup = new ArrayList<Integer>();
+	@Inject
+	private CustomExceptionHandler exception;
 
-	private List<Integer> priorityShutdown = new ArrayList<Integer>();
-
-	public List<Integer> getPriorityStartup() {
-		return priorityStartup;
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(CustomExceptionTest.class);
+		return deployment;
 	}
 
-	public List<Integer> getPriorityShutdown() {
-		return priorityShutdown;
-	}
-
-	@Startup
-	@Priority(MIN_PRIORITY)
-	public void loadWithMinPriority() {
-		priorityStartup.add(2);
-	}
-
-	@Startup
-	@Priority(MAX_PRIORITY)
-	public void loadWithMaxPriority() {
-		priorityStartup.add(1);
-	}
-
-	@Shutdown
-	@Priority(MIN_PRIORITY)
-	public void unloadWithMinPriority() {
-		priorityShutdown.add(1);
-	}
-
-	@Shutdown
-	@Priority(MAX_PRIORITY)
-	public void unloadWithMaxPriority() {
-		priorityShutdown.add(2);
+	@Test
+	public void customExceptionHandler() {
+		exception.throwExceptionWithMessage();
+		assertEquals(true, exception.isExceptionHandler());
 	}
 }

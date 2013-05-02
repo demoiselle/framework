@@ -34,47 +34,52 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package resourcebundle.file.custom;
+package lifecycle.shutdown.priority;
 
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
+import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
-public class ResourceBundleCustomTest {
+public class ShutdownWithPriorityTest {
 
-	private ResourceBundleCustom bundleCustom;
+	@Inject
+	private ShutdownWithPriority shutdownWithPriority;
 
-	private static final String PATH = "src/test/resources/resourcebundle/file/custom/";
+	List<Integer> expected = new ArrayList<Integer>();
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(ResourceBundleCustomTest.class);
-		deployment.addAsResource(Tests.createFileAsset(PATH + "mymessages.properties"), "mymessages.properties");
-		deployment.addAsResource(Tests.createFileAsset(PATH + "mymessages_en.properties"), "mymessages_en.properties");
-
+		JavaArchive deployment = Tests.createDeployment(ShutdownWithPriorityTest.class);
 		return deployment;
 	}
 
-	@Test
-	public void loadResourceFileCustom() {
-		bundleCustom = Beans.getReference(ResourceBundleCustom.class);
-		Assert.assertEquals("mensagem em Portugues", bundleCustom.getMessage());
+	@Before
+	public void fireEvent() {
+		Beans.getBeanManager().fireEvent(new AfterShutdownProccess() {
+		});
 	}
 
 	@Test
-	public void loadResourceFileCustomEnglish() {
-		Locale.setDefault(Locale.ENGLISH);
-		bundleCustom = Beans.getReference(ResourceBundleCustom.class);
-		Assert.assertEquals("message in English", bundleCustom.getMessage());
+	public void shutdownWithPriority() {
+		expected.add(1);
+		expected.add(2);
+		expected.add(3);
+
+		Assert.assertEquals(expected, shutdownWithPriority.getListShutdown());
 	}
 }

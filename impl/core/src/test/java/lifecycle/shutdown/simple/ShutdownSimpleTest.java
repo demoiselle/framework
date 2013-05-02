@@ -34,48 +34,52 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package lifecycle.shutdown.simple;
 
-import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
-import br.gov.frameworkdemoiselle.stereotype.Controller;
+import java.util.ArrayList;
+import java.util.List;
 
-@Controller
-public class MultiException {
+import javax.inject.Inject;
 
-	private boolean nullPointerExceptionHandler = false;
+import junit.framework.Assert;
 
-	private boolean arithmeticExceptionHandler = false;
-	
-	public boolean isNullPointerExceptionHandler() {
-		return nullPointerExceptionHandler;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import test.Tests;
+import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
+import br.gov.frameworkdemoiselle.util.Beans;
+
+@RunWith(Arquillian.class)
+public class ShutdownSimpleTest {
+
+	@Inject
+	private ShutdownSimple shutdownSimple;
+
+	List<Integer> expected = new ArrayList<Integer>();
+
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(ShutdownSimpleTest.class);
+		return deployment;
 	}
 
-	public boolean isArithmeticExceptionHandler() {
-		return arithmeticExceptionHandler;
-	}
-	
-	public void throwNullPointerException() {
-		throw new NullPointerException();
+	@Before
+	public void fireEvent() {
+		Beans.getBeanManager().fireEvent(new AfterShutdownProccess() {
+		});
 	}
 
-	public void throwArithmeticException() {
-		throw new ArithmeticException();
-	}
-	
-	@SuppressWarnings({ "null", "unused" })
-	public void throwTwoException() {
-		String txt = null;
-		txt.toString();
-		int result = 4 / 0;
-	}
+	@Test
+	public void testShutdown() {
+		expected.add(3);
+		expected.add(2);
+		expected.add(1);
 
-	@ExceptionHandler
-	public void handler(NullPointerException cause) {
-		nullPointerExceptionHandler = true;
+		Assert.assertEquals(expected, shutdownSimple.getListShutdown());
 	}
-
-	@ExceptionHandler
-	public void handler(ArithmeticException cause) {
-		arithmeticExceptionHandler = true;
-	}	
 }

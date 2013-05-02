@@ -34,21 +34,30 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
-
-import java.awt.geom.IllegalPathStateException;
+package exception.custom;
 
 import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
 import br.gov.frameworkdemoiselle.stereotype.Controller;
 
 @Controller
-public class ExceptionHandlerTwoParameter {
+public class CustomExceptionHandler {
 
-	public void throwIllegalPathException() {
-		throw new IllegalPathStateException();
+	private boolean exceptionHandler = false;
+
+	public boolean isExceptionHandler() {
+		return exceptionHandler;
 	}
 
+	public void setExceptionHandler(boolean exceptionHandler) {
+		this.exceptionHandler = exceptionHandler;
+	}	
+	
+	public void throwExceptionWithMessage() {
+		throw new CustomException();
+	}
+	
 	@ExceptionHandler
-	public void handler(IllegalPathStateException cause, IllegalStateException cause2) {
+	public void handler(CustomException exception) {
+		setExceptionHandler(true);
 	}
 }

@@ -34,47 +34,43 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package resourcebundle.file.custom;
+package lifecycle.startup.priority;
 
-import java.util.Locale;
+import static br.gov.frameworkdemoiselle.annotation.Priority.MAX_PRIORITY;
+import static br.gov.frameworkdemoiselle.annotation.Priority.MIN_PRIORITY;
 
-import junit.framework.Assert;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import javax.enterprise.context.ApplicationScoped;
 
-import test.Tests;
-import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.lifecycle.Startup;
 
-@RunWith(Arquillian.class)
-public class ResourceBundleCustomTest {
+@ApplicationScoped
+public class StartupWithPriority {
 
-	private ResourceBundleCustom bundleCustom;
+	private List<Integer> priorityStartup = new ArrayList<Integer>();
 
-	private static final String PATH = "src/test/resources/resourcebundle/file/custom/";
-
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(ResourceBundleCustomTest.class);
-		deployment.addAsResource(Tests.createFileAsset(PATH + "mymessages.properties"), "mymessages.properties");
-		deployment.addAsResource(Tests.createFileAsset(PATH + "mymessages_en.properties"), "mymessages_en.properties");
-
-		return deployment;
+	public List<Integer> getPriorityStartup() {
+		return priorityStartup;
 	}
 
-	@Test
-	public void loadResourceFileCustom() {
-		bundleCustom = Beans.getReference(ResourceBundleCustom.class);
-		Assert.assertEquals("mensagem em Portugues", bundleCustom.getMessage());
+	@Startup
+	@Priority(MIN_PRIORITY)
+	public void loadWithMinPriority() {
+		priorityStartup.add(3);
 	}
 
-	@Test
-	public void loadResourceFileCustomEnglish() {
-		Locale.setDefault(Locale.ENGLISH);
-		bundleCustom = Beans.getReference(ResourceBundleCustom.class);
-		Assert.assertEquals("message in English", bundleCustom.getMessage());
+	@Startup
+	@Priority(1)
+	public void loadWithPriority1() {
+		priorityStartup.add(2);
+	}
+
+	@Startup
+	@Priority(MAX_PRIORITY)
+	public void loadWithMaxPriority() {
+		priorityStartup.add(1);
 	}
 }

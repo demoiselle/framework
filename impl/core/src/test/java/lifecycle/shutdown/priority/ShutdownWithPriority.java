@@ -34,61 +34,43 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package lifecycle;
+package lifecycle.shutdown.priority;
+
+import static br.gov.frameworkdemoiselle.annotation.Priority.MAX_PRIORITY;
+import static br.gov.frameworkdemoiselle.annotation.Priority.MIN_PRIORITY;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
 
-import junit.framework.Assert;
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+@ApplicationScoped
+public class ShutdownWithPriority {
 
-import test.Tests;
-import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
-import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
-import br.gov.frameworkdemoiselle.util.Beans;
-
-@RunWith(Arquillian.class)
-public class LifecycleWithoutPriorityTest {
-
-	@Inject
-	private LifecycleWithoutPriority lifecycleWithoutPriority;
-
-	List<Integer> expected = new ArrayList<Integer>();
-
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(LifecycleWithoutPriorityTest.class);
-		return deployment;
+	private List<Integer> listShutdown = new ArrayList<Integer>();
+	
+	public List<Integer> getListShutdown() {
+		return listShutdown;
 	}
 
-	@Test
-	public void testStartup() {
-		Beans.getBeanManager().fireEvent(new AfterStartupProccess() {
-		});
-		expected.add(1);
-		expected.add(3);
-		expected.add(2);
-
-		Assert.assertEquals(expected, lifecycleWithoutPriority.getPriorityStartup());
+	@Shutdown
+	@Priority(MIN_PRIORITY)
+	public void unloadWithMinPriority() {
+		listShutdown.add(3);
 	}
 
-	@Test
-	public void testShutdown() {
-		Beans.getBeanManager().fireEvent(new AfterShutdownProccess() {
-		});
-		expected.clear();
-		expected.add(3);
-		expected.add(2);
-		expected.add(1);
-
-		Assert.assertEquals(expected, lifecycleWithoutPriority.getPriorityShutdown());
+	@Shutdown
+	@Priority(1)
+	public void unloadWithPriority1() {
+		listShutdown.add(2);
 	}
-
+	
+	@Shutdown
+	@Priority(MAX_PRIORITY)
+	public void unloadWithMaxPriority() {
+		listShutdown.add(1);
+	}
 }

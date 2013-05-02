@@ -34,47 +34,52 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package resourcebundle.file.custom;
+package exception.basic;
 
-import java.util.Locale;
+import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
+import br.gov.frameworkdemoiselle.stereotype.Controller;
 
-import junit.framework.Assert;
+@Controller
+public class SimpleExceptionHandler {
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+	private boolean nullPointerExceptionHandler = false;
 
-import test.Tests;
-import br.gov.frameworkdemoiselle.util.Beans;
-
-@RunWith(Arquillian.class)
-public class ResourceBundleCustomTest {
-
-	private ResourceBundleCustom bundleCustom;
-
-	private static final String PATH = "src/test/resources/resourcebundle/file/custom/";
-
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(ResourceBundleCustomTest.class);
-		deployment.addAsResource(Tests.createFileAsset(PATH + "mymessages.properties"), "mymessages.properties");
-		deployment.addAsResource(Tests.createFileAsset(PATH + "mymessages_en.properties"), "mymessages_en.properties");
-
-		return deployment;
+	private boolean arithmeticExceptionHandler = false;
+	
+	public boolean isNullPointerExceptionHandler() {
+		return nullPointerExceptionHandler;
 	}
 
-	@Test
-	public void loadResourceFileCustom() {
-		bundleCustom = Beans.getReference(ResourceBundleCustom.class);
-		Assert.assertEquals("mensagem em Portugues", bundleCustom.getMessage());
+	public boolean isArithmeticExceptionHandler() {
+		return arithmeticExceptionHandler;
+	}
+	
+	public void throwNullPointerException() {
+		throw new NullPointerException();
 	}
 
-	@Test
-	public void loadResourceFileCustomEnglish() {
-		Locale.setDefault(Locale.ENGLISH);
-		bundleCustom = Beans.getReference(ResourceBundleCustom.class);
-		Assert.assertEquals("message in English", bundleCustom.getMessage());
+	public void throwArithmeticException() {
+		throw new ArithmeticException();
 	}
+	
+	public void throwExceptionWithoutHandler() {
+		throw new IllegalArgumentException();
+	}	
+	
+	@SuppressWarnings({ "null", "unused" })
+	public void throwTwoException() {
+		String txt = null;
+		txt.toString();
+		int result = 4 / 0;
+	}
+
+	@ExceptionHandler
+	public void handler(NullPointerException cause) {
+		nullPointerExceptionHandler = true;
+	}
+
+	@ExceptionHandler
+	public void handler(ArithmeticException cause) {
+		arithmeticExceptionHandler = true;
+	}	
 }

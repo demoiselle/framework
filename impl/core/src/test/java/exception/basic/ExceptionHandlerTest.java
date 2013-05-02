@@ -34,14 +34,12 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package lifecycle;
+package exception.basic;
 
-import java.util.ArrayList;
-import java.util.List;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 
 import javax.inject.Inject;
-
-import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -50,42 +48,75 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
-import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
-import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.DemoiselleException;
 
 @RunWith(Arquillian.class)
-public class LifecycleWithPriorityTest {
+public class ExceptionHandlerTest {
 
 	@Inject
-	private LifecycleClassWithPriority lifecycleClassWithPriority;
+	private SimpleExceptionHandler exceptionHandler;
+	
+	@Inject
+	private MultiExceptionHandler multiExceptionHandler;
 
-	List<Integer> expected = new ArrayList<Integer>();
+	@Inject
+	private ExceptionHandlerTwoParameter exceptionTwoParameter;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(LifecycleWithPriorityTest.class);
+		JavaArchive deployment = Tests.createDeployment(ExceptionHandlerTest.class);
 		return deployment;
 	}
 
 	@Test
-	public void testStartup() {
-		Beans.getBeanManager().fireEvent(new AfterStartupProccess() {
-		});
-		expected.add(1);
-		expected.add(2);
+	public void exceptionWithHandler() {
+		exceptionHandler.throwArithmeticException();
+		exceptionHandler.throwNullPointerException();
+		assertEquals(true, exceptionHandler.isArithmeticExceptionHandler());
+		assertEquals(true, exceptionHandler.isArithmeticExceptionHandler());
+	}
+	
+	@Test
+	public void exceptionWithoutHandler() {
+		try {
+			exceptionHandler.throwExceptionWithoutHandler();
+			fail();
+		} catch (Exception cause) {
+			assertEquals(IllegalArgumentException.class, cause.getClass());
+		}
+	}	
 
-		Assert.assertEquals(expected, lifecycleClassWithPriority.getPriorityStartup());
+	@Test
+	public void twoExceptionOneMethod() {
+		exceptionHandler.throwTwoException();
+		assertEquals(true, exceptionHandler.isNullPointerExceptionHandler());
+		assertEquals(false, exceptionHandler.isArithmeticExceptionHandler());
 	}
 
 	@Test
-	public void testShutdown() {
-		Beans.getBeanManager().fireEvent(new AfterShutdownProccess() {
-		});
-		expected.clear();
-		expected.add(2);
-		expected.add(1);
-
-		Assert.assertEquals(expected, lifecycleClassWithPriority.getPriorityShutdown());
+	public void exceptionWithMultiHandler() {
+		multiExceptionHandler.throwIllegalArgumentException();
+		assertEquals(false, multiExceptionHandler.isExceptionHandlerIllegalArgument1());
+		assertEquals(true, multiExceptionHandler.isExceptionHandlerIllegalArgument2());
+		assertEquals(false, multiExceptionHandler.isExceptionHandlerIllegalArgument3());
 	}
+
+	@Test
+	public void exceptionHandlerWithException() {
+		try {
+			multiExceptionHandler.throwNoSuchElementException();
+		} catch (Exception e) {
+			assertEquals(ArithmeticException.class, e.getClass());
+		}
+	}
+	
+	@Test
+	public void exceptionHandlerWithTwoParameter() {
+		try {
+			exceptionTwoParameter.throwIllegalPathException();
+			fail();
+		} catch (Exception e) {
+			assertEquals(DemoiselleException.class, e.getClass());
+		}
+	}	
 }

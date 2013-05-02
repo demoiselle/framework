@@ -67,7 +67,7 @@ public class ResourceBundleEmptyTest {
 	}
 
 	@Test
-	public void testResourceEmpty() {
+	public void loadEmptyFileResource() {
 		bundleDefault = Beans.getReference(ResourceBundleEmpty.class);
 		try {
 			bundleDefault.getMessage();
