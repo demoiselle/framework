@@ -34,13 +34,35 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package exception.custom;
 
-import br.gov.frameworkdemoiselle.exception.ApplicationException;
+import static junit.framework.Assert.assertEquals;
 
-@ApplicationException
-public class CustomException extends RuntimeException {
+import javax.inject.Inject;
 
-	private static final long serialVersionUID = 1L;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import test.Tests;
+
+@RunWith(Arquillian.class)
+public class CustomExceptionTest {
+
+	@Inject
+	private CustomExceptionHandler exception;
+
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(CustomExceptionTest.class);
+		return deployment;
+	}
+
+	@Test
+	public void customExceptionHandler() {
+		exception.throwExceptionWithMessage();
+		assertEquals(true, exception.isExceptionHandler());
+	}
 }

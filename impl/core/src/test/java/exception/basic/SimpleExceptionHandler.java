@@ -34,21 +34,52 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
-
-import java.awt.geom.IllegalPathStateException;
+package exception.basic;
 
 import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
 import br.gov.frameworkdemoiselle.stereotype.Controller;
 
 @Controller
-public class ExceptionHandlerTwoParameter {
+public class SimpleExceptionHandler {
 
-	public void throwIllegalPathException() {
-		throw new IllegalPathStateException();
+	private boolean nullPointerExceptionHandler = false;
+
+	private boolean arithmeticExceptionHandler = false;
+	
+	public boolean isNullPointerExceptionHandler() {
+		return nullPointerExceptionHandler;
+	}
+
+	public boolean isArithmeticExceptionHandler() {
+		return arithmeticExceptionHandler;
+	}
+	
+	public void throwNullPointerException() {
+		throw new NullPointerException();
+	}
+
+	public void throwArithmeticException() {
+		throw new ArithmeticException();
+	}
+	
+	public void throwExceptionWithoutHandler() {
+		throw new IllegalArgumentException();
+	}	
+	
+	@SuppressWarnings({ "null", "unused" })
+	public void throwTwoException() {
+		String txt = null;
+		txt.toString();
+		int result = 4 / 0;
 	}
 
 	@ExceptionHandler
-	public void handler(IllegalPathStateException cause, IllegalStateException cause2) {
+	public void handler(NullPointerException cause) {
+		nullPointerExceptionHandler = true;
 	}
+
+	@ExceptionHandler
+	public void handler(ArithmeticException cause) {
+		arithmeticExceptionHandler = true;
+	}	
 }

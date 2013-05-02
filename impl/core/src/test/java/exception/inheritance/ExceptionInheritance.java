@@ -34,60 +34,42 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package exception.inheritance;
 
-import javax.inject.Inject;
+import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
+import br.gov.frameworkdemoiselle.stereotype.Controller;
 
-import static junit.framework.Assert.fail;
-import static junit.framework.Assert.assertEquals;
+@Controller
+public class ExceptionInheritance {
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+	private boolean handlerSuperClass = false;
 
-import br.gov.frameworkdemoiselle.DemoiselleException;
+	private boolean handlerClass = false;
 
-import test.Tests;
-
-@RunWith(Arquillian.class)
-public class MultiExceptionTest {
-
-	@Inject
-	private MultiException multiException;
-
-	@Inject
-	private ExceptionHandlerTwoParameter exceptionTwoParameter;
-
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(MultiExceptionTest.class);
-		return deployment;
+	public boolean isHandlerSuperClass() {
+		return handlerSuperClass;
 	}
 
-	@Test
-	public void testTwoExceptionTwoMethod() {
-		multiException.throwArithmeticException();
-		multiException.throwNullPointerException();
-		assertEquals(true, multiException.isArithmeticExceptionHandler());
-		assertEquals(true, multiException.isArithmeticExceptionHandler());
+	public boolean isHandlerClass() {
+		return handlerClass;
 	}
 
-	@Test
-	public void testTwoExceptionOneMethod() {
-		multiException.throwTwoException();
-		assertEquals(true, multiException.isNullPointerExceptionHandler());
-		assertEquals(false, multiException.isArithmeticExceptionHandler());
+	public void throwNullPointerException() {
+		throw new NullPointerException();
 	}
 
-	@Test
-	public void testExceptionHandlerWithTwoParameter() {
-		try {
-			exceptionTwoParameter.throwIllegalPathException();
-			fail();
-		} catch (Exception e) {
-			assertEquals(DemoiselleException.class, e.getClass());
-		}
+	public void throwArithmeticException() {
+		throw new ArithmeticException();
 	}
+
+	@ExceptionHandler
+	public void handle(ArithmeticException e) {
+		handlerClass = true;
+	}
+
+	@ExceptionHandler
+	public void handle(RuntimeException e) {
+		handlerSuperClass = true;
+	}
+
 }

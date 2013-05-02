@@ -34,35 +34,68 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package exception.basic;
 
-import static junit.framework.Assert.assertEquals;
+import java.util.NoSuchElementException;
 
-import javax.inject.Inject;
+import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
+import br.gov.frameworkdemoiselle.stereotype.Controller;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+@Controller
+public class MultiExceptionHandler {
 
-import test.Tests;
+	private boolean exceptionHandlerIllegalArgument1 = false;
 
-@RunWith(Arquillian.class)
-public class CustomExceptionTest {
+	private boolean exceptionHandlerIllegalArgument2 = false;
 
-	@Inject
-	private CustomExceptionHandler exception;
+	private boolean exceptionHandlerIllegalArgument3 = false;
 
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(CustomExceptionTest.class);
-		return deployment;
+	public boolean isExceptionHandlerIllegalArgument1() {
+		return exceptionHandlerIllegalArgument1;
 	}
 
-	@Test
-	public void testCustomExceptionHandler() {
-		exception.throwExceptionWithMessage();
-		assertEquals(true, exception.isExceptionHandler());
+	public boolean isExceptionHandlerIllegalArgument2() {
+		return exceptionHandlerIllegalArgument2;
+	}
+
+	public boolean isExceptionHandlerIllegalArgument3() {
+		return exceptionHandlerIllegalArgument3;
+	}
+
+	@SuppressWarnings("null")
+	public void throwExceptionWithHandler() {
+		String txt = null;
+		txt.toString();
+	}
+
+
+
+	public void throwIllegalArgumentException() {
+		throw new IllegalArgumentException();
+	}
+
+	public void throwNoSuchElementException() {
+		throw new NoSuchElementException();
+	}
+
+	@ExceptionHandler
+	public void handler1(IllegalArgumentException cause) {
+		exceptionHandlerIllegalArgument1 = true;
+	}
+
+	@ExceptionHandler
+	public void handler3(IllegalArgumentException cause) {
+		exceptionHandlerIllegalArgument3 = true;
+	}
+
+	@ExceptionHandler
+	public void handler2(IllegalArgumentException cause) {
+		exceptionHandlerIllegalArgument2 = true;
+	}
+
+	@ExceptionHandler
+	@SuppressWarnings("unused")
+	public void handlerWithError(NoSuchElementException cause) {
+		int a = 2 / 0;
 	}
 }

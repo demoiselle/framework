@@ -34,48 +34,42 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package exception.inheritance;
 
-import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
-import br.gov.frameworkdemoiselle.stereotype.Controller;
+import static junit.framework.Assert.assertEquals;
 
-@Controller
-public class MultiException {
+import javax.inject.Inject;
 
-	private boolean nullPointerExceptionHandler = false;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	private boolean arithmeticExceptionHandler = false;
-	
-	public boolean isNullPointerExceptionHandler() {
-		return nullPointerExceptionHandler;
+import test.Tests;
+
+@RunWith(Arquillian.class)
+public class ExceptionInheritanceTest {
+
+	@Inject
+	private ExceptionInheritance exceptionInheritance;
+
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(ExceptionInheritanceTest.class);
+		return deployment;
 	}
 
-	public boolean isArithmeticExceptionHandler() {
-		return arithmeticExceptionHandler;
-	}
-	
-	public void throwNullPointerException() {
-		throw new NullPointerException();
+	@Test
+	public void exceptionHandlerSuperClass() {
+		exceptionInheritance.throwNullPointerException();
+		assertEquals(true, exceptionInheritance.isHandlerSuperClass());
 	}
 
-	public void throwArithmeticException() {
-		throw new ArithmeticException();
+	@Test
+	public void exceptionHandlerClass() {
+		exceptionInheritance.throwArithmeticException();
+		assertEquals(false, exceptionInheritance.isHandlerSuperClass());
+		assertEquals(true, exceptionInheritance.isHandlerClass());
 	}
-	
-	@SuppressWarnings({ "null", "unused" })
-	public void throwTwoException() {
-		String txt = null;
-		txt.toString();
-		int result = 4 / 0;
-	}
-
-	@ExceptionHandler
-	public void handler(NullPointerException cause) {
-		nullPointerExceptionHandler = true;
-	}
-
-	@ExceptionHandler
-	public void handler(ArithmeticException cause) {
-		arithmeticExceptionHandler = true;
-	}	
 }

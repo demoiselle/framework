@@ -34,9 +34,10 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package exception.basic;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 
 import javax.inject.Inject;
 
@@ -47,29 +48,75 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
+import br.gov.frameworkdemoiselle.DemoiselleException;
 
 @RunWith(Arquillian.class)
-public class ExceptionInheritanceTest {
+public class ExceptionHandlerTest {
 
 	@Inject
-	private ExceptionInheritance exceptionInheritance;
+	private SimpleExceptionHandler exceptionHandler;
+	
+	@Inject
+	private MultiExceptionHandler multiExceptionHandler;
+
+	@Inject
+	private ExceptionHandlerTwoParameter exceptionTwoParameter;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(ExceptionInheritanceTest.class);
+		JavaArchive deployment = Tests.createDeployment(ExceptionHandlerTest.class);
 		return deployment;
 	}
 
 	@Test
-	public void testExceptionInheritanceSuperClass() {
-		exceptionInheritance.throwNullPointerException();
-		assertEquals(true, exceptionInheritance.isHandlerSuperClass());
+	public void exceptionWithHandler() {
+		exceptionHandler.throwArithmeticException();
+		exceptionHandler.throwNullPointerException();
+		assertEquals(true, exceptionHandler.isArithmeticExceptionHandler());
+		assertEquals(true, exceptionHandler.isArithmeticExceptionHandler());
+	}
+	
+	@Test
+	public void exceptionWithoutHandler() {
+		try {
+			exceptionHandler.throwExceptionWithoutHandler();
+			fail();
+		} catch (Exception cause) {
+			assertEquals(IllegalArgumentException.class, cause.getClass());
+		}
+	}	
+
+	@Test
+	public void twoExceptionOneMethod() {
+		exceptionHandler.throwTwoException();
+		assertEquals(true, exceptionHandler.isNullPointerExceptionHandler());
+		assertEquals(false, exceptionHandler.isArithmeticExceptionHandler());
 	}
 
 	@Test
-	public void testExceptionInheritanceClass() {
-		exceptionInheritance.throwArithmeticException();
-		assertEquals(false, exceptionInheritance.isHandlerSuperClass());
-		assertEquals(true, exceptionInheritance.isHandlerClass());
+	public void exceptionWithMultiHandler() {
+		multiExceptionHandler.throwIllegalArgumentException();
+		assertEquals(false, multiExceptionHandler.isExceptionHandlerIllegalArgument1());
+		assertEquals(true, multiExceptionHandler.isExceptionHandlerIllegalArgument2());
+		assertEquals(false, multiExceptionHandler.isExceptionHandlerIllegalArgument3());
 	}
+
+	@Test
+	public void exceptionHandlerWithException() {
+		try {
+			multiExceptionHandler.throwNoSuchElementException();
+		} catch (Exception e) {
+			assertEquals(ArithmeticException.class, e.getClass());
+		}
+	}
+	
+	@Test
+	public void exceptionHandlerWithTwoParameter() {
+		try {
+			exceptionTwoParameter.throwIllegalPathException();
+			fail();
+		} catch (Exception e) {
+			assertEquals(DemoiselleException.class, e.getClass());
+		}
+	}	
 }

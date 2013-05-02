@@ -34,30 +34,13 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package exception.custom;
 
-import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
-import br.gov.frameworkdemoiselle.stereotype.Controller;
+import br.gov.frameworkdemoiselle.exception.ApplicationException;
 
-@Controller
-public class CustomExceptionHandler {
+@ApplicationException
+public class CustomException extends RuntimeException {
 
-	private boolean exceptionHandler = false;
+	private static final long serialVersionUID = 1L;
 
-	public boolean isExceptionHandler() {
-		return exceptionHandler;
-	}
-
-	public void setExceptionHandler(boolean exceptionHandler) {
-		this.exceptionHandler = exceptionHandler;
-	}	
-	
-	public void throwExceptionWithMessage() {
-		throw new CustomException();
-	}
-	
-	@ExceptionHandler
-	public void handler(CustomException exception) {
-		setExceptionHandler(true);
-	}
 }

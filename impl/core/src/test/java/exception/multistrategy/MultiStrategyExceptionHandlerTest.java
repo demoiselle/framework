@@ -34,63 +34,51 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package exception.multistrategy;
 
-import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
-import br.gov.frameworkdemoiselle.stereotype.Controller;
+import static junit.framework.Assert.assertEquals;
 
-@Controller
-public class MultiStrategyExceptionHandler {
+import javax.inject.Inject;
 
-	private boolean exceptionHandler = false;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	private boolean exceptionTryCacth = false;
+import test.Tests;
 
-	String txt = null;
+@RunWith(Arquillian.class)
+public class MultiStrategyExceptionHandlerTest {
 
-	public boolean isExceptionHandler() {
-		return exceptionHandler;
+	@Inject
+	private MultiStrategyExceptionHandler handlerTest;
+
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(MultiStrategyExceptionHandlerTest.class);
+		return deployment;
 	}
 
-	public boolean isExceptionTryCacth() {
-		return exceptionTryCacth;
-	}
-
-	@SuppressWarnings("unused")
+	@Test
 	public void exceptionMultiStrategyTryAndHandler() {
-		try {
-			int result = 4 / 0;
-		} catch (ArithmeticException e) {
-			exceptionTryCacth = true;
-		}
-		txt.toString();
+		handlerTest.exceptionMultiStrategyTryAndHandler();
+		assertEquals(true, handlerTest.isExceptionTryCacth());
+		assertEquals(true, handlerTest.isExceptionHandler());
 	}
 
-	@SuppressWarnings("unused")
+	@Test
 	public void exceptionMultiStrategyHandlerAndTry() {
-		txt.toString();
-		try {
-			int result = 4 / 0;
-		} catch (ArithmeticException e) {
-			exceptionTryCacth = true;
-		}
+		handlerTest.exceptionMultiStrategyHandlerAndTry();
+		assertEquals(false, handlerTest.isExceptionTryCacth());
+		assertEquals(true, handlerTest.isExceptionHandler());
 	}
 
-	public void exceptionTwoHandler() {
-		try {
-			txt.toString();
-		} catch (NullPointerException e) {
-			exceptionTryCacth = true;
-		}
-	}
-
-	public void exceptionHandler() {
-		txt.toString();
-	}
-
-	@ExceptionHandler
-	public void handler(NullPointerException cause) {
-		exceptionHandler = true;
+	@Test
+	public void sameExceptionTwoStrategyHandler() {
+		handlerTest.exceptionTwoHandler();
+		assertEquals(true, handlerTest.isExceptionTryCacth());
+		assertEquals(false, handlerTest.isExceptionHandler());
 	}
 
 }

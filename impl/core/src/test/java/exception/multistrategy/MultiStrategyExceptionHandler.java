@@ -34,42 +34,59 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception;
+package exception.multistrategy;
 
 import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
 import br.gov.frameworkdemoiselle.stereotype.Controller;
 
 @Controller
-public class ExceptionInheritance {
+public class MultiStrategyExceptionHandler {
 
-	private boolean handlerSuperClass = false;
+	private boolean exceptionHandler = false;
 
-	private boolean handlerClass = false;
+	private boolean exceptionTryCacth = false;
 
-	public boolean isHandlerSuperClass() {
-		return handlerSuperClass;
+	String txt = null;
+
+	public boolean isExceptionHandler() {
+		return exceptionHandler;
 	}
 
-	public boolean isHandlerClass() {
-		return handlerClass;
+	public boolean isExceptionTryCacth() {
+		return exceptionTryCacth;
 	}
 
-	public void throwNullPointerException() {
-		throw new NullPointerException();
+	@SuppressWarnings("unused")
+	public void exceptionMultiStrategyTryAndHandler() {
+		try {
+			int result = 4 / 0;
+		} catch (ArithmeticException e) {
+			exceptionTryCacth = true;
+		}
+		txt.toString();
 	}
 
-	public void throwArithmeticException() {
-		throw new ArithmeticException();
+	@SuppressWarnings("unused")
+	public void exceptionMultiStrategyHandlerAndTry() {
+		txt.toString();
+		try {
+			int result = 4 / 0;
+		} catch (ArithmeticException e) {
+			exceptionTryCacth = true;
+		}
+	}
+
+	public void exceptionTwoHandler() {
+		try {
+			txt.toString();
+		} catch (NullPointerException e) {
+			exceptionTryCacth = true;
+		}
 	}
 
 	@ExceptionHandler
-	public void handle(ArithmeticException e) {
-		handlerClass = true;
-	}
-
-	@ExceptionHandler
-	public void handle(RuntimeException e) {
-		handlerSuperClass = true;
+	public void handler(NullPointerException cause) {
+		exceptionHandler = true;
 	}
 
 }
