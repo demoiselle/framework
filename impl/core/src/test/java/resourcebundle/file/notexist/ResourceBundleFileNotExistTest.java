@@ -70,6 +70,7 @@ public class ResourceBundleFileNotExistTest {
 			bundleFileNotExist.getMessage();
 			fail();
 		} catch (Exception e) {
+			Assert.assertEquals(RuntimeException.class, e.getClass());
 			Assert.assertEquals(MissingResourceException.class, e.getCause().getClass());
 		}
 	}
