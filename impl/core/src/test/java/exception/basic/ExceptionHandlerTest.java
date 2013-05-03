@@ -41,6 +41,8 @@ import static junit.framework.Assert.fail;
 
 import javax.inject.Inject;
 
+import junit.framework.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -55,12 +57,18 @@ public class ExceptionHandlerTest {
 
 	@Inject
 	private SimpleExceptionHandler exceptionHandler;
-	
+
 	@Inject
 	private MultiExceptionHandler multiExceptionHandler;
 
 	@Inject
 	private ExceptionHandlerTwoParameter exceptionTwoParameter;
+
+	@Inject
+	private ExceptionNested nested;
+	
+	@Inject
+	private ExceptionClassNotAnnotated classNotAnnotated;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
@@ -75,7 +83,7 @@ public class ExceptionHandlerTest {
 		assertEquals(true, exceptionHandler.isArithmeticExceptionHandler());
 		assertEquals(true, exceptionHandler.isArithmeticExceptionHandler());
 	}
-	
+
 	@Test
 	public void exceptionWithoutHandler() {
 		try {
@@ -84,7 +92,7 @@ public class ExceptionHandlerTest {
 		} catch (Exception cause) {
 			assertEquals(IllegalArgumentException.class, cause.getClass());
 		}
-	}	
+	}
 
 	@Test
 	public void twoExceptionOneMethod() {
@@ -102,15 +110,6 @@ public class ExceptionHandlerTest {
 	}
 
 	@Test
-	public void exceptionHandlerWithException() {
-		try {
-			multiExceptionHandler.throwNoSuchElementException();
-		} catch (Exception e) {
-			assertEquals(ArithmeticException.class, e.getClass());
-		}
-	}
-	
-	@Test
 	public void exceptionHandlerWithTwoParameter() {
 		try {
 			exceptionTwoParameter.throwIllegalPathException();
@@ -118,5 +117,26 @@ public class ExceptionHandlerTest {
 		} catch (Exception e) {
 			assertEquals(DemoiselleException.class, e.getClass());
 		}
-	}	
+	}
+
+	@Test
+	public void exceptionHandlerWithException() {
+		try {
+			nested.throwNoSuchElementException();
+			fail();
+		} catch (Exception e) {
+			assertEquals(ArithmeticException.class, e.getClass());
+			assertEquals(false, nested.isExceptionHandler());
+		}
+	}
+	
+	@Test
+	public void exceptionClassNotAnnotatedController() {
+		try {
+			classNotAnnotated.throwNullPointerException();
+			fail();
+		} catch (Exception e) {
+			assertEquals(NullPointerException.class, e.getClass());
+		}
+	}
 }

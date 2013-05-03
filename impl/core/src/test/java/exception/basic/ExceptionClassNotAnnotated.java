@@ -37,46 +37,21 @@
 package exception.basic;
 
 import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
-import br.gov.frameworkdemoiselle.stereotype.Controller;
 
-@Controller
-public class MultiExceptionHandler {
+public class ExceptionClassNotAnnotated {
 
-	private boolean exceptionHandlerIllegalArgument1 = false;
-
-	private boolean exceptionHandlerIllegalArgument2 = false;
-
-	private boolean exceptionHandlerIllegalArgument3 = false;
-
-	public boolean isExceptionHandlerIllegalArgument1() {
-		return exceptionHandlerIllegalArgument1;
+	private boolean nullPointerExceptionHandler = false;
+	
+	public boolean isNullPointerExceptionHandler() {
+		return nullPointerExceptionHandler;
 	}
 
-	public boolean isExceptionHandlerIllegalArgument2() {
-		return exceptionHandlerIllegalArgument2;
-	}
-
-	public boolean isExceptionHandlerIllegalArgument3() {
-		return exceptionHandlerIllegalArgument3;
-	}
-
-	public void throwIllegalArgumentException() {
-		throw new IllegalArgumentException();
+	public void throwNullPointerException() {
+		throw new NullPointerException();
 	}
 
 	@ExceptionHandler
-	public void handler1(IllegalArgumentException cause) {
-		exceptionHandlerIllegalArgument1 = true;
+	public void handler(NullPointerException cause) {
+		nullPointerExceptionHandler = true;
 	}
-
-	@ExceptionHandler
-	public void handler3(IllegalArgumentException cause) {
-		exceptionHandlerIllegalArgument3 = true;
-	}
-
-	@ExceptionHandler
-	public void handler2(IllegalArgumentException cause) {
-		exceptionHandlerIllegalArgument2 = true;
-	}
-
 }
