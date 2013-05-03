@@ -1,4 +1,4 @@
-package management;
+package management.testclasses;
 
 import java.util.UUID;
 

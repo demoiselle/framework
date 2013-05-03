@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.management.internal.notification.event.NotificationEvent;
@@ -48,16 +49,32 @@ public class NotificationManager implements Serializable{
 	 * @param notification The notification to send
 	 */
 	public void sendNotification(Notification notification) {
-		genericNotificationEvent.fire(new NotificationEvent(notification));
+		if (! AttributeChangeNotification.class.isInstance(notification) ){
+			getGenericNotificationEvent().fire(new NotificationEvent(notification));
+		}
+		else{
+			getAttributeChangeNotificationEvent().fire(new NotificationEvent(notification));
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private Event<NotificationEvent> getGenericNotificationEvent() {
+		if (genericNotificationEvent==null){
+			genericNotificationEvent = Beans.getReference(Event.class , new AnnotationLiteral<Generic>() {});
+		}
+		
+		return genericNotificationEvent;
 	}
 	
-	/**
-	 * Sends a notification comunicating about a change of value for an attribute.
-	 * 
-	 * @param notification Special notification communicating a change of value in an attribute.
-	 * 
-	 */
-	public void sendAttributeChangedMessage(AttributeChangeNotification notification){
-		attributeChangeNotificationEvent.fire(new NotificationEvent(notification));
+	@SuppressWarnings("unchecked")
+	private Event<NotificationEvent> getAttributeChangeNotificationEvent() {
+		if (attributeChangeNotificationEvent==null){
+			attributeChangeNotificationEvent = Beans.getReference(Event.class , new AnnotationLiteral<AttributeChange>() {});
+		}
+		
+		return attributeChangeNotificationEvent;
 	}
+	
+	
+	
 }

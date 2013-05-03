@@ -11,12 +11,12 @@ import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
-import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 import br.gov.frameworkdemoiselle.management.annotation.Managed;
 import br.gov.frameworkdemoiselle.management.extension.ManagementExtension;
 import br.gov.frameworkdemoiselle.management.internal.ManagedType;
@@ -60,11 +60,13 @@ public class ManagementBootstrap implements Extension {
 		monitoringManager.initialize(managementExtensionCache);
 	}
 
-	public void unregisterAvailableManagedTypes(@Observes final AfterShutdownProccess event) {
+	public void unregisterAvailableManagedTypes(@Observes final BeforeShutdown event) {
 
 		MonitoringManager manager = Beans.getReference(MonitoringManager.class);
 		manager.shutdown(managementExtensionCache);
-
+		
+		managementExtensionCache.clear();
+		types.clear();
 	}
 
 }
