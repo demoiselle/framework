@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.management.internal.notification.qualifier;
+package br.gov.frameworkdemoiselle.internal.management.qualifier;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -43,12 +43,12 @@ import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
-import br.gov.frameworkdemoiselle.management.internal.notification.event.NotificationEvent;
-import br.gov.frameworkdemoiselle.management.notification.AttributeChangeNotification;
+import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
+import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
 
 /**
  * 
- * Enables {@link NotificationEvent} observers to trigger only with notifications
+ * Enables {@link ManagementNotificationEvent} observers to trigger only with notifications
  * of the specialized type {@link AttributeChangeNotification}.
  * 
  * @author serpro

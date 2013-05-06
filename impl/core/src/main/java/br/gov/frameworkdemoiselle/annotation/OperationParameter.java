@@ -34,44 +34,40 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.management.notification;
+package br.gov.frameworkdemoiselle.annotation;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.enterprise.util.Nonbinding;
 
 /**
+ * <p>Optional annotation to write additional detail about an operation's parameter.</p>
+ * <p>This annotation is ignored for non-operation methods.</p>  
  * 
- * Notification that can be sent by the {@link NotificationManager}.
- * 
- * @author serpro
+ * @author SERPRO
  *
  */
-public class Notification {
+@Documented
+@Target({ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface OperationParameter {
 	
-	private Object message;
+	/**
+	 * Name that will be used to publish this operation's parameter to clients.
+	 */
+	@Nonbinding
+	String name();
 	
-	public Notification(){
-	}
+	/**
+	 * Optional description that will be used to publish this operation's parameter to clients.
+	 * Defaults to an empty description.
+	 */
+	@Nonbinding
+	String description() default "";
 	
-	public Notification(Object message) {
-		super();
-		this.message = message;
-	}
-
-
-	public Object getMessage() {
-		return message;
-	}
-
-	
-	public void setMessage(Object message) {
-		this.message = message;
-	}
-
-	
-	public Class<? extends Object> getType() {
-		if (message!=null){
-			return message.getClass();
-		}
-		
-		return null;
-	}
 
 }

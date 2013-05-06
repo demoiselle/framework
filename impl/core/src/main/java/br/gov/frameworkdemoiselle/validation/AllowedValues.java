@@ -34,71 +34,43 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.management.internal.validators;
+package br.gov.frameworkdemoiselle.validation;
 
-import java.math.BigDecimal;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import br.gov.frameworkdemoiselle.management.annotation.validation.AllowedValues;
+import javax.validation.Constraint;
 
+import br.gov.frameworkdemoiselle.internal.validation.AllowedValuesValidator;
 
-public class AllowedValuesValidator implements ConstraintValidator<AllowedValues, Object> {
-
-	private br.gov.frameworkdemoiselle.management.annotation.validation.AllowedValues.ValueType valueType;
-	private String[] allowedValues;
-
-	@Override
-	public void initialize(AllowedValues constraintAnnotation) {
-		valueType = constraintAnnotation.valueType();
-		allowedValues = constraintAnnotation.allows();
+@Documented
+@Target({ FIELD})
+@Retention(RUNTIME)
+@Constraint(validatedBy = AllowedValuesValidator.class)
+/**
+ * Validate a value against a list of allowed values.
+ * 
+ * @author serpro
+ *
+ */
+public @interface AllowedValues {
+	
+	/**
+	 * List of accepted values
+	 */
+	String[] allows();
+	
+	/**
+	 * Type of allowed values. Defaults to {@link ValueType#STRING}.
+	 */
+	ValueType valueType() default ValueType.STRING;
+	
+	enum ValueType {
+		STRING,INTEGER,DECIMAL;
 	}
 	
-	@Override
-	public boolean isValid(Object value, ConstraintValidatorContext context) {
-		
-		if (value==null){
-			return false;
-		}
-
-		switch(valueType){
-			case STRING:
-				for (String str : allowedValues){
-					if (str.equals(value)) return true;
-				}
-				return false;
-				
-			case INTEGER:
-				try{
-					Integer number = Integer.valueOf(value.toString());
-					String strNumber = number.toString();
-					for (String str : allowedValues){
-						if (str.equals(strNumber)) return true;
-					}
-
-					return false;
-				}
-				catch(NumberFormatException ne){
-					return false;
-				}
-				
-			case DECIMAL:
-				try{
-					BigDecimal number = new BigDecimal(value.toString());
-					String strNumber = number.toString();
-					for (String str : allowedValues){
-						if (str.equals(strNumber)) return true;
-					}
-				}
-				catch(NumberFormatException ne){
-					return false;
-				}
-				
-				return false;
-		}
-
-		return false;
-	}
-
 }

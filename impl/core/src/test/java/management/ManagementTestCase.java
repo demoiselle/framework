@@ -152,7 +152,7 @@ public class ManagementTestCase {
 
 		try {
 			// O método "nonOperationAnnotatedMethod" existe na classe DummyManagedClass, mas não está anotado como
-			// "@Operation", então
+			// "@ManagedOperation", então
 			// ela não pode ser exposta para extensões.
 			store.invoke(DummyManagedClass.class, "nonOperationAnnotatedMethod");
 			Assert.fail();

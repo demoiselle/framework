@@ -34,77 +34,32 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.management.notification;
+package br.gov.frameworkdemoiselle.internal.management;
+
+import br.gov.frameworkdemoiselle.management.Notification;
+import br.gov.frameworkdemoiselle.management.NotificationManager;
 
 /**
- * Special notification to denote an attribute has changed values.
- * 
- * @see Notification
+ * Event fired when a notification is sent by {@link NotificationManager}.
+ * Implementators can capture this event and be notified when the {@link NotificationManager}
+ * sends notifications, so they can pass the notification to the underlying technology.
  * 
  * @author serpro
  *
  */
-public class AttributeChangeNotification extends Notification {
+public class ManagementNotificationEvent {
 	
-	private String attributeName;
+	private Notification notification;
 	
-	private Class<? extends Object> attributeType;
-	
-	private Object oldValue;
-	
-	private Object newValue;
-	
-	public AttributeChangeNotification(){}
-	
-	public AttributeChangeNotification(Object message, String attributeName, Class<? extends Object> attributeType, Object oldValue,
-			Object newValue) {
-		super(message);
-		this.attributeName = attributeName;
-		this.attributeType = attributeType;
-		this.oldValue = oldValue;
-		this.newValue = newValue;
+	public ManagementNotificationEvent(Notification notification){
+		this.notification = notification;
 	}
 
-
-	public String getAttributeName() {
-		return attributeName;
+	public Notification getNotification() {
+		return notification;
 	}
 
-	
-	public void setAttributeName(String attributeName) {
-		this.attributeName = attributeName;
+	public void setNotification(Notification notification) {
+		this.notification = notification;
 	}
-
-	
-	public Class<? extends Object> getAttributeType() {
-		return attributeType;
-	}
-
-	
-	public void setAttributeType(Class<? extends Object> attributeType) {
-		this.attributeType = attributeType;
-	}
-
-	
-	public Object getOldValue() {
-		return oldValue;
-	}
-
-	
-	public void setOldValue(Object oldValue) {
-		this.oldValue = oldValue;
-	}
-
-	
-	public Object getNewValue() {
-		return newValue;
-	}
-
-	
-	public void setNewValue(Object newValue) {
-		this.newValue = newValue;
-	}
-	
-	
-
 }

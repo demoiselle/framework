@@ -56,8 +56,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.LocaleProducer;
-import br.gov.frameworkdemoiselle.management.extension.ManagementExtension;
-import br.gov.frameworkdemoiselle.management.internal.ManagedType;
+import br.gov.frameworkdemoiselle.internal.management.ManagedType;
+import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
@@ -111,7 +111,7 @@ public class ManagementBootstrapTestCase {
 		deployer.deploy("default");
 
 		// "store" é application scoped e é usado pelo DummyManagementExtension para
-		// armazenar todos os beans anotados com @Managed. Se o bootstrap rodou corretamente,
+		// armazenar todos os beans anotados com @ManagementController. Se o bootstrap rodou corretamente,
 		// ele chamou DummyManagementExtension.initialize e este store conterá o bean de teste que anotamos.
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
 
@@ -129,7 +129,7 @@ public class ManagementBootstrapTestCase {
 		deployer.deploy("default");
 		
 		// "store" é application scoped e é usado pelo DummyManagementExtension para
-		// armazenar todos os beans anotados com @Managed. Se o bootstrap rodou corretamente,
+		// armazenar todos os beans anotados com @ManagementController. Se o bootstrap rodou corretamente,
 		// ele chamou DummyManagementExtension.initialize e este store conterá o bean de teste que anotamos.
 		// Nós então disparamos o evento de shutdown onde ele deverá limpar o store.
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);

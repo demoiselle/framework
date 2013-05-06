@@ -54,11 +54,11 @@ import org.junit.runner.RunWith;
 
 import test.LocaleProducer;
 import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.management.internal.ManagedType;
-import br.gov.frameworkdemoiselle.management.internal.MonitoringManager;
-import br.gov.frameworkdemoiselle.management.notification.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.notification.Notification;
-import br.gov.frameworkdemoiselle.management.notification.NotificationManager;
+import br.gov.frameworkdemoiselle.internal.management.ManagedType;
+import br.gov.frameworkdemoiselle.internal.management.Management;
+import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
+import br.gov.frameworkdemoiselle.management.Notification;
+import br.gov.frameworkdemoiselle.management.NotificationManager;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -119,7 +119,7 @@ public class NotificationTestCase {
 	 */
 	@Test
 	public void testNotifyChangeManagedClass(){
-		MonitoringManager manager = Beans.getReference(MonitoringManager.class);
+		Management manager = Beans.getReference(Management.class);
 		
 		for (ManagedType type : manager.getManagedTypes()){
 			if (type.getType().equals(DummyManagedClass.class)){

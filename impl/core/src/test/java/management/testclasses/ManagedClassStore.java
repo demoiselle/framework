@@ -42,8 +42,8 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import br.gov.frameworkdemoiselle.management.internal.ManagedType;
-import br.gov.frameworkdemoiselle.management.internal.MonitoringManager;
+import br.gov.frameworkdemoiselle.internal.management.ManagedType;
+import br.gov.frameworkdemoiselle.internal.management.Management;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
@@ -69,7 +69,7 @@ public class ManagedClassStore {
 	}
 	
 	public void setProperty(Class<?> managedClass , String attributeName , Object newValue){
-		MonitoringManager manager = Beans.getReference(MonitoringManager.class);
+		Management manager = Beans.getReference(Management.class);
 		for (ManagedType type : manager.getManagedTypes()){
 			if (type.getType().equals(managedClass)){
 				manager.setProperty(type, attributeName, newValue);
@@ -79,7 +79,7 @@ public class ManagedClassStore {
 	}
 	
 	public Object getProperty(Class<?> managedClass , String attributeName ){
-		MonitoringManager manager = Beans.getReference(MonitoringManager.class);
+		Management manager = Beans.getReference(Management.class);
 		for (ManagedType type : manager.getManagedTypes()){
 			if (type.getType().equals(managedClass)){
 				return manager.getProperty(type, attributeName);
@@ -90,7 +90,7 @@ public class ManagedClassStore {
 	}
 	
 	public Object invoke(Class<?> managedClass , String operation , Object...  params){
-		MonitoringManager manager = Beans.getReference(MonitoringManager.class);
+		Management manager = Beans.getReference(Management.class);
 		for (ManagedType type : manager.getManagedTypes()){
 			if (type.getType().equals(managedClass)){
 				return manager.invoke(type, operation, params);

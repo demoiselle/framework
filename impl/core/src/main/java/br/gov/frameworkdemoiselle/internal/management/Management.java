@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.management.internal;
+package br.gov.frameworkdemoiselle.internal.management;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -49,27 +49,26 @@ import javax.management.ReflectionException;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
-import br.gov.frameworkdemoiselle.management.annotation.Managed;
-import br.gov.frameworkdemoiselle.management.annotation.Property;
-import br.gov.frameworkdemoiselle.management.extension.ManagementExtension;
-import br.gov.frameworkdemoiselle.management.internal.ManagedType.MethodDetail;
-import br.gov.frameworkdemoiselle.management.notification.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.notification.NotificationManager;
+import br.gov.frameworkdemoiselle.internal.management.ManagedType.MethodDetail;
+import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
+import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
+import br.gov.frameworkdemoiselle.management.NotificationManager;
+import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
- * A manager that helps implementators of the management framework to obtain a
- * list of managed classes, set or obtain values from them or invoke operations
- * over them.
+ * Central class used by management extensions to obtain information, access properties and call operations
+ * over discovered {@link ManagementController} classes. 
  * 
  * @author serpro
  */
 @ApplicationScoped
-public class MonitoringManager {
+public class Management {
 
 	@Inject
 	private Logger logger;
@@ -86,7 +85,7 @@ public class MonitoringManager {
 	}
 
 	/**
-	 * @return A list all managed types, classes annotated with {@link Managed}.
+	 * @return List all discovered {@link ManagementController} classes.
 	 *         The returned list is a shallow copy of the internal list, so you
 	 *         are free to modify it.
 	 * 
@@ -99,13 +98,13 @@ public class MonitoringManager {
 	}
 
 	/**
-	 * <p>Invoke an operation over a managed type.</p>
+	 * <p>Invoke an operation over a {@link ManagementController}.</p>
 	 * 
 	 * <p>This method is not thread-safe, it's the user's responsibility to
 	 * make the operations of the managed type synchronized if necessary.</p>
 	 * 
 	 * @param managedType
-	 *            A type annotated with {@link Managed}. This method will create
+	 *            A type annotated with {@link ManagementController}. This method will create
 	 *            an (or obtain an already created) instance of this type and
 	 *            invoke the operation over it.
 	 * @param actionName
@@ -152,7 +151,7 @@ public class MonitoringManager {
 
 	/**
 	 * <p>Retrieve the current value of a property from a managed type. Properties
-	 * are attributes annotated with {@link Property}.</p>
+	 * are attributes annotated with {@link ManagedProperty}.</p>
 	 * 
 	 * <p>This method is not thread-safe, it's the user's responsibility to
 	 * create the property's access methods from the managed type synchronized if necessary.</p>
@@ -196,7 +195,7 @@ public class MonitoringManager {
 	
 	/**
 	 * <p>Sets a new value for a property contained inside a managed type. A property
-	 * is an attribute annotated with {@link Property}.</p>
+	 * is an attribute annotated with {@link ManagedProperty}.</p>
 	 * 
 	 * <p>This method is not thread-safe, it's the user's responsibility to
 	 * create the property's access methods from the managed type synchronized if necessary.</p>
@@ -218,7 +217,7 @@ public class MonitoringManager {
 
 				// Obtém uma instância da classe gerenciada, lembrando que
 				// classes
-				// anotadas com @Managed são sempre singletons.
+				// anotadas com @ManagementController são sempre singletons.
 				activateContexts(managedType.getType());
 				try {
 					Object delegate = Beans.getReference(managedType.getType());

@@ -34,48 +34,29 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.management.annotation;
+package br.gov.frameworkdemoiselle.internal.management.qualifier;
 
-import javax.management.MBeanOperationInfo;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
+import javax.inject.Qualifier;
+
+import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
+import br.gov.frameworkdemoiselle.management.Notification;
 
 /**
- * Define the operation type for an operation inside a Managed class.
  * 
+ * Enables {@link ManagementNotificationEvent} observers to trigger only with notifications
+ * of the base type {@link Notification}.
  * 
- * @author SERPRO
+ * @author serpro
  *
  */
-public enum OperationType {
-	
-	/**
-	 * Operation is write-only
-	 */
-	ACTION(MBeanOperationInfo.ACTION)
-	,
-	/**
-	 * Operation is read-only
-	 */
-	INFO(MBeanOperationInfo.INFO)
-	,
-	/**
-	 * Operation is read-write
-	 */
-	ACTION_INFO(MBeanOperationInfo.ACTION_INFO)
-	,
-	/**
-	 * Operation is unkown
-	 */
-	UNKNOWN(MBeanOperationInfo.UNKNOWN);
-	
-	private int operationTypeValue;
-	
-	private OperationType(int type){
-		this.operationTypeValue = type;
-	}
-	
-	public int getValue(){
-		return operationTypeValue;
-	}
-	
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
+public @interface Generic {
+
 }

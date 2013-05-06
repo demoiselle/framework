@@ -41,8 +41,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 
-import br.gov.frameworkdemoiselle.management.extension.ManagementExtension;
-import br.gov.frameworkdemoiselle.management.internal.ManagedType;
+import br.gov.frameworkdemoiselle.internal.management.ManagedType;
+import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
 
 public class DummyManagementExtension implements ManagementExtension {
 

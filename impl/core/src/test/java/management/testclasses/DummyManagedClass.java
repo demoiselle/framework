@@ -38,44 +38,44 @@ package management.testclasses;
 
 import java.util.UUID;
 
-import br.gov.frameworkdemoiselle.management.annotation.Managed;
-import br.gov.frameworkdemoiselle.management.annotation.Operation;
-import br.gov.frameworkdemoiselle.management.annotation.Property;
-import br.gov.frameworkdemoiselle.management.annotation.validation.AllowedValues;
-import br.gov.frameworkdemoiselle.management.annotation.validation.AllowedValues.ValueType;
+import br.gov.frameworkdemoiselle.annotation.ManagedOperation;
+import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
+import br.gov.frameworkdemoiselle.stereotype.ManagementController;
+import br.gov.frameworkdemoiselle.validation.AllowedValues;
+import br.gov.frameworkdemoiselle.validation.AllowedValues.ValueType;
 
-@Managed
+@ManagementController
 public class DummyManagedClass {
 	
-	@Property
+	@ManagedProperty
 	private String name;
 	
-	@Property
+	@ManagedProperty
 	@AllowedValues(allows={"f","m","F","M"},valueType=ValueType.INTEGER)
 	private Integer id;
 	
-	@Property
+	@ManagedProperty
 	private Integer firstFactor , secondFactor;
 	
-	@Property
+	@ManagedProperty
 	private String uuid;
 	
-	@Property
+	@ManagedProperty
 	private String writeOnlyProperty;
 	
-	@Property
+	@ManagedProperty
 	private String readOnlyProperty = "Default Value";
 	
 	/**
 	 * Propriedade para testar detecção de métodos GET e SET quando propriedade tem apenas uma letra.
 	 */
-	@Property
+	@ManagedProperty
 	private Integer a;
 	
 	/**
 	 * Propriedade para testar detecção de métodos GET e SET quando propriedade tem apenas letras maiúsculas.
 	 */
-	@Property
+	@ManagedProperty
 	private Integer MAIUSCULO;
 
 	public Integer getId() {
@@ -111,7 +111,7 @@ public class DummyManagedClass {
 		MAIUSCULO = mAIUSCULO;
 	}
 
-	@Operation(description="Generates a random UUID")
+	@ManagedOperation(description="Generates a random UUID")
 	public String generateUUID(){
 		this.uuid = UUID.randomUUID().toString();
 		return this.uuid;
@@ -152,7 +152,7 @@ public class DummyManagedClass {
 		this.secondFactor = secondFactor;
 	}
 	
-	@Operation
+	@ManagedOperation
 	public Integer calculateFactorsNonSynchronized(Integer firstFactor , Integer secondFactor){
 		setFirstFactor(firstFactor);
 		setSecondFactor(secondFactor);
@@ -173,7 +173,7 @@ public class DummyManagedClass {
 		}
 	}
 	
-	@Operation
+	@ManagedOperation
 	public synchronized Integer calculateFactorsSynchronized(Integer firstFactor , Integer secondFactor){
 		setFirstFactor(firstFactor);
 		setSecondFactor(secondFactor);

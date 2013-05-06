@@ -36,8 +36,8 @@
  */
 package management.testclasses;
 
-import br.gov.frameworkdemoiselle.management.annotation.Managed;
-import br.gov.frameworkdemoiselle.management.annotation.Property;
+import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
+import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 
 
 /**
@@ -47,13 +47,13 @@ import br.gov.frameworkdemoiselle.management.annotation.Property;
  * @author serpro
  *
  */
-@Managed
+@ManagementController
 public class DummyManagedClassPropertyError {
 
 	/**
-	 * Property with no setter or getter
+	 * ManagedProperty with no setter or getter
 	 */
-	@Property
+	@ManagedProperty
 	private Long property;
 	
 }

@@ -34,36 +34,56 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.management.annotation;
+package br.gov.frameworkdemoiselle.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import javax.management.MBeanOperationInfo;
 
-import javax.enterprise.util.Nonbinding;
 
 /**
- * <p>Indicates that a field must be exposed as a property to management clients.</p>
- * <p>The property will be writable if there's a public setter method
- * declared for the field and readable if there's a getter method.</p>
- * <p>It's a runtime error to annotate a field with no getter and no setter method.</p>
- * <p>It's also a runtime error to declare a field as a property and one or both of it's getter and setter
- * methods as an operation using the {@link Operation} annotation.</p> 
+ * <p>Define the operation type for an operation inside a ManagementController class.</p>
+ * 
+ * <p>This is an optional annotation and it's significanse will change based on the management extension
+ * used. Most extensions will just publish this information to the client so it can better show to the user the inner
+ * workings of the annotated operation.</p>
+ * 
  * 
  * @author SERPRO
  *
  */
-@Documented
-@Target({ElementType.FIELD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Property {
+public enum OperationType {
 	
 	/**
-	 * @return The description of this property exposed to management clients.
+	 * ManagedOperation is write-only, it causes the application
+	 * to change some of it's behaviour but doesn't return any kind of information
 	 */
-	@Nonbinding
-	String description() default "";
-
+	ACTION(MBeanOperationInfo.ACTION)
+	,
+	/**
+	 * ManagedOperation is read-only, it will operate over data provided by the application and return some information,
+	 * but will not change the application in any way.
+	 */
+	INFO(MBeanOperationInfo.INFO)
+	,
+	/**
+	 * ManagedOperation is read-write, it will both change the way the application work and return some information regarding
+	 * the result of the operation.
+	 */
+	ACTION_INFO(MBeanOperationInfo.ACTION_INFO)
+	,
+	/**
+	 * The effect of calling this operation is unknown. This is the default type and if this type is assigned to an operation,
+	 * the user must rely on the {@link ManagedOperation#description()} attribute to learn about how the operation works.
+	 */
+	UNKNOWN(MBeanOperationInfo.UNKNOWN);
+	
+	private int operationTypeValue;
+	
+	private OperationType(int type){
+		this.operationTypeValue = type;
+	}
+	
+	public int getValue(){
+		return operationTypeValue;
+	}
+	
 }

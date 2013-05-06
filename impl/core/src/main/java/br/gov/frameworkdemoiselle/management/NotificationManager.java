@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.management.notification;
+package br.gov.frameworkdemoiselle.management;
 
 import java.io.Serializable;
 
@@ -44,9 +44,9 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.management.internal.notification.event.NotificationEvent;
-import br.gov.frameworkdemoiselle.management.internal.notification.qualifier.AttributeChange;
-import br.gov.frameworkdemoiselle.management.internal.notification.qualifier.Generic;
+import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
+import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
+import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
@@ -59,7 +59,7 @@ import br.gov.frameworkdemoiselle.util.Beans;
  * your code using {@link Inject} or the {@link Beans#getReference(Class beanType)} method. The {@link NotificationManager}
  * is {@link ApplicationScoped}, so you can inject it as many times as needed and still have only one instance per application.</p>
  * 
- * <p>Implementators of management protocols must observe the {@link NotificationEvent} event (using the {@link Observes} annotation), this way
+ * <p>Implementators of management protocols must observe the {@link ManagementNotificationEvent} event (using the {@link Observes} annotation), this way
  * they will receive an event containing the original notification and can translate this notification to a specific protocol. Optionaly,
  * the implementator can use qualifiers like the {@link Generic} and {@link AttributeChange} qualifiers
  * to filter what king of notifications they will handle. One example of an implementator is the <b>demoiselle-jmx</b> extension.</p>
@@ -73,11 +73,11 @@ public class NotificationManager implements Serializable{
 	
 	@Inject
 	@Generic
-	private Event<NotificationEvent> genericNotificationEvent;
+	private Event<ManagementNotificationEvent> genericNotificationEvent;
 	
 	@Inject
 	@AttributeChange
-	private Event<NotificationEvent> attributeChangeNotificationEvent;
+	private Event<ManagementNotificationEvent> attributeChangeNotificationEvent;
 	
 	/**
 	 * Sends a generic notification to all management clients.
@@ -86,15 +86,15 @@ public class NotificationManager implements Serializable{
 	 */
 	public void sendNotification(Notification notification) {
 		if (! AttributeChangeNotification.class.isInstance(notification) ){
-			getGenericNotificationEvent().fire(new NotificationEvent(notification));
+			getGenericNotificationEvent().fire(new ManagementNotificationEvent(notification));
 		}
 		else{
-			getAttributeChangeNotificationEvent().fire(new NotificationEvent(notification));
+			getAttributeChangeNotificationEvent().fire(new ManagementNotificationEvent(notification));
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private Event<NotificationEvent> getGenericNotificationEvent() {
+	private Event<ManagementNotificationEvent> getGenericNotificationEvent() {
 		if (genericNotificationEvent==null){
 			genericNotificationEvent = Beans.getReference(Event.class , new AnnotationLiteral<Generic>() {});
 		}
@@ -103,7 +103,7 @@ public class NotificationManager implements Serializable{
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Event<NotificationEvent> getAttributeChangeNotificationEvent() {
+	private Event<ManagementNotificationEvent> getAttributeChangeNotificationEvent() {
 		if (attributeChangeNotificationEvent==null){
 			attributeChangeNotificationEvent = Beans.getReference(Event.class , new AnnotationLiteral<AttributeChange>() {});
 		}

@@ -34,29 +34,41 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.management.internal.notification.qualifier;
+package br.gov.frameworkdemoiselle.annotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.inject.Qualifier;
+import javax.enterprise.util.Nonbinding;
 
-import br.gov.frameworkdemoiselle.management.internal.notification.event.NotificationEvent;
-import br.gov.frameworkdemoiselle.management.notification.Notification;
+import br.gov.frameworkdemoiselle.DemoiselleException;
 
 /**
+ * <p>Indicates that a method is a <b>managed operation</b>, meaning you can manage some aspect of the application by calling it from a external management client.</p>
+ * <p>This annotation can't be used together with {@link ManagedProperty}, doing so will throw a {@link DemoiselleException}.</p>  
  * 
- * Enables {@link NotificationEvent} observers to trigger only with notifications
- * of the base type {@link Notification}.
- * 
- * @author serpro
+ * @author SERPRO
  *
  */
-@Qualifier
+@Documented
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
-public @interface Generic {
+public @interface ManagedOperation {
+	
+	/**
+	 * Description that will be used to publish the operation to clients.
+	 * Defaults to an empty description.
+	 */
+	@Nonbinding
+	String description() default "";
+	
+	/**
+	 * Type of operation. Defaults to {@link OperationType#UNKNOWN}.
+	 */
+	@Nonbinding
+	OperationType type() default OperationType.UNKNOWN;
 
 }

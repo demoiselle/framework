@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.management.internal;
+package br.gov.frameworkdemoiselle.internal.management;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -42,15 +42,18 @@ import java.lang.reflect.Method;
 import java.util.TreeMap;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.annotation.ManagedOperation;
+import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
+import br.gov.frameworkdemoiselle.annotation.OperationParameter;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
-import br.gov.frameworkdemoiselle.management.annotation.Managed;
-import br.gov.frameworkdemoiselle.management.annotation.Operation;
-import br.gov.frameworkdemoiselle.management.annotation.OperationParameter;
-import br.gov.frameworkdemoiselle.management.annotation.Property;
+import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
- * Represents a detected managed type, a Java class annotated with {@link Managed}.
+ * <p>Package class containing information about a discovered {@link ManagementController}.</p>
+ * 
+ * <p>Instances if this class are passed to each discovered management extension during bootstrap so they can have
+ * enough information to expose all discovered {@link ManagementController}'s to management clients.</p>
  * 
  * @author serpro
  */
@@ -72,14 +75,14 @@ public class ManagedType {
 		if (type == null) {
 			throw new DemoiselleException(bundle.getString("management-null-class-defined"));
 		}
-		if (!type.isAnnotationPresent(Managed.class)) {
+		if (!type.isAnnotationPresent(ManagementController.class)) {
 			throw new DemoiselleException(bundle.getString("management-no-annotation-found", type.getCanonicalName()));
 		}
 
 		this.type = type;
 		fields = new TreeMap<String, FieldDetail>();
 		operationMethods = new TreeMap<String, MethodDetail>();
-		this.description = type.getAnnotation(Managed.class).description();
+		this.description = type.getAnnotation(ManagementController.class).description();
 
 		initialize();
 	}
@@ -101,25 +104,25 @@ public class ManagedType {
 	}
 
 	private void initialize() {
-		// Para cada atributo verifica se ele está anotado com Property e extrai as informações dele (método get, set e
+		// Para cada atributo verifica se ele está anotado com ManagedProperty e extrai as informações dele (método get, set e
 		// descrição do atributo).
 		Field[] fields = type.getDeclaredFields();
 		if (fields != null) {
 			for (Field field : fields) {
-				if (field.isAnnotationPresent(Property.class)) {
+				if (field.isAnnotationPresent(ManagedProperty.class)) {
 					// Obtém os métodos GET e SET para esta propriedade
 					Method getterMethod = getGetterMethod(field);
 					Method setterMethod = getSetterMethod(field);
 					if (getterMethod == null && setterMethod == null) {
 						throw new DemoiselleException(bundle.getString("management-invalid-property-no-getter-setter",
 								type.getSimpleName(), field.getName()));
-					} else if ((getterMethod != null && getterMethod.isAnnotationPresent(Operation.class))
-							|| (setterMethod != null && setterMethod.isAnnotationPresent(Operation.class))) {
+					} else if ((getterMethod != null && getterMethod.isAnnotationPresent(ManagedOperation.class))
+							|| (setterMethod != null && setterMethod.isAnnotationPresent(ManagedOperation.class))) {
 						throw new DemoiselleException(bundle.getString("management-invalid-property-as-operation",
 								type.getSimpleName()));
 					}
 
-					String propertyDescription = field.getAnnotation(Property.class).description();
+					String propertyDescription = field.getAnnotation(ManagedProperty.class).description();
 
 					this.fields.put(field.getName(), new FieldDetail(field, propertyDescription, getterMethod,
 							setterMethod));
@@ -127,11 +130,11 @@ public class ManagedType {
 			}
 		}
 
-		// Para cada metodo verifica se ele está anotado com Operation e cria um MBeanOperationInfo para ele.
+		// Para cada metodo verifica se ele está anotado com ManagedOperation e cria um MBeanOperationInfo para ele.
 		Method[] methodList = type.getMethods();
 		if (methodList != null) {
 			for (Method method : methodList) {
-				Operation opAnnotation = method.getAnnotation(Operation.class);
+				ManagedOperation opAnnotation = method.getAnnotation(ManagedOperation.class);
 
 				if (opAnnotation != null) {
 					// Lemos as informações sobre o método e criamos uma instância
