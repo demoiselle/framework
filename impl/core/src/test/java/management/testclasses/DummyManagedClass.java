@@ -12,14 +12,23 @@ import br.gov.frameworkdemoiselle.management.annotation.validation.AllowedValues
 public class DummyManagedClass {
 	
 	@Property
+	private String name;
+	
+	@Property
 	@AllowedValues(allows={"f","m","F","M"},valueType=ValueType.INTEGER)
 	private Integer id;
+	
+	@Property
+	private Integer firstFactor , secondFactor;
 	
 	@Property
 	private String uuid;
 	
 	@Property
 	private String writeOnlyProperty;
+	
+	@Property
+	private String readOnlyProperty = "Default Value";
 	
 	/**
 	 * Propriedade para testar detecção de métodos GET e SET quando propriedade tem apenas uma letra.
@@ -71,4 +80,87 @@ public class DummyManagedClass {
 		this.uuid = UUID.randomUUID().toString();
 		return this.uuid;
 	}
+
+	
+	public String getName() {
+		return name;
+	}
+
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	
+	public String getReadOnlyProperty() {
+		return readOnlyProperty;
+	}
+
+	
+	public Integer getFirstFactor() {
+		return firstFactor;
+	}
+
+	
+	public void setFirstFactor(Integer firstFactor) {
+		this.firstFactor = firstFactor;
+	}
+
+	
+	public Integer getSecondFactor() {
+		return secondFactor;
+	}
+
+	
+	public void setSecondFactor(Integer secondFactor) {
+		this.secondFactor = secondFactor;
+	}
+	
+	@Operation
+	public Integer calculateFactorsNonSynchronized(Integer firstFactor , Integer secondFactor){
+		setFirstFactor(firstFactor);
+		setSecondFactor(secondFactor);
+		
+		try {
+			int temp = firstFactor + secondFactor;
+			Thread.sleep( (long)(Math.random() * 100));
+			
+			temp = temp + firstFactor;
+			Thread.sleep( (long)(Math.random() * 100));
+			
+			temp = temp + secondFactor;
+			Thread.sleep( (long)(Math.random() * 100));
+			
+			return temp;
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@Operation
+	public synchronized Integer calculateFactorsSynchronized(Integer firstFactor , Integer secondFactor){
+		setFirstFactor(firstFactor);
+		setSecondFactor(secondFactor);
+		
+		try {
+			int temp = firstFactor + secondFactor;
+			Thread.sleep( (long)(Math.random() * 100));
+			
+			temp = temp + firstFactor;
+			Thread.sleep( (long)(Math.random() * 100));
+			
+			temp = temp + secondFactor;
+			Thread.sleep( (long)(Math.random() * 100));
+			
+			return temp;
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public void nonOperationAnnotatedMethod(){
+		System.out.println("Test");
+	}
+	
+	
 }

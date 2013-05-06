@@ -63,7 +63,10 @@ public class MonitoringManager {
 	}
 
 	/**
-	 * Invoke an operation over a managed type.
+	 * <p>Invoke an operation over a managed type.</p>
+	 * 
+	 * <p>This method is not thread-safe, it's the user's responsibility to
+	 * make the operations of the managed type synchronized if necessary.</p>
 	 * 
 	 * @param managedType
 	 *            A type annotated with {@link Managed}. This method will create
@@ -81,7 +84,7 @@ public class MonitoringManager {
 	 *             In case the operation doesn't exist or have a different
 	 *             signature
 	 */
-	public synchronized Object invoke(ManagedType managedType, String actionName,
+	public Object invoke(ManagedType managedType, String actionName,
 			Object[] params) {
 		if ( managedTypes.contains(managedType) ) {
 			activateContexts(managedType.getType());
@@ -112,14 +115,17 @@ public class MonitoringManager {
 	}
 
 	/**
-	 * Retrieve the current value of a property from a managed type. Properties
-	 * are attributes annotated with {@link Property}.
+	 * <p>Retrieve the current value of a property from a managed type. Properties
+	 * are attributes annotated with {@link Property}.</p>
+	 * 
+	 * <p>This method is not thread-safe, it's the user's responsibility to
+	 * create the property's access methods from the managed type synchronized if necessary.</p>
 	 * 
 	 * @param managedType The type that has the property the client wants to know the value of.
 	 * @param propertyName The name of the property
 	 * @return The current value of the property
 	 */
-	public synchronized Object getProperty(ManagedType managedType, String propertyName) {
+	public Object getProperty(ManagedType managedType, String propertyName) {
 		
 		if ( managedTypes.contains(managedType) ) {
 			Method getterMethod = managedType.getFields().get(propertyName).getGetterMethod();
@@ -153,14 +159,17 @@ public class MonitoringManager {
 	}
 	
 	/**
-	 * Sets a new value for a property contained inside a managed type. A property
-	 * is an attribute annotated with {@link Property}.
+	 * <p>Sets a new value for a property contained inside a managed type. A property
+	 * is an attribute annotated with {@link Property}.</p>
+	 * 
+	 * <p>This method is not thread-safe, it's the user's responsibility to
+	 * create the property's access methods from the managed type synchronized if necessary.</p>
 	 * 
 	 * @param managedType The type that has access to the property
 	 * @param propertyName The name of the property
 	 * @param newValue The new value of the property
 	 */
-	public synchronized void setProperty(ManagedType managedType, String propertyName,
+	public void setProperty(ManagedType managedType, String propertyName,
 			Object newValue) {
 
 		if ( managedTypes.contains(managedType) ) {

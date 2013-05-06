@@ -6,6 +6,7 @@ import java.util.List;
 import management.testclasses.DummyManagedClass;
 import management.testclasses.DummyManagedClassPropertyError;
 import management.testclasses.DummyManagementExtension;
+import management.testclasses.ManagedClassStore;
 
 import org.jboss.arquillian.container.test.api.Deployer;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -44,7 +45,7 @@ public class ManagementBootstrapTestCase {
 						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
 						"services/javax.enterprise.inject.spi.Extension")
 				.addPackages(false, ManagementBootstrapTestCase.class.getPackage())
-				.addClasses(DummyManagementExtension.class,DummyManagedClass.class);
+				.addClasses(DummyManagementExtension.class,DummyManagedClass.class,ManagedClassStore.class);
 	}
 	
 	/**
@@ -63,7 +64,7 @@ public class ManagementBootstrapTestCase {
 						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
 						"services/javax.enterprise.inject.spi.Extension")
 				.addPackages(false, ManagementBootstrapTestCase.class.getPackage())
-				.addClasses(DummyManagementExtension.class,DummyManagedClassPropertyError.class);
+				.addClasses(DummyManagementExtension.class,DummyManagedClassPropertyError.class,ManagedClassStore.class);
 	}
 
 	/**

@@ -53,7 +53,7 @@ public class NotificationTestCase {
 				.addAsManifestResource(
 						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
 						"services/javax.enterprise.inject.spi.Extension")
-				.addPackages(false, ManagementBootstrapTestCase.class.getPackage())
+				.addPackages(false, NotificationTestCase.class.getPackage())
 				.addClasses(DummyNotificationListener.class,DummyManagedClass.class);
 	}
 	

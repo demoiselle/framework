@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import management.ManagedClassStore;
 
 import br.gov.frameworkdemoiselle.management.extension.ManagementExtension;
 import br.gov.frameworkdemoiselle.management.internal.ManagedType;
