@@ -77,15 +77,6 @@
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
-			<!--
-			<dependency>
-				<groupId>org.jboss.arquillian</groupId>
-				<artifactId>arquillian-bom</artifactId>
-				<version>${arquillian.version}</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>
-			-->
 		</dependencies>
 	</dependencyManagement>
 
@@ -248,6 +239,13 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>br.gov.frameworkdemoiselle.component</groupId>
+			<artifactId>demoiselle-validation</artifactId>
+			<scope>test</scope>
+			<version>${demoiselle.validation.version}</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -279,5 +277,6 @@
 		<!--
 		<jacoco.version>0.6.0.201210061924</jacoco.version>
 		-->
+		<demoiselle.validation.version>2.4.0-BETA2-SNAPSHOT</demoiselle.validation.version>
 	</properties>
 </project>

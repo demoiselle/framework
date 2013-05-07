@@ -40,11 +40,16 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.management.ReflectionException;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidationException;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 
@@ -78,6 +83,8 @@ public class Management {
 	private ResourceBundle bundle;
 
 	private final List<ManagedType> managedTypes = new ArrayList<ManagedType>();
+	
+	private Validator validator;
 
 	public void addManagedType(ManagedType managedType) {
 		managedTypes.add(managedType);
@@ -215,12 +222,31 @@ public class Management {
 						"management-debug-setting-property", method.getName(),
 						managedType.getType().getCanonicalName()));
 
-				// Obtém uma instância da classe gerenciada, lembrando que
-				// classes
-				// anotadas com @ManagementController são sempre singletons.
 				activateContexts(managedType.getType());
 				try {
+					// Obtém uma instância da classe gerenciada, lembrando que
+					// classes
+					// anotadas com @ManagementController são sempre singletons.
 					Object delegate = Beans.getReference(managedType.getType());
+					
+					//Se houver um validador anexado à propriedade alterada, executa o validador sobre
+					//o novo valor.
+					Validator validator = getDefaultValidator();
+					if (validator!=null){
+						Set<?> violations = validator.validateValue(managedType.getType(), propertyName, newValue);
+						if (violations.size()>0){
+							StringBuffer errorBuffer = new StringBuffer();
+							for (Object objectViolation : violations){
+								ConstraintViolation<?> violation = (ConstraintViolation<?>) objectViolation;
+								errorBuffer.append(violation.getMessage()).append('\r').append('\n');
+							}
+							
+							throw new DemoiselleException(bundle.getString("validation-constraint-violation",managedType.getType().getCanonicalName(),errorBuffer.toString()));
+						}
+					}
+					else{
+						logger.warn(bundle.getString("validation-validator-not-found"));
+					}
 
 					Method getterMethod = managedType.getFields().get(propertyName).getGetterMethod();
 					Object oldValue;
@@ -244,6 +270,8 @@ public class Management {
 							, newValue);
 					notificationManager.sendNotification(notification);
 
+				} catch (DemoiselleException de){
+					throw de;
 				} catch (Exception e) {
 					throw new DemoiselleException(bundle.getString(
 							"management-invoke-error", method.getName()), e);
@@ -305,6 +333,19 @@ public class Management {
 
 		}
 
+	}
+	
+	private Validator getDefaultValidator(){
+		if (validator == null){
+			try{
+				this.validator = Validation.buildDefaultValidatorFactory().getValidator();
+			}
+			catch(ValidationException e){
+				this.validator = null;
+			}
+		}
+		
+		return this.validator;
 	}
 
 }

@@ -41,8 +41,8 @@ import java.util.UUID;
 import br.gov.frameworkdemoiselle.annotation.ManagedOperation;
 import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
-import br.gov.frameworkdemoiselle.validation.AllowedValues;
-import br.gov.frameworkdemoiselle.validation.AllowedValues.ValueType;
+import br.gov.frameworkdemoiselle.validation.annotation.AllowedValues;
+import br.gov.frameworkdemoiselle.validation.annotation.AllowedValues.ValueType;
 
 @ManagementController
 public class DummyManagedClass {
@@ -51,7 +51,7 @@ public class DummyManagedClass {
 	private String name;
 	
 	@ManagedProperty
-	@AllowedValues(allows={"f","m","F","M"},valueType=ValueType.INTEGER)
+	@AllowedValues(allows={"1","2","3","4"},valueType=ValueType.INTEGER)
 	private Integer id;
 	
 	@ManagedProperty
