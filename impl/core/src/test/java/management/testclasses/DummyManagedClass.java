@@ -38,11 +38,11 @@ package management.testclasses;
 
 import java.util.UUID;
 
+import javax.validation.constraints.NotNull;
+
 import br.gov.frameworkdemoiselle.annotation.ManagedOperation;
 import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
-import br.gov.frameworkdemoiselle.validation.annotation.AllowedValues;
-import br.gov.frameworkdemoiselle.validation.annotation.AllowedValues.ValueType;
 
 @ManagementController
 public class DummyManagedClass {
@@ -51,8 +51,12 @@ public class DummyManagedClass {
 	private String name;
 	
 	@ManagedProperty
-	@AllowedValues(allows={"1","2","3","4"},valueType=ValueType.INTEGER)
+	@NotNull
 	private Integer id;
+	
+	@ManagedProperty
+	@DummyValidatorAnnotation(allows={"f","m","F","M"})
+	private String gender;
 	
 	@ManagedProperty
 	private Integer firstFactor , secondFactor;
@@ -153,24 +157,8 @@ public class DummyManagedClass {
 	}
 	
 	@ManagedOperation
-	public Integer calculateFactorsNonSynchronized(Integer firstFactor , Integer secondFactor){
-		setFirstFactor(firstFactor);
-		setSecondFactor(secondFactor);
-		
-		try {
-			int temp = firstFactor + secondFactor;
-			Thread.sleep( (long)(Math.random() * 100));
-			
-			temp = temp + firstFactor;
-			Thread.sleep( (long)(Math.random() * 100));
-			
-			temp = temp + secondFactor;
-			Thread.sleep( (long)(Math.random() * 100));
-			
-			return temp;
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+	public Integer sumFactors(){
+		return (firstFactor!=null ? firstFactor.intValue() : 0) + (secondFactor!=null ? secondFactor.intValue() : 0);
 	}
 	
 	@ManagedOperation
@@ -197,6 +185,18 @@ public class DummyManagedClass {
 	public void nonOperationAnnotatedMethod(){
 		System.out.println("Test");
 	}
+
+	
+	public String getGender() {
+		return gender;
+	}
+
+	
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	
+	
 	
 	
 }

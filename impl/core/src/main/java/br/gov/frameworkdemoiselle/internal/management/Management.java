@@ -241,11 +241,22 @@ public class Management {
 								errorBuffer.append(violation.getMessage()).append('\r').append('\n');
 							}
 							
-							throw new DemoiselleException(bundle.getString("validation-constraint-violation",managedType.getType().getCanonicalName(),errorBuffer.toString()));
+							if (errorBuffer.length()>0){
+								errorBuffer.insert(0, "\r\n");
+								errorBuffer.insert(errorBuffer.length(), "\r\n");
+							}
+							
+							throw new DemoiselleException(
+									bundle.getString(
+											"management-validation-constraint-violation"
+											,managedType.getType().getCanonicalName()
+											,propertyName,errorBuffer.toString()
+										)
+								);
 						}
 					}
 					else{
-						logger.warn(bundle.getString("validation-validator-not-found"));
+						logger.warn(bundle.getString("management-validation-validator-not-found"));
 					}
 
 					Method getterMethod = managedType.getFields().get(propertyName).getGetterMethod();
