@@ -49,13 +49,17 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.LocaleProducer;
 
+//TODO O arquillian está com um problema onde, embora os testes rodem todos individualmente,
+//ao pedir para rodar todos este teste individual causa todos os testes executados após esse
+//falharem. Até este problema ser resolvido este teste será ignorado.
 @RunWith(Arquillian.class)
-// @Ignore
+@Ignore
 public class AnnotationTestCase {
 
 	/**
