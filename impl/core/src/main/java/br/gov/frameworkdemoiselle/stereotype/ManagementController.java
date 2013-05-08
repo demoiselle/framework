@@ -1,6 +1,6 @@
 /*
  * Demoiselle Framework
- * Copyright (C) 2010 SERPRO
+ * Copyright (C) 2011 SERPRO
  * ----------------------------------------------------------------------------
  * This file is part of Demoiselle Framework.
  * 
@@ -34,38 +34,46 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management.testclasses;
+package br.gov.frameworkdemoiselle.stereotype;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-
-import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
-import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.NotificationManager;
+import javax.enterprise.inject.Stereotype;
+import javax.enterprise.util.Nonbinding;
 
 /**
- * Dummy class to test receiving of notifications sent by the {@link NotificationManager} 
+ * <p>Identifies a <b>management controller</b> class. What it means is that an external client can manage the application
+ * this class is in by reading or writing it's attributes and calling it's operations.</p>
+ * <p>
+ * Only fields annotated with {@link br.gov.frameworkdemoiselle.annotation.ManagedProperty} or
+ * methods annotated with {@link br.gov.frameworkdemoiselle.annotation.ManagedOperation} will be exposed
+ * to clients.</p>
+ * <p>This stereotype only defines a class as managed, you need to choose an extension that will expose this managed class
+ * to external clients using any technology available. One example is the Demoiselle JMX extension, that will expose
+ * managed classes as MBeans.</p> 
  * 
- * @author serpro
- *
+ * @author SERPRO
  */
 @ApplicationScoped
-public class DummyNotificationListener {
+@Stereotype
+@Documented
+@Controller
+@Inherited
+@Retention(RUNTIME)
+@Target({ TYPE })
+public @interface ManagementController {
 	
-	private String message = null;
-	
-	public void listenNotification(@Observes @Generic ManagementNotificationEvent event){
-		message = event.getNotification().getMessage().toString();
-	}
-	
-	public void listenAttributeChangeNotification(@Observes @AttributeChange ManagementNotificationEvent event){
-		AttributeChangeNotification notification = (AttributeChangeNotification)event.getNotification();
-		message = notification.getMessage().toString() + " - " + notification.getAttributeName();
-	}
-	
-	public String getMessage() {
-		return message;
-	}
+	/**
+	 * @return Human readable description of this managed class.
+	 */
+	@Nonbinding
+	String description() default "";
+
 }

@@ -1,3 +1,39 @@
+/*
+ * Demoiselle Framework
+ * Copyright (C) 2010 SERPRO
+ * ----------------------------------------------------------------------------
+ * This file is part of Demoiselle Framework.
+ * 
+ * Demoiselle Framework is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License version 3
+ * as published by the Free Software Foundation.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License version 3
+ * along with this program; if not,  see <http://www.gnu.org/licenses/>
+ * or write to the Free Software Foundation, Inc., 51 Franklin Street,
+ * Fifth Floor, Boston, MA  02110-1301, USA.
+ * ----------------------------------------------------------------------------
+ * Este arquivo é parte do Framework Demoiselle.
+ * 
+ * O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
+ * do Software Livre (FSF).
+ * 
+ * Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA
+ * GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou
+ * APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português
+ * para maiores detalhes.
+ * 
+ * Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
+ * "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses/>
+ * ou escreva para a Fundação do Software Livre (FSF) Inc.,
+ * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
+ */
 package management;
 
 import java.io.File;
@@ -18,11 +54,11 @@ import org.junit.runner.RunWith;
 
 import test.LocaleProducer;
 import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.management.internal.ManagedType;
-import br.gov.frameworkdemoiselle.management.internal.MonitoringManager;
-import br.gov.frameworkdemoiselle.management.notification.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.notification.Notification;
-import br.gov.frameworkdemoiselle.management.notification.NotificationManager;
+import br.gov.frameworkdemoiselle.internal.management.ManagedType;
+import br.gov.frameworkdemoiselle.internal.management.Management;
+import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
+import br.gov.frameworkdemoiselle.management.Notification;
+import br.gov.frameworkdemoiselle.management.NotificationManager;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -53,7 +89,7 @@ public class NotificationTestCase {
 				.addAsManifestResource(
 						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
 						"services/javax.enterprise.inject.spi.Extension")
-				.addPackages(false, ManagementBootstrapTestCase.class.getPackage())
+				.addPackages(false, NotificationTestCase.class.getPackage())
 				.addClasses(DummyNotificationListener.class,DummyManagedClass.class);
 	}
 	
@@ -83,7 +119,7 @@ public class NotificationTestCase {
 	 */
 	@Test
 	public void testNotifyChangeManagedClass(){
-		MonitoringManager manager = Beans.getReference(MonitoringManager.class);
+		Management manager = Beans.getReference(Management.class);
 		
 		for (ManagedType type : manager.getManagedTypes()){
 			if (type.getType().equals(DummyManagedClass.class)){

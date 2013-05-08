@@ -34,38 +34,32 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management.testclasses;
+package br.gov.frameworkdemoiselle.internal.management;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-
-import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
-import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
+import br.gov.frameworkdemoiselle.management.Notification;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 
 /**
- * Dummy class to test receiving of notifications sent by the {@link NotificationManager} 
+ * Event fired when a notification is sent by {@link NotificationManager}.
+ * Implementators can capture this event and be notified when the {@link NotificationManager}
+ * sends notifications, so they can pass the notification to the underlying technology.
  * 
  * @author serpro
  *
  */
-@ApplicationScoped
-public class DummyNotificationListener {
+public class ManagementNotificationEvent {
 	
-	private String message = null;
+	private Notification notification;
 	
-	public void listenNotification(@Observes @Generic ManagementNotificationEvent event){
-		message = event.getNotification().getMessage().toString();
+	public ManagementNotificationEvent(Notification notification){
+		this.notification = notification;
 	}
-	
-	public void listenAttributeChangeNotification(@Observes @AttributeChange ManagementNotificationEvent event){
-		AttributeChangeNotification notification = (AttributeChangeNotification)event.getNotification();
-		message = notification.getMessage().toString() + " - " + notification.getAttributeName();
+
+	public Notification getNotification() {
+		return notification;
 	}
-	
-	public String getMessage() {
-		return message;
+
+	public void setNotification(Notification notification) {
+		this.notification = notification;
 	}
 }

@@ -36,36 +36,67 @@
  */
 package management.testclasses;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
-import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.NotificationManager;
+import javax.enterprise.context.ApplicationScoped;
+
+import br.gov.frameworkdemoiselle.internal.management.ManagedType;
+import br.gov.frameworkdemoiselle.internal.management.Management;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
- * Dummy class to test receiving of notifications sent by the {@link NotificationManager} 
+ * Dummy class that stores managed types detected by the management bootstrap
+ * and can read/write properties and invoke operations on them, simulating a management
+ * extension like JMX or SNMP. 
  * 
  * @author serpro
  *
  */
 @ApplicationScoped
-public class DummyNotificationListener {
+public class ManagedClassStore {
 	
-	private String message = null;
+	private List<ManagedType> managedTypes = new ArrayList<ManagedType>();
+
 	
-	public void listenNotification(@Observes @Generic ManagementNotificationEvent event){
-		message = event.getNotification().getMessage().toString();
+	public List<ManagedType> getManagedTypes() {
+		return managedTypes;
+	}
+
+	public void addManagedTypes(Collection<ManagedType> managedTypes){
+		this.managedTypes.addAll(managedTypes);
 	}
 	
-	public void listenAttributeChangeNotification(@Observes @AttributeChange ManagementNotificationEvent event){
-		AttributeChangeNotification notification = (AttributeChangeNotification)event.getNotification();
-		message = notification.getMessage().toString() + " - " + notification.getAttributeName();
+	public void setProperty(Class<?> managedClass , String attributeName , Object newValue){
+		Management manager = Beans.getReference(Management.class);
+		for (ManagedType type : manager.getManagedTypes()){
+			if (type.getType().equals(managedClass)){
+				manager.setProperty(type, attributeName, newValue);
+				break;
+			}
+		}
 	}
 	
-	public String getMessage() {
-		return message;
+	public Object getProperty(Class<?> managedClass , String attributeName ){
+		Management manager = Beans.getReference(Management.class);
+		for (ManagedType type : manager.getManagedTypes()){
+			if (type.getType().equals(managedClass)){
+				return manager.getProperty(type, attributeName);
+			}
+		}
+		
+		return null;
+	}
+	
+	public Object invoke(Class<?> managedClass , String operation , Object...  params){
+		Management manager = Beans.getReference(Management.class);
+		for (ManagedType type : manager.getManagedTypes()){
+			if (type.getType().equals(managedClass)){
+				return manager.invoke(type, operation, params);
+			}
+		}
+		
+		return null;
 	}
 }

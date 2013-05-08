@@ -1,6 +1,6 @@
 /*
  * Demoiselle Framework
- * Copyright (C) 2011 SERPRO
+ * Copyright (C) 2010 SERPRO
  * ----------------------------------------------------------------------------
  * This file is part of Demoiselle Framework.
  * 
@@ -34,47 +34,44 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.management.annotation;
-
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Stereotype;
-import javax.enterprise.util.Nonbinding;
-import javax.interceptor.InterceptorBinding;
+package br.gov.frameworkdemoiselle.management;
 
 /**
- * Stereotype to indicate a given class is managed. What it means is that an external client can manage the application
- * this class is in by reading or writing it's attributes and calling it's operations.
- * <p>
- * Only fields annotated with {@link br.gov.frameworkdemoiselle.management.annotation.Property} or
- * methods annotated with {@link br.gov.frameworkdemoiselle.management.annotation.Operation} will be exposed
- * to clients.</p>
- * <p>This stereotype only defines a class as managed, you need to choose an extension that will expose this managed class
- * to external clients using any technology available. One example is the Demoiselle JMX extension, that will expose
- * managed classes as MBeans.</p> 
  * 
- * @author SERPRO
+ * Notification that can be sent by the {@link NotificationManager}.
+ * 
+ * @author serpro
+ *
  */
-@Documented
-@Stereotype
-@InterceptorBinding
-@Inherited
-@Retention(RUNTIME)
-@Target({ TYPE })
-@ApplicationScoped
-public @interface Managed {
+public class Notification {
 	
-	/**
-	 * @return Human readable description of this managed class.
-	 */
-	@Nonbinding
-	String description() default "";
+	private Object message;
+	
+	public Notification(){
+	}
+	
+	public Notification(Object message) {
+		super();
+		this.message = message;
+	}
+
+
+	public Object getMessage() {
+		return message;
+	}
+
+	
+	public void setMessage(Object message) {
+		this.message = message;
+	}
+
+	
+	public Class<? extends Object> getType() {
+		if (message!=null){
+			return message.getClass();
+		}
+		
+		return null;
+	}
 
 }

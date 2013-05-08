@@ -34,38 +34,41 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management.testclasses;
+package br.gov.frameworkdemoiselle.annotation;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
-import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.NotificationManager;
+import javax.enterprise.util.Nonbinding;
+
+import br.gov.frameworkdemoiselle.DemoiselleException;
 
 /**
- * Dummy class to test receiving of notifications sent by the {@link NotificationManager} 
+ * <p>Indicates that a method is a <b>managed operation</b>, meaning you can manage some aspect of the application by calling it from a external management client.</p>
+ * <p>This annotation can't be used together with {@link ManagedProperty}, doing so will throw a {@link DemoiselleException}.</p>  
  * 
- * @author serpro
+ * @author SERPRO
  *
  */
-@ApplicationScoped
-public class DummyNotificationListener {
+@Documented
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ManagedOperation {
 	
-	private String message = null;
+	/**
+	 * Description that will be used to publish the operation to clients.
+	 * Defaults to an empty description.
+	 */
+	@Nonbinding
+	String description() default "";
 	
-	public void listenNotification(@Observes @Generic ManagementNotificationEvent event){
-		message = event.getNotification().getMessage().toString();
-	}
-	
-	public void listenAttributeChangeNotification(@Observes @AttributeChange ManagementNotificationEvent event){
-		AttributeChangeNotification notification = (AttributeChangeNotification)event.getNotification();
-		message = notification.getMessage().toString() + " - " + notification.getAttributeName();
-	}
-	
-	public String getMessage() {
-		return message;
-	}
+	/**
+	 * Type of operation. Defaults to {@link OperationType#UNKNOWN}.
+	 */
+	@Nonbinding
+	OperationType type() default OperationType.UNKNOWN;
+
 }

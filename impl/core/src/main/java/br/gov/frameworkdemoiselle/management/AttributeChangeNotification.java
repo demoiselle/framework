@@ -34,38 +34,77 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management.testclasses;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-
-import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
-import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.NotificationManager;
+package br.gov.frameworkdemoiselle.management;
 
 /**
- * Dummy class to test receiving of notifications sent by the {@link NotificationManager} 
+ * Special notification to denote an attribute has changed values.
+ * 
+ * @see Notification
  * 
  * @author serpro
  *
  */
-@ApplicationScoped
-public class DummyNotificationListener {
+public class AttributeChangeNotification extends Notification {
 	
-	private String message = null;
+	private String attributeName;
 	
-	public void listenNotification(@Observes @Generic ManagementNotificationEvent event){
-		message = event.getNotification().getMessage().toString();
+	private Class<? extends Object> attributeType;
+	
+	private Object oldValue;
+	
+	private Object newValue;
+	
+	public AttributeChangeNotification(){}
+	
+	public AttributeChangeNotification(Object message, String attributeName, Class<? extends Object> attributeType, Object oldValue,
+			Object newValue) {
+		super(message);
+		this.attributeName = attributeName;
+		this.attributeType = attributeType;
+		this.oldValue = oldValue;
+		this.newValue = newValue;
+	}
+
+
+	public String getAttributeName() {
+		return attributeName;
+	}
+
+	
+	public void setAttributeName(String attributeName) {
+		this.attributeName = attributeName;
+	}
+
+	
+	public Class<? extends Object> getAttributeType() {
+		return attributeType;
+	}
+
+	
+	public void setAttributeType(Class<? extends Object> attributeType) {
+		this.attributeType = attributeType;
+	}
+
+	
+	public Object getOldValue() {
+		return oldValue;
+	}
+
+	
+	public void setOldValue(Object oldValue) {
+		this.oldValue = oldValue;
+	}
+
+	
+	public Object getNewValue() {
+		return newValue;
+	}
+
+	
+	public void setNewValue(Object newValue) {
+		this.newValue = newValue;
 	}
 	
-	public void listenAttributeChangeNotification(@Observes @AttributeChange ManagementNotificationEvent event){
-		AttributeChangeNotification notification = (AttributeChangeNotification)event.getNotification();
-		message = notification.getMessage().toString() + " - " + notification.getAttributeName();
-	}
 	
-	public String getMessage() {
-		return message;
-	}
+
 }

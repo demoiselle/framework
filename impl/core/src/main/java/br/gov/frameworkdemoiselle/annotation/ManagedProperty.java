@@ -34,38 +34,36 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management.testclasses;
+package br.gov.frameworkdemoiselle.annotation;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
-import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.NotificationManager;
+import javax.enterprise.util.Nonbinding;
 
 /**
- * Dummy class to test receiving of notifications sent by the {@link NotificationManager} 
+ * <p>Indicates that a field must be exposed as a property to management clients.</p>
+ * <p>The property will be writable if there's a public setter method
+ * declared for the field and readable if there's a getter method.</p>
+ * <p>It's a runtime error to annotate a field with no getter and no setter method.</p>
+ * <p>It's also a runtime error to declare a field as a property and one or both of it's getter and setter
+ * methods as an operation using the {@link ManagedOperation} annotation.</p> 
  * 
- * @author serpro
+ * @author SERPRO
  *
  */
-@ApplicationScoped
-public class DummyNotificationListener {
+@Documented
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ManagedProperty {
 	
-	private String message = null;
-	
-	public void listenNotification(@Observes @Generic ManagementNotificationEvent event){
-		message = event.getNotification().getMessage().toString();
-	}
-	
-	public void listenAttributeChangeNotification(@Observes @AttributeChange ManagementNotificationEvent event){
-		AttributeChangeNotification notification = (AttributeChangeNotification)event.getNotification();
-		message = notification.getMessage().toString() + " - " + notification.getAttributeName();
-	}
-	
-	public String getMessage() {
-		return message;
-	}
+	/**
+	 * @return The description of this property exposed to management clients.
+	 */
+	@Nonbinding
+	String description() default "";
+
 }

@@ -2,10 +2,10 @@ package br.gov.frameworkdemoiselle.internal.context;
 
 import javax.enterprise.context.RequestScoped;
 
-import br.gov.frameworkdemoiselle.management.annotation.Managed;
+import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 
 /**
- * Context that stores {@link RequestScoped} beans during client calls to {@link Managed} classes.
+ * Context that stores {@link RequestScoped} beans during client calls to {@link ManagementController} classes.
  * This context is only activated when no other context is active for {@link RequestScoped}.
  * 
  * @author serpro

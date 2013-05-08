@@ -34,38 +34,40 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management.testclasses;
+package br.gov.frameworkdemoiselle.annotation;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
-import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.NotificationManager;
+import javax.enterprise.util.Nonbinding;
 
 /**
- * Dummy class to test receiving of notifications sent by the {@link NotificationManager} 
+ * <p>Optional annotation to write additional detail about an operation's parameter.</p>
+ * <p>This annotation is ignored for non-operation methods.</p>  
  * 
- * @author serpro
+ * @author SERPRO
  *
  */
-@ApplicationScoped
-public class DummyNotificationListener {
+@Documented
+@Target({ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface OperationParameter {
 	
-	private String message = null;
+	/**
+	 * Name that will be used to publish this operation's parameter to clients.
+	 */
+	@Nonbinding
+	String name();
 	
-	public void listenNotification(@Observes @Generic ManagementNotificationEvent event){
-		message = event.getNotification().getMessage().toString();
-	}
+	/**
+	 * Optional description that will be used to publish this operation's parameter to clients.
+	 * Defaults to an empty description.
+	 */
+	@Nonbinding
+	String description() default "";
 	
-	public void listenAttributeChangeNotification(@Observes @AttributeChange ManagementNotificationEvent event){
-		AttributeChangeNotification notification = (AttributeChangeNotification)event.getNotification();
-		message = notification.getMessage().toString() + " - " + notification.getAttributeName();
-	}
-	
-	public String getMessage() {
-		return message;
-	}
+
 }

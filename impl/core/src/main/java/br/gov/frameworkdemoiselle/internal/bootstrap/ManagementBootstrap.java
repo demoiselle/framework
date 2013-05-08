@@ -17,10 +17,10 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
-import br.gov.frameworkdemoiselle.management.annotation.Managed;
-import br.gov.frameworkdemoiselle.management.extension.ManagementExtension;
-import br.gov.frameworkdemoiselle.management.internal.ManagedType;
-import br.gov.frameworkdemoiselle.management.internal.MonitoringManager;
+import br.gov.frameworkdemoiselle.internal.management.ManagedType;
+import br.gov.frameworkdemoiselle.internal.management.Management;
+import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
+import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 public class ManagementBootstrap implements Extension {
@@ -31,7 +31,7 @@ public class ManagementBootstrap implements Extension {
 	
 
 	public <T> void detectAnnotation(@Observes final ProcessAnnotatedType<T> event, final BeanManager beanManager) {
-		if (event.getAnnotatedType().isAnnotationPresent(Managed.class)) {
+		if (event.getAnnotatedType().isAnnotationPresent(ManagementController.class)) {
 			types.add(event.getAnnotatedType());
 		}
 	}
@@ -43,7 +43,7 @@ public class ManagementBootstrap implements Extension {
 
 	@SuppressWarnings("unchecked")
 	public void registerAvailableManagedTypes(@Observes final AfterDeploymentValidation event,BeanManager beanManager) {
-		MonitoringManager monitoringManager = Beans.getReference(MonitoringManager.class);
+		Management monitoringManager = Beans.getReference(Management.class);
 		for (AnnotatedType<?> type : types) {
 			ManagedType managedType = new ManagedType(type.getJavaClass());
 			monitoringManager.addManagedType(managedType);
@@ -62,7 +62,7 @@ public class ManagementBootstrap implements Extension {
 
 	public void unregisterAvailableManagedTypes(@Observes final BeforeShutdown event) {
 
-		MonitoringManager manager = Beans.getReference(MonitoringManager.class);
+		Management manager = Beans.getReference(Management.class);
 		manager.shutdown(managementExtensionCache);
 		
 		managementExtensionCache.clear();

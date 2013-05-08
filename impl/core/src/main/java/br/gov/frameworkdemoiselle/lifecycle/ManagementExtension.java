@@ -34,38 +34,43 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management.testclasses;
+package br.gov.frameworkdemoiselle.lifecycle;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import java.util.List;
 
-import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
-import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.NotificationManager;
+import br.gov.frameworkdemoiselle.internal.management.ManagedType;
+import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 
 /**
- * Dummy class to test receiving of notifications sent by the {@link NotificationManager} 
+ * 
+ * <p>Interface defining the lifecycle of a <b>management extension</b>, an extension
+ * capable of exposing {@link ManagementController}'s to external clients in one
+ * of the available management technologies, such as JMX or SNMP.</p>
+ * 
+ * <p>To include a management extension into the management lifecycle, it just needs
+ * to implement this interface and be a CDI bean (have a <b>beans.xml</b> file inside
+ * the META-INF folder of it's java package). The Demoiselle Core lifecycle controller
+ * will call the {@link #initialize(List managedTypes)} and {@link #shutdown(List managedTypes)} methods at the apropriate times.</p>
  * 
  * @author serpro
  *
  */
-@ApplicationScoped
-public class DummyNotificationListener {
-	
-	private String message = null;
-	
-	public void listenNotification(@Observes @Generic ManagementNotificationEvent event){
-		message = event.getNotification().getMessage().toString();
-	}
-	
-	public void listenAttributeChangeNotification(@Observes @AttributeChange ManagementNotificationEvent event){
-		AttributeChangeNotification notification = (AttributeChangeNotification)event.getNotification();
-		message = notification.getMessage().toString() + " - " + notification.getAttributeName();
-	}
-	
-	public String getMessage() {
-		return message;
-	}
+public interface ManagementExtension {
+
+	/**
+	 * This method is called during the application initialization process for each concrete
+	 * implementation of this interface.
+	 * 
+	 * @param managedTypes The list of discovered {@link ManagementController} classes.
+	 */
+	void initialize(List<ManagedType> managedTypes);
+
+	/**
+	 * This method is called during the application shutdown process for each concrete
+	 * implementation of this interface.
+	 * 
+	 * @param managedTypes The list of discovered {@link ManagementController} classes.
+	 */
+	void shutdown(List<ManagedType> managedTypes);
+
 }

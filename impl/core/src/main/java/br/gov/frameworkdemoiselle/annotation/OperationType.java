@@ -34,38 +34,56 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management.testclasses;
+package br.gov.frameworkdemoiselle.annotation;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import javax.management.MBeanOperationInfo;
 
-import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
-import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.NotificationManager;
 
 /**
- * Dummy class to test receiving of notifications sent by the {@link NotificationManager} 
+ * <p>Define the operation type for an operation inside a ManagementController class.</p>
  * 
- * @author serpro
+ * <p>This is an optional annotation and it's significanse will change based on the management extension
+ * used. Most extensions will just publish this information to the client so it can better show to the user the inner
+ * workings of the annotated operation.</p>
+ * 
+ * 
+ * @author SERPRO
  *
  */
-@ApplicationScoped
-public class DummyNotificationListener {
+public enum OperationType {
 	
-	private String message = null;
+	/**
+	 * ManagedOperation is write-only, it causes the application
+	 * to change some of it's behaviour but doesn't return any kind of information
+	 */
+	ACTION(MBeanOperationInfo.ACTION)
+	,
+	/**
+	 * ManagedOperation is read-only, it will operate over data provided by the application and return some information,
+	 * but will not change the application in any way.
+	 */
+	INFO(MBeanOperationInfo.INFO)
+	,
+	/**
+	 * ManagedOperation is read-write, it will both change the way the application work and return some information regarding
+	 * the result of the operation.
+	 */
+	ACTION_INFO(MBeanOperationInfo.ACTION_INFO)
+	,
+	/**
+	 * The effect of calling this operation is unknown. This is the default type and if this type is assigned to an operation,
+	 * the user must rely on the {@link ManagedOperation#description()} attribute to learn about how the operation works.
+	 */
+	UNKNOWN(MBeanOperationInfo.UNKNOWN);
 	
-	public void listenNotification(@Observes @Generic ManagementNotificationEvent event){
-		message = event.getNotification().getMessage().toString();
+	private int operationTypeValue;
+	
+	private OperationType(int type){
+		this.operationTypeValue = type;
 	}
 	
-	public void listenAttributeChangeNotification(@Observes @AttributeChange ManagementNotificationEvent event){
-		AttributeChangeNotification notification = (AttributeChangeNotification)event.getNotification();
-		message = notification.getMessage().toString() + " - " + notification.getAttributeName();
+	public int getValue(){
+		return operationTypeValue;
 	}
 	
-	public String getMessage() {
-		return message;
-	}
 }

@@ -1,39 +1,79 @@
-package br.gov.frameworkdemoiselle.management.internal;
+/*
+ * Demoiselle Framework
+ * Copyright (C) 2010 SERPRO
+ * ----------------------------------------------------------------------------
+ * This file is part of Demoiselle Framework.
+ * 
+ * Demoiselle Framework is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License version 3
+ * as published by the Free Software Foundation.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License version 3
+ * along with this program; if not,  see <http://www.gnu.org/licenses/>
+ * or write to the Free Software Foundation, Inc., 51 Franklin Street,
+ * Fifth Floor, Boston, MA  02110-1301, USA.
+ * ----------------------------------------------------------------------------
+ * Este arquivo é parte do Framework Demoiselle.
+ * 
+ * O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
+ * do Software Livre (FSF).
+ * 
+ * Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA
+ * GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou
+ * APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português
+ * para maiores detalhes.
+ * 
+ * Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
+ * "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses/>
+ * ou escreva para a Fundação do Software Livre (FSF) Inc.,
+ * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
+ */
+package br.gov.frameworkdemoiselle.internal.management;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.management.ReflectionException;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidationException;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
-import br.gov.frameworkdemoiselle.management.annotation.Managed;
-import br.gov.frameworkdemoiselle.management.annotation.Property;
-import br.gov.frameworkdemoiselle.management.extension.ManagementExtension;
-import br.gov.frameworkdemoiselle.management.internal.ManagedType.MethodDetail;
-import br.gov.frameworkdemoiselle.management.notification.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.notification.NotificationManager;
+import br.gov.frameworkdemoiselle.internal.management.ManagedType.MethodDetail;
+import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
+import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
+import br.gov.frameworkdemoiselle.management.NotificationManager;
+import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
- * A manager that helps implementators of the management framework to obtain a
- * list of managed classes, set or obtain values from them or invoke operations
- * over them.
+ * Central class used by management extensions to obtain information, access properties and call operations
+ * over discovered {@link ManagementController} classes. 
  * 
  * @author serpro
  */
 @ApplicationScoped
-public class MonitoringManager {
+public class Management {
 
 	@Inject
 	private Logger logger;
@@ -43,6 +83,8 @@ public class MonitoringManager {
 	private ResourceBundle bundle;
 
 	private final List<ManagedType> managedTypes = new ArrayList<ManagedType>();
+	
+	private Validator validator;
 
 	public void addManagedType(ManagedType managedType) {
 		managedTypes.add(managedType);
@@ -50,7 +92,7 @@ public class MonitoringManager {
 	}
 
 	/**
-	 * @return A list all managed types, classes annotated with {@link Managed}.
+	 * @return List all discovered {@link ManagementController} classes.
 	 *         The returned list is a shallow copy of the internal list, so you
 	 *         are free to modify it.
 	 * 
@@ -63,10 +105,13 @@ public class MonitoringManager {
 	}
 
 	/**
-	 * Invoke an operation over a managed type.
+	 * <p>Invoke an operation over a {@link ManagementController}.</p>
+	 * 
+	 * <p>This method is not thread-safe, it's the user's responsibility to
+	 * make the operations of the managed type synchronized if necessary.</p>
 	 * 
 	 * @param managedType
-	 *            A type annotated with {@link Managed}. This method will create
+	 *            A type annotated with {@link ManagementController}. This method will create
 	 *            an (or obtain an already created) instance of this type and
 	 *            invoke the operation over it.
 	 * @param actionName
@@ -81,7 +126,7 @@ public class MonitoringManager {
 	 *             In case the operation doesn't exist or have a different
 	 *             signature
 	 */
-	public synchronized Object invoke(ManagedType managedType, String actionName,
+	public Object invoke(ManagedType managedType, String actionName,
 			Object[] params) {
 		if ( managedTypes.contains(managedType) ) {
 			activateContexts(managedType.getType());
@@ -112,14 +157,17 @@ public class MonitoringManager {
 	}
 
 	/**
-	 * Retrieve the current value of a property from a managed type. Properties
-	 * are attributes annotated with {@link Property}.
+	 * <p>Retrieve the current value of a property from a managed type. Properties
+	 * are attributes annotated with {@link ManagedProperty}.</p>
+	 * 
+	 * <p>This method is not thread-safe, it's the user's responsibility to
+	 * create the property's access methods from the managed type synchronized if necessary.</p>
 	 * 
 	 * @param managedType The type that has the property the client wants to know the value of.
 	 * @param propertyName The name of the property
 	 * @return The current value of the property
 	 */
-	public synchronized Object getProperty(ManagedType managedType, String propertyName) {
+	public Object getProperty(ManagedType managedType, String propertyName) {
 		
 		if ( managedTypes.contains(managedType) ) {
 			Method getterMethod = managedType.getFields().get(propertyName).getGetterMethod();
@@ -153,14 +201,17 @@ public class MonitoringManager {
 	}
 	
 	/**
-	 * Sets a new value for a property contained inside a managed type. A property
-	 * is an attribute annotated with {@link Property}.
+	 * <p>Sets a new value for a property contained inside a managed type. A property
+	 * is an attribute annotated with {@link ManagedProperty}.</p>
+	 * 
+	 * <p>This method is not thread-safe, it's the user's responsibility to
+	 * create the property's access methods from the managed type synchronized if necessary.</p>
 	 * 
 	 * @param managedType The type that has access to the property
 	 * @param propertyName The name of the property
 	 * @param newValue The new value of the property
 	 */
-	public synchronized void setProperty(ManagedType managedType, String propertyName,
+	public void setProperty(ManagedType managedType, String propertyName,
 			Object newValue) {
 
 		if ( managedTypes.contains(managedType) ) {
@@ -171,12 +222,31 @@ public class MonitoringManager {
 						"management-debug-setting-property", method.getName(),
 						managedType.getType().getCanonicalName()));
 
-				// Obtém uma instância da classe gerenciada, lembrando que
-				// classes
-				// anotadas com @Managed são sempre singletons.
 				activateContexts(managedType.getType());
 				try {
+					// Obtém uma instância da classe gerenciada, lembrando que
+					// classes
+					// anotadas com @ManagementController são sempre singletons.
 					Object delegate = Beans.getReference(managedType.getType());
+					
+					//Se houver um validador anexado à propriedade alterada, executa o validador sobre
+					//o novo valor.
+					Validator validator = getDefaultValidator();
+					if (validator!=null){
+						Set<?> violations = validator.validateValue(managedType.getType(), propertyName, newValue);
+						if (violations.size()>0){
+							StringBuffer errorBuffer = new StringBuffer();
+							for (Object objectViolation : violations){
+								ConstraintViolation<?> violation = (ConstraintViolation<?>) objectViolation;
+								errorBuffer.append(violation.getMessage()).append('\r').append('\n');
+							}
+							
+							throw new DemoiselleException(bundle.getString("validation-constraint-violation",managedType.getType().getCanonicalName(),errorBuffer.toString()));
+						}
+					}
+					else{
+						logger.warn(bundle.getString("validation-validator-not-found"));
+					}
 
 					Method getterMethod = managedType.getFields().get(propertyName).getGetterMethod();
 					Object oldValue;
@@ -200,6 +270,8 @@ public class MonitoringManager {
 							, newValue);
 					notificationManager.sendNotification(notification);
 
+				} catch (DemoiselleException de){
+					throw de;
 				} catch (Exception e) {
 					throw new DemoiselleException(bundle.getString(
 							"management-invoke-error", method.getName()), e);
@@ -261,6 +333,19 @@ public class MonitoringManager {
 
 		}
 
+	}
+	
+	private Validator getDefaultValidator(){
+		if (validator == null){
+			try{
+				this.validator = Validation.buildDefaultValidatorFactory().getValidator();
+			}
+			catch(ValidationException e){
+				this.validator = null;
+			}
+		}
+		
+		return this.validator;
 	}
 
 }
