@@ -86,9 +86,9 @@ public class CoreBootstrap implements Extension {
 	}
 
 	public void initializeCustomContexts(@Observes final AfterBeanDiscovery event) {
-		//StaticContext já é criado e gerenciado por esta chamada
+		// StaticContext já é criado e gerenciado por esta chamada
 		ContextManager.initialize(event);
-		
+
 		ContextManager.activate(StaticContext.class, StaticScoped.class);
 	}
 
@@ -97,7 +97,7 @@ public class CoreBootstrap implements Extension {
 	}
 
 	public void engineOff(@Observes final BeforeShutdown event) {
-		ContextManager.deactivate(StaticContext.class, StaticScoped.class);
+		ContextManager.shutdown();
 		getLogger().info(getBundle().getString("engine-off"));
 	}
 }
