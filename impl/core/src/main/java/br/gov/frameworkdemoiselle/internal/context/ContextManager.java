@@ -50,6 +50,8 @@ public class ContextManager {
 	private static ResourceBundle bundle;
 
 	private static Logger logger;
+	
+	private ContextManager(){}
 
 	/**
 	 * <p>
