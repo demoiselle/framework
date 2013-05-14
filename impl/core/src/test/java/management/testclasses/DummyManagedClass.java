@@ -43,6 +43,7 @@ import javax.validation.constraints.NotNull;
 import br.gov.frameworkdemoiselle.annotation.ManagedOperation;
 import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 @ManagementController
 public class DummyManagedClass {
@@ -196,7 +197,15 @@ public class DummyManagedClass {
 		this.gender = gender;
 	}
 	
-	
+	@ManagedOperation
+	public String requestScopedOperation(){
+		RequestScopeBeanClient client = Beans.getReference(RequestScopeBeanClient.class);
+		client.operationOne();
+		client.operationTwo();
+		
+		RequestScopedClass bean = Beans.getReference(RequestScopedClass.class);
+		return bean.getInfo();
+	}
 	
 	
 }

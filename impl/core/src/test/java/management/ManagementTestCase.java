@@ -42,6 +42,8 @@ import junit.framework.Assert;
 import management.testclasses.DummyManagedClass;
 import management.testclasses.DummyManagementExtension;
 import management.testclasses.ManagedClassStore;
+import management.testclasses.RequestScopeBeanClient;
+import management.testclasses.RequestScopedClass;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -75,7 +77,11 @@ public class ManagementTestCase {
 						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
 						"services/javax.enterprise.inject.spi.Extension")
 				.addPackages(false, ManagementTestCase.class.getPackage())
-				.addClasses(DummyManagementExtension.class, DummyManagedClass.class, ManagedClassStore.class);
+				.addClasses(DummyManagementExtension.class
+						, DummyManagedClass.class
+						, ManagedClassStore.class
+						, RequestScopeBeanClient.class
+						, RequestScopedClass.class);
 	}
 
 	@Test
@@ -160,5 +166,19 @@ public class ManagementTestCase {
 			// SUCCESS
 		}
 
+	}
+	
+	@Test
+	public void testRequestScopedOperation() {
+		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
+		
+		//Esta operação faz multiplos acessos a um bean RequestScoped. Durante a operação todos os acessos devem
+		//operar sob a mesma instância, mas uma segunda invocação deve operar em uma instância nova
+		Object info = store.invoke(DummyManagedClass.class, "requestScopedOperation");
+		Assert.assertEquals("-OPERATION ONE CALLED--OPERATION TWO CALLED-", info);
+		
+		//Segunda invocação para testar se uma nova instância é criada, já que esse é um novo request.
+		info = store.invoke(DummyManagedClass.class, "requestScopedOperation");
+		Assert.assertEquals("-OPERATION ONE CALLED--OPERATION TWO CALLED-", info);
 	}
 }
