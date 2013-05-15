@@ -42,6 +42,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -51,6 +52,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
+import br.gov.frameworkdemoiselle.internal.context.ContextManager;
+import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import configuration.resource.ConfigurationResourceTest;
 
@@ -79,17 +82,25 @@ public class CustomAuthenticatorTest {
 
 	@Test
 	public void loginProcess() {
+		ContextManager.activate(ThreadLocalContext.class, RequestScoped.class);
+		
 		context.login();
 		assertTrue(context.isLoggedIn());
 		assertNotNull(observer.getEvent());
 		assertEquals("demoiselle", context.getCurrentUser().getName());
+		
+		ContextManager.deactivate(ThreadLocalContext.class, RequestScoped.class);
 	}
 
 	@Test
 	public void logoutProcess() {
+		ContextManager.activate(ThreadLocalContext.class, RequestScoped.class);
+		
 		context.login();
 		context.logout();
 		assertFalse(context.isLoggedIn());
 		assertNull(context.getCurrentUser());
+		
+		ContextManager.deactivate(ThreadLocalContext.class, RequestScoped.class);
 	}
 }
