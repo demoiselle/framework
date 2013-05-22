@@ -8,12 +8,13 @@
 	<para>
 		No <emphasis>Demoiselle Framework</emphasis> os controladores ou controllers servem para identificar as camadas da
 		arquitetura de sua aplicação. É comum que as aplicações utilizem apenas três camadas: visão, negócio e persistência.
-		Existem aplicações que utilizam fachadas. Por esse motivo, foram implementados nessa versão do framework quatro controllers:
+		Existem aplicações que utilizam fachadas. Por esse motivo, foram implementados nessa versão do framework cinco controllers:
 		<itemizedlist>
 			<listitem><para><literal>ViewController</literal></para></listitem>
 			<listitem><para><literal>FacadeController</literal></para></listitem>
 			<listitem><para><literal>BusinessController</literal></para></listitem>
 			<listitem><para><literal>PersistenceController</literal></para></listitem>
+			<listitem><para><literal>ManagementController</literal></para></listitem>
 		</itemizedlist>
 	</para>
 	<!-- TODO: incluir exemplos de códigos usando os controladores citados acima -->
