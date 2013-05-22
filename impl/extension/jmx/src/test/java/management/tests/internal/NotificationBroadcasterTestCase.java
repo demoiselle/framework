@@ -88,10 +88,11 @@ public class NotificationBroadcasterTestCase {
 	public void sendMessageTest(){
 		JMXConfig config = Beans.getReference(JMXConfig.class);
 		
+		//Este será o lado cliente. Este manager é usado para enviar notificações a partir do código da aplicação
+		NotificationManager notificationManager = Beans.getReference(NotificationManager.class);
+		
 		//Obtém o servidor MBean onde anexaremos um listener para a notificação
 		MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-		
-		NotificationManager notificationManager = Beans.getReference(NotificationManager.class);
 		
 		//Aqui obtemos o MBean de notificações já registrado pelo bootstrap
 		StringBuffer notificationMBeanName = new StringBuffer()

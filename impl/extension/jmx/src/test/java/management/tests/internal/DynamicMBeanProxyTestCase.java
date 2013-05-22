@@ -52,6 +52,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,13 +69,16 @@ public class DynamicMBeanProxyTestCase {
 		mainDeployment
 				.addPackages(true, "br")
 				.addAsResource(new FileAsset(new File("src/test/resources/test/beans.xml")), "beans.xml")
-				.addAsResource(new FileAsset(new File("src/test/resources/configuration/demoiselle.properties")),
-						"demoiselle.properties").addPackages(false, DynamicMBeanProxyTestCase.class.getPackage())
+				.addAsResource(new FileAsset(new File("src/test/resources/configuration/demoiselle.properties")),"demoiselle.properties")
+				.addPackages(false, DynamicMBeanProxyTestCase.class.getPackage())
 				.addClasses(LocaleProducer.class, ManagedTestClass.class);
-
+		
+		mainDeployment.as(ZipExporter.class).exportTo(
+			    new File("/home/81986912515/myPackage.jar"), true);
+		
 		return mainDeployment;
 	}
-
+	
 	/**
 	 * Testa se o bootstrap está corretamente carregando e registrando classes anotadas com {@link Managed} como MBeans.
 	 */
@@ -89,10 +93,12 @@ public class DynamicMBeanProxyTestCase {
 		// o NotificationBroadcaster. Qualquer classe gerenciada criada pelo usuário
 		// será adicionada a ela, então esperamos 2 MBeans aqui.
 		Assert.assertEquals(2, manager.listRegisteredMBeans().size());
+		
 	}
 
 	@Test
 	public void testAttributeWrite() {
+		
 		MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 
 		ObjectName name = null;
@@ -107,10 +113,12 @@ public class DynamicMBeanProxyTestCase {
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
+		
 	}
 
 	@Test
 	public void testAttributeRead() {
+		
 		MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 
 		ObjectName name = null;
@@ -129,6 +137,7 @@ public class DynamicMBeanProxyTestCase {
 		} catch (Exception e) {
 			Assert.fail();
 		}
+		
 	}
 
 	@Test
@@ -156,6 +165,7 @@ public class DynamicMBeanProxyTestCase {
 
 	@Test
 	public void testTryWriteOverReadOnly() {
+		
 		MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 
 		ObjectName name = null;
@@ -170,6 +180,6 @@ public class DynamicMBeanProxyTestCase {
 		} catch (Exception e) {
 			Assert.fail(e.getMessage());
 		}
+		
 	}
-
 }

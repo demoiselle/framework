@@ -39,7 +39,10 @@ package br.gov.frameworkdemoiselle.internal.management;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.TreeMap;
+
+import javax.inject.Qualifier;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.ManagedOperation;
@@ -60,6 +63,8 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 public class ManagedType {
 
 	private Class<?> type;
+	
+	private Annotation[] qualifiers;
 
 	private TreeMap<String, FieldDetail> fields;
 
@@ -83,6 +88,7 @@ public class ManagedType {
 		fields = new TreeMap<String, FieldDetail>();
 		operationMethods = new TreeMap<String, MethodDetail>();
 		this.description = type.getAnnotation(ManagementController.class).description();
+		this.qualifiers = getQualifierAnnotations(type);
 
 		initialize();
 	}
@@ -101,6 +107,18 @@ public class ManagedType {
 
 	public TreeMap<String, MethodDetail> getOperationMethods() {
 		return operationMethods;
+	}
+	
+	/**
+	 * <p>Return a (possibly empty) list of all qualifiers this type have. Qualifiers
+	 * are any annotations marked as {@link Qualifier}.</p>
+	 * 
+	 * <p>This method returns the true list of qualifiers. If implementators change this list, it will
+	 * affect future calls of this method. This is so that resources can be spared by not creating many instances of this list.</p> 
+	 * 
+	 */
+	public Annotation[] getQualifiers(){
+		return this.qualifiers;
 	}
 
 	private void initialize() {
@@ -224,6 +242,33 @@ public class ManagedType {
 
 		return setterMethod;
 	}
+	
+	/**
+	 * Indicates another {@link ManagedType} represents the same {@link Class} as this one. This method also supports a
+	 * {@link Class} as a parameter, in this case it will return <code>true</code> if the passed class is exactly the
+	 * same Java class represented by this {@link ManagedType}.
+	 */
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		}
+
+		return ((ManagedType) other).getType().getCanonicalName().equals(this.getType().getCanonicalName());
+	}
+	
+	private synchronized Annotation[] getQualifierAnnotations(Class<?> beanClass){
+		Annotation[] annotations = beanClass.getAnnotations();
+		ArrayList<Annotation> qualifiers = new ArrayList<Annotation>(annotations.length);
+
+		for (int i=0; i<annotations.length; i++){
+			if (annotations[i].annotationType().getAnnotation(Qualifier.class) != null){
+				qualifiers.add(annotations[i]);
+			}
+		}
+		
+		return qualifiers.toArray(new Annotation[0]);
+	}
 
 	public final class FieldDetail {
 
@@ -316,19 +361,5 @@ public class ManagedType {
 		public String getParameterDescription() {
 			return parameterDescription;
 		}
-	}
-
-	/**
-	 * Indicates another {@link ManagedType} represents the same {@link Class} as this one. This method also supports a
-	 * {@link Class} as a parameter, in this case it will return <code>true</code> if the passed class is exactly the
-	 * same Java class represented by this {@link ManagedType}.
-	 */
-	@Override
-	public boolean equals(Object other) {
-		if (other == null) {
-			return false;
-		}
-
-		return ((ManagedType) other).getType().getCanonicalName().equals(this.getType().getCanonicalName());
 	}
 }
