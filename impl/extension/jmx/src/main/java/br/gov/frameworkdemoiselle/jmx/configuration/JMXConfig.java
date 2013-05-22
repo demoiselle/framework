@@ -40,6 +40,7 @@ import javax.management.NotificationBroadcaster;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
+import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 
 @Configuration(prefix = "frameworkdemoiselle.management.jmx.")
 public class JMXConfig {
@@ -48,13 +49,13 @@ public class JMXConfig {
 	private String mbeanDomain;
 	
 	@Name("notification.domain")
-	private String notificationDomain;
+	private String notificationDomain = "br.gov.frameworkdemoiselle.jmx";
 	
 	@Name("notification.name")
 	private String notificationMBeanName = "NotificationBroadcaster";
 	
 	/**
-	 * </p>The domain to register all {@link Managed} classes found during boot.</p>
+	 * </p>The domain to register all {@link ManagementController} classes found during boot.</p>
 	 * 
 	 * <p>The full name of a MBean has the format of <code>domain:name=MBeanName</code> (ex: <code>br.gov.frameworkdemoiselle.jmx:name=NotificationBroadcaster</code>), this
 	 * parameter is the "domain" portion of the full name.</p>
