@@ -322,14 +322,12 @@ public class Management {
 	public void initialize(Collection<Class<? extends ManagementExtension>> monitoringExtensions) {
 
 		for (Class<? extends ManagementExtension> monitoringExtensionClass : monitoringExtensions) {
-
 			ManagementExtension monitoringExtension = Beans.getReference(monitoringExtensionClass);
-
-			monitoringExtension.initialize(this.getManagedTypes());
 
 			logger.debug(bundle.getString("management-debug-processing-management-extension", monitoringExtension
 					.getClass().getCanonicalName()));
 
+			monitoringExtension.initialize(this.getManagedTypes());
 		}
 
 	}
