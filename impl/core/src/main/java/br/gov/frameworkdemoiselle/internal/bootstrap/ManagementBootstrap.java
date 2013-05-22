@@ -1,8 +1,10 @@
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
@@ -15,13 +17,16 @@ import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
 import br.gov.frameworkdemoiselle.internal.management.ManagedType;
 import br.gov.frameworkdemoiselle.internal.management.Management;
+import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 public class ManagementBootstrap implements Extension {
 
@@ -43,8 +48,14 @@ public class ManagementBootstrap implements Extension {
 
 	@SuppressWarnings("unchecked")
 	public void registerAvailableManagedTypes(@Observes final AfterDeploymentValidation event,BeanManager beanManager) {
+		ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
+
 		Management monitoringManager = Beans.getReference(Management.class);
 		for (AnnotatedType<?> type : types) {
+			if (type.getJavaClass().isInterface() || Modifier.isAbstract(type.getJavaClass().getModifiers()) ){
+				throw new DemoiselleException(bundle.getString("management-abstract-class-defined" , type.getJavaClass().getCanonicalName()));
+			}
+
 			ManagedType managedType = new ManagedType(type.getJavaClass());
 			monitoringManager.addManagedType(managedType);
 		}

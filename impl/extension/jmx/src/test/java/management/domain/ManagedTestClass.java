@@ -1,6 +1,6 @@
 /*
  * Demoiselle Framework
- * Copyright (C) 2011 SERPRO
+ * Copyright (C) 2010 SERPRO
  * ----------------------------------------------------------------------------
  * This file is part of Demoiselle Framework.
  * 
@@ -34,48 +34,40 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.stereotype;
+package management.domain;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Stereotype;
-import javax.enterprise.util.Nonbinding;
+import br.gov.frameworkdemoiselle.annotation.ManagedOperation;
+import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
+import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.annotation.OperationParameter;
+import br.gov.frameworkdemoiselle.annotation.OperationType;
+import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 
 /**
- * <p>Identifies a <b>management controller</b> bean. What it means is that an external client can manage the application
- * this class is in by reading or writing it's attributes and calling it's operations.</p>
- * <p>
- * Only fields annotated with {@link br.gov.frameworkdemoiselle.annotation.ManagedProperty} or
- * methods annotated with {@link br.gov.frameworkdemoiselle.annotation.ManagedOperation} will be exposed
- * to clients.</p>
- * <p>Only bean implementations (concrete classes) can be management controllers. It's a runtime error to mark an interface
- * or abstract class with this annotation.</p>
- * <p>This stereotype only defines a class as managed, you need to choose an extension that will expose this managed class
- * to external clients using any technology available. One example is the Demoiselle JMX extension, that will expose
- * managed classes as MBeans.</p> 
+ * Classe usada para testar se o registro de classes Managed
+ * como MBeans está funcionando.
  * 
  * @author SERPRO
+ *
  */
-@ApplicationScoped
-@Stereotype
-@Documented
-@Controller
-@Inherited
-@Retention(RUNTIME)
-@Target({ TYPE })
-public @interface ManagementController {
+@ManagementController
+@Name("ManagedTest")
+public class ManagedTestClass {
 	
-	/**
-	 * @return Human readable description of this managed class.
-	 */
-	@Nonbinding
-	String description() default "";
+	@ManagedProperty(description="Atributo de teste para testar registro de MBean")
+	private String attribute;
 
+	public String getAttribute() {
+		return attribute;
+	}
+
+	public void setAttribute(String attribute) {
+		this.attribute = attribute;
+	}
+
+	@ManagedOperation(type=OperationType.ACTION_INFO,description="Test Operation")
+	public String operation(@OperationParameter(name="parameter") String parameter){
+		return "Operation called with parameter="+parameter+". Current attribute value is "+attribute;
+	}
+	
 }

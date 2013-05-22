@@ -1,0 +1,11 @@
+<beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+
+	<interceptors>
+		<class>br.gov.frameworkdemoiselle.transaction.TransactionalInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.security.RequiredPermissionInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.security.RequiredRoleInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.exception.ExceptionHandlerInterceptor</class>
+	</interceptors>
+
+</beans>

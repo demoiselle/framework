@@ -129,7 +129,7 @@ public class Management {
 			activateContexts(managedType.getType());
 
 			try {
-				Object delegate = Beans.getReference(managedType.getType());
+				Object delegate = Beans.getReference(managedType.getType() , managedType.getQualifiers());
 				MethodDetail method = managedType.getOperationMethods().get(actionName);
 
 				if (method != null) {
@@ -179,7 +179,7 @@ public class Management {
 				activateContexts(managedType.getType());
 
 				try {
-					Object delegate = Beans.getReference(managedType.getType());
+					Object delegate = Beans.getReference(managedType.getType() , managedType.getQualifiers());
 
 					return getterMethod.invoke(delegate, (Object[]) null);
 				} catch (Exception e) {
@@ -227,7 +227,7 @@ public class Management {
 					// Obtém uma instância da classe gerenciada, lembrando que
 					// classes
 					// anotadas com @ManagementController são sempre singletons.
-					Object delegate = Beans.getReference(managedType.getType());
+					Object delegate = Beans.getReference(managedType.getType() ,  managedType.getQualifiers() );
 
 					// Se houver um validador anexado à propriedade alterada, executa o validador sobre
 					// o novo valor.
@@ -343,5 +343,6 @@ public class Management {
 
 		return this.validator;
 	}
+	
 
 }
