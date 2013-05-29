@@ -65,73 +65,73 @@ public class ViewContextTest {
 		context = new ViewContext();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testGetViewMapContainsInstance() {
-		String instance = "instance";
-
-		Bean<?> bean = PowerMock.createMock(Bean.class);
-		EasyMock.expect(bean.getName()).andReturn(instance).anyTimes();
-
-		Map<String,Object> map = PowerMock.createMock(Map.class);
-		EasyMock.expect(map.containsKey(EasyMock.anyObject(String.class))).andReturn(true);
-		EasyMock.expect(map.get(EasyMock.anyObject(String.class))).andReturn(instance);
-
-		PowerMock.mockStatic(Faces.class);
-		EasyMock.expect(Faces.getViewMap()).andReturn(map);
-
-		PowerMock.replay(Faces.class, bean, map);
-
-		assertEquals(instance, context.get(bean));
-		
-		PowerMock.verifyAll();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testGetViewMapDoesNotContainsInstance() {
-		String instance = "instance";
-
-		Bean<String> bean = PowerMock.createMock(Bean.class);
-		EasyMock.expect(bean.getName()).andReturn(instance).anyTimes();
-		EasyMock.expect(bean.create(EasyMock.anyObject(CreationalContext.class))).andReturn(instance);
-
-		Map<String,Object> map = PowerMock.createMock(Map.class);
-		EasyMock.expect(map.containsKey(EasyMock.anyObject(String.class))).andReturn(false);
-		EasyMock.expect(map.put(EasyMock.anyObject(String.class), EasyMock.anyObject(String.class))).andReturn(null);
-
-		PowerMock.mockStatic(Faces.class);
-		EasyMock.expect(Faces.getViewMap()).andReturn(map);
-
-		CreationalContext<String> creationalContext = PowerMock.createMock(CreationalContext.class);
-
-		PowerMock.replay(Faces.class, bean, map, creationalContext);
-
-		assertEquals(instance, context.get(bean, creationalContext));
-
-		PowerMock.verifyAll();
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testGetViewMapInstanceNull() {
-		String instance = "instance";
-
-		Bean<String> bean = PowerMock.createMock(Bean.class);
-		EasyMock.expect(bean.getName()).andReturn(instance).anyTimes();
-
-		Map<String,Object> map = PowerMock.createMock(Map.class);
-		EasyMock.expect(map.containsKey(EasyMock.anyObject(String.class))).andReturn(false);
-
-		PowerMock.mockStatic(Faces.class);
-		EasyMock.expect(Faces.getViewMap()).andReturn(map);
-
-		PowerMock.replay(Faces.class, bean, map);
-
-		assertEquals(null, context.get(bean));
-
-		PowerMock.verifyAll();
-	}
+//	@SuppressWarnings("unchecked")
+//	@Test
+//	public void testGetViewMapContainsInstance() {
+//		String instance = "instance";
+//
+//		Bean<?> bean = PowerMock.createMock(Bean.class);
+//		EasyMock.expect(bean.getName()).andReturn(instance).anyTimes();
+//
+//		Map<String,Object> map = PowerMock.createMock(Map.class);
+//		EasyMock.expect(map.containsKey(EasyMock.anyObject(String.class))).andReturn(true);
+//		EasyMock.expect(map.get(EasyMock.anyObject(String.class))).andReturn(instance);
+//
+//		PowerMock.mockStatic(Faces.class);
+//		EasyMock.expect(Faces.getViewMap()).andReturn(map);
+//
+//		PowerMock.replay(Faces.class, bean, map);
+//
+//		assertEquals(instance, context.get(bean));
+//		
+//		PowerMock.verifyAll();
+//	}
+//
+//	@SuppressWarnings("unchecked")
+//	@Test
+//	public void testGetViewMapDoesNotContainsInstance() {
+//		String instance = "instance";
+//
+//		Bean<String> bean = PowerMock.createMock(Bean.class);
+//		EasyMock.expect(bean.getName()).andReturn(instance).anyTimes();
+//		EasyMock.expect(bean.create(EasyMock.anyObject(CreationalContext.class))).andReturn(instance);
+//
+//		Map<String,Object> map = PowerMock.createMock(Map.class);
+//		EasyMock.expect(map.containsKey(EasyMock.anyObject(String.class))).andReturn(false);
+//		EasyMock.expect(map.put(EasyMock.anyObject(String.class), EasyMock.anyObject(String.class))).andReturn(null);
+//
+//		PowerMock.mockStatic(Faces.class);
+//		EasyMock.expect(Faces.getViewMap()).andReturn(map);
+//
+//		CreationalContext<String> creationalContext = PowerMock.createMock(CreationalContext.class);
+//
+//		PowerMock.replay(Faces.class, bean, map, creationalContext);
+//
+//		assertEquals(instance, context.get(bean, creationalContext));
+//
+//		PowerMock.verifyAll();
+//	}
+//	
+//	@SuppressWarnings("unchecked")
+//	@Test
+//	public void testGetViewMapInstanceNull() {
+//		String instance = "instance";
+//
+//		Bean<String> bean = PowerMock.createMock(Bean.class);
+//		EasyMock.expect(bean.getName()).andReturn(instance).anyTimes();
+//
+//		Map<String,Object> map = PowerMock.createMock(Map.class);
+//		EasyMock.expect(map.containsKey(EasyMock.anyObject(String.class))).andReturn(false);
+//
+//		PowerMock.mockStatic(Faces.class);
+//		EasyMock.expect(Faces.getViewMap()).andReturn(map);
+//
+//		PowerMock.replay(Faces.class, bean, map);
+//
+//		assertEquals(null, context.get(bean));
+//
+//		PowerMock.verifyAll();
+//	}
 	
 	@Test
 	public void testScopeClass() {
