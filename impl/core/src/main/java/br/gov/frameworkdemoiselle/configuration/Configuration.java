@@ -73,7 +73,7 @@ public @interface Configuration {
 	/**
 	 * Define the default resource.
 	 */
-	public static final String DEFAULT_RESOURCE = "demoiselle";
+	static final String DEFAULT_RESOURCE = "demoiselle";
 
 	/**
 	 * Defines the resource type to be used: a properties file, an XML file, or system variables.

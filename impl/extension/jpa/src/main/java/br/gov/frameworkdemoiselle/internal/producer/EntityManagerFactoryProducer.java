@@ -30,7 +30,7 @@ public class EntityManagerFactoryProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static String ENTITY_MANAGER_RESOURCE = "META-INF/persistence.xml";
+	private static final String ENTITY_MANAGER_RESOURCE = "META-INF/persistence.xml";
 
 	@Inject
 	private Logger logger;
@@ -38,14 +38,6 @@ public class EntityManagerFactoryProducer implements Serializable {
 	@Inject
 	@Name("demoiselle-jpa-bundle")
 	private ResourceBundle bundle;
-
-	// private final Map<String, EntityManagerFactory> cache = Collections
-	// .synchronizedMap(new HashMap<String, EntityManagerFactory>());
-
-	/*
-	 * private final Map<Key, EntityManagerFactory> cache = Collections .synchronizedMap(new HashMap<Key,
-	 * EntityManagerFactory>());
-	 */
 
 	private final Map<ClassLoader, Map<String, EntityManagerFactory>> factoryCache = Collections
 			.synchronizedMap(new HashMap<ClassLoader, Map<String, EntityManagerFactory>>());
@@ -90,9 +82,6 @@ public class EntityManagerFactoryProducer implements Serializable {
 				} else {
 					persistenceUnits.add(persistenceUnit);
 				}
-				// logger.debug(bundle.getString("persistence-unit-name-found",
-				// persistenceUnit));
-
 			}
 
 			return persistenceUnits.toArray(new String[0]);
@@ -110,14 +99,13 @@ public class EntityManagerFactoryProducer implements Serializable {
 	public void loadPersistenceUnits() {
 		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 		for (String persistenceUnit : loadPersistenceUnitFromClassloader(contextClassLoader)) {
-			
-			try{
+
+			try {
 				create(persistenceUnit);
+			} catch (Exception cause) {
+				throw new DemoiselleException(cause);
 			}
-			catch(Throwable t){
-				throw new DemoiselleException(t);
-			}
-			
+
 			logger.debug(bundle.getString("persistence-unit-name-found", persistenceUnit));
 		}
 	}
@@ -146,5 +134,4 @@ public class EntityManagerFactoryProducer implements Serializable {
 
 		return result;
 	}
-
 }

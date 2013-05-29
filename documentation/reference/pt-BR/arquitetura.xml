@@ -41,10 +41,8 @@
 		<para>
 			As boas práticas de programação nos alertam para que nunca sejamos dependentes de implementações, mas sempre de
 			interfaces ou, como alguns costumam dizer, <quote>depender de contratos</quote>.
-			As interfaces existem para isto: definem um contrato, enquanto as implementações deste contrato ficam à parte, de
-			preferência, distante do programador da aplicação. O mecanismo de injeção de dependência fortalece ainda mais esta
-			ideia. Sua aplicação precisará apenas depender das interfaces que o Demoiselle provê. A implementação específica será
-			injetada automaticamente pelo CDI.
+			Portanto a sua aplicação precisará apenas depender das interfaces que o Demoiselle provê. As implementações específicas
+			e internas do Framework serão injetadas automaticamente pelo CDI.
 		</para>
 		<tip>
 			<para>
@@ -53,14 +51,13 @@
 		</tip>
 		<para>
 			Qual o motivo de toda esta explicação? Os programadores mais curiosos irão encontrar classes do framework que estão
-			inseridas no pacote <literal>internal</literal>. 
-			Cabe alertar que as classes aí contidas não devem ser usadas diretamente pela aplicação, caso contrário, você
-			estará acoplando-a com a implementação interna do framework, que pode sofrer mudanças sem aviso prévio. A equipe do
+			inseridas no pacote <literal>br.gov.frameworkdemoiselle.internal</literal>. 
+			As classes deste pacote não devem ser usadas diretamente pela sua aplicação, caso contrário você
+			estará acoplando-a com a implementação interna do Framework. A equipe do
 			Demoiselle possui atenção especial quanto às suas interfaces (contratos) e não irá modificá-las sem antes tornar
-			públicas as mudanças. Contudo, tudo que consta no pacote
-			<literal>internal</literal>
-			pode sofrer mudanças repentinas. Isto significa que sua aplicação pode deixar de funcionar de uma versão para outra
-			caso você esteja usando diretamente classes internas.
+			públicas as mudanças. Contudo, tudo que consta no pacote <literal>br.gov.frameworkdemoiselle.internal</literal>
+			pode sofrer mudanças repentinas. Se você referenciar tais classes internas, a sua aplicação pode deixar
+			de funcionar ao atualizar a versão do Demoiselle.
 		</para>
 	</section>
 
@@ -77,14 +74,14 @@
 			apresentação, regras de negócio e persistência. O Demoiselle já fornece estereótipos que visam tornar esta 
 			separação mais clara, respectivamente:
 			<literal>@ViewController</literal>, <literal>@BusinessController</literal> e <literal>@PersistenceController</literal>. 
-			Maiores detalhes sobre cada anotação desta serão dados no decorrer desta documentação.
+			Maiores detalhes sobre cada anotação serão dados no decorrer desta documentação.
 		</para>
 		<!-- TODO: explicar melhor cada um dos estereótipos, se possível exemplificando com códigos -->
 		<para>
-			Cabe destacar que estamos falando de uma macro-visão arquitetural. Cada camada desta pode ser organizada
+			Cabe destacar que estamos falando de uma macro-visão arquitetural. Cada camada pode ser organizada
 			internamente da melhor forma possível, ou conforme os padrões vigentes no mercado. Para uma aplicação Swing, por
 			exemplo, o padrão de projeto <emphasis>Presentation Model</emphasis>
-			é bastante indicado e pode ser adotado em aplicações nesta plataforma. Para aplicações Web, os frameworks
+			é bastante indicado. Para aplicações Web, os frameworks
 			especialistas geralmente aplicam o padrão MVC (Model/View/Controller).
 		</para>
 	</section>

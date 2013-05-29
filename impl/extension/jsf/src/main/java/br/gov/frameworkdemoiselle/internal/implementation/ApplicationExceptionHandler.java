@@ -74,7 +74,7 @@ public class ApplicationExceptionHandler extends AbstractExceptionHandler {
 		return handled;
 	}
 
-	private final boolean isRendering(FacesContext context) {
+	private boolean isRendering(FacesContext context) {
 		return PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId());
 	}
 
@@ -87,7 +87,7 @@ public class ApplicationExceptionHandler extends AbstractExceptionHandler {
 	 * @param config
 	 * @return
 	 */
-	private final boolean handlingDuringRenderResponse(final Throwable cause, final ExceptionHandlerConfig config) {
+	private boolean handlingDuringRenderResponse(final Throwable cause, final ExceptionHandlerConfig config) {
 		boolean handled = false;
 		try {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -104,7 +104,7 @@ public class ApplicationExceptionHandler extends AbstractExceptionHandler {
 		}
 		return handled;
 	}
-	
+
 	protected Throwable getRoot(final Throwable throwable) {
 		Throwable root = throwable;
 

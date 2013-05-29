@@ -39,16 +39,53 @@ package br.gov.frameworkdemoiselle.template;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Interface containing basic methods for creating, updating and deleting entities (the CRUD design pattern).
+ * 
+ * @author serpro
+ *
+ * @param <T> Type of the entity
+ * @param <I> Type of the identification attribute of the entity
+ */
 public interface Crud<T, I> extends Serializable {
 
+	/**
+	 * Find an entity by it's identification attribute and make it transient.
+	 * 
+	 * @param id The unique identification to find the entity to be deleted.
+	 */
 	void delete(I id);
 
+	/**
+	 * List all instances of the given entity.
+	 * 
+	 * @return The (possibly empty) list of all instances of the given entity.
+	 */
 	List<T> findAll();
 
-	void insert(T bean);
+	/**
+	 * Insert an entity and return the inserted instance of the entity
+	 * 
+	 * @param bean The bean to be inserted
+	 * @return The inserted instance of the entity
+	 */
+	T insert(T bean);
 
+	/**
+	 * Find an entity's instance by it's identification attribute and return it
+	 * @param id Value of the identification attribute of the desired entity's instance
+	 * @return The entity's instance whose identification attribute's value matches
+	 * the one passed as argument.
+	 */
 	T load(I id);
 
-	void update(T bean);
+	/**
+	 * Update an instance of the entity with the bean's attributes as new values. 
+	 * 
+	 * @param bean The bean instance containing both the identification value to find the old
+	 * instance and the new values for the instance's attributes.
+	 * @return The updated entity's instance
+	 */
+	T update(T bean);
 
 }

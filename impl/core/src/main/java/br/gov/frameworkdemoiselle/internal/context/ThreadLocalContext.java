@@ -50,17 +50,19 @@ package br.gov.frameworkdemoiselle.internal.context;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * Base context that has a separated store for each thread 
+ * 
+ * @author serpro
+ *
+ */
 public class ThreadLocalContext extends AbstractCustomContext {
 
 	private final ThreadLocal<Store> threadLocal = new ThreadLocal<Store>();
 
 	public ThreadLocalContext(final Class<? extends Annotation> scope) {
-		super(scope, true);
+		super(scope);
 	}
-
-//	public ThreadLocalContext(final Class<? extends Annotation> scope, boolean active) {
-//		super(scope, active);
-//	}
 
 	@Override
 	protected Store getStore() {

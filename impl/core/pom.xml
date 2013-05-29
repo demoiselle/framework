@@ -34,7 +34,8 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -44,7 +45,7 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-framework-parent</artifactId>
-		<version>2.3.5-SNAPSHOT</version>
+		<version>2.4.0-BETA2-SNAPSHOT</version>
 		<relativePath>../../parent/framework</relativePath>
 	</parent>
 
@@ -72,7 +73,7 @@
 			<dependency>
 				<groupId>br.gov.frameworkdemoiselle</groupId>
 				<artifactId>demoiselle-framework-bom</artifactId>
-				<version>2.3.5-SNAPSHOT</version>
+				<version>2.4.0-BETA2-SNAPSHOT</version>
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
@@ -97,7 +98,21 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
 			</plugin>
+
+			<!-- <plugin> <groupId>org.jacoco</groupId> <artifactId>jacoco-maven-plugin</artifactId> 
+				<version>${jacoco.version}</version> <executions> <execution> <goals> <goal>prepare-agent</goal> 
+				</goals> </execution> <execution> <id>report</id> <phase>prepare-package</phase> 
+				<goals> <goal>report</goal> </goals> </execution> </executions> </plugin> -->
 		</plugins>
+
+		<!-- <pluginManagement> <plugins> <plugin> <groupId>org.eclipse.m2e</groupId> 
+			<artifactId>lifecycle-mapping</artifactId> <version>1.0.0</version> <configuration> 
+			<lifecycleMappingMetadata> <pluginExecutions> <pluginExecution> <pluginExecutionFilter> 
+			<groupId>org.jacoco</groupId> <artifactId>jacoco-maven-plugin</artifactId> 
+			<versionRange>[${jacoco.version},)</versionRange> <goals> <goal>prepare-agent</goal> 
+			</goals> </pluginExecutionFilter> <action> <ignore></ignore> </action> </pluginExecution> 
+			</pluginExecutions> </lifecycleMappingMetadata> </configuration> </plugin> 
+			</plugins> </pluginManagement> -->
 	</build>
 
 	<dependencies>
@@ -117,32 +132,9 @@
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>commons-digester</artifactId>
-					<groupId>commons-digester</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>log4j</artifactId>
-					<groupId>log4j</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>servlet-api</artifactId>
-					<groupId>javax.servlet</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>logkit</artifactId>
-					<groupId>logkit</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>avalon-framework</artifactId>
-					<groupId>avalon-framework</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<!-- for tests -->
@@ -152,30 +144,47 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
+			<groupId>org.jboss.arquillian.container</groupId>
+			<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-easymock</artifactId>
+			<groupId>org.jboss.weld.se</groupId>
+			<artifactId>weld-se-core</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>javax.el</groupId>
-			<artifactId>el-api</artifactId>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- <dependency> <groupId>org.jboss.arquillian.extension</groupId> <artifactId>arquillian-jacoco</artifactId> 
+			<version>1.0.0.Alpha5</version> <scope>test</scope> </dependency> <dependency> 
+			<groupId>org.jacoco</groupId> <artifactId>org.jacoco.core</artifactId> <version>${jacoco.version}</version> 
+			<scope>test</scope> </dependency> -->
+
+		<!-- <dependency> <groupId>org.jboss.shrinkwrap.descriptors</groupId> <artifactId>shrinkwrap-descriptors-spi</artifactId> 
+			<version>2.0.0-alpha-4</version> <scope>test</scope> </dependency> -->
+
+		<!-- <dependency> <groupId>javax.el</groupId> <artifactId>el-api</artifactId> 
+			<scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 
 	<repositories>
@@ -202,4 +211,9 @@
 			</releases>
 		</repository>
 	</repositories>
+
+	<properties>
+		<!-- <jacoco.version>0.6.0.201210061924</jacoco.version> -->
+		<demoiselle.validation.version>2.4.0-BETA2-SNAPSHOT</demoiselle.validation.version>
+	</properties>
 </project>

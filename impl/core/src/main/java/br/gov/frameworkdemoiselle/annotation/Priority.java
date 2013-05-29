@@ -53,12 +53,12 @@ public @interface Priority {
 	/**
 	 * Most important priority value.
 	 */
-	public static int MAX_PRIORITY = Integer.MIN_VALUE;
+	static int MAX_PRIORITY = Integer.MIN_VALUE;
 
 	/**
 	 * Less important priority value.
 	 */
-	public static int MIN_PRIORITY = Integer.MAX_VALUE;
+	static int MIN_PRIORITY = Integer.MAX_VALUE;
 
 	/**
 	 * An integer value defines the priority order.

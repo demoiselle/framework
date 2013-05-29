@@ -48,13 +48,9 @@ public interface Message {
 	 */
 	String getText();
 
-//	void setText(String text);
-
 	/**
 	 * Represents the kind of message. It could be useful for presentation layer.
 	 */
 	SeverityType getSeverity();
-
-//	void setSeverity(SeverityType severity);
 
 }

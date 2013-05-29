@@ -47,6 +47,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.Enumerated;
 import javax.persistence.Query;
@@ -145,25 +146,48 @@ public class JPACrud<T, I> implements Crud<T, I> {
 		}
 	}
 
+	/**
+	 * Insert a new instance of the entity in the database. After insertion the entity becomes "managed"
+	 * as stated by the JPA specification.
+	 * 
+	 * @param entity A non-detached instance of an entity. If this instance is not managed, it will be after this method returns.
+	 * @return The same instance passed as argument.
+	 * @throws EntityExistsException if <code>entity</code> is an unmanaged instance
+	 * and the persistence provider already has a persisted instance that matches the <code>entity</code>'s primary key.
+	 * @throws IllegalArgumentException if the instance is not an entity
+	 * @see EntityManager#persist(Object entity)
+	 */
 	@Override
 	@Transactional
-	public void insert(final T entity) {
+	public T insert(final T entity) {
 		getEntityManager().persist(entity);
+		return entity;
 	}
 
+	/**
+	 * Finds an instance of this entity by it's primary ID and asks to the
+	 * persistence provider to remove this entity instance from the persistence
+	 * context.
+	 * 
+     * @see EntityManager#remove(Object entity)
+	 */
 	@Override
 	@Transactional
 	public void delete(final I id) {
 		T entity = getEntityManager().getReference(getBeanClass(), id);
 		getEntityManager().remove(entity);
 	}
-
+	
+	/**
+	 * Merge all changes made to the passed entity to a managed entity. The passed instance is not
+	 * modified nor becomes managed, instead the managed entity is returned by this method. 
+	 */
 	@Override
 	@Transactional
-	public void update(final T entity) {
-		getEntityManager().merge(entity);
+	public T update(T entity) {
+		return getEntityManager().merge(entity);
 	}
-
+	
 	@Override
 	public T load(final I id) {
 		return getEntityManager().find(getBeanClass(), id);
@@ -227,23 +251,24 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	 * @return
 	 */
 	private String createCountQuery(String query) {
-		Matcher matcher = Pattern.compile("[Ss][Ee][Ll][Ee][Cc][Tt](.+)[Ff][Rr][Oo][Mm]").matcher(query);
+		String result = query;
+		Matcher matcher = Pattern.compile("[Ss][Ee][Ll][Ee][Cc][Tt](.+)[Ff][Rr][Oo][Mm]").matcher(result);
 
 		if (matcher.find()) {
 			String group = matcher.group(1).trim();
-			query = query.replaceFirst(group, "COUNT(" + group + ")");
-			matcher = Pattern.compile("[Oo][Rr][Dd][Ee][Rr](.+)").matcher(query);
+			result = result.replaceFirst(group, "COUNT(" + group + ")");
+			matcher = Pattern.compile("[Oo][Rr][Dd][Ee][Rr](.+)").matcher(result);
 
 			if (matcher.find()) {
 				group = matcher.group(0);
-				query = query.replaceFirst(group, "");
+				result = result.replaceFirst(group, "");
 			}
-
-			return query;
 
 		} else {
 			throw new DemoiselleException(bundle.get().getString("malformed-jpql"));
 		}
+
+		return result;
 	}
 
 	/**

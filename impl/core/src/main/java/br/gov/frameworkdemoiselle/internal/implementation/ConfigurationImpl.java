@@ -1,10 +1,15 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import br.gov.frameworkdemoiselle.internal.configuration.ConfigurationLoader;
+import java.io.Serializable;
+
+import br.gov.frameworkdemoiselle.annotation.Ignore;
 import br.gov.frameworkdemoiselle.util.Beans;
 
-public class ConfigurationImpl {
+public class ConfigurationImpl implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
+	@Ignore
 	private boolean loaded = false;
 
 	@SuppressWarnings("unused")

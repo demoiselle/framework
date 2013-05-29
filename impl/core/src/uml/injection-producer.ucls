@@ -38,7 +38,7 @@
       <operations public="false" package="false" protected="false" private="false"/>    
     </display>  
   </class>  
-  <class id="5" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.internal.producer.LocaleProducer" 
+  <class id="5" corner="BOTTOM_RIGHT" language="java" name="test.LocaleProducer" 
     project="demoiselle-core" 
     file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/internal/producer/LocaleProducer.java" 
     binary="false">    

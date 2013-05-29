@@ -34,7 +34,7 @@
 			               http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 			               
 	   <interceptors>
-	   		<class>br.gov.frameworkdemoiselle.internal.interceptor.TransactionalInterceptor</class>
+	   		<class>br.gov.frameworkdemoiselle.transaction.TransactionalInterceptor</class>
 	   </interceptors>
 </beans>]]></programlisting>
     </section>
@@ -77,23 +77,27 @@ public class AbacaxiException {
 	<section>
 		<title>O objeto Transaction</title>
 		<para>
-			Para ter acesso à instância da transação corrente, basta injetá-la em sua classe.
+			Para ter acesso à instância da transação corrente, basta injetar <literal>TransactionContext</literal> em sua classe e obter a transação corrente.
 		</para>
 		<programlisting role="JAVA"><![CDATA[public class Simples {
 	@Inject
-	private Transaction transaction;
+	private TransactionContext transactionContext;
+
+	public void experimento() {
+		Transaction transaction = transactionContext.getCurrentTransaction();
+	}
 }]]></programlisting>
 	</section>
 
 	<section>
-		<title>Escolha a estratégia adequada</title>
+		<title>A estratégia mais adequada</title>
 		<para>
 			Para o controle transacional funcionar corretamente é preciso escolher a estratégia mais adequada para o seu
 			caso. Não existe a bala de prata, você tem que avaliar a melhor estratégia para o seu projeto. 
 		</para>
 		<para>
 			Você também pode optar por não utilizar controle de transação. Neste caso, basta não utilizar a anotação <literal>@Transactional</literal>. Contudo,
-			caso você a utilize, você poderá escolher entre as estratégias JPA, JTA (ambas fornecidas pelo <literal>Framework</literal>) e uma estratégia que você
+			caso você a utilize, você poderá escolher entre as estratégias JPA, JDBC, JTA (ambas fornecidas pelo <literal>Framework</literal>) e uma estratégia que você
 			pode criar ou importar para seu projeto.
 		</para>
 		<para>
@@ -103,28 +107,46 @@ public class AbacaxiException {
 	</section>
 
 	<section>
+		<title>Estratégia JDBC</title>
+		<para>
+			Esta estratégia, que está disponível na extensão <literal>demoiselle-jdbc</literal>, delega o
+			controle das transações para o <literal>java.sql.Connection</literal> da
+			especificação JDBC. Você deve escolher esta estratégia quando estiver persistindo dados
+			com JDBC e utilizando apenas uma base de dados em sua aplicação. Como um <literal>Connection</literal>
+			acessa apenas uma base de dados, não há como fazer o controle transacional de base de dados distintas.
+		</para>
+		<para>
+			A transação JDBC é simples de configurar e não exige nenhum recurso externo à sua aplicação.
+			Para utilizá-la basta que seu projeto adicione no arquivo pom.xml dependência à extensão <literal>demoiselle-jdbc</literal>, que o 
+			Demoiselle fará a seleção por essa estratégia de forma automática.
+		</para>
+
+	<tip><para>Para utilizar a estratégia de transação JDBC, inclua a dependência para extensão JDBC 
+	no arquivo pom.xml.</para>  
+	 <programlisting role="XML"><![CDATA[<dependency>
+	<groupId>br.gov.frameworkdemoiselle</groupId>
+	<artifactId>demoiselle-jdbc</artifactId>
+	<scope>compile</scope>
+</dependency>]]></programlisting></tip>
+	</section>
+
+	<section>
 		<title>Estratégia JPA</title>
 		<para>
 			Esta estratégia, que está disponível na extensão <literal>demoiselle-jpa</literal>, delega o
-			controle de transações para o <literal>javax.persistence.EntityManager</literal> da
-			especificação JPA. Você deve escolher esta estratégia quando você estiver fazendo a persistência
+			controle das transações para o <literal>javax.persistence.EntityManager</literal> da
+			especificação JPA. Você deve escolher esta estratégia quando estiver persisteindo dados
 			com JPA e utilizando apenas uma base de dados em sua aplicação. Como um <literal>EntityManager</literal>
 			acessa apenas uma unidade de persistência, não há como fazer o controle transacional de unidades distintas.
 		</para>
 		<para>
 			A transação JPA é simples de configurar e não exige nenhum recurso externo à sua aplicação.
-			Para utilizá-la basta que seu projeto adicione no arquivo POM.XML dependência à extensão <literal>demoiselle-jpa</literal>, que o 
+			Para utilizá-la basta que seu projeto adicione no arquivo pom.xml dependência à extensão <literal>demoiselle-jpa</literal>, que o 
 			Demoiselle fará a seleção por essa estratégia de forma automática.
-<!-- 		Basta definir no arquivo <filename>demoiselle.properties</filename> a seguinte configuração: -->
 		</para>
 		
-		<!--  
-		<programlisting>
-			frameworkdemoiselle.transaction.class=br.gov.frameworkdemoiselle.transaction.JPATransaction
-		</programlisting>
-		-->
-	<tip><para> Caso não esteja utilizando o arquétipo JSF-JPA fornecidos pelo Demoiselle, confira se a dependência para a 
-	extensão está indicada corretamente no arquivo POM.XML.</para>  
+	<tip><para>Caso não esteja utilizando o arquétipo JSF-JPA fornecidos pelo Demoiselle, confira se a dependência para a 
+	extensão está indicada corretamente no arquivo pom.xml.</para>  
 	 <programlisting role="XML"><![CDATA[<dependency>
 	<groupId>br.gov.frameworkdemoiselle</groupId>
 	<artifactId>demoiselle-jpa</artifactId>
@@ -143,9 +165,9 @@ public class AbacaxiException {
 		<para>
 			A estratégia JTA não serve apenas para persistência em banco de dados, serve também para integrar com
 			tecnologias que façam acesso ao contexto JTA, como é o caso do EJB. Para ativar esta estratégia basta 
-			que seu projeto adicione no arquivo POM.XML a dependência à extensão <literal>demoiselle-jta</literal>, que o 
+			que seu projeto adicione no arquivo pom.xml a dependência à extensão <literal>demoiselle-jta</literal>, que o 
 			Demoiselle fará a seleção por essa estratégia de forma automática, pois essa estratégia tem prioridade em relação
-			à estratégia JPA. 
+			à estratégia JPA e JDBC. 
 		</para>				
 		<!-- 
 			defina no
@@ -160,8 +182,9 @@ public class AbacaxiException {
 			você precisa de um container JEE ou de um servidor JTA qualquer.
 		</para>
 		<para>
-			É preciso também informar no arquivo <filename>persistence.xml</filename> o endereço da conexão
-			JTA gerenciada. Veja um exemplo utilizando o servidor de aplicações JBoss-AS6 e com o provider Hibernate (embutido no JBoss-AS) como implementação JPA:
+			Caso você esteja persistindo os dados com JPA, é preciso também informar no arquivo <filename>persistence.xml</filename>
+			o endereço da conexão JTA gerenciada. Veja um exemplo utilizando o servidor de aplicações JBoss AS7 e com o
+			provider Hibernate (embutido no JBoss AS) como implementação JPA:
 		</para>
 <programlisting role="XML"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.0" 
@@ -176,24 +199,30 @@ public class AbacaxiException {
 		<property name="hibernate.show_sql" value="true" />
 		<property name="hibernate.format_sql" value="false" />
 		<property name="hibernate.hbm2ddl.auto" value="update" />
-		<property name="hibernate.transaction.jta.platform" 
-		value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
+		<property name="hibernate.transaction.jta.platform"
+			value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
 	</properties>
 	</persistence-unit>
 </persistence>]]></programlisting>
 
-	<tip><para> Caso não esteja utilizando o arquétipo JSF-JPA fornecidos pelo Demoiselle, confira se a dependência para a 
-	extensão está indicada corretamente, no arquivo POM.XML.</para>  
+	<tip><para>Caso não esteja utilizando o arquétipo JSF-JPA fornecidos pelo Demoiselle, confira se a dependência para a 
+	extensão está indicada corretamente, no arquivo pom.xml.</para>  
 	<programlisting role="XML"><![CDATA[<dependency>
 	<groupId>br.gov.frameworkdemoiselle</groupId>
 	<artifactId>demoiselle-jta</artifactId>
 	<scope>compile</scope>
 </dependency>]]></programlisting></tip>
 
+		<para>
+			Caso você esteja persistindo os dados com JDBC, é preciso informar no arquivo <filename>demoiselle.properties</filename>
+			o endereço da conexão JTA gerenciada. Veja um exemplo utilizando o servidor de aplicações JBoss AS7:
+		</para>
+		
+<programlisting role="XML"><![CDATA[frameworkdemoiselle.persistence.jndi.name=java:jboss/datasources/ExampleDS]]></programlisting>
 	</section>
-
+		
 	<section>
-		<title>Crie a sua estratégia</title>
+		<title>Criando sua própria estratégia</title>
 		<para>
 			Caso nenhuma das estratégias oferecidas sirva para você, crie a sua. Basta escrever uma
 			classe não-final que implemente a interface <literal>Transaction</literal> do pacote
@@ -210,7 +239,7 @@ public class AbacaxiException {
 
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 
-public class MegaTransaction implements Transaction {
+public class MyTransaction implements Transaction {
 	public void begin() { }
 	public void commit() { }
 	public void rollback() { }
@@ -222,28 +251,24 @@ public class MegaTransaction implements Transaction {
 }]]></programlisting>
 		<para>
 			Pronto, é só isso! Agora, os métodos anotados com <literal>@Transactional</literal> irão utilizar a estratégia criada em seu projeto de forma automática,
-			mesmo que as extensões <literal>demoiselle-jpa</literal> e <literal>demoiselle-jta</literal> sejam adicionadas ao projeto, pois o framework dá prioridade
-			máxima à estratégia criada no projeto.
+			mesmo que as extensões <literal>demoiselle-jdbc</literal>, <literal>demoiselle-jpa</literal> e <literal>demoiselle-jta</literal> sejam adicionadas ao
+			projeto, pois o framework dará prioridade máxima à estratégia criada no projeto.
 		</para>
-<!-- 	<para>
-			Basta agora definir no arquivo <filename>demoiselle.properties</filename> a sua estratégia:
-		</para>
-		<programlisting>
-			frameworkdemoiselle.transaction.class=projeto.MegaTransaction
-		</programlisting>-->
 	</section> 
 	
 	<section>
-		<title>Escolhendo estratégias manualmente</title>
+		<title>Escolhendo a estratégia manualmente</title>
 		<para>
 			Existem alguns casos nos quais você vai ter que definir a estratégia manualmente. Um exemplo é quando seu projeto implementa mais do que uma estratégia
 			de transação. Outra situação pode acontecer em casos de teste, nos quais você queira utilizar estratégia diferente. Nesses casos você deve definir no 
 			arquivo <filename>demoiselle.properties</filename> qual estratégia será utilizada. Veja alguns exemplos de definição de estratégias própria,
-			<literal>JTATransaction</literal> e <literal>JPATransaction</literal> (importante notar que apenas uma estratégia pode estar ativa por vez):
+			<literal>JDBCTransaction</literal>, <literal>JPATransaction</literal> e <literal>JTATransaction</literal>. É importante notar que apenas uma estratégia
+			pode estar ativa por vez:
 		</para>
-		<programlisting>frameworkdemoiselle.transaction.class=projeto.MyTransaction</programlisting>
-		<programlisting>frameworkdemoiselle.transaction.class=br.gov.frameworkdemoiselle.transaction.JTATransaction</programlisting>
-		<programlisting>frameworkdemoiselle.transaction.class=br.gov.frameworkdemoiselle.transaction.JPATransaction</programlisting>
+		<programlisting>frameworkdemoiselle.transaction.class=projeto.MyTransaction
+frameworkdemoiselle.transaction.class=br.gov.frameworkdemoiselle.transaction.JDBCTransaction
+frameworkdemoiselle.transaction.class=br.gov.frameworkdemoiselle.transaction.JPATransaction
+frameworkdemoiselle.transaction.class=br.gov.frameworkdemoiselle.transaction.JTATransaction</programlisting>
 	</section>
 	
 </chapter>

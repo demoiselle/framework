@@ -57,6 +57,9 @@ import br.gov.frameworkdemoiselle.message.SeverityType;
 
 public class Faces {
 
+	private Faces() {
+	}
+
 	public static void addMessages(final List<Message> messages) {
 		if (messages != null) {
 			for (Message m : messages) {
@@ -163,5 +166,4 @@ public class Faces {
 		UIViewRoot viewRoot = getFacesContext().getViewRoot();
 		return viewRoot.getViewMap(true);
 	}
-
 }

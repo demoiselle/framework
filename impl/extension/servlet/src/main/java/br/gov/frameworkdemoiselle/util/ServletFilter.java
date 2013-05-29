@@ -44,29 +44,27 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import br.gov.frameworkdemoiselle.internal.producer.HttpServletRequestProducer;
-import br.gov.frameworkdemoiselle.internal.producer.HttpServletResponseProducer;
 
 public class ServletFilter implements Filter {
 
 	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
+	public void init(FilterConfig config) throws ServletException {
+		Beans.getReference(InternalProcessorFilter.class).init(config);
 	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
-
-		Beans.getReference(HttpServletRequestProducer.class).setDelegate((HttpServletRequest) request);
-		Beans.getReference(HttpServletResponseProducer.class).setDelegate((HttpServletResponse) response);
+		Beans.getReference(InternalProcessorFilter.class).doFilter(request, response, chain);
 
 		chain.doFilter(request, response);
 	}
 
 	@Override
 	public void destroy() {
+		Beans.getReference(InternalProcessorFilter.class).destroy();
+	}
+
+	public interface InternalProcessorFilter extends Filter {
 	}
 }

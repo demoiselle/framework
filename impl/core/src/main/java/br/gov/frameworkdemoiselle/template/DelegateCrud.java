@@ -41,10 +41,24 @@ import java.util.ListIterator;
 
 import br.gov.frameworkdemoiselle.internal.implementation.DefaultTransaction;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
+import br.gov.frameworkdemoiselle.transaction.TransactionContext;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
+/**
+ * An implementation of the {@link Crud} interface that delegates it's operations
+ * to another {@link Crud} implementation.
+ * 
+ * @author serpro
+ *
+ * @param <T> 
+ *            bean object type
+ * @param <I>
+ *            bean id type
+ * @param <C>
+ *            type of {@link Crud} implementation this class will delegate to
+ */
 public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 
 	private static final long serialVersionUID = 1L;
@@ -136,21 +150,21 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	 *            A entity to be inserted by the delegate
 	 */
 	@Override
-	public void insert(final T bean) {
+	public T insert(final T bean) {
 		if (isRunningTransactionalOperations()) {
-			transactionalInsert(bean);
+			return transactionalInsert(bean);
 		} else {
-			nonTransactionalInsert(bean);
+			return nonTransactionalInsert(bean);
 		}
 	}
 
 	@Transactional
-	private void transactionalInsert(final T bean) {
-		nonTransactionalInsert(bean);
+	private T transactionalInsert(final T bean) {
+		return nonTransactionalInsert(bean);
 	}
 
-	private void nonTransactionalInsert(final T bean) {
-		getDelegate().insert(bean);
+	private T nonTransactionalInsert(final T bean) {
+		return getDelegate().insert(bean);
 	}
 
 	/**
@@ -170,24 +184,25 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	 *            The instance containing the updated state.
 	 */
 	@Override
-	public void update(final T bean) {
+	public T update(final T bean) {
 		if (isRunningTransactionalOperations()) {
-			transactionalUpdate(bean);
+			return transactionalUpdate(bean);
 		} else {
-			nonTransactionalUpdate(bean);
+			return nonTransactionalUpdate(bean);
 		}
 	}
 
 	@Transactional
-	private void transactionalUpdate(final T bean) {
-		nonTransactionalUpdate(bean);
+	private T transactionalUpdate(final T bean) {
+		return nonTransactionalUpdate(bean);
 	}
 
-	private void nonTransactionalUpdate(final T bean) {
-		getDelegate().update(bean);
+	private T nonTransactionalUpdate(final T bean) {
+		return getDelegate().update(bean);
 	}
 
 	private boolean isRunningTransactionalOperations() {
-		return !(Beans.getReference(Transaction.class) instanceof DefaultTransaction);
+		Transaction transaction = Beans.getReference(TransactionContext.class).getCurrentTransaction();
+		return !(transaction instanceof DefaultTransaction);
 	}
 }

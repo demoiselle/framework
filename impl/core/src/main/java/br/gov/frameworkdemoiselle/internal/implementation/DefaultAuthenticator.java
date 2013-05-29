@@ -40,6 +40,7 @@ import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelecto
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.security.User;
@@ -51,6 +52,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * @author SERPRO
  * @see Authenticator
  */
+@SuppressWarnings("deprecation")
 @Priority(CORE_PRIORITY)
 public class DefaultAuthenticator implements Authenticator {
 
@@ -62,7 +64,7 @@ public class DefaultAuthenticator implements Authenticator {
 	 * @see br.gov.frameworkdemoiselle.security.Authenticator#authenticate()
 	 */
 	@Override
-	public boolean authenticate() {
+	public void authenticate() throws AuthenticationException {
 		throw getException();
 	}
 
@@ -83,8 +85,8 @@ public class DefaultAuthenticator implements Authenticator {
 	}
 
 	private DemoiselleException getException() {
-		return new DemoiselleException(getBundle().getString("authenticator-not-defined",
-				SecurityContext.class.getSimpleName()));
+		return new AuthenticationException(getBundle().getString("authenticator-not-defined",
+				SecurityContext.class.getSimpleName()), new ClassNotFoundException());
 	}
 
 	private static ResourceBundle getBundle() {

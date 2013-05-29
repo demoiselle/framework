@@ -52,6 +52,7 @@ public class ConfigurationException extends DemoiselleException {
 	 * 
 	 * @param message
 	 *            exception message
+	 * @deprecated
 	 */
 	public ConfigurationException(String message) {
 		super(message);

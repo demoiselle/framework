@@ -36,39 +36,35 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Extension;
 
-import br.gov.frameworkdemoiselle.internal.context.Contexts;
-import br.gov.frameworkdemoiselle.internal.context.CustomContext;
+import br.gov.frameworkdemoiselle.annotation.ViewScoped;
+import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ViewContext;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 
 public class JsfBootstrap implements Extension {
 
-	private List<CustomContext> tempContexts = new ArrayList<CustomContext>();
+	//private List<CustomContext> customContexts = new ArrayList<CustomContext>();
 
-	private AfterBeanDiscovery afterBeanDiscoveryEvent;
+	//private AfterBeanDiscovery afterBeanDiscoveryEvent;
 
 	public void storeContexts(@Observes final AfterBeanDiscovery event) {
-		this.tempContexts.add(new ViewContext());
-		this.afterBeanDiscoveryEvent = event;
+		//Registra o ViewContext para controlar o escopo ViewScoped.
+		ContextManager.initialize(event);
+		ContextManager.add(new ViewContext(), event);
 	}
 
 	public void addContexts(@Observes final AfterDeploymentValidation event) {
-		for (CustomContext tempContext : this.tempContexts) {
-			Contexts.add(tempContext, this.afterBeanDiscoveryEvent);
-		}
+		//Ativa o ViewContext
+		ContextManager.activate(ViewContext.class, ViewScoped.class);
 	}
 
 	public void removeContexts(@Observes AfterShutdownProccess event) {
-		for (CustomContext tempContext : this.tempContexts) {
-			Contexts.remove(tempContext);
-		}
+		//Desativa o ViewContext
+		ContextManager.deactivate(ViewContext.class, ViewScoped.class);
 	}
 }

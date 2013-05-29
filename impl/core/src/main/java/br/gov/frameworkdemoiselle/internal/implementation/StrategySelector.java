@@ -40,10 +40,15 @@ import static br.gov.frameworkdemoiselle.annotation.Priority.MIN_PRIORITY;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.enterprise.inject.AmbiguousResolutionException;
+
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -72,8 +77,22 @@ public final class StrategySelector implements Serializable {
 		return bundle;
 	}
 
-	public static <T> Class<? extends T> getClass(Class<T> type, List<Class<? extends T>> options)
-			throws ConfigurationException {
+	@SuppressWarnings("unchecked")
+	public static <T> T selectInstance(Class<T> type, Collection<? extends T> options) {
+
+		Map<Class<? extends T>, T> map = new HashMap<Class<? extends T>, T>();
+
+		for (T instance : options) {
+			if (instance != null) {
+				map.put((Class<T>) instance.getClass(), instance);
+			}
+		}
+
+		Class<? extends T> elected = selectClass(type, map.keySet());
+		return map.get(elected);
+	}
+
+	public static <T> Class<? extends T> selectClass(Class<T> type, Collection<Class<? extends T>> options) {
 		Class<? extends T> selected = null;
 
 		for (Class<? extends T> option : options) {
@@ -82,13 +101,15 @@ public final class StrategySelector implements Serializable {
 			}
 		}
 
-		checkForAmbiguity(type, selected, options);
+		if (selected != null) {
+			checkForAmbiguity(type, selected, options);
+		}
 
 		return selected;
 	}
 
 	private static <T> void checkForAmbiguity(Class<T> type, Class<? extends T> selected,
-			List<Class<? extends T>> options) throws ConfigurationException {
+			Collection<Class<? extends T>> options) {
 		int selectedPriority = getPriority(selected);
 
 		List<Class<? extends T>> ambiguous = new ArrayList<Class<? extends T>>();
@@ -103,7 +124,7 @@ public final class StrategySelector implements Serializable {
 			ambiguous.add(selected);
 
 			String message = getExceptionMessage(type, ambiguous);
-			throw new ConfigurationException(message);
+			throw new DemoiselleException(message, new AmbiguousResolutionException());
 		}
 	}
 
@@ -132,41 +153,4 @@ public final class StrategySelector implements Serializable {
 
 		return result;
 	}
-
-	// public static <T> T getExplicitReference(String configKey, Class<T> strategyType, Class<T> defaultType) {
-	// Class<T> selectedType = loadSelected(configKey, strategyType, defaultType);
-	// return Beans.getReference(selectedType);
-	// }
-	//
-	// @SuppressWarnings("unchecked")
-	// private static <T> Class<T> loadSelected(String configKey, Class<T> strategyType, Class<T> defaultType) {
-	// ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-core-bundle",
-	// Beans.getReference(Locale.class));
-	// Class<T> result = null;
-	// String canonicalName = null;
-	// String typeName = strategyType.getSimpleName().toLowerCase();
-	// String key = null;
-	// try {
-	// URL url = ConfigurationLoader.getResourceAsURL("demoiselle.properties");
-	// Configuration config = new PropertiesConfiguration(url);
-	// canonicalName = config.getString(configKey, defaultType.getCanonicalName());
-	// ClassLoader classLoader = ConfigurationLoader.getClassLoaderForClass(canonicalName);
-	// if (classLoader == null) {
-	// classLoader = Thread.currentThread().getContextClassLoader();
-	// }
-	// result = (Class<T>) Class.forName(canonicalName, false, classLoader);
-	// result.asSubclass(strategyType);
-	// } catch (org.apache.commons.configuration.ConfigurationException cause) {
-	// throw new ConfigurationException(bundle.getString("file-not-found", "demoiselle.properties"));
-	// } catch (ClassNotFoundException cause) {
-	// key = Strings.getString("{0}-class-not-found", typeName);
-	// throw new ConfigurationException(bundle.getString(key, canonicalName));
-	// } catch (FileNotFoundException e) {
-	// throw new ConfigurationException(bundle.getString("file-not-found", "demoiselle.properties"));
-	// } catch (ClassCastException cause) {
-	// key = Strings.getString("{0}-class-must-be-of-type", typeName);
-	// throw new ConfigurationException(bundle.getString(key, canonicalName, strategyType));
-	// }
-	// return result;
-	// }
 }

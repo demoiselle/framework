@@ -43,8 +43,8 @@ import javax.enterprise.inject.Produces;
 
 public class SeLocaleProducer {
 
-	@Produces
 	@Default
+	@Produces
 	public Locale create() {
 		return Locale.getDefault();
 	}

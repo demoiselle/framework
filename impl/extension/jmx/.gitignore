@@ -1,0 +1,9 @@
+/.settings
+/hsql:..tmp
+/target
+/.classpath
+/.project
+/hsql:..lck
+/hsql:..log
+/hsql:..properties
+/hsql:..script

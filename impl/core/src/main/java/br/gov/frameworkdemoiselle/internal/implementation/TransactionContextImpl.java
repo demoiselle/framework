@@ -62,7 +62,7 @@ public class TransactionContextImpl implements TransactionContext {
 			Class<? extends Transaction> clazz = getConfig().getTransactionClass();
 
 			if (clazz == null) {
-				clazz = StrategySelector.getClass(Transaction.class, bootstrap.getCache());
+				clazz = StrategySelector.selectClass(Transaction.class, bootstrap.getCache());
 			}
 
 			this.transaction = Beans.getReference(clazz);

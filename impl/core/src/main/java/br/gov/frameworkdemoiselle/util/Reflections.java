@@ -42,7 +42,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class Reflections {
@@ -89,13 +91,14 @@ public final class Reflections {
 		return (Class<T>) method.getGenericParameterTypes()[pos];
 	}
 
-	public static Object getFieldValue(Field field, Object object) {
-		Object result = null;
+	@SuppressWarnings("unchecked")
+	public static <T> T getFieldValue(Field field, Object object) {
+		T result = null;
 
 		try {
 			boolean acessible = field.isAccessible();
 			field.setAccessible(true);
-			result = field.get(object);
+			result = (T) field.get(object);
 			field.setAccessible(acessible);
 
 		} catch (Exception e) {
@@ -131,6 +134,17 @@ public final class Reflections {
 		return fields.toArray(new Field[0]);
 	}
 
+	public static List<Field> getNonStaticFields(Class<?> type) {
+		List<Field> fields = new ArrayList<Field>();
+
+		if (type != null) {
+			fields.addAll(Arrays.asList(getNonStaticDeclaredFields(type)));
+			fields.addAll(getNonStaticFields(type.getSuperclass()));
+		}
+
+		return fields;
+	}
+
 	public static <T> T instantiate(Class<T> clasz) {
 		T object = null;
 		try {
@@ -145,5 +159,42 @@ public final class Reflections {
 
 	public static boolean isOfType(Class<?> clazz, Class<?> type) {
 		return type.isAssignableFrom(clazz) && clazz != type;
+	}
+
+	public static ClassLoader getClassLoaderForClass(final String canonicalName) {
+		return Reflections.getClassLoaderForResource(canonicalName.replaceAll("\\.", "/") + ".class");
+	}
+
+	public static ClassLoader getClassLoaderForResource(final String resource) {
+		final String stripped = resource.startsWith("/") ? resource.substring(1) : resource;
+
+		URL url = null;
+		ClassLoader result = Thread.currentThread().getContextClassLoader();
+
+		if (result != null) {
+			url = result.getResource(stripped);
+		}
+
+		if (url == null) {
+			result = Reflections.class.getClassLoader();
+			url = Reflections.class.getClassLoader().getResource(stripped);
+		}
+
+		if (url == null) {
+			result = null;
+		}
+
+		return result;
+	}
+
+	public static URL getResourceAsURL(final String resource) {
+		ClassLoader classLoader = getClassLoaderForResource(resource);
+		return classLoader != null ? classLoader.getResource(resource) : null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> Class<T> forName(final String className) throws ClassNotFoundException {
+		ClassLoader classLoader = getClassLoaderForClass(className);
+		return (Class<T>) Class.forName(className, true, classLoader);
 	}
 }

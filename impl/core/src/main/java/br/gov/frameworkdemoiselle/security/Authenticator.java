@@ -37,6 +37,7 @@
 package br.gov.frameworkdemoiselle.security;
 
 import java.io.Serializable;
+import java.security.Principal;
 
 /**
  * Defines the methods that should be implemented by anyone who wants an authentication mechanism.
@@ -48,9 +49,9 @@ public interface Authenticator extends Serializable {
 	/**
 	 * Executes the necessary steps to authenticate an user.
 	 * 
-	 * @return {@code true} if the user was authenticated properly
+	 * @throws AuthenticationException When the authentication process fails, this exception is thrown.
 	 */
-	boolean authenticate();
+	void authenticate() throws AuthenticationException;
 
 	/**
 	 * Executes the necessary steps to unauthenticate an user.
@@ -62,5 +63,5 @@ public interface Authenticator extends Serializable {
 	 * 
 	 * @return the user currently authenticated
 	 */
-	User getUser();
+	Principal getUser();
 }

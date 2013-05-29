@@ -56,15 +56,7 @@ public class MessagePhaseListener implements PhaseListener {
 
 	private static final long serialVersionUID = 1L;
 
-	// FIXME: por que não funciona injeção disso aqui?
-	// @Inject
-	// private Logger logger;
 	private final Logger logger = LoggerProducer.create(this.getClass());
-
-	// TODO: usar o bundle nas mensagens de log
-	// @Inject
-	// @Name("demoiselle-core-bundle")
-	// private ResourceBundle bundle;
 
 	public void beforePhase(PhaseEvent e) {
 		transferMessages(e);
@@ -85,6 +77,7 @@ public class MessagePhaseListener implements PhaseListener {
 
 		MessageContext messageContext = Beans.getReference(MessageContext.class);
 
+		// TODO: usar o bundle nas mensagens de log
 		logger.debug("Moving " + messageContext.getMessages().size()
 				+ " message(s) from MessageContext to FacesContext.");
 

@@ -53,13 +53,18 @@ import javassist.NotFoundException;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
-import br.gov.frameworkdemoiselle.configuration.Configuration;
-import br.gov.frameworkdemoiselle.internal.implementation.ConfigurationImpl;
+import org.slf4j.Logger;
 
-public class ConfigurationBootstrap implements Extension {
+import br.gov.frameworkdemoiselle.configuration.Configuration;
+import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
+import br.gov.frameworkdemoiselle.internal.implementation.ConfigurationImpl;
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
+
+public class ConfigurationBootstrap extends AbstractStrategyBootstrap<ConfigurationValueExtractor> {
+
+	private Logger logger;
 
 	private static final Map<ClassLoader, Map<String, Class<Object>>> cacheClassLoader = Collections
 			.synchronizedMap(new HashMap<ClassLoader, Map<String, Class<Object>>>());
@@ -78,7 +83,7 @@ public class ConfigurationBootstrap implements Extension {
 	private static List<CtMethod> getMethods(CtClass type) throws NotFoundException {
 		List<CtMethod> fields = new ArrayList<CtMethod>();
 
-		if (type != null && !type.getName().equals(Object.class.getName())) {
+		if (!type.getName().equals(Object.class.getName())) {
 			fields.addAll(Arrays.asList(type.getDeclaredMethods()));
 			fields.addAll(getMethods(type.getSuperclass()));
 		}
@@ -89,7 +94,7 @@ public class ConfigurationBootstrap implements Extension {
 	@SuppressWarnings("unchecked")
 	private Class<Object> createProxy(Class<Object> type) throws Exception {
 		String superClassName = type.getCanonicalName();
-		String chieldClassName = superClassName + "__DemoiselleProxy";
+		String chieldClassName = superClassName + "_$$_DemoiselleProxy";
 
 		Map<String, Class<Object>> cacheProxy = Collections.synchronizedMap(new HashMap<String, Class<Object>>());;
 
@@ -129,5 +134,14 @@ public class ConfigurationBootstrap implements Extension {
 		}
 
 		return clazzProxy;
+	}
+
+	@Override
+	protected Logger getLogger() {
+		if (logger == null) {
+			logger = LoggerProducer.create(TransactionBootstrap.class);
+		}
+
+		return logger;
 	}
 }

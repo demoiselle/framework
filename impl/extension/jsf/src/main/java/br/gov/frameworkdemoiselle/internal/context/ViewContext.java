@@ -44,7 +44,7 @@ import br.gov.frameworkdemoiselle.util.Faces;
 public class ViewContext extends AbstractCustomContext {
 
 	public ViewContext() {
-		super(ViewScoped.class, true);
+		super(ViewScoped.class);
 	}
 
 	@Override
