@@ -47,6 +47,7 @@ import javax.inject.Qualifier;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.ManagedOperation;
 import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
+import br.gov.frameworkdemoiselle.annotation.ManagedProperty.ManagedPropertyAccess;
 import br.gov.frameworkdemoiselle.annotation.OperationParameter;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
@@ -195,6 +196,12 @@ public class ManagedType {
 			.append("get")
 			.append(field.getName().substring(0, 1).toUpperCase())
 			.append(field.getName().substring(1));
+		
+		//Se propriedade está anotada como WRITE-ONLY, ignora essa etapa.
+		ManagedProperty annotation = field.getAnnotation(ManagedProperty.class);
+		if (annotation.accessLevel() == ManagedPropertyAccess.WRITE_ONLY){
+			return null;
+		}
 
 		Method getterMethod;
 
@@ -227,6 +234,13 @@ public class ManagedType {
 	 * Returns the public setter method for a given field, or <code>null</code> if no setter method can be found.
 	 */
 	private Method getSetterMethod(Field field) {
+		
+		//Se propriedade está anotada como READ-ONLY, ignora essa etapa.
+		ManagedProperty annotation = field.getAnnotation(ManagedProperty.class);
+		if (annotation.accessLevel() == ManagedPropertyAccess.READ_ONLY){
+			return null;
+		}
+		
 		StringBuffer setterMethodName = new StringBuffer()
 			.append("set")
 			.append(field.getName().substring(0, 1).toUpperCase())

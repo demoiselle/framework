@@ -169,6 +169,21 @@ public class ManagementTestCase {
 	}
 	
 	@Test
+	public void testAccessLevelControl(){
+		//tentamos escrever em uma propriedade que, apesar de ter método setter, está marcada como read-only.
+		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
+		
+		try{
+			store.setProperty(DummyManagedClass.class, "readOnlyPropertyWithSetMethod","A Value");
+			Assert.fail();
+		}
+		catch(DemoiselleException de){
+			System.out.println(de.getMessage());
+			//success
+		}
+	}
+	
+	@Test
 	public void testRequestScopedOperation() {
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
 		

@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<chapter id="mensagem">
+
+	<title>Monitoração e Gerenciamento de Recursos</title>
+	
+	<section>
+		<title>Por que monitorar e gerenciar aplicações</title>
+		
+		<para>Ao implantar um sistema para produção, muitas vezes é necessário monitorar aspectos sobre o funcionamento desse sistema. Quanta memória
+		ele está utilizando? Qual o pico de MIPS utilizados? Quantas sessões estão autenticadas no momento?</para>
+		
+		<para>Além de monitorar um sistema, as vezes é necessário gerencia-lo alterando aspectos de seu comportamento. Se o sistema está implantado em um
+		servidor alugado, talvez seja necessário ajustar o uso de MIPS para reduzir custos ou talvez deseje-se solicitar que o sistema limpe dados de sessão
+		de autenticação abandonados por usuários que desligaram suas estações sem efetuar "logoff".</para>
+		
+		<para>Para esse fim existem diversas tecnologias que permitem ao desenvolvedor expor aspectos monitoráveis e gerenciáves de seu sistema
+		para clientes de gerenciamento. Exemplos dessas tecnologias incluem o <emphasis>Simple Network Management Protocol</emphasis> (SNMP) e o
+		<emphasis>Java Management Extension</emphasis> (JMX).</para>
+		
+		<para>O <emphasis>Demoiselle Framework</emphasis> dispõe de uma série de ferramentas para nivelar
+		o conhecimento do desenvolvedor e facilitar o uso e integraçao de várias tecnologias de gerenciamento e monitoração. Através de seu
+		uso o desenvolvedor pode se despreocupar com detalhes de implementação de cada tecnologia individual e facilmente integrar tais tecnologias.</para>
+	</section>
+	
+	<section>
+		<title>Introdução ao mecanismo</title>
+		
+		<para>Para expor aspectos monitoráveis da sua aplicação, o primeiro passo é criar uma interface contendo os atributos monitoráveis e as operações
+		de gerenciamento que serão expostas para clientes de gerenciamento. Isso é feito através de uma simples classe Java (<emphasis>ou POJO</emphasis>)
+		anotada com o estereótipo <code>@ManagementController</code>.</para>
+		
+		<programlisting role="JAVA"><![CDATA[
+		@ManagementController
+		public class GerenciadorUsuarios]]></programlisting>
+		
+		<para>Essa anotação é suficiente para o mecanismo de gerenciamento descobrir sua classe e disponibiliza-la para ser monitorada e gerenciada.</para>
+		
+		<para>Contudo, a simples anotação acima não informa ao mecanismo quais aspectos da classe serão expostos. Por padrão, um <emphasis>Management Controller</emphasis>
+		não expõe nenhum aspecto seu. Para selecionais quais aspectos serão expostos usamos as anotações <code>@ManagedProperty</code> e <code>@ManagedOperation</code>.</para>
+		
+		<table>
+			<tbody>
+				<row>
+					<entry>
+						<emphasis role="BOLD">@ManagedProperty</emphasis>
+					</entry>
+				</row>
+				
+				<row>
+					<entry>
+						<para>Marca um atributo na classe como uma propriedade gerenciada, significando que clientes externos podem ler e/ou escrever valores nesses atributos.</para>
+						<para>Um</para>
+					</entry>
+				</row>
+			</tbody>
+		</table>
+		
+	</section>
+
+</chapter>

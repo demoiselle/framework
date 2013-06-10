@@ -189,7 +189,7 @@ public class Management {
 					deactivateContexts(managedType.getType());
 				}
 			} else {
-				throw new DemoiselleException(bundle.getString("management-invoke-error", propertyName));
+				throw new DemoiselleException(bundle.getString("management-read-value-error", propertyName));
 			}
 		} else {
 			throw new DemoiselleException(bundle.getString("management-type-not-found"));
@@ -282,7 +282,7 @@ public class Management {
 				}
 
 			} else {
-				throw new DemoiselleException(bundle.getString("management-invoke-error", propertyName));
+				throw new DemoiselleException(bundle.getString("management-write-value-error", propertyName));
 			}
 		} else {
 			throw new DemoiselleException(bundle.getString("management-type-not-found"));

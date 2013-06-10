@@ -42,6 +42,7 @@ import javax.validation.constraints.NotNull;
 
 import br.gov.frameworkdemoiselle.annotation.ManagedOperation;
 import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
+import br.gov.frameworkdemoiselle.annotation.ManagedProperty.ManagedPropertyAccess;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.Beans;
 
@@ -70,6 +71,12 @@ public class DummyManagedClass {
 	
 	@ManagedProperty
 	private String readOnlyProperty = "Default Value";
+	
+	@ManagedProperty(accessLevel=ManagedPropertyAccess.READ_ONLY)
+	private String readOnlyPropertyWithSetMethod = "Default Value";
+	
+	@ManagedProperty(accessLevel=ManagedPropertyAccess.WRITE_ONLY)
+	private String writeOnlyPropertyWithGetMethod;
 	
 	/**
 	 * Propriedade para testar detecção de métodos GET e SET quando propriedade tem apenas uma letra.
@@ -192,11 +199,26 @@ public class DummyManagedClass {
 		return gender;
 	}
 
-	
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
 	
+	public String getReadOnlyPropertyWithSetMethod() {
+		return readOnlyPropertyWithSetMethod;
+	}
+
+	public void setReadOnlyPropertyWithSetMethod(String readOnlyPropertyWithSetMethod) {
+		this.readOnlyPropertyWithSetMethod = readOnlyPropertyWithSetMethod;
+	}
+
+	public String getWriteOnlyPropertyWithGetMethod() {
+		return writeOnlyPropertyWithGetMethod;
+	}
+
+	public void setWriteOnlyPropertyWithGetMethod(String writeOnlyPropertyWithGetMethod) {
+		this.writeOnlyPropertyWithGetMethod = writeOnlyPropertyWithGetMethod;
+	}
+
 	@ManagedOperation
 	public String requestScopedOperation(){
 		RequestScopeBeanClient client = Beans.getReference(RequestScopeBeanClient.class);
