@@ -38,7 +38,6 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 
 import javax.inject.Named;
 
-import br.gov.frameworkdemoiselle.internal.bootstrap.TransactionBootstrap;
 import br.gov.frameworkdemoiselle.internal.configuration.TransactionConfig;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.TransactionContext;
@@ -58,11 +57,10 @@ public class TransactionContextImpl implements TransactionContext {
 
 	private Transaction getTransaction() {
 		if (this.transaction == null) {
-			TransactionBootstrap bootstrap = Beans.getReference(TransactionBootstrap.class);
 			Class<? extends Transaction> clazz = getConfig().getTransactionClass();
 
 			if (clazz == null) {
-				clazz = StrategySelector.selectClass(Transaction.class, bootstrap.getCache());
+				clazz = StrategySelector.selectClass(Transaction.class);
 			}
 
 			this.transaction = Beans.getReference(clazz);
