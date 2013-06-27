@@ -36,57 +36,17 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
+import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.CORE_PRIORITY;
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.message.Message;
 
-import org.slf4j.Logger;
-
-import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.message.MessageContext;
-import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.Faces;
-
-/**
- * This class is a JSF phase listener intended to transfer messages from Demoiselle Context to JSF own context.
- * 
- * @author SERPRO
- */
-public class MessagePhaseListener implements PhaseListener {
+@Priority(CORE_PRIORITY)
+public class ConsoleMessageAppender implements MessageAppender {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Logger logger = LoggerProducer.create(this.getClass());
-
-	public void beforePhase(PhaseEvent e) {
-		transferMessages(e);
+	@Override
+	public void append(Message message) {
+		System.out.println(message.getText());
 	}
-
-	public void afterPhase(PhaseEvent e) {
-	}
-
-	/**
-	 * Transfers messages from a context to another.
-	 * 
-	 * @param e
-	 *            PhaseEvent
-	 */
-	private void transferMessages(PhaseEvent e) {
-
-		logger.debug(this.getClass().getSimpleName() + " " + e.getPhaseId());
-
-		MessageContext messageContext = Beans.getReference(MessageContext.class);
-
-		// TODO: usar o bundle nas mensagens de log
-		logger.debug("Moving " + messageContext.getMessages().size()
-				+ " message(s) from MessageContext to FacesContext.");
-
-		Faces.addMessages(messageContext.getMessages());
-		messageContext.clear();
-	}
-
-	public PhaseId getPhaseId() {
-		return PhaseId.RENDER_RESPONSE;
-	}
-
 }

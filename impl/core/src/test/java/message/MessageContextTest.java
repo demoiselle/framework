@@ -14,7 +14,6 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import resourcebundle.parameter.ResourceBundleWithParameter;
 import test.Tests;
 import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
@@ -34,7 +33,7 @@ public class MessageContextTest {
 	private MessageWithResourceBundle bundleCustom;
 
 	private static final String PATH = "src/test/resources/message/";
-	
+
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = Tests.createDeployment(MessageContextTest.class);
@@ -78,7 +77,7 @@ public class MessageContextTest {
 		assertEquals(messageContext.getMessages().get(0).getSeverity(), SeverityType.WARN);
 		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
 	}
-	
+
 	@Test
 	public void testAddMessageWitSeverityErro() {
 		ContextManager.activate(ManagedContext.class, RequestScoped.class);
@@ -87,7 +86,7 @@ public class MessageContextTest {
 		assertEquals(messageContext.getMessages().get(0).getSeverity(), SeverityType.ERROR);
 		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
 	}
-	
+
 	@Test
 	public void testCleanMessageContext() {
 		ContextManager.activate(ManagedContext.class, RequestScoped.class);
@@ -107,7 +106,7 @@ public class MessageContextTest {
 		assertTrue(messageContext.getMessages().get(0).getText().equals("Message with 1 param"));
 		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
 	}
-	
+
 	@Test
 	public void testMessageWithResourceBundle() {
 		bundleCustom = Beans.getReference(MessageWithResourceBundle.class);
@@ -115,9 +114,9 @@ public class MessageContextTest {
 		String value = bundleCustom.getBundle().getString("MESSAGE_WITHOUT_PARAMETER");
 		Assert.assertEquals(expected, value);
 	}
-	
+
 	@Test
-	public void testMessageParsedText(){
+	public void testMessageParsedText() {
 		ContextManager.activate(ManagedContext.class, RequestScoped.class);
 		Message MESSAGE_PARSED = new DefaultMessage("{MESSAGE_PARSED}");
 		String expected = "Message parsed";
@@ -125,9 +124,9 @@ public class MessageContextTest {
 		Assert.assertEquals(expected, value);
 		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
 	}
-	
+
 	@Test
-	public void testMessageIsNull(){
+	public void testMessageIsNull() {
 		ContextManager.activate(ManagedContext.class, RequestScoped.class);
 		Message NULL_MESSAGE = new DefaultMessage(null);
 		String expected = null;
@@ -135,5 +134,5 @@ public class MessageContextTest {
 		Assert.assertEquals(expected, value);
 		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
 	}
-	
+
 }

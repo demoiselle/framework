@@ -139,7 +139,7 @@ public class ConfigurationBootstrap extends AbstractStrategyBootstrap<Configurat
 	@Override
 	protected Logger getLogger() {
 		if (logger == null) {
-			logger = LoggerProducer.create(TransactionBootstrap.class);
+			logger = LoggerProducer.create(ConfigurationBootstrap.class);
 		}
 
 		return logger;

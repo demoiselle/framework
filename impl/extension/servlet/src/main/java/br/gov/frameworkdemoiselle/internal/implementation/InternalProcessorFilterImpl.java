@@ -24,7 +24,9 @@ public class InternalProcessorFilterImpl implements InternalProcessorFilter {
 
 		filters.add(new HttpServletRequestProducerFilter());
 		filters.add(new HttpServletResponseProducerFilter());
-		filters.add(new BasicAuthenticationFilter());
+		
+		// TODO Analizar o uso do BasicAuthenticationFilter
+		// filters.add(new BasicAuthenticationFilter());
 	}
 
 	@Override

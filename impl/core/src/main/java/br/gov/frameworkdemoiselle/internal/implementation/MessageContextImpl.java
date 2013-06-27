@@ -50,6 +50,7 @@ import br.gov.frameworkdemoiselle.message.DefaultMessage;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.MessageContext;
 import br.gov.frameworkdemoiselle.message.SeverityType;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -79,7 +80,13 @@ public class MessageContextImpl implements Serializable, MessageContext {
 		}
 
 		getLogger().debug(getBundle().getString("adding-message-to-context", message.toString()));
-		messages.add(aux);
+		getAppender().append(aux);
+	}
+
+	private MessageAppender getAppender() {
+		Class<? extends MessageAppender> appenderClass = StrategySelector.selectClass(MessageAppender.class);
+		
+		return Beans.getReference(appenderClass);
 	}
 
 	@Override

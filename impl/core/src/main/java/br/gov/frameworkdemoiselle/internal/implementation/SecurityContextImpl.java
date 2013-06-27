@@ -42,8 +42,6 @@ import java.security.Principal;
 import javax.inject.Named;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.internal.bootstrap.AuthenticatorBootstrap;
-import br.gov.frameworkdemoiselle.internal.bootstrap.AuthorizerBootstrap;
 import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfig;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
@@ -74,11 +72,10 @@ public class SecurityContextImpl implements SecurityContext {
 
 	private Authenticator getAuthenticator() {
 		if (this.authenticator == null) {
-			AuthenticatorBootstrap bootstrap = Beans.getReference(AuthenticatorBootstrap.class);
 			Class<? extends Authenticator> clazz = getConfig().getAuthenticatorClass();
 
 			if (clazz == null) {
-				clazz = StrategySelector.selectClass(Authenticator.class, bootstrap.getCache());
+				clazz = StrategySelector.selectClass(Authenticator.class);
 			}
 
 			this.authenticator = Beans.getReference(clazz);
@@ -89,11 +86,10 @@ public class SecurityContextImpl implements SecurityContext {
 
 	private Authorizer getAuthorizer() {
 		if (this.authorizer == null) {
-			AuthorizerBootstrap bootstrap = Beans.getReference(AuthorizerBootstrap.class);
 			Class<? extends Authorizer> clazz = getConfig().getAuthorizerClass();
 
 			if (clazz == null) {
-				clazz = StrategySelector.selectClass(Authorizer.class, bootstrap.getCache());
+				clazz = StrategySelector.selectClass(Authorizer.class);
 			}
 
 			this.authorizer = Beans.getReference(clazz);
