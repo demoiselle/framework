@@ -37,16 +37,37 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.CORE_PRIORITY;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.message.Message;
 
 @Priority(CORE_PRIORITY)
-public class ConsoleMessageAppender implements MessageAppender {
+public class LoggerMessageAppender implements MessageAppender {
 
 	private static final long serialVersionUID = 1L;
 
+	@Inject
+	private Logger logger;
+
 	@Override
 	public void append(Message message) {
-		System.out.println(message.getText());
+		String text = message.getText();
+
+		switch (message.getSeverity()) {
+			case INFO:
+				logger.info(text);
+				break;
+
+			case WARN:
+				logger.warn(text);
+				break;
+
+			default:
+				logger.error(text);
+		}
 	}
 }
