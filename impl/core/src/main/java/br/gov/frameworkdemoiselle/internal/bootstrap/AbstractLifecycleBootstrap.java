@@ -98,14 +98,13 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		return this.annotationClass;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T> void processAnnotatedType(@Observes final ProcessAnnotatedType<T> event) {
 		final AnnotatedType<T> annotatedType = event.getAnnotatedType();
 
 		for (AnnotatedMethod<?> am : annotatedType.getMethods()) {
 			if (am.isAnnotationPresent(getAnnotationClass())) {
-				@SuppressWarnings("unchecked")
-				AnnotatedMethod<T> annotatedMethod = (AnnotatedMethod<T>) am;
-				processors.add(newProcessorInstance(annotatedMethod));
+				processors.add(newProcessorInstance((AnnotatedMethod<T>) am));
 			}
 		}
 	}
