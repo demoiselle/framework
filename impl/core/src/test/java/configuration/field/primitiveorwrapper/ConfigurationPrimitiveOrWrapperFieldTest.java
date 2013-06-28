@@ -78,7 +78,7 @@ public class ConfigurationPrimitiveOrWrapperFieldTest {
 
 	@Inject
 	private PropertiesNullWrappedField nullWrappedField;
-	
+
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = Tests.createDeployment(ConfigurationPrimitiveOrWrapperFieldTest.class);
@@ -210,9 +210,9 @@ public class ConfigurationPrimitiveOrWrapperFieldTest {
 			assertEquals(ConversionException.class, cause.getCause().getClass());
 		}
 	}
-	
+
 	@Test
-	public void loadNullWrappedField(){
+	public void loadNullWrappedField() {
 		assertNull(nullWrappedField.getNullWrappedField());
 	}
 }

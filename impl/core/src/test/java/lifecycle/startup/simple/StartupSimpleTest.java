@@ -59,9 +59,9 @@ public class StartupSimpleTest {
 
 	@Inject
 	private StartupSimple startupSimple;
-	
+
 	List<Integer> expected = new ArrayList<Integer>();
-	
+
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = Tests.createDeployment(StartupSimpleTest.class);
@@ -73,7 +73,7 @@ public class StartupSimpleTest {
 		Beans.getBeanManager().fireEvent(new AfterStartupProccess() {
 		});
 	}
-	
+
 	@Test
 	public void startup() {
 		expected.add(1);
@@ -83,4 +83,3 @@ public class StartupSimpleTest {
 		Assert.assertEquals(expected, startupSimple.getListStartup());
 	}
 }
-

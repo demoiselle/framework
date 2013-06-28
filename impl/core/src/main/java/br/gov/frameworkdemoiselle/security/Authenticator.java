@@ -49,7 +49,8 @@ public interface Authenticator extends Serializable {
 	/**
 	 * Executes the necessary steps to authenticate an user.
 	 * 
-	 * @throws AuthenticationException When the authentication process fails, this exception is thrown.
+	 * @throws AuthenticationException
+	 *             When the authentication process fails, this exception is thrown.
 	 */
 	void authenticate() throws AuthenticationException;
 

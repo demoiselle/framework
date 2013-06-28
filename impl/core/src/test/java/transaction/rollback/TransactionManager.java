@@ -97,35 +97,35 @@ public class TransactionManager {
 		return transactionPassedInSetRollbackOnlyMethod;
 	}
 
-	public static void setTransactionMarkedRollback(boolean markedRollback) {
+	public static void setTransactionMarkedRollback(final boolean markedRollback) {
 		transactionMarkedRollback = markedRollback;
 	}
 
-	public static void setTransactionActive(boolean active) {
+	public static void setTransactionActive(final boolean active) {
 		transactionActive = active;
 	}
 
-	public static void setTransactionPassedInIsActiveMethod(boolean passedInIsActiveMethod) {
+	public static void setTransactionPassedInIsActiveMethod(final boolean passedInIsActiveMethod) {
 		transactionPassedInIsActiveMethod = passedInIsActiveMethod;
 	}
 
-	public static void setTransactionPassedInIsMarkedRollbackMethod(boolean passedInIsMarkedRollbackMethod) {
+	public static void setTransactionPassedInIsMarkedRollbackMethod(final boolean passedInIsMarkedRollbackMethod) {
 		transactionPassedInIsMarkedRollbackMethod = passedInIsMarkedRollbackMethod;
 	}
 
-	public static void setTransactionPassedInBeginMethod(boolean passedInBeginMethod) {
+	public static void setTransactionPassedInBeginMethod(final boolean passedInBeginMethod) {
 		transactionPassedInBeginMethod = passedInBeginMethod;
 	}
 
-	public static void setTransactionPassedInCommitMethod(boolean passedInCommitMethod) {
+	public static void setTransactionPassedInCommitMethod(final boolean passedInCommitMethod) {
 		transactionPassedInCommitMethod = passedInCommitMethod;
 	}
 
-	public static void setTransactionPassedInRollbackMethod(boolean passedInRollbackMethod) {
+	public static void setTransactionPassedInRollbackMethod(final boolean passedInRollbackMethod) {
 		transactionPassedInRollbackMethod = passedInRollbackMethod;
 	}
 
-	public static void setTransactionPassedInSetRollbackOnlyMethod(boolean passedInSetRollbackOnlyMethod) {
+	public static void setTransactionPassedInSetRollbackOnlyMethod(final boolean passedInSetRollbackOnlyMethod) {
 		transactionPassedInSetRollbackOnlyMethod = passedInSetRollbackOnlyMethod;
 	}
 }

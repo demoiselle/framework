@@ -110,10 +110,10 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 	}
 
 	public void loadTempContexts(@Observes final AfterBeanDiscovery event) {
-		//Caso este bootstrap rode antes do CoreBootstrap. Não há problemas em chamar este método várias vezes, ele
-		//ignora chamadas adicionais.
+		// Caso este bootstrap rode antes do CoreBootstrap. Não há problemas em chamar este método várias vezes, ele
+		// ignora chamadas adicionais.
 		ContextManager.initialize(event);
-		
+
 		// Não registrar o contexto de aplicação pq ele já é registrado pela implementação do CDI
 		ContextManager.add(new ThreadLocalContext(ViewScoped.class), event);
 		ContextManager.add(new ThreadLocalContext(SessionScoped.class), event);

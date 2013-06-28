@@ -45,7 +45,7 @@ public abstract class AbstractPrimitiveOrWrapperErrorFieldConfig {
 	private Integer emptyWrappedField;
 
 	private Integer conversionErrorWrappedField;
-	
+
 	public int getEmptyPrimitiveField() {
 		return emptyPrimitiveField;
 	}

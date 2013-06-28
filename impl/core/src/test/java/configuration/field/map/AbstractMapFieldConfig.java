@@ -45,7 +45,7 @@ public abstract class AbstractMapFieldConfig {
 	private Map<String, String> stringWithUndefinedKeyMap;
 
 	private Map<String, String> emptyValueMap;
-	
+
 	private Map<String, String> NullMapValue;
 
 	public Map<String, String> getStringWithUndefinedKeyMap() {

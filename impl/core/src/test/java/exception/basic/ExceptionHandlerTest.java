@@ -64,7 +64,7 @@ public class ExceptionHandlerTest {
 
 	@Inject
 	private ExceptionNested nested;
-	
+
 	@Inject
 	private ExceptionClassNotAnnotated classNotAnnotated;
 
@@ -127,7 +127,7 @@ public class ExceptionHandlerTest {
 			assertEquals(false, nested.isExceptionHandler());
 		}
 	}
-	
+
 	@Test
 	public void exceptionClassNotAnnotatedController() {
 		try {

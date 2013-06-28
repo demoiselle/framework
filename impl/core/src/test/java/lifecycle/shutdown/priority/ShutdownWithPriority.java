@@ -51,7 +51,7 @@ import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
 public class ShutdownWithPriority {
 
 	private List<Integer> listShutdown = new ArrayList<Integer>();
-	
+
 	public List<Integer> getListShutdown() {
 		return listShutdown;
 	}
@@ -67,7 +67,7 @@ public class ShutdownWithPriority {
 	public void unloadWithPriority1() {
 		listShutdown.add(2);
 	}
-	
+
 	@Shutdown
 	@Priority(MAX_PRIORITY)
 	public void unloadWithMaxPriority() {

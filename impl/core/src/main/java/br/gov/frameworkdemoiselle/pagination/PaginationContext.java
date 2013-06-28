@@ -51,7 +51,8 @@ public interface PaginationContext {
 	/**
 	 * Retrieves the pagination according to the class type specified.
 	 * 
-	 * @param clazz a {@code Class} type
+	 * @param clazz
+	 *            a {@code Class} type
 	 * @return Pagination
 	 */
 	Pagination getPagination(Class<?> clazz);
@@ -60,8 +61,10 @@ public interface PaginationContext {
 	 * Retrieves the pagination according to the class type specified. If not existing, creates the pagination whenever
 	 * {@code create} parameter is true.
 	 * 
-	 * @param clazz a {@code Class} type
-	 * @param create determines whether pagination must always be returned
+	 * @param clazz
+	 *            a {@code Class} type
+	 * @param create
+	 *            determines whether pagination must always be returned
 	 * @return Pagination
 	 */
 	Pagination getPagination(Class<?> clazz, boolean create);

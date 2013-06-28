@@ -41,7 +41,7 @@ public abstract class AbstractClassNotFoundFieldConfig {
 	private Class<MyClass> nonExistentTypedClass;
 
 	private Class<?> nonExistentUntypedClass;
-	
+
 	public Class<MyClass> getNonExistentTypedClass() {
 		return nonExistentTypedClass;
 	}

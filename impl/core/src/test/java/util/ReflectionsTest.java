@@ -62,7 +62,7 @@ public class ReflectionsTest {
 
 class SomeClass<T, I> {
 
-	public void setNumber(T t) {
+	public void setNumber(final T t) {
 
 	}
 }

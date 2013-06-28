@@ -6,7 +6,7 @@ import br.gov.frameworkdemoiselle.configuration.Configuration;
 public class PropertiesNullWrappedField {
 
 	private Integer nullWrappedField;
-	
+
 	public Integer getNullWrappedField() {
 		return nullWrappedField;
 	}

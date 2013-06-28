@@ -57,7 +57,7 @@ public class ExceptionHandlerInterceptor extends br.gov.frameworkdemoiselle.exce
 
 	@Inject
 	private Logger logger;
-	
+
 	@Override
 	@AroundInvoke
 	public Object manage(InvocationContext ic) throws Exception {
@@ -65,4 +65,3 @@ public class ExceptionHandlerInterceptor extends br.gov.frameworkdemoiselle.exce
 		return super.manage(ic);
 	}
 }
-

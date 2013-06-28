@@ -47,9 +47,8 @@ import javax.interceptor.InvocationContext;
 
 import org.slf4j.Logger;
 
-import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -63,9 +62,9 @@ public class RequiredRoleInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static ResourceBundle bundle;
+	private static transient ResourceBundle bundle;
 
-	private static Logger logger;
+	private static transient Logger logger;
 
 	/**
 	 * Gets the value property of {@code @RequiredRole}. Delegates to {@code SecurityContext} check role. If the user
@@ -102,7 +101,6 @@ public class RequiredRoleInterceptor implements Serializable {
 					.error(getBundle().getString("does-not-have-role", getSecurityContext().getCurrentUser().getName(),
 							roles));
 
-			// AuthorizationException a = new AuthorizationException(null);
 			throw new AuthorizationException(getBundle().getString("does-not-have-role-ui", roles));
 		}
 
@@ -139,7 +137,7 @@ public class RequiredRoleInterceptor implements Serializable {
 
 	private static ResourceBundle getBundle() {
 		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}
 
 		return bundle;
@@ -147,7 +145,7 @@ public class RequiredRoleInterceptor implements Serializable {
 
 	private static Logger getLogger() {
 		if (logger == null) {
-			logger = LoggerProducer.create(RequiredRoleInterceptor.class);
+			logger = Beans.getReference(Logger.class, new NameQualifier(RequiredRoleInterceptor.class.getName()));
 		}
 
 		return logger;

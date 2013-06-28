@@ -42,14 +42,14 @@ public abstract class BeanValidationWithEmptyNotNullFieldConfig {
 
 	@NotNull
 	private Integer intAttributeNull;
-	
+
 	@NotNull
 	private String stringAttributeNull;
-	
+
 	public Integer getIntAttributeNull() {
 		return intAttributeNull;
 	}
-	
+
 	public String getStringAttributeNull() {
 		return stringAttributeNull;
 	}

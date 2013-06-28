@@ -41,7 +41,7 @@ import br.gov.frameworkdemoiselle.transaction.Transaction;
 public class DummyStrategy implements Transaction {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private boolean markedRollback = false;
 
 	private boolean active = false;

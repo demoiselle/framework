@@ -49,17 +49,23 @@ import javax.enterprise.inject.Stereotype;
 import javax.enterprise.util.Nonbinding;
 
 /**
- * <p>Identifies a <b>management controller</b> bean. What it means is that an external client can manage the application
- * this class is in by reading or writing it's attributes and calling it's operations.</p>
  * <p>
- * Only fields annotated with {@link br.gov.frameworkdemoiselle.annotation.ManagedProperty} or
- * methods annotated with {@link br.gov.frameworkdemoiselle.annotation.ManagedOperation} will be exposed
- * to clients.</p>
- * <p>Only bean implementations (concrete classes) can be management controllers. It's a runtime error to mark an interface
- * or abstract class with this annotation.</p>
- * <p>This stereotype only defines a class as managed, you need to choose an extension that will expose this managed class
+ * Identifies a <b>management controller</b> bean. What it means is that an external client can manage the application
+ * this class is in by reading or writing it's attributes and calling it's operations.
+ * </p>
+ * <p>
+ * Only fields annotated with {@link br.gov.frameworkdemoiselle.annotation.ManagedProperty} or methods annotated with
+ * {@link br.gov.frameworkdemoiselle.annotation.ManagedOperation} will be exposed to clients.
+ * </p>
+ * <p>
+ * Only bean implementations (concrete classes) can be management controllers. It's a runtime error to mark an interface
+ * or abstract class with this annotation.
+ * </p>
+ * <p>
+ * This stereotype only defines a class as managed, you need to choose an extension that will expose this managed class
  * to external clients using any technology available. One example is the Demoiselle JMX extension, that will expose
- * managed classes as MBeans.</p> 
+ * managed classes as MBeans.
+ * </p>
  * 
  * @author SERPRO
  */
@@ -71,7 +77,7 @@ import javax.enterprise.util.Nonbinding;
 @Retention(RUNTIME)
 @Target({ TYPE })
 public @interface ManagementController {
-	
+
 	/**
 	 * @return Human readable description of this managed class.
 	 */

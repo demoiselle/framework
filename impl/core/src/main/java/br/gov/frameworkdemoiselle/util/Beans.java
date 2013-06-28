@@ -37,21 +37,24 @@
 package br.gov.frameworkdemoiselle.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
 import java.lang.reflect.Type;
-import java.util.Locale;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.internal.bootstrap.CustomInjectionPoint;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 
 public final class Beans {
+
+	private static transient ResourceBundle bundle;
 
 	private static BeanManager manager;
 
@@ -132,6 +135,98 @@ public final class Beans {
 	}
 
 	private static ResourceBundle getBundle() {
-		return ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
+		if (bundle == null) {
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
+		}
+
+		return bundle;
+	}
+
+	static class CustomInjectionPoint implements InjectionPoint {
+
+		private final Bean<?> bean;
+
+		private final Type beanType;
+
+		private final Set<Annotation> qualifiers;
+
+		public CustomInjectionPoint(Bean<?> bean, Type beanType, Annotation... qualifiers) {
+			this.bean = bean;
+			this.beanType = beanType;
+			this.qualifiers = new HashSet<Annotation>(Arrays.asList(qualifiers));
+		}
+
+		@Override
+		public Type getType() {
+			return this.beanType;
+		}
+
+		@Override
+		public Set<Annotation> getQualifiers() {
+			return this.qualifiers;
+		}
+
+		@Override
+		public Bean<?> getBean() {
+			return this.bean;
+		}
+
+		@Override
+		public Member getMember() {
+			return null;
+		}
+
+		@Override
+		public boolean isDelegate() {
+			return false;
+		}
+
+		@Override
+		public boolean isTransient() {
+			return false;
+		}
+
+		@Override
+		public Annotated getAnnotated() {
+			return new Annotated() {
+
+				@Override
+				public Type getBaseType() {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				@Override
+				public Set<Type> getTypeClosure() {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				@Override
+				@SuppressWarnings("unchecked")
+				public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+					T result = null;
+
+					for (Annotation annotation : getAnnotations()) {
+						if (annotation.annotationType() == annotationType) {
+							result = (T) annotation;
+							break;
+						}
+					}
+
+					return result;
+				}
+
+				@Override
+				public Set<Annotation> getAnnotations() {
+					return qualifiers;
+				}
+
+				@Override
+				public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+					return qualifiers.contains(annotationType);
+				}
+			};
+		}
 	}
 }

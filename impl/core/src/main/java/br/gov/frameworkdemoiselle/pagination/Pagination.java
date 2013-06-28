@@ -88,5 +88,5 @@ public interface Pagination {
 	 * Sets the position for the first record and hence calculates current page according to page size.
 	 */
 	void setFirstResult(int firstResult);
-	
+
 }

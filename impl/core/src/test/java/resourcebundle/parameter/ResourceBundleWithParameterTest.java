@@ -77,7 +77,7 @@ public class ResourceBundleWithParameterTest {
 		String value = bundleCustom.getBundle().getString("messageTwoParameter", "1", "2");
 		Assert.assertEquals(expected, value);
 	}
-	
+
 	@Test
 	public void loadKeyWithoutParameter() {
 		bundleCustom = Beans.getReference(ResourceBundleWithParameter.class);
@@ -85,15 +85,15 @@ public class ResourceBundleWithParameterTest {
 		String value = bundleCustom.getBundle().getString("messageWithoutParameter", "1", "2", "3");
 		Assert.assertEquals(expected, value);
 	}
-	
+
 	@Test
 	public void loadKeyWithStringParameter() {
 		bundleCustom = Beans.getReference(ResourceBundleWithParameter.class);
 		String expected = "Mensagem número 1";
 		String value = bundleCustom.getBundle().getString("messageParameterString", "1");
 		Assert.assertNotSame(expected, value);
-		
-		expected = "Mensagem número {numero}";	
+
+		expected = "Mensagem número {numero}";
 		Assert.assertEquals(expected, value);
 	}
 

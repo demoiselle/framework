@@ -55,7 +55,8 @@ public class TransactionContextImpl implements TransactionContext {
 
 	private Transaction transaction;
 
-	private Transaction getTransaction() {
+	@Override
+	public Transaction getCurrentTransaction() {
 		if (this.transaction == null) {
 			Class<? extends Transaction> clazz = getConfig().getTransactionClass();
 
@@ -67,11 +68,6 @@ public class TransactionContextImpl implements TransactionContext {
 		}
 
 		return this.transaction;
-	}
-
-	@Override
-	public Transaction getCurrentTransaction() {
-		return getTransaction();
 	}
 
 	private TransactionConfig getConfig() {

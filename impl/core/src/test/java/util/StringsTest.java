@@ -144,7 +144,7 @@ public class StringsTest {
 		assertTrue(result.contains("Test [name=myName, lastname=myLastname, nullField=null, this"));
 	}
 
-	private void testEqualsGetString(String in, String expected, Object... params) {
+	private void testEqualsGetString(final String in, final String expected, final Object... params) {
 		String out = Strings.getString(in, params);
 		assertEquals(expected, out);
 	}
