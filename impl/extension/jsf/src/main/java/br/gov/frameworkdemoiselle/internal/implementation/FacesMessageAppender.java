@@ -39,6 +39,7 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L2_PRIORITY;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.message.Message;
+import br.gov.frameworkdemoiselle.message.MessageAppender;
 import br.gov.frameworkdemoiselle.util.Faces;
 
 @Priority(EXTENSIONS_L2_PRIORITY)

@@ -44,6 +44,7 @@ import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.message.Message;
+import br.gov.frameworkdemoiselle.message.MessageAppender;
 
 @Priority(CORE_PRIORITY)
 public class LoggerMessageAppender implements MessageAppender {

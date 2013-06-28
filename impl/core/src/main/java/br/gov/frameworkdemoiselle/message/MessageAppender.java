@@ -34,12 +34,13 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.implementation;
+package br.gov.frameworkdemoiselle.message;
 
 import java.io.Serializable;
 
-import br.gov.frameworkdemoiselle.message.Message;
-
+/**
+ * @author SERPRO
+ */
 public interface MessageAppender extends Serializable {
 
 	void append(Message message);

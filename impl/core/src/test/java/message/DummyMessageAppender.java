@@ -41,8 +41,8 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 
-import br.gov.frameworkdemoiselle.internal.implementation.MessageAppender;
 import br.gov.frameworkdemoiselle.message.Message;
+import br.gov.frameworkdemoiselle.message.MessageAppender;
 
 @RequestScoped
 public class DummyMessageAppender implements MessageAppender {
