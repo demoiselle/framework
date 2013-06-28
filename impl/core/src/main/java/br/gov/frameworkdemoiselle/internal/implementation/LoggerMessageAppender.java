@@ -36,7 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.CORE_PRIORITY;
+import static br.gov.frameworkdemoiselle.annotation.Priority.L1_PRIORITY;
 
 import javax.inject.Inject;
 
@@ -46,7 +46,7 @@ import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.MessageAppender;
 
-@Priority(CORE_PRIORITY)
+@Priority(L1_PRIORITY)
 public class LoggerMessageAppender implements MessageAppender {
 
 	private static final long serialVersionUID = 1L;

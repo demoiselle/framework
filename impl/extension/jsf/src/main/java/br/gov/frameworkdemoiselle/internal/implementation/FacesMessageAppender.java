@@ -36,13 +36,13 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L2_PRIORITY;
+import static br.gov.frameworkdemoiselle.annotation.Priority.L3_PRIORITY;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.MessageAppender;
 import br.gov.frameworkdemoiselle.util.Faces;
 
-@Priority(EXTENSIONS_L2_PRIORITY)
+@Priority(L3_PRIORITY)
 public class FacesMessageAppender implements MessageAppender {
 
 	private static final long serialVersionUID = 1L;

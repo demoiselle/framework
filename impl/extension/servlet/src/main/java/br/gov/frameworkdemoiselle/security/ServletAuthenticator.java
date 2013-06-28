@@ -36,7 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.security;
 
-import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
+import static br.gov.frameworkdemoiselle.annotation.Priority.L2_PRIORITY;
 
 import java.security.Principal;
 
@@ -48,7 +48,7 @@ import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
-@Priority(EXTENSIONS_L1_PRIORITY)
+@Priority(L2_PRIORITY)
 public class ServletAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;

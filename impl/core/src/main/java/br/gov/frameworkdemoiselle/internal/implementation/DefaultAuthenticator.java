@@ -36,14 +36,16 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.CORE_PRIORITY;
+import static br.gov.frameworkdemoiselle.annotation.Priority.L1_PRIORITY;
+
+import java.security.Principal;
+
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
-import br.gov.frameworkdemoiselle.security.User;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -52,8 +54,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * @author SERPRO
  * @see Authenticator
  */
-@SuppressWarnings("deprecation")
-@Priority(CORE_PRIORITY)
+@Priority(L1_PRIORITY)
 public class DefaultAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
@@ -80,7 +81,7 @@ public class DefaultAuthenticator implements Authenticator {
 	 * @see br.gov.frameworkdemoiselle.security.Authenticator#getUser()
 	 */
 	@Override
-	public User getUser() {
+	public Principal getUser() {
 		throw getException();
 	}
 
