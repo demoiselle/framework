@@ -36,17 +36,27 @@
  */
 package message;
 
-import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
+import javax.enterprise.context.RequestScoped;
 
-public class MessageWithResourceBundle {
+import br.gov.frameworkdemoiselle.internal.implementation.MessageAppender;
+import br.gov.frameworkdemoiselle.message.Message;
 
-	@Inject
-	private ResourceBundle bundle;
+@RequestScoped
+public class DummyMessageAppender implements MessageAppender {
 
-	public ResourceBundle getBundle() {
-		return bundle;
+	private static final long serialVersionUID = 1L;
+
+	private List<Message> messages = new ArrayList<Message>();
+
+	@Override
+	public void append(Message message) {
+		messages.add(message);
 	}
 
+	public List<Message> getMessages() {
+		return messages;
+	}
 }
