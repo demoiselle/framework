@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.configuration.JDBCConfig;
-import br.gov.frameworkdemoiselle.transaction.BasicDataSourceProxy;
+import br.gov.frameworkdemoiselle.internal.proxy.BasicDataSourceProxy;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 

@@ -1,4 +1,4 @@
-package br.gov.frameworkdemoiselle.transaction;
+package br.gov.frameworkdemoiselle.internal.proxy;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
