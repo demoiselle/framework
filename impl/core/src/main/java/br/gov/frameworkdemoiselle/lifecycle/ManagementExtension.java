@@ -42,34 +42,36 @@ import br.gov.frameworkdemoiselle.internal.management.ManagedType;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 
 /**
- * 
- * <p>Interface defining the lifecycle of a <b>management extension</b>, an extension
- * capable of exposing {@link ManagementController}'s to external clients in one
- * of the available management technologies, such as JMX or SNMP.</p>
- * 
- * <p>To include a management extension into the management lifecycle, it just needs
- * to implement this interface and be a CDI bean (have a <b>beans.xml</b> file inside
- * the META-INF folder of it's java package). The Demoiselle Core lifecycle controller
- * will call the {@link #initialize(List managedTypes)} and {@link #shutdown(List managedTypes)} methods at the apropriate times.</p>
+ * <p>
+ * Interface defining the lifecycle of a <b>management extension</b>, an extension capable of exposing
+ * {@link ManagementController}'s to external clients in one of the available management technologies, such as JMX or
+ * SNMP.
+ * </p>
+ * <p>
+ * To include a management extension into the management lifecycle, it just needs to implement this interface and be a
+ * CDI bean (have a <b>beans.xml</b> file inside the META-INF folder of it's java package). The Demoiselle Core
+ * lifecycle controller will call the {@link #initialize(List managedTypes)} and {@link #shutdown(List managedTypes)}
+ * methods at the apropriate times.
+ * </p>
  * 
  * @author serpro
- *
  */
 public interface ManagementExtension {
 
 	/**
-	 * This method is called during the application initialization process for each concrete
-	 * implementation of this interface.
+	 * This method is called during the application initialization process for each concrete implementation of this
+	 * interface.
 	 * 
-	 * @param managedTypes The list of discovered {@link ManagementController} classes.
+	 * @param managedTypes
+	 *            The list of discovered {@link ManagementController} classes.
 	 */
 	void initialize(List<ManagedType> managedTypes);
 
 	/**
-	 * This method is called during the application shutdown process for each concrete
-	 * implementation of this interface.
+	 * This method is called during the application shutdown process for each concrete implementation of this interface.
 	 * 
-	 * @param managedTypes The list of discovered {@link ManagementController} classes.
+	 * @param managedTypes
+	 *            The list of discovered {@link ManagementController} classes.
 	 */
 	void shutdown(List<ManagedType> managedTypes);
 

@@ -47,24 +47,28 @@ import javax.enterprise.util.Nonbinding;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 
 /**
- * <p>Indicates that a method is a <b>managed operation</b>, meaning you can manage some aspect of the application by calling it from a external management client.</p>
- * <p>This annotation can't be used together with {@link ManagedProperty}, doing so will throw a {@link DemoiselleException}.</p>  
+ * <p>
+ * Indicates that a method is a <b>managed operation</b>, meaning you can manage some aspect of the application by
+ * calling it from a external management client.
+ * </p>
+ * <p>
+ * This annotation can't be used together with {@link ManagedProperty}, doing so will throw a
+ * {@link DemoiselleException}.
+ * </p>
  * 
  * @author SERPRO
- *
  */
 @Documented
-@Target({ElementType.METHOD})
+@Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ManagedOperation {
-	
+
 	/**
-	 * Description that will be used to publish the operation to clients.
-	 * Defaults to an empty description.
+	 * Description that will be used to publish the operation to clients. Defaults to an empty description.
 	 */
 	@Nonbinding
 	String description() default "";
-	
+
 	/**
 	 * Type of operation. Defaults to {@link OperationType#UNKNOWN}.
 	 */

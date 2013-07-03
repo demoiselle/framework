@@ -45,7 +45,7 @@ public class SimpleExceptionHandler {
 	private boolean nullPointerExceptionHandler = false;
 
 	private boolean arithmeticExceptionHandler = false;
-	
+
 	public boolean isNullPointerExceptionHandler() {
 		return nullPointerExceptionHandler;
 	}
@@ -53,7 +53,7 @@ public class SimpleExceptionHandler {
 	public boolean isArithmeticExceptionHandler() {
 		return arithmeticExceptionHandler;
 	}
-	
+
 	public void throwNullPointerException() {
 		throw new NullPointerException();
 	}
@@ -61,11 +61,11 @@ public class SimpleExceptionHandler {
 	public void throwArithmeticException() {
 		throw new ArithmeticException();
 	}
-	
+
 	public void throwExceptionWithoutHandler() {
 		throw new IllegalArgumentException();
-	}	
-	
+	}
+
 	@SuppressWarnings({ "null", "unused" })
 	public void throwTwoException() {
 		String txt = null;
@@ -81,5 +81,5 @@ public class SimpleExceptionHandler {
 	@ExceptionHandler
 	public void handler(ArithmeticException cause) {
 		arithmeticExceptionHandler = true;
-	}	
+	}
 }

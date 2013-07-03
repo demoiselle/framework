@@ -99,9 +99,9 @@ public class ConfigurationMapFieldTest {
 		assertEquals(expected, propertiesConfig.getEmptyValueMap());
 		assertEquals(expected, xmlConfig.getEmptyValueMap());
 	}
-	
+
 	@Test
-	public void loadNullMap(){
+	public void loadNullMap() {
 		assertNull(propertiesConfig.getNullMapValue());
 		assertNull(xmlConfig.getNullMapValue());
 	}

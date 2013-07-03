@@ -45,29 +45,31 @@ import java.lang.annotation.Target;
 import javax.enterprise.util.Nonbinding;
 
 /**
- * <p>Optional annotation to write additional detail about an operation's parameter.</p>
- * <p>This annotation is ignored for non-operation methods.</p>  
+ * <p>
+ * Optional annotation to write additional detail about an operation's parameter.
+ * </p>
+ * <p>
+ * This annotation is ignored for non-operation methods.
+ * </p>
  * 
  * @author SERPRO
- *
  */
 @Documented
-@Target({ElementType.PARAMETER})
+@Target({ ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface OperationParameter {
-	
+
 	/**
 	 * Name that will be used to publish this operation's parameter to clients.
 	 */
 	@Nonbinding
 	String name();
-	
+
 	/**
-	 * Optional description that will be used to publish this operation's parameter to clients.
-	 * Defaults to an empty description.
+	 * Optional description that will be used to publish this operation's parameter to clients. Defaults to an empty
+	 * description.
 	 */
 	@Nonbinding
 	String description() default "";
-	
 
 }

@@ -57,5 +57,5 @@ public enum ConfigType {
 	 * Configuration loaded on properties resources.
 	 */
 	PROPERTIES;
-	
+
 }

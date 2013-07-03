@@ -1,3 +1,39 @@
+/*
+ * Demoiselle Framework
+ * Copyright (C) 2010 SERPRO
+ * ----------------------------------------------------------------------------
+ * This file is part of Demoiselle Framework.
+ * 
+ * Demoiselle Framework is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License version 3
+ * as published by the Free Software Foundation.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License version 3
+ * along with this program; if not,  see <http://www.gnu.org/licenses/>
+ * or write to the Free Software Foundation, Inc., 51 Franklin Street,
+ * Fifth Floor, Boston, MA  02110-1301, USA.
+ * ----------------------------------------------------------------------------
+ * Este arquivo é parte do Framework Demoiselle.
+ * 
+ * O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
+ * modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
+ * do Software Livre (FSF).
+ * 
+ * Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA
+ * GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou
+ * APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português
+ * para maiores detalhes.
+ * 
+ * Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
+ * "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses/>
+ * ou escreva para a Fundação do Software Livre (FSF) Inc.,
+ * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
+ */
 package message;
 
 import static junit.framework.Assert.assertEquals;
@@ -14,7 +50,6 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import resourcebundle.parameter.ResourceBundleWithParameter;
 import test.Tests;
 import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
@@ -34,7 +69,7 @@ public class MessageContextTest {
 	private MessageWithResourceBundle bundleCustom;
 
 	private static final String PATH = "src/test/resources/message/";
-	
+
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = Tests.createDeployment(MessageContextTest.class);
@@ -47,8 +82,10 @@ public class MessageContextTest {
 	public void testAddMessageWithoutParams() {
 		ContextManager.activate(ManagedContext.class, RequestScoped.class);
 		Message message = new DefaultMessage("Menssage without param");
+		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
+
 		messageContext.add(message);
-		assertEquals(messageContext.getMessages().size(), 1);
+		assertEquals(appender.getMessages().size(), 1);
 		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
 	}
 
@@ -56,8 +93,10 @@ public class MessageContextTest {
 	public void testAddMessageWithoutParamsIfSeverityIsInfo() {
 		ContextManager.activate(ManagedContext.class, RequestScoped.class);
 		Message message = new DefaultMessage("Menssage without param");
+		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
+
 		messageContext.add(message);
-		assertEquals(messageContext.getMessages().get(0).getSeverity(), SeverityType.INFO);
+		assertEquals(appender.getMessages().get(0).getSeverity(), SeverityType.INFO);
 		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
 	}
 
@@ -65,8 +104,10 @@ public class MessageContextTest {
 	public void testAddMessageWitSeverityInfo() {
 		ContextManager.activate(ManagedContext.class, RequestScoped.class);
 		Message message = new DefaultMessage("Menssage without param", SeverityType.INFO);
+		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
+
 		messageContext.add(message);
-		assertEquals(messageContext.getMessages().get(0).getSeverity(), SeverityType.INFO);
+		assertEquals(appender.getMessages().get(0).getSeverity(), SeverityType.INFO);
 		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
 	}
 
@@ -74,28 +115,21 @@ public class MessageContextTest {
 	public void testAddMessageWitSeverityWarn() {
 		ContextManager.activate(ManagedContext.class, RequestScoped.class);
 		Message message = new DefaultMessage("Menssage without param", SeverityType.WARN);
+		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
+
 		messageContext.add(message);
-		assertEquals(messageContext.getMessages().get(0).getSeverity(), SeverityType.WARN);
+		assertEquals(appender.getMessages().get(0).getSeverity(), SeverityType.WARN);
 		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
 	}
-	
+
 	@Test
 	public void testAddMessageWitSeverityErro() {
 		ContextManager.activate(ManagedContext.class, RequestScoped.class);
 		Message message = new DefaultMessage("Menssage without param", SeverityType.ERROR);
+		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
+
 		messageContext.add(message);
-		assertEquals(messageContext.getMessages().get(0).getSeverity(), SeverityType.ERROR);
-		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
-	}
-	
-	@Test
-	public void testCleanMessageContext() {
-		ContextManager.activate(ManagedContext.class, RequestScoped.class);
-		Message message = new DefaultMessage("Menssage without param");
-		messageContext.add(message);
-		assertEquals(messageContext.getMessages().size(), 1);
-		messageContext.clear();
-		assertEquals(messageContext.getMessages().size(), 0);
+		assertEquals(appender.getMessages().get(0).getSeverity(), SeverityType.ERROR);
 		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
 	}
 
@@ -103,11 +137,13 @@ public class MessageContextTest {
 	public void testRecoverMessageWithParams() {
 		ContextManager.activate(ManagedContext.class, RequestScoped.class);
 		Message message = new DefaultMessage("Message with {0} param");
+		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
+
 		messageContext.add(message, 1);
-		assertTrue(messageContext.getMessages().get(0).getText().equals("Message with 1 param"));
+		assertTrue(appender.getMessages().get(0).getText().equals("Message with 1 param"));
 		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
 	}
-	
+
 	@Test
 	public void testMessageWithResourceBundle() {
 		bundleCustom = Beans.getReference(MessageWithResourceBundle.class);
@@ -115,9 +151,9 @@ public class MessageContextTest {
 		String value = bundleCustom.getBundle().getString("MESSAGE_WITHOUT_PARAMETER");
 		Assert.assertEquals(expected, value);
 	}
-	
+
 	@Test
-	public void testMessageParsedText(){
+	public void testMessageParsedText() {
 		ContextManager.activate(ManagedContext.class, RequestScoped.class);
 		Message MESSAGE_PARSED = new DefaultMessage("{MESSAGE_PARSED}");
 		String expected = "Message parsed";
@@ -125,9 +161,9 @@ public class MessageContextTest {
 		Assert.assertEquals(expected, value);
 		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
 	}
-	
+
 	@Test
-	public void testMessageIsNull(){
+	public void testMessageIsNull() {
 		ContextManager.activate(ManagedContext.class, RequestScoped.class);
 		Message NULL_MESSAGE = new DefaultMessage(null);
 		String expected = null;
@@ -135,5 +171,4 @@ public class MessageContextTest {
 		Assert.assertEquals(expected, value);
 		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
 	}
-	
 }

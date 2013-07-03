@@ -51,8 +51,9 @@ public class ContextManager {
 	private static ResourceBundle bundle;
 
 	private static Logger logger;
-	
-	private ContextManager(){}
+
+	private ContextManager() {
+	}
 
 	/**
 	 * <p>
@@ -105,9 +106,9 @@ public class ContextManager {
 		}
 
 		ContextManager.getLogger().trace(
-				ContextManager.getBundle().getString("bootstrap-context-added",
-						context.getClass().getCanonicalName(), context.getScope().getCanonicalName()));
-		
+				ContextManager.getBundle().getString("bootstrap-context-added", context.getClass().getCanonicalName(),
+						context.getScope().getCanonicalName()));
+
 		context.setActive(false);
 		event.addContext(context);
 		contexts.add(new CustomContextCounter(context));
@@ -194,8 +195,10 @@ public class ContextManager {
 	}
 
 	/**
-	 * <p>This method should be called when the application is shutting down, usually by observing
-	 * the {@link BeforeShutdown} event.</p> 
+	 * <p>
+	 * This method should be called when the application is shutting down, usually by observing the
+	 * {@link BeforeShutdown} event.
+	 * </p>
 	 */
 	public static synchronized void shutdown() {
 		for (CustomContextCounter context : contexts) {
@@ -252,7 +255,7 @@ class CustomContextCounter {
 	public CustomContext getInternalContext() {
 		return this.context;
 	}
-	
+
 	public void setInternalContext(CustomContext context) {
 		this.context = context;
 	}
@@ -261,19 +264,14 @@ class CustomContextCounter {
 		try {
 			BeanManager beanManager = Beans.getReference(BeanManager.class);
 			Context c = beanManager.getContext(context.getScope());
-			
-			
+
 			if (c == context) {
 				activationCounter++;
-			}
-			else{
+			} else {
 				ContextManager.getLogger().trace(
 						ContextManager.getBundle().getString("custom-context-already-activated",
-								context.getClass().getCanonicalName()
-								,c.getScope().getCanonicalName()
-								,c.getClass().getCanonicalName()
-						)
-					);
+								context.getClass().getCanonicalName(), c.getScope().getCanonicalName(),
+								c.getClass().getCanonicalName()));
 			}
 		} catch (ContextNotActiveException ce) {
 			context.setActive(true);
@@ -299,10 +297,10 @@ class CustomContextCounter {
 		} catch (ContextNotActiveException ce) {
 		}
 	}
-	
+
 	public synchronized void shutdown() {
 		context.setActive(false);
-		context=null;
-		activationCounter=0;
+		context = null;
+		activationCounter = 0;
 	}
 }

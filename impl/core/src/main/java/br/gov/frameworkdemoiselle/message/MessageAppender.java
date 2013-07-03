@@ -34,23 +34,14 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.bootstrap;
+package br.gov.frameworkdemoiselle.message;
 
-import org.slf4j.Logger;
+import java.io.Serializable;
 
-import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.transaction.Transaction;
+/**
+ * @author SERPRO
+ */
+public interface MessageAppender extends Serializable {
 
-public class TransactionBootstrap extends AbstractStrategyBootstrap<Transaction> {
-
-	private Logger logger;
-
-	@Override
-	protected Logger getLogger() {
-		if (logger == null) {
-			logger = LoggerProducer.create(TransactionBootstrap.class);
-		}
-
-		return logger;
-	}
+	void append(Message message);
 }

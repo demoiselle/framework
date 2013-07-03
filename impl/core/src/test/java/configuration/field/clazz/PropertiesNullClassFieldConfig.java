@@ -40,9 +40,9 @@ import br.gov.frameworkdemoiselle.configuration.Configuration;
 
 @Configuration
 public class PropertiesNullClassFieldConfig {
-	
+
 	private Class<MyClass> nullClass;
-	
+
 	public Class<MyClass> getNullClass() {
 		return nullClass;
 	}

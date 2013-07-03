@@ -50,12 +50,12 @@ public class CustomExceptionHandler {
 
 	public void setExceptionHandler(boolean exceptionHandler) {
 		this.exceptionHandler = exceptionHandler;
-	}	
-	
+	}
+
 	public void throwExceptionWithMessage() {
 		throw new CustomException();
 	}
-	
+
 	@ExceptionHandler
 	public void handler(CustomException exception) {
 		setExceptionHandler(true);

@@ -36,7 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
+import static br.gov.frameworkdemoiselle.annotation.Priority.L2_PRIORITY;
 
 import java.lang.reflect.Field;
 
@@ -46,7 +46,7 @@ import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
-@Priority(EXTENSIONS_L1_PRIORITY)
+@Priority(L2_PRIORITY)
 public class ConfigurationClassValueExtractor implements ConfigurationValueExtractor {
 
 	@Override

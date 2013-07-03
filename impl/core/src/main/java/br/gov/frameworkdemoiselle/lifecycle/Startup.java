@@ -48,17 +48,20 @@ import java.lang.annotation.Target;
  * Take a look at the following usage sample:
  * <p>
  * <blockquote>
+ * 
  * <pre>
  * public class Finalizer {
  * 
- *   &#064;Startup
+ * 	&#064;Startup
  *   &#064;Priority(1)
  *   public void init() {
  *       ...
  *    }
  * }
  * 
+ * 
  * </pre>
+ * 
  * </blockquote>
  * <p>
  * 

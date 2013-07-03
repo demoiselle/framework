@@ -73,7 +73,7 @@ public class StartupWithPriorityTest {
 		Beans.getBeanManager().fireEvent(new AfterStartupProccess() {
 		});
 	}
-	
+
 	@Test
 	public void startupWithPriority() {
 		expected.add(1);

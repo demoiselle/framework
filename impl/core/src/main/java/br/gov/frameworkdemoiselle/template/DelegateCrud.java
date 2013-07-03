@@ -39,20 +39,15 @@ package br.gov.frameworkdemoiselle.template;
 import java.util.List;
 import java.util.ListIterator;
 
-import br.gov.frameworkdemoiselle.internal.implementation.DefaultTransaction;
-import br.gov.frameworkdemoiselle.transaction.Transaction;
-import br.gov.frameworkdemoiselle.transaction.TransactionContext;
-import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
 /**
- * An implementation of the {@link Crud} interface that delegates it's operations
- * to another {@link Crud} implementation.
+ * An implementation of the {@link Crud} interface that delegates it's operations to another {@link Crud}
+ * implementation.
  * 
  * @author serpro
- *
- * @param <T> 
+ * @param <T>
  *            bean object type
  * @param <I>
  *            bean id type
@@ -75,19 +70,6 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	 */
 	@Override
 	public void delete(final I id) {
-		if (isRunningTransactionalOperations()) {
-			transactionalDelete(id);
-		} else {
-			nonTransactionalDelete(id);
-		}
-	}
-
-	@Transactional
-	private void transactionalDelete(final I id) {
-		nonTransactionalDelete(id);
-	}
-
-	private void nonTransactionalDelete(final I id) {
 		getDelegate().delete(id);
 	}
 
@@ -98,20 +80,8 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	 *            List of entities identifiers
 	 */
 	public void delete(final List<I> ids) {
-		if (isRunningTransactionalOperations()) {
-			transactionalDelete(ids);
-		} else {
-			nonTransactionalDelete(ids);
-		}
-	}
-
-	@Transactional
-	private void transactionalDelete(final List<I> ids) {
-		nonTransactionalDelete(ids);
-	}
-
-	private void nonTransactionalDelete(final List<I> ids) {
 		ListIterator<I> iter = ids.listIterator();
+
 		while (iter.hasNext()) {
 			this.delete(iter.next());
 		}
@@ -151,19 +121,6 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	 */
 	@Override
 	public T insert(final T bean) {
-		if (isRunningTransactionalOperations()) {
-			return transactionalInsert(bean);
-		} else {
-			return nonTransactionalInsert(bean);
-		}
-	}
-
-	@Transactional
-	private T transactionalInsert(final T bean) {
-		return nonTransactionalInsert(bean);
-	}
-
-	private T nonTransactionalInsert(final T bean) {
 		return getDelegate().insert(bean);
 	}
 
@@ -185,24 +142,6 @@ public class DelegateCrud<T, I, C extends Crud<T, I>> implements Crud<T, I> {
 	 */
 	@Override
 	public T update(final T bean) {
-		if (isRunningTransactionalOperations()) {
-			return transactionalUpdate(bean);
-		} else {
-			return nonTransactionalUpdate(bean);
-		}
-	}
-
-	@Transactional
-	private T transactionalUpdate(final T bean) {
-		return nonTransactionalUpdate(bean);
-	}
-
-	private T nonTransactionalUpdate(final T bean) {
 		return getDelegate().update(bean);
-	}
-
-	private boolean isRunningTransactionalOperations() {
-		Transaction transaction = Beans.getReference(TransactionContext.class).getCurrentTransaction();
-		return !(transaction instanceof DefaultTransaction);
 	}
 }

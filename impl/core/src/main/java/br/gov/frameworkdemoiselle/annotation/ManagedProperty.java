@@ -45,57 +45,65 @@ import java.lang.annotation.Target;
 import javax.enterprise.util.Nonbinding;
 
 /**
- * <p>Indicates that a field must be exposed as a property to management clients.</p>
- * <p>The property will be writable if there's a public setter method
- * declared for the field and readable if there's a getter method. You can override this behaviour by passing a value
- * to the {@link #accessLevel()} property.</p>
- * <p>It's a runtime error to annotate a field with no getter and no setter method.</p>
- * <p>It's also a runtime error to declare a field as a property and one or both of it's getter and setter
- * methods as an operation using the {@link ManagedOperation} annotation.</p> 
+ * <p>
+ * Indicates that a field must be exposed as a property to management clients.
+ * </p>
+ * <p>
+ * The property will be writable if there's a public setter method declared for the field and readable if there's a
+ * getter method. You can override this behaviour by passing a value to the {@link #accessLevel()} property.
+ * </p>
+ * <p>
+ * It's a runtime error to annotate a field with no getter and no setter method.
+ * </p>
+ * <p>
+ * It's also a runtime error to declare a field as a property and one or both of it's getter and setter methods as an
+ * operation using the {@link ManagedOperation} annotation.
+ * </p>
  * 
  * @author SERPRO
- *
  */
 @Documented
-@Target({ElementType.FIELD})
+@Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ManagedProperty {
-	
+
 	/**
 	 * @return The description of this property exposed to management clients.
 	 */
 	@Nonbinding
 	String description() default "";
-	
+
 	@Nonbinding
 	ManagedPropertyAccess accessLevel() default ManagedPropertyAccess.DEFAULT;
-	
+
 	/**
-	 * <p>Access level of a managed property.</p>
-	 * 
-	 * <p>These values only affect access via external management clients, the application is still able to inject and use the normal visibility of the property
-	 * by Java standards.</p>
+	 * <p>
+	 * Access level of a managed property.
+	 * </p>
+	 * <p>
+	 * These values only affect access via external management clients, the application is still able to inject and use
+	 * the normal visibility of the property by Java standards.
+	 * </p>
 	 * 
 	 * @author serpro
-	 *
 	 */
-	enum ManagedPropertyAccess{
-		
+	enum ManagedPropertyAccess {
+
 		/**
 		 * Restricts a property to be only readable even if a setter method exists.
 		 */
 		READ_ONLY
-		
+
 		/**
 		 * Restricts a property to be only writeable even if a getter method exists.
 		 */
-		,WRITE_ONLY
-		
+		, WRITE_ONLY
+
 		/**
-		 * Says that the read or write access will
-		 * be determined by the presence of a getter method <code>(getProperty())</code> or setter method <code>(setProperty(propertyValue))</code> for a property.
+		 * Says that the read or write access will be determined by the presence of a getter method
+		 * <code>(getProperty())</code> or setter method <code>(setProperty(propertyValue))</code> for a property.
 		 */
-		,DEFAULT;
+		, DEFAULT;
 	}
 
 }

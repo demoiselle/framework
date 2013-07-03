@@ -67,23 +67,23 @@ public class ResourceBundleDefaultTest {
 
 	@Test
 	public void loadResourceDefault() {
-		Locale.setDefault(new Locale("pt", "BR"));  
+		Locale.setDefault(new Locale("pt", "BR"));
 		bundleDefault = Beans.getReference(ResourceBundleDefault.class);
 		Assert.assertEquals("mensagem em Portugues", bundleDefault.getMessage());
 	}
 
 	@Test
 	public void loadResourceDefaultEnglish() {
-		Locale.setDefault(Locale.US);  
+		Locale.setDefault(Locale.US);
 		bundleDefault = Beans.getReference(ResourceBundleDefault.class);
 		Assert.assertEquals("message in English", bundleDefault.getMessage());
 	}
-	
+
 	@Test
 	public void loadResourceWithLocaleNotExist() {
 		Locale.setDefault(Locale.ITALY);
 		bundleDefault = Beans.getReference(ResourceBundleDefault.class);
 		Assert.assertEquals("mensagem em Portugues", bundleDefault.getMessage());
-	}	
+	}
 
 }

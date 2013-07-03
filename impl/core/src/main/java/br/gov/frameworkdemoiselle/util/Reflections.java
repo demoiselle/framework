@@ -166,7 +166,7 @@ public final class Reflections {
 	}
 
 	public static ClassLoader getClassLoaderForResource(final String resource) {
-		final String stripped = resource.startsWith("/") ? resource.substring(1) : resource;
+		final String stripped = resource.charAt(0) == '/' ? resource.substring(1) : resource;
 
 		URL url = null;
 		ClassLoader result = Thread.currentThread().getContextClassLoader();

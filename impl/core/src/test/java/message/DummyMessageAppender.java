@@ -34,59 +34,29 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.implementation;
+package message;
 
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.slf4j.Logger;
+import javax.enterprise.context.RequestScoped;
 
-import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.message.MessageContext;
-import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.Faces;
+import br.gov.frameworkdemoiselle.message.Message;
+import br.gov.frameworkdemoiselle.message.MessageAppender;
 
-/**
- * This class is a JSF phase listener intended to transfer messages from Demoiselle Context to JSF own context.
- * 
- * @author SERPRO
- */
-public class MessagePhaseListener implements PhaseListener {
+@RequestScoped
+public class DummyMessageAppender implements MessageAppender {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Logger logger = LoggerProducer.create(this.getClass());
+	private List<Message> messages = new ArrayList<Message>();
 
-	public void beforePhase(PhaseEvent e) {
-		transferMessages(e);
+	@Override
+	public void append(Message message) {
+		messages.add(message);
 	}
 
-	public void afterPhase(PhaseEvent e) {
+	public List<Message> getMessages() {
+		return messages;
 	}
-
-	/**
-	 * Transfers messages from a context to another.
-	 * 
-	 * @param e
-	 *            PhaseEvent
-	 */
-	private void transferMessages(PhaseEvent e) {
-
-		logger.debug(this.getClass().getSimpleName() + " " + e.getPhaseId());
-
-		MessageContext messageContext = Beans.getReference(MessageContext.class);
-
-		// TODO: usar o bundle nas mensagens de log
-		logger.debug("Moving " + messageContext.getMessages().size()
-				+ " message(s) from MessageContext to FacesContext.");
-
-		Faces.addMessages(messageContext.getMessages());
-		messageContext.clear();
-	}
-
-	public PhaseId getPhaseId() {
-		return PhaseId.RENDER_RESPONSE;
-	}
-
 }

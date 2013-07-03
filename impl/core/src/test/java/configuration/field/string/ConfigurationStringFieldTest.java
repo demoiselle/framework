@@ -63,7 +63,7 @@ public class ConfigurationStringFieldTest {
 
 	@Inject
 	private SystemStringFieldConfig systemConfig;
-	
+
 	@Inject
 	private PropertiesNullStringFieldConfig propertiesNullConfig;
 
@@ -113,9 +113,9 @@ public class ConfigurationStringFieldTest {
 		assertEquals(expected, propertiesConfig.getEmptyString());
 		assertEquals(expected, xmlConfig.getEmptyString());
 	}
-	
+
 	@Test
-	public void loadNullString(){
+	public void loadNullString() {
 		assertNull(propertiesNullConfig.getNullString());
 		assertNull(xmlNullConfig.getNullString());
 		assertNull(systemNullConfig.getNullString());

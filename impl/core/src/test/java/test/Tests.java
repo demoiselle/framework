@@ -47,7 +47,7 @@ public final class Tests {
 	private Tests() {
 	}
 
-	public static JavaArchive createDeployment(Class<?> baseClass) {
+	public static JavaArchive createDeployment(final Class<?> baseClass) {
 		return createDeployment().addPackages(true, baseClass.getPackage());
 	}
 
@@ -62,7 +62,7 @@ public final class Tests {
 						"services/javax.enterprise.inject.spi.Extension");
 	}
 
-	public static FileAsset createFileAsset(String pathname) {
+	public static FileAsset createFileAsset(final String pathname) {
 		return new FileAsset(new File(pathname));
 	}
 }

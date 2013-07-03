@@ -41,8 +41,8 @@ import br.gov.frameworkdemoiselle.stereotype.Controller;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 
 @Controller
-public class TransactionManagerWithDefaultRollback extends TransactionManager{
-	
+public class TransactionManagerWithDefaultRollback extends TransactionManager {
+
 	@Transactional
 	public void insert() {
 		throw new TransactionExceptionWithDefaultRollback();

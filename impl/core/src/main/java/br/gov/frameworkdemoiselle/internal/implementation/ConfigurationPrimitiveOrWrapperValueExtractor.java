@@ -36,7 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L1_PRIORITY;
+import static br.gov.frameworkdemoiselle.annotation.Priority.L2_PRIORITY;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -50,7 +50,7 @@ import org.apache.commons.lang.ClassUtils;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 
-@Priority(EXTENSIONS_L1_PRIORITY)
+@Priority(L2_PRIORITY)
 public class ConfigurationPrimitiveOrWrapperValueExtractor implements ConfigurationValueExtractor {
 
 	private static final Set<Object> wrappers = new HashSet<Object>();

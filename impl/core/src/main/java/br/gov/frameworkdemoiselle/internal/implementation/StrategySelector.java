@@ -36,31 +36,25 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import static br.gov.frameworkdemoiselle.annotation.Priority.MIN_PRIORITY;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.inject.AmbiguousResolutionException;
+import javax.enterprise.inject.spi.Bean;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 public final class StrategySelector implements Serializable {
-
-	public static final int CORE_PRIORITY = MIN_PRIORITY;
-
-	public static final int EXTENSIONS_L1_PRIORITY = CORE_PRIORITY - 100;
-
-	public static final int EXTENSIONS_L2_PRIORITY = EXTENSIONS_L1_PRIORITY - 100;
-
-	public static final int COMPONENTS_PRIORITY = EXTENSIONS_L2_PRIORITY - 100;
 
 	private static final long serialVersionUID = 1L;
 
@@ -92,7 +86,7 @@ public final class StrategySelector implements Serializable {
 		return map.get(elected);
 	}
 
-	public static <T> Class<? extends T> selectClass(Class<T> type, Collection<Class<? extends T>> options) {
+	private static <T> Class<? extends T> selectClass(Class<T> type, Collection<Class<? extends T>> options) {
 		Class<? extends T> selected = null;
 
 		for (Class<? extends T> option : options) {
@@ -102,13 +96,28 @@ public final class StrategySelector implements Serializable {
 		}
 
 		if (selected != null) {
-			checkForAmbiguity(type, selected, options);
+			performAmbiguityCheck(type, selected, options);
 		}
 
 		return selected;
 	}
 
-	private static <T> void checkForAmbiguity(Class<T> type, Class<? extends T> selected,
+	public static <T> Class<? extends T> selectClass(Class<T> type) {
+		return selectClass(type, getOptions(type));
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T> Collection<Class<? extends T>> getOptions(Class<T> type) {
+		Set<Class<? extends T>> result = new HashSet<Class<? extends T>>();
+
+		for (Bean<?> bean : Beans.getBeanManager().getBeans(type)) {
+			result.add((Class<? extends T>) bean.getBeanClass());
+		}
+
+		return result;
+	}
+
+	private static <T> void performAmbiguityCheck(Class<T> type, Class<? extends T> selected,
 			Collection<Class<? extends T>> options) {
 		int selectedPriority = getPriority(selected);
 

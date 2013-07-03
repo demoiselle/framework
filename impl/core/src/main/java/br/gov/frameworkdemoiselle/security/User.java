@@ -41,7 +41,7 @@ import java.security.Principal;
 
 /**
  * @author SERPRO
- * @deprecated 
+ * @deprecated
  */
 public interface User extends Principal, Serializable {
 

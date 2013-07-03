@@ -51,10 +51,9 @@ package br.gov.frameworkdemoiselle.internal.context;
 import java.lang.annotation.Annotation;
 
 /**
- * Base context that has a separated store for each thread 
+ * Base context that has a separated store for each thread
  * 
  * @author serpro
- *
  */
 public class ThreadLocalContext extends AbstractCustomContext {
 

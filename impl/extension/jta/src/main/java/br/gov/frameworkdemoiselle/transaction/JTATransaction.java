@@ -36,7 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.transaction;
 
-import static br.gov.frameworkdemoiselle.internal.implementation.StrategySelector.EXTENSIONS_L2_PRIORITY;
+import static br.gov.frameworkdemoiselle.annotation.Priority.L3_PRIORITY;
 import static javax.transaction.Status.STATUS_MARKED_ROLLBACK;
 import static javax.transaction.Status.STATUS_NO_TRANSACTION;
 import static javax.transaction.Status.STATUS_ROLLEDBACK;
@@ -47,7 +47,7 @@ import javax.transaction.UserTransaction;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.util.Beans;
 
-@Priority(EXTENSIONS_L2_PRIORITY)
+@Priority(L3_PRIORITY)
 public class JTATransaction implements Transaction {
 
 	private static final long serialVersionUID = 1L;

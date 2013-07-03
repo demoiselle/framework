@@ -65,11 +65,13 @@ public interface MessageContext {
 	/**
 	 * Returns all messages in the context.
 	 */
+	@Deprecated
 	List<Message> getMessages();
 
 	/**
 	 * Clears the list of messages in the context.
 	 */
+	@Deprecated
 	void clear();
 
 }

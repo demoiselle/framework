@@ -41,7 +41,7 @@ import br.gov.frameworkdemoiselle.exception.ExceptionHandler;
 public class ExceptionClassNotAnnotated {
 
 	private boolean nullPointerExceptionHandler = false;
-	
+
 	public boolean isNullPointerExceptionHandler() {
 		return nullPointerExceptionHandler;
 	}

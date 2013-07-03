@@ -24,6 +24,8 @@
 		uso o desenvolvedor pode se despreocupar com detalhes de implementação de cada tecnologia individual e facilmente integrar tais tecnologias.</para>
 	</section>
 	
+	
+	
 	<section>
 		<title>Introdução ao mecanismo</title>
 		
@@ -136,6 +138,8 @@
 		
 	</section>
 	
+	
+	
 	<section>
 		<title>Expondo aspectos de sua aplicação para monitoração</title>
 		
@@ -169,6 +173,8 @@
 		a quantidade de logins efetuados no momento da consulta.</para>
 	</section>
 	
+	
+	
 	<section>
 		<title>Conectando um cliente de monitoração</title>
 		
@@ -197,7 +203,7 @@
 			individualmente, as classes monitoradas serão então expostas para todas as extensões escolhidas.</para>
 		</tip>
 		
-		<para>A imagem abaixo mostra como uma classe monitorada na aplicação <emphasis>Bookmark</emphasis> é exibida no <emphasis>JConsole</emphasis>.</para>
+		<para>A figura <xref linkend="exemplo_jconsole"/> mostra como uma classe monitorada na aplicação <emphasis>Bookmark</emphasis> é exibida no <emphasis>JConsole</emphasis>.</para>
 		
 		<programlisting role="JAVA"><![CDATA[
 		@ManagementController
@@ -213,15 +219,14 @@
 		}
 		]]></programlisting>
 		
-		<figure>
-			<title>JConsole acessando a aplicação <emphasis>Bookmark</emphasis></title>
+		<figure id="exemplo_jconsole"><title>JConsole acessando a aplicação <emphasis>Bookmark</emphasis></title>
 			<mediaobject>
 				<imageobject>
-					<imagedata fileref="jmx-console-example.jpg" align="center"/>
+					<imagedata fileref="images/jmx-jconsole-example.png"/>
 				</imageobject>
+				<textobject><phrase>JConsole acessando a aplicação <emphasis>Bookmark</emphasis></phrase></textobject>
 			</mediaobject>
 		</figure>
-		
 	</section>
 
 </chapter>

@@ -80,7 +80,8 @@ public class ConfigurationBeanValidationFieldTest {
 		JavaArchive deployment = Tests.createDeployment(ConfigurationBeanValidationFieldTest.class);
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.xml"), "demoiselle.xml");
-		deployment.addAsResource(Tests.createFileAsset(PATH + "/two-constrain-validation.properties"), "two-constrain-validation.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/two-constrain-validation.properties"),
+				"two-constrain-validation.properties");
 
 		return deployment;
 	}
@@ -136,7 +137,7 @@ public class ConfigurationBeanValidationFieldTest {
 	}
 
 	@Test
-	public void loadPropertiesWithTwoConstraintViolations(){
+	public void loadPropertiesWithTwoConstraintViolations() {
 		try {
 			propertyWithTwoConstrainViolations.getAttributeWithTwoConstrainValidations();
 			fail();

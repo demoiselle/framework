@@ -58,16 +58,16 @@ import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
 
 @RunWith(Arquillian.class)
 public class TransactionRollbackTest {
-	
+
 	@Inject
 	private TransactionManagerWithDefaultRollback managerWithDefaultRollback;
-	
+
 	@Inject
 	private TransactionManagerWithRollback managerWithRollback;
-	
+
 	@Inject
 	private TransactionManagerWithoutRollback managerWithoutRollback;
-	
+
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = Tests.createDeployment(TransactionRollbackTest.class);
@@ -78,19 +78,19 @@ public class TransactionRollbackTest {
 	public void activeContext() {
 		ContextManager.activate(ManagedContext.class, RequestScoped.class);
 	}
-	
+
 	@After
-	public void deactiveContext(){
+	public void deactiveContext() {
 		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
 	}
-	
+
 	@Test
-	public void transactionWithDefaultRollback(){
-		try{
+	public void transactionWithDefaultRollback() {
+		try {
 			managerWithDefaultRollback.clean();
 			managerWithDefaultRollback.insert();
 			fail();
-		}catch(TransactionExceptionWithDefaultRollback exception){
+		} catch (TransactionExceptionWithDefaultRollback exception) {
 			assertTrue(managerWithDefaultRollback.isTransactionPassedInIsActiveMethod());
 			assertTrue(managerWithDefaultRollback.isTransactionPassedInBeginMethod());
 			assertTrue(managerWithDefaultRollback.isTransactionMarkedRollback());
@@ -101,14 +101,14 @@ public class TransactionRollbackTest {
 			assertFalse(managerWithDefaultRollback.isTransactionActive());
 		}
 	}
-	
+
 	@Test
-	public void transactionWithRollback(){
-		try{
+	public void transactionWithRollback() {
+		try {
 			managerWithRollback.clean();
 			managerWithRollback.insert();
 			fail();
-		}catch(TransactionExceptionWithRollback exception){
+		} catch (TransactionExceptionWithRollback exception) {
 			assertTrue(managerWithRollback.isTransactionPassedInIsActiveMethod());
 			assertTrue(managerWithRollback.isTransactionPassedInBeginMethod());
 			assertTrue(managerWithRollback.isTransactionMarkedRollback());
@@ -119,14 +119,14 @@ public class TransactionRollbackTest {
 			assertFalse(managerWithRollback.isTransactionActive());
 		}
 	}
-	
-	@Test 
-	public void transactionWithoutRollback(){
-		try{
+
+	@Test
+	public void transactionWithoutRollback() {
+		try {
 			managerWithoutRollback.clean();
 			managerWithoutRollback.insert();
 			fail();
-		}catch(TransactionExceptionWithoutRollback exception){
+		} catch (TransactionExceptionWithoutRollback exception) {
 			assertTrue(managerWithRollback.isTransactionPassedInIsActiveMethod());
 			assertTrue(managerWithRollback.isTransactionPassedInBeginMethod());
 			assertFalse(managerWithRollback.isTransactionMarkedRollback());

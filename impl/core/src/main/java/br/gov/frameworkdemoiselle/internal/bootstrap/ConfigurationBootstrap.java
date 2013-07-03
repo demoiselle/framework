@@ -96,7 +96,7 @@ public class ConfigurationBootstrap extends AbstractStrategyBootstrap<Configurat
 		String superClassName = type.getCanonicalName();
 		String chieldClassName = superClassName + "_$$_DemoiselleProxy";
 
-		Map<String, Class<Object>> cacheProxy = Collections.synchronizedMap(new HashMap<String, Class<Object>>());;
+		Map<String, Class<Object>> cacheProxy = Collections.synchronizedMap(new HashMap<String, Class<Object>>());
 
 		Class<Object> clazzProxy = null;
 
@@ -139,7 +139,7 @@ public class ConfigurationBootstrap extends AbstractStrategyBootstrap<Configurat
 	@Override
 	protected Logger getLogger() {
 		if (logger == null) {
-			logger = LoggerProducer.create(TransactionBootstrap.class);
+			logger = LoggerProducer.create(ConfigurationBootstrap.class);
 		}
 
 		return logger;

@@ -60,6 +60,14 @@ public @interface Priority {
 	 */
 	static int MIN_PRIORITY = Integer.MAX_VALUE;
 
+	static int L1_PRIORITY = MIN_PRIORITY;
+
+	static int L2_PRIORITY = L1_PRIORITY - 100;
+
+	static int L3_PRIORITY = L2_PRIORITY - 100;
+
+	static int L4_PRIORITY = L3_PRIORITY - 100;
+
 	/**
 	 * An integer value defines the priority order.
 	 */

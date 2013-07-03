@@ -46,9 +46,8 @@ import javax.interceptor.InvocationContext;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
 
@@ -63,9 +62,9 @@ public class RequiredPermissionInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static ResourceBundle bundle;
+	private static transient ResourceBundle bundle;
 
-	private static Logger logger;
+	private static transient Logger logger;
 
 	/**
 	 * Gets the values for both resource and operation properties of {@code @RequiredPermission}. Delegates to
@@ -168,7 +167,7 @@ public class RequiredPermissionInterceptor implements Serializable {
 
 	private static ResourceBundle getBundle() {
 		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}
 
 		return bundle;
@@ -176,7 +175,7 @@ public class RequiredPermissionInterceptor implements Serializable {
 
 	private static Logger getLogger() {
 		if (logger == null) {
-			logger = LoggerProducer.create(RequiredPermissionInterceptor.class);
+			logger = Beans.getReference(Logger.class, new NameQualifier(RequiredPermissionInterceptor.class.getName()));
 		}
 
 		return logger;

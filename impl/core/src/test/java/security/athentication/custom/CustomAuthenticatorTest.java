@@ -83,24 +83,24 @@ public class CustomAuthenticatorTest {
 	@Test
 	public void loginProcess() {
 		ContextManager.activate(ThreadLocalContext.class, RequestScoped.class);
-		
+
 		context.login();
 		assertTrue(context.isLoggedIn());
 		assertNotNull(observer.getEvent());
 		assertEquals("demoiselle", context.getCurrentUser().getName());
-		
+
 		ContextManager.deactivate(ThreadLocalContext.class, RequestScoped.class);
 	}
 
 	@Test
 	public void logoutProcess() {
 		ContextManager.activate(ThreadLocalContext.class, RequestScoped.class);
-		
+
 		context.login();
 		context.logout();
 		assertFalse(context.isLoggedIn());
 		assertNull(context.getCurrentUser());
-		
+
 		ContextManager.deactivate(ThreadLocalContext.class, RequestScoped.class);
 	}
 }

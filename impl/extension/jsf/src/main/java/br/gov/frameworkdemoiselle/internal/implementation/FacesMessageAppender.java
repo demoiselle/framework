@@ -34,23 +34,21 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.bootstrap;
+package br.gov.frameworkdemoiselle.internal.implementation;
 
-import org.slf4j.Logger;
+import static br.gov.frameworkdemoiselle.annotation.Priority.L3_PRIORITY;
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.message.Message;
+import br.gov.frameworkdemoiselle.message.MessageAppender;
+import br.gov.frameworkdemoiselle.util.Faces;
 
-import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.security.Authorizer;
+@Priority(L3_PRIORITY)
+public class FacesMessageAppender implements MessageAppender {
 
-public class AuthorizerBootstrap extends AbstractStrategyBootstrap<Authorizer> {
-
-	private Logger logger;
+	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected Logger getLogger() {
-		if (logger == null) {
-			logger = LoggerProducer.create(AuthorizerBootstrap.class);
-		}
-
-		return logger;
+	public void append(Message message) {
+		Faces.addMessage(message);
 	}
 }

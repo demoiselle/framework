@@ -61,12 +61,12 @@ public class Slf4jLoggerProxy implements Logger, Serializable {
 	private transient Logger delegate;
 
 	private final Class<?> type;
-	
+
 	private Logger getDelegate() {
-		if(delegate == null) {
+		if (delegate == null) {
 			delegate = LoggerFactory.getLogger(type);
 		}
-		
+
 		return delegate;
 	}
 

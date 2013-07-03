@@ -47,11 +47,11 @@ import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
 public class ShutdownSimple {
 
 	private List<Integer> listShutdown = new ArrayList<Integer>();
-	
+
 	public List<Integer> getListShutdown() {
 		return listShutdown;
 	}
-	
+
 	@Shutdown
 	public void unloadWithoutPriorityFirst() {
 		listShutdown.add(3);

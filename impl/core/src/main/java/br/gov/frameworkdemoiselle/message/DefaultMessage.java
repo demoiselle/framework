@@ -36,8 +36,6 @@
  */
 package br.gov.frameworkdemoiselle.message;
 
-import javax.enterprise.inject.Alternative;
-
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
@@ -45,7 +43,6 @@ import br.gov.frameworkdemoiselle.util.Strings;
 /**
  * @author SERPRO
  */
-@Alternative
 public class DefaultMessage implements Message {
 
 	private final String originalText;
@@ -65,28 +62,27 @@ public class DefaultMessage implements Message {
 		this.severity = (severity == null ? DEFAULT_SEVERITY : severity);
 		this.params = params;
 		this.bundle = Beans.getReference(ResourceBundle.class);
+
+		initParsedText();
 	}
 
 	public DefaultMessage(String text, Object... params) {
 		this(text, null, (Object[]) params);
 	}
 
-	public String getText() {
-		initParsedText();
-		return parsedText;
+	private void initParsedText() {
+		if (Strings.isResourceBundleKeyFormat(originalText)) {
+			parsedText = bundle.getString(Strings.removeBraces(originalText));
+
+		} else if (originalText != null) {
+			parsedText = new String(originalText);
+		}
+
+		parsedText = Strings.getString(parsedText, params);
 	}
 
-	private void initParsedText() {
-		if (parsedText == null) {
-			if (Strings.isResourceBundleKeyFormat(originalText)) {
-				parsedText = bundle.getString(Strings.removeBraces(originalText));
-
-			} else if (originalText != null) {
-				parsedText = new String(originalText);
-			}
-
-			parsedText = Strings.getString(parsedText, params);
-		}
+	public String getText() {
+		return parsedText;
 	}
 
 	public SeverityType getSeverity() {
@@ -95,7 +91,40 @@ public class DefaultMessage implements Message {
 
 	@Override
 	public String toString() {
-		initParsedText();
 		return Strings.toString(this);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((parsedText == null) ? 0 : parsedText.hashCode());
+		result = prime * result + ((severity == null) ? 0 : severity.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		DefaultMessage other = (DefaultMessage) obj;
+		if (parsedText == null) {
+			if (other.parsedText != null) {
+				return false;
+			}
+		} else if (!parsedText.equals(other.parsedText)) {
+			return false;
+		}
+		if (severity != other.severity) {
+			return false;
+		}
+		return true;
 	}
 }

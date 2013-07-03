@@ -65,5 +65,5 @@ public class StartupSimple {
 	@Startup
 	public void loadWithoutPriorityThird() {
 		listStartup.add(2);
-	}	
+	}
 }

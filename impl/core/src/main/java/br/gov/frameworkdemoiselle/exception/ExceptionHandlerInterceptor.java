@@ -52,9 +52,9 @@ import javax.interceptor.InvocationContext;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.stereotype.Controller;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @Interceptor
@@ -63,9 +63,9 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static ResourceBundle bundle;
+	private static transient ResourceBundle bundle;
 
-	private static Logger logger;
+	private static transient Logger logger;
 
 	private final Map<Class<?>, Map<Class<?>, Method>> cache = new HashMap<Class<?>, Map<Class<?>, Method>>();
 
@@ -199,7 +199,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 	private static ResourceBundle getBundle() {
 		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}
 
 		return bundle;
@@ -207,7 +207,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 	private static Logger getLogger() {
 		if (logger == null) {
-			logger = LoggerProducer.create(ExceptionHandlerInterceptor.class);
+			logger = Beans.getReference(Logger.class, new NameQualifier(ExceptionHandlerInterceptor.class.getName()));
 		}
 
 		return logger;
