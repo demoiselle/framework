@@ -36,23 +36,18 @@
  */
 package br.gov.frameworkdemoiselle.management;
 
-import java.io.Serializable;
-
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
-import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
 import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
 import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
  * 
- * <p>Central class to manage sending notifications to management clients.
- * This class allows applications to send management notifications without
+ * <p>Central type to manage sending notifications to management clients.
+ * This interface allows applications to send management notifications without
  * knowledge of the technology used to send those notifications.</p>
  * 
  * <p>To obtain an instance of the {@link NotificationManager} simply inject it in
@@ -68,49 +63,13 @@ import br.gov.frameworkdemoiselle.util.Beans;
  *
  */
 @ApplicationScoped
-@SuppressWarnings("serial")
-public class NotificationManager implements Serializable{
-	
-	@Inject
-	@Generic
-	private Event<ManagementNotificationEvent> genericNotificationEvent;
-	
-	@Inject
-	@AttributeChange
-	private Event<ManagementNotificationEvent> attributeChangeNotificationEvent;
+public interface NotificationManager {
 	
 	/**
-	 * Sends a generic notification to all management clients.
+	 * Sends a notification to all management clients.
 	 * 
 	 * @param notification The notification to send
 	 */
-	public void sendNotification(Notification notification) {
-		if (! AttributeChangeNotification.class.isInstance(notification) ){
-			getGenericNotificationEvent().fire(new ManagementNotificationEvent(notification));
-		}
-		else{
-			getAttributeChangeNotificationEvent().fire(new ManagementNotificationEvent(notification));
-		}
-	}
+	public void sendNotification(GenericNotification notification);
 
-	@SuppressWarnings("unchecked")
-	private Event<ManagementNotificationEvent> getGenericNotificationEvent() {
-		if (genericNotificationEvent==null){
-			genericNotificationEvent = Beans.getReference(Event.class , new AnnotationLiteral<Generic>() {});
-		}
-		
-		return genericNotificationEvent;
-	}
-	
-	@SuppressWarnings("unchecked")
-	private Event<ManagementNotificationEvent> getAttributeChangeNotificationEvent() {
-		if (attributeChangeNotificationEvent==null){
-			attributeChangeNotificationEvent = Beans.getReference(Event.class , new AnnotationLiteral<AttributeChange>() {});
-		}
-		
-		return attributeChangeNotificationEvent;
-	}
-	
-	
-	
 }
