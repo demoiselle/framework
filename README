@@ -35,8 +35,8 @@ Links úteis
 Repositório Maven
 -----------
 
-    <repository>
-  	<id>demoiselle.sourceforge.net-release</id>
+	<repository>
+  		<id>demoiselle.sourceforge.net-release</id>
 		<url>http://demoiselle.sourceforge.net/repository/release</url>
 	</repository>
 
