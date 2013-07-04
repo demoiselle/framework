@@ -27,6 +27,7 @@
 	<xi:include href="parentsPom.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 	<xi:include href="arquetipo.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 	<xi:include href="controlador.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="persistencia.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 	<xi:include href="transacao.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 	<xi:include href="excecao.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 	<xi:include href="configuracao.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />

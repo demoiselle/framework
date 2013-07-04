@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+<chapter id="persistencia">
+
+	<title>Persistência</title>
+
+	<section>
+		<title>JDBC</title>
+		<para>
+			A persistência de dados usando JDBC, está disponível na extensão <literal>demoiselle-jdbc</literal>,
+			que provê uma fábrica de <literal>Connection</literal>. Para utilizá-la basta incluir a dependência para extensão JDBC 
+			no arquivo pom.xml.
+		</para>	
+	 	<programlisting role="XML"><![CDATA[<dependency>
+	<groupId>br.gov.frameworkdemoiselle</groupId>
+	<artifactId>demoiselle-jdbc</artifactId>
+	<scope>compile</scope>
+</dependency>]]>
+		</programlisting>
+			
+		<para>
+			Para obter uma instância de uma conexão, basta injetá-la na classe:
+		</para>
+		<programlisting role="JAVA"><![CDATA[@Inject 
+private Connection conn;]]></programlisting>
+		<para>
+			A conexão será criada pela fábrica do Demoiselle de acordo com as configurações no arquivo de propriedade (<emphasis>demoiselle.properties</emphasis>). 
+		</para>
+		<para>
+			Você pode configurar as propriedades da conexão:
+		</para>
+		<programlisting>frameworkdemoiselle.persistence.driver.class=MeuDriver
+frameworkdemoiselle.persistence.url=MinhaUrl
+frameworkdemoiselle.persistence.username=MeuUsername
+frameworkdemoiselle.persistence.password=MeuPassword</programlisting>
+		<para>
+			ou indicar o JNDI do datasource:
+		</para>
+		<programlisting>frameworkdemoiselle.persistence.jndi.name=MeuJndiName</programlisting>		
+
+		<para>
+			Caso você necessite usar conexões com datasources diferentes, você pode usar a anotoção 
+			<literal>@Name</literal> passando como valor o nome da conexão definida no arquivo 
+			<literal>demoiselle.properties</literal>
+		</para>
+	
+		<para>
+			No <literal>demoiselle.properties</literal> basta adicionar um nome qualquer para identificar a conexão:
+		</para>
+		<programlisting>frameworkdemoiselle.persistence.conn1.jndi.name=MeuJndiName1
+frameworkdemoiselle.persistence.conn2.jndi.name=MeuJndiName2</programlisting>	
+	
+		<para>
+			Injetar o <literal>Connection</literal> usando <literal>@Name</literal> com o nome da conexão escolhida:
+		</para>
+		
+		<programlisting role="JAVA"><![CDATA[@Inject 
+@Name("conn1") 
+private Connection conn1;
+
+@Inject 
+@Name("conn2") 
+private Connection conn2;
+]]></programlisting>
+
+
+	<para>
+		Caso possua mais de uma configuração de datasource você pode definir uma configuração padrão 
+		para sua aplicação.
+	</para>
+	<programlisting>frameworkdemoiselle.persistence.default.unit.name=conn1</programlisting>	
+
+	</section>
+
+</chapter>
