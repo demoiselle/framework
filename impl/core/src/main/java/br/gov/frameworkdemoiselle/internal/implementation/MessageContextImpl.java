@@ -40,8 +40,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
-
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
@@ -59,16 +57,16 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * 
  * @see MessageContext
  */
-@RequestScoped
 public class MessageContextImpl implements Serializable, MessageContext {
 
 	private static final long serialVersionUID = 1L;
 
-	private final List<Message> messages = new ArrayList<Message>();
+	@Deprecated
+	private transient final List<Message> messages = new ArrayList<Message>();
 
-	private static ResourceBundle bundle;
+	private transient static ResourceBundle bundle;
 
-	private static Logger logger;
+	private transient static Logger logger;
 
 	@Override
 	public void add(final Message message, Object... params) {
@@ -101,11 +99,13 @@ public class MessageContextImpl implements Serializable, MessageContext {
 	}
 
 	@Override
+	@Deprecated
 	public List<Message> getMessages() {
 		return messages;
 	}
 
 	@Override
+	@Deprecated
 	public void clear() {
 		getLogger().debug(getBundle().getString("cleaning-message-context"));
 		messages.clear();

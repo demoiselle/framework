@@ -45,6 +45,7 @@ import java.lang.annotation.Target;
 
 import javax.enterprise.inject.Stereotype;
 import javax.enterprise.util.Nonbinding;
+import javax.inject.Named;
 
 import br.gov.frameworkdemoiselle.annotation.StaticScoped;
 
@@ -63,6 +64,7 @@ import br.gov.frameworkdemoiselle.annotation.StaticScoped;
  * 
  * @author SERPRO
  */
+@Named
 @Inherited
 @Stereotype
 @StaticScoped
