@@ -214,8 +214,13 @@ public class Credential {
 			frameworkdemoiselle.security.authorizer.class=projeto.MeuAuthorizer 
 		</programlisting> -->
 		<para>
-			Pronto! Sua aplicação já possui uma implementação de segurança definida. Caso sua ela não implemente essas interfaces, no momento em que
-			forem chamadas, o framework lançará uma exceção informando que a aplicação precisa implementá-las.	
+			Pronto! Sua aplicação já possui uma implementação de segurança definida.
+		</para>
+			
+		<para>
+			Caso sua aplicação detecte o uso das anotações @RequiredRole e @RequiredPermission mas nenhuma classe
+			implemente essas interfaces, no momento em que os recursos anotados forem acessados, o framework lançará uma exceção informando que a
+			aplicação precisa implementá-las.	
 		</para>
 		<para>
 			Se você tem mais de uma implementação de <literal>Authenticator</literal> e/ou <literal>Authorizer</literal> (o que pode acontecer, por exemplo, quando
