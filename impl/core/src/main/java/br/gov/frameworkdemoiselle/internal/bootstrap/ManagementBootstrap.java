@@ -13,7 +13,6 @@ import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
@@ -23,6 +22,7 @@ import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
 import br.gov.frameworkdemoiselle.internal.management.ManagedType;
 import br.gov.frameworkdemoiselle.internal.management.Management;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -72,7 +72,7 @@ public class ManagementBootstrap implements Extension {
 		monitoringManager.initialize(managementExtensionCache);
 	}
 
-	public void unregisterAvailableManagedTypes(@Observes final BeforeShutdown event) {
+	public void unregisterAvailableManagedTypes(@Observes final AfterShutdownProccess event) {
 
 		Management manager = Beans.getReference(Management.class);
 		manager.shutdown(managementExtensionCache);
