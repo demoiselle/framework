@@ -77,8 +77,8 @@ public class Credential {
 	private SecurityContext context; 
 
 	public void metodo1() { 
-		credential.setLogin(“usuario1”);
-		credential.setSenha(“123”);
+		credential.setLogin("usuario1");
+		credential.setSenha("123");
 		context.login(); 
 		// codigo do metodo 
 		context.logout(); 
