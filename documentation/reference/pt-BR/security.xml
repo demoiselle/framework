@@ -43,15 +43,15 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 		</para>
 		<para>
 			O Demoiselle deixa o desenvolvedor livre para definir qual forma usar, de acordo com a sua conveniência e necessidade.
-			A peça chave para tornar isso possível é o contexto de segurança, representado pela interface SecurityContext. Nessa
+			A peça chave para tornar isso possível é o contexto de segurança, representado pela interface <literal>SecurityContext</literal>. Nessa
 			estão definidos os métodos responsáveis por gerenciar os mecanismos de autenticação como, por exemplo, executar
 			login/logout de usuários e verificar se os mesmos estão ou não autenticados.
 		</para>
 		<para>
 			O contexto de segurança irá direcionar as requisições para a implementação definida pela aplicação. A autenticação será
-			efetuada por uma classe que implemente a interface Authenticator, cujo método authenticate() é responsável por
+			efetuada por uma classe que implemente a interface <literal>Authenticator</literal>, cujo método <literal>authenticate()</literal> é responsável por
 			executar os passos necessários para validar a identidade de um usuário. Nesta mesma interface serão encontrados,
-			ainda, os métodos unAuthenticate() e getUser(), responsáveis por, respectivamente, desautenticar e retornar o usuário
+			ainda, os métodos <literal>unAuthenticate()</literal> e <literal>getUser()</literal>, responsáveis por, respectivamente, desautenticar e retornar o usuário
 			autenticado.
 		</para>
 		<para>
@@ -85,7 +85,7 @@ public class Credential {
 	} 
 }]]></programlisting>
 		<para>
-			Neste caso, a interface SecurityContext e o bean Credential estão sendo injetados na classe utilizando o CDI.
+			Neste caso, a interface <literal>SecurityContext</literal> e o bean <literal>Credential</literal> estão sendo injetados na classe utilizando o CDI.
 			Dentro do método, ao definir o usuário e a senha e invocar <literal>context.login()</literal>, a implementação de segurança definida irá
 			tratar essa requisição de acordo com os critérios estabelecidos. 		
 		</para>	
@@ -98,17 +98,17 @@ public class Credential {
 			determinados recursos de um sistema. No modelo de segurança do Demoiselle 2, a autorização pode acontecer de duas
 			formas:
 			<itemizedlist>
-				<listitem><para>Permissão por usuário, através da anotação @RequiredPermission</para></listitem>
-				<listitem><para>Permissão por papel, através da anotação @RequiredRole</para></listitem>
+				<listitem><para>Permissão por usuário, através da anotação <literal>@RequiredPermission</literal></para></listitem>
+				<listitem><para>Permissão por papel, através da anotação <literal>@RequiredRole</literal></para></listitem>
 			</itemizedlist>
 		</para>
 		<para>
-			Novamente a interface SecurityContext é a responsável pela interação entre as funcionalidades da aplicação e a implementação de
+			Novamente a interface <literal>SecurityContext</literal> é a responsável pela interação entre as funcionalidades da aplicação e a implementação de
 			segurança. Nela estão definidos os métodos que verificam se o usuário possui permissão para acessar um recurso ou se o
 			usuário está associado a um papel.
 		</para>
 		<para>
-			A anotação @RequiredPermission pode ser utilizada tanto em classes como em métodos e possui dois parâmetros opcionais:
+			A anotação <literal>@RequiredPermission</literal> pode ser utilizada tanto em classes como em métodos e possui dois parâmetros opcionais:
 			<literal>operation</literal> e <literal>resource</literal>. O primeiro define a operação para a qual se deseja permissão e o segundo define em qual
 			recurso essa operação será realizada. Abaixo serão exemplificadas algumas formas de utilização:
 		</para>
@@ -124,20 +124,20 @@ public class Credential {
 }]]></programlisting>
 		<para>
 			Observe o método cuja anotação não possui parâmetros. Nesse caso serão considerados como recurso e operação o nome da classe e
-			do método, respectivamente. Uma outra possibilidade seria utilizar a anotação @Name, tanto na classe como no método, de
+			do método, respectivamente. Uma outra possibilidade seria utilizar a anotação <literal>@Name</literal>, tanto na classe como no método, de
 			forma a possibilitar uma descrição mais amigável para o usuário.
 		</para>
 		<para>
 			Assim como na autenticação, o contexto de segurança possui métodos destinados a delegar as requisições de autorização para
-			a implementação de segurança. No caso da anotação @RequiredPermission, o método hasPermission(String resource, String
-			operation) executa esta tarefa. Para tanto, deve existir uma classe que implemente a interface Authorizer, cujo
-			método hasPermission(String resource, String operation) verifica se o usuário logado possui permissão para executar
+			a implementação de segurança. No caso da anotação <literal>@RequiredPermission</literal>, o método <literal>hasPermission(String resource, String
+            operationliteral</p> executa esta tarefa. Para tanto, deve existir uma classe que implemente a interface Authorizer, cujo
+			método <literal>hasPermission(String resource, String operation)</literal> verifica se o usuário logado possui permissão para executar
 			uma determinada operação em um recurso específico.
 		</para>
 		<para>
-			Ainda na interface Authorizer, pode-se notar a existência do método hasRole(String role), responsável por verificar se o
+			Ainda na interface <literal>Authorizer</literal>, pode-se notar a existência do método <literal>hasRole(String role)</literal>, responsável por verificar se o
 			usuário logado possui um papel específico. Este método é chamado pelo contexto de segurança, por meio do seu método
-			hasRole(String role), para tratar as requisições que possuam a anotação @RequiredRole. Essa anotação possui um
+			<literal>hasRole(String role)</literal>, para tratar as requisições que possuam a anotação <literal>@RequiredRole</literal>. Essa anotação possui um
 			parâmetro obrigatório, no qual podem ser definidos uma simples role ou um array delas.
 		</para>
 		<programlisting role="JAVA"><![CDATA[class ClasseExemplo { 
@@ -169,7 +169,7 @@ public class Credential {
 			Após toda essa explicação, fica a dúvida: como implementar um esquema de segurança sem utilizar a extensão existente?
 		</para>
 		<para>
-			O primeiro passo é criar classes para implementar as interfaces Authenticator e Authorizer. O <literal>Demoiselle</literal> detecta automaticamente
+			O primeiro passo é criar classes para implementar as interfaces <literal>Authenticator</literal> e <literal>Authorizer</literal>. O Demoiselle detecta automaticamente
 			a implementação, e torna essa classe a implementação padrão dessas interfaces:<!-- Essas classes devem ser
 			anotadas com @Alternative para que o CDI saiba que se trata de uma estratégia: -->
 		</para>
