@@ -86,7 +86,7 @@ public class Credential {
 }]]></programlisting>
 		<para>
 			Neste caso, a interface SecurityContext e o bean Credential estão sendo injetados na classe utilizando o CDI.
-			Dentro do método, ao definir o usuário e a senha e invocar “context.login()”, a implementação de segurança definida irá
+			Dentro do método, ao definir o usuário e a senha e invocar <literal>context.login()</literal>, a implementação de segurança definida irá
 			tratar essa requisição de acordo com os critérios estabelecidos. 		
 		</para>	
 	</section>
@@ -109,7 +109,7 @@ public class Credential {
 		</para>
 		<para>
 			A anotação @RequiredPermission pode ser utilizada tanto em classes como em métodos e possui dois parâmetros opcionais:
-			“operation” e “resource”. O primeiro define a operação para a qual se deseja permissão e o segundo define em qual
+			<literal>operation</literal> e <literal>resource</literal>. O primeiro define a operação para a qual se deseja permissão e o segundo define em qual
 			recurso essa operação será realizada. Abaixo serão exemplificadas algumas formas de utilização:
 		</para>
 		<programlisting role="JAVA"><![CDATA[class ClasseExemplo { 
@@ -159,7 +159,7 @@ public class Credential {
 			disabled="#{!securityContext.hasPermission('contact', 'insert')}" />]]></programlisting>
 		<para>
 			Nesse caso, a habilitação de um botão está condicionada à existência de permissão para o usuário autenticado no momento
-			executar a operação “insert” no recurso “contact”.		
+			executar a operação <literal>insert</literal> no recurso <literal>contact</literal>.		
 		</para>
 	</section>
 	
