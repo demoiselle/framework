@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding="utf-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
-<chapter id="mensagem">
+<chapter id="gerenciamento">
 
 	<title>Monitoração e Gerenciamento de Recursos</title>
 	
@@ -32,31 +32,179 @@
 		anotada com o estereótipo <code>@ManagementController</code>.</para>
 		
 		<programlisting role="JAVA"><![CDATA[
-		@ManagementController
-		public class GerenciadorUsuarios]]></programlisting>
+@ManagementController
+public class GerenciadorUsuarios]]></programlisting>
 		
 		<para>Essa anotação é suficiente para o mecanismo de gerenciamento descobrir sua classe e disponibiliza-la para ser monitorada e gerenciada.</para>
 		
 		<para>Contudo, a simples anotação acima não informa ao mecanismo quais aspectos da classe serão expostos. Por padrão, um <emphasis>Management Controller</emphasis>
-		não expõe nenhum aspecto seu. Para selecionais quais aspectos serão expostos usamos as anotações <code>@ManagedProperty</code> e <code>@ManagedOperation</code>.</para>
+		não expõe nenhum aspecto seu. Para selecionar quais aspectos serão expostos usamos as anotações
+		<emphasis>@ManagedProperty</emphasis> e <emphasis>@ManagedOperation</emphasis>. Além disso outras anotações podem ser usadas para personalizar o funcionamento
+		de classes anotadas com <code>@ManagementController</code>.</para>
 		
-		<table>
-			<tbody>
-				<row>
-					<entry>
-						<emphasis role="BOLD">@ManagedProperty</emphasis>
-					</entry>
-				</row>
-				
-				<row>
-					<entry>
-						<para>Marca um atributo na classe como uma propriedade gerenciada, significando que clientes externos podem ler e/ou escrever valores nesses atributos.</para>
-						<para>Um</para>
-					</entry>
-				</row>
-			</tbody>
-		</table>
+		<informaltable>
+			<tgroup cols="3">
+				<thead>
+					<row>
+						<entry>Anotação</entry>
+						<entry>Descrição</entry>
+						<entry>Atributos</entry>
+					</row>
+				</thead>
+			
+				<tbody>
+					<row>
+						<entry>
+							<emphasis role="BOLD">@ManagedProperty</emphasis>
+						</entry>
+						
+						<entry>
+							<para>Marca um atributo na classe como uma propriedade gerenciada, significando que clientes externos podem ler e/ou escrever valores nesses atributos.</para>
+							<para>Um atributo marcado pode estar disponível para leitura e/ou escrita. Por padrão, o que determina a visibilidade de um atributo
+							marcado é a presença dos métodos <emphasis>getAtributo</emphasis> e <emphasis>setAtributo</emphasis>, respectivamente disponibilizando o atributo
+							para leitura e escrita.</para>
+							<para>Para sobrescrever esse comportamento existe na anotação <emphasis role="BOLD">@ManagedProperty</emphasis> o atributo <emphasis>accessLevel</emphasis>.
+							Com ele é possível criar um atributo apenas para leitura, mas que contenha um método <emphasis>set</emphasis>. O contrário também é possível.</para>
+						</entry>
+						
+						<entry>
+							<itemizedlist>
+								<listitem><emphasis role="BOLD">description</emphasis>: Um texto descritivo documentando o propósito da propriedade.</listitem>
+								<listitem><emphasis role="BOLD">accessLevel</emphasis>: Sobrescreve o nível padrão de acesso de uma propriedade. Os valores possíveis são
+								READ_ONLY, WRITE_ONLY e DEFAULT, que significa que a presença de métodos <emphasis>get</emphasis> e <emphasis>set</emphasis> vai determinar o nível de acesso.</listitem>
+							</itemizedlist>
+						</entry>
+					</row>
+					
+					<row>
+						<entry>
+							<emphasis role="BOLD">@ManagedOperation</emphasis>
+						</entry>
+						
+						<entry>
+							<para>Marca um método da classe gerenciada como uma operação, o que significa que clientes externos podem invocar esse método remotamente.</para>
+							<para>Operações gerenciadas normalmente são criadas para executar intervenções em um sistema já em execução. Por exemplo, é possível criar uma
+							operação que, ao ser invocada, destrua todas as seções abertas no servidor e não utilizadas nos últimos 30 minutos.</para>
+						</entry>
+						
+						<entry>
+							<itemizedlist>
+								<listitem><emphasis role="BOLD">description</emphasis>: Um texto descritivo documentando o propósito da operação.</listitem>
+								<listitem><emphasis role="BOLD">type</emphasis>: Documenta o propósito da operação. <emphasis>ACTION</emphasis> informa que a operação modificará
+								o sistema de alguma forma. <emphasis>INFO</emphasis> diz que a operação coletará e retornará informações sobre o sistema. <emphasis>ACTION_INFO</emphasis> 
+								informa que a operação modificará o sistema de alguma forma e retornará informações sobre o resultado. <emphasis>UNKNOWN</emphasis> é o padrão
+								e significa que o resultado da execução da operação é desconhecido.</listitem>
+							</itemizedlist>
+						</entry>
+					</row>
+					
+					<row>
+						<entry>
+							<emphasis role="BOLD">@OperationParameter</emphasis>
+						</entry>
+						
+						<entry>
+							<para>Esta anotação opcional pode ser usada para cada parâmetro de um método anotado com <emphasis role="BOLD">@ManagedOperation</emphasis>.</para>
+							
+							<para>Ele permite detalhar melhor parâmetros em uma operação gerenciada. O efeito desta anotação é dependente da
+							tecnologia utilizada para comunicação entre cliente e servidor. Na maioria das tecnologias, essa anotação meramente permite ao cliente
+							exibir informações sobre cada parâmetro: nome, tipo e descrição.</para>
+						</entry>
+						
+						<entry>
+							<itemizedlist>
+								<listitem><emphasis role="BOLD">name</emphasis>: O nome do parâmetro quando exibido para clientes.</listitem>
+								<listitem><emphasis role="BOLD">description</emphasis>: Um texto descritivo documentando o propósito do parâmetro.</listitem>
+							</itemizedlist>
+						</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</informaltable>
 		
 	</section>
+	
+	
+	
+	<section>
+		<title>Expondo aspectos de sua aplicação para monitoração</title>
+		
+		<para>Uma vez que uma classe esteja anotada com <emphasis>@ManagementController</emphasis> e seus atributos e operações estejam expostos, a classe está pronta para
+		ser monitorada.</para>
+		
+		<para>Suponha que a aplicação deseje expor o número de usuários que efetuaram login. A operação de <emphasis>login</emphasis> será processada em
+		uma classe de negócio <emphasis>ControleAcesso</emphasis>. Vamos supor também que existe uma classe chamada <emphasis>MonitorLogin</emphasis> responsável
+		por expor o número de usuários que efetuaram login no sistema.</para>
+		
+		<programlisting role="JAVA"><![CDATA[
+@BusinessController
+public class ControleAcesso{
+
+  @Inject
+  private MonitorLogin monitorLogin;
+
+  public boolean efetuarLogin(String usuario , String senha){
+    // código de login
+    monitorLogin.setContadorLogin( monitorLogin.getContadorLogin() + 1 );
+  }
+}]]></programlisting>
+		
+		<para>Como é possível ver, classes anotadas com <emphasis>@ManagementController</emphasis> podem ser injetadas em qualquer ponto do código. Valores definidos
+		para seus atributos retêm seu estado, então um cliente que acesse remotamente o sistema e monitore o valor do atributo <emphasis>contadorLogin</emphasis> verá
+		a quantidade de logins efetuados no momento da consulta.</para>
+	</section>
+	
+	<section>
+		<title>Conectando um cliente de monitoração</title>
+		
+		<para>O <emphasis>demoiselle-core</emphasis> contém as funcionalidades necessárias para marcar aspectos monitoráveis de sua aplicação,
+		mas não conta com nenhum mecanismo para estabelecer uma conexão com um cliente de monitoração. Para isso utiliza-se extensões do framework.</para>
+		
+		<para>A extensão padrão do framework <emphasis>Demoiselle</emphasis> responsável pela tecnologia de monitoração é a <emphasis>demoiselle-jmx</emphasis>.
+		Essa extensão utiliza a especificação JMX (JSR 3) e permite registrar as classes marcadas para monitoração como <emphasis>MBeans</emphasis>.
+		Uma vez que as classes sejam registradas como <emphasis>MBeans</emphasis>, seus atributos e operações expostos para monitoração podem ser
+		acessados via JMX por um cliente adequado, como o <emphasis>JConsole</emphasis> que acompanha por padrão o JDK da Oracle.</para>
+		
+		<tip>
+			<para>Para acrescentar a extensão <emphasis>demoiselle-jmx</emphasis> em um projeto Maven, adicione a dependência abaixo no arquivo <emphasis>pom.xml</emphasis>.</para>
+			
+			<programlisting role="XML"><![CDATA[
+<dependency>
+  <groupId>br.gov.frameworkdemoiselle</groupId>
+  <artifactId>demoiselle-jmx</artifactId>
+  <scope>compile</scope>
+</dependency>]]></programlisting>
+		</tip>
+		
+		<tip>
+			<para>A API de monitoração é compatível com o uso de múltiplas extensões simultãneas. Adicione em seu projeto a dependência às extensões desejadas e configure-as
+			individualmente, as classes monitoradas serão então expostas para todas as extensões escolhidas.</para>
+		</tip>
+		
+		<para>A figura <xref linkend="exemplo_jconsole"/> mostra como uma classe monitorada na aplicação <emphasis>Bookmark</emphasis> é exibida no <emphasis>JConsole</emphasis>.</para>
+		
+		<programlisting role="JAVA"><![CDATA[
+@ManagementController
+public class BookmarkMonitor {
+
+  @Inject
+  private BookmarkDAO bookmarkDAO;
+
+  @ManagedOperation(type=OperationType.INFO , description="Informa quantos bookmarks estão salvos no sistema")
+  public int countSavedBookmarks(){
+      return bookmarkDAO.findAll().size();
+  }
+}]]></programlisting>
+		
+		<figure id="exemplo_jconsole"><title>JConsole acessando a aplicação <emphasis>Bookmark</emphasis></title>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="images/jmx-jconsole-example.png" width="90%" />
+				</imageobject>
+				<textobject><phrase>JConsole acessando a aplicação <emphasis>Bookmark</emphasis></phrase></textobject>
+			</mediaobject>
+		</figure>
+	</section>
+		
 
 </chapter>

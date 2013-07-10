@@ -48,6 +48,7 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.internal.configuration.JsfSecurityConfig;
 import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
@@ -55,6 +56,7 @@ import br.gov.frameworkdemoiselle.security.AfterLogoutSuccessful;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.PageNotFoundException;
 import br.gov.frameworkdemoiselle.util.Redirector;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @SessionScoped
 public class SecurityObserver implements Serializable {
@@ -69,6 +71,10 @@ public class SecurityObserver implements Serializable {
 
 	@Inject
 	private Logger logger;
+	
+	@Inject
+	@Name("demoiselle-jsf-bundle")
+	private ResourceBundle bundle;
 
 	public SecurityObserver() {
 		clear();
@@ -107,12 +113,7 @@ public class SecurityObserver implements Serializable {
 			Redirector.redirect(getConfig().getLoginPage());
 
 		} catch (PageNotFoundException cause) {
-			// TODO Colocar a mensagem no bundle
-			throw new ConfigurationException(
-					"A tela de login \""
-							+ cause.getViewId()
-							+ "\" não foi encontrada. Caso o seu projeto possua outra, defina no arquivo de configuração a chave \""
-							+ "frameworkdemoiselle.security.login.page" + "\"", cause);
+			throw new ConfigurationException( bundle.getString("login-page-not-found",cause.getViewId()) , cause);
 		}
 	}
 
@@ -130,12 +131,7 @@ public class SecurityObserver implements Serializable {
 
 		} catch (PageNotFoundException cause) {
 			if (redirectedFromConfig) {
-				// TODO Colocar a mensagem no bundle
-				throw new ConfigurationException(
-						"A tela \""
-								+ cause.getViewId()
-								+ "\" que é invocada após o logon não foi encontrada. Caso o seu projeto possua outra, defina no arquivo de configuração a chave \""
-								+ "frameworkdemoiselle.security.redirect.after.login" + "\"", cause);
+				throw new ConfigurationException( bundle.getString("after-login-page-not-found",cause.getViewId()) , cause);
 			} else {
 				throw cause;
 			}
@@ -152,12 +148,7 @@ public class SecurityObserver implements Serializable {
 			}
 
 		} catch (PageNotFoundException cause) {
-			// TODO Colocar a mensagem no bundle
-			throw new ConfigurationException(
-					"A tela \""
-							+ cause.getViewId()
-							+ "\" que é invocada após o logout não foi encontrada. Caso o seu projeto possua outra, defina no arquivo de configuração a chave \""
-							+ "frameworkdemoiselle.security.redirect.after.logout" + "\"", cause);
+			throw new ConfigurationException( bundle.getString("after-logout-page-not-found",cause.getViewId()) , cause);
 
 		} finally {
 			try {

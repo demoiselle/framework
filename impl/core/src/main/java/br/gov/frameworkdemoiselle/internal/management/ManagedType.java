@@ -47,6 +47,7 @@ import javax.inject.Qualifier;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.ManagedOperation;
 import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
+import br.gov.frameworkdemoiselle.annotation.OperationType;
 import br.gov.frameworkdemoiselle.annotation.ManagedProperty.ManagedPropertyAccess;
 import br.gov.frameworkdemoiselle.annotation.OperationParameter;
 import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
@@ -163,6 +164,7 @@ public class ManagedType {
 					Class<?>[] parameterTypes = method.getParameterTypes();
 					Annotation[][] parameterAnnotations = method.getParameterAnnotations();
 					ParameterDetail[] parameterDetails = new ParameterDetail[parameterTypes.length];
+					OperationType operationType = opAnnotation.type();
 
 					for (int i = 0; i < parameterTypes.length; i++) {
 						OperationParameter paramAnnotation = null;
@@ -181,7 +183,7 @@ public class ManagedType {
 
 					// Com todas as informações, criamos nossa instância de MethodDetail e
 					// acrescentamos na lista de todas as operações.
-					MethodDetail detail = new MethodDetail(method, opAnnotation.description(), parameterDetails);
+					MethodDetail detail = new MethodDetail(method, opAnnotation.description(), operationType, parameterDetails);
 					operationMethods.put(method.getName(), detail);
 				}
 			}
@@ -326,12 +328,15 @@ public class ManagedType {
 
 		private final ParameterDetail[] parameterTypers;
 
-		private String description;
+		private final String description;
+		
+		private final OperationType type;
 
-		public MethodDetail(Method method, String description, ParameterDetail[] parameterTypers) {
+		public MethodDetail(Method method, String description, OperationType type,ParameterDetail[] parameterTypers) {
 			super();
 			this.method = method;
 			this.description = description;
+			this.type = type;
 			this.parameterTypers = parameterTypers;
 		}
 
@@ -347,6 +352,10 @@ public class ManagedType {
 			return description;
 		}
 
+		public OperationType getType() {
+			return type;
+		}
+		
 	}
 
 	public final class ParameterDetail {

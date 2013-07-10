@@ -43,13 +43,13 @@ import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
-import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
-import br.gov.frameworkdemoiselle.management.Notification;
+import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
+import br.gov.frameworkdemoiselle.management.GenericNotification;
 
 /**
  * 
  * Enables {@link ManagementNotificationEvent} observers to trigger only with notifications
- * of the base type {@link Notification}.
+ * of the base type {@link GenericNotification}.
  * 
  * @author serpro
  *

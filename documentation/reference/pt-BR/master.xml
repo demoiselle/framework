@@ -39,6 +39,7 @@
 	<xi:include href="templates.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 	<xi:include href="security.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 	<xi:include href="paginacao.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="gerenciamento.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 	<xi:include href="properties.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 	<!-- parte 1 -->

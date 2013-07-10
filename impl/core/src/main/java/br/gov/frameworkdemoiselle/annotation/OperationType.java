@@ -36,7 +36,6 @@
  */
 package br.gov.frameworkdemoiselle.annotation;
 
-import javax.management.MBeanOperationInfo;
 
 /**
  * <p>
@@ -56,32 +55,24 @@ public enum OperationType {
 	 * ManagedOperation is write-only, it causes the application to change some of it's behaviour but doesn't return any
 	 * kind of information
 	 */
-	ACTION(MBeanOperationInfo.ACTION),
+	ACTION,
+
 	/**
 	 * ManagedOperation is read-only, it will operate over data provided by the application and return some information,
 	 * but will not change the application in any way.
 	 */
-	INFO(MBeanOperationInfo.INFO),
+	INFO,
+	
 	/**
 	 * ManagedOperation is read-write, it will both change the way the application work and return some information
 	 * regarding the result of the operation.
 	 */
-	ACTION_INFO(MBeanOperationInfo.ACTION_INFO),
+	ACTION_INFO,
+
 	/**
 	 * The effect of calling this operation is unknown. This is the default type and if this type is assigned to an
 	 * operation, the user must rely on the {@link ManagedOperation#description()} attribute to learn about how the
 	 * operation works.
 	 */
-	UNKNOWN(MBeanOperationInfo.UNKNOWN);
-
-	private int operationTypeValue;
-
-	private OperationType(int type) {
-		this.operationTypeValue = type;
-	}
-
-	public int getValue() {
-		return operationTypeValue;
-	}
-
+	UNKNOWN
 }

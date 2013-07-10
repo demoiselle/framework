@@ -65,7 +65,6 @@ public abstract class AbstractCustomContext implements CustomContext {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T get(final Contextual<T> contextual, final CreationalContext<T> creationalContext) {
 		T instance = null;
 

@@ -43,8 +43,8 @@ import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
-import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
 import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
+import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
 
 /**
  * 

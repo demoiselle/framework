@@ -212,9 +212,27 @@ public class DynamicMBeanProxy implements DynamicMBean {
 
 			// Com todas as informações, criamos nossa instância de MBeanOperationInfo e
 			// acrescentamos na lista de todas as operações.
+			int operationType = 0;
+			switch(methodDetail.getType()){
+				case ACTION:
+					operationType = MBeanOperationInfo.ACTION;
+					break;
+					
+				case INFO:
+					operationType = MBeanOperationInfo.INFO;
+					break;
+					
+				case ACTION_INFO:
+					operationType = MBeanOperationInfo.ACTION_INFO;
+					break;
+					
+				default:
+					operationType = MBeanOperationInfo.UNKNOWN;
+			}
+			
 			MBeanOperationInfo operation = new MBeanOperationInfo(methodDetail.getMethod().getName(),
 					methodDetail.getDescription(), parameters, methodDetail.getMethod().getReturnType().getName(),
-					MBeanOperationInfo.ACTION_INFO);
+					operationType);
 
 			operations.add(operation);
 
