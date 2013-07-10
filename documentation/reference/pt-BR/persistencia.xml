@@ -69,7 +69,7 @@ private Connection conn2;
 		Caso possua mais de uma configuração de datasource você pode definir uma configuração padrão 
 		para sua aplicação.
 	</para>
-	<programlisting>frameworkdemoiselle.persistence.default.unit.name=conn1</programlisting>	
+	<programlisting>frameworkdemoiselle.persistence.default.datasource.name=conn1</programlisting>	
 
 	</section>
 
