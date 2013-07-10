@@ -20,7 +20,7 @@
 	<section>
     	<title>Configurando</title>
     	<para>
-    	Para um correto funcionamento do Demoiselle é necessário inserir os interceptadores de segurança no arquivo <filename>src/main/WEB-INF/beans.xml</filename>.
+    	Para um correto funcionamento do Demoiselle é necessário inserir os interceptadores de segurança no arquivo <filename>src/main/webapp/WEB-INF/beans.xml</filename>.
     	</para>
 		<programlisting role="XML"><![CDATA[<beans xmlns="http://java.sun.com/xml/ns/javaee" 
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
