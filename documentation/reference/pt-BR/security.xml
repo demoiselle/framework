@@ -131,7 +131,7 @@ public class Credential {
 			Assim como na autenticação, o contexto de segurança possui métodos destinados a delegar as requisições de autorização para
 			a implementação de segurança. No caso da anotação @RequiredPermission, o método hasPermission(String resource, String
 			operation) executa esta tarefa. Para tanto, deve existir uma classe que implemente a interface Authorizer, cujo
-			método hasPermission(Object resource, String operation) verifica se o usuário logado possui permissão para executar
+			método hasPermission(String resource, String operation) verifica se o usuário logado possui permissão para executar
 			uma determinada operação em um recurso específico.
 		</para>
 		<para>
@@ -201,7 +201,7 @@ public class Credential {
 	} 
 
 	@Override 
-	public boolean hasPermission(Object resource, String operation) { 
+	public boolean hasPermission(String resource, String operation) { 
 		// Escreva aqui seu codigo de verificação de permissao 
 		return false; 
 	} 
