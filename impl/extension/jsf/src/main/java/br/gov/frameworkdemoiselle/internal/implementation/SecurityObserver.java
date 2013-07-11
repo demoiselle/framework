@@ -161,7 +161,8 @@ public class SecurityObserver implements Serializable {
 
 		} finally {
 			try {
-				Beans.getReference(HttpSession.class).invalidate();
+				HttpSession session = (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+				session.invalidate();
 			} catch (IllegalStateException e) {
 				logger.debug("Esta sessão já foi invalidada.");
 			}
