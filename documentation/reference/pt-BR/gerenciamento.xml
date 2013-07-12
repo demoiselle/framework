@@ -144,7 +144,7 @@ public class ControleAcesso{
   private MonitorLogin monitorLogin;
 
   public boolean efetuarLogin(String usuario , String senha){
-    // código de login
+    // codigo de login
     monitorLogin.setContadorLogin( monitorLogin.getContadorLogin() + 1 );
   }
 }]]></programlisting>
@@ -190,7 +190,7 @@ public class BookmarkMonitor {
   @Inject
   private BookmarkDAO bookmarkDAO;
 
-  @ManagedOperation(type=OperationType.INFO , description="Informa quantos bookmarks estão salvos no sistema")
+  @ManagedOperation(type=OperationType.INFO , description="Informa quantos bookmarks estao salvos no sistema")
   public int countSavedBookmarks(){
       return bookmarkDAO.findAll().size();
   }

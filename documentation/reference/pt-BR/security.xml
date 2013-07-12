@@ -126,13 +126,13 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 
 	public void efetuarAutenticacao() { 
 		/*
-		Obtém as credenciais do usuário, pode ser um login e senha ou um certificado digital. O mais
-		comum é exibir uma tela HTML contendo um formulário que solicita as informações.
+		Obtem as credenciais do usuario, pode ser um login e senha ou um certificado digital. O mais
+		comum e exibir uma tela HTML contendo um formulario que solicita as informacoes.
 		*/
 		
 		securityContext.login();
 		
-		//Executa código que requer autenticação
+		//Executa codigo que requer autenticacao
 		
 		securityContext.logout();
 		 
@@ -172,12 +172,12 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 
 	@RequiredPermission(resource = "bookmark" , operation = "gerenciar") 
 	public void incluirBookmark(Bookmark bookmark) {
-		//Código do método 
+		//Ccdigo do metodo 
 	} 
 
 	@RequiredPermission(resource = "bookmark", operation = "gerenciar") 
 	public List<Bookmark> listarBookmarks() {
-		//Código do método 
+		//Codigo do metodo 
 	}
    	
 	@RequiredPermission
@@ -199,11 +199,11 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 class GerenciadorBookmark { 
 
 	public void incluirBookmark(Bookmark bookmark) {
-		//Código do método 
+		//Codigo do metodo 
 	} 
 
 	public List<Bookmark> listarBookmarks() {
-		//Código do método 
+		//Codigo do metodo 
 	}
    	
 	public List<Bookmark> apagarBookmark(Long idBookmark) {
@@ -273,7 +273,7 @@ class GerenciadorBookmark {
 
 	public void removerBookmark(Long idBookmark) {
 	
-		//Código que remove o bookmark
+		//Codigo que remove o bookmark
 		
 		if  ( ! securityContext.hasRole("administrador") ){
 			//Envia um email ao administrador
@@ -512,7 +512,7 @@ class GerenciadorBookmark {
 
 	@Override 
 	public Principal getUser() { 
-		// Obtenha dados sobre o usuário autenticado e retorne na forma da interface javax.security.Principal 
+		// Obtenha dados sobre o usuario autenticado e retorne na forma da interface javax.security.Principal 
 		return new Principal(){
 			public String getName(){
 				return "usuario";
@@ -522,21 +522,21 @@ class GerenciadorBookmark {
 
 	@Override 
 	public void unAuthenticate() { 
-		// Remova qualquer informação de autenticação do usuário, após o retorno deste método o usuário
-		// deve ser considerado não autenticado. 
+		// Remova qualquer informacao de autenticacao do usuario, apas o retorno deste metodo o usuario
+		// deve ser considerado nao autenticado. 
 	} 
 }]]></programlisting>
 		<programlisting role="JAVA"><![CDATA[public class MeuAuthorizer implements Authorizer { 
 
 	@Override 
 	public boolean hasRole(String role) { 
-		// Verifique se o usuário autenticado tem o papel informado, retorne true em caso positivo 
+		// Verifique se o usuario autenticado tem o papel informado, retorne true em caso positivo 
 		return false; 
 	} 
 
 	@Override 
 	public boolean hasPermission(Object resource, String operation) { 
-		// Verifique se o usuário autenticado tem a permissão adequada, retorne true em caso positivo 
+		// Verifique se o usuario autenticado tem a permissao adequada, retorne true em caso positivo 
 		return false; 
 	} 
 }]]></programlisting>
