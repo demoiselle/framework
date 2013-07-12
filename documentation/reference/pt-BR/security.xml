@@ -42,9 +42,9 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 		<table>
 			<title>Propriedades de segurança do Framework Demoiselle</title>
 			<tgroup cols="3">
-				<colspec align="left"/>
-				<colspec align="left"/>
-				<colspec align="right"/>
+				<colspec align="left" colwidth="40*"/>
+				<colspec align="left" colwidth="40*"/>
+				<colspec align="right" colwidth="20*"/>
 	
 				<thead>
 					<row valign="top">
@@ -55,7 +55,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 				</thead>
 				<tbody>
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.enabled</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;enabled</entry>
 						<entry>
 							<para>
 								Habilita ou desabilita o mecanismo de segurança
@@ -65,7 +65,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 					</row>
 					
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.authenticator.class</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;authenticator.&#8203;class</entry>
 						<entry>
 							<para>
 								Define a classe que implementa o mecanismo de autenticação.
@@ -78,7 +78,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 					</row>
 					
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.authorizer.class</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;authorizer.&#8203;class</entry>
 						<entry>
 							<para>
 								Define a classe que implementa o mecanismo de autorização.
@@ -339,9 +339,9 @@ class GerenciadorBookmark {
 		<table>
 			<title>Propriedades de segurança da extensão <emphasis>demoiselle-jsf</emphasis></title>
 			<tgroup cols="3">
-				<colspec align="left"/>
-				<colspec align="left"/>
-				<colspec align="right"/>
+				<colspec align="left" colwidth="40*"/>
+				<colspec align="left" colwidth="40*"/>
+				<colspec align="right" colwidth="20*"/>
 	
 				<thead>
 					<row valign="top">
@@ -352,7 +352,7 @@ class GerenciadorBookmark {
 				</thead>
 				<tbody>
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.login.page</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;login.&#8203;page</entry>
 						<entry>
 							<para>
 								Define a página de login da aplicação.
@@ -361,7 +361,7 @@ class GerenciadorBookmark {
 						<entry>"/login"</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.redirect.after.login</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;redirect.&#8203;after.&#8203;login</entry>
 						<entry>
 							<para>
 								Define a tela para qual o usuário será redirecionado após o processo de <emphasis>login</emphasis> bem sucedido.
@@ -370,7 +370,7 @@ class GerenciadorBookmark {
 						<entry>"/index"</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.redirect.after.logout</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;redirect.&#8203;after.&#8203;logout</entry>
 						<entry>
 							<para>
 								Define a tela para qual o usuário será redirecionado após o processo de <emphasis>logout</emphasis> bem sucedido.
@@ -379,7 +379,7 @@ class GerenciadorBookmark {
 						<entry>"/login"</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.redirect.enabled</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;redirect.&#8203;enabled</entry>
 						<entry>
 							<para>
 								Habilita ou desabilita o redirecionamento automático para a página de login após uma tentativa
@@ -565,11 +565,11 @@ class GerenciadorBookmark {
 			a classe que deve ser usada por padrão:
  		</para>
  		
- 		<informaltable>
+ 		<informaltable width="100%">
 			<tgroup cols="3">
-				<colspec align="left"/>
-				<colspec align="left"/>
-				<colspec align="right"/>
+				<colspec align="left" colwidth="40%"/>
+				<colspec align="left" colwidth="40%"/>
+				<colspec align="right" colwidth="20%"/>
 	
 				<thead>
 					<row valign="top">
@@ -580,7 +580,7 @@ class GerenciadorBookmark {
 				</thead>
 				<tbody>
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.authenticator.class</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;authenticator.&#8203;class</entry>
 						<entry>
 							<para>
 								Define a classe concreta utilizada como implementação da interface Authenticator
@@ -595,7 +595,7 @@ class GerenciadorBookmark {
 					</row>
 					
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.authorizer.class</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;authorizer.&#8203;class</entry>
 						<entry>
 							<para>
 								Define a classe concreta utilizada como implementação da interface Authorizer

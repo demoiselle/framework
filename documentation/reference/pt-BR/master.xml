@@ -40,7 +40,8 @@
 	<xi:include href="security.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 	<xi:include href="paginacao.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 	<xi:include href="gerenciamento.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-	<xi:include href="properties.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<!-- 
+	<xi:include href="properties.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />  -->
 
 	<!-- parte 1 -->
 	<!-- TODO: dividir melhor os capítulos em seções -->
@@ -75,5 +76,6 @@
 
 	<!-- apêndices -->
 	<xi:include href="instalacao.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+	<xi:include href="properties.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </book>

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding="utf-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
-<chapter id="properties">
+<appendix id="propriedades">
 
 	<title>Atributos do demoiselle.properties</title>
 	
@@ -14,12 +14,12 @@
 	</para>	
 	
 	<para>
-		<table>
+		<table width="100%">
 			<title>Configurações do Core</title>
 			<tgroup cols="3">
-				<colspec align="left"/>
-				<colspec align="left"/>
-				<colspec align="right"/>
+				<colspec align="left" colwidth="0.4*"/>
+				<colspec align="left" colwidth="0.4*"/>
+				<colspec align="right" colwidth="0.2*"/>
 	
 				<thead>
 					<row valign="top">
@@ -30,7 +30,7 @@
 				</thead>
 				<tbody>
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.enabled</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;enabled</entry>
 						<entry>
 							<para>
 								Habilita o mecanismo de segurança.
@@ -39,7 +39,7 @@
 						<entry>true</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.authenticator.class</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;authenticator.&#8203;class</entry>
 						<entry>
 							<para>
 								Define a classe que implementa a estratégia de autenticação.
@@ -48,7 +48,7 @@
 						<entry></entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.authorizer.class</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;authorizer.&#8203;class</entry>
 						<entry>
 							<para>
 								Define a classe que implementa a estratégia de autorização.
@@ -57,7 +57,7 @@
 						<entry></entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.transaction.class</entry>
+						<entry>frameworkdemoiselle.&#8203;transaction.&#8203;class</entry>
 						<entry>
 							<para>
 								Define a classe que implementa a estratégia de controle transacional.
@@ -66,7 +66,7 @@
 						<entry></entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.pagination.page.size</entry>
+						<entry>frameworkdemoiselle.&#8203;pagination.&#8203;page.&#8203;size</entry>
 						<entry>
 							<para>
 								Define o tamanho da página padrão do mecanismo de paginação.
@@ -77,13 +77,13 @@
 				</tbody>
 			</tgroup>
 		</table>
-		<table>
+		<table width="100%">
 			<title>Configurações da extensão JSF</title>
 			<tgroup cols="3">
-				<colspec align="left"/>
-				<colspec align="left"/>
-				<colspec align="right"/>
-	
+				<colspec align="left" colwidth="0.4*"/>
+				<colspec align="left" colwidth="0.4*"/>
+				<colspec align="right" colwidth="0.2*"/>
+				
 				<thead>
 					<row valign="top">
 						<entry><emphasis role="bold">Propriedade</emphasis></entry>
@@ -93,7 +93,7 @@
 				</thead>
 				<tbody>
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.login.page</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;login.&#8203;page</entry>
 						<entry>
 							<para>
 								Define a página de login da aplicação.
@@ -102,7 +102,7 @@
 						<entry>"/login"</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.redirect.after.login</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;redirect.&#8203;after.&#8203;login</entry>
 						<entry>
 							<para>
 								Define a tela para qual o usuário será redirecionado após o processo de <emphasis>login</emphasis> bem sucedido.
@@ -111,7 +111,7 @@
 						<entry>"/index"</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.redirect.after.logout</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;redirect.&#8203;after.&#8203;logout</entry>
 						<entry>
 							<para>
 								Define a tela para qual o usuário será redirecionado após o processo de <emphasis>logout</emphasis> bem sucedido.
@@ -120,7 +120,7 @@
 						<entry>"/login"</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.security.redirect.enabled</entry>
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;redirect.&#8203;enabled</entry>
 						<entry>
 							<para>
 								Habilita os redirecionamentos relacionados aos processos de login e logout.
@@ -129,7 +129,7 @@
 						<entry>true</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.handle.application.exception</entry>
+						<entry>frameworkdemoiselle.&#8203;handle.&#8203;application.&#8203;exception</entry>
 						<entry>
 							<para>
 								Habilita o tratamento automático das exceções da aplicação anotadas com @ApplicationException.
@@ -138,7 +138,7 @@
 						<entry>true</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.handle.application.exception.page</entry>
+						<entry>frameworkdemoiselle.&#8203;handle.&#8203;application.&#8203;exception.&#8203;page</entry>
 						<entry>
 							<para>
 								Define o redirecionamento das exceções da aplicação anotadas com @ApplicationException ocorridas
@@ -148,7 +148,7 @@
 						<entry>"/application_error"</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.pagination.max.page.links</entry>
+						<entry>frameworkdemoiselle.&#8203;pagination.&#8203;max.&#8203;page.&#8203;links</entry>
 						<entry>
 							<para>
 								Configura a quantidade de links que será exibido em uma página.
@@ -159,12 +159,12 @@
 				</tbody>
 			</tgroup>
 		</table>
-		<table>
+		<table width="100%">
 			<title>Configurações da extensão JDBC</title>
 			<tgroup cols="3">
-				<colspec align="left"/>
-				<colspec align="left"/>
-				<colspec align="right"/>
+				<colspec align="left" colwidth="0.4*"/>
+				<colspec align="left" colwidth="0.4*"/>
+				<colspec align="right" colwidth="0.2*"/>
 	
 				<thead>
 					<row valign="top">
@@ -175,7 +175,7 @@
 				</thead>
 				<tbody>
 					<row valign="top">
-						<entry>frameworkdemoiselle.persistence.jndi.name</entry>
+						<entry>frameworkdemoiselle.&#8203;persistence.&#8203;jndi.&#8203;name</entry>
 						<entry>
 							<para>
 								Define o nome JNDI onde o DataSource está disponível.
@@ -184,7 +184,7 @@
 						<entry></entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.persistence.driver.class</entry>
+						<entry>frameworkdemoiselle.&#8203;persistence.&#8203;driver.&#8203;class</entry>
 						<entry>
 							<para>
 								Define a classe que implementa o Driver de conexão com a base de dados.
@@ -193,7 +193,7 @@
 						<entry></entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.persistence.url</entry>
+						<entry>frameworkdemoiselle.&#8203;persistence.&#8203;url</entry>
 						<entry>
 							<para>
 								Define a URL de conexão com a base de dados.
@@ -202,7 +202,7 @@
 						<entry></entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.persistence.username</entry>
+						<entry>frameworkdemoiselle.&#8203;persistence.&#8203;username</entry>
 						<entry>
 							<para>
 								Define o username para estabelecer a conexão com a base de dados.
@@ -211,7 +211,7 @@
 						<entry></entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.persistence.password</entry>
+						<entry>frameworkdemoiselle.&#8203;persistence.&#8203;password</entry>
 						<entry>
 							<para>
 								Define o password para estabelecer a conexão com a base de dados.
@@ -220,7 +220,7 @@
 						<entry></entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.persistence.default.datasource.name</entry>
+						<entry>frameworkdemoiselle.&#8203;persistence.&#8203;default.&#8203;datasource.&#8203;name</entry>
 						<entry>
 							<para>
 								Define a configuração de banco de dados padrão para aplicações que possuem mais
@@ -232,12 +232,12 @@
 				</tbody>
 			</tgroup>
 		</table>
-		<table>
+		<table width="100%">
 			<title>Configurações da extensão JPA</title>
 			<tgroup cols="3">
-				<colspec align="left"/>
-				<colspec align="left"/>
-				<colspec align="right"/>
+				<colspec align="left" colwidth="0.4*"/>
+				<colspec align="left" colwidth="0.4*"/>
+				<colspec align="right" colwidth="0.2*"/>
 	
 				<thead>
 					<row valign="top">
@@ -248,7 +248,7 @@
 				</thead>
 				<tbody>
 					<row valign="top">
-						<entry>frameworkdemoiselle.persistence.default.unit.name</entry>
+						<entry>frameworkdemoiselle.&#8203;persistence.&#8203;default.&#8203;unit.&#8203;name</entry>
 						<entry>
 							<para>
 								Define a unidade de persistência padrão para aplicações que possuem mais
@@ -260,12 +260,12 @@
 				</tbody>
 			</tgroup>
 		</table>
-		<table>
+		<table width="100%">
 			<title>Configurações da extensão JMX</title>
 			<tgroup cols="3">
-				<colspec align="left"/>
-				<colspec align="left"/>
-				<colspec align="right"/>
+				<colspec align="left" colwidth="0.4*"/>
+				<colspec align="left" colwidth="0.4*"/>
+				<colspec align="right" colwidth="0.2*"/>
 	
 				<thead>
 					<row valign="top">
@@ -276,30 +276,30 @@
 				</thead>
 				<tbody>
 					<row valign="top">
-						<entry>frameworkdemoiselle.management.jmx.mbean.domain</entry>
+						<entry role="">frameworkdemoiselle.&#8203;management.&#8203;jmx.&#8203;mbean.&#8203;domain</entry>
 						<entry>
 							<para>Define o domínio padrão onde classes anotadas com <emphasis>@ManagementController</emphasis> serão registradas no MBeanServer.</para>
 							<para>Na especificação JMX, um MBean é registrado no MBeanServer com um nome no formato <emphasis>domain:name=MBeanName</emphasis>
-							(ex: <emphasis>br.gov.frameworkdemoiselle.jmx:name=NotificationBroadcaster</emphasis>). Esse parâmetro controla a porção <emphasis>domain</emphasis>
+							(ex: <emphasis>br.&#8203;gov.&#8203;frameworkdemoiselle.&#8203;jmx.&#8203;name=NotificationBroadcaster</emphasis>). Esse parâmetro controla a porção <emphasis>domain</emphasis>
 							desse formato.</para>
 						</entry>
-						<entry>O pacote da classe anotada com <emphasis>@ManagementController</emphasis></entry>
+						<entry>O pacote da classe anotada com <emphasis>@Management&#8203;Controller</emphasis></entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.management.jmx.notification.domain</entry>
-						<entry>
-							<para>O mesmo que <emphasis>frameworkdemoiselle.management.jmx.mbean.domain</emphasis>, mas apenas para o domínio do
-							MBean <emphasis role="bold">br.gov.frameworkdemoiselle.jmx.internal.NotificationBroadcaster</emphasis>. Esse MBean é automaticamente
-							registrado para receber notificações enviadas usando a classe <emphasis role="bold">br.gov.frameworkdemoiselle.management.NotificationManager</emphasis></para>
+						<entry colsep="1">frameworkdemoiselle.&#8203;management.&#8203;jmx.&#8203;notification.&#8203;domain</entry>
+						<entry colsep="1">
+							<para>O mesmo que <emphasis>frameworkdemoiselle.&#8203;management.&#8203;jmx.&#8203;mbean.&#8203;domain</emphasis>, mas apenas para o domínio do
+							MBean <emphasis role="bold">br.&#8203;gov.&#8203;frameworkdemoiselle.&#8203;jmx.&#8203;internal.&#8203;NotificationBroadcaster</emphasis>. Esse MBean é automaticamente
+							registrado para receber notificações enviadas usando a classe <emphasis role="bold">br.&#8203;gov.&#8203;frameworkdemoiselle.&#8203;management.&#8203;NotificationManager</emphasis></para>
 						</entry>
-						<entry>br.gov.frameworkdemoiselle.jmx</entry>
+						<entry>br.&#8203;gov.&#8203;frameworkdemoiselle.&#8203;jmx</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.management.jmx.notification.name</entry>
+						<entry>frameworkdemoiselle.&#8203;management.&#8203;jmx.&#8203;notification.&#8203;name</entry>
 						<entry>
-							<para>O nome usado para registrar a classe <emphasis role="bold">br.gov.frameworkdemoiselle.jmx.internal.NotificationBroadcaster</emphasis> como MBean.</para>
+							<para>O nome usado para registrar a classe <emphasis role="bold">br.&#8203;gov.&#8203;frameworkdemoiselle.&#8203;jmx.&#8203;internal.&#8203;NotificationBroadcaster</emphasis> como MBean.</para>
 						</entry>
-						<entry>NotificationBroadcaster</entry>
+						<entry>Notification&#8203;Broadcaster</entry>
 					</row>
 				</tbody>
 			</tgroup>
@@ -340,4 +340,4 @@
 		e <link linkend="security">Segurança</link>.
 		</para>
 	</section> -->
-</chapter>
+</appendix>
