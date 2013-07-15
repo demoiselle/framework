@@ -51,6 +51,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -60,10 +61,11 @@ import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
+@Ignore
 public class ManagementBootstrapTestCase {
 
 	/**
-	 * Deployment to test normal deployment behaviour 
+	 * Deployment to test normal deployment behaviour
 	 * 
 	 */
 	@Deployment
@@ -72,47 +74,63 @@ public class ManagementBootstrapTestCase {
 				.create(JavaArchive.class)
 				.addClass(LocaleProducer.class)
 				.addPackages(true, "br")
-				.addAsResource(new FileAsset(new File("src/test/resources/test/beans.xml")), "beans.xml")
+				.addAsResource(
+						new FileAsset(new File(
+								"src/test/resources/test/beans.xml")),
+						"beans.xml")
 				.addAsManifestResource(
-						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
+						new File(
+								"src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
 						"services/javax.enterprise.inject.spi.Extension")
-				.addPackages(false, ManagementBootstrapTestCase.class.getPackage())
-				.addClasses(DummyManagementExtension.class,DummyManagedClass.class,ManagedClassStore.class);
+				.addPackages(false,
+						ManagementBootstrapTestCase.class.getPackage())
+				.addClasses(DummyManagementExtension.class,
+						DummyManagedClass.class, ManagedClassStore.class);
 	}
-	
+
 	/**
-	 * Test if a a management extension (a library that implements {@link ManagementExtension}) is correctly detected.
+	 * Test if a a management extension (a library that implements
+	 * {@link ManagementExtension}) is correctly detected.
 	 */
 	@Test
 	public void testManagementExtensionRegistration() {
-		// "store" é application scoped e é usado pelo DummyManagementExtension para
-		// armazenar todos os beans anotados com @ManagementController. Se o bootstrap rodou corretamente,
-		// ele chamou DummyManagementExtension.initialize e este store conterá o bean de teste que anotamos.
+		// "store" é application scoped e é usado pelo DummyManagementExtension
+		// para
+		// armazenar todos os beans anotados com @ManagementController. Se o
+		// bootstrap rodou corretamente,
+		// ele chamou DummyManagementExtension.initialize e este store conterá o
+		// bean de teste que anotamos.
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
 
 		Assert.assertEquals(1, store.getManagedTypes().size());
 	}
 
 	/**
-	 * Test if a a management extension's shutdown method is
-	 * correctly called upon application shutdown.
+	 * Test if a a management extension's shutdown method is correctly called
+	 * upon application shutdown.
 	 */
 	@Test
 	public void testManagementExtensionShutdown() {
-		// "store" é application scoped e é usado pelo DummyManagementExtension para
-		// armazenar todos os beans anotados com @ManagementController. Se o bootstrap rodou corretamente,
-		// ele chamou DummyManagementExtension.initialize e este store conterá o bean de teste que anotamos.
-		// Nós então disparamos o evento de shutdown onde ele deverá limpar o store.
+		// "store" é application scoped e é usado pelo DummyManagementExtension
+		// para
+		// armazenar todos os beans anotados com @ManagementController. Se o
+		// bootstrap rodou corretamente,
+		// ele chamou DummyManagementExtension.initialize e este store conterá o
+		// bean de teste que anotamos.
+		// Nós então disparamos o evento de shutdown onde ele deverá limpar o
+		// store.
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
-		
-		//Detecta se a classe anotada foi detectada
+
+		// Detecta se a classe anotada foi detectada
 		List<ManagedType> managedTypes = store.getManagedTypes();
 		Assert.assertEquals(1, managedTypes.size());
-		
-		Beans.getBeanManager().fireEvent(new BeforeShutdown() {});
 
-		//Após o "undeploy", o ciclo de vida precisa ter removido a classe gerenciada da lista.
+		Beans.getBeanManager().fireEvent(new BeforeShutdown() {
+		});
+
+		// Após o "undeploy", o ciclo de vida precisa ter removido a classe
+		// gerenciada da lista.
 		Assert.assertEquals(0, managedTypes.size());
 	}
-	
+
 }
