@@ -75,7 +75,7 @@ public abstract class AbstractCustomContext implements CustomContext {
 
 		Class<?> type = getType(contextual);
 		if (getStore().contains(type)) {
-			instance = getStore().get(type);
+			instance = (T) getStore().get(type);
 
 		} else if (creationalContext != null) {
 			instance = contextual.create(creationalContext);
@@ -124,9 +124,8 @@ public abstract class AbstractCustomContext implements CustomContext {
 			return this.getMap().containsKey(type);
 		}
 
-		@SuppressWarnings("unchecked")
-		private <T> T get(final Class<?> type) {
-			return (T) this.getMap().get(type);
+		private Object get(final Class<?> type) {
+			return this.getMap().get(type);
 		}
 
 		private void put(final Class<?> type, final Object instance) {

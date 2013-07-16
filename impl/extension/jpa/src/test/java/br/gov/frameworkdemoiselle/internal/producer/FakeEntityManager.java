@@ -38,6 +38,7 @@ package br.gov.frameworkdemoiselle.internal.producer;
 
 import java.util.Map;
 
+import javax.enterprise.inject.Alternative;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -49,7 +50,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.Metamodel;
 
-
+@Alternative
 public class FakeEntityManager implements EntityManager {
 
 	private boolean closed = false;
