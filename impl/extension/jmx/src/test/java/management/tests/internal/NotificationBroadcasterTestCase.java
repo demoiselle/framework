@@ -61,7 +61,7 @@ import org.junit.runner.RunWith;
 import br.gov.frameworkdemoiselle.jmx.configuration.JMXConfig;
 import br.gov.frameworkdemoiselle.jmx.internal.MBeanManager;
 import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.Notification;
+import br.gov.frameworkdemoiselle.management.GenericNotification;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 import br.gov.frameworkdemoiselle.util.Beans;
 
@@ -122,7 +122,7 @@ public class NotificationBroadcasterTestCase {
 		}
 		
 		//Manda a notificação pelo Demoiselle
-		Notification n = new Notification("Notification test successful");
+		GenericNotification n = new GenericNotification("Notification test successful");
 		notificationManager.sendNotification(n);
 		
 		//Se o componente funcionou, o Demoiselle propagou a notificação para o servidor MBean e o listener preencheu

@@ -34,32 +34,44 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.management;
-
-import br.gov.frameworkdemoiselle.management.Notification;
-import br.gov.frameworkdemoiselle.management.NotificationManager;
+package br.gov.frameworkdemoiselle.management;
 
 /**
- * Event fired when a notification is sent by {@link NotificationManager}.
- * Implementators can capture this event and be notified when the {@link NotificationManager}
- * sends notifications, so they can pass the notification to the underlying technology.
+ * 
+ * Notification that can be sent by the {@link NotificationManager}.
  * 
  * @author serpro
  *
  */
-public class ManagementNotificationEvent {
+public class GenericNotification {
 	
-	private Notification notification;
+	private Object message;
 	
-	public ManagementNotificationEvent(Notification notification){
-		this.notification = notification;
+	public GenericNotification(){
+	}
+	
+	public GenericNotification(Object message) {
+		super();
+		this.message = message;
 	}
 
-	public Notification getNotification() {
-		return notification;
+
+	public Object getMessage() {
+		return message;
 	}
 
-	public void setNotification(Notification notification) {
-		this.notification = notification;
+	
+	public void setMessage(Object message) {
+		this.message = message;
 	}
+
+	
+	public Class<? extends Object> getType() {
+		if (message!=null){
+			return message.getClass();
+		}
+		
+		return null;
+	}
+
 }

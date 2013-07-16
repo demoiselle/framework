@@ -41,10 +41,11 @@ import java.io.File;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
 
 public final class Tests {
 
-	private Tests() {
+	public Tests() {
 	}
 
 	public static JavaArchive createDeployment(final Class<?> baseClass) {
@@ -64,5 +65,9 @@ public final class Tests {
 
 	public static FileAsset createFileAsset(final String pathname) {
 		return new FileAsset(new File(pathname));
+	}
+	
+	@Test
+	public void test(){
 	}
 }

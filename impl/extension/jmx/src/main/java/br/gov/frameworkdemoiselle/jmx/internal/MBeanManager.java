@@ -39,10 +39,10 @@ package br.gov.frameworkdemoiselle.jmx.internal;
 import java.util.Collection;
 import java.util.HashMap;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.management.ObjectInstance;
 
-@Singleton
+@ApplicationScoped
 public class MBeanManager {
 	
 	private HashMap<String,ObjectInstance> registeredMBeans = new HashMap<String,ObjectInstance>();

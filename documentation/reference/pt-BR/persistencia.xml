@@ -4,72 +4,250 @@
 <chapter id="persistencia">
 
 	<title>Persistência</title>
+	
+	<para>
+		Persist&ecirc;ncia &eacute; um dos aspectos mais importantes de sistemas corporativos - grande parte desses sistemas devem
+		em algum ponto persistir informa&ccedil;&otilde;es em um sistema gerenciador de banco de dados. A tecnologia Java conta
+		hoje com algumas formas de facilitar o acesso a SGBD's - algumas s&atilde;o especifica&ccedil;&otilde;es Java como o JDBC
+		e o JPA, outras s&atilde;o tecnologias desenvolvidas por terceiros como o Hibernate.
+	</para>
+	
+	<para>
+		O Framework Demoiselle facilita o acesso e a configura&ccedil;&atilde;o a algumas dessas tecnologias fornecendo produtores
+		padr&atilde;o para seus pontos de entrada e centralizando a configura&ccedil;&atilde;o. Tudo que o desenvolvedor deve fazer
+		&eacute; apenas injetar o recurso adequado em seu c&oacute;digo e o Framework Demoiselle se encarregar&aacute; de
+		produzi-lo e configur&aacute;-lo. 
+	</para>
 
 	<section>
+		
 		<title>JDBC</title>
+		
 		<para>
-			A persistência de dados usando JDBC, está disponível na extensão <literal>demoiselle-jdbc</literal>,
-			que provê uma fábrica de <literal>Connection</literal>. Para utilizá-la basta incluir a dependência para extensão JDBC 
-			no arquivo pom.xml.
+			O Framework Demoiselle fornece um produtor padrão para conexões JDBC puras. Esse produtor possui suporte
+			ao acesso direto utilizando uma URL e ao acesso via <code>DataSource</code>, acessando a conexão através
+			de um nome <code>JNDI</code> configurado em um servidor de aplicação.
+		</para>
+		
+		<para>
+			A persistência de dados usando JDBC está disponível na extensão <literal>demoiselle-jdbc</literal>. Para ter acesso
+			a essa extensão em um projeto Maven declare sua dependência no arquivo <literal>pom.xml</literal> de seu projeto.
 		</para>	
-	 	<programlisting role="XML"><![CDATA[<dependency>
+	 	
+	 	<tip>
+	 		<para>
+	 			Para acrescentar a dependência à extensão <literal>demoiselle-jdbc</literal>, adicione esse código
+	 			em seu arquivo <literal>pom.xml</literal>, na seção <literal>dependencies</literal>.
+	 		</para>
+	 	
+	 		<programlisting role="XML"><![CDATA[<dependency>
 	<groupId>br.gov.frameworkdemoiselle</groupId>
 	<artifactId>demoiselle-jdbc</artifactId>
 	<scope>compile</scope>
-</dependency>]]>
-		</programlisting>
-			
-		<para>
-			Para obter uma instância de uma conexão, basta injetá-la na classe:
-		</para>
-		<programlisting role="JAVA"><![CDATA[@Inject 
-private Connection conn;]]></programlisting>
-		<para>
-			A conexão será criada pela fábrica do Demoiselle de acordo com as configurações no arquivo de propriedade (<emphasis>demoiselle.properties</emphasis>). 
-		</para>
-		<para>
-			Você pode configurar as propriedades da conexão:
-		</para>
-		<programlisting>frameworkdemoiselle.persistence.driver.class=MeuDriver
-frameworkdemoiselle.persistence.url=MinhaUrl
-frameworkdemoiselle.persistence.username=MeuUsername
-frameworkdemoiselle.persistence.password=MeuPassword</programlisting>
-		<para>
-			ou indicar o JNDI do datasource:
-		</para>
-		<programlisting>frameworkdemoiselle.persistence.jndi.name=MeuJndiName</programlisting>		
-
-		<para>
-			Caso você necessite usar conexões com datasources diferentes, você pode usar a anotoção 
-			<literal>@Name</literal> passando como valor o nome da conexão definida no arquivo 
-			<literal>demoiselle.properties</literal>
-		</para>
-	
-		<para>
-			No <literal>demoiselle.properties</literal> basta adicionar um nome qualquer para identificar a conexão:
-		</para>
-		<programlisting>frameworkdemoiselle.persistence.conn1.jndi.name=MeuJndiName1
-frameworkdemoiselle.persistence.conn2.jndi.name=MeuJndiName2</programlisting>	
-	
-		<para>
-			Injetar o <literal>Connection</literal> usando <literal>@Name</literal> com o nome da conexão escolhida:
-		</para>
+</dependency>]]></programlisting>
+		</tip>
 		
-		<programlisting role="JAVA"><![CDATA[@Inject 
-@Name("conn1") 
-private Connection conn1;
+		<section>
+			<title>Configuração</title>
+			
+			<para>
+				A conexão será criada pela fábrica do Demoiselle de acordo com as configurações no arquivo de propriedade (<emphasis>demoiselle.properties</emphasis>).
+				Para configurar uma conexão diretamente através de uma URL utilize as propriedades abaixo:
+			</para>
+			
+			<informaltable width="100%">
+				<tgroup cols="2">
+					<colspec align="left"/>
+					<colspec align="left"/>
+					
+					<thead>
+						<row valign="top">
+							<entry><emphasis role="bold">Propriedade</emphasis></entry>
+							<entry><emphasis role="bold">Descrição</emphasis></entry>
+						</row>
+					</thead>
+					
+					<tbody>
+						<row valign="top">
+							<entry>frameworkdemoiselle.&#8203;persistence.&#8203;driver.&#8203;class</entry>
+							<entry>
+								<para>
+									Implementação da interface <code>java.sql.Driver</code> que dá acesso
+									ao SGBD utilizado pela aplicação.
+								</para>
+							</entry>
+						</row>
+						
+						<row valign="top">
+							<entry>frameworkdemoiselle.&#8203;persistence.&#8203;url</entry>
+							<entry>
+								<para>
+									URL de conexão no formato <code>jdbc:vendor:database-properties</code>.
+								</para>
+							</entry>
+						</row>
+						
+						<row valign="top">
+							<entry>frameworkdemoiselle.&#8203;persistence.&#8203;username</entry>
+							<entry>
+								<para>
+									Login de acesso ao SGBD.
+								</para>
+							</entry>
+						</row>
+						
+						<row valign="top">
+							<entry>frameworkdemoiselle.&#8203;persistence.&#8203;password</entry>
+							<entry>
+								<para>
+									Senha de acesso ao SGBD.
+								</para>
+							</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</informaltable>
+			
+			<para>
+				Também é possível configurar o acesso indicando um nome <code>JNDI</code> que esteja
+				configurado no servidor de aplicação. 
+			</para>
+			
+			<informaltable width="100%">
+				<tgroup cols="2">
+					<colspec align="left"/>
+					<colspec align="left"/>
+					
+					<thead>
+						<row valign="top">
+							<entry><emphasis role="bold">Propriedade</emphasis></entry>
+							<entry><emphasis role="bold">Descrição</emphasis></entry>
+						</row>
+					</thead>
+					
+					<tbody>
+						<row valign="top">
+							<entry>frameworkdemoiselle.&#8203;persistence.&#8203;jndi.&#8203;name</entry>
+							<entry>
+								<para>
+									Nome <code>JNDI</code> criado no servidor de aplicação para dar acesso
+									à conexão ao banco de dados. 
+								</para>
+							</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</informaltable>
+			
+			<para>
+				É possível configurar mais de uma conexão JDBC. Para isso acrescente nas propriedades nomes
+				separados para cada conexão como no exemplo abaixo:
+			</para>
+			
+			<example>
+				<title>Criando múltiplas conexões</title>
+				
+				<programlisting>frameworkdemoiselle.&#8203;persistence.&#8203;<emphasis role="bold">conn1</emphasis>.&#8203;driver.&#8203;class=MinhaClasse
+frameworkdemoiselle.&#8203;persistence.&#8203;<emphasis role="bold">conn1</emphasis>.&#8203;url=MinhaURL
+frameworkdemoiselle.&#8203;persistence.&#8203;<emphasis role="bold">conn1</emphasis>.&#8203;username=MeuLogin
+frameworkdemoiselle.&#8203;persistence.&#8203;<emphasis role="bold">conn1</emphasis>.&#8203;password=MinhaSenha
 
-@Inject 
-@Name("conn2") 
-private Connection conn2;
-]]></programlisting>
+frameworkdemoiselle.&#8203;persistence.&#8203;<emphasis role="bold">conn2</emphasis>.&#8203;driver.&#8203;class=MinhaClasse
+frameworkdemoiselle.&#8203;persistence.&#8203;<emphasis role="bold">conn2</emphasis>.&#8203;url=MinhaURL
+frameworkdemoiselle.&#8203;persistence.&#8203;<emphasis role="bold">conn2</emphasis>.&#8203;username=MeuLogin
+frameworkdemoiselle.&#8203;persistence.&#8203;<emphasis role="bold">conn2</emphasis>.&#8203;password=MinhaSenha</programlisting>
+			
+				<programlisting>frameworkdemoiselle.&#8203;persistence.&#8203;<emphasis role="bold">conn1</emphasis>.&#8203;jndi.&#8203;name=MeuJndiName1
+frameworkdemoiselle.&#8203;persistence.&#8203;<emphasis role="bold">conn2</emphasis>.&#8203;jndi.&#8203;name=MeuJndiName2</programlisting>
+			</example>
+			
+			<para>
+				Caso várias conexões sejam configuradas, é possível determinal a conexão padrão - aquela
+				que será utilizada quando o desenvolvedor não especificar qual deseja utilizar.
+			</para>
+			
+			<informaltable width="100%">
+				<tgroup cols="2">
+					<colspec align="left"/>
+					<colspec align="left"/>
+					
+					<thead>
+						<row valign="top">
+							<entry><emphasis role="bold">Propriedade</emphasis></entry>
+							<entry><emphasis role="bold">Descrição</emphasis></entry>
+						</row>
+					</thead>
+					
+					<tbody>
+						<row valign="top">
+							<entry>frameworkdemoiselle.&#8203;persistence.&#8203;default.&#8203;datasource.&#8203;name</entry>
+							<entry>
+								<para>
+									Caso múltiplas conexões sejam criadas, define a conexão padrão
+									quando uma <code>Connection</code> é injetada no código sem utilizar
+									a anotação <code>@Name</code>. 
+								</para>
+							</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</informaltable>
+		</section>
 
+		<section>
+			<title>Utilização</title>
+			
+			<para>
+				Para utilizar uma conexão JDBC em seu código, basta injetá-la. O Demoiselle se encarregará de produzir
+				o tipo adequado de conexão.
+			</para>
+			
+			<programlisting role="JAVA"><![CDATA[public class ClasseDAO {
+ 	
+ 	@Inject
+ 	private Connection conn1;
+ 	
+ 	public void metodoPersistir(){
+ 		conn1.prepareStatement("INSERT INTO TAB_1 VALUES (1,'JDBC')").execute();
+ 	}
+ 	
+}]]></programlisting>
 
-	<para>
-		Caso possua mais de uma configuração de datasource você pode definir uma configuração padrão 
-		para sua aplicação.
-	</para>
-	<programlisting>frameworkdemoiselle.persistence.default.unit.name=conn1</programlisting>	
+			<para>
+				Caso multiplas conexões tenham sido definidas, é possível utilizar a anotação <code>@Name</code> para injetar
+				uma conexão específica.
+			</para>
+			
+			<programlisting role="JAVA"><![CDATA[public class ClasseDAO {
+ 	
+ 	@Inject
+ 	@Name("conn1")
+ 	private Connection conn1;
+ 	
+ 	@Inject
+ 	@Name("conn2")
+ 	private Connection conn2;
+ 	
+ 	public void metodoPersistirEmConn1(){
+ 		conn1.prepareStatement("INSERT INTO TAB_1 VALUES (1,'JDBC')").execute();
+ 	}
+ 	
+ 	public void metodoPersistirEmConn2(){
+ 		conn2.prepareStatement("INSERT INTO TAB_2 VALUES (1,'JDBC')").execute();
+ 	}
+ 	
+}]]></programlisting>
+
+			<caution>
+				<para>
+					Caso a propriedade <code>frameworkdemoiselle.persistence.default.datasource.name</code> seja utilizada para
+					especificar uma conexão padrão, a anotação <code>@Name</code> só é necessária para utilizar conexões diferentes
+					da padrão. Caso essa propriedade não seja utilizada e existam múltiplas conexões configuradas, torna-se obrigatório
+					o uso da anotação <code>@Name</code> em todos os pontos de injeção. 
+				</para>
+			</caution>
+
+		</section>
 
 	</section>
 

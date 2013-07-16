@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding="utf-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
-   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" []>
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
 <chapter id="security">
 
 	<title>Segurança</title>
@@ -9,19 +9,21 @@
 		Neste capítulo será tratada uma questão de grande importância para a maioria das aplicações e motivo de infindáveis
 		discussões nas equipes de desenvolvimento: controle de acesso. Assim como tudo relacionado ao framework, a
 		implementação de segurança foi projetada de forma simples e flexível, independente de camada de apresentação ou
-		tecnologia, te deixando livre para implementar sua própria solução ou utilizar as extensões prontas, como a que
-		atualmente provemos baseada no Apache Shiro (<ulink url="http://shiro.apache.org" />).
+		tecnologia, te deixando livre para implementar sua própria solução ou utilizar as extensões existentes.
 	</para>
 	<para>
-		Para utilizar o modelo de segurança proposto basta utilizar o Demoiselle, pois no núcleo do Framework estão as
+		Para utilizar o modelo de segurança proposto basta utilizar o Framework Demoiselle, pois no núcleo do framework estão as
 		interfaces e anotações que definem o comportamento básico da implementação.
 	</para>
 	
 	<section>
     	<title>Configurando</title>
+
     	<para>
-    	Para um correto funcionamento do Demoiselle é necessário inserir os interceptadores de segurança no arquivo <filename>src/main/WEB-INF/beans.xml</filename>.
+    	Para um correto funcionamento da segurança no Framework Demoiselle é necessário inserir os interceptadores de segurança no arquivo <filename>beans.xml</filename>, localizado
+    	na pasta WEB-INF em projetos WEB ou na pasta META-INF em projetos SE ou EJB.
     	</para>
+
 		<programlisting role="XML"><![CDATA[<beans xmlns="http://java.sun.com/xml/ns/javaee" 
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
@@ -31,203 +33,584 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 		<class>br.gov.frameworkdemoiselle.security.RequiredRoleInterceptor</class>
 	</interceptors>
 </beans>]]></programlisting>
+
+		<para>
+			Opcionalmente é possível configurar o comportamento do módulo de segurança definindo propriedades no arquivo <emphasis>demoiselle.properties</emphasis>
+			da sua aplicação.
+		</para>
+		
+		<table>
+			<title>Propriedades de segurança do Framework Demoiselle</title>
+			<tgroup cols="3">
+				<colspec align="left" colwidth="40*"/>
+				<colspec align="left" colwidth="40*"/>
+				<colspec align="right" colwidth="20*"/>
+	
+				<thead>
+					<row valign="top">
+						<entry><emphasis role="bold">Propriedade</emphasis></entry>
+						<entry><emphasis role="bold">Descrição</emphasis></entry>
+						<entry><emphasis role="bold">Valor padrão</emphasis></entry>
+					</row>
+				</thead>
+				<tbody>
+					<row valign="top">
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;enabled</entry>
+						<entry>
+							<para>
+								Habilita ou desabilita o mecanismo de segurança
+							</para>
+						</entry>
+						<entry>true</entry>
+					</row>
+					
+					<row valign="top">
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;authenticator.&#8203;class</entry>
+						<entry>
+							<para>
+								Define a classe que implementa o mecanismo de autenticação.
+								(Detalhes na seção <link linkend="criando_implementacao_seguranca">Criando sua implementação</link>)
+							</para>
+						</entry>
+						<entry>
+							-
+						</entry>
+					</row>
+					
+					<row valign="top">
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;authorizer.&#8203;class</entry>
+						<entry>
+							<para>
+								Define a classe que implementa o mecanismo de autorização.
+								(Detalhes na seção <link linkend="criando_implementacao_seguranca">Criando sua implementação</link>)
+							</para>
+						</entry>
+						<entry>
+							-
+						</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
     </section> 
 	
 	<section>
 		<title>Autenticação</title>
 		<para>
-			O mecanismo de autenticação busca verificar a identidade do usuário de um sistema. A forma mais conhecida, e comum,
-			para executar essa verificação se dá por meio de um formulário de login, geralmente solicitando um nome de usuário e
+			O mecanismo de autenticação busca verificar a identidade do usuário de um sistema. A forma mais conhecida - e comum - para
+			executar essa verificação se dá por meio de um formulário de login, geralmente solicitando um nome de usuário e
 			sua respectiva senha. No entanto, outras formas como reconhecimento biométrico e autenticação por token, para citar
-			apenas duas, têm ganhado um grande número de adeptos.
+			apenas duas, tem ganhado um grande número de adeptos.
 		</para>
 		<para>
-			O Demoiselle deixa o desenvolvedor livre para definir qual forma usar, de acordo com a sua conveniência e necessidade.
-			A peça chave para tornar isso possível é o contexto de segurança, representado pela interface SecurityContext. Nessa
+			O Framework Demoiselle deixa o desenvolvedor livre para definir qual forma usar, de acordo com a sua conveniência e necessidade.
+			A peça chave para tornar isso possível é o contexto de segurança, representado pela interface <code>SecurityContext</code>. Nessa
 			estão definidos os métodos responsáveis por gerenciar os mecanismos de autenticação como, por exemplo, executar
 			login/logout de usuários e verificar se os mesmos estão ou não autenticados.
 		</para>
 		<para>
-			O contexto de segurança irá direcionar as requisições para a implementação definida pela aplicação. A autenticação será
-			efetuada por uma classe que implemente a interface Authenticator, cujo método authenticate() é responsável por
-			executar os passos necessários para validar a identidade de um usuário. Nesta mesma interface serão encontrados,
-			ainda, os métodos unAuthenticate() e getUser(), responsáveis por, respectivamente, desautenticar e retornar o usuário
-			autenticado.
+			Para utilizar o <code>SecurityContext</code>, basta injetá-lo em seu código. O método <code>login</code> ativa o mecanismo de autenticação
+			e o método <code>logout</code> remove as credenciais atualmente autenticadas do sistema. A classe <code>SecurityContext</code> possui
+			outros métodos que permitem verificar se há um usuário autenticado e acessar o objeto <emphasis>gerente</emphasis> (representado pela
+			classe <code>javax.security.Principal</code>), um objeto que contém dados adicionais sobre o usuário atualmente autenticado. Consulte
+			a documentação da classe <code>SecurityContext</code> para consultar as funcionalidades que ela oferece.
 		</para>
 		<para>
-			Para exemplificar, consideremos a autenticação baseada em nome de usuário e senha. O primeiro passo é criar um bean para
-			armazenar essas informações:
+			Um exemplo do uso do <code>SecurityContext</code> para autenticação segue abaixo:
 		</para>
-		<programlisting role="JAVA"><![CDATA[@SessionScoped
-public class Credential { 
-
-	private String login; 
-	private String senha; 
-	// ...
-}]]></programlisting>
-		<para>
-			Feito isso, podemos implementar a classe na qual se deseja adicionar o mecanismo de segurança:
-		</para>
-		<programlisting role="JAVA"><![CDATA[public class ClasseExemplo { 
-
-	@Inject
-	private Credential credential;
+		<programlisting role="JAVA"><![CDATA[public class ExemploAutenticacao { 
 
 	@Inject 
-	private SecurityContext context; 
+	private SecurityContext securityContext; 
 
-	public void metodo1() { 
-		credential.setLogin(“usuario1”);
-		credential.setSenha(“123”);
-		context.login(); 
-		// codigo do metodo 
-		context.logout(); 
+	public void efetuarAutenticacao() { 
+		/*
+		Obtem as credenciais do usuario, pode ser um login e senha ou um certificado digital. O mais
+		comum e exibir uma tela HTML contendo um formulario que solicita as informacoes.
+		*/
+		
+		securityContext.login();
+		
+		//Executa codigo que requer autenticacao
+		
+		securityContext.logout();
+		 
 	} 
 }]]></programlisting>
-		<para>
-			Neste caso, a interface SecurityContext e o bean Credential estão sendo injetados na classe utilizando o CDI.
-			Dentro do método, ao definir o usuário e a senha e invocar “context.login()”, a implementação de segurança definida irá
-			tratar essa requisição de acordo com os critérios estabelecidos. 		
-		</para>	
 	</section>
 	
 	<section>
 		<title>Autorização</title>
 		<para>
-			O mecanismo de autorização é responsável por garantir que apenas usuários autorizados tenham o acesso concedido a
-			determinados recursos de um sistema. No modelo de segurança do Demoiselle 2, a autorização pode acontecer de duas
+			Em certos sistemas é necessário não apenas autenticar um usuário, mas também proteger funcionalidades individuais e separar
+			usuários em grupos que possuem diferentes autorizações de acesso. O mecanismo de autorização é responsável por garantir que apenas
+			usuários autorizados tenham o acesso concedido a determinados recursos de um sistema.
+		</para>
+			
+		<para>
+			No modelo de segurança do Framework Demoiselle, a autorização pode acontecer de duas
 			formas:
 			<itemizedlist>
-				<listitem><para>Permissão por usuário, através da anotação @RequiredPermission</para></listitem>
+				<listitem><para>Permissão por funcionalidade, através da anotação @RequiredPermission</para></listitem>
 				<listitem><para>Permissão por papel, através da anotação @RequiredRole</para></listitem>
 			</itemizedlist>
 		</para>
-		<para>
-			Novamente a interface SecurityContext é a responsável pela interação entre as funcionalidades da aplicação e a implementação de
-			segurança. Nela estão definidos os métodos que verificam se o usuário possui permissão para acessar um recurso ou se o
-			usuário está associado a um papel.
-		</para>
-		<para>
-			A anotação @RequiredPermission pode ser utilizada tanto em classes como em métodos e possui dois parâmetros opcionais:
-			“operation” e “resource”. O primeiro define a operação para a qual se deseja permissão e o segundo define em qual
-			recurso essa operação será realizada. Abaixo serão exemplificadas algumas formas de utilização:
-		</para>
-		<programlisting role="JAVA"><![CDATA[class ClasseExemplo { 
+		
+		
+		<section>
+			<title>Protegendo o sistema com <emphasis>@RequiredPermission</emphasis></title>
+		
+			<para>
+				A anotação <code>@RequiredPermission</code> permite marcar uma classe ou método e informar que acesso a esse recurso requer
+				a permissão de executar uma <emphasis>operação</emphasis>. Operação nesse contexto é um nome definido pelo desenvolvedor
+				que representa uma funcionalidade do sistema. Por exemplo, determinada classe pode ter métodos responsávels por criar, editar,
+				listar e remover bookmarks, o desenvolvedor pode decidir agrupar esses métodos sobre a operação <emphasis>gerenciar bookmark</emphasis>.
+			</para>
+		
+			<programlisting role="JAVA"><![CDATA[class GerenciadorBookmark { 
 
-	@RequiredPermission 
-   	public void requiredPermissionWithoutDeclaredResourceAndOperation() { 
+	@RequiredPermission(resource = "bookmark" , operation = "gerenciar") 
+	public void incluirBookmark(Bookmark bookmark) {
+		//Ccdigo do metodo 
 	} 
 
-   	@RequiredPermission(resource = "contact", operation = "insert") 
-   	public void requiredPermissionWithDeclaredResourceAndOperation() { 
-   	}
+	@RequiredPermission(resource = "bookmark", operation = "gerenciar") 
+	public List<Bookmark> listarBookmarks() {
+		//Codigo do metodo 
+	}
+   	
+	@RequiredPermission
+	public List<Bookmark> apagarBookmark(Long idBookmark) {
+		public List<Bookmark> listarBookmarks() {
+	}
 }]]></programlisting>
-		<para>
-			Observe o método cuja anotação não possui parâmetros. Nesse caso serão considerados como recurso e operação o nome da classe e
-			do método, respectivamente. Uma outra possibilidade seria utilizar a anotação @Name, tanto na classe como no método, de
-			forma a possibilitar uma descrição mais amigável para o usuário.
-		</para>
-		<para>
-			Assim como na autenticação, o contexto de segurança possui métodos destinados a delegar as requisições de autorização para
-			a implementação de segurança. No caso da anotação @RequiredPermission, o método hasPermission(String resource, String
-			operation) executa esta tarefa. Para tanto, deve existir uma classe que implemente a interface Authorizer, cujo
-			método hasPermission(Object resource, String operation) verifica se o usuário logado possui permissão para executar
-			uma determinada operação em um recurso específico.
-		</para>
-		<para>
-			Ainda na interface Authorizer, pode-se notar a existência do método hasRole(String role), responsável por verificar se o
-			usuário logado possui um papel específico. Este método é chamado pelo contexto de segurança, por meio do seu método
-			hasRole(String role), para tratar as requisições que possuam a anotação @RequiredRole. Essa anotação possui um
-			parâmetro obrigatório, no qual podem ser definidos uma simples role ou um array delas.
-		</para>
-		<programlisting role="JAVA"><![CDATA[class ClasseExemplo { 
 
-	@RequiredRole("simpleRoleName") 
-	public void requiredRoleWithSingleRole() { 
+			<tip>
+				Perceba que a anotação <code>@RequiredPermission</code> sobre o método <code>apagarBookmark</code> não contém parâmetros. Quando não
+				são passados parâmetros o valor padrão para o parâmetro <code>resource</code> é o nome da classe e o valor padrão para <code>operation</code>
+				é o nome do método. 
+			</tip>
+			
+			<tip>
+				É possível anotar a classe inteira com <code>@RequiredPermission</code>, isso protegerá o acesso a todos os métodos dessa classe.
+				
+				<programlisting role="JAVA"><![CDATA[@RequiredPermission(resource="bookmark" , operation="gerenciar")
+class GerenciadorBookmark { 
+
+	public void incluirBookmark(Bookmark bookmark) {
+		//Codigo do metodo 
 	} 
 
-	@RequiredRole({ "firstRole", "secondRole", "thirdRole", "fourthRole", "fifthRole" }) 
-	public void requiredRoleWithArrayOfRoles() { 
-	} 
+	public List<Bookmark> listarBookmarks() {
+		//Codigo do metodo 
+	}
+   	
+	public List<Bookmark> apagarBookmark(Long idBookmark) {
+		public List<Bookmark> listarBookmarks() {
+	}
 }]]></programlisting>
-		<para>
-			As restrições de segurança pode ser utilizadas, ainda, em páginas web, com o auxílio de Expression Language, como no
-			exemplo abaixo:
-		</para>
-		<programlisting role="XHTML"><![CDATA[<p:commandButton value="#{messages['button.save']}" action="#{contactEditMB.insert}" 
-			rendered="#{!contactEditMB.updateMode}" ajax="false" 
-			disabled="#{!securityContext.hasPermission('contact', 'insert')}" />]]></programlisting>
-		<para>
-			Nesse caso, a habilitação de um botão está condicionada à existência de permissão para o usuário autenticado no momento
-			executar a operação “insert” no recurso “contact”.		
-		</para>
+			</tip>
+		</section>
+		
+		<section>
+			<title>Protegendo o sistema com <emphasis>@RequiredRole</emphasis></title>
+			
+			<para>
+				Diferente de <code>@RequiredPermission</code>, a anotação <code>@RequiredRole</code> utiliza o conceito
+				de papéis - ou perfís - para proteger recursos. Uma classe ou método anotado com <code>@RequiredRole</code>
+				exigirá que o usuário autenticado possua o papel indicado para acessar o recurso.
+			</para>
+			
+			<para>
+				Voltando ao exemplo de nosso aplicativo de bookmarks, vamos supor que a função de listar os bookmarks existentes
+				pode ser acessada por qualquer usuário autenticado, mas apenas administradores podem criar um novo bookmark. A classe
+				responsável por tais funcionalidades pode ser criada da seguinte forma: 
+			</para>
+
+			<programlisting role="JAVA"><![CDATA[class GerenciadorBookmark { 
+
+	@RequiredRole("administrador") 
+	public void inserirBookmark(Bookmark bookmark) { 
+	}
+	 
+	@RequiredRole({"convidado" , "administrador"}) 
+	public List<Bookmark> listarBookmarks() { 
+	} 
+
+}]]></programlisting>
+
+			<tip>
+				É possível informar mais de um papel para a anotação <code>@RequiredRole</code>, neste caso basta que o usuário
+				autenticado possua um dos papéis listados para ter acesso ao recurso.
+			</tip>
+			
+			<para>
+				Da mesma forma que a anotação <code>@RequiredPermission</code>, a anotação <code>@RequiredRole</code> pode ser usada
+				a nível de classe para proteger todos os métodos contidos nessa classe.
+			</para>
+		</section>
+		
+		<section>
+			<title>Protegendo porções do código</title>
+			
+			<para>
+				É possível proteger apenas parte de um código ao invés de todo o método ou toda a classe. Isso pode ser necessário em
+				expressões condicionais, onde um trecho só deve ser executado caso o usuário possua a autorização necessária.
+				Para isso voltamos a usar a interface <code>SecurityContext</code>, pois ela contém métodos que são funcionalmente equivalentes
+				às anotações <code>@RequiredPermission</code> e <code>@RequiredRole</code>.
+			</para>
+			
+			<para>
+				Como um exemplo, vamos supor que ao remover um bookmark um email seja enviado ao administrador, mas se o próprio
+				administrador executou a operação não é necessário enviar o email.
+			</para>
+			
+			<programlisting role="JAVA"><![CDATA[class GerenciadorBookmark {
+			
+	@Inject
+	private SecurityContext securityContext; 
+
+	public void removerBookmark(Long idBookmark) {
+	
+		//Codigo que remove o bookmark
+		
+		if  ( ! securityContext.hasRole("administrador") ){
+			//Envia um email ao administrador
+		}
+	 
+	} 
+
+}]]></programlisting>
+			
+		</section>
+		
+		<section>
+			<title>Protegendo porções de páginas <code>Java Server Faces</code></title>
+
+			<para>
+				As restrições de segurança podem ser utilizadas ainda em páginas web, com o auxílio de Expression Language. A interface
+				<code>SecurityContext</code> está automaticamente disponível para páginas <code>Java Server Faces</code> como um <emphasis>bean</emphasis>
+				de nome <code>securityContext</code>, bastando então acessar seus métodos a partir deste bean.
+			</para>
+			
+			<programlisting role="XHTML"><![CDATA[<p:commandButton value="#{messages['button.save']}" action="#{contactEditMB.insert}" 
+				ajax="false" disabled="#{!securityContext.hasPermission('contact', 'insert')}" />]]></programlisting>
+			
+			<para>
+				Nesse caso, a habilitação de um botão está condicionada à existência de permissão para o usuário autenticado no momento
+				executar a operação “insert” no recurso “contact”.		
+			</para>
+		</section>
 	</section>
 	
 	<section>
+		<title>Redirecionando automaticamente para um formulário de acesso</title>
+		
+		<para>
+			Se sua aplicação usa a extensão <emphasis>demoiselle-jsf</emphasis> ou se você utilizou o arquétipo <emphasis>demoiselle-jsf-jpa</emphasis>
+			durante a criação de seu projeto, então você pode definir uma página de login e o Framework Demoiselle vai automaticamente lhe redirecionar
+			para essa página caso haja a tentativa de acessar um recurso protejido e nenhum usuário esteja autenticado no sistema.
+		</para>
+		
+		<tip>
+			<para>Para acrescentar a extensão <emphasis>demoiselle-jsf</emphasis> em um projeto Maven, adicione a dependência abaixo
+			no arquivo <emphasis>pom.xml</emphasis>.</para>
+			
+			<programlisting role="XML"><![CDATA[
+<dependency>
+  <groupId>br.gov.frameworkdemoiselle</groupId>
+  <artifactId>demoiselle-jsf</artifactId>
+  <scope>compile</scope>
+</dependency>]]></programlisting>
+
+			<para>
+				O arquétipo <emphasis>demoiselle-jsf-jpa</emphasis> já contém essa extensão, se você criou seu projeto
+				baseado nesse arquétipo nada precisa ser feito.
+			</para>
+		</tip>
+		
+		<para>
+			Por padrão a página contendo o formulário de login deve se chamar <emphasis>login.jsp</emphasis> ou <emphasis>login.xhtml</emphasis>
+			(a depender de como sua aplicação esteja configurada para mapear páginas JSF). Para mudar esse padrão, é possível
+			editar o arquivo <emphasis>demoiselle.properties</emphasis> para configurar qual página deve ser utilizada.
+		</para>
+		
+		<table>
+			<title>Propriedades de segurança da extensão <emphasis>demoiselle-jsf</emphasis></title>
+			<tgroup cols="3">
+				<colspec align="left" colwidth="40*"/>
+				<colspec align="left" colwidth="40*"/>
+				<colspec align="right" colwidth="20*"/>
+	
+				<thead>
+					<row valign="top">
+						<entry><emphasis role="bold">Propriedade</emphasis></entry>
+						<entry><emphasis role="bold">Descrição</emphasis></entry>
+						<entry><emphasis role="bold">Valor padrão</emphasis></entry>
+					</row>
+				</thead>
+				<tbody>
+					<row valign="top">
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;login.&#8203;page</entry>
+						<entry>
+							<para>
+								Define a página de login da aplicação.
+							</para>
+						</entry>
+						<entry>"/login"</entry>
+					</row>
+					<row valign="top">
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;redirect.&#8203;after.&#8203;login</entry>
+						<entry>
+							<para>
+								Define a tela para qual o usuário será redirecionado após o processo de <emphasis>login</emphasis> bem sucedido.
+							</para>
+						</entry>
+						<entry>"/index"</entry>
+					</row>
+					<row valign="top">
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;redirect.&#8203;after.&#8203;logout</entry>
+						<entry>
+							<para>
+								Define a tela para qual o usuário será redirecionado após o processo de <emphasis>logout</emphasis> bem sucedido.
+							</para>
+						</entry>
+						<entry>"/login"</entry>
+					</row>
+					<row valign="top">
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;redirect.&#8203;enabled</entry>
+						<entry>
+							<para>
+								Habilita ou desabilita o redirecionamento automático para a página de login após uma tentativa
+								de acessar recurso protegido.
+							</para>
+						</entry>
+						<entry>true</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+	</section>
+	
+	<section>
+		<title>Integrando o Framework Demoiselle com a especificação JAAS</title>
+		
+		<para>
+			Até agora vimos como criar código protegido em uma aplicação Demoiselle, mas nada foi dito sobre a tecnologia que implementa essa
+			proteção. A verdade é que o Framework Demoiselle dá ao desenvolvedor a liberdade de implementar a solução que mais se adequa ao sistema
+			desenvolvido, mas o framework também conta com suporte nativo à especificação JAAS (<emphasis>Java Authentication and
+			Authorization Service</emphasis>).
+		</para>
+		
+		<para>
+			O suporte a JAAS é fornecido para aplicações WEB e está implementado na extensão
+			<emphasis>demoiselle-servlet</emphasis>, então é necessário declarar a dependência a essa extensão em sua aplicação.
+		</para>
+		
+		<tip>
+			<para>Para acrescentar a extensão <emphasis>demoiselle-servlet</emphasis> em um projeto Maven, adicione a dependência abaixo
+			no arquivo <emphasis>pom.xml</emphasis>.</para>
+			
+			<programlisting role="XML"><![CDATA[
+<dependency>
+  <groupId>br.gov.frameworkdemoiselle</groupId>
+  <artifactId>demoiselle-servlet</artifactId>
+  <scope>compile</scope>
+</dependency>]]></programlisting>
+		</tip>
+		
+		<tip>
+			<para>
+				O arquétipo <emphasis>demoiselle-jsf-jpa</emphasis> já conta com a dependência à extensão <emphasis>demoiselle-jsf</emphasis>, que
+			 	por sua vez depende da extensão <emphasis>demoiselle-servlet</emphasis>. Se sua aplicação é baseada no arquétipo
+			 	<emphasis>demoiselle-jsf-jpa</emphasis> você já possui a extensão <emphasis>demoiselle-servlet</emphasis>.
+			 </para>
+		</tip>
+		
+		<para>
+			Uma vez que sua aplicação contenha a extensão <emphasis>demoiselle-servlet</emphasis>, tudo que você precisa fazer é configurar
+			o suporte a JAAS em seu servidor de aplicação e criar os usuários e papéis necessários. Esta configuração depende do servidor de
+			aplicação utilizado e foge ao escopo deste documento.
+		</para>
+		
+		<para>
+			Para autenticar um usuário presente no servidor de aplicação através do JAAS, a extensão <emphasis>demoiselle-servlet</emphasis>
+			oferece a classe <code>Credentials</code>, que deve ser injetada em seu código. O código abaixo mostra como realizar a autenticação a partir de um servlet. 
+		</para>
+		
+		<programlisting role="JAVA"><![CDATA[class LoginServlet extends HttpServlet {
+			
+	@Inject
+	private SecurityContext securityContext;
+	
+	@Inject
+	private Credentials credentials; 
+
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) {
+	
+		credentials.setUsername( req.getParameter("username") );
+		credentials.setPassword( req.getParameter("password") );
+		
+		securityContext.login();
+	 
+	} 
+
+}]]></programlisting>
+
+		<para>
+			Uma vez autenticado o usuário, a anotação <code>@RequiredRole</code> passará a verificar se o usuário presente no JAAS possui o papel informado.  
+		</para>
+		
+		<caution>
+			<para>
+				A especificação JAAS não prevê o uso de permissões para proteger recursos, apenas papéis de usuários. Por isso ao utilizar a segurança
+				da especificação JAAS o uso da anotação <code>@RequiredPermission</code> fica vetado. Utilizar essa anotação em um sistema que utilize
+				JAAS para autorização causará uma exceção quando o recurso for acessado.
+			</para>
+		</caution>
+		
+		<tip>
+			<para>
+				É possível utilizar o JAAS para autenticar e autorizar papéis de usuários mas criar sua própria implementação para
+				implementar a autorização de permissões. Para isso crie uma classe que herde a classe
+				<code>br.gov.frameworkdemoiselle.security.ServletAuthorizer</code> e sobrescreva o método <code>hasPermission(String resource, String operation)</code>
+				para implementar seu próprio mecanismo. Feito isso, basta definir sua classe no arquivo <emphasis>demoiselle.properties</emphasis> usando
+				a propriedade <code>frameworkdemoiselle.security.authorizer.class</code>.
+			</para>
+			
+			<para>
+				Mais detalhes sobre como criar sua própria implementação ou extender uma implementação existente podem
+				ser vistos na seção <link linkend="criando_implementacao_seguranca">Criando sua implementação</link>.
+			</para>
+		</tip>
+		
+	</section>
+	
+	<section id="criando_implementacao_seguranca">
 		<title>Criando sua implementação</title>
+		
 		<para>
-			Após toda essa explicação, fica a dúvida: como implementar um esquema de segurança sem utilizar a extensão existente?
+			Para os mecanismos de autenticação não cobertos pelo Framework Demoiselle, é possível criar sua própria implementação e integra-la
+			ao framework. Também é possível extender uma implementação existente e acrescentar funcionalidades inexistentes.
 		</para>
+		
 		<para>
-			O primeiro passo é criar classes para implementar as interfaces Authenticator e Authorizer. O <literal>Demoiselle</literal> detecta automaticamente
-			a implementação, e torna essa classe a implementação padrão dessas interfaces:<!-- Essas classes devem ser
-			anotadas com @Alternative para que o CDI saiba que se trata de uma estratégia: -->
+			O ponto de extensão para o módulo de segurança são as interfaces <code>Authenticator</code> e <code>Authorizer</code>. Para criar
+			um novo mecanismo de autenticação e autorização, é necessário apenas implementar essas duas interfaces em sua aplicação. Segue
+			abaixo um exemplo de implementação.
 		</para>
+
 		<programlisting role="JAVA"><![CDATA[public class MeuAuthenticator implements Authenticator { 
 
 	@Override 
 	public boolean authenticate() { 
-		// Escreva aqui seu codigo de autenticacao 
+		// Escreva aqui seu codigo de autenticacao e retorne true caso o processo seja um sucesso 
 		return true; 
 	} 
 
 	@Override 
-	public User getUser() { 
-		// Escreva aqui seu codigo para retornar o usuario logado 
-		return null; 
+	public Principal getUser() { 
+		// Obtenha dados sobre o usuario autenticado e retorne na forma da interface javax.security.Principal 
+		return new Principal(){
+			public String getName(){
+				return "usuario";
+			}
+		}; 
 	} 
 
 	@Override 
 	public void unAuthenticate() { 
-		// Escreva aqui seu codigo de desautenticacao 
+		// Remova qualquer informacao de autenticacao do usuario, apas o retorno deste metodo o usuario
+		// deve ser considerado nao autenticado. 
 	} 
 }]]></programlisting>
 		<programlisting role="JAVA"><![CDATA[public class MeuAuthorizer implements Authorizer { 
 
 	@Override 
 	public boolean hasRole(String role) { 
-		// Escreva aqui seu codigo de verificacao do papel 
+		// Verifique se o usuario autenticado tem o papel informado, retorne true em caso positivo 
 		return false; 
 	} 
 
 	@Override 
 	public boolean hasPermission(Object resource, String operation) { 
-		// Escreva aqui seu codigo de verificacao de permissao 
+		// Verifique se o usuario autenticado tem a permissao adequada, retorne true em caso positivo 
 		return false; 
 	} 
 }]]></programlisting>
-		<!-- <para>
-			Feito isso deve-se definir no arquivo <filename>demoiselle.properties</filename>, as classes criadas:
-		</para>
-		<programlisting>
-			frameworkdemoiselle.security.authenticator.class=projeto.MeuAuthenticator 
-			frameworkdemoiselle.security.authorizer.class=projeto.MeuAuthorizer 
-		</programlisting> -->
-		<para>
-			Pronto! Sua aplicação já possui uma implementação de segurança definida. Caso sua ela não implemente essas interfaces, no momento em que
-			forem chamadas, o framework lançará uma exceção informando que a aplicação precisa implementá-las.	
-		</para>
-		<para>
-			Se você tem mais de uma implementação de <literal>Authenticator</literal> e/ou <literal>Authorizer</literal> (o que pode acontecer, por exemplo, quando
-			se necessite de uma implementação na aplicação principal, e outra para os testes), deverá definir no arquivo <filename>demoiselle.properties</filename>
-			qual classe será a padrão:
-			<programlisting>frameworkdemoiselle.security.authenticator.class=projeto.MeuAuthenticatorPadrao 
-frameworkdemoiselle.security.authorizer.class=projeto.MeuAuthorizerPadrao</programlisting>
- 		</para>
-	</section>
-	<caution> <para>O Demoiselle também oferece o componente 
-	<ulink url="http://demoiselle.sourceforge.net/docs/demoiselle-guide-components/1.2.0/html/authorization-master.html">demoiselle-authorization</ulink> 
-	 que facilita o uso de segurança com JAAS. Obviamente, não é possível utilizá-los ao mesmo tempo. Há arquétipos Maven que já trazem esse componente 
-	 como dependência, por isso sempre confira o arquivo pom.xml e se for o caso retire essa dependência.</para> </caution>
 
+		<para>
+			Pronto! Sua aplicação já possui uma implementação de segurança definida.
+		</para>
+		
+		<tip>
+			<para>
+				Você nunca deve chamar diretamente em sua aplicação as implementações das interfaces <code>Authenticator</code>
+				e <code>Authorizer</code>, o Framework Demoiselle vai automaticamente chamar os métodos implementados
+				quando for necessário.
+			</para>
+		</tip>
+
+		<para>
+			Em um sistema que use as anotações <code>@RequiredRole</code> ou <code>@RequiredPermission</code>, deve haver pelo menos uma implementação
+			dessas duas interfaces. Ao processar essas anotações, o Framework Demoiselle vai buscar uma implementação para essas interfaces
+			e disparar uma exceção caso não encontre uma implementação adequada.
+		</para>
+
+		<para>
+			Se existe mais de uma implementação de <code>Authenticator</code> e/ou <code>Authorizer</code> (o que pode acontecer, por exemplo, quando
+			seja necessário uma implementação na aplicação principal e outra para os testes), é possível definir no arquivo <filename>demoiselle.properties</filename>
+			a classe que deve ser usada por padrão:
+ 		</para>
+ 		
+ 		<informaltable width="100%">
+			<tgroup cols="3">
+				<colspec align="left" colwidth="40%"/>
+				<colspec align="left" colwidth="40%"/>
+				<colspec align="right" colwidth="20%"/>
+	
+				<thead>
+					<row valign="top">
+						<entry><emphasis role="bold">Propriedade</emphasis></entry>
+						<entry><emphasis role="bold">Descrição</emphasis></entry>
+						<entry><emphasis role="bold">Valor padrão</emphasis></entry>
+					</row>
+				</thead>
+				<tbody>
+					<row valign="top">
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;authenticator.&#8203;class</entry>
+						<entry>
+							<para>
+								Define a classe concreta utilizada como implementação da interface Authenticator
+							</para>
+						</entry>
+						<entry>
+							<emphasis>
+								nenhum, se houver apenas uma implementação o framework a detectará
+								automaticamente sem necessidade de definir essa propriedade
+							</emphasis>
+						</entry>
+					</row>
+					
+					<row valign="top">
+						<entry>frameworkdemoiselle.&#8203;security.&#8203;authorizer.&#8203;class</entry>
+						<entry>
+							<para>
+								Define a classe concreta utilizada como implementação da interface Authorizer
+							</para>
+						</entry>
+						<entry>
+							<emphasis>
+								nenhum, se houver apenas uma implementação o framework a detectará
+								automaticamente sem necessidade de definir essa propriedade
+							</emphasis>
+						</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</informaltable>
+	</section>
+	
 </chapter>

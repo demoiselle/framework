@@ -42,8 +42,8 @@ import javax.management.AttributeChangeNotification;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 
-import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEvent;
 import br.gov.frameworkdemoiselle.jmx.configuration.JMXConfig;
+import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 
 /**
@@ -67,7 +67,7 @@ final class NotificationBroadcaster extends NotificationBroadcasterSupport imple
 	private static final String NOTIFICATION_TYPE_GENERIC = "jmx.message";
 
 	protected void sendNotification( ManagementNotificationEvent event , JMXConfig config ) {
-		br.gov.frameworkdemoiselle.management.Notification demoiselleNotification = event.getNotification();
+		br.gov.frameworkdemoiselle.management.GenericNotification demoiselleNotification = event.getNotification();
 		Notification n = new Notification(NOTIFICATION_TYPE_GENERIC, config.getNotificationMBeanName(), sequenceNumber++, System.currentTimeMillis(), demoiselleNotification.getMessage().toString());
 		sendNotification(n);
 	}

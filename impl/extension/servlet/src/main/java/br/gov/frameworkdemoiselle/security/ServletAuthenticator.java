@@ -58,8 +58,9 @@ public class ServletAuthenticator implements Authenticator {
 	@Override
 	public void authenticate() throws AuthenticationException {
 		try {
-			getRequest().login(getCredentials().getUsername(), getCredentials().getPassword());
-
+			if (this.getUser()==null){
+				getRequest().login(getCredentials().getUsername(), getCredentials().getPassword());
+			}
 		} catch (ServletException cause) {
 			throw new AuthenticationException(getBundle().getString("authentication-failed"), cause);
 		}
@@ -68,6 +69,11 @@ public class ServletAuthenticator implements Authenticator {
 	@Override
 	public void unAuthenticate() {
 		getCredentials().clear();
+		try {
+			getRequest().logout();
+		} catch (ServletException e) {
+			//Logout já havia sido efetuado
+		}
 		getRequest().getSession().invalidate();
 	}
 

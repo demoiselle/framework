@@ -39,12 +39,12 @@ package br.gov.frameworkdemoiselle.management;
 /**
  * Special notification to denote an attribute has changed values.
  * 
- * @see Notification
+ * @see GenericNotification
  * 
  * @author serpro
  *
  */
-public class AttributeChangeNotification extends Notification {
+public class AttributeChangeNotification extends GenericNotification {
 	
 	private String attributeName;
 	
