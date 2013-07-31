@@ -41,6 +41,9 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
 
 /**
+ * An implementation of the Message that uses resource files the application for
+ * obtaining the description of the messages.
+ * 
  * @author SERPRO
  */
 public class DefaultMessage implements Message {
@@ -57,6 +60,14 @@ public class DefaultMessage implements Message {
 
 	public static final SeverityType DEFAULT_SEVERITY = SeverityType.INFO;
 
+	/**
+	 * Create a new DefaultMessage with text, severity and parameters.
+	 * 
+	 *  @param text: the text of the message.
+	 *  @param severity: represents the kind of message.
+	 *  @param params: parameters of the message.
+	 * 
+	 * */
 	public DefaultMessage(String text, SeverityType severity, Object... params) {
 		this.originalText = text;
 		this.severity = (severity == null ? DEFAULT_SEVERITY : severity);
@@ -66,6 +77,13 @@ public class DefaultMessage implements Message {
 		initParsedText();
 	}
 
+	/**
+	 * Create a new DefaultMessage with text and parameters.
+	 * 
+	 *  @param text: the text of the message.
+	 *  @param params: parameters of the message.
+	 * 
+	 * */
 	public DefaultMessage(String text, Object... params) {
 		this(text, null, (Object[]) params);
 	}
@@ -98,8 +116,10 @@ public class DefaultMessage implements Message {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((parsedText == null) ? 0 : parsedText.hashCode());
-		result = prime * result + ((severity == null) ? 0 : severity.hashCode());
+		result = prime * result
+				+ ((parsedText == null) ? 0 : parsedText.hashCode());
+		result = prime * result
+				+ ((severity == null) ? 0 : severity.hashCode());
 		return result;
 	}
 
