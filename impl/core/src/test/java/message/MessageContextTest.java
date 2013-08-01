@@ -134,6 +134,16 @@ public class MessageContextTest {
 	}
 
 	@Test
+	public void testRecoverStringMessageWithParams() {
+		ContextManager.activate(ManagedContext.class, RequestScoped.class);
+		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
+
+		messageContext.add("Message with {0} param", 1);
+		assertTrue(appender.getMessages().get(0).getText().equals("Message with 1 param"));
+		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
+	}
+
+	@Test
 	public void testRecoverMessageWithParams() {
 		ContextManager.activate(ManagedContext.class, RequestScoped.class);
 		Message message = new DefaultMessage("Message with {0} param");
