@@ -42,6 +42,15 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * <p>
+ * Should be used only in attributes of configuration classes (those annotated with @Configuration).
+ * </p>
+ * When an attribute in a configuration class is annotated with @Ignore, that attribute is not 
+ * </br>considerated in loading of configurations.
+ * 
+ * @author SERPRO
+ */
 @Target(FIELD)
 @Retention(RUNTIME)
 public @interface Ignore {
