@@ -49,6 +49,40 @@ import java.lang.annotation.Target;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
+/**
+ * This annotation is used to make passible:
+ * 
+ * <ul>
+ * <li>map an attribute that belongs to a configuration class in a key with a different name of this attribute</li>
+ * <li>map a Resource Bundle to a file with different name of the created object</li>
+ * </ul>
+ * 
+ * <p>
+ * The examples below shows how these annotation could be used:
+ * <p>
+ * 
+ * <blockquote>
+ * 
+ * <pre>
+ * public class NameConfig {
+ * 
+ * 	&#064;Name("other.name.attrib")
+ *   private int nameOfAttribute;
+ *   ...
+ * }
+ * 
+ * public class NameResourceBundle {
+ * 
+ * 	&#064;Name("other.name.bundle")
+ *   &#064;Inject
+ *   private ResourceBundle bundle;
+ *   ...
+ * }
+ * </pre>
+ * </blockquote>
+ * 
+ * @author SERPRO
+ */
 @Qualifier
 @Inherited
 @Retention(RUNTIME)
