@@ -62,6 +62,11 @@ public class ThreadLocalContext extends AbstractCustomContext {
 	public ThreadLocalContext(final Class<? extends Annotation> scope) {
 		super(scope);
 	}
+	
+	@Override
+	protected boolean isStoreInitialized() {
+		return threadLocal.get()!=null;
+	}
 
 	@Override
 	protected Store getStore() {

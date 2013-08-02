@@ -50,4 +50,9 @@ public class StaticContext extends AbstractCustomContext {
 	protected Store getStore() {
 		return store;
 	}
+
+	@Override
+	protected boolean isStoreInitialized() {
+		return store!=null;
+	}
 }
