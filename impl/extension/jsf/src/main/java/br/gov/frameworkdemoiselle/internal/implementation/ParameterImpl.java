@@ -41,6 +41,7 @@ import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.faces.convert.Converter;
 import javax.inject.Inject;
@@ -53,6 +54,7 @@ import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.Parameter;
 import br.gov.frameworkdemoiselle.util.Reflections;
 
+@Alternative
 public class ParameterImpl<T extends Serializable> implements Parameter<T>, Serializable {
 
 	private static final long serialVersionUID = 1L;
