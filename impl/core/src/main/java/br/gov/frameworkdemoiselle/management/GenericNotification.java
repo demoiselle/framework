@@ -37,40 +37,44 @@
 package br.gov.frameworkdemoiselle.management;
 
 /**
- * 
  * Notification that can be sent by the {@link NotificationManager}.
  * 
  * @author serpro
- *
  */
 public class GenericNotification {
-	
+
 	private Object message;
-	
-	public GenericNotification(){
+
+	/**
+	 * Constructor without params.
+	 */
+	public GenericNotification() {
 	}
-	
+
+	/**
+	 * Constructor with message to notification.
+	 * 
+	 * @param message
+	 * 			message to notification.
+	 */
 	public GenericNotification(Object message) {
 		super();
 		this.message = message;
 	}
 
-
 	public Object getMessage() {
 		return message;
 	}
 
-	
 	public void setMessage(Object message) {
 		this.message = message;
 	}
 
-	
 	public Class<? extends Object> getType() {
-		if (message!=null){
+		if (message != null) {
 			return message.getClass();
 		}
-		
+
 		return null;
 	}
 
