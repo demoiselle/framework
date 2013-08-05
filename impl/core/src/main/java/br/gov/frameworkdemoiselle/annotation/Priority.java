@@ -44,7 +44,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Used to prioritize methods annotated with @startup or @shutdown
+ * Used to prioritize some execution flow, as methods annoted with @startup or @shutdown
  * 
  * @author SERPRO
  */
