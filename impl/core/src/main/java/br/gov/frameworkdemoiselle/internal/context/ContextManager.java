@@ -10,7 +10,6 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeShutdown;
 
 import org.slf4j.Logger;
 
@@ -196,8 +195,7 @@ public class ContextManager {
 
 	/**
 	 * <p>
-	 * This method should be called when the application is shutting down, usually by observing the
-	 * {@link BeforeShutdown} event.
+	 * This method should be called when the application is shutting down.
 	 * </p>
 	 */
 	public static synchronized void shutdown() {

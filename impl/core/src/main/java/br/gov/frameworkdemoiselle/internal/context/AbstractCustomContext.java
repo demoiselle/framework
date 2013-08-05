@@ -58,12 +58,15 @@ public abstract class AbstractCustomContext implements CustomContext {
 	}
 
 	protected abstract Store getStore();
+	
+	protected abstract boolean isStoreInitialized();
 
 	@Override
 	public <T> T get(final Contextual<T> contextual) {
 		return get(contextual, null);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T get(final Contextual<T> contextual, final CreationalContext<T> creationalContext) {
 		T instance = null;
@@ -97,7 +100,9 @@ public abstract class AbstractCustomContext implements CustomContext {
 	public void setActive(boolean active) {
 		if (!active && this.active) {
 			// Limpando contexto
-			getStore().clear();
+			if (isStoreInitialized()){
+				getStore().clear();
+			}
 		}
 		this.active = active;
 	}

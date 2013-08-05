@@ -38,6 +38,8 @@ package br.gov.frameworkdemoiselle.internal.context;
 
 import java.util.Map;
 
+import javax.faces.context.FacesContext;
+
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.util.Faces;
 
@@ -45,6 +47,11 @@ public class ViewContext extends AbstractCustomContext {
 
 	public ViewContext() {
 		super(ViewScoped.class);
+	}
+	
+	@Override
+	protected boolean isStoreInitialized() {
+		return FacesContext.getCurrentInstance()!=null;
 	}
 
 	@Override

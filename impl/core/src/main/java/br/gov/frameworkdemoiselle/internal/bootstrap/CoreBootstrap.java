@@ -91,13 +91,16 @@ public class CoreBootstrap implements Extension {
 
 		ContextManager.activate(StaticContext.class, StaticScoped.class);
 	}
+	
+	public void terminateCustomContexts(@Observes final BeforeShutdown event) {
+		ContextManager.shutdown();
+	}
 
 	public void takeOff(@Observes final AfterDeploymentValidation event) {
 		getLogger().info(getBundle().getString("taking-off"));
 	}
 
 	public void engineOff(@Observes final BeforeShutdown event) {
-		ContextManager.shutdown();
 		getLogger().info(getBundle().getString("engine-off"));
 	}
 }
