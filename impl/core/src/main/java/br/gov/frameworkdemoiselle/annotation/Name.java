@@ -54,7 +54,7 @@ import javax.inject.Qualifier;
  * 
  * <ul>
  * <li>map an attribute that belongs to a configuration class in a key with a different name of this attribute</li>
- * <li>map a Resource Bundle to a file with different name of the created object</li>
+ * <li>map a Resource Bundle object to a file with different name of this object</li>
  * </ul>
  * 
  * <p>
