@@ -34,35 +34,67 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.security;
+package security.authorization.custom;
 
-import java.io.Serializable;
-import java.security.Principal;
+import javax.inject.Inject;
 
-/**
- * Defines the methods that should be implemented by anyone who wants an authentication mechanism.
- * 
- * @author SERPRO
- */
-public interface Authenticator extends Serializable {
+import junit.framework.Assert;
 
-	/**
-	 * Executes the necessary steps to authenticate an user.
-	 * 
-	 * @throws AuthenticationException
-	 *             When the authentication process fails, this exception is thrown.
-	 */
-	void authenticate();
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	/**
-	 * Executes the necessary steps to unauthenticate an user.
-	 */
-	void unAuthenticate();
+import security.athentication.custom.CustomAuthenticator;
+import test.Tests;
+import br.gov.frameworkdemoiselle.security.SecurityContext;
+import configuration.resource.ConfigurationResourceTest;
 
-	/**
-	 * Returns the currently authenticated user.
-	 * 
-	 * @return the user currently authenticated
-	 */
-	Principal getUser();
+@RunWith(Arquillian.class)
+public class CustomAuthorizerTest {
+
+	@Inject
+	private SecurityContext context;
+
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(ConfigurationResourceTest.class);
+		deployment.addClass(CustomAuthenticator.class);
+		deployment.addClass(CustomAuthorizer.class);
+		return deployment;
+	}
+	
+	@Before
+	public void loginToTest(){
+		context.login();
+	}
+
+	@Test
+	public void hasPermission(){
+		Assert.assertTrue(context.hasPermission("resource", "operation"));
+	}
+	
+	@Test
+	public void hasRole(){
+		Assert.assertTrue(context.hasRole("role"));
+	}
+	
+	@Test
+	public void denyPermission(){
+		Assert.assertFalse(context.hasPermission("falseresource", "falseoperation"));
+	}
+	
+	@Test
+	public void denyRole(){
+		Assert.assertFalse(context.hasRole("falserole"));
+	}
+	
+	@After
+	public void logoutAfterTest(){
+		context.logout();
+	}
+	
 }

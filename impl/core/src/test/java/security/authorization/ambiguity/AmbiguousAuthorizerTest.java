@@ -34,35 +34,59 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.security;
+package security.authorization.ambiguity;
 
-import java.io.Serializable;
-import java.security.Principal;
+import static junit.framework.Assert.assertEquals;
 
-/**
- * Defines the methods that should be implemented by anyone who wants an authentication mechanism.
- * 
- * @author SERPRO
- */
-public interface Authenticator extends Serializable {
+import javax.enterprise.inject.AmbiguousResolutionException;
+import javax.inject.Inject;
 
-	/**
-	 * Executes the necessary steps to authenticate an user.
-	 * 
-	 * @throws AuthenticationException
-	 *             When the authentication process fails, this exception is thrown.
-	 */
-	void authenticate();
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	/**
-	 * Executes the necessary steps to unauthenticate an user.
-	 */
-	void unAuthenticate();
+import security.athentication.custom.CustomAuthenticator;
+import security.authorization.custom.CustomAuthorizer;
+import test.Tests;
+import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.security.SecurityContext;
+import configuration.resource.ConfigurationResourceTest;
 
-	/**
-	 * Returns the currently authenticated user.
-	 * 
-	 * @return the user currently authenticated
-	 */
-	Principal getUser();
+@RunWith(Arquillian.class)
+public class AmbiguousAuthorizerTest {
+
+	@Inject
+	private SecurityContext context;
+
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(ConfigurationResourceTest.class);
+		deployment.addClass(CustomAuthenticator.class);
+		deployment.addClass(CustomAuthorizer.class);
+		deployment.addClass(DuplicatedCustomAuthorizer.class);
+		return deployment;
+	}
+	
+	@Before
+	public void loginToTest(){
+		context.login();
+	}
+
+	@Test
+	public void ambiguousAuthorizerStrategy() {
+		try {
+			context.hasRole("role");
+		} catch (DemoiselleException cause) {
+			assertEquals(AmbiguousResolutionException.class, cause.getCause().getClass());
+		}
+	}
+	
+	@After
+	public void logoutAfterTest(){
+		context.logout();
+	}
 }
