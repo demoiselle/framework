@@ -52,6 +52,14 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 
+/**
+ * <p>
+ * Utilizes a {@link BeanManager}, obtained in the bootstrap process, to provide custom operations for obtaining contextual references for beans.
+ * <p>
+ * All its public methods are static.
+ * 
+ * @author SERPRO
+ */
 public final class Beans {
 
 	private static transient ResourceBundle bundle;
@@ -69,6 +77,20 @@ public final class Beans {
 		return manager;
 	}
 
+	/**
+	 * Obtains a injectble instance of a bean, which have the given required type and qualifiers, 
+     * and are available for injection in the point where this method was call. 
+	 * 
+	 * @param beanClass
+	 * 			the beanClass which instace is requested to be obtained.
+	 * @param qualifiers
+	 * 			a set of qualifiers with any quantity of elements (zero including).
+	 * @return Type
+	 * 			a instace of the injected beanClass.
+	 * @throws DemoiselleException
+	 * 			if no bean are avaliable to be injected for the given Class and qualifiers.
+	 *            
+	 */
 	public static <T> T getReference(final Class<T> beanClass, Annotation... qualifiers) {
 		T instance;
 
@@ -91,6 +113,18 @@ public final class Beans {
 		return instance;
 	}
 
+	/**
+	 * Obtains a injectble instance of a bean, which have the given required type 
+     * and are available for injection in the point where this method was call. 
+	 * 
+	 * @param beanClass
+	 * 			the beanClass which instace is requested to be obtained.
+	 * @return Type
+	 * 			a instace of the injected beanClass.
+	 * @throws DemoiselleException
+	 * 			if no bean are avaliable to be injected for the given Class.
+	 *            
+	 */
 	public static <T> T getReference(final Class<T> beanClass) {
 		T instance;
 
@@ -105,6 +139,18 @@ public final class Beans {
 		return instance;
 	}
 
+	/**
+	 * Obtains a injectble instance of a bean, which have the given EL name 
+     * and are available for injection in the point where this method was call. 
+	 * 
+	 * @param beanName
+	 * 			the EL name for the requested bean.
+	 * @return Type
+	 * 			a instace of the injected beanClass.
+	 * @throws DemoiselleException
+	 * 			if no bean are avaliable to be injected for the given bean name.
+	 *            
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T getReference(String beanName) {
 		T instance;
