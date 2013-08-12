@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.StaticScoped;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -40,14 +39,14 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * 
  * @author serpro
  */
-public class ContextManager {
+public final class ContextManager {
 
 	private static List<CustomContextCounter> contexts = Collections
 			.synchronizedList(new ArrayList<CustomContextCounter>());
 
 	private static boolean initialized = false;
 
-	private static ResourceBundle bundle;
+	private static transient ResourceBundle bundle;
 
 	private static Logger logger;
 
@@ -217,7 +216,7 @@ public class ContextManager {
 
 	static ResourceBundle getBundle() {
 		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
+			bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 		}
 
 		return bundle;

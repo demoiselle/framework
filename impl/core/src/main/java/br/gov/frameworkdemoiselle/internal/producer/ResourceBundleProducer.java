@@ -62,6 +62,7 @@ public class ResourceBundleProducer implements Serializable {
 	 * @param String
 	 *            baseName
 	 */
+	@Deprecated
 	public static ResourceBundle create(String baseName) {
 		return create(baseName, Beans.getReference(Locale.class));
 	}
@@ -72,6 +73,7 @@ public class ResourceBundleProducer implements Serializable {
 	 * @param String
 	 *            baseName
 	 */
+	@Deprecated
 	public static ResourceBundle create(String baseName, Locale locale) {
 		return new ResourceBundle(baseName, locale);
 	}
@@ -83,7 +85,7 @@ public class ResourceBundleProducer implements Serializable {
 	@Default
 	@Produces
 	public ResourceBundle createDefault(InjectionPoint ip) {
-		return create("messages", Beans.getReference(Locale.class));
+		return new ResourceBundle("messages", Beans.getReference(Locale.class));
 	}
 
 	/**
@@ -94,6 +96,6 @@ public class ResourceBundleProducer implements Serializable {
 	@Produces
 	public ResourceBundle createNamed(InjectionPoint ip) {
 		String baseName = ip.getAnnotated().getAnnotation(Name.class).value();
-		return create(baseName, Beans.getReference(Locale.class));
+		return new ResourceBundle(baseName, Beans.getReference(Locale.class));
 	}
 }

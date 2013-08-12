@@ -50,25 +50,17 @@ import javax.enterprise.inject.spi.Bean;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 public final class StrategySelector implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static ResourceBundle bundle;
+	private transient static ResourceBundle bundle;
 
 	private StrategySelector() {
-	}
-
-	private static ResourceBundle getBundle() {
-		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
-		}
-
-		return bundle;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -161,5 +153,13 @@ public final class StrategySelector implements Serializable {
 		}
 
 		return result;
+	}
+
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
+		}
+
+		return bundle;
 	}
 }

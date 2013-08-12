@@ -43,7 +43,6 @@ import javax.inject.Named;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfig;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
 import br.gov.frameworkdemoiselle.security.AfterLogoutSuccessful;
 import br.gov.frameworkdemoiselle.security.AuthenticationException;
@@ -53,6 +52,7 @@ import br.gov.frameworkdemoiselle.security.NotLoggedInException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.security.User;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -65,6 +65,8 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 public class SecurityContextImpl implements SecurityContext {
 
 	private static final long serialVersionUID = 1L;
+
+	private transient static ResourceBundle bundle;
 
 	private Authenticator authenticator;
 
@@ -199,9 +201,16 @@ public class SecurityContextImpl implements SecurityContext {
 
 	public void checkLoggedIn() throws NotLoggedInException {
 		if (!isLoggedIn()) {
-			ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
-			throw new NotLoggedInException(bundle.getString("user-not-authenticated"));
+			throw new NotLoggedInException(getBundle().getString("user-not-authenticated"));
 		}
+	}
+
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
+		}
+
+		return bundle;
 	}
 
 	private static class EmptyUser implements Principal, Serializable {
