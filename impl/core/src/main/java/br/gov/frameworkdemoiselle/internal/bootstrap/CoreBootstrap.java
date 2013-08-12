@@ -52,7 +52,6 @@ import br.gov.frameworkdemoiselle.annotation.StaticScoped;
 import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.StaticContext;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -60,7 +59,7 @@ public class CoreBootstrap implements Extension {
 
 	private Logger logger;
 
-	private ResourceBundle bundle;
+	private static transient ResourceBundle bundle;
 
 	private Logger getLogger() {
 		if (this.logger == null) {
@@ -70,12 +69,12 @@ public class CoreBootstrap implements Extension {
 		return this.logger;
 	}
 
-	private ResourceBundle getBundle() {
-		if (this.bundle == null) {
-			this.bundle = ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 		}
 
-		return this.bundle;
+		return bundle;
 	}
 
 	public void engineOn(@Observes final BeforeBeanDiscovery event, BeanManager beanManager) {
@@ -91,7 +90,7 @@ public class CoreBootstrap implements Extension {
 
 		ContextManager.activate(StaticContext.class, StaticScoped.class);
 	}
-	
+
 	public void terminateCustomContexts(@Observes final BeforeShutdown event) {
 		ContextManager.shutdown();
 	}

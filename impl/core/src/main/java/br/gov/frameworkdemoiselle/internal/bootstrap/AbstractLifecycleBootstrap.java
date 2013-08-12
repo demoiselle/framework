@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.RequestScoped;
@@ -60,7 +59,8 @@ import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.internal.implementation.AnnotatedMethodProcessor;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -74,16 +74,16 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 
 	private boolean registered = false;
 
-	private ResourceBundle bundle;
+	private transient static ResourceBundle bundle;
 
 	protected abstract Logger getLogger();
 
-	protected ResourceBundle getBundle() {
-		if (this.bundle == null) {
-			this.bundle = ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
+	protected static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}
 
-		return this.bundle;
+		return bundle;
 	}
 
 	protected <T> AnnotatedMethodProcessor<T> newProcessorInstance(AnnotatedMethod<T> annotatedMethod) {

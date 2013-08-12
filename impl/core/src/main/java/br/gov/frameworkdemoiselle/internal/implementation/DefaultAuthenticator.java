@@ -42,10 +42,11 @@ import java.security.Principal;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -59,7 +60,7 @@ public class DefaultAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
 
-	private static ResourceBundle bundle;
+	private transient static ResourceBundle bundle;
 
 	/**
 	 * @see br.gov.frameworkdemoiselle.security.Authenticator#authenticate()
@@ -92,7 +93,7 @@ public class DefaultAuthenticator implements Authenticator {
 
 	private static ResourceBundle getBundle() {
 		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}
 
 		return bundle;

@@ -37,7 +37,6 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Locale;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
@@ -46,9 +45,9 @@ import org.slf4j.Logger;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -61,7 +60,7 @@ public class AnnotatedMethodProcessor<T> implements Comparable<AnnotatedMethodPr
 
 	private AnnotatedMethod<T> annotatedMethod;
 
-	private ResourceBundle bundle;
+	private transient static ResourceBundle bundle;
 
 	public AnnotatedMethodProcessor(final AnnotatedMethod<T> annotatedMethod) {
 		this.annotatedMethod = annotatedMethod;
@@ -132,9 +131,9 @@ public class AnnotatedMethodProcessor<T> implements Comparable<AnnotatedMethodPr
 		return priority;
 	}
 
-	protected ResourceBundle getBundle() {
-		if (this.bundle == null) {
-			this.bundle = ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
+	protected static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}
 
 		return bundle;
