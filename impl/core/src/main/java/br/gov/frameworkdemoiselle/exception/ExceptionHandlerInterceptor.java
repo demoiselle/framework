@@ -51,8 +51,6 @@ import javax.interceptor.InvocationContext;
 
 import org.slf4j.Logger;
 
-import exception.custom.CustomException;
-
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.stereotype.Controller;
 import br.gov.frameworkdemoiselle.util.Beans;
