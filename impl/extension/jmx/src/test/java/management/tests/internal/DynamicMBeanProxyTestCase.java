@@ -52,12 +52,15 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import br.gov.frameworkdemoiselle.jmx.internal.MBeanManager;
+import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
+import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
@@ -73,11 +76,20 @@ public class DynamicMBeanProxyTestCase {
 				.addPackages(false, DynamicMBeanProxyTestCase.class.getPackage())
 				.addClasses(LocaleProducer.class, ManagedTestClass.class);
 		
-		mainDeployment.as(ZipExporter.class).exportTo(
-			    new File("/home/81986912515/myPackage.jar"), true);
-		
 		return mainDeployment;
 	}
+	
+	@BeforeClass
+	public static void fireEventStartupProccess() {
+		Beans.getBeanManager().fireEvent(new AfterStartupProccess() {
+		});
+	}
+	
+	@AfterClass
+	public static void fireEventShutdownProccess() {
+		Beans.getBeanManager().fireEvent(new AfterShutdownProccess() {
+		});
+	}	
 	
 	/**
 	 * Testa se o bootstrap está corretamente carregando e registrando classes anotadas com {@link Managed} como MBeans.
