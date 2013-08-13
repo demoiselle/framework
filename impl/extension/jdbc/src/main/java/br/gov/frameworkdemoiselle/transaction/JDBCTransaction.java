@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.internal.producer.ConnectionProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -97,7 +98,7 @@ public class JDBCTransaction implements Transaction {
 			try {
 				connection.commit();
 			} catch (Exception cause) {
-				throw new TransactionException(cause);
+				throw new DemoiselleException(cause);
 			}
 		}
 	}
@@ -108,7 +109,7 @@ public class JDBCTransaction implements Transaction {
 			try {
 				connection.rollback();
 			} catch (Exception cause) {
-				throw new TransactionException(cause);
+				throw new DemoiselleException(cause);
 			}
 		}
 	}
