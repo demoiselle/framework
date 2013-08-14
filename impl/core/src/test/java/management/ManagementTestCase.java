@@ -72,7 +72,7 @@ public class ManagementTestCase {
 				.create(JavaArchive.class)
 				.addClass(LocaleProducer.class)
 				.addPackages(true, "br")
-				.addAsResource(new FileAsset(new File("src/test/resources/test/beans.xml")), "beans.xml")
+				.addAsResource(new FileAsset(new File("src/test/resources/beans.xml")), "beans.xml")
 				.addAsManifestResource(
 						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
 						"services/javax.enterprise.inject.spi.Extension")

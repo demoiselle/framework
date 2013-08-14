@@ -76,7 +76,7 @@ public class ManagementBootstrapTestCase {
 				.addPackages(true, "br")
 				.addAsResource(
 						new FileAsset(new File(
-								"src/test/resources/test/beans.xml")),
+								"src/test/resources/beans.xml")),
 						"beans.xml")
 				.addAsManifestResource(
 						new File(

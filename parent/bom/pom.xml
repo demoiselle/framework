@@ -307,6 +307,13 @@
 				<artifactId>commons-dbcp</artifactId>
 				<version>${commons.dbcp.version}</version>
 			</dependency>
+			
+			<!-- embedded containners -->
+			<dependency>
+				<groupId>org.glassfish.main.extras</groupId>
+				<artifactId>glassfish-embedded-web</artifactId>
+				<version>${glassfish.embedded.version}</version>
+			</dependency>			
 
 			<!-- embedded database -->
 			<dependency>
@@ -328,6 +335,34 @@
 				<version>${junit.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<version>${arquillian.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
+				<version>${arquillian.weld.se.embedded.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-glassfish-embedded-3.1</artifactId>
+				<version>${arquillian.glassfish.embedded.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.extension</groupId>
+				<artifactId>arquillian-persistence-impl</artifactId>
+				<version>${arquillian.persistence.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.weld.se</groupId>
+				<artifactId>weld-se-core</artifactId>
+				<version>${weld.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.powermock</groupId>
 				<artifactId>powermock-module-junit4</artifactId>
 				<version>${powermock.version}</version>
@@ -341,26 +376,6 @@
 				<groupId>org.easymock</groupId>
 				<artifactId>easymock</artifactId>
 				<version>${easymock.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.arquillian.junit</groupId>
-				<artifactId>arquillian-junit-container</artifactId>
-				<version>${arquillian.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.arquillian.container</groupId>
-				<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
-				<version>${arquillian.weld.se.embedded.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.arquillian.container</groupId>
-				<artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
-				<version>${arquillian.weld.ee.embedded.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.weld.se</groupId>
-				<artifactId>weld-se-core</artifactId>
-				<version>${weld.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -406,9 +421,12 @@
 		<junit.version>4.8.1</junit.version>
 		<easymock.version>3.0</easymock.version>
 
-		<arquillian.version>1.0.3.Final</arquillian.version>
-		<arquillian.weld.se.embedded.version>1.0.0.CR6</arquillian.weld.se.embedded.version>
-		<arquillian.weld.ee.embedded.version>1.0.0.CR6</arquillian.weld.ee.embedded.version>
+		<arquillian.version>1.1.1.Final</arquillian.version>
+		<arquillian.weld.se.embedded.version>1.0.0.CR7</arquillian.weld.se.embedded.version>
+		<arquillian.persistence.version>1.0.0.Alpha6</arquillian.persistence.version>
+		<arquillian.glassfish.embedded.version>1.0.0.CR3</arquillian.glassfish.embedded.version>
+		
+		<glassfish.embedded.version>3.1.2</glassfish.embedded.version>
 
 		<powermock.version>1.4.6</powermock.version>
 		<primefaces.version>3.4</primefaces.version>

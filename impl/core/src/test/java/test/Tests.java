@@ -41,7 +41,6 @@ import java.io.File;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
 
 public final class Tests {
 
@@ -57,7 +56,7 @@ public final class Tests {
 				.create(JavaArchive.class)
 				.addClass(LocaleProducer.class)
 				.addPackages(true, "br")
-				.addAsResource(Tests.createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")
+				.addAsResource(Tests.createFileAsset("src/test/resources/beans.xml"), "beans.xml")
 				.addAsManifestResource(
 						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
 						"services/javax.enterprise.inject.spi.Extension");
@@ -65,9 +64,5 @@ public final class Tests {
 
 	public static FileAsset createFileAsset(final String pathname) {
 		return new FileAsset(new File(pathname));
-	}
-	
-	@Test
-	public void test(){
 	}
 }
