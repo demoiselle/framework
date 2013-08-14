@@ -43,13 +43,13 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
-import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.Parameter;
 import br.gov.frameworkdemoiselle.util.Reflections;
@@ -82,7 +82,7 @@ public class ParameterImpl<T extends Serializable> implements Parameter<T>, Seri
 	}
 
 	private HttpServletRequest getRequest() {
-		return (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		return (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 	}
 
 	@Inject
