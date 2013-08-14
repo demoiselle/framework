@@ -34,33 +34,14 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util;
+package util.beans;
 
-import static org.junit.Assert.assertEquals;
+import br.gov.frameworkdemoiselle.annotation.Priority;
 
-import java.util.Locale;
+@Priority(value = 1)
+public class DummyImplementation implements Dummy {
 
-import org.junit.Before;
-import org.junit.Test;
-
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
-
-public class ResourceBundleTest {
-
-	private ResourceBundle resourceBundle;
-
-	@Before
-	public void setUp() throws Exception {
-		resourceBundle = new ResourceBundle("resourcebundle/resource-bundle", new Locale("pt"));
+	@Override
+	public void dummyMethod() {
 	}
-
-	@Test
-	public void getString() {
-		assertEquals("no params", resourceBundle.getString("msgWithoutParams"));
-
-		assertEquals("params: a, b", resourceBundle.getString("msgWithParams", "a", "b"));
-
-		assertEquals("params: {0}, {1}", resourceBundle.getString("msgWithParams"));
-	}
-
 }

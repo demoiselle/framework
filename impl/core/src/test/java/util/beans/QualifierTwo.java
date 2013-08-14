@@ -34,33 +34,21 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util;
+package util.beans;
 
-import static org.junit.Assert.assertEquals;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.util.Locale;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import org.junit.Before;
-import org.junit.Test;
+import javax.inject.Qualifier;
 
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
-
-public class ResourceBundleTest {
-
-	private ResourceBundle resourceBundle;
-
-	@Before
-	public void setUp() throws Exception {
-		resourceBundle = new ResourceBundle("resourcebundle/resource-bundle", new Locale("pt"));
-	}
-
-	@Test
-	public void getString() {
-		assertEquals("no params", resourceBundle.getString("msgWithoutParams"));
-
-		assertEquals("params: a, b", resourceBundle.getString("msgWithParams", "a", "b"));
-
-		assertEquals("params: {0}, {1}", resourceBundle.getString("msgWithParams"));
-	}
-
+@Qualifier
+@Target({TYPE,  METHOD, PARAMETER, FIELD})
+@Retention(RUNTIME)
+public @interface QualifierTwo {
 }
