@@ -82,7 +82,7 @@ public class ParameterImpl<T extends Serializable> implements Parameter<T>, Seri
 	}
 
 	private HttpServletRequest getRequest() {
-		return Beans.getReference(HttpServletRequest.class);
+		return (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
 	}
 
 	@Inject
