@@ -44,6 +44,7 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -99,6 +100,7 @@ public class ExceptionHandlerTest {
 		assertEquals(false, exceptionHandler.isArithmeticExceptionHandler());
 	}
 
+	@Ignore
 	@Test
 	public void exceptionWithMultiHandler() {
 		multiExceptionHandler.throwIllegalArgumentException();
