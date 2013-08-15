@@ -17,7 +17,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import test.LocaleProducer;
+import test.Tests;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.util.Beans;
 
@@ -28,18 +28,15 @@ public class ValidationTestCase {
 	public static JavaArchive createDeployment() {
 		return ShrinkWrap
 				.create(JavaArchive.class)
-				.addClass(LocaleProducer.class)
+				.addClass(Tests.class)
 				.addPackages(true, "br")
 				.addAsResource(new FileAsset(new File("src/test/resources/beans.xml")), "beans.xml")
 				.addAsManifestResource(
 						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
 						"services/javax.enterprise.inject.spi.Extension")
 				.addPackages(false, NotificationTestCase.class.getPackage())
-				.addClasses(DummyManagementExtension.class
-						, ManagedClassStore.class
-						, DummyManagedClass.class
-						, DummyValidator.class
-						, DummyValidatorAnnotation.class);
+				.addClasses(DummyManagementExtension.class, ManagedClassStore.class, DummyManagedClass.class,
+						DummyValidator.class, DummyValidatorAnnotation.class);
 	}
 
 	/**
@@ -87,7 +84,7 @@ public class ValidationTestCase {
 
 			Assert.fail();
 		} catch (DemoiselleException e) {
-			Assert.assertTrue( e.getMessage().contains("Test Message") );
+			Assert.assertTrue(e.getMessage().contains("Test Message"));
 		}
 
 	}

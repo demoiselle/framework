@@ -53,7 +53,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import test.LocaleProducer;
+import test.Tests;
 
 //TODO O arquillian está com um problema onde, embora os testes rodem todos individualmente,
 //ao pedir para rodar todos este teste individual causa todos os testes executados após esse
@@ -70,7 +70,7 @@ public class AnnotationTestCase {
 	public static JavaArchive createWrongAnnotationDeployment() {
 		return ShrinkWrap
 				.create(JavaArchive.class)
-				.addClass(LocaleProducer.class)
+				.addClass(Tests.class)
 				.addPackages(true, "br")
 				.addAsResource(new FileAsset(new File("src/test/resources/beans.xml")), "beans.xml")
 				.addAsManifestResource(
