@@ -44,7 +44,7 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-framework-parent</artifactId>
-		<version>2.4.0-BETA3-SNAPSHOT</version>
+		<version>2.4.0-BETA3</version>
 		<relativePath>../framework</relativePath>
 	</parent>
 
@@ -72,37 +72,37 @@
 			<dependency>
 				<groupId>br.gov.frameworkdemoiselle</groupId>
 				<artifactId>demoiselle-core</artifactId>
-				<version>2.4.0-BETA3-SNAPSHOT</version>
+				<version>2.4.0-BETA3</version>
 			</dependency>
 			<dependency>
 				<groupId>br.gov.frameworkdemoiselle</groupId>
 				<artifactId>demoiselle-jta</artifactId>
-				<version>2.4.0-BETA3-SNAPSHOT</version>
+				<version>2.4.0-BETA3</version>
 			</dependency>
 			<dependency>
 				<groupId>br.gov.frameworkdemoiselle</groupId>
 				<artifactId>demoiselle-jdbc</artifactId>
-				<version>2.4.0-BETA3-SNAPSHOT</version>
+				<version>2.4.0-BETA3</version>
 			</dependency>
 			<dependency>
 				<groupId>br.gov.frameworkdemoiselle</groupId>
 				<artifactId>demoiselle-jpa</artifactId>
-				<version>2.4.0-BETA3-SNAPSHOT</version>
+				<version>2.4.0-BETA3</version>
 			</dependency>
 			<dependency>
 				<groupId>br.gov.frameworkdemoiselle</groupId>
 				<artifactId>demoiselle-servlet</artifactId>
-				<version>2.4.0-BETA3-SNAPSHOT</version>
+				<version>2.4.0-BETA3</version>
 			</dependency>
 			<dependency>
 				<groupId>br.gov.frameworkdemoiselle</groupId>
 				<artifactId>demoiselle-jsf</artifactId>
-				<version>2.4.0-BETA3-SNAPSHOT</version>
+				<version>2.4.0-BETA3</version>
 			</dependency>
 			<dependency>
 				<groupId>br.gov.frameworkdemoiselle</groupId>
 				<artifactId>demoiselle-se</artifactId>
-				<version>2.4.0-BETA3-SNAPSHOT</version>
+				<version>2.4.0-BETA3</version>
 			</dependency>
 			<dependency>
 				<groupId>br.gov.frameworkdemoiselle</groupId>
