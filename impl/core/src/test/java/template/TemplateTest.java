@@ -51,7 +51,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import template.business.TemplateBC;
+import template.business.TemplateDelegateCrud;
 import template.crud.CrudImpl;
 import template.model.DummyEntity;
 import test.Tests;
@@ -66,7 +66,7 @@ public class TemplateTest {
 	private static final Long VALID_ID = 1L;
 
 	@Inject
-	private TemplateBC templateBC;
+	private TemplateDelegateCrud templateBC;
 
 	@Inject
 	private CrudImpl crudImpl;
