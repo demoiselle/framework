@@ -36,7 +36,10 @@
  */
 package template;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 
 import java.util.List;
 
@@ -51,9 +54,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import template.business.TemplateDelegateCrud;
-import template.crud.CrudImpl;
-import template.model.DummyEntity;
 import test.Tests;
 import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ManagedContext;

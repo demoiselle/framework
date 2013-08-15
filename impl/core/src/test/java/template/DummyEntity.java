@@ -34,98 +34,67 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package template.crud;
+package template;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-
-import template.model.DummyEntity;
-import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.template.Crud;
-
-@RequestScoped
-public class CrudImpl implements Crud<DummyEntity, Long> {
-
-	private List<DummyEntity> entities;
+public class DummyEntity {
 	
-	public CrudImpl() {
+	private Long id;
+	private String name;
+	
+	public DummyEntity(Long id, String name) {
 		
 		super();
 		
-		this.entities = new ArrayList<DummyEntity>();
+		this.id = id;
+		this.name = name;
 		
 	}
-
-	public void resetEntities() {
-		
-		this.entities.clear();
-		
-		this.entities.add(new DummyEntity(1L, "Dummy1 Label 1"));
-		this.entities.add(new DummyEntity(2L, "Dummy1 Label 2"));
-		this.entities.add(new DummyEntity(3L, "Dummy1 Label 3"));
-		this.entities.add(new DummyEntity(4L, "Dummy1 Label 4"));
-		this.entities.add(new DummyEntity(5L, "Dummy1 Label 5"));
-		this.entities.add(new DummyEntity(6L, "Dummy1 Label 6"));
-		this.entities.add(new DummyEntity(7L, "Dummy1 Label 7"));
-		this.entities.add(new DummyEntity(8L, "Dummy1 Label 8"));
-		this.entities.add(new DummyEntity(9L, "Dummy1 Label 9"));
-		this.entities.add(new DummyEntity(10L, "Dummy1 Label 10"));
-		
+	
+	public String getName() {
+		return name;
 	}
 
-	@Override
-	public void delete(Long id) {
-				
-		this.entities.remove(this.load(id));
-		
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Override
-	public List<DummyEntity> findAll() {
-
-		return this.entities;
-		
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
 	}
 
 	@Override
-	public DummyEntity insert(DummyEntity bean) {
-
-		if (this.entities.add(bean)) {
-			return bean;
-		} else {
-			throw new DemoiselleException("Erro ao inserir entity");
-		}
-		
-	}
-
-	@Override
-	public DummyEntity load(Long id) {
-
-		for (DummyEntity dummyEntity : this.entities) {
-			
-			if (dummyEntity.getId().equals(id)) {
-
-				return dummyEntity;
-				
-			}
-			
-		}
-		
-		return null;
-		
-	}
-
-	@Override
-	public DummyEntity update(DummyEntity bean) {
-
-		DummyEntity dummyEntity = this.load(bean.getId());
-		
-		dummyEntity.setName(bean.getName());
-		
-		return dummyEntity;
-		
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DummyEntity other = (DummyEntity) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
 
 }
