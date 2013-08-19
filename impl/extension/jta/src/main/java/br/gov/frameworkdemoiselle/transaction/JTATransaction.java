@@ -55,8 +55,7 @@ public class JTATransaction implements Transaction {
 
 	private UserTransaction delegate;
 
-	public UserTransaction getDelegate() {
-
+	private UserTransaction getDelegate() {
 		if (delegate == null) {
 			delegate = Beans.getReference(UserTransaction.class);
 		}
