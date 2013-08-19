@@ -63,7 +63,7 @@ public class ResourceBundleProducer implements Serializable {
 	 *            baseName
 	 */
 	@Deprecated
-	public static ResourceBundle create(String baseName) {
+	public ResourceBundle create(String baseName) {
 		return create(baseName, Beans.getReference(Locale.class));
 	}
 
@@ -74,7 +74,7 @@ public class ResourceBundleProducer implements Serializable {
 	 *            baseName
 	 */
 	@Deprecated
-	public static ResourceBundle create(String baseName, Locale locale) {
+	public ResourceBundle create(String baseName, Locale locale) {
 		return new ResourceBundle(baseName, locale);
 	}
 

@@ -44,8 +44,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @Priority(L2_PRIORITY)
@@ -58,7 +58,7 @@ public class ServletAuthenticator implements Authenticator {
 	@Override
 	public void authenticate() throws AuthenticationException {
 		try {
-			if (this.getUser()==null){
+			if (this.getUser() == null) {
 				getRequest().login(getCredentials().getUsername(), getCredentials().getPassword());
 			}
 		} catch (ServletException cause) {
@@ -72,7 +72,7 @@ public class ServletAuthenticator implements Authenticator {
 		try {
 			getRequest().logout();
 		} catch (ServletException e) {
-			//Logout já havia sido efetuado
+			// Logout já havia sido efetuado
 		}
 		getRequest().getSession().invalidate();
 	}
@@ -92,7 +92,7 @@ public class ServletAuthenticator implements Authenticator {
 
 	private static ResourceBundle getBundle() {
 		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-servlet-bundle");
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-servlet-bundle"));
 		}
 
 		return bundle;

@@ -48,7 +48,7 @@ public class ManagementBootstrap implements Extension {
 
 	@SuppressWarnings("unchecked")
 	public void registerAvailableManagedTypes(@Observes final AfterDeploymentValidation event, BeanManager beanManager) {
-		ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-core-bundle", Locale.getDefault());
+		ResourceBundle bundle = new ResourceBundleProducer().create("demoiselle-core-bundle", Locale.getDefault());
 
 		Management monitoringManager = Beans.getReference(Management.class);
 		for (AnnotatedType<?> type : types) {

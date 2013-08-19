@@ -79,7 +79,7 @@ public class DynamicMBeanProxy implements DynamicMBean {
 	
 	private ManagedType managedType;
 
-	private ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-jmx-bundle", Locale.getDefault());
+	private ResourceBundle bundle = new ResourceBundleProducer().create("demoiselle-jmx-bundle", Locale.getDefault());
 
 	public DynamicMBeanProxy(ManagedType type) {
 		if (type == null) {

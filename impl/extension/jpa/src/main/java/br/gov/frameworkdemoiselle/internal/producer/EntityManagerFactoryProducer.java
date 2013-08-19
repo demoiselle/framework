@@ -26,6 +26,7 @@ import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @ApplicationScoped
+// @StaticScoped
 public class EntityManagerFactoryProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
