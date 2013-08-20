@@ -41,7 +41,12 @@ import java.util.Map;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
-
+/**
+ * Provide used to access the configurations of the JDBC connexion
+ * 
+ * @author SERPRO
+ *
+ */
 @Configuration(prefix = "frameworkdemoiselle.persistence.")
 public class JDBCConfig implements Serializable {
 
