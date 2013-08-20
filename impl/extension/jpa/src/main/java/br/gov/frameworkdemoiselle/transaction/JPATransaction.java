@@ -124,8 +124,11 @@ public class JPATransaction implements Transaction {
 	public boolean isActive() {
 		boolean active = false;
 
+		EntityTransaction transaction;
 		for (EntityManager entityManager : getDelegate()) {
-			if (entityManager.getTransaction().isActive()) {
+			transaction = entityManager.getTransaction();
+
+			if (transaction.isActive()) {
 				active = true;
 				break;
 			}

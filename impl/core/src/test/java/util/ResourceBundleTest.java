@@ -37,61 +37,21 @@
 package util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
-import java.util.Enumeration;
 import java.util.Locale;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
-@Ignore
 public class ResourceBundleTest {
 
-	/**
-	 * This is a workaround to mock java.util.ResourceBundle. Since getString(key) method is defined as final, there is
-	 * no way to extend and override it. For that reason, setting expectations (i.e. expect(...)) won't work.
-	 */
 	private ResourceBundle resourceBundle;
 
 	@Before
 	public void setUp() throws Exception {
-		resourceBundle = new ResourceBundle("resource-bundle", new Locale("pt"));
-	}
-
-	@Test
-	public void containsKey() {
-		assertTrue(resourceBundle.containsKey("msgWithoutParams"));
-
-		assertFalse(resourceBundle.containsKey("inexistentKey"));
-	}
-
-	@Test
-	public void getKeys() {
-		int keyCount = 0;
-
-		Enumeration<String> e = resourceBundle.getKeys();
-
-		while (e.hasMoreElements()) {
-			keyCount++;
-			e.nextElement();
-		}
-
-		assertEquals(resourceBundle.keySet().size(), keyCount);
-	}
-
-	@Test
-	public void testGetLocale() {
-		assertEquals(resourceBundle.getLocale(), new Locale("pt"));
-	}
-
-	@Test
-	public void testKeySet() {
-		assertEquals(2, resourceBundle.keySet().size());
+		resourceBundle = new ResourceBundle("resourcebundle/resource-bundle", new Locale("pt"));
 	}
 
 	@Test
@@ -102,25 +62,5 @@ public class ResourceBundleTest {
 
 		assertEquals("params: {0}, {1}", resourceBundle.getString("msgWithParams"));
 	}
-
-	/**
-	 * For this test, java.util.ResourceBundle is mocked to force an exception. Since the getString method is called
-	 * from the actual ResourceBundle, not from the mock, it tries to find a handleGetObject method that doesn't exist.
-	 * 
-	 * @throws Exception
-	 */
-	// @Test(expected = RuntimeException.class)
-	// public void getStringWhenHandleGetObjectThrowsException() {
-	// mockResourceBundle = createMock(java.util.ResourceBundle.class);
-	// resourceBundle = new ResourceBundle(mockResourceBundle);
-	//
-	// replay(mockResourceBundle);
-	//
-	// resourceBundle.getString("msgWithParams");
-	//
-	// verify(mockResourceBundle);
-	//
-	// Assert.fail();
-	// }
 
 }

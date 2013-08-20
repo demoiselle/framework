@@ -40,9 +40,37 @@ import java.lang.reflect.Field;
 
 import org.apache.commons.configuration.Configuration;
 
+/**
+ * Interface that defining the way to extract the values of configurations attributes from property file.
+ * It should be implemented if is wanted to extract values of a configuration attribute, in a different way or 
+ * for a type not yet offered by Demoiselle Framework.
+ * 
+ * @author SERPRO
+ */
 public interface ConfigurationValueExtractor {
 
+	/**
+	 * Method that must appropriately extract the value from a property file and set this value to a 
+	 * field in a configuration class.
+	 * 
+	 * @param prefix
+	 * 			optional parte of property name that must be concatenated with <b>key</b> to form the whole 
+	 * 			property name.
+	 * @param key
+	 * 			key of the property.
+	 * @param field
+	 * 			configuration field to be setted.
+	 * @param configuration
+	 * 			a configuration object.
+	 */
 	Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception;
 
+	/**
+	 * Checks if the extractor class is appropriate to extract values to the type of deffined by parameter
+	 * <b>field</b>.
+	 * 
+	 * @param field
+	 * 			field to be checked.
+	 */
 	boolean isSupported(Field field);
 }

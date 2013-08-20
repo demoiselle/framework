@@ -39,13 +39,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>demoiselle-framework-build</artifactId>
-	<version>2.4.0-BETA3-SNAPSHOT</version>
+	<version>2.4.0-BETA4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-build-parent</artifactId>
-		<version>8</version>
+		<version>9</version>
 		<relativePath>../internal/parent/build/demoiselle</relativePath>
 	</parent>
 
@@ -71,6 +71,7 @@
 		<module>impl/extension/jta</module>
 		<module>impl/extension/se</module>
 		<module>impl/extension/servlet</module>
+		<module>impl/extension/jmx</module>
 <!--
 		<module>impl/extension/jaas</module>
 -->

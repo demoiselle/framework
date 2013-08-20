@@ -20,8 +20,7 @@
     	<title>Configurando</title>
 
     	<para>
-    	Para um correto funcionamento da segurança no Framework Demoiselle é necessário inserir os interceptadores de segurança no arquivo <filename>beans.xml</filename>, localizado
-    	na pasta WEB-INF em projetos WEB ou na pasta META-INF em projetos SE ou EJB.
+    	Para um correto funcionamento do Demoiselle é necessário inserir os interceptadores de segurança no arquivo <filename>src/main/webapp/WEB-INF/beans.xml</filename>.
     	</para>
 
 		<programlisting role="XML"><![CDATA[<beans xmlns="http://java.sun.com/xml/ns/javaee" 
@@ -239,7 +238,6 @@ class GerenciadorBookmark {
 	} 
 
 }]]></programlisting>
-
 			<tip>
 				É possível informar mais de um papel para a anotação <code>@RequiredRole</code>, neste caso basta que o usuário
 				autenticado possua um dos papéis listados para ter acesso ao recurso.
@@ -535,8 +533,8 @@ class GerenciadorBookmark {
 	} 
 
 	@Override 
-	public boolean hasPermission(Object resource, String operation) { 
-		// Verifique se o usuario autenticado tem a permissao adequada, retorne true em caso positivo 
+	public boolean hasPermission(String resource, String operation) { 
+		// Escreva aqui seu codigo de verificação de permissao 
 		return false; 
 	} 
 }]]></programlisting>
@@ -612,5 +610,4 @@ class GerenciadorBookmark {
 			</tgroup>
 		</informaltable>
 	</section>
-	
 </chapter>

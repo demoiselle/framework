@@ -43,6 +43,12 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Set;
 
+/**
+ * The Demoiselle's ResourceBundle extends the abstraction java.util.ResourceBundle, 
+ * and provide the locale and the base name for the bundle.
+ * 
+ * @author SERPRO
+ */
 public class ResourceBundle extends java.util.ResourceBundle implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -67,6 +73,15 @@ public class ResourceBundle extends java.util.ResourceBundle implements Serializ
 		return delegate;
 	}
 
+	/**
+	 * Constructor that set values of baseName and locale.
+	 * 
+	 * @param baseName
+	 * 			the base name to construct the complete bundle name.
+	 * 
+	 * @param locale
+	 * 			locale to define the choosen bundle.
+	 */
 	public ResourceBundle(String baseName, Locale locale) {
 		this.baseName = baseName;
 		this.locale = locale;

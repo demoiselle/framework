@@ -40,12 +40,12 @@
 
 	<artifactId>demoiselle-framework-reference</artifactId>
 	<packaging>jdocbook</packaging>
-	<version>2.4.0-BETA3-SNAPSHOT</version>
+	<version>2.4.0-BETA4-SNAPSHOT</version>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-documentation-parent</artifactId>
-		<version>8</version>
+		<version>9</version>
 		<relativePath>../../../internal/parent/documentation</relativePath>
 	</parent>
 

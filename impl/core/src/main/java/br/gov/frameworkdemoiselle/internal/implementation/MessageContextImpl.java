@@ -37,19 +37,19 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.message.DefaultMessage;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.MessageAppender;
 import br.gov.frameworkdemoiselle.message.MessageContext;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -60,9 +60,6 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 public class MessageContextImpl implements Serializable, MessageContext {
 
 	private static final long serialVersionUID = 1L;
-
-	@Deprecated
-	private transient final List<Message> messages = new ArrayList<Message>();
 
 	private transient static ResourceBundle bundle;
 
@@ -101,19 +98,22 @@ public class MessageContextImpl implements Serializable, MessageContext {
 	@Override
 	@Deprecated
 	public List<Message> getMessages() {
-		return messages;
+		throw new DemoiselleException(
+				"Este método não é mais suportado desde a versão 2.4.0 do Demoiselle Framework. Considere atualizar a sua aplicação ou o componente com uma nova versão que faça uso do "
+						+ MessageAppender.class.getCanonicalName() + ".");
 	}
 
 	@Override
 	@Deprecated
 	public void clear() {
-		getLogger().debug(getBundle().getString("cleaning-message-context"));
-		messages.clear();
+		throw new DemoiselleException(
+				"Este método não é mais suportado desde a versão 2.4.0 do Demoiselle Framework. Considere atualizar a sua aplicação ou o componente com uma nova versão que faça uso do "
+						+ MessageAppender.class.getCanonicalName() + ".");
 	}
 
 	private static ResourceBundle getBundle() {
 		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}
 
 		return bundle;

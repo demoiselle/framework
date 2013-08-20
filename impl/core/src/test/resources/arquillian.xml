@@ -40,7 +40,7 @@
 
 	<!--
 	<engine>
-		<property name="deploymentExportPath">target/arquillian</property>
+		<property name="deploymentExportPath">target/deployments</property>
 	</engine>
 	-->
 

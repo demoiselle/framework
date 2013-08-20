@@ -70,7 +70,7 @@ public class ServletAuthorizer implements Authorizer {
 
 	private static ResourceBundle getBundle() {
 		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-servlet-bundle");
+			bundle = new ResourceBundleProducer().create("demoiselle-servlet-bundle");
 		}
 
 		return bundle;

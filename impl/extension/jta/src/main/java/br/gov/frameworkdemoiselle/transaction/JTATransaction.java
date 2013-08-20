@@ -44,9 +44,15 @@ import static javax.transaction.Status.STATUS_ROLLEDBACK;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.util.Beans;
-
+/**
+ * Delegates the transaction control to a JEE container.
+ * 
+ * @author SERPRO
+ *
+ */
 @Priority(L3_PRIORITY)
 public class JTATransaction implements Transaction {
 
@@ -54,8 +60,7 @@ public class JTATransaction implements Transaction {
 
 	private UserTransaction delegate;
 
-	public UserTransaction getDelegate() {
-
+	private UserTransaction getDelegate() {
 		if (delegate == null) {
 			delegate = Beans.getReference(UserTransaction.class);
 		}
@@ -63,16 +68,22 @@ public class JTATransaction implements Transaction {
 		return delegate;
 	}
 
+	/**
+	 * @throws DemoiselleException
+	 */
 	@Override
 	public boolean isActive() {
 		try {
 			return getDelegate().getStatus() != STATUS_NO_TRANSACTION;
 
 		} catch (SystemException cause) {
-			throw new TransactionException(cause);
+			throw new DemoiselleException(cause);
 		}
 	}
 
+	/**
+	 * @throws DemoiselleException
+	 */
 	@Override
 	public boolean isMarkedRollback() {
 		try {
@@ -80,47 +91,59 @@ public class JTATransaction implements Transaction {
 					|| getDelegate().getStatus() == STATUS_ROLLEDBACK;
 
 		} catch (SystemException cause) {
-			throw new TransactionException(cause);
+			throw new DemoiselleException(cause);
 		}
 	}
 
+	/**
+	 * @throws DemoiselleException
+	 */
 	@Override
 	public void begin() {
 		try {
 			getDelegate().begin();
 
 		} catch (Exception cause) {
-			throw new TransactionException(cause);
+			throw new DemoiselleException(cause);
 		}
 	}
 
+	/**
+	 * @throws DemoiselleException
+	 */
 	@Override
 	public void commit() {
 		try {
 			getDelegate().commit();
 
 		} catch (Exception cause) {
-			throw new TransactionException(cause);
+			throw new DemoiselleException(cause);
 		}
 	}
 
+	/**
+	 * @throws DemoiselleException
+	 */
 	@Override
 	public void rollback() {
 		try {
 			getDelegate().rollback();
 
 		} catch (SystemException cause) {
-			throw new TransactionException(cause);
+			throw new DemoiselleException(cause);
 		}
 	}
 
+	/**
+	 * @throws DemoiselleException
+	 */
 	@Override
 	public void setRollbackOnly() {
 		try {
 			getDelegate().setRollbackOnly();
 
 		} catch (SystemException cause) {
-			throw new TransactionException(cause);
+			throw new DemoiselleException(cause);
 		}
 	}
 }

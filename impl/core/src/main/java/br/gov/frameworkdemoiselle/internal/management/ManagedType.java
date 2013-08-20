@@ -77,7 +77,7 @@ public class ManagedType {
 	private String description;
 
 	public ManagedType(Class<?> type) {
-		bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+		bundle = new ResourceBundleProducer().create("demoiselle-core-bundle");
 
 		if (type == null) {
 			throw new DemoiselleException(bundle.getString("management-null-class-defined"));

@@ -39,9 +39,10 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 import static br.gov.frameworkdemoiselle.annotation.Priority.L1_PRIORITY;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -55,7 +56,7 @@ public class DefaultTransaction implements Transaction {
 
 	private static final long serialVersionUID = 1L;
 
-	private static ResourceBundle bundle;
+	private transient static ResourceBundle bundle;
 
 	@Override
 	public void begin() {
@@ -94,7 +95,7 @@ public class DefaultTransaction implements Transaction {
 
 	private static ResourceBundle getBundle() {
 		if (bundle == null) {
-			bundle = ResourceBundleProducer.create("demoiselle-core-bundle");
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}
 
 		return bundle;

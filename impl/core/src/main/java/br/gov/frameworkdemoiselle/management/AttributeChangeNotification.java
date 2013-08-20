@@ -40,24 +40,40 @@ package br.gov.frameworkdemoiselle.management;
  * Special notification to denote an attribute has changed values.
  * 
  * @see GenericNotification
- * 
  * @author serpro
- *
  */
 public class AttributeChangeNotification extends GenericNotification {
-	
+
 	private String attributeName;
-	
+
 	private Class<? extends Object> attributeType;
-	
+
 	private Object oldValue;
-	
+
 	private Object newValue;
-	
-	public AttributeChangeNotification(){}
-	
-	public AttributeChangeNotification(Object message, String attributeName, Class<? extends Object> attributeType, Object oldValue,
-			Object newValue) {
+
+	/**
+	 * Constructor without params.
+	 */
+	public AttributeChangeNotification() {
+	}
+
+	/**
+	 * Set all the class attibutes, according to the parameters received.
+	 * 
+	 * @param message
+	 * 			message to be displayed.
+	 * @param attributeName
+	 * 			name of the monitored attribute.
+	 * @param attributeType
+	 * 			type of the monitored attribute.
+	 * @param oldValue
+	 * 			old value of the monitored attribute.
+	 * @param newValue
+	 * 			new value for the monitored attribute.
+	 */
+	public AttributeChangeNotification(Object message, String attributeName, Class<? extends Object> attributeType,
+			Object oldValue, Object newValue) {
 		super(message);
 		this.attributeName = attributeName;
 		this.attributeType = attributeType;
@@ -65,46 +81,36 @@ public class AttributeChangeNotification extends GenericNotification {
 		this.newValue = newValue;
 	}
 
-
 	public String getAttributeName() {
 		return attributeName;
 	}
 
-	
 	public void setAttributeName(String attributeName) {
 		this.attributeName = attributeName;
 	}
 
-	
 	public Class<? extends Object> getAttributeType() {
 		return attributeType;
 	}
 
-	
 	public void setAttributeType(Class<? extends Object> attributeType) {
 		this.attributeType = attributeType;
 	}
 
-	
 	public Object getOldValue() {
 		return oldValue;
 	}
 
-	
 	public void setOldValue(Object oldValue) {
 		this.oldValue = oldValue;
 	}
 
-	
 	public Object getNewValue() {
 		return newValue;
 	}
 
-	
 	public void setNewValue(Object newValue) {
 		this.newValue = newValue;
 	}
-	
-	
 
 }

@@ -36,6 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.internal.management;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,7 +74,9 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * @author serpro
  */
 @ApplicationScoped
-public class Management {
+public class Management implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private Logger logger;

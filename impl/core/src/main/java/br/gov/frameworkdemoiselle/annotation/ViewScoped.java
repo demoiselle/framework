@@ -47,6 +47,11 @@ import java.lang.annotation.Target;
 
 import javax.enterprise.context.NormalScope;
 
+/**
+ * This scope maintains the context for viewed page; when the viewed page change, the data will be lost.
+ * 
+ * @author SERPRO
+ */
 @Inherited
 @Target({ METHOD, TYPE, FIELD })
 @Retention(RUNTIME)

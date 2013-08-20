@@ -55,7 +55,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import test.LocaleProducer;
+import test.Tests;
 import br.gov.frameworkdemoiselle.internal.management.ManagedType;
 import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -72,11 +72,11 @@ public class ManagementBootstrapTestCase {
 	public static JavaArchive createDeployment() {
 		return ShrinkWrap
 				.create(JavaArchive.class)
-				.addClass(LocaleProducer.class)
+				.addClass(Tests.class)
 				.addPackages(true, "br")
 				.addAsResource(
 						new FileAsset(new File(
-								"src/test/resources/test/beans.xml")),
+								"src/test/resources/beans.xml")),
 						"beans.xml")
 				.addAsManifestResource(
 						new File(

@@ -36,6 +36,11 @@
  */
 package br.gov.frameworkdemoiselle.lifecycle;
 
+/**
+ *  This interface represents an event that is fired when the shutdown process is finalized.
+ * 
+ * @author SERPRO
+ */
 public interface AfterShutdownProccess {
 
 }

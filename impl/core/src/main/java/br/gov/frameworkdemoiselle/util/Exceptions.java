@@ -38,15 +38,39 @@ package br.gov.frameworkdemoiselle.util;
 
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
 
+/**
+ *Class that offer tow methods that can help with manipulation of throwable exceptions. 
+ * 
+ * @author SERPRO
+ */
 public final class Exceptions {
 
+	/**
+	 * Constructor without parameters.
+	 */
 	private Exceptions() {
 	}
 
+	/**
+	 * Informs if a Throwable class is annotated with @ApplicationException or not.
+	 * 
+	 * @param throwable
+	 * 			a throwable object.
+	 *      
+	 * @return a boolean, true if thowable is annotated with @ApplicationException, and false otherwise.          
+	 */
 	public static boolean isApplicationException(final Throwable throwable) {
 		return throwable != null && throwable.getClass().isAnnotationPresent(ApplicationException.class);
 	}
 
+	/**
+	 * Receives as parameter any kind of Throwable objects, and throws a RuntimeException instead. 
+	 * 
+	 * @param throwable
+	 * 			a throwable object.
+	 *    
+	 * @throws RuntimeException throws this kind of exception every time that is called.             
+	 */
 	public static void handleToRuntimeException(final Throwable throwable) throws RuntimeException {
 		if (throwable instanceof RuntimeException) {
 			throw (RuntimeException) throwable;

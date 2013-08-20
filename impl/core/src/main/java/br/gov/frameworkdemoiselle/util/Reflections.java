@@ -47,11 +47,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Provides some features to do some operations relating to java reflection.
+ * 
+ * @author SERPRO
+ */
 public final class Reflections {
 
 	private Reflections() {
 	}
 
+	/**
+	 * TODO 
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getGenericTypeArgument(final Class<?> clazz, final int idx) {
 		final Type type = clazz.getGenericSuperclass();
@@ -66,6 +74,9 @@ public final class Reflections {
 		return (Class<T>) paramType.getActualTypeArguments()[idx];
 	}
 
+	/**
+	 * TODO 
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getGenericTypeArgument(final Field field, final int idx) {
 		final Type type = field.getGenericType();
@@ -74,6 +85,9 @@ public final class Reflections {
 		return (Class<T>) paramType.getActualTypeArguments()[idx];
 	}
 
+	/**
+	 * TODO 
+	 */
 	public static <T> Class<T> getGenericTypeArgument(final Member member, final int idx) {
 		Class<T> result = null;
 
@@ -86,11 +100,23 @@ public final class Reflections {
 		return result;
 	}
 
+	/**
+	 * TODO 
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getGenericTypeArgument(final Method method, final int pos) {
 		return (Class<T>) method.getGenericParameterTypes()[pos];
 	}
 
+	/**
+	 * Returns the value contained in the given field. 
+	 * 
+	 * @param field
+	 * 			field to be extracted the value.
+	 * @param object
+	 * 			object that contains the field.
+	 * @return value of the field.
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T getFieldValue(Field field, Object object) {
 		T result = null;
@@ -108,6 +134,16 @@ public final class Reflections {
 		return result;
 	}
 
+	/**
+	 * Sets a value in a field.
+	 * 
+	 * @param field
+	 * 			field to be setted.
+	 * @param object
+	 * 			object that contains the field.
+	 * @param value
+	 * 			value to be setted in the field.
+	 */
 	public static void setFieldValue(Field field, Object object, Object value) {
 		try {
 			boolean acessible = field.isAccessible();
@@ -120,6 +156,9 @@ public final class Reflections {
 		}
 	}
 
+	/**
+	 * TODO 
+	 */
 	public static Field[] getNonStaticDeclaredFields(Class<?> type) {
 		List<Field> fields = new ArrayList<Field>();
 
@@ -134,6 +173,9 @@ public final class Reflections {
 		return fields.toArray(new Field[0]);
 	}
 
+	/**
+	 * TODO 
+	 */
 	public static List<Field> getNonStaticFields(Class<?> type) {
 		List<Field> fields = new ArrayList<Field>();
 
@@ -145,10 +187,13 @@ public final class Reflections {
 		return fields;
 	}
 
-	public static <T> T instantiate(Class<T> clasz) {
+	/**
+	 * TODO 
+	 */
+	public static <T> T instantiate(Class<T> clazz) {
 		T object = null;
 		try {
-			object = clasz.newInstance();
+			object = clazz.newInstance();
 		} catch (InstantiationException e) {
 			Exceptions.handleToRuntimeException(e);
 		} catch (IllegalAccessException e) {
@@ -157,14 +202,40 @@ public final class Reflections {
 		return object;
 	}
 
+	/**
+	 * Verifies if a given class could be converted to a given type. 
+	 * 
+	 * @param clazz
+	 * 			class to be checked.
+	 * @param type
+	 * 			type to be checked.
+	 * @return {@link Boolean}
+	 * 			true if the given class can be converted to a given type, and false otherwise.
+	 */
 	public static boolean isOfType(Class<?> clazz, Class<?> type) {
 		return type.isAssignableFrom(clazz) && clazz != type;
 	}
 
+	/**
+	 * Obtains the {@link ClassLoader} for the given class, from his canonical name.
+	 * 
+	 * @param canonicalName
+	 * 			canonical name of the the given class.
+	 * @return {@link ClassLoader}
+	 * 			ClassLoader for the given class.
+	 */
 	public static ClassLoader getClassLoaderForClass(final String canonicalName) {
 		return Reflections.getClassLoaderForResource(canonicalName.replaceAll("\\.", "/") + ".class");
 	}
 
+	/**
+	 * Obtains the {@link ClassLoader} for the given resource.
+	 * 
+	 * @param resource
+	 * 			
+	 * @return {@link ClassLoader}
+	 * 			ClassLoader for the given resource.
+	 */
 	public static ClassLoader getClassLoaderForResource(final String resource) {
 		final String stripped = resource.charAt(0) == '/' ? resource.substring(1) : resource;
 
@@ -187,11 +258,17 @@ public final class Reflections {
 		return result;
 	}
 
+	/**
+	 * TODO 
+	 */
 	public static URL getResourceAsURL(final String resource) {
 		ClassLoader classLoader = getClassLoaderForResource(resource);
 		return classLoader != null ? classLoader.getResource(resource) : null;
 	}
 
+	/**
+	 * TODO 
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> forName(final String className) throws ClassNotFoundException {
 		ClassLoader classLoader = getClassLoaderForClass(className);

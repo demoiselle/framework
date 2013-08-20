@@ -43,15 +43,41 @@ import java.util.regex.Pattern;
 
 import br.gov.frameworkdemoiselle.annotation.Ignore;
 
+/**
+ * Contain a set of methods that implements a set of functionalities that envolves manipulation of strings.
+ * 
+ * @author SERPRO
+ */
 public final class Strings {
 
 	private Strings() {
 	}
 
+	/**
+	 * Returns if some string matches with the format of a ResourceBundle key or not.
+	 * 
+	 * @param key
+	 * 			string to check if matches with key format of ResourceBundle.
+	 * 
+	 * @return boolean
+	 * 			true if matches and false otherwise.
+	 */
 	public static boolean isResourceBundleKeyFormat(final String key) {
 		return Pattern.matches("^\\{(.+)\\}$", key == null ? "" : key);
 	}
 
+	/**
+	 * Removes specific characteres from a given string.
+	 * 
+	 * @param string
+	 * 			string to be changed, by the removing of some characters.
+	 * 
+	 * @param chars
+	 * 			characters to be removed from string.
+	 * 
+	 * @return String
+	 * 			returns the given string without the given characters. 
+	 */
 	public static String removeChars(String string, char... chars) {
 		String result = string;
 
@@ -63,6 +89,20 @@ public final class Strings {
 		return result;
 	}
 
+	/**
+	 * Inserts the character "0" in the begin of a given string. The quantity of zeros that will be placed 
+	 * depends on the difference between the length of the given string and the value of howMuchZeros.
+	 * 
+	 * @param string
+	 * 			string to insert zeros characthers.
+	 * 
+	 * @param howMuchZeros
+	 * 			its controls how much zeros will be insert.  
+	 * 
+	 * @return String
+	 * 			Retuns the string, added with appropriate number of zeros.
+	 * 			For exemplo, if string = "yes" and howMuchZeros = 5, the returned string will be "00yes".
+	 */
 	public static String insertZeros(String string, int howMuchZeros) {
 		StringBuffer result = new StringBuffer((string == null ? "" : string).trim());
 		int difference = howMuchZeros - result.toString().length();
@@ -74,6 +114,22 @@ public final class Strings {
 		return result.toString();
 	}
 
+	/**
+	 * <p>
+	 * Replaces the numbers between braces in the given string with the given parameters. 
+	 * The process will replace a number between braces for the parameter for which its order
+	 * in the set of parameters matches with the number of the given string.   
+	 * <p>
+	 * For exemple, if is received the following string "Treats an {0} exception" and the set of parameters 
+	 * {"DemoiselleException"}, the return will be the following string: "Treats an DemoiselleException exception". 
+	 * 
+	 * @param string 
+	 * 			with the numbers with braces to be replaced with the parameters.
+	 * @param params
+	 * 			parameters that will replace the number with braces in the given string.
+	 * @return String
+	 * 			string with numbers replaced with the matching parameter.
+	 */
 	public static String getString(final String string, final Object... params) {
 		String result = null;
 
@@ -92,10 +148,28 @@ public final class Strings {
 		return result;
 	}
 
+	/**
+	 * Verifies if a given string is empty or null.
+	 * 
+	 * @param string
+	 * 			string to be verified.	
+	 * 
+	 * @return boolean
+	 * 		returns true if the given string is empty or null and returns false otherwise.
+	 */
 	public static boolean isEmpty(String string) {
 		return string == null || string.trim().isEmpty();
 	}
 
+	/**
+	 * Converts any object to string. 
+	 * 
+	 * @param object
+	 * 			object to be converted.
+	 * 
+	 * @return String
+	 * 			the given object converted to string.
+	 */
 	public static String toString(Object object) {
 		StringBuffer result = new StringBuffer();
 		Object fieldValue;
@@ -127,6 +201,16 @@ public final class Strings {
 		return result.toString();
 	}
 
+	/**
+	 * Replace the camel case string for a lowercase string separated for a given symbol. 
+	 * 
+	 * @param string
+	 * 			string that separeted with camel case.
+	 * @param symbol
+	 * 			simbol to be the new separator for the given string.
+	 * @return String
+	 * 			the given string separated with the given symbol.
+	 */
 	public static String camelCaseToSymbolSeparated(String string, String symbol) {
 		if (symbol == null) {
 			symbol = "";
@@ -135,6 +219,14 @@ public final class Strings {
 		return string == null ? null : string.replaceAll("\\B([A-Z])", symbol + "$1").toLowerCase();
 	}
 
+	/**
+	 * Sets the first character of a given string to upper case. 
+	 * 
+	 * @param string
+	 * 			
+	 * @return String
+	 * 			the given string with the first character setted to upper case.
+	 */
 	public static String firstToUpper(String string) {
 		String result = string;
 
@@ -145,6 +237,14 @@ public final class Strings {
 		return result;
 	}
 
+	/**
+	 * Removes braces from a given string. 
+	 * 
+	 * @param string
+	 * 
+	 * @return String
+	 * 			the given string without braces.
+	 */
 	public static String removeBraces(String string) {
 		String result = string;
 
@@ -155,6 +255,14 @@ public final class Strings {
 		return result;
 	}
 
+	/**
+	 * Inserts braces in a given string. 
+	 * 
+	 * @param string
+	 * 
+	 * @return String
+	 * 			the given string with braces.
+	 */
 	public static String insertBraces(String string) {
 		String result = string;
 

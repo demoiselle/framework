@@ -47,6 +47,11 @@ import java.lang.annotation.Target;
 
 import javax.enterprise.context.NormalScope;
 
+/**
+ *This scope stores the classes just as if it was a static attribute.
+ * 
+ * @author SERPRO
+ */
 @Inherited
 @Target({ METHOD, TYPE, FIELD })
 @Retention(RUNTIME)

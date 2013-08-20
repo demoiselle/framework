@@ -57,6 +57,57 @@ import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
+/**
+ * <p>
+ * Intercepts some thrown exceptions, and calls the appropriate method. These interceptor works only in
+ * classes annotated with <b>@Contoller</b>. Above we discribe which kind of exception is intercepted and 
+ * what is an appropriate method. 
+ * <p>
+ * To be interceptable, the thrown exception must be from a type which is annotated with 
+ * <b>@ApplicationException</b>.
+ * <p>
+ * An appropriate method must be annotated with <b>@ExceptionHandler</b>, and receive as parameter some 
+ * exception that could be thrown for it's class (which have to be annotated with <b>@ApplicationException</b>).
+ * So, when this method is called, it's receive the thrown exception as parameter. In the same class shouldn't 
+ * be more than one method annotated with <b>@ExceptionHandler</b> and receiving the same type of exception.
+ * <p>
+ * <p>
+ * The examples below shows how these interceptor works:
+ * <p>
+ * 
+ * <blockquote>
+ * 
+ * <pre>
+ * &#064;ApplicationException
+ * public class CustomException extends RuntimeException {
+ * }
+ * 
+ * &#064;Controller
+ * public class CustomExceptionHandler {
+ * 
+ * 	public void throwException() {
+ *		throw new CustomException();
+ *	}
+ *	
+ *	&#064;ExceptionHandler
+ *	public void handler(CustomException exception) {
+ *		...
+ *	}
+ *
+ * }
+ * </pre>
+ * </blockquote>
+ * 
+ * <p>
+ * When the method <b>throwException</b> throw a <b>CustomException</b>, once CustomException is annotated 
+ * with @ApplicationException and CustomExceptionHandle is annotated with @Controller, the interceptor will 
+ * looking for some method (in CustomExceptionHandle) annotated with @ExceptionHandle and that receive a 
+ * CustomException as parameter to call. In the case shown, the method <b>handler</b> is called when a 
+ * <b>CustomException</b> is thrown.
+ * <p>
+ * 
+ * @author SERPRO
+ */
 @Interceptor
 @Controller
 public class ExceptionHandlerInterceptor implements Serializable {
@@ -68,7 +119,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 	private static transient Logger logger;
 
 	private final Map<Class<?>, Map<Class<?>, Method>> cache = new HashMap<Class<?>, Map<Class<?>, Method>>();
-
+	
 	private boolean handleException(final Exception cause, final Object target) throws Exception {
 		getLogger().info(getBundle().getString("handling-exception", cause.getClass().getCanonicalName()));
 

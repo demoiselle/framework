@@ -40,6 +40,15 @@ import javax.enterprise.util.AnnotationLiteral;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
 
+/**
+ * Creates a instance of an java annotation, specifically for qualification @Name. 
+ * This is required to get some classes by calling Beans.getReference method.
+ * 
+ * @see Beans
+ * @see Name
+ * 
+ * @author SERPRO
+ */
 @SuppressWarnings("all")
 public class NameQualifier extends AnnotationLiteral<Name> implements Name {
 
@@ -47,6 +56,12 @@ public class NameQualifier extends AnnotationLiteral<Name> implements Name {
 
 	private final String value;
 
+	/**
+	 * Constructor with string value of name qualifier.
+	 * 
+	 * @param value
+	 * 			value of name qualifier.
+	 */
 	public NameQualifier(String value) {
 		this.value = value;
 	}

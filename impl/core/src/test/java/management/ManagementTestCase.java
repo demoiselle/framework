@@ -53,7 +53,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import test.LocaleProducer;
+import test.Tests;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.util.Beans;
 
@@ -70,18 +70,15 @@ public class ManagementTestCase {
 	public static JavaArchive createMultithreadedDeployment() {
 		return ShrinkWrap
 				.create(JavaArchive.class)
-				.addClass(LocaleProducer.class)
+				.addClass(Tests.class)
 				.addPackages(true, "br")
-				.addAsResource(new FileAsset(new File("src/test/resources/test/beans.xml")), "beans.xml")
+				.addAsResource(new FileAsset(new File("src/test/resources/beans.xml")), "beans.xml")
 				.addAsManifestResource(
 						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
 						"services/javax.enterprise.inject.spi.Extension")
 				.addPackages(false, ManagementTestCase.class.getPackage())
-				.addClasses(DummyManagementExtension.class
-						, DummyManagedClass.class
-						, ManagedClassStore.class
-						, RequestScopeBeanClient.class
-						, RequestScopedClass.class);
+				.addClasses(DummyManagementExtension.class, DummyManagedClass.class, ManagedClassStore.class,
+						RequestScopeBeanClient.class, RequestScopedClass.class);
 	}
 
 	@Test
@@ -167,32 +164,31 @@ public class ManagementTestCase {
 		}
 
 	}
-	
+
 	@Test
-	public void testAccessLevelControl(){
-		//tentamos escrever em uma propriedade que, apesar de ter método setter, está marcada como read-only.
+	public void testAccessLevelControl() {
+		// tentamos escrever em uma propriedade que, apesar de ter método setter, está marcada como read-only.
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
-		
-		try{
-			store.setProperty(DummyManagedClass.class, "readOnlyPropertyWithSetMethod","A Value");
+
+		try {
+			store.setProperty(DummyManagedClass.class, "readOnlyPropertyWithSetMethod", "A Value");
 			Assert.fail();
-		}
-		catch(DemoiselleException de){
+		} catch (DemoiselleException de) {
 			System.out.println(de.getMessage());
-			//success
+			// success
 		}
 	}
-	
+
 	@Test
 	public void testRequestScopedOperation() {
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
-		
-		//Esta operação faz multiplos acessos a um bean RequestScoped. Durante a operação todos os acessos devem
-		//operar sob a mesma instância, mas uma segunda invocação deve operar em uma instância nova
+
+		// Esta operação faz multiplos acessos a um bean RequestScoped. Durante a operação todos os acessos devem
+		// operar sob a mesma instância, mas uma segunda invocação deve operar em uma instância nova
 		Object info = store.invoke(DummyManagedClass.class, "requestScopedOperation");
 		Assert.assertEquals("-OPERATION ONE CALLED--OPERATION TWO CALLED-", info);
-		
-		//Segunda invocação para testar se uma nova instância é criada, já que esse é um novo request.
+
+		// Segunda invocação para testar se uma nova instância é criada, já que esse é um novo request.
 		info = store.invoke(DummyManagedClass.class, "requestScopedOperation");
 		Assert.assertEquals("-OPERATION ONE CALLED--OPERATION TWO CALLED-", info);
 	}

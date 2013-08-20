@@ -39,9 +39,18 @@ package br.gov.frameworkdemoiselle.message;
 import java.io.Serializable;
 
 /**
+ * Classes that will treat what to do with messages added to the context must implement this interface.
+ * 
  * @author SERPRO
  */
 public interface MessageAppender extends Serializable {
-
+	
+	/**
+	 * Method that must hold message in an appropriate way and in an appropriate local.
+	 * Demoiselle holds a message in a Logger or in a FacesContext, depending on the project.
+	 * 
+	 * @param message
+	 * 			message to be stored.
+	 */
 	void append(Message message);
 }

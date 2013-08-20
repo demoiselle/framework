@@ -189,7 +189,7 @@ public class TransactionalInterceptor implements Serializable {
 	}
 
 	@RequestScoped
-	static class TransactionInfo implements Serializable {
+	public static class TransactionInfo implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 

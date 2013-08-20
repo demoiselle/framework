@@ -59,7 +59,7 @@ public class MBeanHelper {
 
 	private static final Logger logger = LoggerProducer.create(MBeanHelper.class);
 	
-	private static ResourceBundle bundle = ResourceBundleProducer.create("demoiselle-jmx-bundle", Locale.getDefault());
+	private static ResourceBundle bundle = new ResourceBundleProducer().create("demoiselle-jmx-bundle", Locale.getDefault());
 
 	private static final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 
