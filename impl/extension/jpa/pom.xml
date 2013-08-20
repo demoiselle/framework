@@ -66,9 +66,92 @@
 		<url>http://www.serpro.gov.br</url>
 	</organization>
 
-	<!--
 	<build>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
+	
 		<plugins>
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>process-test-classes</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.jboss.as</groupId>
+									<artifactId>jboss-as-dist</artifactId>
+									<version>${jbossas.version}</version>
+									<type>zip</type>
+									<overWrite>false</overWrite>
+									<outputDirectory>target</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!--
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12.4</version>
+				<configuration>
+					<environmentVariables>
+						<JBOSS_HOME>${project.build.directory}/jboss-as-${jbossas.version}</JBOSS_HOME>
+					</environmentVariables>
+					<systemProperties>
+						<jboss.version>${jbossas.version}</jboss.version>
+					</systemProperties>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>process-test-classes</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.jboss.as</groupId>
+									<artifactId>jboss-as-dist</artifactId>
+									<version>${jbossas.version}</version>
+									<type>zip</type>
+									<overWrite>false</overWrite>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			-->
+			<!--
+			<plugin>
+				
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<configuration>
+				<systemPropertyVariables>
+					<tomee.httpPort>-1</tomee.httpPort>
+					<tomee.stopPort>-1</tomee.stopPort>
+				</systemPropertyVariables>
+			</configuration>
+		</plugin>
+			-->
+			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -84,9 +167,14 @@
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.16</version>
+			</plugin>
 		</plugins>
 	</build>
-	-->
 
 	<dependencies>
 		<dependency>
@@ -115,27 +203,58 @@
 		</dependency>
 		-->
 
+		<dependency>
+			<groupId>org.jboss.as</groupId>
+			<artifactId>jboss-as-arquillian-container-managed</artifactId>
+			<version>${jbossas.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.protocol</groupId>
+			<artifactId>arquillian-protocol-servlet</artifactId>
+		</dependency>
+                
 		<!--
+		<dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>arquillian-tomee-embedded</artifactId>
+			<version>1.5.2</version>
+		</dependency>
 		-->
+
+		<!--
 		<dependency>
 			<groupId>org.jboss.arquillian.container</groupId>
 			<artifactId>arquillian-glassfish-embedded-3.1</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!--
 		<dependency>
 			<groupId>org.glassfish.main.extras</groupId>
 			<artifactId>glassfish-embedded-web</artifactId>
 			<scope>test</scope>
 		</dependency>
-		-->
 		<dependency>
 			<groupId>org.glassfish.main.extras</groupId>
 			<artifactId>glassfish-embedded-all</artifactId>
 			<version>3.1.2</version>
 			<scope>test</scope>
 		</dependency>
+		-->
 
+		<!--
+		<dependency>
+			<groupId>org.jboss.as</groupId>
+			<artifactId>jboss-as-arquillian-container-managed</artifactId>
+			<version>7.1.1.Final</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.protocol</groupId>
+			<artifactId>arquillian-protocol-servlet</artifactId>
+			<scope>test</scope>
+		</dependency>
+		-->
+		
 		<!--
 		<dependency>
 			<groupId>org.jboss.as</groupId>
@@ -218,7 +337,6 @@
 			<artifactId>hibernate-validator</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		-->
 	</dependencies>
 
@@ -268,6 +386,8 @@
 							<groupId>org.slf4j</groupId>
 							<artifactId>slf4j-api</artifactId>
 						</exclusion>
+						<!--
+						-->
 						<exclusion>
 							<groupId>org.javassist</groupId>
 							<artifactId>javassist</artifactId>
@@ -282,4 +402,8 @@
 			</dependencies>
 		</profile>
 	</profiles>
+
+	<properties>
+		<jbossas.version>7.1.1.Final</jbossas.version>
+	</properties>
 </project>
