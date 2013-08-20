@@ -34,9 +34,8 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management.tests.internal;
+package management.tests.notification;
 
-import java.io.File;
 import java.lang.management.ManagementFactory;
 
 import javax.management.InstanceNotFoundException;
@@ -47,13 +46,11 @@ import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
 import junit.framework.Assert;
-import management.LocaleProducer;
 import management.domain.ManagedTestClass;
+import management.tests.Tests;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -70,19 +67,12 @@ import br.gov.frameworkdemoiselle.management.NotificationManager;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
-public class NotificationBroadcasterTestCase {
+public class NotificationBroadcasterTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive mainDeployment = ShrinkWrap.create(JavaArchive.class);
-		mainDeployment
-				.addPackages(true, "br")
-				.addAsResource(new FileAsset(new File("src/test/resources/test/beans.xml")), "beans.xml")
-				.addAsResource(new FileAsset(new File("src/test/resources/configuration/demoiselle.properties")),
-						"demoiselle.properties").addPackages(false, DynamicMBeanProxyTestCase.class.getPackage())
-				.addClasses(LocaleProducer.class, ManagedTestClass.class);
-
-		return mainDeployment;
+		return Tests.createDeployment(NotificationBroadcasterTest.class)
+				.addClasses(ManagedTestClass.class);
 	}
 
 	@BeforeClass
@@ -101,7 +91,7 @@ public class NotificationBroadcasterTestCase {
 	 * Testa o envio de uma mensagem para clientes conectados
 	 */
 	@Test
-	public void sendMessageTest() {
+	public void sendMessage() {
 		JMXConfig config = Beans.getReference(JMXConfig.class);
 
 		// Este será o lado cliente. Este manager é usado para enviar notificações a partir do código da aplicação
@@ -143,14 +133,15 @@ public class NotificationBroadcasterTestCase {
 		// Se o componente funcionou, o Demoiselle propagou a notificação para o servidor MBean e o listener preencheu
 		// o StringBuffer com nossa mensagem.
 		Assert.assertEquals("Notification test successful", notificationBuffer.toString());
-
+		
 	}
 
 	/**
 	 * Testa o envio de uma mensagem de mudança de atributo para clientes conectados
 	 */
 	@Test
-	public void sendAttributeChangedMessageTest() {
+	public void sendAttributeChangedMessage() {
+		
 		JMXConfig config = Beans.getReference(JMXConfig.class);
 
 		// Obtém o servidor MBean onde anexaremos um listener para a notificação
@@ -187,7 +178,7 @@ public class NotificationBroadcasterTestCase {
 		// Se o componente funcionou, o Demoiselle propagou a notificação para o servidor MBean e o listener preencheu
 		// o StringBuffer com nossa mensagem.
 		Assert.assertEquals("Attribute Changed: name = Demoiselle 2", notificationBuffer.toString());
-
+		
 	}
 
 	/**
