@@ -79,7 +79,7 @@ public class JDBCTransaction implements Transaction {
 		return producer;
 	}
 
-	public Collection<Connection> getDelegate() {
+	private Collection<Connection> getDelegate() {
 		return getProducer().getCache().values();
 	}
 
