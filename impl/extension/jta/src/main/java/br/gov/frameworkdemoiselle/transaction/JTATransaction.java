@@ -47,7 +47,12 @@ import javax.transaction.UserTransaction;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.util.Beans;
-
+/**
+ * Delegates the transaction control to a JEE container.
+ * 
+ * @author SERPRO
+ *
+ */
 @Priority(L3_PRIORITY)
 public class JTATransaction implements Transaction {
 
@@ -63,6 +68,9 @@ public class JTATransaction implements Transaction {
 		return delegate;
 	}
 
+	/**
+	 * @throws DemoiselleException
+	 */
 	@Override
 	public boolean isActive() {
 		try {
@@ -73,6 +81,9 @@ public class JTATransaction implements Transaction {
 		}
 	}
 
+	/**
+	 * @throws DemoiselleException
+	 */
 	@Override
 	public boolean isMarkedRollback() {
 		try {
@@ -84,6 +95,9 @@ public class JTATransaction implements Transaction {
 		}
 	}
 
+	/**
+	 * @throws DemoiselleException
+	 */
 	@Override
 	public void begin() {
 		try {
@@ -94,6 +108,9 @@ public class JTATransaction implements Transaction {
 		}
 	}
 
+	/**
+	 * @throws DemoiselleException
+	 */
 	@Override
 	public void commit() {
 		try {
@@ -104,6 +121,9 @@ public class JTATransaction implements Transaction {
 		}
 	}
 
+	/**
+	 * @throws DemoiselleException
+	 */
 	@Override
 	public void rollback() {
 		try {
@@ -114,6 +134,9 @@ public class JTATransaction implements Transaction {
 		}
 	}
 
+	/**
+	 * @throws DemoiselleException
+	 */
 	@Override
 	public void setRollbackOnly() {
 		try {
