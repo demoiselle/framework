@@ -42,7 +42,7 @@ import java.util.Map;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 /**
- * Provide used to access the configurations of the JDBC connexion
+ * Provide used to access the configurations of the JDBC connection
  * 
  * @author SERPRO
  *
