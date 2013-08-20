@@ -34,9 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management;
-
-import java.io.File;
+package management.basic;
 
 import junit.framework.Assert;
 import management.testclasses.DummyManagedClass;
@@ -47,8 +45,6 @@ import management.testclasses.RequestScopedClass;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,25 +60,17 @@ import br.gov.frameworkdemoiselle.util.Beans;
  * @author serpro
  */
 @RunWith(Arquillian.class)
-public class ManagementTestCase {
+public class ManagementTest {
 
 	@Deployment
 	public static JavaArchive createMultithreadedDeployment() {
-		return ShrinkWrap
-				.create(JavaArchive.class)
-				.addClass(Tests.class)
-				.addPackages(true, "br")
-				.addAsResource(new FileAsset(new File("src/test/resources/beans.xml")), "beans.xml")
-				.addAsManifestResource(
-						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-						"services/javax.enterprise.inject.spi.Extension")
-				.addPackages(false, ManagementTestCase.class.getPackage())
-				.addClasses(DummyManagementExtension.class, DummyManagedClass.class, ManagedClassStore.class,
-						RequestScopeBeanClient.class, RequestScopedClass.class);
+		
+		return Tests.createDeployment(ManagementTest.class)
+				.addClasses(DummyManagementExtension.class, DummyManagedClass.class, ManagedClassStore.class,RequestScopeBeanClient.class, RequestScopedClass.class);
 	}
 
 	@Test
-	public void testReadProperty() {
+	public void readProperty() {
 		DummyManagedClass managedClass = Beans.getReference(DummyManagedClass.class);
 		managedClass.setName("Test Name");
 
@@ -94,7 +82,7 @@ public class ManagementTestCase {
 	}
 
 	@Test
-	public void testWriteProperty() {
+	public void writeProperty() {
 		// store é nossa extensão de gerenciamento falsa, então estamos testando um "cliente" definindo
 		// um novo valor em uma propriedade de nosso tipo gerenciado DummyManagedClass remotamente.
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
@@ -105,7 +93,7 @@ public class ManagementTestCase {
 	}
 
 	@Test
-	public void testReadAWriteOnly() {
+	public void readAWriteOnly() {
 
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
 
@@ -119,7 +107,7 @@ public class ManagementTestCase {
 	}
 
 	@Test
-	public void testWriteAReadOnly() {
+	public void writeAReadOnly() {
 
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
 
@@ -133,7 +121,7 @@ public class ManagementTestCase {
 	}
 
 	@Test
-	public void testInvokeOperation() {
+	public void invokeOperation() {
 
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
 
@@ -149,7 +137,7 @@ public class ManagementTestCase {
 	}
 
 	@Test
-	public void testInvokeNonAnnotatedOperation() {
+	public void invokeNonAnnotatedOperation() {
 
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
 
@@ -166,7 +154,7 @@ public class ManagementTestCase {
 	}
 
 	@Test
-	public void testAccessLevelControl() {
+	public void accessLevelControl() {
 		// tentamos escrever em uma propriedade que, apesar de ter método setter, está marcada como read-only.
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
 
@@ -180,7 +168,7 @@ public class ManagementTestCase {
 	}
 
 	@Test
-	public void testRequestScopedOperation() {
+	public void requestScopedOperation() {
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
 
 		// Esta operação faz multiplos acessos a um bean RequestScoped. Durante a operação todos os acessos devem

@@ -21,7 +21,6 @@ import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
 import br.gov.frameworkdemoiselle.internal.management.ManagedType;
 import br.gov.frameworkdemoiselle.internal.management.Management;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
@@ -48,7 +47,7 @@ public class ManagementBootstrap implements Extension {
 
 	@SuppressWarnings("unchecked")
 	public void registerAvailableManagedTypes(@Observes final AfterDeploymentValidation event, BeanManager beanManager) {
-		ResourceBundle bundle = new ResourceBundleProducer().create("demoiselle-core-bundle", Locale.getDefault());
+		ResourceBundle bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 
 		Management monitoringManager = Beans.getReference(Management.class);
 		for (AnnotatedType<?> type : types) {

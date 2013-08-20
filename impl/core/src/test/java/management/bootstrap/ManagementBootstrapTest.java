@@ -34,12 +34,9 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management;
+package management.bootstrap;
 
-import java.io.File;
 import java.util.List;
-
-import javax.enterprise.inject.spi.BeforeShutdown;
 
 import management.testclasses.DummyManagedClass;
 import management.testclasses.DummyManagementExtension;
@@ -47,22 +44,19 @@ import management.testclasses.ManagedClassStore;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
 import br.gov.frameworkdemoiselle.internal.management.ManagedType;
+import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
-@Ignore
-public class ManagementBootstrapTestCase {
+public class ManagementBootstrapTest {
 
 	/**
 	 * Deployment to test normal deployment behaviour
@@ -70,20 +64,7 @@ public class ManagementBootstrapTestCase {
 	 */
 	@Deployment
 	public static JavaArchive createDeployment() {
-		return ShrinkWrap
-				.create(JavaArchive.class)
-				.addClass(Tests.class)
-				.addPackages(true, "br")
-				.addAsResource(
-						new FileAsset(new File(
-								"src/test/resources/beans.xml")),
-						"beans.xml")
-				.addAsManifestResource(
-						new File(
-								"src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-						"services/javax.enterprise.inject.spi.Extension")
-				.addPackages(false,
-						ManagementBootstrapTestCase.class.getPackage())
+		return Tests.createDeployment(ManagementBootstrapTest.class)
 				.addClasses(DummyManagementExtension.class,
 						DummyManagedClass.class, ManagedClassStore.class);
 	}
@@ -93,7 +74,7 @@ public class ManagementBootstrapTestCase {
 	 * {@link ManagementExtension}) is correctly detected.
 	 */
 	@Test
-	public void testManagementExtensionRegistration() {
+	public void managementExtensionRegistration() {
 		// "store" é application scoped e é usado pelo DummyManagementExtension
 		// para
 		// armazenar todos os beans anotados com @ManagementController. Se o
@@ -110,7 +91,7 @@ public class ManagementBootstrapTestCase {
 	 * upon application shutdown.
 	 */
 	@Test
-	public void testManagementExtensionShutdown() {
+	public void managementExtensionShutdown() {
 		// "store" é application scoped e é usado pelo DummyManagementExtension
 		// para
 		// armazenar todos os beans anotados com @ManagementController. Se o
@@ -125,7 +106,7 @@ public class ManagementBootstrapTestCase {
 		List<ManagedType> managedTypes = store.getManagedTypes();
 		Assert.assertEquals(1, managedTypes.size());
 
-		Beans.getBeanManager().fireEvent(new BeforeShutdown() {
+		Beans.getBeanManager().fireEvent(new AfterShutdownProccess() {
 		});
 
 		// Após o "undeploy", o ciclo de vida precisa ter removido a classe
