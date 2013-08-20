@@ -51,7 +51,7 @@ import br.gov.frameworkdemoiselle.internal.producer.ConnectionProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
- * Represents the strategy destinated to manage JPA transactions.
+ * Represents the strategy destinated to manage JDBC transactions.
  * 
  * @author SERPRO
  * @see Transaction
@@ -79,7 +79,7 @@ public class JDBCTransaction implements Transaction {
 		return producer;
 	}
 
-	public Collection<Connection> getDelegate() {
+	private Collection<Connection> getDelegate() {
 		return getProducer().getCache().values();
 	}
 
@@ -92,6 +92,9 @@ public class JDBCTransaction implements Transaction {
 		}
 	}
 
+	/**
+	 * @throws DemoiselleException
+	 */
 	@Override
 	public void commit() {
 		for (Connection connection : getDelegate()) {
@@ -103,6 +106,9 @@ public class JDBCTransaction implements Transaction {
 		}
 	}
 
+	/**
+	 * @throws DemoiselleException
+	 */
 	@Override
 	public void rollback() {
 		for (Connection connection : getDelegate()) {
