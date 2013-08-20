@@ -49,10 +49,10 @@ public interface SecurityContext extends Serializable {
 	/**
 	 * Executes the login of a user to the application.
 	 * 
-	 * @throws AuthorizationException
+	 * @throws AuthenticationException
 	 *             When the logon process fails, this exception is thrown.
 	 */
-	void login() throws AuthorizationException;
+	void login();
 
 	/**
 	 * Executes the logout of a user.
@@ -60,7 +60,7 @@ public interface SecurityContext extends Serializable {
 	 * @throws NotLoggedInException
 	 *             if there is no user logged in a specific session
 	 */
-	void logout() throws NotLoggedInException;
+	void logout();
 
 	/**
 	 * Checks if a specific user is logged in.
@@ -69,7 +69,11 @@ public interface SecurityContext extends Serializable {
 	 */
 	boolean isLoggedIn();
 
-	void checkLoggedIn() throws NotLoggedInException;
+	/**
+	 * @throws NotLoggedInException
+	 *             if there is no user logged in a specific session
+	 */
+	void checkLoggedIn();
 
 	/**
 	 * Checks if the logged user has permission to execute an specific operation on a specific resource.
@@ -79,10 +83,11 @@ public interface SecurityContext extends Serializable {
 	 * @param operation
 	 *            operation to be checked
 	 * @return {@code true} if the user has the permission
+	 * 
 	 * @throws NotLoggedInException
 	 *             if there is no user logged in a specific session.
 	 */
-	boolean hasPermission(String resource, String operation) throws NotLoggedInException;
+	boolean hasPermission(String resource, String operation);
 
 	/**
 	 * Checks if the logged user has an specific role
@@ -90,10 +95,11 @@ public interface SecurityContext extends Serializable {
 	 * @param role
 	 *            role to be checked
 	 * @return {@code true} if the user has the role
+	 * 
 	 * @throws NotLoggedInException
 	 *             if there is no user logged in a specific session.
 	 */
-	boolean hasRole(String role) throws NotLoggedInException;
+	boolean hasRole(String role);
 
 	/**
 	 * Return the user logged in the session.

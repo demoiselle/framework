@@ -34,35 +34,44 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.security;
+package security.athentication.credentials;
 
-import java.io.Serializable;
 import java.security.Principal;
 
-/**
- * Defines the methods that should be implemented by anyone who wants an authentication mechanism.
- * 
- * @author SERPRO
- */
-public interface Authenticator extends Serializable {
+import br.gov.frameworkdemoiselle.security.AuthenticationException;
+import br.gov.frameworkdemoiselle.security.Authenticator;
+import br.gov.frameworkdemoiselle.util.Beans;
 
-	/**
-	 * Executes the necessary steps to authenticate an user.
-	 * 
-	 * @throws AuthenticationException
-	 *             When the authentication process fails, this exception is thrown.
-	 */
-	void authenticate();
+public class StrictAuthenticator implements Authenticator {
 
-	/**
-	 * Executes the necessary steps to unauthenticate an user.
-	 */
-	void unAuthenticate();
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Returns the currently authenticated user.
-	 * 
-	 * @return the user currently authenticated
-	 */
-	Principal getUser();
+	private Principal currentUser;
+
+	@Override
+	public void authenticate() throws AuthenticationException {
+		
+		Credentials c = Beans.getReference(Credentials.class);
+		if ("demoiselle".equals(c.getLogin())){
+			this.currentUser = new Principal() {
+	
+				public String getName() {
+					return "demoiselle";
+				}
+			};
+		}
+		else{
+			throw new AuthenticationException("As credenciais fornecidas não são válidas");
+		}
+	}
+
+	@Override
+	public void unAuthenticate() {
+		this.currentUser = null;
+	}
+
+	@Override
+	public Principal getUser() {
+		return this.currentUser;
+	}
 }
