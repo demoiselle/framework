@@ -47,7 +47,7 @@
 		<protocol type="Servlet 3.0" />
 
 		<configuration>
-			<property name="javaHome">/usr/lib/jvm/java-6-serpro/</property>
+			<!-- <property name="javaHome">/usr/lib/jvm/java-6-serpro/</property> -->
 			<property name="jbossHome">target/jboss-as-${jbossas.version}</property>
 			<!--
 			<property name="serverConfig">../../../../src/test/resources/standalone.xml</property>
