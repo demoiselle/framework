@@ -96,6 +96,17 @@ public class TransactionalInterceptor implements Serializable {
 		return this.transactionInfo;
 	}
 
+	/**
+	 * <p>Manages methods annotated with {@link Transactional}. If there's no active transaction
+	 * the moment a {@link Transactional} method is called, this interceptor will activate one. If a {@link Transactional} method
+	 * that activated a transaction returns, this method will commit the active transaction. If the {@link Transactional} method
+	 * throws an exception caught outside of the method (or uncaught), this interceptor will mark the transaction for rollback.</p>
+	 * 
+	 * <p>
+	 * This method is not intended to be called directly, instead the CDI provider will call this method when a {@link Transactional} method
+	 * is called.
+	 * </p>
+	 */
 	@AroundInvoke
 	public Object manage(final InvocationContext ic) throws Exception {
 		initiate();
