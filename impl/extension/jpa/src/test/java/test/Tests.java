@@ -67,7 +67,7 @@ public final class Tests {
 		return createDeployment().addPackages(true, baseClass.getPackage());
 	}
 
-	public static WebArchive createDeployment() {
+	private static WebArchive createDeployment() {
 		File[] libs = Maven.resolver().offline().loadPomFromFile("pom.xml", "arquillian-test")
 				.importCompileAndRuntimeDependencies().resolve().withTransitivity().asFile();
 
@@ -85,7 +85,6 @@ public final class Tests {
 				.addAsResource(createFileAsset("src/main/resources/demoiselle-jpa-bundle.properties"),
 						"demoiselle-jpa-bundle.properties")
 				.addAsResource(createFileAsset("src/test/resources/logging.properties"), "logging.properties")
-				.addAsLibraries(libs)
 				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")
 				.addAsLibraries(libs);
 	}

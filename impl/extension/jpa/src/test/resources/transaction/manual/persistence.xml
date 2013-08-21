@@ -41,7 +41,8 @@
 	<persistence-unit name="pu1" transaction-type="RESOURCE_LOCAL">
 		<non-jta-data-source>jdbc/arquillian1</non-jta-data-source>
 
-		<class>transaction.manual.MyEntity</class>
+		<class>transaction.manual.MyEntity1</class>
+		<class>transaction.manual.MyEntity2</class>
 
 		<properties>
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
@@ -53,7 +54,8 @@
 	<persistence-unit name="pu2" transaction-type="RESOURCE_LOCAL">
 		<non-jta-data-source>jdbc/arquillian2</non-jta-data-source>
 
-		<class>transaction.manual.MyEntity</class>
+		<class>transaction.manual.MyEntity1</class>
+		<class>transaction.manual.MyEntity2</class>
 
 		<properties>
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />

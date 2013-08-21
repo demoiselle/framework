@@ -351,12 +351,14 @@
 				<artifactId>arquillian-glassfish-embedded-3.1</artifactId>
 				<version>${arquillian.glassfish.embedded.version}</version>
 			</dependency>
+			<!--
 			<dependency>
 				<groupId>org.jboss.arquillian.extension</groupId>
 				<artifactId>arquillian-persistence-impl</artifactId>
 				<version>${arquillian.persistence.version}</version>
 				<scope>test</scope>
 			</dependency>
+			-->
 			<dependency>
 				<groupId>org.jboss.weld.se</groupId>
 				<artifactId>weld-se-core</artifactId>
@@ -420,11 +422,14 @@
 
 		<junit.version>4.8.1</junit.version>
 		<easymock.version>3.0</easymock.version>
-
+	
 		<arquillian.version>1.1.1.Final</arquillian.version>
+		<!--
+		<arquillian.version>1.0.4.Final</arquillian.version>
+		-->
 		<arquillian.weld.se.embedded.version>1.0.0.CR7</arquillian.weld.se.embedded.version>
 		<arquillian.persistence.version>1.0.0.Alpha6</arquillian.persistence.version>
-		<arquillian.glassfish.embedded.version>1.0.0.CR3</arquillian.glassfish.embedded.version>
+		<arquillian.glassfish.embedded.version>1.0.0.CR4</arquillian.glassfish.embedded.version>
 		
 		<glassfish.embedded.version>3.1.2</glassfish.embedded.version>
 

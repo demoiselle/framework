@@ -37,7 +37,7 @@ public class JPATransactionTest {
 	@Name("pu2")
 	private EntityManager em2;
 
-	@Deployment(testable = true)
+	@Deployment(name = "2")
 	public static WebArchive createDeployment() {
 		WebArchive deployment = Tests.createDeployment(JPATransactionTest.class);
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/persistence.xml"), "META-INF/persistence.xml");
