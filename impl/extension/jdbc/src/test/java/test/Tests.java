@@ -65,7 +65,7 @@ public final class Tests {
 		return createDeployment().addPackages(true, baseClass.getPackage());
 	}
 
-	public static WebArchive createDeployment() {
+	private static WebArchive createDeployment() {
 		File[] libs = Maven.resolver().offline().loadPomFromFile("pom.xml", "arquillian-test")
 				.importCompileAndRuntimeDependencies().resolve().withTransitivity().asFile();
 
@@ -80,8 +80,7 @@ public final class Tests {
 				.addClass(JDBCTransaction.class)
 				.addAsResource(createFileAsset("src/main/resources/demoiselle-jdbc-bundle.properties"),
 						"demoiselle-jdbc-bundle.properties")
-//				.addAsResource(createFileAsset("src/test/resources/logging.properties"), "logging.properties")
-				.addAsWebInfResource(createFileAsset("src/test/resources/META-INF/beans.xml"), "beans.xml")
+				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")
 				.addAsLibraries(libs);
 	}
 

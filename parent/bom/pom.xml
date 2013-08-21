@@ -311,7 +311,7 @@
 			<!-- embedded containners -->
 			<dependency>
 				<groupId>org.glassfish.main.extras</groupId>
-				<artifactId>glassfish-embedded-web</artifactId>
+				<artifactId>glassfish-embedded-all</artifactId>
 				<version>${glassfish.embedded.version}</version>
 			</dependency>			
 
@@ -379,6 +379,13 @@
 				<artifactId>easymock</artifactId>
 				<version>${easymock.version}</version>
 			</dependency>
+
+			<!-- Plug-ins -->
+			<dependency>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven.surefire.plugin.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -422,7 +429,7 @@
 
 		<junit.version>4.8.1</junit.version>
 		<easymock.version>3.0</easymock.version>
-	
+
 		<arquillian.version>1.1.1.Final</arquillian.version>
 		<!--
 		<arquillian.version>1.0.4.Final</arquillian.version>
@@ -430,8 +437,10 @@
 		<arquillian.weld.se.embedded.version>1.0.0.CR7</arquillian.weld.se.embedded.version>
 		<arquillian.persistence.version>1.0.0.Alpha6</arquillian.persistence.version>
 		<arquillian.glassfish.embedded.version>1.0.0.CR4</arquillian.glassfish.embedded.version>
-		
-		<glassfish.embedded.version>3.1.2</glassfish.embedded.version>
+
+		<glassfish.embedded.version>3.1.2.2</glassfish.embedded.version>
+
+		<maven.surefire.plugin.version>2.16</maven.surefire.plugin.version>
 
 		<powermock.version>1.4.6</powermock.version>
 		<primefaces.version>3.4</primefaces.version>
