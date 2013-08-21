@@ -53,7 +53,7 @@ public class JDBCConfig implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Name("default.datasource.name")
-	private String defaultDataDourceName;
+	private String defaultDataSourceName;
 
 	@Name("jndi.name")
 	private Map<String, String> jndiName;
@@ -70,8 +70,8 @@ public class JDBCConfig implements Serializable {
 	@Name("password")
 	private Map<String, String> password;
 
-	public String getDefaultDataDourceName() {
-		return defaultDataDourceName;
+	public String getDefaultDataSourceName() {
+		return defaultDataSourceName;
 	}
 
 	public Map<String, String> getJndiName() {
