@@ -70,8 +70,8 @@
 	<persistence-unit name="pu1" transaction-type="RESOURCE_LOCAL">
 		<non-jta-data-source>java:jboss/datasources/ExampleDS</non-jta-data-source>
 
-		<class>transaction.manual.MyEntity1</class>
-		<class>transaction.manual.MyEntity2</class>
+		<class>transaction.interceptor.MyEntity1</class>
+		<class>transaction.interceptor.MyEntity2</class>
 
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
@@ -83,8 +83,8 @@
 	<persistence-unit name="pu2" transaction-type="RESOURCE_LOCAL">
 		<non-jta-data-source>java:jboss/datasources/ExampleDS</non-jta-data-source>
 
-		<class>transaction.manual.MyEntity1</class>
-		<class>transaction.manual.MyEntity2</class>
+		<class>transaction.interceptor.MyEntity1</class>
+		<class>transaction.interceptor.MyEntity2</class>
 
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
@@ -93,17 +93,4 @@
 		</properties>
 	</persistence-unit>
 	
-	<persistence-unit name="pu3" transaction-type="RESOURCE_LOCAL">
-		<non-jta-data-source>java:jboss/datasources/ExampleDS</non-jta-data-source>
-
-		<class>transaction.manual.MyEntity1</class>
-		<class>transaction.manual.MyEntity2</class>
-
-		<properties>
-			<property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.format_sql" value="false" />
-			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
-		</properties>
-	</persistence-unit>
-
 </persistence>

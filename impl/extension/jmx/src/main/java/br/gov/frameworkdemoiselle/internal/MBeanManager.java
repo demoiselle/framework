@@ -34,47 +34,34 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.jmx.internal;
+package br.gov.frameworkdemoiselle.internal;
 
-import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import javax.management.ObjectInstance;
 
-import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
-import br.gov.frameworkdemoiselle.jmx.configuration.JMXConfig;
-import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
-import br.gov.frameworkdemoiselle.management.NotificationManager;
-
-/**
- * Listens to {@link NotificationManager} notification events and proxies them
- * to a {@link NotificationBroadcaster} MBean. This MBean will send the notification to
- * any JMX clients connected and listening.
- * 
- * @author serpro
- *
- */
 @ApplicationScoped
-@SuppressWarnings("serial")
-public class NotificationEventListener implements Serializable {
+public class MBeanManager {
 	
-	private NotificationBroadcaster notificationBroadcaster;
+	private HashMap<String,ObjectInstance> registeredMBeans = new HashMap<String,ObjectInstance>();
 	
-	public void sendNotification( @Observes @Generic ManagementNotificationEvent event , JMXConfig config ) {
-		createNotificationBroadcaster().sendNotification(event,config);
+	public void storeRegisteredMBean(ObjectInstance instance){
+		registeredMBeans.put(instance.getObjectName().getCanonicalName(),instance);
 	}
 	
-	public void sendAttributeChangedMessage( @Observes @AttributeChange ManagementNotificationEvent event , JMXConfig config ) {
-		createNotificationBroadcaster().sendAttributeChangedMessage(event, config);
+	public Collection<ObjectInstance> listRegisteredMBeans(){
+		return registeredMBeans.values();
 	}
 	
-	public NotificationBroadcaster createNotificationBroadcaster(){
-		if (notificationBroadcaster==null){
-			notificationBroadcaster = new NotificationBroadcaster();
-		}
-		
-		return notificationBroadcaster;
+	public ObjectInstance findMBeanInstance(String name){
+		ObjectInstance instance = registeredMBeans.get(name);
+		return instance;
+	}
+	
+	public void cleanRegisteredMBeans(){
+		registeredMBeans.clear();
 	}
 
 }

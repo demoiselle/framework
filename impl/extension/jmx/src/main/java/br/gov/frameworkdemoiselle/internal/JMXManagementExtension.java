@@ -34,19 +34,15 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.jmx.bootstrap;
+package br.gov.frameworkdemoiselle.internal;
 
 import java.util.List;
 
 import javax.management.ObjectInstance;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.configuration.JMXConfig;
 import br.gov.frameworkdemoiselle.internal.management.ManagedType;
-import br.gov.frameworkdemoiselle.jmx.configuration.JMXConfig;
-import br.gov.frameworkdemoiselle.jmx.internal.DynamicMBeanProxy;
-import br.gov.frameworkdemoiselle.jmx.internal.MBeanHelper;
-import br.gov.frameworkdemoiselle.jmx.internal.MBeanManager;
-import br.gov.frameworkdemoiselle.jmx.internal.NotificationEventListener;
 import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
 import br.gov.frameworkdemoiselle.util.Beans;
 

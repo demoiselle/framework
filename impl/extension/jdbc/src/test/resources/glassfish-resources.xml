@@ -34,20 +34,15 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<arquillian xmlns="http://jboss.org/schema/arquillian" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+<!DOCTYPE resources PUBLIC
+    "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN"
+    "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
+<resources>
+	<jdbc-resource pool-name="ArquillianEmbeddedDerbyPool" jndi-name="jdbc/arquillian" />
 
-	<!--
-	-->
-	<engine>
-		<property name="deploymentExportPath">target/deployments</property>
-	</engine>
-
-	<container qualifier="glassfish-embedded" default="true">
-		<configuration>
-			<property name="resourcesXml">src/test/resources/glassfish-resources.xml</property>
-<!-- 			<property name="resourcesXml">${project.testResources}/glassfish-resources.xml</property> -->
-		</configuration>
-	</container>
-
-</arquillian>
+	<jdbc-connection-pool name="ArquillianEmbeddedDerbyPool" res-type="javax.sql.DataSource" datasource-classname="org.apache.derby.jdbc.EmbeddedDataSource"
+		is-isolation-level-guaranteed="false">
+		<property name="databaseName" value="target/databases/derby" />
+		<property name="createDatabase" value="create" />
+	</jdbc-connection-pool>
+</resources>
