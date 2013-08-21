@@ -34,10 +34,9 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management;
+package management.annotation;
 
-import java.io.File;
-
+import management.testclasses.DummyManagedClassPropertyError;
 import management.testclasses.DummyManagementExtension;
 import management.testclasses.ManagedClassStore;
 
@@ -45,8 +44,6 @@ import org.jboss.arquillian.container.test.api.Deployer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -55,12 +52,13 @@ import org.junit.runner.RunWith;
 
 import test.Tests;
 
-//TODO O arquillian está com um problema onde, embora os testes rodem todos individualmente,
-//ao pedir para rodar todos este teste individual causa todos os testes executados após esse
-//falharem. Até este problema ser resolvido este teste será ignorado.
+/*
+ * TODO Esse teste está impedindo outros de rodarem por fazer um deployment manual pelo arquillian (após esse teste nenhum mais roda).
+ * Por enquanto ele fica marcado como @Ignore, até esse problema ser resolvido.
+ */
 @RunWith(Arquillian.class)
 @Ignore
-public class AnnotationTestCase {
+public class AnnotationTest {
 
 	/**
 	 * Deployment containing a malformed managed class. Tests using this deployment will check if deployment fails (it
@@ -68,21 +66,13 @@ public class AnnotationTestCase {
 	 */
 	@Deployment(name = "wrong_annotation", managed = false)
 	public static JavaArchive createWrongAnnotationDeployment() {
-		return ShrinkWrap
-				.create(JavaArchive.class)
-				.addClass(Tests.class)
-				.addPackages(true, "br")
-				.addAsResource(new FileAsset(new File("src/test/resources/beans.xml")), "beans.xml")
-				.addAsManifestResource(
-						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-						"services/javax.enterprise.inject.spi.Extension")
-				.addPackages(false, ManagementBootstrapTestCase.class.getPackage())
-				//.addClasses(DummyManagementExtension.class, DummyManagedClassPropertyError.class,	ManagedClassStore.class);
-				.addClasses(DummyManagementExtension.class, ManagedClassStore.class);
+		
+		return Tests.createDeployment(AnnotationTest.class)
+				.addClasses(DummyManagementExtension.class, ManagedClassStore.class,DummyManagedClassPropertyError.class);
 	}
 
 	@Test
-	public void testWrongAnnotation(@ArquillianResource Deployer deployer) {
+	public void wrongAnnotation(@ArquillianResource Deployer deployer) {
 
 		try {
 			deployer.deploy("wrong_annotation");

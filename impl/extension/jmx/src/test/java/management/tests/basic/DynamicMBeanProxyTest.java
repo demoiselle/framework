@@ -34,9 +34,8 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management.tests.internal;
+package management.tests.basic;
 
-import java.io.File;
 import java.lang.management.ManagementFactory;
 
 import javax.management.Attribute;
@@ -45,13 +44,11 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 import junit.framework.Assert;
-import management.LocaleProducer;
 import management.domain.ManagedTestClass;
+import management.tests.Tests;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -64,19 +61,12 @@ import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
-public class DynamicMBeanProxyTestCase {
+public class DynamicMBeanProxyTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive mainDeployment = ShrinkWrap.create(JavaArchive.class);
-		mainDeployment
-				.addPackages(true, "br")
-				.addAsResource(new FileAsset(new File("src/test/resources/test/beans.xml")), "beans.xml")
-				.addAsResource(new FileAsset(new File("src/test/resources/configuration/demoiselle.properties")),"demoiselle.properties")
-				.addPackages(false, DynamicMBeanProxyTestCase.class.getPackage())
-				.addClasses(LocaleProducer.class, ManagedTestClass.class);
-		
-		return mainDeployment;
+		return Tests.createDeployment(DynamicMBeanProxyTest.class)
+				.addClasses(ManagedTestClass.class);
 	}
 	
 	@BeforeClass
@@ -95,7 +85,7 @@ public class DynamicMBeanProxyTestCase {
 	 * Testa se o bootstrap está corretamente carregando e registrando classes anotadas com {@link Managed} como MBeans.
 	 */
 	@Test
-	public void testMBeanInitialization() {
+	public void initializeMBean() {
 		MBeanManager manager = Beans.getReference(MBeanManager.class);
 
 		Assert.assertNotNull(manager);
@@ -109,7 +99,7 @@ public class DynamicMBeanProxyTestCase {
 	}
 
 	@Test
-	public void testAttributeWrite() {
+	public void attributeWrite() {
 		
 		MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 
@@ -129,7 +119,7 @@ public class DynamicMBeanProxyTestCase {
 	}
 
 	@Test
-	public void testAttributeRead() {
+	public void attributeRead() {
 		
 		MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 
@@ -153,7 +143,7 @@ public class DynamicMBeanProxyTestCase {
 	}
 
 	@Test
-	public void testOperationInvocation() {
+	public void operationInvocation() {
 
 		MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 
@@ -176,7 +166,7 @@ public class DynamicMBeanProxyTestCase {
 	}
 
 	@Test
-	public void testTryWriteOverReadOnly() {
+	public void tryWriteOverReadOnly() {
 		
 		MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 

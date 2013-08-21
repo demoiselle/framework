@@ -34,46 +34,77 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.security;
+package security.authorization.error;
 
-/**
- * Thrown when the authentication process fails.
- * 
- * @author SERPRO
- */
-public class AuthenticationException extends SecurityException {
+import javax.inject.Inject;
 
-	private static final long serialVersionUID = 1L;
+import junit.framework.Assert;
 
-	/**
-	 * Constructor with message.
-	 * 
-	 * @param message
-	 *            exception message
-	 */
-	public AuthenticationException(String message) {
-		super(message);
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import security.athentication.custom.CustomAuthenticator;
+import test.Tests;
+import br.gov.frameworkdemoiselle.security.AuthorizationException;
+import br.gov.frameworkdemoiselle.security.NotLoggedInException;
+import br.gov.frameworkdemoiselle.security.SecurityContext;
+import configuration.resource.ConfigurationResourceTest;
+
+@RunWith(Arquillian.class)
+public class ErrorAuthorizerTest {
+
+	@Inject
+	private SecurityContext context;
+
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(ConfigurationResourceTest.class);
+		deployment.addClass(CustomAuthenticator.class);
+		deployment.addClass(ErrorAuthorizer.class);
+		return deployment;
+	}
+	
+	@Before
+	public void loginToTest(){
+		context.login();
 	}
 
-	/**
-	 * Constructor with the cause.
-	 * 
-	 * @param cause
-	 *            exception cause
-	 */
-	public AuthenticationException(Throwable cause) {
-		super(cause);
+	@Test
+	public void errorDuringCheckPermission(){
+		try{
+			context.hasPermission("resource", "operation");
+			Assert.fail("Verificar permissão deveria disparar exceção de runtime");
+		}
+		catch(NotLoggedInException ae){
+			Assert.fail("A exceção disparada não foi a esperada");
+		}
+		catch(RuntimeException e){
+			//PASS
+		}
 	}
-
-	/**
-	 * Constructor with message and cause.
-	 * 
-	 * @param message
-	 *            exception message
-	 * @param cause
-	 *            exception cause
-	 */
-	public AuthenticationException(String message, Throwable cause) {
-		super(message, cause);
+	
+	@Test
+	public void errorDuringCheckRole(){
+		try{
+			context.hasRole("role");
+			Assert.fail("Verificar papel deveria disparar exceção de runtime");
+		}
+		catch(AuthorizationException ae){
+			Assert.fail("A exceção disparada não foi a esperada");
+		}
+		catch(RuntimeException e){
+			//PASS
+		}
 	}
+	
+	@After
+	public void logoutAfterTest(){
+		context.logout();
+	}
+	
 }

@@ -34,9 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management;
-
-import java.io.File;
+package management.notification;
 
 import javax.inject.Inject;
 
@@ -46,8 +44,6 @@ import management.testclasses.DummyNotificationListener;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,7 +64,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * @author serpro
  */
 @RunWith(Arquillian.class)
-public class NotificationTestCase {
+public class NotificationTest {
 
 	@Inject
 	private NotificationManager manager;
@@ -79,15 +75,7 @@ public class NotificationTestCase {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		return ShrinkWrap
-				.create(JavaArchive.class)
-				.addClass(Tests.class)
-				.addPackages(true, "br")
-				.addAsResource(new FileAsset(new File("src/test/resources/beans.xml")), "beans.xml")
-				.addAsManifestResource(
-						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-						"services/javax.enterprise.inject.spi.Extension")
-				.addPackages(false, NotificationTestCase.class.getPackage())
+		return Tests.createDeployment(NotificationTest.class)
 				.addClasses(DummyNotificationListener.class, DummyManagedClass.class);
 	}
 
@@ -95,7 +83,7 @@ public class NotificationTestCase {
 	 * Test sending a normal notification
 	 */
 	@Test
-	public void testSendGenericNotification() {
+	public void sendGenericNotification() {
 		manager.sendNotification(new GenericNotification("Test Message"));
 		DummyNotificationListener listener = Beans.getReference(DummyNotificationListener.class);
 		Assert.assertEquals("Test Message", listener.getMessage());
@@ -105,7 +93,7 @@ public class NotificationTestCase {
 	 * Test sending a notification of change in attribute
 	 */
 	@Test
-	public void testSendAttributeChangeNotification() {
+	public void sendAttributeChangeNotification() {
 		manager.sendNotification(new AttributeChangeNotification("Test Message", "attribute", String.class, "old",
 				"new"));
 		DummyNotificationListener listener = Beans.getReference(DummyNotificationListener.class);
@@ -116,7 +104,7 @@ public class NotificationTestCase {
 	 * Test if notifications are automatically sent when an attribute from a managed class change values
 	 */
 	@Test
-	public void testNotifyChangeManagedClass() {
+	public void notifyChangeManagedClass() {
 		Management manager = Beans.getReference(Management.class);
 
 		for (ManagedType type : manager.getManagedTypes()) {

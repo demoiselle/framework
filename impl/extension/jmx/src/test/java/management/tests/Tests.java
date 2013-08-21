@@ -34,35 +34,51 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.security;
 
-import java.io.Serializable;
-import java.security.Principal;
+package management.tests;
 
-/**
- * Defines the methods that should be implemented by anyone who wants an authentication mechanism.
- * 
- * @author SERPRO
- */
-public interface Authenticator extends Serializable {
+import java.io.File;
+import java.util.Locale;
 
-	/**
-	 * Executes the necessary steps to authenticate an user.
-	 * 
-	 * @throws AuthenticationException
-	 *             When the authentication process fails, this exception is thrown.
-	 */
-	void authenticate();
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Produces;
 
-	/**
-	 * Executes the necessary steps to unauthenticate an user.
-	 */
-	void unAuthenticate();
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Ignore;
 
-	/**
-	 * Returns the currently authenticated user.
-	 * 
-	 * @return the user currently authenticated
-	 */
-	Principal getUser();
+@Ignore
+public final class Tests {
+
+	private Tests() {
+	}
+
+	public static JavaArchive createDeployment(final Class<?> baseClass) {
+		return createDeployment().addPackages(true, baseClass.getPackage());
+	}
+
+	public static JavaArchive createDeployment() {
+		return ShrinkWrap
+				.create(JavaArchive.class)
+				.addClass(Tests.class)
+				.addPackages(true, "br")
+				.addAsResource(Tests.createFileAsset("src/main/resources/demoiselle-jmx-bundle.properties") , "demoiselle-jmx-bundle.properties")
+				.addAsResource(Tests.createFileAsset("src/test/resources/log4j.properties"),"log4j.properties")
+				.addAsResource(Tests.createFileAsset("src/test/resources/configuration/demoiselle.properties"),"demoiselle.properties")
+				.addAsManifestResource(Tests.createFileAsset("src/test/resources/beans.xml"), "beans.xml")
+				.addAsManifestResource(
+						new File("src/test/resources/javax.enterprise.inject.spi.Extension"),
+						"services/javax.enterprise.inject.spi.Extension");
+	}
+
+	public static FileAsset createFileAsset(final String pathname) {
+		return new FileAsset(new File(pathname));
+	}
+
+	@Default
+	@Produces
+	public Locale create() {
+		return Locale.getDefault();
+	}
 }

@@ -1,6 +1,4 @@
-package management;
-
-import java.io.File;
+package management.validation;
 
 import management.testclasses.DummyManagedClass;
 import management.testclasses.DummyManagementExtension;
@@ -10,8 +8,6 @@ import management.testclasses.ManagedClassStore;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,21 +18,14 @@ import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
-public class ValidationTestCase {
+public class ValidationTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		return ShrinkWrap
-				.create(JavaArchive.class)
-				.addClass(Tests.class)
-				.addPackages(true, "br")
-				.addAsResource(new FileAsset(new File("src/test/resources/beans.xml")), "beans.xml")
-				.addAsManifestResource(
-						new File("src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-						"services/javax.enterprise.inject.spi.Extension")
-				.addPackages(false, NotificationTestCase.class.getPackage())
-				.addClasses(DummyManagementExtension.class, ManagedClassStore.class, DummyManagedClass.class,
-						DummyValidator.class, DummyValidatorAnnotation.class);
+		
+		return Tests.createDeployment(ValidationTest.class)
+				.addClasses(DummyManagementExtension.class, ManagedClassStore.class, DummyManagedClass.class,DummyValidator.class, DummyValidatorAnnotation.class);
+		
 	}
 
 	/**
@@ -44,7 +33,7 @@ public class ValidationTestCase {
 	 * when a property is being set by a management client
 	 */
 	@Test
-	public void testSetValidValue() {
+	public void setValidValue() {
 		// Testa se é possível definir um valor válido para uma propriedade.
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
 		store.setProperty(DummyManagedClass.class, "id", new Integer(1));
@@ -56,7 +45,7 @@ public class ValidationTestCase {
 	 * when a property is being set by a management client
 	 */
 	@Test
-	public void testSetInvalidValue() {
+	public void setInvalidValue() {
 		// Testa se é possível definir um valor válido para uma propriedade.
 		try {
 			ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
@@ -72,7 +61,7 @@ public class ValidationTestCase {
 	 * Tests if custom validators (outside the javax.validation package) run as normal
 	 */
 	@Test
-	public void testCustomValidation() {
+	public void customValidation() {
 
 		try {
 			ManagedClassStore store = Beans.getReference(ManagedClassStore.class);

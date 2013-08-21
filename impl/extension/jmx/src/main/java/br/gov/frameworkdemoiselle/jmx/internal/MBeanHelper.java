@@ -47,7 +47,6 @@ import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -59,7 +58,7 @@ public class MBeanHelper {
 
 	private static final Logger logger = LoggerProducer.create(MBeanHelper.class);
 	
-	private static ResourceBundle bundle = new ResourceBundleProducer().create("demoiselle-jmx-bundle", Locale.getDefault());
+	private static ResourceBundle bundle = new ResourceBundle("demoiselle-jmx-bundle", Locale.getDefault());
 
 	private static final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 

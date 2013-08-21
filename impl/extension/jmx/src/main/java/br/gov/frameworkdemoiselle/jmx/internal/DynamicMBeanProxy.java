@@ -58,7 +58,6 @@ import br.gov.frameworkdemoiselle.internal.management.ManagedType.FieldDetail;
 import br.gov.frameworkdemoiselle.internal.management.ManagedType.MethodDetail;
 import br.gov.frameworkdemoiselle.internal.management.ManagedType.ParameterDetail;
 import br.gov.frameworkdemoiselle.internal.management.Management;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
@@ -79,11 +78,11 @@ public class DynamicMBeanProxy implements DynamicMBean {
 	
 	private ManagedType managedType;
 
-	private ResourceBundle bundle = new ResourceBundleProducer().create("demoiselle-jmx-bundle", Locale.getDefault());
+	private ResourceBundle bundle;
 
 	public DynamicMBeanProxy(ManagedType type) {
 		if (type == null) {
-			throw new NullPointerException(bundle.getString("mbean-null-type-defined"));
+			throw new NullPointerException(getBundle().getString("mbean-null-type-defined"));
 		}
 		managedType = type;
 	}
@@ -186,7 +185,7 @@ public class DynamicMBeanProxy implements DynamicMBean {
 				attributes.add(attributeInfo);
 
 			} catch (javax.management.IntrospectionException e) {
-				throw new DemoiselleException(bundle.getString("mbean-introspection-error", managedType.getType()
+				throw new DemoiselleException(getBundle().getString("mbean-introspection-error", managedType.getType()
 						.getSimpleName()));
 			}
 		}
@@ -252,6 +251,14 @@ public class DynamicMBeanProxy implements DynamicMBean {
 		}
 
 		return delegateInfo;
+	}
+	
+	public ResourceBundle getBundle(){
+		if (bundle==null){
+			bundle = new ResourceBundle("demoiselle-jmx-bundle", Locale.getDefault());
+		}
+		
+		return bundle;
 	}
 
 }

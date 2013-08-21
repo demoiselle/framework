@@ -34,35 +34,21 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.security;
+package security.authorization.ambiguity;
 
-import java.io.Serializable;
-import java.security.Principal;
+import br.gov.frameworkdemoiselle.security.Authorizer;
 
-/**
- * Defines the methods that should be implemented by anyone who wants an authentication mechanism.
- * 
- * @author SERPRO
- */
-public interface Authenticator extends Serializable {
+public class DuplicatedCustomAuthorizer implements Authorizer {
 
-	/**
-	 * Executes the necessary steps to authenticate an user.
-	 * 
-	 * @throws AuthenticationException
-	 *             When the authentication process fails, this exception is thrown.
-	 */
-	void authenticate();
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Executes the necessary steps to unauthenticate an user.
-	 */
-	void unAuthenticate();
+	@Override
+	public boolean hasRole(String role) {
+		return true;
+	}
 
-	/**
-	 * Returns the currently authenticated user.
-	 * 
-	 * @return the user currently authenticated
-	 */
-	Principal getUser();
+	@Override
+	public boolean hasPermission(String resource, String operation) {
+		return true;
+	}
 }

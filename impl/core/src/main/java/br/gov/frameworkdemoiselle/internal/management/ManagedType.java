@@ -40,6 +40,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.TreeMap;
 
 import javax.inject.Qualifier;
@@ -47,10 +48,9 @@ import javax.inject.Qualifier;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.ManagedOperation;
 import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
-import br.gov.frameworkdemoiselle.annotation.OperationType;
 import br.gov.frameworkdemoiselle.annotation.ManagedProperty.ManagedPropertyAccess;
 import br.gov.frameworkdemoiselle.annotation.OperationParameter;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
+import br.gov.frameworkdemoiselle.annotation.OperationType;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -77,7 +77,7 @@ public class ManagedType {
 	private String description;
 
 	public ManagedType(Class<?> type) {
-		bundle = new ResourceBundleProducer().create("demoiselle-core-bundle");
+		bundle = new ResourceBundle("demoiselle-core-bundle",Locale.getDefault());
 
 		if (type == null) {
 			throw new DemoiselleException(bundle.getString("management-null-class-defined"));
