@@ -55,7 +55,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import br.gov.frameworkdemoiselle.jmx.internal.MBeanManager;
+import br.gov.frameworkdemoiselle.internal.MBeanManager;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
 import br.gov.frameworkdemoiselle.util.Beans;

@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.jmx.internal;
+package br.gov.frameworkdemoiselle.internal;
 
 import java.io.Serializable;
 
@@ -42,7 +42,7 @@ import javax.management.AttributeChangeNotification;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 
-import br.gov.frameworkdemoiselle.jmx.configuration.JMXConfig;
+import br.gov.frameworkdemoiselle.configuration.JMXConfig;
 import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 
@@ -54,7 +54,7 @@ import br.gov.frameworkdemoiselle.management.NotificationManager;
  * @author serpro
  *
  */
-final class NotificationBroadcaster extends NotificationBroadcasterSupport implements NotificationBroadcasterMBean,Serializable {
+public final class NotificationBroadcaster extends NotificationBroadcasterSupport implements NotificationBroadcasterMBean,Serializable {
 	
 	private static final long serialVersionUID = 1L;
 

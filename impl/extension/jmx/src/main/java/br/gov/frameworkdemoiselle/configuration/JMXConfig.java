@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.jmx.configuration;
+package br.gov.frameworkdemoiselle.configuration;
 
 import javax.management.NotificationBroadcaster;
 
@@ -42,6 +42,29 @@ import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 
+/**
+ * 
+ * Contains configuration parameters to control how {@link Managed} classes are exposed to the MBean server.
+ * 
+ * To use this class, inject it into your code using the {@link Inject} annotation.
+ * 
+ * ex:<pre><code>
+ * 
+ * public class BusinessClass(){
+ * 
+ *    //...
+ *    
+ *    &at;Inject
+ *    private JMXConfig jmxConfiguration;
+ *    
+ *    //...
+ *    
+ * }
+ * </code></pre>
+ * 
+ * @author serpro
+ *
+ */
 @Configuration(prefix = "frameworkdemoiselle.management.jmx.")
 public class JMXConfig {
 	
