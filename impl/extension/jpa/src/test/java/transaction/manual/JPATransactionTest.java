@@ -9,6 +9,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
 
+import junit.framework.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -20,6 +22,8 @@ import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.transaction.JPATransaction;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.TransactionContext;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 
 @RunWith(Arquillian.class)
 public class JPATransactionTest {
@@ -37,7 +41,7 @@ public class JPATransactionTest {
 	@Name("pu2")
 	private EntityManager em2;
 
-	@Deployment(name = "2")
+	@Deployment
 	public static WebArchive createDeployment() {
 		WebArchive deployment = Tests.createDeployment(JPATransactionTest.class);
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/persistence.xml"), "META-INF/persistence.xml");
@@ -119,6 +123,33 @@ public class JPATransactionTest {
 		MyEntity2 persisted2 = em2.find(MyEntity2.class, createId("id-4"));
 		assertNull(persisted1);
 		assertNull(persisted2);
+	}
+	
+	@Test
+	public void checkEntityManagerCreatedAfterTransaction(){
+		Transaction transaction = transactionContext.getCurrentTransaction();
+
+		String id = createId("id-5");
+		MyEntity1 entity1 = new MyEntity1();
+		entity1.setId(id);
+		entity1.setDescription("Test description");
+		
+		Assert.assertFalse(transaction.isActive());
+		transaction.begin();
+		Assert.assertTrue(transaction.isActive());
+		
+		EntityManager em1 = Beans.getReference(EntityManager.class, new NameQualifier("pu3"));
+		
+		try{
+			em1.persist(entity1);
+			transaction.commit();
+		}
+		catch(TransactionRequiredException te){
+			Assert.fail("Entity Manager não ingressou em transação já em curso: "+te.getMessage());
+		}
+		
+		entity1 = em1.find(MyEntity1.class, id);
+		Assert.assertEquals("Test description", entity1.getDescription());
 	}
 
 	private String createId(String id) {
