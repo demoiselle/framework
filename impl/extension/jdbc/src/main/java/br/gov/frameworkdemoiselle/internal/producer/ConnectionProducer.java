@@ -99,7 +99,7 @@ public class ConnectionProducer implements Serializable {
 	}
 
 	private String getNameFromProperties(JDBCConfig config) {
-		String result = config.getDefaultDataDourceName();
+		String result = config.getDefaultDataSourceName();
 
 		if (result != null) {
 			logger.debug(bundle.getString("getting-default-datasource-name-from-properties", result));

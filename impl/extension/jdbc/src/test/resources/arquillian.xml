@@ -45,8 +45,13 @@
 
 	<container qualifier="jbossas-managed" default="true">
 		<protocol type="Servlet 3.0" />
+
 		<configuration>
-			<property name="jbossHome">target/jboss-as-${jbossas.version}</property>
+			<property name="jbossHome">target/jboss-as-7.1.1.Final</property>
+			<property name="javaHome">/usr/lib/jvm/java-6-sun/</property>
+			<!--
+			<property name="serverConfig">../../../../src/test/resources/standalone.xml</property>
+			-->
 		</configuration>
 	</container>
 	<!--
@@ -68,9 +73,8 @@
 	
 	<!--
 	<container qualifier="glassfish-embedded" default="true">
-		<protocol type="Servlet 3.0" />
 		<configuration>
-			<property name="sunResourcesXml">src/test/resources/glassfish-resources.xml</property>
+			<property name="resourcesXml">src/test/resources/glassfish-resources.xml</property>
 		</configuration>
 	</container>
 	-->

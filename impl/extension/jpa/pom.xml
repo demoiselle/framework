@@ -73,7 +73,7 @@
 				<filtering>true</filtering>
 			</testResource>
 		</testResources>
-	
+
 		<plugins>
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -158,12 +158,8 @@
 				<version>2.12</version>
 				<configuration>
 					<systemPropertyVariables>
-						<java.util.logging.config.file>
-							${project.build.testOutputDirectory}/logging.properties
-						</java.util.logging.config.file>
-						<derby.stream.error.file>
-							${project.build.directory}/derby.log
-						</derby.stream.error.file>
+						<java.util.logging.config.file>${project.build.testOutputDirectory}/logging.properties</java.util.logging.config.file>
+						<derby.stream.error.file>${project.build.directory}/derby.log</derby.stream.error.file>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
@@ -238,6 +234,8 @@
 		</dependency>
 		-->
 
+		<!--
+		-->
 		<dependency>
 			<groupId>org.jboss.as</groupId>
 			<artifactId>jboss-as-arquillian-container-managed</artifactId>
@@ -265,13 +263,18 @@
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.main.extras</groupId>
-			<artifactId>glassfish-embedded-web</artifactId>
+			<artifactId>glassfish-embedded-all</artifactId>
+			<version>3.1.2.2</version>
+			<version>4.0</version>
+			<version>3.2-b06</version>
+			<version>3.1.2</version>
 			<scope>test</scope>
 		</dependency>
+		-->
+		<!--
 		<dependency>
 			<groupId>org.glassfish.main.extras</groupId>
-			<artifactId>glassfish-embedded-all</artifactId>
-			<version>3.1.2</version>
+			<artifactId>glassfish-embedded-web</artifactId>
 			<scope>test</scope>
 		</dependency>
 		-->
@@ -316,6 +319,25 @@
             <type>pom</type>
             <scope>test</scope>
         </dependency>
+		-->
+
+		<!--
+		<dependency>
+			<groupId>org.jboss.arquillian.protocol</groupId>
+			<artifactId>arquillian-protocol-servlet</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.extension</groupId>
+			<artifactId>arquillian-jacoco</artifactId>
+			<version>1.0.0.Alpha5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>org.jacoco.core</artifactId>
+			<version>0.6.3.201306030806</version>
+		</dependency>
 		-->
         
 		<!--
@@ -417,12 +439,12 @@
 							<artifactId>validation-api</artifactId>
 							<groupId>javax.validation</groupId>
 						</exclusion>
+						<!--
+						-->
 						<exclusion>
 							<groupId>org.slf4j</groupId>
 							<artifactId>slf4j-api</artifactId>
 						</exclusion>
-						<!--
-						-->
 						<exclusion>
 							<groupId>org.javassist</groupId>
 							<artifactId>javassist</artifactId>
@@ -434,6 +456,21 @@
 					<artifactId>javax.persistence</artifactId>
 					<scope>provided</scope>
 				</dependency>
+
+				<!--
+				<dependency>
+					<groupId>org.slf4j</groupId>
+					<artifactId>jul-to-slf4j</artifactId>
+					<version>1.7.5</version>
+					<scope>runtime</scope>
+				</dependency>
+				<dependency>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+					<version>1.0.13</version>
+					<scope>runtime</scope>
+				</dependency>
+				-->
 			</dependencies>
 		</profile>
 	</profiles>

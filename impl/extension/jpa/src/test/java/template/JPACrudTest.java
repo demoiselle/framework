@@ -22,7 +22,7 @@ public class JPACrudTest {
 	@Inject
 	private MyCrud crud;
 
-	@Deployment
+	@Deployment(name = "1")
 	public static WebArchive createDeployment() {
 		WebArchive deployment = Tests.createDeployment(JPACrudTest.class);
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/persistence.xml"), "META-INF/persistence.xml");
