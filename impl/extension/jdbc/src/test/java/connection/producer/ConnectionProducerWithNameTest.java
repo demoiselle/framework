@@ -3,6 +3,8 @@ package connection.producer;
 import static org.junit.Assert.assertNotNull;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.inject.Inject;
 
@@ -16,31 +18,24 @@ import test.Tests;
 import br.gov.frameworkdemoiselle.annotation.Name;
 
 @RunWith(Arquillian.class)
-public class ConnectionProducerTest {
+public class ConnectionProducerWithNameTest {
 
-	private static String PATH = "src/test/resources/producer";
-	
+	private static String PATH = "src/test/resources/producer/with-name";
+
 	@Inject
 	@Name("conn1")
-	private Connection connectionWithName;
-	
-	@Inject
-	private Connection connectionWithoutName;
-	
+	private Connection connection;
+
 	@Deployment
 	public static WebArchive createDeployment() {
-		WebArchive deployment = Tests.createDeployment(ConnectionProducerTest.class);
+		WebArchive deployment = Tests.createDeployment(ConnectionProducerWithNameTest.class);
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
 		return deployment;
 	}
-	
+
 	@Test
-	public void createDefaultConnectionWithName(){
-		assertNotNull(connectionWithName);
+	public void createConnection() {
+		assertNotNull(connection);
 	}
-	
-	@Test
-	public void createDefaultConnectionWithoutName(){
-		assertNotNull(connectionWithoutName);
-	}
+
 }
