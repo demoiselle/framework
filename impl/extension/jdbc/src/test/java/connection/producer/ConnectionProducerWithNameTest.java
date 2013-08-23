@@ -3,8 +3,6 @@ package connection.producer;
 import static org.junit.Assert.assertNotNull;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import javax.inject.Inject;
 
@@ -24,7 +22,7 @@ public class ConnectionProducerWithNameTest {
 
 	@Inject
 	@Name("conn1")
-	private Connection connection;
+	private Connection conn1;
 
 	@Deployment
 	public static WebArchive createDeployment() {
@@ -35,7 +33,7 @@ public class ConnectionProducerWithNameTest {
 
 	@Test
 	public void createConnection() {
-		assertNotNull(connection);
+		assertNotNull(conn1);
 	}
 
 }

@@ -30,6 +30,9 @@ public class ConnectionProducerNoConnectionDriverTest {
 		return deployment;
 	}
 
+	/**
+	 * TODO Refinar a exceção esperada 
+	 */
 	@Test(expected = Exception.class)
 	public void failOnCreateConnection() {
 		conn1.get();
