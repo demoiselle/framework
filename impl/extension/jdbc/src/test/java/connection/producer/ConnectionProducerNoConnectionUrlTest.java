@@ -1,7 +1,6 @@
 package connection.producer;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -13,13 +12,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
 
 @RunWith(Arquillian.class)
-public class ConnectionProducerNoConnectionTest {
+public class ConnectionProducerNoConnectionUrlTest {
 
-	private static String PATH = "src/test/resources/producer/no-connection";
+	private static String PATH = "src/test/resources/producer/no-connection-url";
 
 	@Inject
 	@Name("conn1")
@@ -27,14 +25,14 @@ public class ConnectionProducerNoConnectionTest {
 
 	@Deployment
 	public static WebArchive createDeployment() {
-		WebArchive deployment = Tests.createDeployment(ConnectionProducerNoConnectionTest.class);
+		WebArchive deployment = Tests.createDeployment(ConnectionProducerNoConnectionUrlTest.class);
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
 		return deployment;
 	}
 
-	@Test(expected = DemoiselleException.class)
-	public void failOnCreateConnection() throws SQLException {
-		String url = ((Connection)conn1).getMetaData().getURL();
+	@Test(expected = Exception.class)
+	public void failOnCreateConnection() {
+		conn1.get();
 	}
 
 }
