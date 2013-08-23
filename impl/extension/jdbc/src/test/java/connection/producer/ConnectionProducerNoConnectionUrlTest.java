@@ -31,7 +31,7 @@ public class ConnectionProducerNoConnectionUrlTest {
 	}
 
 	/**
-	 * TODO Refinar a exceção esperada 
+	 * TODO Refinar a exceção esperada
 	 */
 	@Test(expected = Exception.class)
 	public void failOnCreateConnection() {
