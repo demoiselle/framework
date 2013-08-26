@@ -82,8 +82,8 @@ public class JPATransactionTest {
 			Assert.assertEquals("Exceção criada para marcar transação para rollback", e.getMessage());
 		}
 		finally{
-			MyEntity1 entity1 = em1.find(MyEntity1.class, tb.createId("id-1"));
-			MyEntity2 entity2 = em2.find(MyEntity2.class, tb.createId("id-2"));
+			MyEntity1 entity1 = em1.find(MyEntity1.class, tb.createId("id-3"));
+			MyEntity2 entity2 = em2.find(MyEntity2.class, tb.createId("id-4"));
 			
 			Assert.assertNull(entity1);
 			Assert.assertNull(entity2);
