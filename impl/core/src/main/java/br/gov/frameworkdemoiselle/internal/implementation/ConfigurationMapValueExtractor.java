@@ -50,6 +50,12 @@ import org.apache.commons.configuration.Configuration;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 
+/**
+ * 
+ * TODO Adicionar verificação da existência de duas ou mais configurações JDBC com mesmo nome. Lançar INFO ou Exceção.
+ *
+ */
+
 @Priority(L2_PRIORITY)
 public class ConfigurationMapValueExtractor implements ConfigurationValueExtractor {
 
