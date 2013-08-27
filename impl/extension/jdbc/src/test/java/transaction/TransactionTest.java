@@ -37,7 +37,6 @@
 
 package transaction;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import junit.framework.Assert;
@@ -45,14 +44,14 @@ import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import br.gov.frameworkdemoiselle.internal.context.ContextManager;
-import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
+import br.gov.frameworkdemoiselle.transaction.JDBCTransaction;
+import br.gov.frameworkdemoiselle.transaction.Transaction;
+import br.gov.frameworkdemoiselle.transaction.TransactionContext;
 
 @RunWith(Arquillian.class)
 public class TransactionTest {
@@ -61,52 +60,77 @@ public class TransactionTest {
 
 	@Inject
 	private TransactionalBusiness tb;
-	
+
+	private Transaction transaction;
+
+	@Inject
+	private TransactionContext context;
+
+	@Inject
+	private DDL ddl;
+
 	@Deployment
 	public static WebArchive createDeployment() {
 		WebArchive deployment = Tests.createDeployment(TransactionTest.class);
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
 		return deployment;
 	}
-	
-//	@Before
-//	public void init() throws Exception{
-////		transaction = context.getCurrentTransaction();
-////		ddl.dropAndCreate();
-//	}
-	
-//	@Before
-//	public void activeContext() {
-//		ContextManager.activate(ManagedContext.class, RequestScoped.class);
-//	}
-//
-//	@After
-//	public void deactiveContext() {
-//		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
-//	}
-	
+
+	@Before
+	public void init() throws Exception {
+		transaction = context.getCurrentTransaction();
+		ddl.dropAndCreate();
+		transaction.commit();
+	}
+
 	@Test
-	public void isTransactionActiveWithInterceptor(){
+	public void isTransactionActiveWithInterceptor() {
 		Assert.assertTrue(tb.isTransactionActiveWithInterceptor());
 	}
-	
+
 	@Test
-	public void isTransactionActiveWithoutInterceptor(){
+	public void isTransactionActiveWithoutInterceptor() {
 		Assert.assertFalse(tb.isTransactionActiveWithoutInterceptor());
 	}
 
-//	@Test
-//	public void verifyIfTransactionIsJdbcTransaction() {
-//		assertEquals(transaction.getClass(), JDBCTransaction.class);
-//	}
-//	
-//	@Test
-//	public void verifyIfTransactionIsActive() {
-//		assertTrue(!transaction.isActive());
-//		transaction.begin();
-//		assertTrue(transaction.isActive());
-//	}
+	@Test
+	public void verifyIfTransactionIsJdbcTransaction() {
+		Assert.assertEquals(transaction.getClass(), JDBCTransaction.class);
+	}
+
+	@Test
+	public void verifyIfTransactionIsActive() {
+		Assert.assertTrue(!transaction.isActive());
+		transaction.begin();
+		Assert.assertTrue(transaction.isActive());
+	}
 	
-	
+	@Test
+	public void commitWithSuccess() throws Exception{
+		
+		MyEntity1 m1 = new MyEntity1();
+		m1.setId(1);
+		m1.setDescription("desc-1");
+		
+		tb.insert(m1);
+
+		Assert.assertEquals("desc-1", tb.find(m1.getId()).getDescription());
+		
+		tb.delete(m1);
+		
+		Assert.assertNull(tb.find(m1.getId()).getDescription());
+	}	
+
+	@Test
+	public void rollbackWithSuccess() throws Exception {
+		try{
+			tb.rollbackWithSuccess();
+		} catch (Exception e) {
+			Assert.assertEquals("Exceção criada para marcar transação para rollback", e.getMessage());
+		}
+		finally{
+			MyEntity1 m1 = tb.find(3);
+			Assert.assertNull(tb.find(m1.getId()).getDescription());
+		}
+	}	
 }
-	

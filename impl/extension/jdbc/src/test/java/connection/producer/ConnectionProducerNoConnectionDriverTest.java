@@ -44,6 +44,7 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -67,7 +68,7 @@ public class ConnectionProducerNoConnectionDriverTest {
 	}
 
 	/**
-	 * TODO Refinar a exceção esperada 
+	 * TODO Refinar a exceção esperada
 	 */
 	@Test(expected = Exception.class)
 	public void failOnCreateConnection() {

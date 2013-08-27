@@ -47,7 +47,6 @@ import br.gov.frameworkdemoiselle.internal.producer.ConnectionProducer;
 import br.gov.frameworkdemoiselle.internal.producer.ConnectionProducer.Status;
 import br.gov.frameworkdemoiselle.util.Beans;
 
-
 /**
  * Represents the strategy destinated to manage JDBC transactions.
  * 
@@ -61,22 +60,9 @@ public class JDBCTransaction implements Transaction {
 
 	private ConnectionProducer producer;
 
-	//private Map<Connection, Status> cache = Collections.synchronizedMap(new HashMap<Connection, Status>());
-	//private List<ConnectionProxy> cache = Collections.synchronizedList(new ArrayList<ConnectionProxy>());
-
 	private ConnectionProducer getProducer() {
 		if (producer == null) {
 			producer = Beans.getReference(ConnectionProducer.class);
-
-			/*for (Connection connection : producer.getCache().values()) {
-				if (!ConnectionProxy.class.isInstance(connection)) {
-					continue;
-				}
-				
-				if (!cache.contains(connection)) {
-					cache.add((ConnectionProxy)connection);
-				}
-			}*/
 		}
 
 		return producer;
@@ -101,7 +87,7 @@ public class JDBCTransaction implements Transaction {
 	@Override
 	public void commit() {
 		Status status;
-		
+
 		for (Connection connection : getDelegate()) {
 			try {
 				connection.commit();
@@ -119,7 +105,7 @@ public class JDBCTransaction implements Transaction {
 	@Override
 	public void rollback() {
 		Status status;
-		
+
 		for (Connection connection : getDelegate()) {
 			try {
 				connection.rollback();
@@ -165,29 +151,4 @@ public class JDBCTransaction implements Transaction {
 
 		return result;
 	}
-
-	/*private static class Status implements Serializable {
-
-		private static final long serialVersionUID = 1L;
-
-		private boolean active = false;
-
-		private boolean markedRollback = false;
-
-		public boolean isActive() {
-			return active;
-		}
-
-		public void setActive(boolean active) {
-			this.active = active;
-		}
-
-		public boolean isMarkedRollback() {
-			return markedRollback;
-		}
-
-		public void setRollbackOnly(boolean markedRollback) {
-			this.markedRollback = markedRollback;
-		}
-	}*/
 }
