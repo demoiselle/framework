@@ -83,9 +83,9 @@ public class ConnectionProducerMultipleConnectionsTest {
 
 	@Test
 	public void createConnection() throws SQLException {
-		assertEquals(conn1.getMetaData().getURL(), "jdbc:hsqldb:hsql1");
-		assertEquals(conn2.getMetaData().getURL(), "jdbc:hsqldb:hsql2");
-		assertEquals(conn3.getMetaData().getURL(), "jdbc:hsqldb:hsql3");
+		assertEquals(conn1.getMetaData().getURL(), "jdbc:hsqldb:mem:hsql1");
+		assertEquals(conn2.getMetaData().getURL(), "jdbc:hsqldb:mem:hsql2");
+		assertEquals(conn3.getMetaData().getURL(), "jdbc:hsqldb:mem:hsql3");
 		assertEquals(conn4.getMetaData().getURL(), "jdbc:h2:mem:test");
 	}
 

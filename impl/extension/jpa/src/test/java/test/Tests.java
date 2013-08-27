@@ -84,7 +84,6 @@ public final class Tests {
 				.addClass(JPATransaction.class)
 				.addAsResource(createFileAsset("src/main/resources/demoiselle-jpa-bundle.properties"),
 						"demoiselle-jpa-bundle.properties")
-				.addAsResource(createFileAsset("src/test/resources/logging.properties"), "logging.properties")
 				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")
 				.addAsLibraries(libs);
 	}
