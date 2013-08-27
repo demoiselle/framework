@@ -29,7 +29,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 public class ManagementBootstrap implements Extension {
 
-	protected static List<AnnotatedType<?>> types = Collections.synchronizedList(new ArrayList<AnnotatedType<?>>());
+	protected List<AnnotatedType<?>> types = Collections.synchronizedList(new ArrayList<AnnotatedType<?>>());
 
 	private List<Class<? extends ManagementExtension>> managementExtensionCache = Collections
 			.synchronizedList(new ArrayList<Class<? extends ManagementExtension>>());

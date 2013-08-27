@@ -83,9 +83,9 @@ public class ConfigurationLoader implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static ResourceBundle bundle;
+	private ResourceBundle bundle;
 
-	private static Logger logger;
+	private Logger logger;
 
 	private Object object;
 
@@ -314,7 +314,7 @@ public class ConfigurationLoader implements Serializable {
 		}
 	}
 
-	private static ResourceBundle getBundle() {
+	private ResourceBundle getBundle() {
 		if (bundle == null) {
 			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}
@@ -322,7 +322,7 @@ public class ConfigurationLoader implements Serializable {
 		return bundle;
 	}
 
-	private static Logger getLogger() {
+	private Logger getLogger() {
 		if (logger == null) {
 			logger = Beans.getReference(Logger.class, new NameQualifier(ConfigurationLoader.class.getName()));
 		}

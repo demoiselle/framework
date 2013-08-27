@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import test.Tests;
 import br.gov.frameworkdemoiselle.annotation.Name;
 
+//@Ignore
 @RunWith(Arquillian.class)
 public class ConnectionProducerNoConnectionDriverTest {
 
@@ -31,7 +32,7 @@ public class ConnectionProducerNoConnectionDriverTest {
 	}
 
 	/**
-	 * TODO Refinar a exceção esperada 
+	 * TODO Refinar a exceção esperada
 	 */
 	@Test(expected = Exception.class)
 	public void failOnCreateConnection() {

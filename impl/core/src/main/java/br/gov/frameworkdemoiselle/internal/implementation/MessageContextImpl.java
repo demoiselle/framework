@@ -61,9 +61,9 @@ public class MessageContextImpl implements Serializable, MessageContext {
 
 	private static final long serialVersionUID = 1L;
 
-	private transient static ResourceBundle bundle;
+	private transient  ResourceBundle bundle;
 
-	private transient static Logger logger;
+	private transient  Logger logger;
 
 	@Override
 	public void add(final Message message, Object... params) {
@@ -111,7 +111,7 @@ public class MessageContextImpl implements Serializable, MessageContext {
 						+ MessageAppender.class.getCanonicalName() + ".");
 	}
 
-	private static ResourceBundle getBundle() {
+	private  ResourceBundle getBundle() {
 		if (bundle == null) {
 			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}
@@ -119,7 +119,7 @@ public class MessageContextImpl implements Serializable, MessageContext {
 		return bundle;
 	}
 
-	private static Logger getLogger() {
+	private  Logger getLogger() {
 		if (logger == null) {
 			logger = LoggerProducer.create(MessageContext.class);
 		}

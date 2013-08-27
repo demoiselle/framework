@@ -60,7 +60,7 @@ public class AnnotatedMethodProcessor<T> implements Comparable<AnnotatedMethodPr
 
 	private AnnotatedMethod<T> annotatedMethod;
 
-	private transient static ResourceBundle bundle;
+	private transient ResourceBundle bundle;
 
 	public AnnotatedMethodProcessor(final AnnotatedMethod<T> annotatedMethod) {
 		this.annotatedMethod = annotatedMethod;
@@ -131,7 +131,7 @@ public class AnnotatedMethodProcessor<T> implements Comparable<AnnotatedMethodPr
 		return priority;
 	}
 
-	protected static ResourceBundle getBundle() {
+	protected ResourceBundle getBundle() {
 		if (bundle == null) {
 			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}

@@ -31,11 +31,6 @@ public class JPACrudTest {
 	}
 
 	@Test
-	public void x() {
-
-	}
-
-	@Test
 	public void successfullyInserted() {
 		populate(1, 0);
 

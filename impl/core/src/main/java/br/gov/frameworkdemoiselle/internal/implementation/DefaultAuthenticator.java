@@ -60,7 +60,7 @@ public class DefaultAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
 
-	private transient static ResourceBundle bundle;
+	private transient ResourceBundle bundle;
 
 	/**
 	 * @see br.gov.frameworkdemoiselle.security.Authenticator#authenticate()
@@ -91,7 +91,7 @@ public class DefaultAuthenticator implements Authenticator {
 				SecurityContext.class.getSimpleName()), new ClassNotFoundException());
 	}
 
-	private static ResourceBundle getBundle() {
+	private ResourceBundle getBundle() {
 		if (bundle == null) {
 			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}

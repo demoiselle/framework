@@ -40,7 +40,7 @@
 	<artifactId>demoiselle-jmx</artifactId>
 	<name>Demoiselle Framework JMX Extension</name>
 	<description>Demoiselle Framework JMX Extension</description>
-	
+
 	<parent>
 		<artifactId>demoiselle-extension-parent</artifactId>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
@@ -76,11 +76,13 @@
 			<artifactId>weld-se-core</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>org.jboss.arquillian.container</groupId>
 			<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
 			<scope>test</scope>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
@@ -92,7 +94,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<repositories>
 		<repository>
 			<id>sonatype-nexus-snapshots</id>
@@ -117,14 +119,14 @@
 			</releases>
 		</repository>
 	</repositories>
-	
+
 	<url>http://www.frameworkdemoiselle.gov.br</url>
-	
+
 	<organization>
 		<name>SERPRO - Serviço Federal de Processamento de Dados</name>
 		<url>http://www.serpro.gov.br</url>
 	</organization>
-	
+
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License, Version 3</name>

@@ -56,7 +56,7 @@ public class DefaultAuthorizer implements Authorizer {
 
 	private static final long serialVersionUID = 1L;
 
-	private transient static ResourceBundle bundle;
+	private transient ResourceBundle bundle;
 
 	@Override
 	public boolean hasRole(String role) {
@@ -73,7 +73,7 @@ public class DefaultAuthorizer implements Authorizer {
 				SecurityContext.class.getSimpleName()));
 	}
 
-	private static ResourceBundle getBundle() {
+	private ResourceBundle getBundle() {
 		if (bundle == null) {
 			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}

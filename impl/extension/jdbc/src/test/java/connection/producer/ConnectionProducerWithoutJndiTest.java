@@ -1,7 +1,5 @@
 package connection.producer;
 
-import static org.junit.Assert.assertEquals;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -17,6 +15,7 @@ import org.junit.runner.RunWith;
 import test.Tests;
 import br.gov.frameworkdemoiselle.annotation.Name;
 
+//@Ignore
 @RunWith(Arquillian.class)
 public class ConnectionProducerWithoutJndiTest {
 
@@ -33,7 +32,7 @@ public class ConnectionProducerWithoutJndiTest {
 		return deployment;
 	}
 
-	@Test(expected=Exception.class)
+	@Test(expected = Exception.class)
 	public void createConnection() throws SQLException {
 		conn1.get();
 	}

@@ -4,12 +4,11 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
-
-import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -124,32 +123,32 @@ public class JPATransactionTest {
 		assertNull(persisted1);
 		assertNull(persisted2);
 	}
-	
+
 	@Test
-	public void checkEntityManagerCreatedAfterTransaction(){
+	public void checkEntityManagerCreatedAfterTransaction() {
 		Transaction transaction = transactionContext.getCurrentTransaction();
 
 		String id = createId("id-5");
 		MyEntity1 entity1 = new MyEntity1();
 		entity1.setId(id);
 		entity1.setDescription("Test description");
-		
-		Assert.assertFalse(transaction.isActive());
+
+		assertFalse(transaction.isActive());
 		transaction.begin();
-		Assert.assertTrue(transaction.isActive());
-		
+		assertTrue(transaction.isActive());
+
 		EntityManager em1 = Beans.getReference(EntityManager.class, new NameQualifier("pu3"));
-		
-		try{
+
+		try {
 			em1.persist(entity1);
 			transaction.commit();
+
+		} catch (TransactionRequiredException te) {
+			fail("Entity Manager não ingressou em transação já em curso: " + te.getMessage());
 		}
-		catch(TransactionRequiredException te){
-			Assert.fail("Entity Manager não ingressou em transação já em curso: "+te.getMessage());
-		}
-		
+
 		entity1 = em1.find(MyEntity1.class, id);
-		Assert.assertEquals("Test description", entity1.getDescription());
+		assertEquals("Test description", entity1.getDescription());
 	}
 
 	private String createId(String id) {

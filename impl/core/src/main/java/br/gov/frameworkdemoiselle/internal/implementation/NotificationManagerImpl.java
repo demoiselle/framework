@@ -10,8 +10,8 @@ import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEven
 import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
 import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
 import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
 import br.gov.frameworkdemoiselle.management.GenericNotification;
+import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 import br.gov.frameworkdemoiselle.util.Beans;
 

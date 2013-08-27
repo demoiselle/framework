@@ -40,7 +40,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -54,7 +57,8 @@ import br.gov.frameworkdemoiselle.DemoiselleException;
 
 /**
  * <p>
- * Utilizes a {@link BeanManager}, obtained in the bootstrap process, to provide custom operations for obtaining contextual references for beans.
+ * Utilizes a {@link BeanManager}, obtained in the bootstrap process, to provide custom operations for obtaining
+ * contextual references for beans.
  * <p>
  * All its public methods are static.
  * 
@@ -62,40 +66,41 @@ import br.gov.frameworkdemoiselle.DemoiselleException;
  */
 public final class Beans {
 
-	private static transient ResourceBundle bundle;
-
-	private static BeanManager manager;
+	private static final Map<ClassLoader, BeanManager> beanManagerCache = Collections
+			.synchronizedMap(new HashMap<ClassLoader, BeanManager>());
 
 	private Beans() {
 	}
 
 	public static void setBeanManager(BeanManager beanManager) {
-		manager = beanManager;
+		beanManagerCache.put(getCurrentClassLoader(), beanManager);
 	}
 
 	public static BeanManager getBeanManager() {
-		return manager;
+		return beanManagerCache.get(getCurrentClassLoader());
+	}
+
+	private static ClassLoader getCurrentClassLoader() {
+		return Thread.currentThread().getContextClassLoader();
 	}
 
 	/**
-	 * Obtains a injectble instance of a bean, which have the given required type and qualifiers, 
-     * and are available for injection in the point where this method was call. 
+	 * Obtains a injectble instance of a bean, which have the given required type and qualifiers, and are available for
+	 * injection in the point where this method was call.
 	 * 
 	 * @param beanClass
-	 * 			the beanClass which instace is requested to be obtained.
+	 *            the beanClass which instace is requested to be obtained.
 	 * @param qualifiers
-	 * 			a set of qualifiers with any quantity of elements (zero including).
-	 * @return Type
-	 * 			a instace of the injected beanClass.
+	 *            a set of qualifiers with any quantity of elements (zero including).
+	 * @return Type a instace of the injected beanClass.
 	 * @throws DemoiselleException
-	 * 			if no bean are avaliable to be injected for the given Class and qualifiers.
-	 *            
+	 *             if no bean are avaliable to be injected for the given Class and qualifiers.
 	 */
 	public static <T> T getReference(final Class<T> beanClass, Annotation... qualifiers) {
 		T instance;
 
 		try {
-			instance = (T) getReference(manager.getBeans(beanClass, qualifiers), beanClass, qualifiers);
+			instance = (T) getReference(getBeanManager().getBeans(beanClass, qualifiers), beanClass, qualifiers);
 
 		} catch (NoSuchElementException cause) {
 			StringBuffer buffer = new StringBuffer();
@@ -114,22 +119,20 @@ public final class Beans {
 	}
 
 	/**
-	 * Obtains a injectble instance of a bean, which have the given required type 
-     * and are available for injection in the point where this method was call. 
+	 * Obtains a injectble instance of a bean, which have the given required type and are available for injection in the
+	 * point where this method was call.
 	 * 
 	 * @param beanClass
-	 * 			the beanClass which instace is requested to be obtained.
-	 * @return Type
-	 * 			a instace of the injected beanClass.
+	 *            the beanClass which instace is requested to be obtained.
+	 * @return Type a instace of the injected beanClass.
 	 * @throws DemoiselleException
-	 * 			if no bean are avaliable to be injected for the given Class.
-	 *            
+	 *             if no bean are avaliable to be injected for the given Class.
 	 */
 	public static <T> T getReference(final Class<T> beanClass) {
 		T instance;
 
 		try {
-			instance = (T) getReference(manager.getBeans(beanClass), beanClass);
+			instance = (T) getReference(getBeanManager().getBeans(beanClass), beanClass);
 
 		} catch (NoSuchElementException cause) {
 			String message = getBundle().getString("bean-not-found", beanClass.getCanonicalName());
@@ -140,23 +143,21 @@ public final class Beans {
 	}
 
 	/**
-	 * Obtains a injectble instance of a bean, which have the given EL name 
-     * and are available for injection in the point where this method was call. 
+	 * Obtains a injectble instance of a bean, which have the given EL name and are available for injection in the point
+	 * where this method was call.
 	 * 
 	 * @param beanName
-	 * 			the EL name for the requested bean.
-	 * @return Type
-	 * 			a instace of the injected beanClass.
+	 *            the EL name for the requested bean.
+	 * @return Type a instace of the injected beanClass.
 	 * @throws DemoiselleException
-	 * 			if no bean are avaliable to be injected for the given bean name.
-	 *            
+	 *             if no bean are avaliable to be injected for the given bean name.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T getReference(String beanName) {
 		T instance;
 
 		try {
-			instance = (T) getReference(manager.getBeans(beanName));
+			instance = (T) getReference(getBeanManager().getBeans(beanName));
 
 		} catch (NoSuchElementException cause) {
 			String message = getBundle().getString("bean-not-found", beanName);
@@ -169,11 +170,11 @@ public final class Beans {
 	@SuppressWarnings("unchecked")
 	private static <T> T getReference(Set<Bean<?>> beans, Class<T> beanClass, Annotation... qualifiers) {
 		Bean<?> bean = beans.iterator().next();
-		CreationalContext<?> context = manager.createCreationalContext(bean);
+		CreationalContext<?> context = getBeanManager().createCreationalContext(bean);
 		Type beanType = beanClass == null ? bean.getBeanClass() : beanClass;
 		InjectionPoint injectionPoint = new CustomInjectionPoint(bean, beanType, qualifiers);
 
-		return (T) manager.getInjectableReference(injectionPoint, context);
+		return (T) getBeanManager().getInjectableReference(injectionPoint, context);
 	}
 
 	private static <T> T getReference(Set<Bean<?>> beans) {
@@ -181,11 +182,7 @@ public final class Beans {
 	}
 
 	private static ResourceBundle getBundle() {
-		if (bundle == null) {
-			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
-		}
-
-		return bundle;
+		return Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 	}
 
 	static class CustomInjectionPoint implements InjectionPoint {

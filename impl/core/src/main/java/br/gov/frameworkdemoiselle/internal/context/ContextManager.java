@@ -3,8 +3,10 @@ package br.gov.frameworkdemoiselle.internal.context;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Context;
@@ -41,16 +43,43 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  */
 public final class ContextManager {
 
-	private static List<CustomContextCounter> contexts = Collections
-			.synchronizedList(new ArrayList<CustomContextCounter>());
+	private static final Map<ClassLoader, List<CustomContextCounter>> contextsCache = Collections
+			.synchronizedMap(new HashMap<ClassLoader, List<CustomContextCounter>>());
 
-	private static boolean initialized = false;
-
-	private static transient ResourceBundle bundle;
-
-	private static Logger logger;
+	private static final Map<ClassLoader, Boolean> initializedCache = Collections
+			.synchronizedMap(new HashMap<ClassLoader, Boolean>());
 
 	private ContextManager() {
+	}
+
+	private synchronized static List<CustomContextCounter> getContexts() {
+		List<CustomContextCounter> contexts = contextsCache.get(getCurrentClassLoader());
+
+		if (contexts == null) {
+			contexts = Collections.synchronizedList(new ArrayList<CustomContextCounter>());
+			contextsCache.put(getCurrentClassLoader(), contexts);
+		}
+
+		return contexts;
+	}
+
+	private synchronized static boolean isInitialized() {
+		Boolean initialized = initializedCache.get(getCurrentClassLoader());
+		
+		if (initialized == null) {
+			initialized = false;
+			initializedCache.put(getCurrentClassLoader(), initialized);
+		}
+		
+		return initialized;
+	}
+
+	private static void setInitialized(boolean initialized) {
+		initializedCache.put(getCurrentClassLoader(), initialized);
+	}
+
+	private static ClassLoader getCurrentClassLoader() {
+		return Thread.currentThread().getContextClassLoader();
 	}
 
 	/**
@@ -66,12 +95,12 @@ public final class ContextManager {
 	 *            The CDI event indicating all beans have been discovered.
 	 */
 	public static void initialize(AfterBeanDiscovery event) {
-		if (initialized) {
+		if (isInitialized()) {
 			return;
 		}
 
 		add(new StaticContext(), event);
-		initialized = true;
+		setInitialized(true);
 	}
 
 	/**
@@ -92,7 +121,7 @@ public final class ContextManager {
 	 *            The CDI event indicating all beans have been discovered.
 	 */
 	public static void add(CustomContext context, AfterBeanDiscovery event) {
-		for (CustomContextCounter contextCounter : contexts) {
+		for (CustomContextCounter contextCounter : getContexts()) {
 			if (contextCounter.isSame(context.getClass(), context.getScope())) {
 
 				ContextManager.getLogger().trace(
@@ -109,7 +138,7 @@ public final class ContextManager {
 
 		context.setActive(false);
 		event.addContext(context);
-		contexts.add(new CustomContextCounter(context));
+		getContexts().add(new CustomContextCounter(context));
 	}
 
 	/**
@@ -137,11 +166,11 @@ public final class ContextManager {
 	 */
 	public static synchronized void activate(Class<? extends CustomContext> customContextClass,
 			Class<? extends Annotation> scope) {
-		if (!initialized) {
+		if (!isInitialized()) {
 			throw new DemoiselleException(getBundle().getString("custom-context-manager-not-initialized"));
 		}
 
-		for (CustomContextCounter context : contexts) {
+		for (CustomContextCounter context : getContexts()) {
 			if (context.isSame(customContextClass, scope)) {
 				context.activate();
 				return;
@@ -177,11 +206,11 @@ public final class ContextManager {
 	 */
 	public static synchronized void deactivate(Class<? extends CustomContext> customContextClass,
 			Class<? extends Annotation> scope) {
-		if (!initialized) {
+		if (!isInitialized()) {
 			throw new DemoiselleException(getBundle().getString("custom-context-manager-not-initialized"));
 		}
 
-		for (CustomContextCounter context : contexts) {
+		for (CustomContextCounter context : getContexts()) {
 			if (context.isSame(customContextClass, scope)) {
 				context.deactivate();
 				return;
@@ -198,28 +227,20 @@ public final class ContextManager {
 	 * </p>
 	 */
 	public static synchronized void shutdown() {
-		for (CustomContextCounter context : contexts) {
+		for (CustomContextCounter context : getContexts()) {
 			context.shutdown();
 		}
 
-		contexts.clear();
-		initialized = false;
+		getContexts().clear();
+		setInitialized(false);
 	}
 
 	static Logger getLogger() {
-		if (logger == null) {
-			logger = LoggerProducer.create(ContextManager.class);
-		}
-
-		return logger;
+		return LoggerProducer.create(ContextManager.class);
 	}
 
 	static ResourceBundle getBundle() {
-		if (bundle == null) {
-			bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
-		}
-
-		return bundle;
+		return new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 	}
 }
 

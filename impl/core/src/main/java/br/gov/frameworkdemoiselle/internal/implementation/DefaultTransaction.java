@@ -56,7 +56,7 @@ public class DefaultTransaction implements Transaction {
 
 	private static final long serialVersionUID = 1L;
 
-	private transient static ResourceBundle bundle;
+	private transient ResourceBundle bundle;
 
 	@Override
 	public void begin() {
@@ -93,7 +93,7 @@ public class DefaultTransaction implements Transaction {
 				Transactional.class.getSimpleName()));
 	}
 
-	private static ResourceBundle getBundle() {
+	private ResourceBundle getBundle() {
 		if (bundle == null) {
 			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}

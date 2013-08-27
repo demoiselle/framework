@@ -58,8 +58,6 @@ public final class StrategySelector implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private transient static ResourceBundle bundle;
-
 	private StrategySelector() {
 	}
 
@@ -156,10 +154,6 @@ public final class StrategySelector implements Serializable {
 	}
 
 	private static ResourceBundle getBundle() {
-		if (bundle == null) {
-			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
-		}
-
-		return bundle;
+		return Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 	}
 }

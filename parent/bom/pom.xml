@@ -109,13 +109,13 @@
 				<artifactId>demoiselle-jmx</artifactId>
 				<version>2.4.0-BETA2-SNAPSHOT</version>
 			</dependency>
-<!--
+			<!--
 			<dependency>
 				<groupId>br.gov.frameworkdemoiselle</groupId>
 				<artifactId>demoiselle-jaas</artifactId>
 				<version>2.4.0-BETA1-SNAPSHOT</version>
 			</dependency>
--->
+			-->
 
 			<!-- jsr-299 api -->
 			<dependency>
@@ -308,13 +308,6 @@
 				<version>${commons.dbcp.version}</version>
 			</dependency>
 			
-			<!-- embedded containners -->
-			<dependency>
-				<groupId>org.glassfish.main.extras</groupId>
-				<artifactId>glassfish-embedded-all</artifactId>
-				<version>${glassfish.embedded.version}</version>
-			</dependency>			
-
 			<!-- embedded database -->
 			<dependency>
 				<groupId>hsqldb</groupId>
@@ -334,31 +327,6 @@
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.jboss.arquillian</groupId>
-				<artifactId>arquillian-bom</artifactId>
-				<version>${arquillian.version}</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.arquillian.container</groupId>
-				<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
-				<version>${arquillian.weld.se.embedded.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.arquillian.container</groupId>
-				<artifactId>arquillian-glassfish-embedded-3.1</artifactId>
-				<version>${arquillian.glassfish.embedded.version}</version>
-			</dependency>
-			<!--
-			<dependency>
-				<groupId>org.jboss.arquillian.extension</groupId>
-				<artifactId>arquillian-persistence-impl</artifactId>
-				<version>${arquillian.persistence.version}</version>
-				<scope>test</scope>
-			</dependency>
-			-->
 			<dependency>
 				<groupId>org.jboss.weld.se</groupId>
 				<artifactId>weld-se-core</artifactId>
@@ -429,16 +397,6 @@
 
 		<junit.version>4.8.1</junit.version>
 		<easymock.version>3.0</easymock.version>
-
-		<arquillian.version>1.1.1.Final</arquillian.version>
-		<!--
-		<arquillian.version>1.0.4.Final</arquillian.version>
-		-->
-		<arquillian.weld.se.embedded.version>1.0.0.CR7</arquillian.weld.se.embedded.version>
-		<arquillian.persistence.version>1.0.0.Alpha6</arquillian.persistence.version>
-		<arquillian.glassfish.embedded.version>1.0.0.CR4</arquillian.glassfish.embedded.version>
-
-		<glassfish.embedded.version>3.1.2.2</glassfish.embedded.version>
 
 		<maven.surefire.plugin.version>2.16</maven.surefire.plugin.version>
 

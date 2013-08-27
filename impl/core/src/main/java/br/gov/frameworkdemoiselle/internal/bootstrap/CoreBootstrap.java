@@ -59,7 +59,7 @@ public class CoreBootstrap implements Extension {
 
 	private Logger logger;
 
-	private static transient ResourceBundle bundle;
+	private transient ResourceBundle bundle;
 
 	private Logger getLogger() {
 		if (this.logger == null) {
@@ -69,7 +69,7 @@ public class CoreBootstrap implements Extension {
 		return this.logger;
 	}
 
-	private static ResourceBundle getBundle() {
+	private ResourceBundle getBundle() {
 		if (bundle == null) {
 			bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
 		}

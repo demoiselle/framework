@@ -76,6 +76,13 @@
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<version>${arquillian.bom.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -189,6 +196,7 @@
 		<dependency>
 			<groupId>org.jboss.arquillian.container</groupId>
 			<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
+			<version>${arquillian.weld.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -268,6 +276,9 @@
 	</repositories>
 
 	<properties>
+		<arquillian.bom.version>1.1.1.Final</arquillian.bom.version>
+		<arquillian.weld.version>1.0.0.CR7</arquillian.weld.version>
+	
 		<!-- <jacoco.version>0.6.0.201210061924</jacoco.version> -->
 		<demoiselle.validation.version>2.4.0-BETA2-SNAPSHOT</demoiselle.validation.version>
 	</properties>

@@ -62,9 +62,9 @@ public class TransactionalInterceptor implements Serializable {
 
 	private TransactionInfo transactionInfo;
 
-	private static transient ResourceBundle bundle;
+	private transient ResourceBundle bundle;
 
-	private static transient Logger logger;
+	private transient Logger logger;
 
 	private TransactionContext getTransactionContext() {
 		if (this.transactionContext == null) {
@@ -97,14 +97,16 @@ public class TransactionalInterceptor implements Serializable {
 	}
 
 	/**
-	 * <p>Manages methods annotated with {@link Transactional}. If there's no active transaction
-	 * the moment a {@link Transactional} method is called, this interceptor will activate one. If a {@link Transactional} method
-	 * that activated a transaction returns, this method will commit the active transaction. If the {@link Transactional} method
-	 * throws an exception caught outside of the method (or uncaught), this interceptor will mark the transaction for rollback.</p>
-	 * 
 	 * <p>
-	 * This method is not intended to be called directly, instead the CDI provider will call this method when a {@link Transactional} method
-	 * is called.
+	 * Manages methods annotated with {@link Transactional}. If there's no active transaction the moment a
+	 * {@link Transactional} method is called, this interceptor will activate one. If a {@link Transactional} method
+	 * that activated a transaction returns, this method will commit the active transaction. If the
+	 * {@link Transactional} method throws an exception caught outside of the method (or uncaught), this interceptor
+	 * will mark the transaction for rollback.
+	 * </p>
+	 * <p>
+	 * This method is not intended to be called directly, instead the CDI provider will call this method when a
+	 * {@link Transactional} method is called.
 	 * </p>
 	 */
 	@AroundInvoke
@@ -183,7 +185,7 @@ public class TransactionalInterceptor implements Serializable {
 		}
 	}
 
-	private static ResourceBundle getBundle() {
+	private ResourceBundle getBundle() {
 		if (bundle == null) {
 			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}
@@ -191,7 +193,7 @@ public class TransactionalInterceptor implements Serializable {
 		return bundle;
 	}
 
-	private static Logger getLogger() {
+	private Logger getLogger() {
 		if (logger == null) {
 			logger = Beans.getReference(Logger.class, new NameQualifier(TransactionalInterceptor.class.getName()));
 		}

@@ -46,51 +46,8 @@
 	<container qualifier="jbossas-managed" default="true">
 		<protocol type="Servlet 3.0" />
 		<configuration>
-			<property name="jbossHome">target/jboss-as-${jbossas.version}</property>
+			<property name="jbossHome">target/jboss-as-${jboss.as.version}</property>
 		</configuration>
 	</container>
-	<!--
-	<container qualifier="jbossas-managed" default="true">
-		<configuration>
-			<property name="jbossHome">target/jboss-as-${jbossas.version}</property>
-			<property name="javaVmArguments">-Djboss.socket.binding.port-offset=10000 -Xmx512m -XX:MaxPermSize=128m</property>
-		</configuration>
-	</container>
-	-->
-	<!--
-	<container qualifier="jbossas-managed" default="true">
-		<configuration>
-			<property name="javaHome">/usr/lib/jvm/java-6-serpro/</property>
-			<property name="jbossHome">/opt/demoiselle/server/jboss-7.1/</property>
-		</configuration>
-	</container>
-	-->
-	
-	<!--
-	<container qualifier="glassfish-embedded" default="true">
-		<protocol type="Servlet 3.0" />
-		<configuration>
-			<property name="sunResourcesXml">src/test/resources/glassfish-resources.xml</property>
-		</configuration>
-	</container>
-	-->
-
-	<!--
-	<container qualifier="tomee" default="true">
-		<configuration>
-			<property name="httpPort">-1</property>
-			<property name="stopPort">-1</property>
-		</configuration>
-	</container>
-	-->
-
-	<!--
-	<container qualifier="jbossas-embedded" default="true">
-		<configuration>
-			<property name="bindaddress">127.0.0.1</property>
-			<property name="httpport">8081</property>
-		</configuration>
-	</container>
-	-->
 
 </arquillian>
