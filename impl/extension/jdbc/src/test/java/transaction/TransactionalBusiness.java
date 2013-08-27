@@ -34,59 +34,78 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package connection.producer;
-
-import static org.junit.Assert.assertEquals;
+package transaction;
 
 import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 import javax.inject.Inject;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import test.Tests;
 import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.transaction.TransactionContext;
+import br.gov.frameworkdemoiselle.transaction.Transactional;
 
-//@Ignore
-@RunWith(Arquillian.class)
-public class ConnectionProducerMultipleConnectionsTest {
-
-	private static String PATH = "src/test/resources/producer/multiple-connections";
+public class TransactionalBusiness {
 
 	@Inject
 	@Name("conn1")
 	private Connection conn1;
 
 	@Inject
-	@Name("conn2")
-	private Connection conn2;
+	private TransactionContext transactionContext;
 
-	// Conexão Default
-	@Inject
-	private Connection conn3;
-
-	@Inject
-	@Name("conn4")
-	private Connection conn4;
-
-	@Deployment
-	public static WebArchive createDeployment() {
-		WebArchive deployment = Tests.createDeployment(ConnectionProducerMultipleConnectionsTest.class);
-		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
-		return deployment;
+	@Transactional
+	public boolean isTransactionActiveWithInterceptor() {
+		return transactionContext.getCurrentTransaction().isActive();
 	}
 
-	@Test
-	public void createConnection() throws SQLException {
-		assertEquals(conn1.getMetaData().getURL(), "jdbc:hsqldb:hsql1");
-		assertEquals(conn2.getMetaData().getURL(), "jdbc:hsqldb:hsql2");
-		assertEquals(conn3.getMetaData().getURL(), "jdbc:hsqldb:hsql3");
-		assertEquals(conn4.getMetaData().getURL(), "jdbc:h2:mem:test");
+	public boolean isTransactionActiveWithoutInterceptor() {
+		return transactionContext.getCurrentTransaction().isActive();
+	}
+
+	@Transactional
+	public void insert(MyEntity1 m) throws Exception {
+		String sql = "insert into myentity (id, description) values (" + m.getId() + ", '" + m.getDescription() + "')";
+		Statement st = conn1.createStatement();
+		st.executeUpdate(sql);
+		st.close();
+	}
+
+	@Transactional
+	public void delete(MyEntity1 m1) throws Exception {
+		String sql = "delete from myentity where id = " + m1.getId();
+		Statement st = conn1.createStatement();
+		st.executeUpdate(sql);
+		st.close();
+	}
+
+	@Transactional
+	public MyEntity1 find(int id) throws Exception {
+		String sql = "select * from myentity where id = " + id;
+		Statement st = conn1.createStatement();
+		ResultSet rs = st.executeQuery(sql);
+
+		MyEntity1 m1 = new MyEntity1();
+		while (rs.next()) {
+			m1.setId(rs.getInt(1));
+			m1.setDescription(rs.getString(2));
+		}
+
+		rs.close();
+		st.close();
+
+		return m1;
+	}
+
+	@Transactional
+	public void rollbackWithSuccess() throws Exception {
+		MyEntity1 m1 = new MyEntity1();
+		m1.setId(3);
+
+		this.insert(m1);
+
+		throw new Exception("Exceção criada para marcar transação para rollback");
 	}
 
 }

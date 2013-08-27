@@ -25,6 +25,12 @@ import br.gov.frameworkdemoiselle.internal.proxy.BasicDataSourceProxy;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
+/**
+ * 
+ * TODO Verificar métodos públicos que só são usados dentro do pacote. Ajustar o modificador de acesso.
+ *
+ */
+
 @ApplicationScoped
 public class DataSourceProducer implements Serializable {
 

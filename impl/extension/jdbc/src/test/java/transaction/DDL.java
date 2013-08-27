@@ -34,59 +34,53 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package connection.producer;
-
-import static org.junit.Assert.assertEquals;
+package transaction;
 
 import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 import javax.inject.Inject;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import test.Tests;
 import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.transaction.Transactional;
 
-//@Ignore
-@RunWith(Arquillian.class)
-public class ConnectionProducerMultipleConnectionsTest {
+public class DDL {
 
-	private static String PATH = "src/test/resources/producer/multiple-connections";
-
-	@Inject
 	@Name("conn1")
-	private Connection conn1;
-
 	@Inject
-	@Name("conn2")
-	private Connection conn2;
+	private Connection connection;
 
-	// Conexão Default
-	@Inject
-	private Connection conn3;
-
-	@Inject
-	@Name("conn4")
-	private Connection conn4;
-
-	@Deployment
-	public static WebArchive createDeployment() {
-		WebArchive deployment = Tests.createDeployment(ConnectionProducerMultipleConnectionsTest.class);
-		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
-		return deployment;
+	@Transactional
+	public void dropAndCreate() throws Exception {
+		dropTable();
+		createTable();
 	}
 
-	@Test
-	public void createConnection() throws SQLException {
-		assertEquals(conn1.getMetaData().getURL(), "jdbc:hsqldb:hsql1");
-		assertEquals(conn2.getMetaData().getURL(), "jdbc:hsqldb:hsql2");
-		assertEquals(conn3.getMetaData().getURL(), "jdbc:hsqldb:hsql3");
-		assertEquals(conn4.getMetaData().getURL(), "jdbc:h2:mem:test");
+	private void dropTable() throws Exception {
+
+		Statement st = connection.createStatement();
+		
+		try {
+			String sql = "DROP TABLE myentity";
+			st.executeUpdate(sql);
+			st.close();
+		} catch (Exception e) {
+			
+		}
 	}
 
+	private void createTable() throws Exception {
+		StringBuffer sql = new StringBuffer();
+
+		sql.append("CREATE TABLE myentity ( ");
+		sql.append("	id int NOT NULL, ");
+		sql.append("	description varchar(10) NOT NULL, ");
+		sql.append("CONSTRAINT myentity_pk PRIMARY KEY (id) ");
+		sql.append("); ");
+
+		PreparedStatement pstmt = connection.prepareStatement(sql.toString());
+		pstmt.execute();
+		pstmt.close();
+	}
 }

@@ -34,59 +34,103 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package connection.producer;
 
-import static org.junit.Assert.assertEquals;
-
-import java.sql.Connection;
-import java.sql.SQLException;
+package transaction;
 
 import javax.inject.Inject;
+
+import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.transaction.JDBCTransaction;
+import br.gov.frameworkdemoiselle.transaction.Transaction;
+import br.gov.frameworkdemoiselle.transaction.TransactionContext;
 
-//@Ignore
 @RunWith(Arquillian.class)
-public class ConnectionProducerMultipleConnectionsTest {
+public class TransactionTest {
 
-	private static String PATH = "src/test/resources/producer/multiple-connections";
-
-	@Inject
-	@Name("conn1")
-	private Connection conn1;
+	private static String PATH = "src/test/resources/transaction";
 
 	@Inject
-	@Name("conn2")
-	private Connection conn2;
+	private TransactionalBusiness tb;
 
-	// Conexão Default
-	@Inject
-	private Connection conn3;
+	private Transaction transaction;
 
 	@Inject
-	@Name("conn4")
-	private Connection conn4;
+	private TransactionContext context;
+
+	@Inject
+	private DDL ddl;
 
 	@Deployment
 	public static WebArchive createDeployment() {
-		WebArchive deployment = Tests.createDeployment(ConnectionProducerMultipleConnectionsTest.class);
+		WebArchive deployment = Tests.createDeployment(TransactionTest.class);
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
 		return deployment;
 	}
 
-	@Test
-	public void createConnection() throws SQLException {
-		assertEquals(conn1.getMetaData().getURL(), "jdbc:hsqldb:hsql1");
-		assertEquals(conn2.getMetaData().getURL(), "jdbc:hsqldb:hsql2");
-		assertEquals(conn3.getMetaData().getURL(), "jdbc:hsqldb:hsql3");
-		assertEquals(conn4.getMetaData().getURL(), "jdbc:h2:mem:test");
+	@Before
+	public void init() throws Exception {
+		transaction = context.getCurrentTransaction();
+		ddl.dropAndCreate();
+		transaction.commit();
 	}
 
+	@Test
+	public void isTransactionActiveWithInterceptor() {
+		Assert.assertTrue(tb.isTransactionActiveWithInterceptor());
+	}
+
+	@Test
+	public void isTransactionActiveWithoutInterceptor() {
+		Assert.assertFalse(tb.isTransactionActiveWithoutInterceptor());
+	}
+
+	@Test
+	public void verifyIfTransactionIsJdbcTransaction() {
+		Assert.assertEquals(transaction.getClass(), JDBCTransaction.class);
+	}
+
+	@Test
+	public void verifyIfTransactionIsActive() {
+		Assert.assertTrue(!transaction.isActive());
+		transaction.begin();
+		Assert.assertTrue(transaction.isActive());
+	}
+	
+	@Test
+	public void commitWithSuccess() throws Exception{
+		
+		MyEntity1 m1 = new MyEntity1();
+		m1.setId(1);
+		m1.setDescription("desc-1");
+		
+		tb.insert(m1);
+
+		Assert.assertEquals("desc-1", tb.find(m1.getId()).getDescription());
+		
+		tb.delete(m1);
+		
+		Assert.assertNull(tb.find(m1.getId()).getDescription());
+	}	
+
+	@Test
+	public void rollbackWithSuccess() throws Exception {
+		try{
+			tb.rollbackWithSuccess();
+		} catch (Exception e) {
+			Assert.assertEquals("Exceção criada para marcar transação para rollback", e.getMessage());
+		}
+		finally{
+			MyEntity1 m1 = tb.find(3);
+			Assert.assertNull(tb.find(m1.getId()).getDescription());
+		}
+	}	
 }

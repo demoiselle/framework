@@ -34,59 +34,27 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package connection.producer;
+package transaction;
 
-import static org.junit.Assert.assertEquals;
+public class MyEntity1 {
 
-import java.sql.Connection;
-import java.sql.SQLException;
+	private int id;
 
-import javax.inject.Inject;
+	private String description;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import test.Tests;
-import br.gov.frameworkdemoiselle.annotation.Name;
-
-//@Ignore
-@RunWith(Arquillian.class)
-public class ConnectionProducerMultipleConnectionsTest {
-
-	private static String PATH = "src/test/resources/producer/multiple-connections";
-
-	@Inject
-	@Name("conn1")
-	private Connection conn1;
-
-	@Inject
-	@Name("conn2")
-	private Connection conn2;
-
-	// Conexão Default
-	@Inject
-	private Connection conn3;
-
-	@Inject
-	@Name("conn4")
-	private Connection conn4;
-
-	@Deployment
-	public static WebArchive createDeployment() {
-		WebArchive deployment = Tests.createDeployment(ConnectionProducerMultipleConnectionsTest.class);
-		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
-		return deployment;
+	public int getId() {
+		return id;
 	}
 
-	@Test
-	public void createConnection() throws SQLException {
-		assertEquals(conn1.getMetaData().getURL(), "jdbc:hsqldb:hsql1");
-		assertEquals(conn2.getMetaData().getURL(), "jdbc:hsqldb:hsql2");
-		assertEquals(conn3.getMetaData().getURL(), "jdbc:hsqldb:hsql3");
-		assertEquals(conn4.getMetaData().getURL(), "jdbc:h2:mem:test");
+	public void setId(int id) {
+		this.id = id;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 }

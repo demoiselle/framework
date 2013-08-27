@@ -46,15 +46,14 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.management.ReflectionException;
 import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 
 import org.slf4j.Logger;
 
-import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.context.ContextManager;
@@ -62,6 +61,8 @@ import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
 import br.gov.frameworkdemoiselle.internal.management.ManagedType.MethodDetail;
 import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
 import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
+import br.gov.frameworkdemoiselle.management.ManagedAttributeNotFoundException;
+import br.gov.frameworkdemoiselle.management.ManagedInvokationException;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -124,7 +125,7 @@ public class Management implements Serializable {
 	 *            parameters.
 	 * @return The return value of the original invoked operation. Methods of return type <code>void</code> will return
 	 *         the {@link Void} type.
-	 * @throws ReflectionException
+	 * @throws ManagedInvokationException
 	 *             In case the operation doesn't exist or have a different signature
 	 */
 	public Object invoke(ManagedType managedType, String actionName, Object[] params) {
@@ -141,16 +142,16 @@ public class Management implements Serializable {
 								.getType().getCanonicalName()));
 						return method.getMethod().invoke(delegate, params);
 					} catch (Exception e) {
-						throw new DemoiselleException(bundle.getString("management-invoke-error", actionName), e);
+						throw new ManagedInvokationException(bundle.getString("management-invoke-error", actionName), e);
 					}
 				} else {
-					throw new DemoiselleException(bundle.getString("management-invoke-error", actionName));
+					throw new ManagedInvokationException(bundle.getString("management-invoke-error", actionName));
 				}
 			} finally {
 				deactivateContexts(managedType.getType());
 			}
 		} else {
-			throw new DemoiselleException(bundle.getString("management-type-not-found"));
+			throw new ManagedInvokationException(bundle.getString("management-type-not-found"));
 		}
 	}
 
@@ -169,6 +170,8 @@ public class Management implements Serializable {
 	 * @param propertyName
 	 *            The name of the property
 	 * @return The current value of the property
+	 * @throws ManagedAttributeNotFoundException If the given property doesn't exist or there was a problem trying to read the property value.
+	 * @throws ManagedInvokationException If there was an error trying to invoke the getter method to read the propery value. 
 	 */
 	public Object getProperty(ManagedType managedType, String propertyName) {
 
@@ -186,16 +189,16 @@ public class Management implements Serializable {
 
 					return getterMethod.invoke(delegate, (Object[]) null);
 				} catch (Exception e) {
-					throw new DemoiselleException(bundle.getString("management-invoke-error", getterMethod.getName()),
+					throw new ManagedInvokationException(bundle.getString("management-invoke-error", getterMethod.getName()),
 							e);
 				} finally {
 					deactivateContexts(managedType.getType());
 				}
 			} else {
-				throw new DemoiselleException(bundle.getString("management-read-value-error", propertyName));
+				throw new ManagedAttributeNotFoundException(bundle.getString("management-read-value-error", propertyName));
 			}
 		} else {
-			throw new DemoiselleException(bundle.getString("management-type-not-found"));
+			throw new ManagedInvokationException(bundle.getString("management-type-not-found"));
 		}
 	}
 
@@ -215,7 +218,11 @@ public class Management implements Serializable {
 	 *            The name of the property
 	 * @param newValue
 	 *            The new value of the property
+	 * @throws ManagedInvokationException If there was an error trying to call the setter method for this property.
+	 * @throws ManagedAttributeNotFoundException If the giver property doesn't exist or could'n be written to.
+	 * @throws ConstraintViolationException If the property defined one or more validation constraints and setting this value violates some of those constraints.
 	 */
+	@SuppressWarnings("unchecked")
 	public void setProperty(ManagedType managedType, String propertyName, Object newValue) {
 
 		if (managedTypes.contains(managedType)) {
@@ -249,9 +256,9 @@ public class Management implements Serializable {
 								errorBuffer.insert(errorBuffer.length(), "\r\n");
 							}
 
-							throw new DemoiselleException(bundle.getString(
-									"management-validation-constraint-violation", managedType.getType()
-											.getCanonicalName(), propertyName, errorBuffer.toString()));
+							throw new ConstraintViolationException(bundle.getString("management-validation-constraint-violation"
+										, managedType.getType().getCanonicalName(), propertyName, errorBuffer.toString())
+									, (Set<ConstraintViolation<?>>) violations);
 						}
 					} else {
 						logger.warn(bundle.getString("management-validation-validator-not-found"));
@@ -276,19 +283,19 @@ public class Management implements Serializable {
 									.getCanonicalName()), propertyName, attributeType, oldValue, newValue);
 					notificationManager.sendNotification(notification);
 
-				} catch (DemoiselleException de) {
-					throw de;
+				} catch (ConstraintViolationException ce) {
+					throw ce;
 				} catch (Exception e) {
-					throw new DemoiselleException(bundle.getString("management-invoke-error", method.getName()), e);
+					throw new ManagedInvokationException(bundle.getString("management-invoke-error", method.getName()), e);
 				} finally {
 					deactivateContexts(managedType.getType());
 				}
 
 			} else {
-				throw new DemoiselleException(bundle.getString("management-write-value-error", propertyName));
+				throw new ManagedAttributeNotFoundException(bundle.getString("management-write-value-error", propertyName));
 			}
 		} else {
-			throw new DemoiselleException(bundle.getString("management-type-not-found"));
+			throw new ManagedInvokationException(bundle.getString("management-type-not-found"));
 		}
 
 	}

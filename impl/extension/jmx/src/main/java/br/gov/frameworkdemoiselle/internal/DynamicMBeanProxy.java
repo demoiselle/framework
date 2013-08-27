@@ -58,6 +58,8 @@ import br.gov.frameworkdemoiselle.internal.management.ManagedType.FieldDetail;
 import br.gov.frameworkdemoiselle.internal.management.ManagedType.MethodDetail;
 import br.gov.frameworkdemoiselle.internal.management.ManagedType.ParameterDetail;
 import br.gov.frameworkdemoiselle.internal.management.Management;
+import br.gov.frameworkdemoiselle.management.ManagedAttributeNotFoundException;
+import br.gov.frameworkdemoiselle.management.ManagedInvokationException;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
@@ -95,7 +97,21 @@ public class DynamicMBeanProxy implements DynamicMBean {
 		}
 
 		Management manager = Beans.getReference(Management.class);
-		return manager.getProperty(managedType, attribute);
+		
+		try{
+			return manager.getProperty(managedType, attribute);
+		}
+		catch(DemoiselleException de){
+			if (ManagedAttributeNotFoundException.class.isInstance(de)){
+				throw new AttributeNotFoundException(de.getMessage());
+			}
+			else if (ManagedInvokationException.class.isInstance(de)){
+				throw new MBeanException(new Exception(de.getMessage()));
+			}
+			else{
+				throw de;
+			}
+		}
 	}
 
 	@Override
@@ -108,7 +124,21 @@ public class DynamicMBeanProxy implements DynamicMBean {
 		}
 
 		Management manager = Beans.getReference(Management.class);
-		manager.setProperty(managedType, attribute.getName(), attribute.getValue());
+		
+		try{
+			manager.setProperty(managedType, attribute.getName(), attribute.getValue());
+		}
+		catch(DemoiselleException de){
+			if (ManagedAttributeNotFoundException.class.isInstance(de)){
+				throw new AttributeNotFoundException(de.getMessage());
+			}
+			else if (ManagedInvokationException.class.isInstance(de)){
+				throw new MBeanException(new Exception(de.getMessage()));
+			}
+			else{
+				throw de;
+			}
+		}
 	}
 
 	@Override
@@ -161,7 +191,13 @@ public class DynamicMBeanProxy implements DynamicMBean {
 		}
 
 		Management manager = Beans.getReference(Management.class);
-		return manager.invoke(managedType, actionName, params);
+		
+		try{
+			return manager.invoke(managedType, actionName, params);
+		}
+		catch(DemoiselleException de){
+			throw new MBeanException(new Exception(de.getMessage()));
+		}
 	}
 
 	/**
