@@ -49,8 +49,8 @@ import br.gov.frameworkdemoiselle.transaction.Transactional;
 public class TransactionalBusiness {
 
 	@Inject
-	@Name("conn1")
-	private Connection conn1;
+	@Name("conn")
+	private Connection conn;
 
 	@Inject
 	private TransactionContext transactionContext;
@@ -65,47 +65,53 @@ public class TransactionalBusiness {
 	}
 
 	@Transactional
-	public void insert(MyEntity1 m) throws Exception {
+	public void insert(MyEntity m) throws Exception {
 		String sql = "insert into myentity (id, description) values (" + m.getId() + ", '" + m.getDescription() + "')";
-		Statement st = conn1.createStatement();
+		Statement st = conn.createStatement();
 		st.executeUpdate(sql);
 		st.close();
 	}
+	
+	public void insertWithouTransaction(MyEntity m) throws Exception {
+		String sql = "insert into myentity (id, description) values (" + m.getId() + ", '" + m.getDescription() + "')";
+		Statement st = conn.createStatement();
+		st.executeUpdate(sql);
+		st.close();
+	}
+	
 
 	@Transactional
-	public void delete(MyEntity1 m1) throws Exception {
+	public void delete(MyEntity m1) throws Exception {
 		String sql = "delete from myentity where id = " + m1.getId();
-		Statement st = conn1.createStatement();
+		Statement st = conn.createStatement();
 		st.executeUpdate(sql);
 		st.close();
 	}
 
-	@Transactional
-	public MyEntity1 find(int id) throws Exception {
+	public MyEntity find(int id) throws Exception {
 		String sql = "select * from myentity where id = " + id;
-		Statement st = conn1.createStatement();
+		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(sql);
 
-		MyEntity1 m1 = new MyEntity1();
+		MyEntity m = new MyEntity();
 		while (rs.next()) {
-			m1.setId(rs.getInt(1));
-			m1.setDescription(rs.getString(2));
+			m.setId(rs.getInt(1));
+			m.setDescription(rs.getString(2));
 		}
 
 		rs.close();
 		st.close();
 
-		return m1;
+		return m;
 	}
 
 	@Transactional
 	public void rollbackWithSuccess() throws Exception {
-		MyEntity1 m1 = new MyEntity1();
-		m1.setId(3);
+		MyEntity m = new MyEntity();
+		m.setId(3);
 
-		this.insert(m1);
+		this.insert(m);
 
 		throw new Exception("Exceção criada para marcar transação para rollback");
 	}
-
 }
