@@ -37,6 +37,7 @@ public class ConnectionProducer implements Serializable {
 	private ResourceBundle bundle;
 
 	private final Map<String, Connection> cache = Collections.synchronizedMap(new HashMap<String, Connection>());
+	private final Map<Connection,Status> statusCache = Collections.synchronizedMap(new HashMap<Connection, Status>());
 
 	@Inject
 	private DataSourceProducer producer;
@@ -79,6 +80,7 @@ public class ConnectionProducer implements Serializable {
 				disableAutoCommit(connection);
 
 				cache.put(name, connection);
+				statusCache.put(connection, new Status());
 				logger.info(bundle.getString("connection-was-created", name));
 
 			} catch (Exception cause) {
@@ -149,6 +151,35 @@ public class ConnectionProducer implements Serializable {
 
 	public Map<String, Connection> getCache() {
 		return cache;
+	}
+	
+	public Status getStatus(Connection connection) {
+		return statusCache.get(connection);
+	}
+	
+	public static class Status implements Serializable {
+
+		private static final long serialVersionUID = 1L;
+
+		private boolean active = false;
+
+		private boolean markedRollback = false;
+
+		public boolean isActive() {
+			return active;
+		}
+
+		public void setActive(boolean active) {
+			this.active = active;
+		}
+
+		public boolean isMarkedRollback() {
+			return markedRollback;
+		}
+
+		public void setRollbackOnly(boolean markedRollback) {
+			this.markedRollback = markedRollback;
+		}
 	}
 
 }

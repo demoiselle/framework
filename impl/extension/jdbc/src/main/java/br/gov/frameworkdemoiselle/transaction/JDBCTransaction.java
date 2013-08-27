@@ -38,17 +38,15 @@ package br.gov.frameworkdemoiselle.transaction;
 
 import static br.gov.frameworkdemoiselle.annotation.Priority.L2_PRIORITY;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.internal.producer.ConnectionProducer;
+import br.gov.frameworkdemoiselle.internal.producer.ConnectionProducer.Status;
 import br.gov.frameworkdemoiselle.util.Beans;
+
 
 /**
  * Represents the strategy destinated to manage JDBC transactions.
@@ -63,17 +61,22 @@ public class JDBCTransaction implements Transaction {
 
 	private ConnectionProducer producer;
 
-	private Map<Connection, Status> cache = Collections.synchronizedMap(new HashMap<Connection, Status>());
+	//private Map<Connection, Status> cache = Collections.synchronizedMap(new HashMap<Connection, Status>());
+	//private List<ConnectionProxy> cache = Collections.synchronizedList(new ArrayList<ConnectionProxy>());
 
 	private ConnectionProducer getProducer() {
 		if (producer == null) {
 			producer = Beans.getReference(ConnectionProducer.class);
 
-			for (Connection connection : producer.getCache().values()) {
-				if (!cache.containsKey(connection)) {
-					cache.put(connection, new Status());
+			/*for (Connection connection : producer.getCache().values()) {
+				if (!ConnectionProxy.class.isInstance(connection)) {
+					continue;
 				}
-			}
+				
+				if (!cache.contains(connection)) {
+					cache.add((ConnectionProxy)connection);
+				}
+			}*/
 		}
 
 		return producer;
@@ -87,7 +90,7 @@ public class JDBCTransaction implements Transaction {
 	public void begin() {
 		Status status;
 		for (Connection connection : getDelegate()) {
-			status = cache.get(connection);
+			status = getProducer().getStatus(connection);
 			status.setActive(true);
 		}
 	}
@@ -97,9 +100,13 @@ public class JDBCTransaction implements Transaction {
 	 */
 	@Override
 	public void commit() {
+		Status status;
+		
 		for (Connection connection : getDelegate()) {
 			try {
 				connection.commit();
+				status = getProducer().getStatus(connection);
+				status.setActive(false);
 			} catch (Exception cause) {
 				throw new DemoiselleException(cause);
 			}
@@ -111,9 +118,13 @@ public class JDBCTransaction implements Transaction {
 	 */
 	@Override
 	public void rollback() {
+		Status status;
+		
 		for (Connection connection : getDelegate()) {
 			try {
 				connection.rollback();
+				status = getProducer().getStatus(connection);
+				status.setActive(false);
 			} catch (Exception cause) {
 				throw new DemoiselleException(cause);
 			}
@@ -124,7 +135,7 @@ public class JDBCTransaction implements Transaction {
 	public void setRollbackOnly() {
 		Status status;
 		for (Connection connection : getDelegate()) {
-			status = cache.get(connection);
+			status = getProducer().getStatus(connection);
 			status.setRollbackOnly(true);
 		}
 	}
@@ -135,7 +146,7 @@ public class JDBCTransaction implements Transaction {
 		boolean result = true;
 
 		for (Connection connection : getDelegate()) {
-			status = cache.get(connection);
+			status = getProducer().getStatus(connection);
 			result = result && status.isActive();
 		}
 
@@ -148,14 +159,14 @@ public class JDBCTransaction implements Transaction {
 		boolean result = true;
 
 		for (Connection connection : getDelegate()) {
-			status = cache.get(connection);
+			status = getProducer().getStatus(connection);
 			result = result && status.isMarkedRollback();
 		}
 
 		return result;
 	}
 
-	private static class Status implements Serializable {
+	/*private static class Status implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
@@ -178,5 +189,5 @@ public class JDBCTransaction implements Transaction {
 		public void setRollbackOnly(boolean markedRollback) {
 			this.markedRollback = markedRollback;
 		}
-	}
+	}*/
 }

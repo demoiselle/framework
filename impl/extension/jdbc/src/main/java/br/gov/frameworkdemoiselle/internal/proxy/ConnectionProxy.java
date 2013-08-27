@@ -27,7 +27,7 @@ public class ConnectionProxy implements Connection, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private final String dataSourceName;
-
+	
 	public ConnectionProxy(String dataSourceName) {
 		this.dataSourceName = dataSourceName;
 	}
@@ -236,4 +236,5 @@ public class ConnectionProxy implements Connection, Serializable {
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		return getDelegate().unwrap(iface);
 	}
+	
 }
