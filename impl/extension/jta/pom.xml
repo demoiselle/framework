@@ -1,40 +1,26 @@
-<!--
- Demoiselle Framework
- Copyright (C) 2010 SERPRO
- ============================================================================
- This file is part of Demoiselle Framework.
- 
- Demoiselle Framework is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public License version 3
- as published by the Free Software Foundation.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- 
- You should have received a copy of the GNU Lesser General Public License version 3
- along with this program; if not,  see <http://www.gnu.org/licenses />
- or write to the Free Software Foundation, Inc., 51 Franklin Street,
- Fifth Floor, Boston, MA  02110-1301, USA.
- ============================================================================
- Este arquivo é parte do Framework Demoiselle.
- 
- O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
- modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
- do Software Livre (FSF).
- 
- Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA
- GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou
- APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português
- para maiores detalhes.
- 
- Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
- "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses />
- ou escreva para a Fundação do Software Livre (FSF) Inc.,
- 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!-- Demoiselle Framework Copyright (C) 2010 SERPRO ============================================================================ 
+	This file is part of Demoiselle Framework. Demoiselle Framework is free software; 
+	you can redistribute it and/or modify it under the terms of the GNU Lesser 
+	General Public License version 3 as published by the Free Software Foundation. 
+	This program is distributed in the hope that it will be useful, but WITHOUT 
+	ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+	FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. 
+	You should have received a copy of the GNU Lesser General Public License 
+	version 3 along with this program; if not, see <http://www.gnu.org/licenses 
+	/> or write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth 
+	Floor, Boston, MA 02110-1301, USA. ============================================================================ 
+	Este arquivo é parte do Framework Demoiselle. O Framework Demoiselle é um 
+	software livre; você pode redistribuí-lo e/ou modificá-lo dentro dos termos 
+	da GNU LGPL versão 3 como publicada pela Fundação do Software Livre (FSF). 
+	Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA 
+	GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou APLICAÇÃO 
+	EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português para maiores 
+	detalhes. Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título 
+	"LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses 
+	/> ou escreva para a Fundação do Software Livre (FSF) Inc., 51 Franklin St, 
+	Fifth Floor, Boston, MA 02111-1301, USA. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -71,7 +57,90 @@
 			<groupId>javax.transaction</groupId>
 			<artifactId>jta</artifactId>
 		</dependency>
+
+		<!-- TESTS -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.arquillian.core</groupId>
+			<artifactId>arquillian-core-api</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>arquillian-embedded</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+
+			<dependencies>
+				<dependency>
+					<groupId>org.jboss.arquillian.junit</groupId>
+					<artifactId>arquillian-junit-container</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.jboss.arquillian.container</groupId>
+					<artifactId>arquillian-glassfish-embedded-3.1</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.glassfish.main.extras</groupId>
+					<artifactId>glassfish-embedded-all</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.eclipse.persistence</groupId>
+					<artifactId>eclipselink</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.jboss.shrinkwrap.resolver</groupId>
+					<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+		
+		<profile>
+			<id>arquillian-test</id>
+			<dependencies>
+				<dependency>
+					<groupId>br.gov.frameworkdemoiselle</groupId>
+					<artifactId>demoiselle-core</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>javax.enterprise</groupId>
+							<artifactId>cdi-api</artifactId>
+						</exclusion>
+						<exclusion>
+							<artifactId>validation-api</artifactId>
+							<groupId>javax.validation</groupId>
+						</exclusion>
+						<exclusion>
+							<groupId>org.slf4j</groupId>
+							<artifactId>slf4j-api</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>org.javassist</groupId>
+							<artifactId>javassist</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 
 	<repositories>
 		<repository>
