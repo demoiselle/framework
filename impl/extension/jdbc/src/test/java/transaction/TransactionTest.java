@@ -37,21 +37,76 @@
 
 package transaction;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import junit.framework.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
+import br.gov.frameworkdemoiselle.internal.context.ContextManager;
+import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
 
 @RunWith(Arquillian.class)
 public class TransactionTest {
 
+	private static String PATH = "src/test/resources/transaction";
+
+	@Inject
+	private TransactionalBusiness tb;
 	
 	@Deployment
 	public static WebArchive createDeployment() {
 		WebArchive deployment = Tests.createDeployment(TransactionTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
 		return deployment;
 	}
 	
+//	@Before
+//	public void init() throws Exception{
+////		transaction = context.getCurrentTransaction();
+////		ddl.dropAndCreate();
+//	}
+	
+//	@Before
+//	public void activeContext() {
+//		ContextManager.activate(ManagedContext.class, RequestScoped.class);
+//	}
+//
+//	@After
+//	public void deactiveContext() {
+//		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
+//	}
+	
+	@Test
+	public void isTransactionActiveWithInterceptor(){
+		Assert.assertTrue(tb.isTransactionActiveWithInterceptor());
+	}
+	
+	@Test
+	public void isTransactionActiveWithoutInterceptor(){
+		Assert.assertFalse(tb.isTransactionActiveWithoutInterceptor());
+	}
+
+//	@Test
+//	public void verifyIfTransactionIsJdbcTransaction() {
+//		assertEquals(transaction.getClass(), JDBCTransaction.class);
+//	}
+//	
+//	@Test
+//	public void verifyIfTransactionIsActive() {
+//		assertTrue(!transaction.isActive());
+//		transaction.begin();
+//		assertTrue(transaction.isActive());
+//	}
+	
+	
 }
+	
