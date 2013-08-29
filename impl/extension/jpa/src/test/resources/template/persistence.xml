@@ -54,7 +54,7 @@
 	<!--
 	-->
 	<persistence-unit name="pu" transaction-type="RESOURCE_LOCAL">
-		<non-jta-data-source>java:jboss/datasources/ExampleDS</non-jta-data-source>
+		<non-jta-data-source>jdbc/__default</non-jta-data-source>
 
 		<class>template.MyEntity</class>
 

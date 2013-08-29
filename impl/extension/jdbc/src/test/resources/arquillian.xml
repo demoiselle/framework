@@ -51,10 +51,4 @@
 		</configuration>
 	</container>
 	-->
-
-	<container qualifier="glassfish-embedded" default="true">
-		<configuration>
-			<property name="resourcesXml">src/test/resources/glassfish-resources.xml</property>
-		</configuration>
-	</container>
 </arquillian>
