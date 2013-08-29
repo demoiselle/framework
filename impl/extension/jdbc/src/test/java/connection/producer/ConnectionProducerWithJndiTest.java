@@ -52,7 +52,6 @@ import org.junit.runner.RunWith;
 import test.Tests;
 import br.gov.frameworkdemoiselle.annotation.Name;
 
-//@Ignore
 @RunWith(Arquillian.class)
 public class ConnectionProducerWithJndiTest {
 
@@ -71,6 +70,6 @@ public class ConnectionProducerWithJndiTest {
 
 	@Test
 	public void createConnection() throws SQLException {
-		assertEquals(conn1.getMetaData().getURL(), "jdbc:h2:mem:test");
+		assertEquals(conn1.getMetaData().getURL(), "jdbc:derby:target/databases/derby");
 	}
 }

@@ -1,0 +1,94 @@
+<class-diagram version="1.0.3" icons="true" automaticImage="PNG" always-add-relationships="false" 
+  generalizations="false" realizations="false" associations="false" dependencies="false" nesting-relationships="false">  
+  <interface id="1" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.transaction.Transaction" 
+    project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/transaction/Transaction.java" binary="false">    
+    <position height="-1" width="-1" x="256" y="103"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <annotation id="2" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.transaction.Transactional" 
+    project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/transaction/Transactional.java" binary="false">    
+    <position height="-1" width="-1" x="-5" y="-48"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </annotation>  
+  <class id="3" corner="BOTTOM_RIGHT" language="java" 
+    name="br.gov.frameworkdemoiselle.internal.interceptor.TransactionalInterceptoror" project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/internal/interceptor/TransactionalInterceptor.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="-6" y="103"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="4" corner="BOTTOM_RIGHT" language="java" 
+    name="br.gov.frameworkdemoiselle.internal.implementation.TransactionInfo" project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/internal/context/TransactionInfo.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="-5" y="231"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="5" corner="BOTTOM_RIGHT" language="java" 
+    name="br.gov.frameworkdemoiselle.internal.implementation.DefaultTransaction" project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/internal/implementation/DefaultTransaction.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="256" y="241"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="6" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.exception.DemoiselleException 
+    project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/exception/DemoiselleException.java" binary="false">    
+    <position height="-1" width="-1" x="256" y="320"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <annotation id="7" corner="BOTTOM_RIGHT" language="java" 
+    name="br.gov.frameworkdemoiselle.exception.ApplicationException" project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/exception/ApplicationException.java" binary="false">    
+    <position height="-1" width="-1" x="-5" y="30"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </annotation>  
+  <dependency>    
+    <end type="SOURCE" nodeId="3"/>    
+    <end type="TARGET" nodeId="7"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="3"/>    
+    <end type="TARGET" nodeId="4"/>  
+  </dependency>  
+  <realization>    
+    <end type="SOURCE" nodeId="5"/>    
+    <end type="TARGET" nodeId="1"/>  
+  </realization>  
+  <dependency>    
+    <end type="SOURCE" nodeId="5"/>    
+    <end type="TARGET" nodeId="6"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="3"/>    
+    <end type="TARGET" nodeId="1"/>  
+  </dependency>  
+  <classifier-display autosize="true" package="true" initial-value="false" signature="true" visibility="true">    
+    <attributes public="false" package="true" protected="false" private="false"/>    
+    <operations public="false" package="true" protected="false" private="false"/>  
+  </classifier-display>  
+  <association-display labels="false" multiplicity="false"/>
+</class-diagram>

@@ -42,14 +42,12 @@ import java.sql.Statement;
 
 import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.transaction.TransactionContext;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 
 public class TransactionalBusiness {
 
 	@Inject
-	@Name("conn")
 	private Connection conn;
 
 	@Inject
@@ -71,14 +69,13 @@ public class TransactionalBusiness {
 		st.executeUpdate(sql);
 		st.close();
 	}
-	
+
 	public void insertWithouTransaction(MyEntity m) throws Exception {
 		String sql = "insert into myentity (id, description) values (" + m.getId() + ", '" + m.getDescription() + "')";
 		Statement st = conn.createStatement();
 		st.executeUpdate(sql);
 		st.close();
 	}
-	
 
 	@Transactional
 	public void delete(MyEntity m1) throws Exception {

@@ -140,7 +140,7 @@ public class DataSourceProducer implements Serializable {
 			result = (DataSource) context.lookup(jndi);
 
 		} catch (NamingException cause) {
-			throw new DemoiselleException(bundle.getString("load-jndi-datasource-failed", dataSourceName), cause);
+			throw new DemoiselleException(bundle.getString("load-jndi-datasource-failed", dataSourceName, jndi), cause);
 
 		} catch (ClassCastException cause) {
 			throw new DemoiselleException(bundle.getString("load-duplicated-configuration-failed"), cause);

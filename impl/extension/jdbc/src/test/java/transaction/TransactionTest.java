@@ -56,7 +56,6 @@ import br.gov.frameworkdemoiselle.transaction.JDBCTransaction;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.TransactionContext;
 import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.NameQualifier;
 
 @RunWith(Arquillian.class)
 public class TransactionTest {
@@ -109,46 +108,45 @@ public class TransactionTest {
 		transaction.begin();
 		Assert.assertTrue(transaction.isActive());
 	}
-	
+
 	@Test
-	public void commitWithSuccess() throws Exception{
+	public void commitWithSuccess() throws Exception {
 		MyEntity m = new MyEntity();
 		m.setId(1);
 		m.setDescription("desc-1");
-		
+
 		tb.insert(m);
 
 		Assert.assertEquals("desc-1", tb.find(m.getId()).getDescription());
-		
+
 		tb.delete(m);
-		
+
 		Assert.assertNull(tb.find(m.getId()).getDescription());
-	}	
+	}
 
 	@Test
 	public void rollbackWithSuccess() throws Exception {
-		try{
+		try {
 			tb.rollbackWithSuccess();
 		} catch (Exception e) {
 			Assert.assertEquals("Exceção criada para marcar transação para rollback", e.getMessage());
-		}
-		finally{
+		} finally {
 			MyEntity m = tb.find(3);
 			Assert.assertNull(tb.find(m.getId()).getDescription());
 		}
-	}	
-	
-	@Test(expected=SQLException.class)
-	public void closedConnection() throws Exception{
+	}
+
+	@Test(expected = SQLException.class)
+	public void closedConnection() throws Exception {
 		MyEntity m = new MyEntity();
 		m.setId(1);
 		m.setDescription("desc-1");
-		
+
 		tb.insertWithouTransaction(m);
-		
-		Connection conn = Beans.getReference(Connection.class, new NameQualifier("conn"));
+
+		Connection conn = Beans.getReference(Connection.class);
 		conn.close();
-		
+
 		tb.find(m.getId());
-	}		
+	}
 }

@@ -50,7 +50,6 @@ import org.junit.runner.RunWith;
 
 import test.Tests;
 
-//@Ignore
 @RunWith(Arquillian.class)
 public class ConnectionProducerWithoutNameTest {
 

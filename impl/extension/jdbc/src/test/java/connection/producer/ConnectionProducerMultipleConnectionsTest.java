@@ -52,7 +52,6 @@ import org.junit.runner.RunWith;
 import test.Tests;
 import br.gov.frameworkdemoiselle.annotation.Name;
 
-//@Ignore
 @RunWith(Arquillian.class)
 public class ConnectionProducerMultipleConnectionsTest {
 
@@ -86,7 +85,7 @@ public class ConnectionProducerMultipleConnectionsTest {
 		assertEquals(conn1.getMetaData().getURL(), "jdbc:hsqldb:mem:hsql1");
 		assertEquals(conn2.getMetaData().getURL(), "jdbc:hsqldb:mem:hsql2");
 		assertEquals(conn3.getMetaData().getURL(), "jdbc:hsqldb:mem:hsql3");
-		assertEquals(conn4.getMetaData().getURL(), "jdbc:h2:mem:test");
+		assertEquals(conn4.getMetaData().getURL(), "jdbc:derby:target/databases/derby");
 	}
 
 }

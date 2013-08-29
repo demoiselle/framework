@@ -1,0 +1,147 @@
+<class-diagram version="1.0.3" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
+  <annotation id="1" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.lifecycle.Startup" 
+    project="demoiselle-core" file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/annotation/Startup.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="301" y="232"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </annotation>  
+  <class id="3" corner="BOTTOM_RIGHT" language="java" 
+    name="br.gov.frameworkdemoiselle.internal.processor.StartupProcessor" project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/internal/processor/StartupProcessor.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="302" y="129"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="4" corner="BOTTOM_RIGHT" language="java" 
+    name="br.gov.frameworkdemoiselle.internal.bootstrap.StartupBootstrap" project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/internal/bootstrap/StartupBootstrap.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="302" y="17"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="true" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <annotation id="5" corner="BOTTOM_RIGHT" language="java" name="javax.enterprise.context.ApplicationScoped" 
+    project="contactlist-jsf" 
+    file="/opt/demoiselle/tool/maven2-local-repo/javax/enterprise/cdi-api/1.0-SP4/cdi-api-1.0-SP4.jar" binary="true">    
+    <position height="-1" width="-1" x="592" y="-16"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </annotation>  
+  <annotation id="6" corner="BOTTOM_RIGHT" language="java" name="javax.enterprise.context.ConversationScoped" 
+    project="contactlist-jsf" 
+    file="/opt/demoiselle/tool/maven2-local-repo/javax/enterprise/cdi-api/1.0-SP4/cdi-api-1.0-SP4.jar" binary="true">    
+    <position height="-1" width="-1" x="598" y="102"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </annotation>  
+  <annotation id="7" corner="BOTTOM_RIGHT" language="java" name="javax.enterprise.context.SessionScoped" 
+    project="contactlist-jsf" 
+    file="/opt/demoiselle/tool/maven2-local-repo/javax/enterprise/cdi-api/1.0-SP4/cdi-api-1.0-SP4.jar" binary="true">    
+    <position height="-1" width="-1" x="583" y="43"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </annotation>  
+  <annotation id="8" corner="BOTTOM_RIGHT" language="java" name="javax.enterprise.context.RequestScoped" 
+    project="contactlist-jsf" 
+    file="/opt/demoiselle/tool/maven2-local-repo/javax/enterprise/cdi-api/1.0-SP4/cdi-api-1.0-SP4.jar" binary="true">    
+    <position height="-1" width="-1" x="584" y="220"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </annotation>  
+  <annotation id="9" corner="BOTTOM_RIGHT" language="java" name="br.gov.frameworkdemoiselle.annotation.ViewScoped" 
+    project="demoiselle-core" 
+    file="/demoiselle-core/src/main/java/br/gov/frameworkdemoiselle/annotation/ViewScoped.java" binary="false">    
+    <position height="-1" width="-1" x="612" y="161"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </annotation>  
+  <interface id="10" corner="BOTTOM_RIGHT" language="java" name="javax.enterprise.inject.spi.ProcessAnnotatedType" 
+    project="demoiselle-core" 
+    file="/opt/demoiselle/tool/maven2-local-repo/javax/enterprise/cdi-api/1.0-SP4/cdi-api-1.0-SP4.jar" binary="true">    
+    <position height="-1" width="-1" x="0" y="-7"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <interface id="11" corner="BOTTOM_RIGHT" language="java" name="javax.enterprise.inject.spi.AfterBeanDiscovery" 
+    project="demoiselle-core" 
+    file="/opt/demoiselle/tool/maven2-local-repo/javax/enterprise/cdi-api/1.0-SP4/cdi-api-1.0-SP4.jar" binary="true">    
+    <position height="-1" width="-1" x="19" y="53"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <interface id="12" corner="BOTTOM_RIGHT" language="java" name="javax.enterprise.inject.spi.AfterDeploymentValidation" 
+    project="demoiselle-core" 
+    file="/opt/demoiselle/tool/maven2-local-repo/javax/enterprise/cdi-api/1.0-SP4/cdi-api-1.0-SP4.jar" binary="true">    
+    <position height="-1" width="-1" x="2" y="122"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <dependency>    
+    <end type="SOURCE" nodeId="4"/>    
+    <end type="TARGET" nodeId="6"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="4"/>    
+    <end type="TARGET" nodeId="12"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="4"/>    
+    <end type="TARGET" nodeId="7"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="4"/>    
+    <end type="TARGET" nodeId="8"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="4"/>    
+    <end type="TARGET" nodeId="11"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="3"/>    
+    <end type="TARGET" nodeId="1"/>  
+  </dependency>  
+  <dependency>    
+    <end type="SOURCE" nodeId="4"/>    
+    <end type="TARGET" nodeId="10"/>  
+  </dependency>  
+  <association>    
+    <end type="SOURCE" nodeId="4" navigable="false">      
+      <attribute name="processors">        
+        <position height="13" width="56" x="238" y="80"/>      
+      </attribute>      
+      <multiplicity minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" nodeId="3" navigable="true"/>    
+    <display labels="false" multiplicity="true"/>  
+  </association>  
+  <classifier-display autosize="true" package="true" initial-value="false" signature="true" visibility="true">    
+    <attributes public="true" package="false" protected="false" private="false"/>    
+    <operations public="true" package="false" protected="false" private="false"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

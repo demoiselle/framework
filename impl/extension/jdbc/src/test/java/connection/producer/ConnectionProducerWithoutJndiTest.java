@@ -51,7 +51,6 @@ import org.junit.runner.RunWith;
 import test.Tests;
 import br.gov.frameworkdemoiselle.annotation.Name;
 
-//@Ignore
 @RunWith(Arquillian.class)
 public class ConnectionProducerWithoutJndiTest {
 

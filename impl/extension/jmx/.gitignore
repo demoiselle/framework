@@ -1,9 +1,7 @@
-/.settings
-/hsql:..tmp
+/*.log
 /target
-/.classpath
 /.project
-/hsql:..lck
-/hsql:..log
-/hsql:..properties
-/hsql:..script
+/.classpath
+/.settings
+/.externalToolBuilders
+/.DS_Store
