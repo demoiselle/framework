@@ -34,19 +34,38 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.producer;
 
-import java.util.Locale;
+package test;
 
-import junit.framework.Assert;
+import java.io.File;
 
-import org.junit.Test;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Ignore;
 
-public class SeLocaleProducerTest {
-	
-	@Test
-	public void testCreate() {
-		Locale locale = (new SeLocaleProducer()).create();
-		Assert.assertNotNull(locale);
+@Ignore
+public final class Tests {
+
+	private Tests() {
 	}
+
+	public static JavaArchive createDeployment(final Class<?> baseClass) {
+		return createDeployment().addPackages(true, baseClass.getPackage());
+	}
+
+	public static JavaArchive createDeployment() {
+		return ShrinkWrap
+				.create(JavaArchive.class)
+				.addClass(Tests.class)
+				.addPackages(true, "br.gov.frameworkdemoiselle")
+				.addAsResource(Tests.createFileAsset("src/test/resources/log4j.properties"),"log4j.properties")
+				.addAsResource(Tests.createFileAsset("src/test/resources/demoiselle-core-bundle.properties"),"demoiselle-core-bundle.properties")
+				.addAsManifestResource(Tests.createFileAsset("src/test/resources/beans.xml"), "beans.xml");
+	}
+
+	public static FileAsset createFileAsset(final String pathname) {
+		return new FileAsset(new File(pathname));
+	}
+
 }

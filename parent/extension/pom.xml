@@ -189,6 +189,11 @@
 		</profile>
 		<profile>
 			<id>arquillian-weld-se-embedded</id>
+			<activation>
+				<file>
+					<exists>.arquillian-weld-se-embedded</exists>
+				</file>
+			</activation>
 			<dependencies>
 				<dependency>
 					<groupId>org.jboss.arquillian.container</groupId>
@@ -223,6 +228,11 @@
 		</profile>
 		<profile>
 			<id>arquillian-jbossas7-managed</id>
+			<activation>
+				<file>
+					<exists>.arquillian-jbossas7-managed</exists>
+				</file>
+			</activation>
 			<build>
 				<testResources>
 					<testResource>
