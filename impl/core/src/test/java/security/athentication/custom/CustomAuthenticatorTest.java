@@ -77,7 +77,7 @@ public class CustomAuthenticatorTest {
 	@Test
 	public void unauthenticated() {
 		assertFalse(context.isLoggedIn());
-		assertNull(context.getCurrentUser());
+		assertNull(context.getUser());
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class CustomAuthenticatorTest {
 		context.login();
 		assertTrue(context.isLoggedIn());
 		assertNotNull(observer.getEvent());
-		assertEquals("demoiselle", context.getCurrentUser().getName());
+		assertEquals("demoiselle", context.getUser().getId());
 
 		ContextManager.deactivate(ThreadLocalContext.class, RequestScoped.class);
 	}
@@ -99,7 +99,7 @@ public class CustomAuthenticatorTest {
 		context.login();
 		context.logout();
 		assertFalse(context.isLoggedIn());
-		assertNull(context.getCurrentUser());
+		assertNull(context.getUser());
 
 		ContextManager.deactivate(ThreadLocalContext.class, RequestScoped.class);
 	}

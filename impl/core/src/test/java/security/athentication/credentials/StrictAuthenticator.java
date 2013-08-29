@@ -36,31 +36,40 @@
  */
 package security.athentication.credentials;
 
-import java.security.Principal;
-
 import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Authenticator;
+import br.gov.frameworkdemoiselle.security.User;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 public class StrictAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
 
-	private Principal currentUser;
+	private User currentUser;
 
 	@Override
 	public void authenticate() throws AuthenticationException {
-		
+
 		Credentials c = Beans.getReference(Credentials.class);
-		if ("demoiselle".equals(c.getLogin())){
-			this.currentUser = new Principal() {
-	
-				public String getName() {
+		if ("demoiselle".equals(c.getLogin())) {
+			this.currentUser = new User() {
+
+				private static final long serialVersionUID = 1L;
+
+				public String getId() {
 					return "demoiselle";
 				}
+
+				@Override
+				public Object getAttribute(Object key) {
+					return null;
+				}
+
+				@Override
+				public void setAttribute(Object key, Object value) {
+				}
 			};
-		}
-		else{
+		} else {
 			throw new AuthenticationException("As credenciais fornecidas não são válidas");
 		}
 	}
@@ -71,7 +80,7 @@ public class StrictAuthenticator implements Authenticator {
 	}
 
 	@Override
-	public Principal getUser() {
+	public User getUser() {
 		return this.currentUser;
 	}
 }

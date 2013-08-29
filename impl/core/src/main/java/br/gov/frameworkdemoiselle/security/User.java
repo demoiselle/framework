@@ -37,13 +37,11 @@
 package br.gov.frameworkdemoiselle.security;
 
 import java.io.Serializable;
-import java.security.Principal;
 
 /**
  * @author SERPRO
- * @deprecated
  */
-public interface User extends Principal, Serializable {
+public interface User extends Serializable {
 
 	/**
 	 * Returns the id of the logged user.

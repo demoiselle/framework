@@ -37,14 +37,12 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import static br.gov.frameworkdemoiselle.annotation.Priority.L1_PRIORITY;
-
-import java.security.Principal;
-
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
+import br.gov.frameworkdemoiselle.security.User;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
@@ -82,7 +80,7 @@ public class DefaultAuthenticator implements Authenticator {
 	 * @see br.gov.frameworkdemoiselle.security.Authenticator#getUser()
 	 */
 	@Override
-	public Principal getUser() {
+	public User getUser() {
 		throw getException();
 	}
 

@@ -37,7 +37,6 @@
 package br.gov.frameworkdemoiselle.security;
 
 import java.io.Serializable;
-import java.security.Principal;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -106,10 +105,10 @@ public class RequiredPermissionInterceptor implements Serializable {
 	 */
 	private String getUsername() {
 		String username = "";
-		Principal user = getSecurityContext().getCurrentUser();
+		User user = getSecurityContext().getUser();
 
-		if (user != null && user.getName() != null) {
-			username = user.getName();
+		if (user != null && user.getId() != null) {
+			username = user.getId();
 		}
 
 		return username;

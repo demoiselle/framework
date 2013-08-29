@@ -36,12 +36,8 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import java.io.Serializable;
-import java.security.Principal;
-
 import javax.inject.Named;
 
-import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfig;
 import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
 import br.gov.frameworkdemoiselle.security.AfterLogoutSuccessful;
@@ -60,7 +56,6 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * 
  * @author SERPRO
  */
-@SuppressWarnings("deprecation")
 @Named("securityContext")
 public class SecurityContextImpl implements SecurityContext {
 
@@ -137,7 +132,7 @@ public class SecurityContextImpl implements SecurityContext {
 		boolean result = true;
 
 		if (getConfig().isEnabled()) {
-			result = getCurrentUser() != null;
+			result = getUser() != null;
 		}
 
 		return result;
@@ -176,17 +171,11 @@ public class SecurityContextImpl implements SecurityContext {
 	}
 
 	/**
-	 * @deprecated Use {@link #getCurrentUser()} instead.
 	 * @see br.gov.frameworkdemoiselle.security.SecurityContext#getUser()
 	 */
 	@Override
 	public User getUser() {
-		throw new DemoiselleException("Utilize o método getCurrentUser() ao invés do getUser()");
-	}
-
-	@Override
-	public Principal getCurrentUser() {
-		Principal user = getAuthenticator().getUser();
+		User user = getAuthenticator().getUser();
 
 		if (!getConfig().isEnabled() && user == null) {
 			user = new EmptyUser();
@@ -213,13 +202,22 @@ public class SecurityContextImpl implements SecurityContext {
 		return bundle;
 	}
 
-	private static class EmptyUser implements Principal, Serializable {
+	private static class EmptyUser implements User{
 
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public String getName() {
+		public String getId() {
 			return "demoiselle";
+		}
+
+		@Override
+		public Object getAttribute(Object key) {
+			return null;
+		}
+
+		@Override
+		public void setAttribute(Object key, Object value) {
 		}
 	}
 }
