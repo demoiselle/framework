@@ -36,10 +36,12 @@
  */
 package connection.producer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -70,6 +72,10 @@ public class ConnectionProducerWithJndiTest {
 
 	@Test
 	public void createConnection() throws SQLException {
-		assertEquals(conn1.getMetaData().getURL(), "jdbc:derby:target/databases/derby");
+		String regexp = "^jdbc:derby:(.*)/databases/embedded_default$";
+		Pattern pattern = Pattern.compile(regexp);
+		Matcher matcher = pattern.matcher(conn1.getMetaData().getURL());
+
+		assertTrue(matcher.matches());
 	}
 }
