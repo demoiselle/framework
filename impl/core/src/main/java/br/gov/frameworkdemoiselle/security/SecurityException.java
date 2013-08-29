@@ -54,7 +54,7 @@ public class SecurityException extends DemoiselleException {
 	 * @param message
 	 *            the detail message.
 	 */
-	public SecurityException(String message) {
+	SecurityException(String message) {
 		super(message);
 	}
 
@@ -64,7 +64,7 @@ public class SecurityException extends DemoiselleException {
 	 * @param cause
 	 *            exception cause
 	 */
-	public SecurityException(Throwable cause) {
+	SecurityException(Throwable cause) {
 		super(cause);
 	}
 
@@ -76,7 +76,7 @@ public class SecurityException extends DemoiselleException {
 	 * @param cause
 	 *            exception cause
 	 */
-	public SecurityException(String message, Throwable cause) {
+	SecurityException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }

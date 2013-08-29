@@ -37,7 +37,7 @@
 package br.gov.frameworkdemoiselle.security;
 
 /**
- * Thrown when the authentication process fails.
+ * Thrown when the mecanism responsible for the entire authentication lifecycle fails.
  * 
  * @author SERPRO
  */

@@ -58,7 +58,7 @@ public class ServletAuthenticator implements Authenticator {
 	@Override
 	public void authenticate() throws AuthenticationException {
 		try {
-			if (this.getUser() == null) {
+			if (getRequest().getUserPrincipal() == null) {
 				getRequest().login(getCredentials().getUsername(), getCredentials().getPassword());
 			}
 		} catch (ServletException cause) {
@@ -77,9 +77,36 @@ public class ServletAuthenticator implements Authenticator {
 		getRequest().getSession().invalidate();
 	}
 
+	// TODO Criar uma delegação especializada de User ao invés de retornar
+	// uma inner class
 	@Override
-	public Principal getUser() {
-		return getRequest().getUserPrincipal();
+	public User getUser() {
+		final Principal principal = getRequest().getUserPrincipal();
+		
+		User user = null;
+		
+		if (principal!=null) {
+			user =  new User() {
+				
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+				public String getId() {
+					return principal.getName();
+				}
+				
+				@Override
+				public void setAttribute(Object key, Object value) {
+				}
+				
+				@Override
+				public Object getAttribute(Object key) {
+					return null;
+				}
+			};
+		}
+		
+		return user;
 	}
 
 	protected Credentials getCredentials() {

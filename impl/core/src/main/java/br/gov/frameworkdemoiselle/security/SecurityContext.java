@@ -50,14 +50,17 @@ public interface SecurityContext extends Serializable {
 	 * 
 	 * @throws AuthenticationException
 	 *             When the logon process fails, this exception is thrown.
+	 * @throws InvalidCredentialsException
+	 *             When the user's credentials coudn't be validated. InvalidCredentialsException is a special case of
+	 *             AuthenticationException.
 	 */
 	void login();
 
 	/**
 	 * Executes the logout of a user.
 	 * 
-	 * @throws NotLoggedInException
-	 *             if there is no user logged in a specific session
+	 * @throws AuthenticationException
+	 *             When the logout process fails, this exception is thrown.
 	 */
 	void logout();
 
@@ -82,7 +85,8 @@ public interface SecurityContext extends Serializable {
 	 * @param operation
 	 *            operation to be checked
 	 * @return {@code true} if the user has the permission
-	 * 
+	 * @throws AuthorizationException
+	 *             When the permission checking fails, this exception is thrown.
 	 * @throws NotLoggedInException
 	 *             if there is no user logged in a specific session.
 	 */
@@ -94,7 +98,8 @@ public interface SecurityContext extends Serializable {
 	 * @param role
 	 *            role to be checked
 	 * @return {@code true} if the user has the role
-	 * 
+	 * @throws AuthorizationException
+	 *             When the permission checking fails, this exception is thrown.
 	 * @throws NotLoggedInException
 	 *             if there is no user logged in a specific session.
 	 */
@@ -103,7 +108,8 @@ public interface SecurityContext extends Serializable {
 	/**
 	 * Return the user logged in the session.
 	 * 
-	 * @return the user logged in a specific session. If there is no active session returns {@code null}
+	 * @return the user logged in a specific authenticated session. If there is no active session {@code null} is
+	 *         returned.
 	 */
 	User getUser();
 
