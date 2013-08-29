@@ -36,7 +36,7 @@
  */
 package transaction;
 
-public class MyEntity1 {
+public class MyEntity {
 
 	private int id;
 

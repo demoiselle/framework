@@ -4,11 +4,14 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,6 +31,13 @@ public class JPACrudTest {
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/persistence.xml"), "META-INF/persistence.xml");
 
 		return deployment;
+	}
+
+	@Before
+	public void eraseData() {
+		for(MyEntity myEntity : crud.findAll()) {
+			crud.delete(myEntity.getId());
+		}
 	}
 
 	@Test
@@ -59,6 +69,16 @@ public class JPACrudTest {
 		persisted = crud.load(createId("id-21"));
 
 		assertEquals("update example", persisted.getDescription());
+	}
+
+	@Test
+	public void findAll() {
+		populate(4, 0);
+
+		List<MyEntity> list;
+		list = crud.findAll();
+		
+		assertEquals(list.size(), 4);
 	}
 
 	private void populate(int size, int offset) {
