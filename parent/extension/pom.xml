@@ -309,9 +309,9 @@
 		<arquillian.jacoco.version>1.0.0.Alpha5</arquillian.jacoco.version>
 		<arquillian.container.glassfish.version>1.0.0.CR4</arquillian.container.glassfish.version>
 		<arquillian.container.weld.version>1.0.0.CR7</arquillian.container.weld.version>
-		<jboss.as.version>7.1.1.Final</jboss.as.version>
 
 		<glassfish.embedded.version>3.1.2.2</glassfish.embedded.version>
+		<jboss.as.version>7.1.1.Final</jboss.as.version>
 
 		<jacoco.version>0.6.0.201210061924</jacoco.version>
 	</properties>
