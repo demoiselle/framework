@@ -193,6 +193,7 @@
 				<dependency>
 					<groupId>org.jboss.arquillian.container</groupId>
 					<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
+					<version>${arquillian.container.weld.version}</version>
 				</dependency>
 				<dependency>
 					<groupId>org.jboss.weld.se</groupId>
@@ -307,6 +308,7 @@
 		<arquillian.bom.version>1.1.1.Final</arquillian.bom.version>
 		<arquillian.jacoco.version>1.0.0.Alpha5</arquillian.jacoco.version>
 		<arquillian.container.glassfish.version>1.0.0.CR4</arquillian.container.glassfish.version>
+		<arquillian.container.weld.version>1.0.0.CR7</arquillian.container.weld.version>
 		<jboss.as.version>7.1.1.Final</jboss.as.version>
 
 		<glassfish.embedded.version>3.1.2.2</glassfish.embedded.version>
