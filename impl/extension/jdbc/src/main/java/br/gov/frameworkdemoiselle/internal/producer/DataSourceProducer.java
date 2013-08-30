@@ -25,12 +25,6 @@ import br.gov.frameworkdemoiselle.internal.proxy.BasicDataSourceProxy;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
-/**
- * 
- * TODO Verificar métodos públicos que só são usados dentro do pacote. Ajustar o modificador de acesso.
- *
- */
-
 @ApplicationScoped
 public class DataSourceProducer implements Serializable {
 
@@ -82,7 +76,7 @@ public class DataSourceProducer implements Serializable {
 		return result;
 	}
 
-	public DataSource create(String dataSourceName) {
+	DataSource create(String dataSourceName) {
 		DataSource factory;
 
 		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
@@ -154,7 +148,7 @@ public class DataSourceProducer implements Serializable {
 		cache.clear();
 	}
 
-	public Map<String, DataSource> getCache() {
+	Map<String, DataSource> getCache() {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		Map<String, DataSource> result = cache.get(classLoader);
 
