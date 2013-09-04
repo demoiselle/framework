@@ -40,6 +40,15 @@ import java.io.Serializable;
 
 import javax.faces.convert.Converter;
 
+/**
+ * 
+ * Interface that defines the methods to be implemented to get and set values on a parameter.
+ * 
+ * @param <T>
+ *            bean object type  
+ * 
+ * @author SERPRO
+ * */
 public interface Parameter<T extends Serializable> {
 
 	void setValue(T value);

@@ -38,6 +38,12 @@ package br.gov.frameworkdemoiselle.template;
 
 import java.io.Serializable;
 
+/**
+ * Interface that defines a contract of facilities that all pages could implement. 
+ * 
+ * @author SERPRO
+ * 
+ */
 public interface PageBean extends Serializable {
 
 	String getCurrentView();

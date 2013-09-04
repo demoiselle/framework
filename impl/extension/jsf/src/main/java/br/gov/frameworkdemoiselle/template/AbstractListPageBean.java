@@ -49,7 +49,17 @@ import javax.inject.Inject;
 import br.gov.frameworkdemoiselle.pagination.Pagination;
 import br.gov.frameworkdemoiselle.pagination.PaginationContext;
 import br.gov.frameworkdemoiselle.util.Reflections;
-
+/**
+ * Template Managed Bean class that implements the methods defined by the interface ListPageBean.
+ * 
+ * @param <T>
+ *            bean object type
+ * @param <I>
+ *            bean id type
+ *
+ * @author SERPRO
+ * @see ListPageBean
+ */
 public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implements ListPageBean<T, I> {
 
 	private static final long serialVersionUID = 1L;

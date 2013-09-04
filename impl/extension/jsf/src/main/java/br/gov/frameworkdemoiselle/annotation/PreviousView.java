@@ -47,6 +47,11 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * Used to indicate which page to return after the execution of some method.
+ * 
+ * @author SERPRO
+ */
 @Inherited
 @Documented
 @Target({ TYPE, FIELD, METHOD, PARAMETER })

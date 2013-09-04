@@ -36,6 +36,15 @@
  */
 package br.gov.frameworkdemoiselle.template;
 
+/**
+ * Interface that defines a contract of facilities that a page with funcionalities of insert, edit and delete could implement.
+ *
+ * @param <T>
+ *            bean object type
+ *            
+ * @author SERPRO
+ * 
+ */
 public interface EditPageBean<T> extends PageBean {
 
 	String delete();

@@ -41,6 +41,17 @@ import java.util.Map;
 
 import javax.faces.model.DataModel;
 
+/**
+ * Interface that defines a contract of facilities that a page with the funcionality of list could implement.
+ *  
+ * @param <T>
+ *            bean object type
+ * @param <I>
+ *            bean id type
+ *
+ * @author SERPRO
+ * 
+ */
 public interface ListPageBean<T, I> extends PageBean {
 
 	DataModel<T> getDataModel();
