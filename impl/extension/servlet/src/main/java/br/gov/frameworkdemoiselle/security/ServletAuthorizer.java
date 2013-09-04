@@ -46,6 +46,14 @@ import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
+/**
+ * Implements the {@link Authorizer} interface, offering a way to implement 
+ * offering a manner to use the authorizer's functionalities.
+ * 
+ * @author SERPRO
+ *
+ */
+
 @Priority(L2_PRIORITY)
 public class ServletAuthorizer implements Authorizer {
 

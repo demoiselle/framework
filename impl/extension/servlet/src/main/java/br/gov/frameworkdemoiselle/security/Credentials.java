@@ -41,6 +41,13 @@ import java.io.Serializable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
+/**
+ * This classes keeps credential informations, username and password.
+ * 
+ * @author SERPRO
+ * 
+ */
+
 @Named
 @RequestScoped
 public class Credentials implements Serializable {
@@ -51,6 +58,9 @@ public class Credentials implements Serializable {
 
 	private String password;
 
+	/**
+	 * Cleans the stored information, setting username and password to null.
+	 */
 	public void clear() {
 		this.username = null;
 		this.password = null;

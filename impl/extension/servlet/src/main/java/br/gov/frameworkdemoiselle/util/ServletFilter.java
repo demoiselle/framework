@@ -45,6 +45,13 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+/**
+ * Implements the {@link javax.servlet.Filter} interface.
+ * 
+ * @author SERPRO
+ *
+ */
+
 public class ServletFilter implements Filter {
 
 	@Override
