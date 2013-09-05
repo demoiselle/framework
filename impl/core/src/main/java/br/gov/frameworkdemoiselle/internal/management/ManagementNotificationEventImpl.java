@@ -44,7 +44,7 @@ import br.gov.frameworkdemoiselle.management.NotificationManager;
  * Implementators can capture this event and be notified when the {@link NotificationManager}
  * sends notifications, so they can pass the notification to the underlying technology.
  * 
- * @author serpro
+ * @author SERPRO
  *
  */
 public class ManagementNotificationEventImpl implements br.gov.frameworkdemoiselle.management.ManagementNotificationEvent {
