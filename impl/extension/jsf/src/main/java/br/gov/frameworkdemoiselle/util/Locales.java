@@ -43,6 +43,11 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+/**
+ * Utility class to configure the Locale.
+ * 
+ * @author SERPRO
+ * */
 @Named
 public class Locales implements Serializable {
 

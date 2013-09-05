@@ -55,6 +55,11 @@ import br.gov.frameworkdemoiselle.exception.ApplicationException;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 
+/**
+ * Utility class to insert messages in the FacesContext.
+ * 
+ * @author SERPRO
+ * */
 public class Faces {
 
 	private Faces() {
