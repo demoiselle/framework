@@ -54,7 +54,7 @@ import br.gov.frameworkdemoiselle.stereotype.ManagementController;
  * methods at the apropriate times.
  * </p>
  * 
- * @author serpro
+ * @author SERPRO
  */
 public interface ManagementExtension {
 
