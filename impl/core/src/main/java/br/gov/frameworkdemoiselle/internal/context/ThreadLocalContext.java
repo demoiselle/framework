@@ -53,7 +53,7 @@ import java.lang.annotation.Annotation;
 /**
  * Base context that has a separated store for each thread
  * 
- * @author serpro
+ * @author SERPRO
  */
 public class ThreadLocalContext extends AbstractCustomContext {
 
