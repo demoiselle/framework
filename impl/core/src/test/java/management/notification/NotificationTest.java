@@ -61,7 +61,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 /**
  * Test the {@link NotificationManager} with a dummy extension to check if notifications are correctly propagated
  * 
- * @author serpro
+ * @author SERPRO
  */
 @RunWith(Arquillian.class)
 public class NotificationTest {
