@@ -59,7 +59,7 @@ import br.gov.frameworkdemoiselle.util.Beans;
  * the implementator can use qualifiers like the {@link Generic} and {@link AttributeChange} qualifiers
  * to filter what king of notifications they will handle. One example of an implementator is the <b>demoiselle-jmx</b> extension.</p>
  * 
- * @author serpro
+ * @author SERPRO
  *
  */
 @ApplicationScoped
