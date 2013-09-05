@@ -75,7 +75,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * activated upon adding).
  * </p>
  * 
- * @author serpro
+ * @author SERPRO
  */
 public final class ContextManager {
 
