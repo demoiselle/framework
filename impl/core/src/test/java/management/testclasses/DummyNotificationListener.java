@@ -48,7 +48,7 @@ import br.gov.frameworkdemoiselle.management.NotificationManager;
 /**
  * Dummy class to test receiving of notifications sent by the {@link NotificationManager} 
  * 
- * @author serpro
+ * @author SERPRO
  *
  */
 @ApplicationScoped
