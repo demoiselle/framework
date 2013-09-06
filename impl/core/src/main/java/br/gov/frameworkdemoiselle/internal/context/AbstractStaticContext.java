@@ -36,27 +36,44 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
-import javax.enterprise.context.spi.Context;
+import java.lang.annotation.Annotation;
+
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.annotation.StaticScoped;
+import br.gov.frameworkdemoiselle.configuration.Configuration;
 
 /**
  * 
- * Base interface for contexts managed by the framework.
+ * <p>This context has a unified static store that keeps all scoped beans available
+ * to all threads of an application. It is intended to keep beans avaliable to
+ * long lasting scopes (like the Session scope and Application scope) on environments
+ * that lack those scopes by default (like desktop Swing applications).</p>
+ * 
+ * <p>This context also keeps beans of the custom {@link StaticScoped} scope, like the beans
+ * annotated with {@link Configuration}.</p>
  * 
  * @author serpro
  *
  */
-public interface CustomContext extends Context {
+@Priority(Priority.MIN_PRIORITY)
+public abstract class AbstractStaticContext extends AbstractCustomContext {
 
-	/**
-	 * Activates a custom context
-	 * 
-	 * @return <code>true</code> if context was activated, <code>false</code> if there was already another active
-	 * context for the same scope and the activation of this scope failed.
-	 */
-	boolean activate();
+	private final static Store store = createStore();
 	
 	/**
-	 * Deactivates this context, it will clear all beans stored on this context.
+	 * Constructs this context to control the provided scope
 	 */
-	void deactivate();
+	AbstractStaticContext(Class<? extends Annotation> scope) {
+		super(scope);
+	}
+
+	@Override
+	protected Store getStore() {
+		return store;
+	}
+
+	@Override
+	protected boolean isStoreInitialized() {
+		return store!=null;
+	}
 }

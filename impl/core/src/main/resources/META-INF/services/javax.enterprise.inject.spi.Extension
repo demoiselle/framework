@@ -1,4 +1,5 @@
 br.gov.frameworkdemoiselle.internal.bootstrap.CoreBootstrap
+br.gov.frameworkdemoiselle.internal.bootstrap.CustomContextBootstrap
 br.gov.frameworkdemoiselle.internal.bootstrap.ConfigurationBootstrap
 br.gov.frameworkdemoiselle.internal.bootstrap.ManagementBootstrap
 br.gov.frameworkdemoiselle.internal.bootstrap.StartupBootstrap

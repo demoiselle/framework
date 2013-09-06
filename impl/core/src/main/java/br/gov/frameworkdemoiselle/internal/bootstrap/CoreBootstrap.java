@@ -79,15 +79,7 @@ public class CoreBootstrap implements Extension {
 		Beans.setBeanManager(beanManager);
 		getLogger().info(getBundle().getString("setting-up-bean-manager", Beans.class.getCanonicalName()));
 	}
-
-	/*public void initializeCustomContexts(@Observes final AfterBeanDiscovery event) {
-		Beans.getReference(ContextManager2.class);
-	}*/
-
-	/*public void terminateCustomContexts(@Observes final BeforeShutdown event) {
-		ContextManager.shutdown();
-	}*/
-
+	
 	public void takeOff(@Observes final AfterDeploymentValidation event) {
 		getLogger().info(getBundle().getString("taking-off"));
 	}

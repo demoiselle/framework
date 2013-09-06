@@ -51,9 +51,9 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.internal.context.RequestContextImpl;
-import br.gov.frameworkdemoiselle.internal.context.SessionContextImpl;
-import br.gov.frameworkdemoiselle.internal.context.ThreadLocalViewContextImpl;
+import br.gov.frameworkdemoiselle.context.RequestContext;
+import br.gov.frameworkdemoiselle.context.SessionContext;
+import br.gov.frameworkdemoiselle.context.ViewContext;
 import br.gov.frameworkdemoiselle.internal.implementation.AnnotatedMethodProcessor;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
@@ -124,9 +124,9 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		Collections.sort(processors);
 		Exception failure = null;
 		
-		RequestContextImpl tempRequestContext = Beans.getReference(RequestContextImpl.class);
-		SessionContextImpl tempSessionContext = Beans.getReference(SessionContextImpl.class);
-		ThreadLocalViewContextImpl tempViewContext = Beans.getReference(ThreadLocalViewContextImpl.class);
+		RequestContext tempRequestContext = Beans.getReference(RequestContext.class);
+		SessionContext tempSessionContext = Beans.getReference(SessionContext.class);
+		ViewContext tempViewContext = Beans.getReference(ViewContext.class);
 
 		if (!registered) {
 			tempRequestContext.activate();

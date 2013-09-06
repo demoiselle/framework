@@ -1,5 +1,7 @@
 package management.validation;
 
+import javax.validation.ConstraintViolationException;
+
 import management.testclasses.DummyManagedClass;
 import management.testclasses.DummyManagementExtension;
 import management.testclasses.DummyValidator;
@@ -14,7 +16,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
@@ -52,8 +53,8 @@ public class ValidationTest {
 			store.setProperty(DummyManagedClass.class, "id", (Integer) null);
 
 			Assert.fail();
-		} catch (DemoiselleException de) {
-			// Classes de gerenciamento disparam Demoiselle Exception quando uma validação falha
+		} catch (ConstraintViolationException ce) {
+			// Classes de gerenciamento disparam ConstraintViolationException quando uma validação falha
 		}
 	}
 
@@ -72,7 +73,7 @@ public class ValidationTest {
 			store.setProperty(DummyManagedClass.class, "gender", "J");
 
 			Assert.fail();
-		} catch (DemoiselleException e) {
+		} catch (ConstraintViolationException e) {
 			Assert.assertTrue(e.getMessage().contains("Test Message"));
 		}
 
