@@ -67,7 +67,7 @@ public final class Tests {
 
 	private static WebArchive createDeployment() {
 		File[] libs = Maven.resolver().offline().loadPomFromFile("pom.xml", "arquillian-test")
-				.importCompileAndRuntimeDependencies().importTestDependencies().resolve().withTransitivity().asFile();
+				.importCompileAndRuntimeDependencies().resolve().withTransitivity().asFile();
 
 		return ShrinkWrap
 				.create(WebArchive.class)

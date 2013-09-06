@@ -14,7 +14,7 @@
  GNU General Public License for more details.
  
  You should have received a copy of the GNU Lesser General Public License version 3
- along with this program; if not,  see <http://www.gnu.org/licenses/>
+ along with this program; if not,  see <http://www.gnu.org/licenses />
  or write to the Free Software Foundation, Inc., 51 Franklin Street,
  Fifth Floor, Boston, MA  02110-1301, USA.
  ============================================================================
@@ -30,35 +30,18 @@
  para maiores detalhes.
  
  Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
- "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses/>
+ "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses />
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+<beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 
-	<persistence-unit name="pu" transaction-type="RESOURCE_LOCAL">
-		<non-jta-data-source>jdbc/__default</non-jta-data-source>
+	<interceptors>
+		<class>br.gov.frameworkdemoiselle.transaction.TransactionalInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.security.RequiredPermissionInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.security.RequiredRoleInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.exception.ExceptionHandlerInterceptor</class>
+	</interceptors>
 
-		<class>productor.MyEntity</class>
-
-		<properties>
-			<property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.format_sql" value="false" />
-			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
-		</properties>
-	</persistence-unit>
-	
-	<persistence-unit name="pu2" transaction-type="RESOURCE_LOCAL">
-		<non-jta-data-source>jdbc/__default</non-jta-data-source>
-
-		<class>productor.MyEntity</class>
-
-		<properties>
-			<property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.format_sql" value="false" />
-			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
-		</properties>
-	</persistence-unit>
-
-</persistence>
+</beans>

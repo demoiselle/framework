@@ -10,7 +10,6 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -19,10 +18,10 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.configuration.JDBCConfig;
 import br.gov.frameworkdemoiselle.internal.proxy.BasicDataSourceProxy;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @ApplicationScoped
@@ -30,12 +29,25 @@ public class DataSourceProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	private Logger logger;
+	private transient Logger logger;
 
-	@Inject
-	@Name("demoiselle-jdbc-bundle")
-	private ResourceBundle bundle;
+	private transient ResourceBundle bundle;
+
+	private ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-jdbc-bundle"));
+		}
+
+		return bundle;
+	}
+
+	private Logger getLogger() {
+		if (logger == null) {
+			logger = Beans.getReference(Logger.class, new NameQualifier(DataSourceProducer.class.getName()));
+		}
+
+		return logger;
+	}
 
 	private final Map<ClassLoader, Map<String, DataSource>> cache = Collections
 			.synchronizedMap(new HashMap<ClassLoader, Map<String, DataSource>>());
@@ -52,7 +64,7 @@ public class DataSourceProducer implements Serializable {
 				throw new DemoiselleException(cause);
 			}
 
-			logger.debug(bundle.getString("datasource-name-found", dataBaseName));
+			getLogger().debug(getBundle().getString("datasource-name-found", dataBaseName));
 		}
 	}
 
@@ -70,7 +82,7 @@ public class DataSourceProducer implements Serializable {
 		}
 
 		if (result.isEmpty()) {
-			throw new DemoiselleException(bundle.getString("datasource-name-not-found"));
+			throw new DemoiselleException(getBundle().getString("datasource-name-not-found"));
 		}
 
 		return result;
@@ -117,10 +129,10 @@ public class DataSourceProducer implements Serializable {
 			result = initJNDIDataSource(dataSourceName, jndi);
 
 		} else if (url != null) {
-			result = new BasicDataSourceProxy(dataSourceName, config, bundle);
-			
+			result = new BasicDataSourceProxy(dataSourceName, config, getBundle());
+
 		} else {
-			throw new DemoiselleException(bundle.getString("uncompleted-datasource-configuration", dataSourceName));
+			throw new DemoiselleException(getBundle().getString("uncompleted-datasource-configuration", dataSourceName));
 		}
 
 		return result;
@@ -134,10 +146,11 @@ public class DataSourceProducer implements Serializable {
 			result = (DataSource) context.lookup(jndi);
 
 		} catch (NamingException cause) {
-			throw new DemoiselleException(bundle.getString("load-jndi-datasource-failed", dataSourceName, jndi), cause);
+			throw new DemoiselleException(getBundle().getString("load-jndi-datasource-failed", dataSourceName, jndi),
+					cause);
 
 		} catch (ClassCastException cause) {
-			throw new DemoiselleException(bundle.getString("load-duplicated-configuration-failed"), cause);
+			throw new DemoiselleException(getBundle().getString("load-duplicated-configuration-failed"), cause);
 		}
 
 		return result;
@@ -153,7 +166,7 @@ public class DataSourceProducer implements Serializable {
 		Map<String, DataSource> result = cache.get(classLoader);
 
 		if (result == null || result.isEmpty()) {
-			logger.debug(bundle.getString("datasource-not-found-in-cache"));
+			getLogger().debug(getBundle().getString("datasource-not-found-in-cache"));
 
 			for (String name : getDataSourceNames(classLoader)) {
 				create(name);

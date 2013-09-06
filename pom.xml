@@ -101,8 +101,8 @@
 		<connection>scm:git:git@github.com:demoiselle/${project.alias}.git</connection>
 		<developerConnection>scm:git:git@github.com:demoiselle/${project.alias}.git</developerConnection>
 		<url>http://github.com/demoiselle/${project.alias}</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<repositories>
 		<repository>

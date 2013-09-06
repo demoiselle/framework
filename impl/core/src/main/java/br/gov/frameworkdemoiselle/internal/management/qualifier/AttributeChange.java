@@ -51,7 +51,7 @@ import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
  * Enables {@link ManagementNotificationEvent} observers to trigger only with notifications
  * of the specialized type {@link AttributeChangeNotification}.
  * 
- * @author serpro
+ * @author SERPRO
  *
  */
 @Qualifier

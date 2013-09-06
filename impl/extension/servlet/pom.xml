@@ -77,11 +77,13 @@
 			<version>1.4</version>
 		</dependency>
 
+		<!--
 		<dependency>
 			<groupId>javax.el</groupId>
 			<artifactId>el-api</artifactId>
 			<scope>test</scope>
 		</dependency>
+		-->
 	</dependencies>
 
 	<repositories>
@@ -108,4 +110,17 @@
 			</releases>
 		</repository>
 	</repositories>
+
+	<profiles>
+		<profile>
+			<id>arquillian-test</id>
+			<dependencies>
+				<dependency>
+					<groupId>javax.servlet</groupId>
+					<artifactId>javax.servlet-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 </project>

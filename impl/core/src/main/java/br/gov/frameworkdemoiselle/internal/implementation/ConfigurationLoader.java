@@ -193,8 +193,7 @@ public class ConfigurationLoader implements Serializable {
 		String prefix = this.object.getClass().getAnnotation(Configuration.class).prefix();
 
 		if (prefix.endsWith(".")) {
-			// prefix = prefix.substring(0, prefix.length() - 1);
-			// TODO Lançar warning pedindo para retirar o ponto (.)?
+			getLogger().warn(getBundle().getString("configuration-dot-after-prefix", this.resource));
 		} else if (!prefix.isEmpty()) {
 			prefix += ".";
 		}
@@ -243,8 +242,7 @@ public class ConfigurationLoader implements Serializable {
 		}
 
 		catch (Exception cause) {
-			// TODO Lançar mensagem informando que houve erro ao tentar extrair o valor com o extrator tal.
-			throw new ConfigurationException("", cause);
+			throw new ConfigurationException(getBundle().getString("configuration-generic-extraction-error", field.getType().toString(), getValueExtractor(field).getClass().getCanonicalName()), cause);
 		}
 
 		return value;

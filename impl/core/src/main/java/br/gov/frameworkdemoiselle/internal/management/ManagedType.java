@@ -60,7 +60,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * <p>Instances if this class are passed to each discovered management extension during bootstrap so they can have
  * enough information to expose all discovered {@link ManagementController}'s to management clients.</p>
  * 
- * @author serpro
+ * @author SERPRO
  */
 public class ManagedType {
 

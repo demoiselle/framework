@@ -40,7 +40,7 @@ package br.gov.frameworkdemoiselle.management;
  * Special notification to denote an attribute has changed values.
  * 
  * @see GenericNotification
- * @author serpro
+ * @author SERPRO
  */
 public class AttributeChangeNotification extends GenericNotification {
 

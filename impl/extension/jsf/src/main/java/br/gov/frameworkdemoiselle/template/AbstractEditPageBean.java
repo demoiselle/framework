@@ -48,6 +48,17 @@ import br.gov.frameworkdemoiselle.util.Parameter;
 import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
+/**
+ * Template Managed Bean class that implements the methods defined by the interface EditPageBean.
+ * 
+ * @param <T>
+ *            bean object type
+ * @param <I>
+ *            bean id type
+ *            
+ * @author SERPRO
+ * @see EditPageBean
+ */
 public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean implements EditPageBean<T> {
 
 	private static final long serialVersionUID = 1L;

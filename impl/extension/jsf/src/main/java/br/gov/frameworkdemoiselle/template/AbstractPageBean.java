@@ -42,6 +42,12 @@ import javax.inject.Inject;
 import br.gov.frameworkdemoiselle.annotation.NextView;
 import br.gov.frameworkdemoiselle.annotation.PreviousView;
 
+/**
+ * Template Managed Bean class that implements the methods defined by the interface PageBean.
+ * 
+ * @author SERPRO
+ * @see PageBean
+ */
 public abstract class AbstractPageBean implements PageBean {
 
 	private static final long serialVersionUID = 1L;

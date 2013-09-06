@@ -57,7 +57,7 @@ import br.gov.frameworkdemoiselle.util.Beans;
  * Test case that simulates a management extension and tests if properties and operations on a managed class can be
  * easily accessed and invoked.
  * 
- * @author serpro
+ * @author SERPRO
  */
 @RunWith(Arquillian.class)
 public class ManagementTest {

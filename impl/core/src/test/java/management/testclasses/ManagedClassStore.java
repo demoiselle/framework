@@ -51,7 +51,7 @@ import br.gov.frameworkdemoiselle.util.Beans;
  * and can read/write properties and invoke operations on them, simulating a management
  * extension like JMX or SNMP. 
  * 
- * @author serpro
+ * @author SERPRO
  *
  */
 @ApplicationScoped

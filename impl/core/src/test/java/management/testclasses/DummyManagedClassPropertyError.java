@@ -44,7 +44,7 @@ import br.gov.frameworkdemoiselle.stereotype.ManagementController;
  * 
  * Used in tests to detect if the bootstrap detects wrong annotations
  * 
- * @author serpro
+ * @author SERPRO
  *
  */
 @ManagementController

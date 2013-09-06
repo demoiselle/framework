@@ -51,7 +51,7 @@ import br.gov.frameworkdemoiselle.management.GenericNotification;
  * Enables {@link ManagementNotificationEvent} observers to trigger only with notifications
  * of the base type {@link GenericNotification}.
  * 
- * @author serpro
+ * @author SERPRO
  *
  */
 @Qualifier
