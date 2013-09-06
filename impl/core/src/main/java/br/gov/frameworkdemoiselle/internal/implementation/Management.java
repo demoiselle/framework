@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.management;
+package br.gov.frameworkdemoiselle.internal.implementation;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -58,11 +58,11 @@ import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.context.ContextManager;
 import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
-import br.gov.frameworkdemoiselle.internal.management.ManagedType.MethodDetail;
-import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
+import br.gov.frameworkdemoiselle.internal.implementation.ManagedType.MethodDetail;
 import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
 import br.gov.frameworkdemoiselle.management.ManagedAttributeNotFoundException;
 import br.gov.frameworkdemoiselle.management.ManagedInvokationException;
+import br.gov.frameworkdemoiselle.management.ManagementExtension;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.Beans;
