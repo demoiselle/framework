@@ -47,6 +47,12 @@ import javax.faces.FacesException;
 import javax.faces.application.ViewHandler;
 import javax.faces.context.FacesContext;
 
+/**
+ * 
+ * Utility class to redirect determined page to another one.
+ * 
+ * @author SERPRO
+ * */
 public class Redirector {
 
 	private Redirector() {

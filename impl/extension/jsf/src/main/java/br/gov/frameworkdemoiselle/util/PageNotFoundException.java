@@ -38,6 +38,12 @@ package br.gov.frameworkdemoiselle.util;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 
+/**
+ * 
+ * Utility class that serves as the exception to be thrown when a page is not found.
+ * 
+ * @author SERPRO
+ * */
 public class PageNotFoundException extends DemoiselleException {
 
 	private static final long serialVersionUID = 1L;

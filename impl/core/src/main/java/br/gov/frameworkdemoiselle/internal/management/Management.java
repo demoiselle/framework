@@ -72,7 +72,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * Central class used by management extensions to obtain information, access properties and call operations over
  * discovered {@link ManagementController} classes.
  * 
- * @author serpro
+ * @author SERPRO
  */
 @ApplicationScoped
 public class Management implements Serializable {

@@ -47,8 +47,12 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * Used to indicate which page to redirect after the execution of some method.
+ * 
+ * @author SERPRO
+ */
 
-// TODO Este qualifier é realmente necessário? Verificar também na anotação PreviousView.
 @Inherited
 @Documented
 @Target({ TYPE, FIELD, METHOD, PARAMETER })

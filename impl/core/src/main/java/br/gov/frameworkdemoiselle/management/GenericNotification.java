@@ -39,7 +39,7 @@ package br.gov.frameworkdemoiselle.management;
 /**
  * Notification that can be sent by the {@link NotificationManager}.
  * 
- * @author serpro
+ * @author SERPRO
  */
 public class GenericNotification {
 
