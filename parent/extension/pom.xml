@@ -191,7 +191,7 @@
 			<id>arquillian-weld-se-embedded</id>
 			<activation>
 				<file>
-					<exists>src/test/resources/.weldse.profile</exists>
+					<exists>src/test/resources/.arquillian-weld-se-embedded.profile</exists>
 				</file>
 			</activation>
 			<dependencies>
@@ -210,7 +210,7 @@
 			<id>arquillian-glassfish-embedded</id>
 			<activation>
 				<file>
-					<exists>src/test/resources/.glassfish.profile</exists>
+					<exists>src/test/resources/.arquillian-glassfish-embedded.profile</exists>
 				</file>
 				<!--
 				<activeByDefault>true</activeByDefault>
@@ -235,7 +235,7 @@
 			<id>arquillian-jbossas7-managed</id>
 			<activation>
 				<file>
-					<exists>src/test/resources/.jbossas7.profile</exists>
+					<exists>src/test/resources/.arquillian-jbossas7-managed.profile</exists>
 				</file>
 			</activation>
 			<build>
@@ -321,7 +321,7 @@
 			<id>arquillian-drone</id>
 			<activation>
 				<file>
-					<exists>src/test/resources/.drone.profile</exists>
+					<exists>src/test/resources/.arquillian-drone.profile</exists>
 				</file>
 			</activation>
 			<dependencyManagement>

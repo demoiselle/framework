@@ -1,12 +1,9 @@
 package xxxx;
 
-import java.io.IOException;
 import java.net.URL;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -15,10 +12,15 @@ import org.junit.runner.RunWith;
 
 import test.Tests;
 
+import com.thoughtworks.selenium.DefaultSelenium;
+
 @RunWith(Arquillian.class)
 public class XTest {
 
 	private static final String PATH = "src/test/resources/xxx";
+
+	@Drone
+	private DefaultSelenium browser;
 
 	@ArquillianResource
 	private URL deploymentUrl;
@@ -31,21 +33,7 @@ public class XTest {
 
 	@Test
 	public void xxxx() {
-		HttpClient client = new HttpClient();
-		GetMethod method = new GetMethod(deploymentUrl + "login");
-
-		try {
-			int status = client.executeMethod(method);
-			System.out.println(status);
-
-		} catch (HttpException e) {
-			e.printStackTrace();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// browser.open(deploymentUrl + "login");
+		browser.open(deploymentUrl + "login");
 
 		// browser.type("id=xxx-input", "demo");
 		// browser.waitForPageToLoad("15000");
