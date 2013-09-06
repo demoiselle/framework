@@ -62,10 +62,6 @@ public class MBeanHelper {
 
 	private static final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 
-	// @Inject
-	// @Name("demoiselle-monitoring-bundle")
-	// private ResourceBundle bundle;
-
 	/**
 	 * Return the MBean Server instance.
 	 * 
