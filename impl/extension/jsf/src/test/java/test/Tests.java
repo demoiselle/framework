@@ -34,29 +34,51 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.management.qualifier;
+package test;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.File;
 
-import javax.inject.Qualifier;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.junit.Ignore;
 
-import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
+@Ignore
+public final class Tests {
 
-/**
- * 
- * Enables {@link ManagementNotificationEvent} observers to trigger only with notifications
- * of the specialized type {@link AttributeChangeNotification}.
- * 
- * @author SERPRO
- *
- */
-@Qualifier
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
-public @interface AttributeChange {
+	private Tests() {
+	}
 
+	public static WebArchive createDeployment(final Class<?> baseClass) {
+		return createDeployment().addPackages(true, baseClass.getPackage()).addClass(Tests.class);
+	}
+
+	public static WebArchive createDeployment() {
+		File[] libs = Maven.resolver().offline().loadPomFromFile("pom.xml", "arquillian-test")
+				.importCompileAndRuntimeDependencies().resolve().withTransitivity().asFile();
+
+		return ShrinkWrap
+				.create(WebArchive.class)
+				// .addClass(ServletAuthenticator.class)
+				// .addClass(ServletAuthorizer.class)
+				// .addClass(ServletFilter.class)
+				// .addClass(ServletListener.class)
+				// .addClass(HttpServletRequestProducer.class)
+				// .addClass(HttpServletResponseProducer.class)
+				// .addClass(HttpSessionProducer.class)
+				// .addClass(ServletLocaleProducer.class)
+				// .addClass(BasicAuthenticationFilter.class)
+				// .addClass(HttpServletRequestProducerFilter.class)
+				// .addClass(HttpServletResponseProducerFilter.class)
+				// .addClass(InternalProcessorFilterImpl.class)
+				.addAsResource(createFileAsset("src/main/resources/demoiselle-jsf-bundle.properties"),
+						"demoiselle-jsf-bundle.properties")
+				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")
+				.addAsLibraries(libs);
+	}
+
+	public static FileAsset createFileAsset(final String pathname) {
+		return new FileAsset(new File(pathname));
+	}
 }

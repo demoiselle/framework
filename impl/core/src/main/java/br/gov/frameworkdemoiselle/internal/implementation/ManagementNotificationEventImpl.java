@@ -34,45 +34,32 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.lifecycle;
+package br.gov.frameworkdemoiselle.internal.implementation;
 
-import java.util.List;
-
-import br.gov.frameworkdemoiselle.internal.management.ManagedType;
-import br.gov.frameworkdemoiselle.stereotype.ManagementController;
+import br.gov.frameworkdemoiselle.management.GenericNotification;
+import br.gov.frameworkdemoiselle.management.NotificationManager;
 
 /**
- * <p>
- * Interface defining the lifecycle of a <b>management extension</b>, an extension capable of exposing
- * {@link ManagementController}'s to external clients in one of the available management technologies, such as JMX or
- * SNMP.
- * </p>
- * <p>
- * To include a management extension into the management lifecycle, it just needs to implement this interface and be a
- * CDI bean (have a <b>beans.xml</b> file inside the META-INF folder of it's java package). The Demoiselle Core
- * lifecycle controller will call the {@link #initialize(List managedTypes)} and {@link #shutdown(List managedTypes)}
- * methods at the apropriate times.
- * </p>
+ * Event fired when a notification is sent by {@link NotificationManager}.
+ * Implementators can capture this event and be notified when the {@link NotificationManager}
+ * sends notifications, so they can pass the notification to the underlying technology.
  * 
  * @author SERPRO
+ *
  */
-public interface ManagementExtension {
+public class ManagementNotificationEventImpl implements br.gov.frameworkdemoiselle.management.ManagementNotificationEvent {
+	
+	private GenericNotification notification;
+	
+	public ManagementNotificationEventImpl(GenericNotification notification){
+		this.notification = notification;
+	}
 
-	/**
-	 * This method is called during the application initialization process for each concrete implementation of this
-	 * interface.
-	 * 
-	 * @param managedTypes
-	 *            The list of discovered {@link ManagementController} classes.
-	 */
-	void initialize(List<ManagedType> managedTypes);
+	public GenericNotification getNotification() {
+		return notification;
+	}
 
-	/**
-	 * This method is called during the application shutdown process for each concrete implementation of this interface.
-	 * 
-	 * @param managedTypes
-	 *            The list of discovered {@link ManagementController} classes.
-	 */
-	void shutdown(List<ManagedType> managedTypes);
-
+	public void setNotification(GenericNotification notification) {
+		this.notification = notification;
+	}
 }

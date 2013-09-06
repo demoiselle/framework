@@ -34,69 +34,45 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package management.testclasses;
+package br.gov.frameworkdemoiselle.management;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import br.gov.frameworkdemoiselle.internal.implementation.ManagedType;
-import br.gov.frameworkdemoiselle.internal.implementation.Management;
-import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 
 /**
- * Dummy class that stores managed types detected by the management bootstrap
- * and can read/write properties and invoke operations on them, simulating a management
- * extension like JMX or SNMP. 
+ * <p>
+ * Interface defining the lifecycle of a <b>management extension</b>, an extension capable of exposing
+ * {@link ManagementController}'s to external clients in one of the available management technologies, such as JMX or
+ * SNMP.
+ * </p>
+ * <p>
+ * To include a management extension into the management lifecycle, it just needs to implement this interface and be a
+ * CDI bean (have a <b>beans.xml</b> file inside the META-INF folder of it's java package). The Demoiselle Core
+ * lifecycle controller will call the {@link #initialize(List managedTypes)} and {@link #shutdown(List managedTypes)}
+ * methods at the apropriate times.
+ * </p>
  * 
  * @author SERPRO
- *
  */
-@ApplicationScoped
-public class ManagedClassStore {
-	
-	private List<ManagedType> managedTypes = new ArrayList<ManagedType>();
+public interface ManagementExtension {
 
-	
-	public List<ManagedType> getManagedTypes() {
-		return managedTypes;
-	}
+	/**
+	 * This method is called during the application initialization process for each concrete implementation of this
+	 * interface.
+	 * 
+	 * @param managedTypes
+	 *            The list of discovered {@link ManagementController} classes.
+	 */
+	void initialize(List<ManagedType> managedTypes);
 
-	public void addManagedTypes(Collection<ManagedType> managedTypes){
-		this.managedTypes.addAll(managedTypes);
-	}
-	
-	public void setProperty(Class<?> managedClass , String attributeName , Object newValue){
-		Management manager = Beans.getReference(Management.class);
-		for (ManagedType type : manager.getManagedTypes()){
-			if (type.getType().equals(managedClass)){
-				manager.setProperty(type, attributeName, newValue);
-				break;
-			}
-		}
-	}
-	
-	public Object getProperty(Class<?> managedClass , String attributeName ){
-		Management manager = Beans.getReference(Management.class);
-		for (ManagedType type : manager.getManagedTypes()){
-			if (type.getType().equals(managedClass)){
-				return manager.getProperty(type, attributeName);
-			}
-		}
-		
-		return null;
-	}
-	
-	public Object invoke(Class<?> managedClass , String operation , Object...  params){
-		Management manager = Beans.getReference(Management.class);
-		for (ManagedType type : manager.getManagedTypes()){
-			if (type.getType().equals(managedClass)){
-				return manager.invoke(type, operation, params);
-			}
-		}
-		
-		return null;
-	}
+	/**
+	 * This method is called during the application shutdown process for each concrete implementation of this interface.
+	 * 
+	 * @param managedTypes
+	 *            The list of discovered {@link ManagementController} classes.
+	 */
+	void shutdown(List<ManagedType> managedTypes);
+
 }

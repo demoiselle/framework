@@ -42,7 +42,7 @@ import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Extension;
 
 import br.gov.frameworkdemoiselle.context.ViewContext;
-import br.gov.frameworkdemoiselle.internal.context.ContextManager2;
+import br.gov.frameworkdemoiselle.internal.context.CustomContextProducer;
 import br.gov.frameworkdemoiselle.internal.context.FacesViewContextImpl;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -52,14 +52,18 @@ public class JsfBootstrap implements Extension {
 	//private List<CustomContext> customContexts = new ArrayList<CustomContext>();
 
 	//private AfterBeanDiscovery afterBeanDiscoveryEvent;
-
-	public void storeContexts(@Observes final AfterBeanDiscovery event) {
-		//Registra o ViewContext para controlar o escopo ViewScoped.
-		ContextManager2 contextManager = Beans.getReference(ContextManager2.class);
-		contextManager.addCustomContext(new FacesViewContextImpl());
+	
+	private FacesViewContextImpl context;
+	
+	public void createCustomContext(@Observes AfterBeanDiscovery event){
+		context = new FacesViewContextImpl();
+		event.addContext(context);
 	}
 
 	public void addContexts(@Observes final AfterDeploymentValidation event) {
+		CustomContextProducer producer = Beans.getReference(CustomContextProducer.class);
+		producer.addRegisteredContext(context);
+		
 		//Ativa o ViewContext
 		ViewContext ctx = Beans.getReference(FacesViewContextImpl.class);
 		ctx.activate();

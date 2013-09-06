@@ -42,8 +42,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
 import br.gov.frameworkdemoiselle.configuration.JMXConfig;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
+import br.gov.frameworkdemoiselle.internal.implementation.AttributeChange;
+import br.gov.frameworkdemoiselle.internal.implementation.Generic;
 import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 
