@@ -49,11 +49,10 @@ import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
- * Implements the {@link Authenticator} interface, offering a way to implement 
- * offering a manner to use the authenticator's functionalities.
+ * Implements the {@link Authenticator} interface, offering a way to implement offering a manner to use the
+ * authenticator's functionalities.
  * 
  * @author SERPRO
- *
  */
 
 @Priority(L2_PRIORITY)
@@ -90,30 +89,30 @@ public class ServletAuthenticator implements Authenticator {
 	@Override
 	public User getUser() {
 		final Principal principal = getRequest().getUserPrincipal();
-		
+
 		User user = null;
-		
-		if (principal!=null) {
-			user =  new User() {
-				
+
+		if (principal != null) {
+			user = new User() {
+
 				private static final long serialVersionUID = 1L;
-				
+
 				@Override
 				public String getId() {
 					return principal.getName();
 				}
-				
+
 				@Override
 				public void setAttribute(Object key, Object value) {
 				}
-				
+
 				@Override
 				public Object getAttribute(Object key) {
 					return null;
 				}
 			};
 		}
-		
+
 		return user;
 	}
 

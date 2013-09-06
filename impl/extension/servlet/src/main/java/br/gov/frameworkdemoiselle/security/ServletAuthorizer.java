@@ -42,16 +42,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.internal.producer.ResourceBundleProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
- * Implements the {@link Authorizer} interface, offering a way to implement 
- * offering a manner to use the authorizer's functionalities.
+ * Implements the {@link Authorizer} interface, offering a way to implement offering a manner to use the authorizer's
+ * functionalities.
  * 
  * @author SERPRO
- *
  */
 
 @Priority(L2_PRIORITY)
@@ -59,7 +58,7 @@ public class ServletAuthorizer implements Authorizer {
 
 	private static final long serialVersionUID = 1L;
 
-	private static ResourceBundle bundle;
+	private transient ResourceBundle bundle;
 
 	@Override
 	public boolean hasRole(String role) {
@@ -76,9 +75,9 @@ public class ServletAuthorizer implements Authorizer {
 		return Beans.getReference(HttpServletRequest.class);
 	}
 
-	private static ResourceBundle getBundle() {
+	private ResourceBundle getBundle() {
 		if (bundle == null) {
-			bundle = new ResourceBundleProducer().create("demoiselle-servlet-bundle");
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-servlet-bundle"));
 		}
 
 		return bundle;

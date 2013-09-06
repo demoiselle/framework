@@ -37,36 +37,6 @@
 <persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 
-	<!--
-	<persistence-unit name="pu1" transaction-type="RESOURCE_LOCAL">
-		<non-jta-data-source>jdbc/arquillian1</non-jta-data-source>
-
-		<class>transaction.manual.MyEntity1</class>
-		<class>transaction.manual.MyEntity2</class>
-
-		<properties>
-			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
-			<property name="eclipselink.logging.level.sql" value="FINE" />
-			<property name="eclipselink.logging.parameters" value="true" />
-		</properties>
-	</persistence-unit>
-
-	<persistence-unit name="pu2" transaction-type="RESOURCE_LOCAL">
-		<non-jta-data-source>jdbc/arquillian2</non-jta-data-source>
-
-		<class>transaction.manual.MyEntity1</class>
-		<class>transaction.manual.MyEntity2</class>
-
-		<properties>
-			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
-			<property name="eclipselink.logging.level.sql" value="FINE" />
-			<property name="eclipselink.logging.parameters" value="true" />
-		</properties>
-	</persistence-unit>
-	-->
-
-	<!--
-	-->
 	<persistence-unit name="pu1" transaction-type="RESOURCE_LOCAL">
 		<non-jta-data-source>jdbc/__default</non-jta-data-source>
 
@@ -74,9 +44,15 @@
 		<class>transaction.interceptor.MyEntity2</class>
 
 		<properties>
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+			<property name="eclipselink.logging.level.sql" value="FINE" />
+			<property name="eclipselink.logging.parameters" value="true" />
+			
+			<!--
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="false" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+			-->
 		</properties>
 	</persistence-unit>
 
@@ -87,10 +63,16 @@
 		<class>transaction.interceptor.MyEntity2</class>
 
 		<properties>
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+			<property name="eclipselink.logging.level.sql" value="FINE" />
+			<property name="eclipselink.logging.parameters" value="true" />
+			
+			<!--
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="false" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+			-->
 		</properties>
 	</persistence-unit>
-	
+
 </persistence>

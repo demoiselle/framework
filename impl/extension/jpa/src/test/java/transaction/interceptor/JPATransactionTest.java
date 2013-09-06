@@ -1,9 +1,12 @@
 package transaction.interceptor;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-
-import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -20,10 +23,10 @@ import br.gov.frameworkdemoiselle.transaction.TransactionContext;
 public class JPATransactionTest {
 
 	private static final String PATH = "src/test/resources/transaction/interceptor";
-	
+
 	@Inject
 	private TransactionalBusiness tb;
-	
+
 	@Inject
 	@Name("pu1")
 	private EntityManager em1;
@@ -31,7 +34,7 @@ public class JPATransactionTest {
 	@Inject
 	@Name("pu2")
 	private EntityManager em2;
-	
+
 	@Inject
 	private TransactionContext transactionContext;
 
@@ -42,52 +45,51 @@ public class JPATransactionTest {
 
 		return deployment;
 	}
-	
+
 	@Before
-	public void eraseDatabases(){
+	public void eraseDatabases() {
 		transactionContext.getCurrentTransaction().begin();
 		em1.createQuery("DELETE FROM MyEntity1").executeUpdate();
 		em2.createQuery("DELETE FROM MyEntity2").executeUpdate();
 		transactionContext.getCurrentTransaction().commit();
 	}
-	
+
 	@Test
-	public void isTransactionActiveWithInterceptor(){
-		Assert.assertTrue(tb.isTransactionActiveWithInterceptor());
+	public void isTransactionActiveWithInterceptor() {
+		assertTrue(tb.isTransactionActiveWithInterceptor());
 	}
-	
+
 	@Test
-	public void isTransactionActiveWithoutInterceptor(){
-		Assert.assertFalse(tb.isTransactionActiveWithoutInterceptor());
+	public void isTransactionActiveWithoutInterceptor() {
+		assertFalse(tb.isTransactionActiveWithoutInterceptor());
 	}
 
 	@Test
 	public void commitWithSuccess() {
-		
+
 		tb.commitWithSuccess();
 
 		MyEntity1 entity1 = em1.find(MyEntity1.class, tb.createId("id-1"));
 		MyEntity2 entity2 = em2.find(MyEntity2.class, tb.createId("id-2"));
-		
-		Assert.assertEquals("desc-1", entity1.getDescription());
-		Assert.assertEquals("desc-2", entity2.getDescription());
+
+		assertEquals("desc-1", entity1.getDescription());
+		assertEquals("desc-2", entity2.getDescription());
 	}
 
 	@Test
 	public void rollbackWithSuccess() {
-		
-		try{
+
+		try {
 			tb.rollbackWithSuccess();
 		} catch (Exception e) {
-			Assert.assertEquals("Exceção criada para marcar transação para rollback", e.getMessage());
-		}
-		finally{
+			assertEquals("Exceção criada para marcar transação para rollback", e.getMessage());
+		} finally {
 			MyEntity1 entity1 = em1.find(MyEntity1.class, tb.createId("id-3"));
 			MyEntity2 entity2 = em2.find(MyEntity2.class, tb.createId("id-4"));
-			
-			Assert.assertNull(entity1);
-			Assert.assertNull(entity2);
+
+			assertNull(entity1);
+			assertNull(entity2);
 		}
 	}
-	
+
 }

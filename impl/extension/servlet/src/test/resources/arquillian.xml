@@ -34,13 +34,35 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+<arquillian xmlns="http://jboss.org/schema/arquillian" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-	<interceptors>
-		<class>br.gov.frameworkdemoiselle.transaction.TransactionalInterceptor</class>
-		<class>br.gov.frameworkdemoiselle.security.RequiredPermissionInterceptor</class>
-		<class>br.gov.frameworkdemoiselle.security.RequiredRoleInterceptor</class>
-		<class>br.gov.frameworkdemoiselle.exception.ExceptionHandlerInterceptor</class>
-	</interceptors>
+	<!--
+	-->
+	<engine>
+		<property name="deploymentExportPath">target/deployments</property>
+	</engine>
 
-</beans>
+	<!--
+	<extension qualifier="selenium">
+		<property name="browser">*googlechrome</property>
+	</extension>
+	-->
+
+	<!--
+	<container qualifier="glassfish" default="true">
+		<configuration>
+			<property name="autoDelete">true</property>
+		</configuration>
+	</container>
+	-->
+
+	<!--
+	<container qualifier="jbossas-managed" default="true">
+		<protocol type="Servlet 3.0" />
+		<configuration>
+			<property name="jbossHome">target/jboss-as-${jboss.as.version}</property>
+		</configuration>
+	</container>
+	-->
+</arquillian>

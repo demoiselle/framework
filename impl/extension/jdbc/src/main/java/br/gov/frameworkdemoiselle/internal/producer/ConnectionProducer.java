@@ -22,6 +22,8 @@ import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.configuration.JDBCConfig;
 import br.gov.frameworkdemoiselle.internal.proxy.ConnectionProxy;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @RequestScoped
@@ -29,15 +31,29 @@ public class ConnectionProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	private Logger logger;
+	private transient Logger logger;
 
-	@Inject
-	@Name("demoiselle-jdbc-bundle")
-	private ResourceBundle bundle;
+	private transient ResourceBundle bundle;
+
+	private ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-jdbc-bundle"));
+		}
+
+		return bundle;
+	}
+
+	private Logger getLogger() {
+		if (logger == null) {
+			logger = Beans.getReference(Logger.class, new NameQualifier(DataSourceProducer.class.getName()));
+		}
+
+		return logger;
+	}
 
 	private final Map<String, Connection> cache = Collections.synchronizedMap(new HashMap<String, Connection>());
-	private final Map<Connection,Status> statusCache = Collections.synchronizedMap(new HashMap<Connection, Status>());
+
+	private final Map<Connection, Status> statusCache = Collections.synchronizedMap(new HashMap<Connection, Status>());
 
 	@Inject
 	private DataSourceProducer producer;
@@ -81,10 +97,10 @@ public class ConnectionProducer implements Serializable {
 
 				cache.put(name, connection);
 				statusCache.put(connection, new Status());
-				logger.info(bundle.getString("connection-was-created", name));
+				getLogger().info(getBundle().getString("connection-was-created", name));
 
 			} catch (Exception cause) {
-				throw new DemoiselleException(bundle.getString("connection-creation-failed", name), cause);
+				throw new DemoiselleException(getBundle().getString("connection-creation-failed", name), cause);
 			}
 		}
 
@@ -96,7 +112,7 @@ public class ConnectionProducer implements Serializable {
 			connection.setAutoCommit(false);
 
 		} catch (SQLException cause) {
-			logger.debug(bundle.getString("set-autocommit-failed"));
+			getLogger().debug(getBundle().getString("set-autocommit-failed"));
 		}
 	}
 
@@ -104,7 +120,7 @@ public class ConnectionProducer implements Serializable {
 		String result = config.getDefaultDataSourceName();
 
 		if (result != null) {
-			logger.debug(bundle.getString("getting-default-datasource-name-from-properties", result));
+			getLogger().debug(getBundle().getString("getting-default-datasource-name-from-properties", result));
 		}
 
 		return result;
@@ -115,7 +131,7 @@ public class ConnectionProducer implements Serializable {
 		Set<String> names = producer.getCache().keySet();
 
 		if (names.size() > 1) {
-			throw new DemoiselleException(bundle.getString("more-than-one-datasource-defined",
+			throw new DemoiselleException(getBundle().getString("more-than-one-datasource-defined",
 					Name.class.getSimpleName()));
 		} else {
 			result = names.iterator().next();
@@ -133,16 +149,16 @@ public class ConnectionProducer implements Serializable {
 
 			try {
 				if (connection.isClosed()) {
-					logger.warn(bundle.getString("connection-has-already-been-closed", key));
+					getLogger().warn(getBundle().getString("connection-has-already-been-closed", key));
 
 				} else {
 					connection.close();
 
-					logger.info(bundle.getString("connection-was-closed", key));
+					getLogger().info(getBundle().getString("connection-was-closed", key));
 				}
 
 			} catch (Exception cause) {
-				throw new DemoiselleException(bundle.getString("connection-close-failed", key), cause);
+				throw new DemoiselleException(getBundle().getString("connection-close-failed", key), cause);
 			}
 		}
 
@@ -152,11 +168,11 @@ public class ConnectionProducer implements Serializable {
 	public Map<String, Connection> getCache() {
 		return cache;
 	}
-	
+
 	public Status getStatus(Connection connection) {
 		return statusCache.get(connection);
 	}
-	
+
 	public static class Status implements Serializable {
 
 		private static final long serialVersionUID = 1L;
@@ -181,5 +197,4 @@ public class ConnectionProducer implements Serializable {
 			this.markedRollback = markedRollback;
 		}
 	}
-
 }

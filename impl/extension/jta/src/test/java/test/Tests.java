@@ -71,7 +71,7 @@ public final class Tests {
 				.addClass(JTATransaction.class)
 				.addAsResource(createFileAsset("src/main/resources/demoiselle-jta-bundle.properties") , "demoiselle-jta-bundle.properties" )
 				.addAsResource(createFileAsset("src/test/resources/log/log4j.properties") , "log4j.properties" )
-				.addAsWebInfResource(createFileAsset("src/test/resources/beans.xml"), "beans.xml")
+				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")
 				.addAsLibraries(libs);
 	}
 

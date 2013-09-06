@@ -34,13 +34,19 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
 
-	<interceptors>
-		<class>br.gov.frameworkdemoiselle.transaction.TransactionalInterceptor</class>
-		<class>br.gov.frameworkdemoiselle.security.RequiredPermissionInterceptor</class>
-		<class>br.gov.frameworkdemoiselle.security.RequiredRoleInterceptor</class>
-		<class>br.gov.frameworkdemoiselle.exception.ExceptionHandlerInterceptor</class>
-	</interceptors>
+	<listener>
+		<listener-class>br.gov.frameworkdemoiselle.util.ServletListener</listener-class>
+	</listener>
+	<filter>
+		<filter-name>Demoiselle Servlet Filter</filter-name>
+		<filter-class>br.gov.frameworkdemoiselle.util.ServletFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Demoiselle Servlet Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
-</beans>
+</web-app>
