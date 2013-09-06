@@ -38,7 +38,6 @@ package pagination;
 
 import static junit.framework.Assert.assertEquals;
 
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -51,11 +50,11 @@ import org.junit.runner.RunWith;
 
 import test.Tests;
 import transaction.defaultstrategy.TransactionDefaultTest;
+import br.gov.frameworkdemoiselle.context.SessionContext;
 import br.gov.frameworkdemoiselle.internal.configuration.PaginationConfig;
-import br.gov.frameworkdemoiselle.internal.context.ContextManager;
-import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
 import br.gov.frameworkdemoiselle.pagination.Pagination;
 import br.gov.frameworkdemoiselle.pagination.PaginationContext;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
 public class PaginationContextBasicTest {
@@ -96,13 +95,15 @@ public class PaginationContextBasicTest {
 
 	@Before
 	public void activeContext() {
-		ContextManager.activate(ThreadLocalContext.class, SessionScoped.class);
+		SessionContext context = Beans.getReference(SessionContext.class);
+		context.activate();
 		pagination = paginationContext.getPagination(DummyEntity.class, true);
 	}
 
 	@After
 	public void deactiveContext() {
-		ContextManager.deactivate(ThreadLocalContext.class, SessionScoped.class);
+		SessionContext context = Beans.getReference(SessionContext.class);
+		context.deactivate();
 	}
 
 	@Test

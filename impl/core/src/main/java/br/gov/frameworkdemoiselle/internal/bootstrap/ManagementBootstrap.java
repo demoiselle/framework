@@ -8,7 +8,6 @@ import java.util.Locale;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
@@ -17,8 +16,6 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.internal.context.ContextManager;
-import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
 import br.gov.frameworkdemoiselle.internal.management.ManagedType;
 import br.gov.frameworkdemoiselle.internal.management.Management;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
@@ -40,10 +37,10 @@ public class ManagementBootstrap implements Extension {
 		}
 	}
 
-	public void activateContexts(@Observes final AfterBeanDiscovery event) {
+	/*public void activateContexts(@Observes final AfterBeanDiscovery event) {
 		ContextManager.initialize(event);
 		ContextManager.add(new ManagedContext(), event);
-	}
+	}*/
 
 	@SuppressWarnings("unchecked")
 	public void registerAvailableManagedTypes(@Observes final AfterDeploymentValidation event, BeanManager beanManager) {

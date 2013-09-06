@@ -39,7 +39,6 @@ package br.gov.frameworkdemoiselle.internal.bootstrap;
 import java.util.Locale;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -48,9 +47,6 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.slf4j.Logger;
 
-import br.gov.frameworkdemoiselle.annotation.StaticScoped;
-import br.gov.frameworkdemoiselle.internal.context.ContextManager;
-import br.gov.frameworkdemoiselle.internal.context.StaticContext;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
@@ -60,7 +56,7 @@ public class CoreBootstrap implements Extension {
 	private Logger logger;
 
 	private transient ResourceBundle bundle;
-
+	
 	private Logger getLogger() {
 		if (this.logger == null) {
 			this.logger = LoggerProducer.create(CoreBootstrap.class);
@@ -84,16 +80,13 @@ public class CoreBootstrap implements Extension {
 		getLogger().info(getBundle().getString("setting-up-bean-manager", Beans.class.getCanonicalName()));
 	}
 
-	public void initializeCustomContexts(@Observes final AfterBeanDiscovery event) {
-		// StaticContext já é criado e gerenciado por esta chamada
-		ContextManager.initialize(event);
+	/*public void initializeCustomContexts(@Observes final AfterBeanDiscovery event) {
+		Beans.getReference(ContextManager2.class);
+	}*/
 
-		ContextManager.activate(StaticContext.class, StaticScoped.class);
-	}
-
-	public void terminateCustomContexts(@Observes final BeforeShutdown event) {
+	/*public void terminateCustomContexts(@Observes final BeforeShutdown event) {
 		ContextManager.shutdown();
-	}
+	}*/
 
 	public void takeOff(@Observes final AfterDeploymentValidation event) {
 		getLogger().info(getBundle().getString("taking-off"));

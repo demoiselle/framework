@@ -34,46 +34,53 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-/*
- * Demoiselle Framework Copyright (c) 2010 Serpro and other contributors as indicated by the @author tag. See the
- * copyright.txt in the distribution for a full listing of contributors. Demoiselle Framework is an open source Java EE
- * library designed to accelerate the development of transactional database Web applications. Demoiselle Framework is
- * released under the terms of the LGPL license 3 http://www.gnu.org/licenses/lgpl.html LGPL License 3 This file is part
- * of Demoiselle Framework. Demoiselle Framework is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License 3 as published by the Free Software Foundation. Demoiselle Framework
- * is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details. You
- * should have received a copy of the GNU Lesser General Public License along with Demoiselle Framework. If not, see
- * <http://www.gnu.org/licenses/>.
- */
 package br.gov.frameworkdemoiselle.internal.context;
 
 import java.lang.annotation.Annotation;
 
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.annotation.StaticScoped;
+import br.gov.frameworkdemoiselle.configuration.Configuration;
+
 /**
- * Base context that has a separated store for each thread
+ * 
+ * <p>This context has a unified static store that keeps all scoped beans available
+ * to all threads of an application. It is intended to keep beans avaliable to
+ * long lasting scopes (like the Session scope and Application scope) on environments
+ * that lack those scopes by default (like desktop Swing applications).</p>
+ * 
+ * <p>This context also keeps beans of the custom {@link StaticScoped} scope, like the beans
+ * annotated with {@link Configuration}.</p>
  * 
  * @author serpro
+ *
  */
-public class ThreadLocalContext extends AbstractCustomContext {
+@Priority(Priority.MIN_PRIORITY)
+public class StaticContextImpl extends AbstractCustomContext {
 
-	private final ThreadLocal<Store> threadLocal = new ThreadLocal<Store>();
-
-	public ThreadLocalContext(final Class<? extends Annotation> scope) {
+	private final static Store store = createStore();
+	
+	/**
+	 * Constructs this context to control the provided scope
+	 */
+	StaticContextImpl(Class<? extends Annotation> scope) {
 		super(scope);
 	}
-	
-	@Override
-	protected boolean isStoreInitialized() {
-		return threadLocal.get()!=null;
+
+	/**
+	 * Constructs this context to control {@link StaticScoped} beans
+	 */
+	StaticContextImpl() {
+		super(StaticScoped.class);
 	}
 
 	@Override
 	protected Store getStore() {
-		if (this.threadLocal.get() == null) {
-			this.threadLocal.set(createStore());
-		}
+		return store;
+	}
 
-		return this.threadLocal.get();
+	@Override
+	protected boolean isStoreInitialized() {
+		return store!=null;
 	}
 }

@@ -34,37 +34,48 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.bootstrap;
+package br.gov.frameworkdemoiselle.internal.context;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import javax.enterprise.inject.spi.Extension;
+import java.util.Map;
 
-import br.gov.frameworkdemoiselle.context.RequestContext;
-import br.gov.frameworkdemoiselle.context.SessionContext;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.context.ViewContext;
-import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
-import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.Faces;
 
-public class SeBootstrap implements Extension {
+/**
+ * 
+ * This {@link ViewContext} implementation uses a map provided
+ * by {@link UIViewRoot#getViewMap()} as a store. Any beans stored on
+ * this store are kept as long as the view is still active.
+ * 
+ * @author serpro
+ *
+ */
+@Priority(Priority.L2_PRIORITY)
+public class FacesViewContextImpl extends AbstractCustomContext implements ViewContext {
 
-	public void addContexts(@Observes final AfterDeploymentValidation event) {
-		RequestContext requestContext = Beans.getReference(RequestContext.class);
-		SessionContext sessionContext = Beans.getReference(SessionContext.class);
-		ViewContext viewContext = Beans.getReference(ViewContext.class);
-		
-		requestContext.activate();
-		sessionContext.activate();
-		viewContext.activate();
+	public FacesViewContextImpl() {
+		super(ViewScoped.class);
+	}
+	
+	@Override
+	protected boolean isStoreInitialized() {
+		return FacesContext.getCurrentInstance()!=null;
 	}
 
-	public void removeContexts(@Observes AfterShutdownProccess event) {
-		RequestContext requestContext = Beans.getReference(RequestContext.class);
-		SessionContext sessionContext = Beans.getReference(SessionContext.class);
-		ViewContext viewContext = Beans.getReference(ViewContext.class);
-		
-		requestContext.deactivate();
-		sessionContext.deactivate();
-		viewContext.deactivate();
+	@Override
+	protected Store getStore() {
+		Map<String, Object> viewMap = Faces.getViewMap();
+		String key = Store.class.getName();
+
+		if (!viewMap.containsKey(key)) {
+			viewMap.put(key, createStore());
+		}
+
+		return (Store) viewMap.get(key);
 	}
 }

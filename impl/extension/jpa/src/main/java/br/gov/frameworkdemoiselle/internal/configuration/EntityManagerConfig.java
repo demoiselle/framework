@@ -52,7 +52,7 @@ import br.gov.frameworkdemoiselle.util.Strings;
 public class EntityManagerConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	/**
 	 * @deprecated
 	 */
@@ -62,6 +62,9 @@ public class EntityManagerConfig implements Serializable {
 
 	@Name("default.unit.name")
 	private String defaultPersistenceUnitName;
+	
+	@Name("entitymanager.scope")
+	private String entityManagerScope = "request";
 
 	/**
 	 * Getter for persistence unit name.
@@ -92,4 +95,16 @@ public class EntityManagerConfig implements Serializable {
 
 		return defaultPersistenceUnitName;
 	}
+
+	
+	public String getEntityManagerScope() {
+		return entityManagerScope;
+	}
+
+	
+	public void setEntityManagerScope(String entityManagerScope) {
+		this.entityManagerScope = entityManagerScope;
+	}
+	
+	
 }

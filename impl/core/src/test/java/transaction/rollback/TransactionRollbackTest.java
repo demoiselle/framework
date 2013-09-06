@@ -40,7 +40,6 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -52,9 +51,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-
-import br.gov.frameworkdemoiselle.internal.context.ContextManager;
-import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
+import br.gov.frameworkdemoiselle.context.RequestContext;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
 public class TransactionRollbackTest {
@@ -76,12 +74,14 @@ public class TransactionRollbackTest {
 
 	@Before
 	public void activeContext() {
-		ContextManager.activate(ManagedContext.class, RequestScoped.class);
+		RequestContext ctx = Beans.getReference(RequestContext.class);
+		ctx.activate();
 	}
 
 	@After
 	public void deactiveContext() {
-		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
+		RequestContext ctx = Beans.getReference(RequestContext.class);
+		ctx.deactivate();
 	}
 
 	@Test

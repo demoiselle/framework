@@ -42,7 +42,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -52,9 +51,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import br.gov.frameworkdemoiselle.internal.context.ContextManager;
-import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
+import br.gov.frameworkdemoiselle.context.RequestContext;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
+import br.gov.frameworkdemoiselle.util.Beans;
 import configuration.resource.ConfigurationResourceTest;
 
 @RunWith(Arquillian.class)
@@ -82,25 +81,27 @@ public class CustomAuthenticatorTest {
 
 	@Test
 	public void loginProcess() {
-		ContextManager.activate(ThreadLocalContext.class, RequestScoped.class);
+		RequestContext ctx = Beans.getReference(RequestContext.class);
+		ctx.activate();
 
 		context.login();
 		assertTrue(context.isLoggedIn());
 		assertNotNull(observer.getEvent());
 		assertEquals("demoiselle", context.getUser().getId());
 
-		ContextManager.deactivate(ThreadLocalContext.class, RequestScoped.class);
+		ctx.deactivate();
 	}
 
 	@Test
 	public void logoutProcess() {
-		ContextManager.activate(ThreadLocalContext.class, RequestScoped.class);
+		RequestContext ctx = Beans.getReference(RequestContext.class);
+		ctx.activate();
 
 		context.login();
 		context.logout();
 		assertFalse(context.isLoggedIn());
 		assertNull(context.getUser());
 
-		ContextManager.deactivate(ThreadLocalContext.class, RequestScoped.class);
+		ctx.deactivate();
 	}
 }
