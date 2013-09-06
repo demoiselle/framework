@@ -60,10 +60,6 @@ public final class NotificationBroadcaster extends NotificationBroadcasterSuppor
 
 	private int sequenceNumber = 1;
 
-	/*public static final String NOTIFICATION_DEFAULT_MBEAN_NAME = NotificationBroadcaster.class.getPackage().getName()
-															+":name="
-															+NotificationBroadcaster.class.getSimpleName();*/
-
 	private static final String NOTIFICATION_TYPE_GENERIC = "jmx.message";
 
 	protected void sendNotification( ManagementNotificationEvent event , JMXConfig config ) {
