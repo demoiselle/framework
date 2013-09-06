@@ -56,16 +56,6 @@
 	</description>
 	<url>http://www.frameworkdemoiselle.gov.br</url>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
-			</plugin>
-		</plugins>
-	</build>
-
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License, Version 3</name>
