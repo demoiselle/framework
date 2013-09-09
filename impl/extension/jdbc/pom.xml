@@ -71,6 +71,13 @@
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
 		</dependency>
+
+		<!-- for tests -->
+		<dependency>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -110,4 +117,8 @@
 			</dependencies>
 		</profile>
 	</profiles>
+
+	<properties>
+		<arquillian.bom.version>1.0.3.Final</arquillian.bom.version>
+	</properties>
 </project>

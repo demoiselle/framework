@@ -68,7 +68,7 @@
 		<module>impl/extension/jdbc</module>
 		<module>impl/extension/jpa</module>
 		<module>impl/extension/jsf</module>
-<!-- 		<module>impl/extension/jta</module> -->
+		<module>impl/extension/jta</module>
 		<module>impl/extension/se</module>
 		<module>impl/extension/servlet</module>
 		<module>impl/extension/jmx</module>

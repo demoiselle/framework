@@ -32,7 +32,7 @@ public class XTest {
 	@Test
 	public void xxxx() {
 		HttpClient client = new HttpClient();
-		GetMethod method = new GetMethod(deploymentUrl + "login");
+		GetMethod method = new GetMethod(deploymentUrl + "/login");
 
 		try {
 			int status = client.executeMethod(method);
