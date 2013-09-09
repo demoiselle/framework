@@ -50,8 +50,8 @@ import org.junit.runner.RunWith;
 
 import test.Tests;
 import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.internal.management.ManagedType;
-import br.gov.frameworkdemoiselle.internal.management.Management;
+import br.gov.frameworkdemoiselle.internal.implementation.ManagedType;
+import br.gov.frameworkdemoiselle.internal.implementation.Management;
 import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
 import br.gov.frameworkdemoiselle.management.GenericNotification;
 import br.gov.frameworkdemoiselle.management.NotificationManager;

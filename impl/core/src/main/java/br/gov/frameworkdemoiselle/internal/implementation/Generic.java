@@ -34,32 +34,29 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.management;
+package br.gov.frameworkdemoiselle.internal.implementation;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.inject.Qualifier;
+
+import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
 import br.gov.frameworkdemoiselle.management.GenericNotification;
-import br.gov.frameworkdemoiselle.management.NotificationManager;
 
 /**
- * Event fired when a notification is sent by {@link NotificationManager}.
- * Implementators can capture this event and be notified when the {@link NotificationManager}
- * sends notifications, so they can pass the notification to the underlying technology.
+ * 
+ * Enables {@link ManagementNotificationEvent} observers to trigger only with notifications
+ * of the base type {@link GenericNotification}.
  * 
  * @author SERPRO
  *
  */
-public class ManagementNotificationEventImpl implements br.gov.frameworkdemoiselle.management.ManagementNotificationEvent {
-	
-	private GenericNotification notification;
-	
-	public ManagementNotificationEventImpl(GenericNotification notification){
-		this.notification = notification;
-	}
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
+public @interface Generic {
 
-	public GenericNotification getNotification() {
-		return notification;
-	}
-
-	public void setNotification(GenericNotification notification) {
-		this.notification = notification;
-	}
 }

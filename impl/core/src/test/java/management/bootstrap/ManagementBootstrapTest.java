@@ -50,9 +50,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import br.gov.frameworkdemoiselle.internal.management.ManagedType;
+import br.gov.frameworkdemoiselle.internal.implementation.ManagedType;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
-import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
+import br.gov.frameworkdemoiselle.management.ManagementExtension;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)

@@ -42,9 +42,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.internal.management.ManagementNotificationEventImpl;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
 import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
 import br.gov.frameworkdemoiselle.management.GenericNotification;
 import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;

@@ -42,8 +42,8 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import br.gov.frameworkdemoiselle.internal.management.ManagedType;
-import br.gov.frameworkdemoiselle.internal.management.Management;
+import br.gov.frameworkdemoiselle.internal.implementation.ManagedType;
+import br.gov.frameworkdemoiselle.internal.implementation.Management;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 /**

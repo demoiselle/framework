@@ -40,8 +40,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.internal.management.qualifier.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.management.qualifier.Generic;
+import br.gov.frameworkdemoiselle.internal.implementation.AttributeChange;
+import br.gov.frameworkdemoiselle.internal.implementation.Generic;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
