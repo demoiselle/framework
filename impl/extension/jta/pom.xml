@@ -71,7 +71,7 @@
 			<groupId>javax.transaction</groupId>
 			<artifactId>jta</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
@@ -103,4 +103,8 @@
 			</releases>
 		</repository>
 	</repositories>
+
+	<properties>
+		<arquillian.bom.version>1.0.3.Final</arquillian.bom.version>
+	</properties>
 </project>

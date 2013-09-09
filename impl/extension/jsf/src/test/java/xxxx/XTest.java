@@ -33,7 +33,7 @@ public class XTest {
 
 	@Test
 	public void xxxx() {
-		browser.open(deploymentUrl + "login");
+		browser.open(deploymentUrl + "/login");
 
 		// browser.type("id=xxx-input", "demo");
 		// browser.waitForPageToLoad("15000");

@@ -46,10 +46,7 @@ import javax.enterprise.inject.Produces;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Ignore;
-
-import br.gov.frameworkdemoiselle.transaction.JTATransaction;
 
 @Ignore
 public final class Tests {
@@ -62,17 +59,14 @@ public final class Tests {
 	}
 
 	public static WebArchive createDeployment() {
-		File[] libs = Maven.resolver().offline().loadPomFromFile("pom.xml" , "arquillian-test")
-				.importCompileAndRuntimeDependencies().resolve().withTransitivity().asFile();
-		
 		return ShrinkWrap
 				.create(WebArchive.class)
 				.addClass(Tests.class)
-				.addClass(JTATransaction.class)
-				.addAsResource(createFileAsset("src/main/resources/demoiselle-jta-bundle.properties") , "demoiselle-jta-bundle.properties" )
-				.addAsResource(createFileAsset("src/test/resources/log/log4j.properties") , "log4j.properties" )
-				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")
-				.addAsLibraries(libs);
+				.addPackages(true, "br")
+				.addAsResource(createFileAsset("src/main/resources/demoiselle-jta-bundle.properties"),
+						"demoiselle-jta-bundle.properties")
+				.addAsResource(createFileAsset("src/test/resources/log/log4j.properties"), "log4j.properties")
+				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml");
 	}
 
 	public static FileAsset createFileAsset(final String pathname) {

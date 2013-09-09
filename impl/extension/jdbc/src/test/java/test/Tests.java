@@ -45,15 +45,7 @@ import javax.enterprise.inject.Produces;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Ignore;
-
-import br.gov.frameworkdemoiselle.internal.configuration.JDBCConfig;
-import br.gov.frameworkdemoiselle.internal.producer.ConnectionProducer;
-import br.gov.frameworkdemoiselle.internal.producer.DataSourceProducer;
-import br.gov.frameworkdemoiselle.internal.proxy.BasicDataSourceProxy;
-import br.gov.frameworkdemoiselle.internal.proxy.ConnectionProxy;
-import br.gov.frameworkdemoiselle.transaction.JDBCTransaction;
 
 @Ignore
 public final class Tests {
@@ -66,22 +58,13 @@ public final class Tests {
 	}
 
 	private static WebArchive createDeployment() {
-		File[] libs = Maven.resolver().offline().loadPomFromFile("pom.xml", "arquillian-test")
-				.importCompileAndRuntimeDependencies().resolve().withTransitivity().asFile();
-
 		return ShrinkWrap
 				.create(WebArchive.class)
 				.addClass(Tests.class)
-				.addClass(JDBCConfig.class)
-				.addClass(ConnectionProducer.class)
-				.addClass(DataSourceProducer.class)
-				.addClass(BasicDataSourceProxy.class)
-				.addClass(ConnectionProxy.class)
-				.addClass(JDBCTransaction.class)
+				.addPackages(true, "br")
 				.addAsResource(createFileAsset("src/main/resources/demoiselle-jdbc-bundle.properties"),
 						"demoiselle-jdbc-bundle.properties")
-				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")
-				.addAsLibraries(libs);
+				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml");
 	}
 
 	public static FileAsset createFileAsset(final String pathname) {
