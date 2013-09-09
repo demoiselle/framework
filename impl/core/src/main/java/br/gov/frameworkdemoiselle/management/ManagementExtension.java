@@ -34,29 +34,45 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.management.qualifier;
+package br.gov.frameworkdemoiselle.management;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.List;
 
-import javax.inject.Qualifier;
-
-import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
-import br.gov.frameworkdemoiselle.management.GenericNotification;
+import br.gov.frameworkdemoiselle.internal.implementation.ManagedType;
+import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 
 /**
- * 
- * Enables {@link ManagementNotificationEvent} observers to trigger only with notifications
- * of the base type {@link GenericNotification}.
+ * <p>
+ * Interface defining the lifecycle of a <b>management extension</b>, an extension capable of exposing
+ * {@link ManagementController}'s to external clients in one of the available management technologies, such as JMX or
+ * SNMP.
+ * </p>
+ * <p>
+ * To include a management extension into the management lifecycle, it just needs to implement this interface and be a
+ * CDI bean (have a <b>beans.xml</b> file inside the META-INF folder of it's java package). The Demoiselle Core
+ * lifecycle controller will call the {@link #initialize(List managedTypes)} and {@link #shutdown(List managedTypes)}
+ * methods at the apropriate times.
+ * </p>
  * 
  * @author SERPRO
- *
  */
-@Qualifier
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
-public @interface Generic {
+public interface ManagementExtension {
+
+	/**
+	 * This method is called during the application initialization process for each concrete implementation of this
+	 * interface.
+	 * 
+	 * @param managedTypes
+	 *            The list of discovered {@link ManagementController} classes.
+	 */
+	void initialize(List<ManagedType> managedTypes);
+
+	/**
+	 * This method is called during the application shutdown process for each concrete implementation of this interface.
+	 * 
+	 * @param managedTypes
+	 *            The list of discovered {@link ManagementController} classes.
+	 */
+	void shutdown(List<ManagedType> managedTypes);
 
 }
