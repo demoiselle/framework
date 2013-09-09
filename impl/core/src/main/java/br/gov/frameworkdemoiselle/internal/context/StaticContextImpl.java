@@ -34,37 +34,31 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.bootstrap;
+/*
+ * Demoiselle Framework Copyright (c) 2010 Serpro and other contributors as indicated by the @author tag. See the
+ * copyright.txt in the distribution for a full listing of contributors. Demoiselle Framework is an open source Java EE
+ * library designed to accelerate the development of transactional database Web applications. Demoiselle Framework is
+ * released under the terms of the LGPL license 3 http://www.gnu.org/licenses/lgpl.html LGPL License 3 This file is part
+ * of Demoiselle Framework. Demoiselle Framework is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License 3 as published by the Free Software Foundation. Demoiselle Framework
+ * is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details. You
+ * should have received a copy of the GNU Lesser General Public License along with Demoiselle Framework. If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+package br.gov.frameworkdemoiselle.internal.context;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.Alternative;
 
-import br.gov.frameworkdemoiselle.context.RequestContext;
-import br.gov.frameworkdemoiselle.context.SessionContext;
-import br.gov.frameworkdemoiselle.context.ViewContext;
-import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
-import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.annotation.StaticScoped;
+import br.gov.frameworkdemoiselle.context.StaticContext;
 
-public class SeBootstrap implements Extension {
+@Priority(Priority.MIN_PRIORITY)
+@Alternative
+public class StaticContextImpl extends AbstractStaticContext implements StaticContext {
 
-	public void addContexts(@Observes final AfterDeploymentValidation event) {
-		RequestContext requestContext = Beans.getReference(RequestContext.class);
-		SessionContext sessionContext = Beans.getReference(SessionContext.class);
-		ViewContext viewContext = Beans.getReference(ViewContext.class);
-		
-		requestContext.activate();
-		sessionContext.activate();
-		viewContext.activate();
-	}
-
-	public void removeContexts(@Observes AfterShutdownProccess event) {
-		RequestContext requestContext = Beans.getReference(RequestContext.class);
-		SessionContext sessionContext = Beans.getReference(SessionContext.class);
-		ViewContext viewContext = Beans.getReference(ViewContext.class);
-		
-		requestContext.deactivate();
-		sessionContext.deactivate();
-		viewContext.deactivate();
+	public StaticContextImpl() {
+		super(StaticScoped.class);
 	}
 }

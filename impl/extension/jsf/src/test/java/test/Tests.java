@@ -50,7 +50,7 @@ import br.gov.frameworkdemoiselle.annotation.Redirect;
 import br.gov.frameworkdemoiselle.internal.bootstrap.JsfBootstrap;
 import br.gov.frameworkdemoiselle.internal.configuration.ExceptionHandlerConfig;
 import br.gov.frameworkdemoiselle.internal.configuration.JsfSecurityConfig;
-import br.gov.frameworkdemoiselle.internal.context.ViewContext;
+import br.gov.frameworkdemoiselle.internal.context.FacesViewContextImpl;
 import br.gov.frameworkdemoiselle.internal.implementation.AbstractExceptionHandler;
 import br.gov.frameworkdemoiselle.internal.implementation.ApplicationExceptionHandler;
 import br.gov.frameworkdemoiselle.internal.implementation.ApplicationExceptionHandlerFactory;
@@ -103,7 +103,7 @@ public final class Tests {
 				.addClass(FileRenderer.class)
 				.addClass(JsfSecurityConfig.class)
 				.addClass(ExceptionHandlerConfig.class)
-				.addClass(ViewContext.class)
+				.addClass(FacesViewContextImpl.class)
 				.addClass(AuthorizationExceptionHandlerFactory.class)
 				.addClass(ApplicationExceptionHandler.class)
 				.addClass(FileRendererImpl.class)

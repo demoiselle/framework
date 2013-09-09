@@ -34,25 +34,23 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.context;
+package br.gov.frameworkdemoiselle.annotation;
 
-import br.gov.frameworkdemoiselle.annotation.StaticScoped;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-public class StaticContext extends AbstractCustomContext {
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-	private final static Store store = createStore();
+import javax.enterprise.context.NormalScope;
 
-	public StaticContext() {
-		super(StaticScoped.class);
-	}
+@Inherited
+@Target({ METHOD, TYPE, FIELD })
+@Retention(RUNTIME)
+@NormalScope
+public @interface PersistenceScoped {
 
-	@Override
-	protected Store getStore() {
-		return store;
-	}
-
-	@Override
-	protected boolean isStoreInitialized() {
-		return store!=null;
-	}
 }

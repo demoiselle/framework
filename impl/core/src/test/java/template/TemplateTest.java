@@ -43,7 +43,6 @@ import static junit.framework.Assert.assertNull;
 
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -55,8 +54,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import br.gov.frameworkdemoiselle.internal.context.ContextManager;
-import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
+import br.gov.frameworkdemoiselle.context.RequestContext;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
 public class TemplateTest {
@@ -83,7 +82,8 @@ public class TemplateTest {
 	@Before
 	public void initialize() {
 
-		ContextManager.activate(ManagedContext.class, RequestScoped.class);
+		RequestContext ctx = Beans.getReference(RequestContext.class);
+		ctx.activate();
 		
 		this.crudImpl.resetEntities();
 
@@ -91,9 +91,8 @@ public class TemplateTest {
 
 	@After
 	public void finalize() {
-
-		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
-		
+		RequestContext ctx = Beans.getReference(RequestContext.class);
+		ctx.deactivate();
 	}
 
 	@Test

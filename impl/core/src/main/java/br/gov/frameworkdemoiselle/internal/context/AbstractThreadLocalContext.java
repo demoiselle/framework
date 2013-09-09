@@ -51,15 +51,17 @@ package br.gov.frameworkdemoiselle.internal.context;
 import java.lang.annotation.Annotation;
 
 /**
- * Base context that has a separated store for each thread
+ * This context keeps a separated store for beans for each running thread. It is intended
+ * to keep beans of short lived scopes like the Request scope, on environments that lack
+ * those scopes by default.
  * 
- * @author SERPRO
+ * @author serpro
  */
-public class ThreadLocalContext extends AbstractCustomContext {
+public abstract class AbstractThreadLocalContext extends AbstractCustomContext {
 
 	private final ThreadLocal<Store> threadLocal = new ThreadLocal<Store>();
 
-	public ThreadLocalContext(final Class<? extends Annotation> scope) {
+	AbstractThreadLocalContext(final Class<? extends Annotation> scope) {
 		super(scope);
 	}
 	

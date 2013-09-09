@@ -39,7 +39,6 @@ package message;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import junit.framework.Assert;
@@ -51,8 +50,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import br.gov.frameworkdemoiselle.internal.context.ContextManager;
-import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
+import br.gov.frameworkdemoiselle.context.RequestContext;
 import br.gov.frameworkdemoiselle.message.DefaultMessage;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.MessageContext;
@@ -80,78 +78,92 @@ public class MessageContextTest {
 
 	@Test
 	public void testAddMessageWithoutParams() {
-		ContextManager.activate(ManagedContext.class, RequestScoped.class);
+		RequestContext context = Beans.getReference(RequestContext.class);
+		
+		context.activate();
 		Message message = new DefaultMessage("Menssage without param");
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
 
 		messageContext.add(message);
 		assertEquals(appender.getMessages().size(), 1);
-		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
+		context.deactivate();
 	}
 
 	@Test
 	public void testAddMessageWithoutParamsIfSeverityIsInfo() {
-		ContextManager.activate(ManagedContext.class, RequestScoped.class);
+		RequestContext context = Beans.getReference(RequestContext.class);
+		
+		context.activate();
 		Message message = new DefaultMessage("Menssage without param");
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
 
 		messageContext.add(message);
 		assertEquals(appender.getMessages().get(0).getSeverity(), SeverityType.INFO);
-		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
+		context.deactivate();
 	}
 
 	@Test
 	public void testAddMessageWitSeverityInfo() {
-		ContextManager.activate(ManagedContext.class, RequestScoped.class);
+		RequestContext context = Beans.getReference(RequestContext.class);
+		
+		context.activate();
 		Message message = new DefaultMessage("Menssage without param", SeverityType.INFO);
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
 
 		messageContext.add(message);
 		assertEquals(appender.getMessages().get(0).getSeverity(), SeverityType.INFO);
-		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
+		context.deactivate();
 	}
 
 	@Test
 	public void testAddMessageWitSeverityWarn() {
-		ContextManager.activate(ManagedContext.class, RequestScoped.class);
+		RequestContext context = Beans.getReference(RequestContext.class);
+		
+		context.activate();
 		Message message = new DefaultMessage("Menssage without param", SeverityType.WARN);
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
 
 		messageContext.add(message);
 		assertEquals(appender.getMessages().get(0).getSeverity(), SeverityType.WARN);
-		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
+		context.deactivate();
 	}
 
 	@Test
 	public void testAddMessageWitSeverityErro() {
-		ContextManager.activate(ManagedContext.class, RequestScoped.class);
+		RequestContext context = Beans.getReference(RequestContext.class);
+		
+		context.activate();
 		Message message = new DefaultMessage("Menssage without param", SeverityType.ERROR);
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
 
 		messageContext.add(message);
 		assertEquals(appender.getMessages().get(0).getSeverity(), SeverityType.ERROR);
-		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
+		context.deactivate();
 	}
 
 	@Test
 	public void testRecoverStringMessageWithParams() {
-		ContextManager.activate(ManagedContext.class, RequestScoped.class);
+		RequestContext context = Beans.getReference(RequestContext.class);
+		
+		context.activate();
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
 
 		messageContext.add("Message with {0} param", 1);
 		assertTrue(appender.getMessages().get(0).getText().equals("Message with 1 param"));
-		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
+		context.deactivate();
 	}
 
 	@Test
 	public void testRecoverMessageWithParams() {
-		ContextManager.activate(ManagedContext.class, RequestScoped.class);
+		RequestContext context = Beans.getReference(RequestContext.class);
+		
+		context.activate();
 		Message message = new DefaultMessage("Message with {0} param");
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
 
 		messageContext.add(message, 1);
 		assertTrue(appender.getMessages().get(0).getText().equals("Message with 1 param"));
-		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
+		context.deactivate();
 	}
 
 	@Test
@@ -164,21 +176,25 @@ public class MessageContextTest {
 
 	@Test
 	public void testMessageParsedText() {
-		ContextManager.activate(ManagedContext.class, RequestScoped.class);
+		RequestContext context = Beans.getReference(RequestContext.class);
+		
+		context.activate();
 		Message MESSAGE_PARSED = new DefaultMessage("{MESSAGE_PARSED}");
 		String expected = "Message parsed";
 		String value = MESSAGE_PARSED.getText();
 		Assert.assertEquals(expected, value);
-		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
+		context.deactivate();
 	}
 
 	@Test
 	public void testMessageIsNull() {
-		ContextManager.activate(ManagedContext.class, RequestScoped.class);
+		RequestContext context = Beans.getReference(RequestContext.class);
+		
+		context.activate();
 		Message NULL_MESSAGE = new DefaultMessage(null);
 		String expected = null;
 		String value = NULL_MESSAGE.getText();
 		Assert.assertEquals(expected, value);
-		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
+		context.deactivate();
 	}
 }

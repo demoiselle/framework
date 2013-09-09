@@ -34,37 +34,46 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.bootstrap;
+package br.gov.frameworkdemoiselle.internal.context;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import javax.enterprise.inject.spi.Extension;
+import java.lang.annotation.Annotation;
 
-import br.gov.frameworkdemoiselle.context.RequestContext;
-import br.gov.frameworkdemoiselle.context.SessionContext;
-import br.gov.frameworkdemoiselle.context.ViewContext;
-import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
-import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.annotation.StaticScoped;
+import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-public class SeBootstrap implements Extension {
+/**
+ * 
+ * <p>This context has a unified static store that keeps all scoped beans available
+ * to all threads of an application. It is intended to keep beans avaliable to
+ * long lasting scopes (like the Session scope and Application scope) on environments
+ * that lack those scopes by default (like desktop Swing applications).</p>
+ * 
+ * <p>This context also keeps beans of the custom {@link StaticScoped} scope, like the beans
+ * annotated with {@link Configuration}.</p>
+ * 
+ * @author serpro
+ *
+ */
+@Priority(Priority.MIN_PRIORITY)
+public abstract class AbstractStaticContext extends AbstractCustomContext {
 
-	public void addContexts(@Observes final AfterDeploymentValidation event) {
-		RequestContext requestContext = Beans.getReference(RequestContext.class);
-		SessionContext sessionContext = Beans.getReference(SessionContext.class);
-		ViewContext viewContext = Beans.getReference(ViewContext.class);
-		
-		requestContext.activate();
-		sessionContext.activate();
-		viewContext.activate();
+	private final static Store store = createStore();
+	
+	/**
+	 * Constructs this context to control the provided scope
+	 */
+	AbstractStaticContext(Class<? extends Annotation> scope) {
+		super(scope);
 	}
 
-	public void removeContexts(@Observes AfterShutdownProccess event) {
-		RequestContext requestContext = Beans.getReference(RequestContext.class);
-		SessionContext sessionContext = Beans.getReference(SessionContext.class);
-		ViewContext viewContext = Beans.getReference(ViewContext.class);
-		
-		requestContext.deactivate();
-		sessionContext.deactivate();
-		viewContext.deactivate();
+	@Override
+	protected Store getStore() {
+		return store;
+	}
+
+	@Override
+	protected boolean isStoreInitialized() {
+		return store!=null;
 	}
 }

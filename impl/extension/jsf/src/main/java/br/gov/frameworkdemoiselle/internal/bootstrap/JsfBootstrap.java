@@ -41,30 +41,37 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Extension;
 
-import br.gov.frameworkdemoiselle.annotation.ViewScoped;
-import br.gov.frameworkdemoiselle.internal.context.ContextManager;
-import br.gov.frameworkdemoiselle.internal.context.ViewContext;
+import br.gov.frameworkdemoiselle.context.ViewContext;
+import br.gov.frameworkdemoiselle.internal.context.CustomContextProducer;
+import br.gov.frameworkdemoiselle.internal.context.FacesViewContextImpl;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 public class JsfBootstrap implements Extension {
 
 	//private List<CustomContext> customContexts = new ArrayList<CustomContext>();
 
 	//private AfterBeanDiscovery afterBeanDiscoveryEvent;
-
-	public void storeContexts(@Observes final AfterBeanDiscovery event) {
-		//Registra o ViewContext para controlar o escopo ViewScoped.
-		ContextManager.initialize(event);
-		ContextManager.add(new ViewContext(), event);
+	
+	private FacesViewContextImpl context;
+	
+	public void createCustomContext(@Observes AfterBeanDiscovery event){
+		context = new FacesViewContextImpl();
+		event.addContext(context);
 	}
 
 	public void addContexts(@Observes final AfterDeploymentValidation event) {
+		CustomContextProducer producer = Beans.getReference(CustomContextProducer.class);
+		producer.addRegisteredContext(context);
+		
 		//Ativa o ViewContext
-		ContextManager.activate(ViewContext.class, ViewScoped.class);
+		ViewContext ctx = Beans.getReference(FacesViewContextImpl.class);
+		ctx.activate();
 	}
 
 	public void removeContexts(@Observes AfterShutdownProccess event) {
 		//Desativa o ViewContext
-		ContextManager.deactivate(ViewContext.class, ViewScoped.class);
+		ViewContext ctx = Beans.getReference(FacesViewContextImpl.class);
+		ctx.deactivate();
 	}
 }

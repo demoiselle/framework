@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -56,8 +55,10 @@ import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
 import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.internal.context.ContextManager;
-import br.gov.frameworkdemoiselle.internal.context.ManagedContext;
+import br.gov.frameworkdemoiselle.context.RequestContext;
+import br.gov.frameworkdemoiselle.context.SessionContext;
+import br.gov.frameworkdemoiselle.context.ViewContext;
+import br.gov.frameworkdemoiselle.internal.implementation.ManagedType;
 import br.gov.frameworkdemoiselle.internal.implementation.ManagedType.MethodDetail;
 import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
 import br.gov.frameworkdemoiselle.management.ManagedAttributeNotFoundException;
@@ -301,36 +302,72 @@ public class Management implements Serializable {
 	}
 
 	private void activateContexts(Class<?> managedType) {
-		logger.debug(bundle.getString("management-debug-starting-custom-context",
-				ManagedContext.class.getCanonicalName(), managedType.getCanonicalName()));
+		
+		RequestContext requestContext = Beans.getReference(RequestContext.class);
+		ViewContext viewContext = Beans.getReference(ViewContext.class);
+		SessionContext sessionContext = Beans.getReference(SessionContext.class);
+		
+		if (!requestContext.isActive()){
+			logger.debug(bundle.getString("management-debug-starting-custom-context",
+					requestContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
+			
+			requestContext.activate();
+		}
+		
+		if (!viewContext.isActive()){
+			logger.debug(bundle.getString("management-debug-starting-custom-context",
+					viewContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
+			
+			viewContext.activate();
+		}
 
-		ContextManager.activate(ManagedContext.class, RequestScoped.class);
+		if (!sessionContext.isActive()){
+			logger.debug(bundle.getString("management-debug-starting-custom-context",
+					sessionContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
+			
+			sessionContext.activate();
+		}
 	}
 
 	private void deactivateContexts(Class<?> managedType) {
-		logger.debug(bundle.getString("management-debug-stoping-custom-context",
-				ManagedContext.class.getCanonicalName(), managedType.getCanonicalName()));
+		RequestContext requestContext = Beans.getReference(RequestContext.class);
+		ViewContext viewContext = Beans.getReference(ViewContext.class);
+		SessionContext sessionContext = Beans.getReference(SessionContext.class);
+		
+		if (requestContext.isActive()){
+			logger.debug(bundle.getString("management-debug-stoping-custom-context",
+					requestContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
+			
+			requestContext.deactivate();
+		}
+		
+		if (!viewContext.isActive()){
+			logger.debug(bundle.getString("management-debug-stoping-custom-context",
+					viewContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
+			
+			viewContext.deactivate();
+		}
 
-		ContextManager.deactivate(ManagedContext.class, RequestScoped.class);
+		if (!sessionContext.isActive()){
+			logger.debug(bundle.getString("management-debug-stoping-custom-context",
+					sessionContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
+			
+			sessionContext.deactivate();
+		}
 	}
 
 	public void shutdown(Collection<Class<? extends ManagementExtension>> monitoringExtensions) {
-
 		for (Class<? extends ManagementExtension> monitoringExtensionClass : monitoringExtensions) {
 
 			ManagementExtension monitoringExtension = Beans.getReference(monitoringExtensionClass);
-
 			monitoringExtension.shutdown(this.getManagedTypes());
-
 			logger.debug(bundle.getString("management-debug-removing-management-extension", monitoringExtension
 					.getClass().getCanonicalName()));
 
 		}
-
 	}
 
 	public void initialize(Collection<Class<? extends ManagementExtension>> monitoringExtensions) {
-
 		for (Class<? extends ManagementExtension> monitoringExtensionClass : monitoringExtensions) {
 			ManagementExtension monitoringExtension = Beans.getReference(monitoringExtensionClass);
 
@@ -339,7 +376,6 @@ public class Management implements Serializable {
 
 			monitoringExtension.initialize(this.getManagedTypes());
 		}
-
 	}
 
 	private Validator getDefaultValidator() {

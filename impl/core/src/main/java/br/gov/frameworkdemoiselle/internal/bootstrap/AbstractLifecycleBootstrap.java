@@ -42,11 +42,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
@@ -55,9 +51,9 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.annotation.ViewScoped;
-import br.gov.frameworkdemoiselle.internal.context.ContextManager;
-import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
+import br.gov.frameworkdemoiselle.context.RequestContext;
+import br.gov.frameworkdemoiselle.context.SessionContext;
+import br.gov.frameworkdemoiselle.context.ViewContext;
 import br.gov.frameworkdemoiselle.internal.implementation.AnnotatedMethodProcessor;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
@@ -109,7 +105,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		}
 	}
 
-	public void loadTempContexts(@Observes final AfterBeanDiscovery event) {
+	/*public void loadTempContexts(@Observes final AfterBeanDiscovery event) {
 		// Caso este bootstrap rode antes do CoreBootstrap. Não há problemas em chamar este método várias vezes, ele
 		// ignora chamadas adicionais.
 		ContextManager.initialize(event);
@@ -119,7 +115,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		ContextManager.add(new ThreadLocalContext(SessionScoped.class), event);
 		ContextManager.add(new ThreadLocalContext(ConversationScoped.class), event);
 		ContextManager.add(new ThreadLocalContext(RequestScoped.class), event);
-	}
+	}*/
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected synchronized void proccessEvent() {
@@ -127,12 +123,15 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 
 		Collections.sort(processors);
 		Exception failure = null;
+		
+		RequestContext tempRequestContext = Beans.getReference(RequestContext.class);
+		SessionContext tempSessionContext = Beans.getReference(SessionContext.class);
+		ViewContext tempViewContext = Beans.getReference(ViewContext.class);
 
 		if (!registered) {
-			ContextManager.activate(ThreadLocalContext.class, ViewScoped.class);
-			ContextManager.activate(ThreadLocalContext.class, SessionScoped.class);
-			ContextManager.activate(ThreadLocalContext.class, ConversationScoped.class);
-			ContextManager.activate(ThreadLocalContext.class, RequestScoped.class);
+			tempRequestContext.activate();
+			tempSessionContext.activate();
+			tempViewContext.activate();
 
 			registered = true;
 		}
@@ -155,10 +154,9 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		}
 
 		if (processors.isEmpty()) {
-			ContextManager.deactivate(ThreadLocalContext.class, ViewScoped.class);
-			ContextManager.deactivate(ThreadLocalContext.class, SessionScoped.class);
-			ContextManager.deactivate(ThreadLocalContext.class, ConversationScoped.class);
-			ContextManager.deactivate(ThreadLocalContext.class, RequestScoped.class);
+			tempRequestContext.deactivate();
+			tempSessionContext.deactivate();
+			tempViewContext.deactivate();
 		}
 
 		if (failure != null) {

@@ -36,7 +36,6 @@
  */
 package security.athentication.credentials;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import junit.framework.Assert;
@@ -48,8 +47,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import br.gov.frameworkdemoiselle.internal.context.ContextManager;
-import br.gov.frameworkdemoiselle.internal.context.ThreadLocalContext;
+import br.gov.frameworkdemoiselle.context.RequestContext;
 import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -71,7 +69,8 @@ public class AcceptOrDenyCredentialsTest {
 	
 	@Test
 	public void denyWrongCredentials() {
-		ContextManager.activate(ThreadLocalContext.class, RequestScoped.class);
+		RequestContext ctx = Beans.getReference(RequestContext.class);
+		ctx.activate();
 		
 		Credentials credentials = Beans.getReference(Credentials.class);
 		credentials.setLogin("wronglogin");
@@ -84,14 +83,15 @@ public class AcceptOrDenyCredentialsTest {
 			//Erro esperado
 		}
 		finally{
-			ContextManager.deactivate(ThreadLocalContext.class, RequestScoped.class);
+			ctx.deactivate();
 		}
 
 	}
 	
 	@Test
 	public void acceptRightCredentials() {
-		ContextManager.activate(ThreadLocalContext.class, RequestScoped.class);
+		RequestContext ctx = Beans.getReference(RequestContext.class);
+		ctx.activate();
 		
 		Credentials credentials = Beans.getReference(Credentials.class);
 		credentials.setLogin("demoiselle");
@@ -103,7 +103,7 @@ public class AcceptOrDenyCredentialsTest {
 			Assert.fail("Authenticator negou credenciais corretas");
 		}
 		finally{
-			ContextManager.deactivate(ThreadLocalContext.class, RequestScoped.class);
+			ctx.deactivate();
 		}
 
 	}

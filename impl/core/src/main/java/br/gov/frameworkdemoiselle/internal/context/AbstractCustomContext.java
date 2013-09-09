@@ -39,20 +39,34 @@ package br.gov.frameworkdemoiselle.internal.context;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+
+import org.slf4j.Logger;
+
+import br.gov.frameworkdemoiselle.context.CustomContext;
+import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 public abstract class AbstractCustomContext implements CustomContext {
 
 	private boolean active;
 
 	private final Class<? extends Annotation> scope;
+	
+	private Logger logger;
+	
+	private transient ResourceBundle bundle;
 
-	public AbstractCustomContext(final Class<? extends Annotation> scope) {
+	AbstractCustomContext(final Class<? extends Annotation> scope) {
 		this.scope = scope;
 		this.active = false;
 	}
@@ -97,14 +111,44 @@ public abstract class AbstractCustomContext implements CustomContext {
 		return this.active;
 	}
 
-	public void setActive(boolean active) {
-		if (!active && this.active) {
-			// Limpando contexto
+	@Override
+	public boolean activate() {
+		if (!this.active){
+			BeanManager beanManager = Beans.getBeanManager();
+			if (beanManager!=null){
+				try{
+					Context ctx = beanManager.getContext(this.getScope());
+					if (ctx!=null){
+						getLogger().debug( getBundle().getString("custom-context-already-activated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() , ctx.getClass().getCanonicalName() ) );
+					}
+				}
+				catch(ContextNotActiveException ce){
+					this.active = true;
+					getLogger().debug( getBundle().getString("custom-context-was-activated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() ) );
+				}
+			}
+			else{
+				this.active = true;
+				getLogger().debug( getBundle().getString("custom-context-was-activated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() ) );
+			}
+		}
+		
+		return this.active;
+	}
+	
+	@Override
+	public void deactivate(){
+		if (this.active){
 			if (isStoreInitialized()){
 				getStore().clear();
 			}
+			
+			this.active = false;
+			
+			Logger logger = getLogger();
+			ResourceBundle bundle = getBundle();
+			logger.debug( bundle.getString("custom-context-was-deactivated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() ) );
 		}
-		this.active = active;
 	}
 
 	@Override
@@ -114,6 +158,22 @@ public abstract class AbstractCustomContext implements CustomContext {
 
 	protected static Store createStore() {
 		return new Store();
+	}
+	
+	private ResourceBundle getBundle(){
+		if (bundle==null){
+			bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
+		}
+		
+		return bundle;
+	}
+	
+	private Logger getLogger(){
+		if (logger==null){
+			logger = LoggerProducer.create(this.getClass());
+		}
+		
+		return logger;
 	}
 
 	static class Store {
