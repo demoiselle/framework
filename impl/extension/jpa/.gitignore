@@ -5,3 +5,5 @@
 /.settings
 /.externalToolBuilders
 /.DS_Store
+/hsql:..properties
+/hsql:..script

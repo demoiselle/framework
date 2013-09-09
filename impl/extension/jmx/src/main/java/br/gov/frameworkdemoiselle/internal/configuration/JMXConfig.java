@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.configuration;
+package br.gov.frameworkdemoiselle.internal.configuration;
 
 import javax.management.NotificationBroadcaster;
 
@@ -65,7 +65,7 @@ import br.gov.frameworkdemoiselle.stereotype.ManagementController;
  * @author serpro
  *
  */
-@Configuration(prefix = "frameworkdemoiselle.management.jmx.")
+@Configuration(prefix = "frameworkdemoiselle.management.jmx")
 public class JMXConfig {
 	
 	@Name("mbean.domain")

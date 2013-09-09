@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal;
+package br.gov.frameworkdemoiselle.internal.implementation;
 
 import java.lang.management.ManagementFactory;
 import java.util.Locale;
@@ -61,10 +61,6 @@ public class MBeanHelper {
 	private static ResourceBundle bundle = new ResourceBundle("demoiselle-jmx-bundle", Locale.getDefault());
 
 	private static final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-
-	// @Inject
-	// @Name("demoiselle-monitoring-bundle")
-	// private ResourceBundle bundle;
 
 	/**
 	 * Return the MBean Server instance.

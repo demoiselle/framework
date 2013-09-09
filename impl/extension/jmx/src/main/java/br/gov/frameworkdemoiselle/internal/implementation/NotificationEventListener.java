@@ -34,34 +34,45 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal;
+package br.gov.frameworkdemoiselle.internal.implementation;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.io.Serializable;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.management.ObjectInstance;
+import javax.enterprise.event.Observes;
 
+import br.gov.frameworkdemoiselle.internal.configuration.JMXConfig;
+import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
+import br.gov.frameworkdemoiselle.management.NotificationManager;
+
+/**
+ * Listens to {@link NotificationManager} notification events and proxies them
+ * to a {@link NotificationBroadcaster} MBean. This MBean will send the notification to
+ * any JMX clients connected and listening.
+ * 
+ * @author serpro
+ *
+ */
 @ApplicationScoped
-public class MBeanManager {
+@SuppressWarnings("serial")
+public class NotificationEventListener implements Serializable {
 	
-	private HashMap<String,ObjectInstance> registeredMBeans = new HashMap<String,ObjectInstance>();
+	private NotificationBroadcaster notificationBroadcaster;
 	
-	public void storeRegisteredMBean(ObjectInstance instance){
-		registeredMBeans.put(instance.getObjectName().getCanonicalName(),instance);
+	public void sendNotification( @Observes @Generic ManagementNotificationEvent event , JMXConfig config ) {
+		createNotificationBroadcaster().sendNotification(event,config);
 	}
 	
-	public Collection<ObjectInstance> listRegisteredMBeans(){
-		return registeredMBeans.values();
+	public void sendAttributeChangedMessage( @Observes @AttributeChange ManagementNotificationEvent event , JMXConfig config ) {
+		createNotificationBroadcaster().sendAttributeChangedMessage(event, config);
 	}
 	
-	public ObjectInstance findMBeanInstance(String name){
-		ObjectInstance instance = registeredMBeans.get(name);
-		return instance;
-	}
-	
-	public void cleanRegisteredMBeans(){
-		registeredMBeans.clear();
+	public NotificationBroadcaster createNotificationBroadcaster(){
+		if (notificationBroadcaster==null){
+			notificationBroadcaster = new NotificationBroadcaster();
+		}
+		
+		return notificationBroadcaster;
 	}
 
 }
