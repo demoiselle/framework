@@ -44,6 +44,41 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Ignore;
 
+import br.gov.frameworkdemoiselle.annotation.NextView;
+import br.gov.frameworkdemoiselle.annotation.PreviousView;
+import br.gov.frameworkdemoiselle.annotation.Redirect;
+import br.gov.frameworkdemoiselle.internal.bootstrap.JsfBootstrap;
+import br.gov.frameworkdemoiselle.internal.configuration.ExceptionHandlerConfig;
+import br.gov.frameworkdemoiselle.internal.configuration.JsfSecurityConfig;
+import br.gov.frameworkdemoiselle.internal.context.ViewContext;
+import br.gov.frameworkdemoiselle.internal.implementation.AbstractExceptionHandler;
+import br.gov.frameworkdemoiselle.internal.implementation.ApplicationExceptionHandler;
+import br.gov.frameworkdemoiselle.internal.implementation.ApplicationExceptionHandlerFactory;
+import br.gov.frameworkdemoiselle.internal.implementation.AuthenticationExceptionHandler;
+import br.gov.frameworkdemoiselle.internal.implementation.AuthenticationExceptionHandlerFactory;
+import br.gov.frameworkdemoiselle.internal.implementation.AuthorizationExceptionHandler;
+import br.gov.frameworkdemoiselle.internal.implementation.AuthorizationExceptionHandlerFactory;
+import br.gov.frameworkdemoiselle.internal.implementation.FacesMessageAppender;
+import br.gov.frameworkdemoiselle.internal.implementation.FileRendererImpl;
+import br.gov.frameworkdemoiselle.internal.implementation.ParameterImpl;
+import br.gov.frameworkdemoiselle.internal.implementation.RedirectExceptionHandler;
+import br.gov.frameworkdemoiselle.internal.implementation.RedirectExceptionHandlerFactory;
+import br.gov.frameworkdemoiselle.internal.implementation.SecurityObserver;
+import br.gov.frameworkdemoiselle.internal.procuder.ParameterProducer;
+import br.gov.frameworkdemoiselle.internal.proxy.FacesContextProxy;
+import br.gov.frameworkdemoiselle.template.AbstractEditPageBean;
+import br.gov.frameworkdemoiselle.template.AbstractListPageBean;
+import br.gov.frameworkdemoiselle.template.AbstractPageBean;
+import br.gov.frameworkdemoiselle.template.EditPageBean;
+import br.gov.frameworkdemoiselle.template.ListPageBean;
+import br.gov.frameworkdemoiselle.template.PageBean;
+import br.gov.frameworkdemoiselle.util.Faces;
+import br.gov.frameworkdemoiselle.util.FileRenderer;
+import br.gov.frameworkdemoiselle.util.Locales;
+import br.gov.frameworkdemoiselle.util.PageNotFoundException;
+import br.gov.frameworkdemoiselle.util.Parameter;
+import br.gov.frameworkdemoiselle.util.Redirector;
+
 @Ignore
 public final class Tests {
 
@@ -60,18 +95,40 @@ public final class Tests {
 
 		return ShrinkWrap
 				.create(WebArchive.class)
-				// .addClass(ServletAuthenticator.class)
-				// .addClass(ServletAuthorizer.class)
-				// .addClass(ServletFilter.class)
-				// .addClass(ServletListener.class)
-				// .addClass(HttpServletRequestProducer.class)
-				// .addClass(HttpServletResponseProducer.class)
-				// .addClass(HttpSessionProducer.class)
-				// .addClass(ServletLocaleProducer.class)
-				// .addClass(BasicAuthenticationFilter.class)
-				// .addClass(HttpServletRequestProducerFilter.class)
-				// .addClass(HttpServletResponseProducerFilter.class)
-				// .addClass(InternalProcessorFilterImpl.class)
+				.addClass(PageNotFoundException.class)
+				.addClass(Locales.class)
+				.addClass(Parameter.class)
+				.addClass(Faces.class)
+				.addClass(Redirector.class)
+				.addClass(FileRenderer.class)
+				.addClass(JsfSecurityConfig.class)
+				.addClass(ExceptionHandlerConfig.class)
+				.addClass(ViewContext.class)
+				.addClass(AuthorizationExceptionHandlerFactory.class)
+				.addClass(ApplicationExceptionHandler.class)
+				.addClass(FileRendererImpl.class)
+				.addClass(SecurityObserver.class)
+				.addClass(FacesMessageAppender.class)
+				.addClass(RedirectExceptionHandler.class)
+				.addClass(AuthenticationExceptionHandlerFactory.class)
+				.addClass(AuthenticationExceptionHandler.class)
+				.addClass(ApplicationExceptionHandlerFactory.class)
+				.addClass(ParameterImpl.class)
+				.addClass(AuthorizationExceptionHandler.class)
+				.addClass(RedirectExceptionHandlerFactory.class)
+				.addClass(AbstractExceptionHandler.class)
+				.addClass(FacesContextProxy.class)
+				.addClass(JsfBootstrap.class)
+				.addClass(ParameterProducer.class)
+				.addClass(AbstractPageBean.class)
+				.addClass(ListPageBean.class)
+				.addClass(AbstractListPageBean.class)
+				.addClass(AbstractEditPageBean.class)
+				.addClass(PageBean.class)
+				.addClass(EditPageBean.class)
+				.addClass(PreviousView.class)
+				.addClass(Redirect.class)
+				.addClass(NextView.class)
 				.addAsResource(createFileAsset("src/main/resources/demoiselle-jsf-bundle.properties"),
 						"demoiselle-jsf-bundle.properties")
 				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")
