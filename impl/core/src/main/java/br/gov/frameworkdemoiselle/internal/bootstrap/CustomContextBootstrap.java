@@ -5,17 +5,15 @@ import java.util.List;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Extension;
 
 import br.gov.frameworkdemoiselle.context.CustomContext;
 import br.gov.frameworkdemoiselle.context.StaticContext;
-import br.gov.frameworkdemoiselle.internal.context.CustomContextProducer;
-import br.gov.frameworkdemoiselle.internal.context.RequestContextImpl;
-import br.gov.frameworkdemoiselle.internal.context.SessionContextImpl;
+import br.gov.frameworkdemoiselle.internal.context.TemporaryRequestContextImpl;
+import br.gov.frameworkdemoiselle.internal.context.TemporarySessionContextImpl;
 import br.gov.frameworkdemoiselle.internal.context.StaticContextImpl;
-import br.gov.frameworkdemoiselle.internal.context.ThreadLocalViewContextImpl;
-import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.internal.context.TemporaryConversationContextImpl;
+import br.gov.frameworkdemoiselle.internal.context.TemporaryViewContextImpl;
 
 /**
  * This portable extension registers and starts custom contexts used by
@@ -28,26 +26,6 @@ public class CustomContextBootstrap implements Extension{
 	
 	private List<CustomContext> contexts;
 	
-	/*private Logger logger;
-
-	private transient ResourceBundle bundle;
-	
-	private Logger getLogger() {
-		if (this.logger == null) {
-			this.logger = LoggerProducer.create(CoreBootstrap.class);
-		}
-
-		return this.logger;
-	}
-
-	private ResourceBundle getBundle() {
-		if (bundle == null) {
-			bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
-		}
-
-		return bundle;
-	}*/
-	
 	public void initializeContexts(@Observes AfterBeanDiscovery event){
 		//Cadastra os contextos contidos no demoiselle-core
 		if (contexts==null || contexts.isEmpty()){
@@ -55,16 +33,19 @@ public class CustomContextBootstrap implements Extension{
 			
 			contexts = new ArrayList<CustomContext>();
 			
-			ctx = new RequestContextImpl();
+			ctx = new TemporaryRequestContextImpl();
 			contexts.add(ctx);
 			
-			ctx = new SessionContextImpl();
+			ctx = new TemporarySessionContextImpl();
 			contexts.add(ctx);
 			
 			ctx = new StaticContextImpl();
 			contexts.add(ctx);
 			
-			ctx = new ThreadLocalViewContextImpl();
+			ctx = new TemporaryViewContextImpl();
+			contexts.add(ctx);
+			
+			ctx = new TemporaryConversationContextImpl();
 			contexts.add(ctx);
 			
 			for (CustomContext c : contexts){
@@ -82,9 +63,13 @@ public class CustomContextBootstrap implements Extension{
 		}
 	}
 	
-	public void storeContexts(@Observes AfterDeploymentValidation event){
+	public List<CustomContext> getCustomContexts(){
+		return this.contexts;
+	}
+	
+	/*public void storeContexts(@Observes AfterDeploymentValidation event){
 		CustomContextProducer producer = Beans.getReference(CustomContextProducer.class);
 		producer.addRegisteredContexts(contexts);
-	}
+	}*/
 	
 }

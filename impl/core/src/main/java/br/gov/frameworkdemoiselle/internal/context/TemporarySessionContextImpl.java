@@ -48,25 +48,29 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Alternative;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.annotation.StaticScoped;
-import br.gov.frameworkdemoiselle.context.StaticContext;
+import br.gov.frameworkdemoiselle.context.SessionContext;
+
 
 /**
  * 
- * Custom context that provide a single store for every thread that tries to instantiate
- * beans of the {@link StaticScoped} custom scope.
+ * Temporary context meant to replace the session context on environments
+ * that doesn't provide a default context for the session scope. Such
+ * environments include desktop applications or remote JMX calls, that by CDI
+ * specification doesn't provide scopes and only have the application scope active.
  * 
  * @author serpro
  *
  */
 @Priority(Priority.MIN_PRIORITY)
 @Alternative
-public class StaticContextImpl extends AbstractStaticContext implements StaticContext {
+public class TemporarySessionContextImpl extends AbstractStaticContext implements SessionContext {
 
-	public StaticContextImpl() {
-		super(StaticScoped.class);
+	public TemporarySessionContextImpl() {
+		super(SessionScoped.class);
 	}
+	
 }

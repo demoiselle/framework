@@ -48,24 +48,28 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Alternative;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.context.RequestContext;
+import br.gov.frameworkdemoiselle.annotation.ViewScoped;
+import br.gov.frameworkdemoiselle.context.ViewContext;
 
 /**
- * Custom request context that stores beans in a thread local store.
+ * 
+ * Temporary context meant to replace the view context on environments
+ * that doesn't provide a default context for the view scope. Such
+ * environments include desktop applications or remote JMX calls, that by CDI
+ * specification doesn't provide scopes and only have the application scope active.
  * 
  * @author serpro
  *
  */
 @Priority(Priority.MIN_PRIORITY)
 @Alternative
-public class RequestContextImpl extends AbstractThreadLocalContext implements RequestContext {
+public class TemporaryViewContextImpl extends AbstractThreadLocalContext implements ViewContext {
 
-	public RequestContextImpl() {
-		super(RequestScoped.class);
+	public TemporaryViewContextImpl() {
+		super(ViewScoped.class);
 	}
 
 }

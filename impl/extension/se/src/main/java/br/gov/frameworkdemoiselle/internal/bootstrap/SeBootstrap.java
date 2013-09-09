@@ -40,6 +40,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Extension;
 
+import br.gov.frameworkdemoiselle.context.ConversationContext;
 import br.gov.frameworkdemoiselle.context.RequestContext;
 import br.gov.frameworkdemoiselle.context.SessionContext;
 import br.gov.frameworkdemoiselle.context.ViewContext;
@@ -52,19 +53,23 @@ public class SeBootstrap implements Extension {
 		RequestContext requestContext = Beans.getReference(RequestContext.class);
 		SessionContext sessionContext = Beans.getReference(SessionContext.class);
 		ViewContext viewContext = Beans.getReference(ViewContext.class);
+		ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
 		
 		requestContext.activate();
 		sessionContext.activate();
 		viewContext.activate();
+		conversationContext.activate();
 	}
 
 	public void removeContexts(@Observes AfterShutdownProccess event) {
 		RequestContext requestContext = Beans.getReference(RequestContext.class);
 		SessionContext sessionContext = Beans.getReference(SessionContext.class);
 		ViewContext viewContext = Beans.getReference(ViewContext.class);
+		ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
 		
 		requestContext.deactivate();
 		sessionContext.deactivate();
 		viewContext.deactivate();
+		conversationContext.activate();
 	}
 }

@@ -48,18 +48,28 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
+import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.inject.Alternative;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.annotation.ViewScoped;
-import br.gov.frameworkdemoiselle.context.ViewContext;
+import br.gov.frameworkdemoiselle.context.ConversationContext;
 
+/**
+ * 
+ * Temporary context meant to replace the conversation context on environments
+ * that doesn't provide a default context for the conversation scope. Such
+ * environments include desktop applications or remote JMX calls, that by CDI
+ * specification doesn't provide scopes and only have the application scope active.
+ * 
+ * @author serpro
+ *
+ */
 @Priority(Priority.MIN_PRIORITY)
 @Alternative
-public class ThreadLocalViewContextImpl extends AbstractThreadLocalContext implements ViewContext {
+public class TemporaryConversationContextImpl extends AbstractStaticContext implements ConversationContext {
 
-	public ThreadLocalViewContextImpl() {
-		super(ViewScoped.class);
+	public TemporaryConversationContextImpl() {
+		super(ConversationScoped.class);
 	}
 
 }

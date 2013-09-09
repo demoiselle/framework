@@ -48,24 +48,28 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Alternative;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.context.SessionContext;
-
+import br.gov.frameworkdemoiselle.context.RequestContext;
 
 /**
+ * 
+ * Temporary context meant to replace the request context on environments
+ * that doesn't provide a default context for the request scope. Such
+ * environments include desktop applications or remote JMX calls, that by CDI
+ * specification doesn't provide scopes and only have the application scope active.
  * 
  * @author serpro
  *
  */
 @Priority(Priority.MIN_PRIORITY)
 @Alternative
-public class SessionContextImpl extends AbstractStaticContext implements SessionContext {
+public class TemporaryRequestContextImpl extends AbstractThreadLocalContext implements RequestContext {
 
-	public SessionContextImpl() {
-		super(SessionScoped.class);
+	public TemporaryRequestContextImpl() {
+		super(RequestScoped.class);
 	}
-	
+
 }
