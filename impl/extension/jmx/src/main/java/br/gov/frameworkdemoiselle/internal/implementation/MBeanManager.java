@@ -34,15 +34,34 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal;
+package br.gov.frameworkdemoiselle.internal.implementation;
 
+import java.util.Collection;
+import java.util.HashMap;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.management.ObjectInstance;
 
-/**
- * MBean interface responsible for sending MBean notifications to remote clients.
- * 
- * @author serpro
- *
- */
-public interface NotificationBroadcasterMBean {
+@ApplicationScoped
+public class MBeanManager {
+	
+	private HashMap<String,ObjectInstance> registeredMBeans = new HashMap<String,ObjectInstance>();
+	
+	public void storeRegisteredMBean(ObjectInstance instance){
+		registeredMBeans.put(instance.getObjectName().getCanonicalName(),instance);
+	}
+	
+	public Collection<ObjectInstance> listRegisteredMBeans(){
+		return registeredMBeans.values();
+	}
+	
+	public ObjectInstance findMBeanInstance(String name){
+		ObjectInstance instance = registeredMBeans.get(name);
+		return instance;
+	}
+	
+	public void cleanRegisteredMBeans(){
+		registeredMBeans.clear();
+	}
+
 }

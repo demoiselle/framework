@@ -34,49 +34,45 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal;
+package br.gov.frameworkdemoiselle.internal.implementation;
 
 import java.io.Serializable;
 
-import javax.management.AttributeChangeNotification;
-import javax.management.Notification;
-import javax.management.NotificationBroadcasterSupport;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 
-import br.gov.frameworkdemoiselle.configuration.JMXConfig;
+import br.gov.frameworkdemoiselle.internal.configuration.JMXConfig;
 import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 
 /**
- * Implementation of the {@link NotificationBroadcaster} MBean.
- * When the {@link NotificationManager} sends an event, a {@link NotificationEventListener} captures the notification and uses
- * this MBean to send it as a JMX notification.
+ * Listens to {@link NotificationManager} notification events and proxies them
+ * to a {@link NotificationBroadcaster} MBean. This MBean will send the notification to
+ * any JMX clients connected and listening.
  * 
  * @author serpro
  *
  */
-public final class NotificationBroadcaster extends NotificationBroadcasterSupport implements NotificationBroadcasterMBean,Serializable {
+@ApplicationScoped
+@SuppressWarnings("serial")
+public class NotificationEventListener implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
-
-	private int sequenceNumber = 1;
-
-	private static final String NOTIFICATION_TYPE_GENERIC = "jmx.message";
-
-	protected void sendNotification( ManagementNotificationEvent event , JMXConfig config ) {
-		br.gov.frameworkdemoiselle.management.GenericNotification demoiselleNotification = event.getNotification();
-		Notification n = new Notification(NOTIFICATION_TYPE_GENERIC, config.getNotificationMBeanName(), sequenceNumber++, System.currentTimeMillis(), demoiselleNotification.getMessage().toString());
-		sendNotification(n);
+	private NotificationBroadcaster notificationBroadcaster;
+	
+	public void sendNotification( @Observes @Generic ManagementNotificationEvent event , JMXConfig config ) {
+		createNotificationBroadcaster().sendNotification(event,config);
 	}
 	
-	protected void sendAttributeChangedMessage( ManagementNotificationEvent event , JMXConfig config ) {
-		br.gov.frameworkdemoiselle.management.AttributeChangeNotification demoiselleNotification = (br.gov.frameworkdemoiselle.management.AttributeChangeNotification)event.getNotification();
+	public void sendAttributeChangedMessage( @Observes @AttributeChange ManagementNotificationEvent event , JMXConfig config ) {
+		createNotificationBroadcaster().sendAttributeChangedMessage(event, config);
+	}
+	
+	public NotificationBroadcaster createNotificationBroadcaster(){
+		if (notificationBroadcaster==null){
+			notificationBroadcaster = new NotificationBroadcaster();
+		}
 		
-		AttributeChangeNotification n = new AttributeChangeNotification(config.getNotificationMBeanName(), sequenceNumber++
-				, System.currentTimeMillis(), demoiselleNotification.getMessage().toString()
-				, demoiselleNotification.getAttributeName(), demoiselleNotification.getAttributeType().getSimpleName()
-				, demoiselleNotification.getOldValue(), demoiselleNotification.getNewValue());
-		
-		sendNotification(n);
+		return notificationBroadcaster;
 	}
 
 }
