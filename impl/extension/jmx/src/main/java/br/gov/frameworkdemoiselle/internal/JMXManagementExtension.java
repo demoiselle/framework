@@ -42,8 +42,8 @@ import javax.management.ObjectInstance;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.JMXConfig;
-import br.gov.frameworkdemoiselle.internal.management.ManagedType;
-import br.gov.frameworkdemoiselle.lifecycle.ManagementExtension;
+import br.gov.frameworkdemoiselle.internal.implementation.ManagedType;
+import br.gov.frameworkdemoiselle.management.ManagementExtension;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 public class JMXManagementExtension implements ManagementExtension {
