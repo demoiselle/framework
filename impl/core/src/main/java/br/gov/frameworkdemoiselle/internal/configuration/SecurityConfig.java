@@ -74,23 +74,11 @@ public class SecurityConfig implements Serializable {
 		return this.enabled;
 	}
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
 	public Class<? extends Authenticator> getAuthenticatorClass() {
 		return this.authenticatorClass;
 	}
 
-	public void setAuthenticatorClass(Class<? extends Authenticator> authenticatorClass) {
-		this.authenticatorClass = authenticatorClass;
-	}
-
 	public Class<? extends Authorizer> getAuthorizerClass() {
 		return this.authorizerClass;
-	}
-
-	public void setAuthorizerClass(Class<? extends Authorizer> authorizerClass) {
-		this.authorizerClass = authorizerClass;
 	}
 }

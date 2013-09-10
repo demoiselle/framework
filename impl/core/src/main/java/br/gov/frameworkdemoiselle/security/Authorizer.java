@@ -51,8 +51,11 @@ public interface Authorizer extends Serializable {
 	 * @param role
 	 *            role to be checked
 	 * @return {@code true} if the user has the role
+	 * @throws Exception
+	 *             If the underlying permission checking mechanism throwns any other exception, just throw it and leave
+	 *             the security context implementation to handle it.
 	 */
-	boolean hasRole(String role);
+	boolean hasRole(String role) throws Exception;
 
 	/**
 	 * Checks if the logged user has permission to execute an specific operation on a specific resource.
@@ -62,7 +65,10 @@ public interface Authorizer extends Serializable {
 	 * @param operation
 	 *            operation to be checked
 	 * @return {@code true} if the user has the permission
+	 * @throws Exception
+	 *             If the underlying permission checking mechanism throwns any other exception, just throw it and leave
+	 *             the security context implementation to handle it.
 	 */
-	boolean hasPermission(String resource, String operation);
+	boolean hasPermission(String resource, String operation) throws Exception;
 
 }
