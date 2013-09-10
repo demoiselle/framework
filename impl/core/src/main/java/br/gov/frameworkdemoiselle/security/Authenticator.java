@@ -46,22 +46,34 @@ import java.io.Serializable;
 public interface Authenticator extends Serializable {
 
 	/**
-	 * Executes the necessary steps to authenticate an user.
+	 * Executes the necessary steps to authenticate an user. After this call, {@link #getUser()} must return
+	 * the currently authenticated user and it will return <code>null</code> if the authentication process fails.
 	 * 
-	 * @throws AuthenticationException
-	 *             When the authentication process fails, this exception is thrown.
+	 * @throws InvalidCredentialsException
+	 *             You should throw this exception when the informed credentials are invalid. 
+	 * @throws Exception
+	 *             If the underlying authentication mechanism throwns any other exception,
+	 *             just throw it and leave the security context implementation to handle it.
 	 */
-	void authenticate();
+	void authenticate() throws Exception;
 
 	/**
-	 * Executes the necessary steps to unauthenticate an user.
+	 * Executes the necessary steps to unauthenticate an user. After this call, {@link #getUser()} must return <code>null</code>.
+	 * 
+	 * @throws Exception
+	 *             If the underlying authentication mechanism throwns any other exception,
+	 *             just throw it and leave the security context implementation to handle it.
 	 */
-	void unAuthenticate();
+	void unauthenticate() throws Exception;
 
 	/**
 	 * Returns the currently authenticated user.
 	 * 
-	 * @return the user currently authenticated
+	 * @return the user currently authenticated, or <code>null</code> if there is no
+	 * authenticated user.
+	 * 
+	 * @see #authenticate()
+	 * @see #unauthenticate()
 	 */
 	User getUser();
 }
