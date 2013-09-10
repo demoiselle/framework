@@ -38,6 +38,7 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 
 import javax.inject.Named;
 
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfig;
 import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
 import br.gov.frameworkdemoiselle.security.AfterLogoutSuccessful;
@@ -45,7 +46,6 @@ import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.AuthorizationException;
 import br.gov.frameworkdemoiselle.security.Authorizer;
-import br.gov.frameworkdemoiselle.security.InvalidCredentialsException;
 import br.gov.frameworkdemoiselle.security.NotLoggedInException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.security.User;
@@ -110,7 +110,7 @@ public class SecurityContextImpl implements SecurityContext {
 			try {
 				result = getAuthorizer().hasPermission(resource, operation);
 
-			} catch (AuthorizationException cause) {
+			} catch (DemoiselleException cause) {
 				throw cause;
 
 			} catch (Exception cause) {
@@ -134,7 +134,7 @@ public class SecurityContextImpl implements SecurityContext {
 			try {
 				result = getAuthorizer().hasRole(role);
 
-			} catch (AuthorizationException cause) {
+			} catch (DemoiselleException cause) {
 				throw cause;
 
 			} catch (Exception cause) {
@@ -169,10 +169,7 @@ public class SecurityContextImpl implements SecurityContext {
 			try {
 				getAuthenticator().authenticate();
 
-			} catch (InvalidCredentialsException cause) {
-				throw cause;
-
-			} catch (AuthenticationException cause) {
+			} catch (DemoiselleException cause) {
 				throw cause;
 
 			} catch (Exception cause) {
@@ -198,10 +195,7 @@ public class SecurityContextImpl implements SecurityContext {
 			try {
 				getAuthenticator().unauthenticate();
 
-			} catch (InvalidCredentialsException cause) {
-				throw cause;
-
-			} catch (AuthenticationException cause) {
+			} catch (DemoiselleException cause) {
 				throw cause;
 
 			} catch (Exception cause) {

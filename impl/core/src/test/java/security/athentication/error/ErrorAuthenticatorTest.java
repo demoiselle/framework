@@ -36,9 +36,10 @@
  */
 package security.athentication.error;
 
-import javax.inject.Inject;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 
-import junit.framework.Assert;
+import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -63,33 +64,27 @@ public class ErrorAuthenticatorTest {
 		deployment.addClass(ErrorAuthenticator.class);
 		return deployment;
 	}
-	
+
 	@Test
-	public void errorDuringLogin(){
-		try{
+	public void errorDuringLogin() {
+		try {
 			context.login();
-			Assert.fail("Login deveria disparar exceção de runtime");
-		}
-		catch(AuthenticationException ae){
-			Assert.fail("A exceção disparada não foi a esperada");
-		}
-		catch(RuntimeException e){
-			//PASS
+			fail("Login deveria disparar exceção de runtime");
+
+		} catch (AuthenticationException cause) {
+			assertEquals(RuntimeException.class, cause.getCause().getClass());
 		}
 	}
-	
+
 	@Test
-	public void errorDuringLogout(){
-		try{
+	public void errorDuringLogout() {
+		try {
 			context.login();
-			Assert.fail("Logout deveria disparar exceção de runtime");
-		}
-		catch(AuthenticationException ae){
-			Assert.fail("A exceção disparada não foi a esperada");
-		}
-		catch(RuntimeException e){
-			//PASS
+			fail("Logout deveria disparar exceção de runtime");
+
+		} catch (AuthenticationException cause) {
+			assertEquals(RuntimeException.class, cause.getCause().getClass());
 		}
 	}
-	
+
 }
