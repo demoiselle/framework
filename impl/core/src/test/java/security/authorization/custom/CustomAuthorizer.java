@@ -49,7 +49,7 @@ public class CustomAuthorizer implements Authorizer {
 
 	@Override
 	public boolean hasPermission(String resource, String operation) {
-		return "resource".equals(resource);
+		return "resource".equals(resource) && "operation".equals(operation);
 	}
 
 
