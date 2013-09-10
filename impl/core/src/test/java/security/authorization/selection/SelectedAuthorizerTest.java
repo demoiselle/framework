@@ -79,7 +79,6 @@ public class SelectedAuthorizerTest {
 
 	@Test
 	public void selectedAuthorizerStrategy() {
-		context.login();
 		Assert.assertTrue(context.hasRole("role"));
 	}
 	
