@@ -48,7 +48,7 @@ public class StrictAuthenticator implements Authenticator {
 	private User currentUser;
 
 	@Override
-	public void authenticate() throws AuthenticationException {
+	public void authenticate()  {
 
 		Credentials c = Beans.getReference(Credentials.class);
 		if ("demoiselle".equals(c.getLogin())) {
@@ -75,7 +75,7 @@ public class StrictAuthenticator implements Authenticator {
 	}
 
 	@Override
-	public void unAuthenticate() {
+	public void unauthenticate() {
 		this.currentUser = null;
 	}
 

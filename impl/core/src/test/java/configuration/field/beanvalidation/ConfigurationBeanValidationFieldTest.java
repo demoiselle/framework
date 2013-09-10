@@ -51,7 +51,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 
 @RunWith(Arquillian.class)

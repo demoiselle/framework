@@ -47,10 +47,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import test.Tests;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.TransactionContext;
-
-import test.Tests;
 
 @RunWith(Arquillian.class)
 public class TransactionWithCreatedStrategyTest {

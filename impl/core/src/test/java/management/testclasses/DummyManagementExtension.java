@@ -40,7 +40,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-
 import br.gov.frameworkdemoiselle.internal.implementation.ManagedType;
 import br.gov.frameworkdemoiselle.management.ManagementExtension;
 

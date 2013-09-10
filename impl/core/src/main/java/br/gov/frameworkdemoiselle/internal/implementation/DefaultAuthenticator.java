@@ -72,7 +72,7 @@ public class DefaultAuthenticator implements Authenticator {
 	 * @see br.gov.frameworkdemoiselle.security.Authenticator#unAuthenticate()
 	 */
 	@Override
-	public void unAuthenticate() {
+	public void unauthenticate() {
 		throw getException();
 	}
 

@@ -36,7 +36,6 @@
  */
 package security.athentication.error;
 
-import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.User;
 
@@ -45,12 +44,12 @@ public class ErrorAuthenticator implements Authenticator {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void authenticate() throws AuthenticationException {
+	public void authenticate()  {
 		throw new RuntimeException();
 	}
 
 	@Override
-	public void unAuthenticate() {
+	public void unauthenticate() {
 		throw new RuntimeException();
 	}
 
