@@ -100,7 +100,13 @@ public class ConfigurationLoader implements Serializable {
 	private Collection<Field> fields;
 
 	public void load(Object object) throws ConfigurationException {
-		getLogger().debug(getBundle().getString("loading-configuration-class", object.getClass().getName()));
+		load(object,true);
+	}
+	
+	public void load(Object object,boolean logLoadingProcess) throws ConfigurationException {
+		if (logLoadingProcess){
+			getLogger().debug(getBundle().getString("loading-configuration-class", object.getClass().getName()));
+		}
 
 		this.object = object;
 

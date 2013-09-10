@@ -38,6 +38,8 @@ package br.gov.frameworkdemoiselle.internal.configuration;
 
 import java.io.Serializable;
 
+import javax.persistence.EntityManager;
+
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
@@ -58,14 +60,15 @@ public class EntityManagerConfig implements Serializable {
 	 */
 	// TODO Implementação apenas para manter a compatibilidade entre a versão 2.3 com a 2.4.
 	@Name("unit.name")
+	@Deprecated
 	private String persistenceUnitName;
 
 	@Name("default.unit.name")
 	private String defaultPersistenceUnitName;
 	
 	@Name("entitymanager.scope")
-	private String entityManagerScope = "request";
-
+	private EntityManagerScope entityManagerScope = EntityManagerScope.REQUEST;
+	
 	/**
 	 * Getter for persistence unit name.
 	 */
@@ -74,6 +77,7 @@ public class EntityManagerConfig implements Serializable {
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	public String getPersistenceUnitName() {
 		return persistenceUnitName;
 	}
@@ -96,15 +100,32 @@ public class EntityManagerConfig implements Serializable {
 		return defaultPersistenceUnitName;
 	}
 
-	
-	public String getEntityManagerScope() {
+	/**
+	 * <p>Defines the scope of {@link EntityManager}'s produced by the internal producer.</p>
+	 * 
+	 * <p>Valid values are NOSCOPE,REQUEST,SESSION,VIEW,CONVERSATION and APPLICATION.</p>
+	 * 
+	 * <p>NOSCOPE means every injected entity manager will be a different instance.</p>  
+	 * 
+	 * <p>The default value is REQUEST, meaning the producer will create the same
+	 * entity manager for the duration of the request.</p>
+	 * 
+	 */
+	public EntityManagerScope getEntityManagerScope() {
 		return entityManagerScope;
 	}
 
-	
-	public void setEntityManagerScope(String entityManagerScope) {
+	public void setEntityManagerScope(EntityManagerScope entityManagerScope) {
 		this.entityManagerScope = entityManagerScope;
 	}
-	
-	
+
+	/**
+	 * Supported scopes for the entity manager
+	 * 
+	 * @author serpro
+	 *
+	 */
+	public enum EntityManagerScope{
+		NOSCOPE,REQUEST,SESSION,VIEW,CONVERSATION,APPLICATION;
+	}
 }

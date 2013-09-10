@@ -52,10 +52,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.slf4j.Logger;
@@ -86,20 +86,20 @@ public class CustomContextProducer {
 
 	private transient ResourceBundle bundle;
 	
-	private List<CustomContext> contexts = new ArrayList<CustomContext>();
-	
-	
 	/**
-	 * Store a context into this producer. The context must have
-	 * been registered into CDI by a portable extension, this method will not do this.
+	 * <p>Store a context into this producer. The context must have
+	 * been registered into CDI (unsing {@link AfterBeanDiscovery#addContext(javax.enterprise.context.spi.Context context)}) by a portable extension,
+	 * this method will not do this.</p>
+	 * 
+	 * <p>This producer can only produce contexts registered through this method.</p>
 	 *  
 	 */
 	public void addRegisteredContext(CustomContext context){
 		Logger logger = getLogger();
 		ResourceBundle bundle = getBundle();
 		
-		if (!contexts.contains(context)){
-			contexts.add(context);
+		if (!getContexts().contains(context)){
+			getContexts().add(context);
 			logger.debug( bundle.getString("bootstrap-context-added", context.getClass().getCanonicalName() , context.getScope().getSimpleName() ) );
 		}
 		else{
@@ -108,65 +108,59 @@ public class CustomContextProducer {
 	}
 
 	/**
-	 * Store a list of contexts into this producer. The contexts must have
-	 * been registered into CDI by a portable extension, this method will not do this.
-	 *  
-	 */
-	@PostConstruct
-	public void addRegisteredContexts(){
-		CustomContextBootstrap contextBootstrap = Beans.getReference(CustomContextBootstrap.class);
-		
-		List<CustomContext> contexts = contextBootstrap.getCustomContexts();
-		
-		for (CustomContext context : contexts){
-			addRegisteredContext(context);
-		}
-	}
-	
-	/**
 	 * Deactivates all registered contexts and clear the context collection
 	 */
 	@PreDestroy
 	public void closeContexts(){
 		//Desativa todos os contextos registrados.
-		for (CustomContext context : contexts){
+		for (CustomContext context : getContexts()){
 			context.deactivate();
 		}
 		
-		contexts.clear();
+		getContexts().clear();
+	}
+	
+	private List<CustomContext> getContexts(){
+		/* The demoiselle-core CustomContextBootstrap class creates default contexts for the main
+		 * scopes of an application (request, session and conversation) and some custom contexts
+		 * (view and static). This method injects a reference to the CustomContextBootstrap to obtain those
+		 * contexts. Also any context registered after application start-up will be obtained by this method. */
+		
+		CustomContextBootstrap contextBootstrap = Beans.getReference(CustomContextBootstrap.class);
+		return contextBootstrap.getCustomContexts();
 	}
 	
 	/////////////PRODUCERS///////////////////
 	
 	@Produces
-	public RequestContext getRequestContext(InjectionPoint ip , CustomContextBootstrap extension){
-		return getContext(ip, extension);
+	public RequestContext getRequestContext(InjectionPoint ip){
+		return getContext(ip);
 	}
 	
 	@Produces
-	public SessionContext getSessionContext(InjectionPoint ip , CustomContextBootstrap extension){
-		return getContext(ip, extension);
+	public SessionContext getSessionContext(InjectionPoint ip){
+		return getContext(ip);
 	}
 	
 	@Produces
-	public ViewContext getViewContext(InjectionPoint ip , CustomContextBootstrap extension){
-		return getContext(ip, extension);
+	public ViewContext getViewContext(InjectionPoint ip){
+		return getContext(ip);
 	}
 	
 	@Produces
-	public StaticContext getStaticContext(InjectionPoint ip , CustomContextBootstrap extension){
-		return getContext(ip, extension);
+	public StaticContext getStaticContext(InjectionPoint ip){
+		return getContext(ip);
 	}
 	
 	@Produces
-	public ConversationContext getConversationContext(InjectionPoint ip , CustomContextBootstrap extension){
-		return getContext(ip, extension);
+	public ConversationContext getConversationContext(InjectionPoint ip){
+		return getContext(ip);
 	}
 	
 	/////////////END OF PRODUCERS///////////////////
 	
 	@SuppressWarnings("unchecked")
-	private <T extends CustomContext> T getContext(InjectionPoint ip , CustomContextBootstrap extension){
+	private <T extends CustomContext> T getContext(InjectionPoint ip){
 		T producedContext = null;
 		
 		if (ip!=null){
@@ -186,7 +180,7 @@ public class CustomContextProducer {
 		
 		ArrayList<CustomContext> selectableContexts = new ArrayList<CustomContext>();
 		
-		for (CustomContext context : contexts){
+		for (CustomContext context : getContexts()){
 			if ( contextClass.isAssignableFrom( context.getClass() ) ){
 				if (context.isActive()){
 					producedContext = context;

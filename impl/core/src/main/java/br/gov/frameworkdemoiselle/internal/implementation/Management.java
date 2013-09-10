@@ -55,6 +55,7 @@ import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
 import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.context.ConversationContext;
 import br.gov.frameworkdemoiselle.context.RequestContext;
 import br.gov.frameworkdemoiselle.context.SessionContext;
 import br.gov.frameworkdemoiselle.context.ViewContext;
@@ -306,6 +307,7 @@ public class Management implements Serializable {
 		RequestContext requestContext = Beans.getReference(RequestContext.class);
 		ViewContext viewContext = Beans.getReference(ViewContext.class);
 		SessionContext sessionContext = Beans.getReference(SessionContext.class);
+		ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
 		
 		if (!requestContext.isActive()){
 			logger.debug(bundle.getString("management-debug-starting-custom-context",
@@ -327,12 +329,20 @@ public class Management implements Serializable {
 			
 			sessionContext.activate();
 		}
+		
+		if (!conversationContext.isActive()){
+			logger.debug(bundle.getString("management-debug-starting-custom-context",
+					conversationContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
+			
+			conversationContext.activate();
+		}
 	}
 
 	private void deactivateContexts(Class<?> managedType) {
 		RequestContext requestContext = Beans.getReference(RequestContext.class);
 		ViewContext viewContext = Beans.getReference(ViewContext.class);
 		SessionContext sessionContext = Beans.getReference(SessionContext.class);
+		ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
 		
 		if (requestContext.isActive()){
 			logger.debug(bundle.getString("management-debug-stoping-custom-context",
@@ -353,6 +363,13 @@ public class Management implements Serializable {
 					sessionContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
 			
 			sessionContext.deactivate();
+		}
+		
+		if (!conversationContext.isActive()){
+			logger.debug(bundle.getString("management-debug-starting-custom-context",
+					conversationContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
+			
+			conversationContext.activate();
 		}
 	}
 
