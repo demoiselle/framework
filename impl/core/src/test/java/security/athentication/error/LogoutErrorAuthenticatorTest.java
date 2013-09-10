@@ -37,6 +37,7 @@
 package security.athentication.error;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 import javax.inject.Inject;
@@ -53,7 +54,7 @@ import br.gov.frameworkdemoiselle.security.SecurityContext;
 import configuration.resource.ConfigurationResourceTest;
 
 @RunWith(Arquillian.class)
-public class ErrorAuthenticatorTest {
+public class LogoutErrorAuthenticatorTest {
 
 	@Inject
 	private SecurityContext context;
@@ -61,25 +62,16 @@ public class ErrorAuthenticatorTest {
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = Tests.createDeployment(ConfigurationResourceTest.class);
-		deployment.addClass(ErrorAuthenticator.class);
+		deployment.addClass(LogoutErrorAuthenticator.class);
 		return deployment;
-	}
-
-	@Test
-	public void errorDuringLogin() {
-		try {
-			context.login();
-			fail("Login deveria disparar exceção de runtime");
-
-		} catch (AuthenticationException cause) {
-			assertEquals(RuntimeException.class, cause.getCause().getClass());
-		}
 	}
 
 	@Test
 	public void errorDuringLogout() {
 		try {
 			context.login();
+			assertTrue(context.isLoggedIn());
+			context.logout();
 			fail("Logout deveria disparar exceção de runtime");
 
 		} catch (AuthenticationException cause) {
