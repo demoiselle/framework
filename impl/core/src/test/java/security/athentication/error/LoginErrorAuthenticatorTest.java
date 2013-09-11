@@ -49,7 +49,11 @@ import org.junit.runner.RunWith;
 
 import test.Tests;
 import br.gov.frameworkdemoiselle.security.AuthenticationException;
+import br.gov.frameworkdemoiselle.security.NotLoggedInException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import configuration.resource.ConfigurationResourceTest;
 
 @RunWith(Arquillian.class)
@@ -73,6 +77,17 @@ public class LoginErrorAuthenticatorTest {
 
 		} catch (AuthenticationException cause) {
 			assertEquals(RuntimeException.class, cause.getCause().getClass());
+		}
+	}
+
+	@Test
+	public void errorDurindCheckLoggedIn() {
+		try {
+			context.checkLoggedIn();
+			fail("checkLoggedIn deveria disparar exceção de NotLoggedIn");
+		} catch (NotLoggedInException cause) {
+			assertEquals(Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"))
+					.getString("user-not-authenticated"), cause.getMessage());
 		}
 	}
 
