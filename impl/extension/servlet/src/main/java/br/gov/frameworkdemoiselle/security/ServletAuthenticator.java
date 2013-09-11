@@ -74,7 +74,7 @@ public class ServletAuthenticator implements Authenticator {
 	}
 
 	@Override
-	public void unAuthenticate() {
+	public void unauthenticate() {
 		getCredentials().clear();
 		try {
 			getRequest().logout();

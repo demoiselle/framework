@@ -54,4 +54,14 @@ public class AuthorizationException extends SecurityException {
 	public AuthorizationException(String message) {
 		super(message);
 	}
+
+	/**
+	 * Constructor with the cause.
+	 * 
+	 * @param cause
+	 *            exception cause
+	 */
+	public AuthorizationException(Throwable cause) {
+		super(cause);
+	}
 }

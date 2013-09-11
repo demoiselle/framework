@@ -34,27 +34,30 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package security.authorization.custom;
+package security.athentication.error;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 
 import javax.inject.Inject;
-
-import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import security.athentication.custom.CustomAuthenticator;
 import test.Tests;
+import br.gov.frameworkdemoiselle.security.AuthenticationException;
+import br.gov.frameworkdemoiselle.security.NotLoggedInException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import configuration.resource.ConfigurationResourceTest;
 
 @RunWith(Arquillian.class)
-public class CustomAuthorizerTest {
+public class LoginErrorAuthenticatorTest {
 
 	@Inject
 	private SecurityContext context;
@@ -62,48 +65,30 @@ public class CustomAuthorizerTest {
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = Tests.createDeployment(ConfigurationResourceTest.class);
-		deployment.addClass(CustomAuthenticator.class);
-		deployment.addClass(CustomAuthorizer.class);
+		deployment.addClass(LoginErrorAuthenticator.class);
 		return deployment;
-	}
-	
-	@Before
-	public void loginToTest(){
-		context.login();
 	}
 
 	@Test
-	public void hasPermission(){
-		Assert.assertTrue(context.hasPermission("resource", "operation"));
+	public void errorDuringLogin() {
+		try {
+			context.login();
+			fail("Login deveria disparar exceção de runtime");
+
+		} catch (AuthenticationException cause) {
+			assertEquals(RuntimeException.class, cause.getCause().getClass());
+		}
 	}
-	
+
 	@Test
-	public void hasRole(){
-		Assert.assertTrue(context.hasRole("role"));
+	public void errorDurindCheckLoggedIn() {
+		try {
+			context.checkLoggedIn();
+			fail("checkLoggedIn deveria disparar exceção de NotLoggedIn");
+		} catch (NotLoggedInException cause) {
+			assertEquals(Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"))
+					.getString("user-not-authenticated"), cause.getMessage());
+		}
 	}
-	
-	/**
-	 * Verify if when already exist an authorizer, the things keeps working fine.
-	 */
-	@Test
-	public void hasPermitionAndHasRole(){
-		Assert.assertTrue(context.hasPermission("resource", "operation"));
-		Assert.assertTrue(context.hasRole("role"));
-	}
-	
-	@Test
-	public void denyPermission(){
-		Assert.assertFalse(context.hasPermission("falseresource", "falseoperation"));
-	}
-	
-	@Test
-	public void denyRole(){
-		Assert.assertFalse(context.hasRole("falserole"));
-	}
-	
-	@After
-	public void logoutAfterTest(){
-		context.logout();
-	}
-	
+
 }

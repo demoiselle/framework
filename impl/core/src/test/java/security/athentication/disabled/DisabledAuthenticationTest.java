@@ -93,12 +93,11 @@ public class DisabledAuthenticationTest {
 		assertEquals("demoiselle", context.getUser().getId());
 	}
 
-	//
-	// @Test
-	// public void logoutProcess() {
-	// context.login();
-	// context.logout();
-	// assertFalse(context.isLoggedIn());
-	// assertNull(context.getCurrentUser());
-	// }
+	@Test
+	public void logoutProcess() {
+		context.login();
+		context.logout();
+		assertTrue(context.isLoggedIn());
+		assertEquals("demoiselle", context.getUser().getId());
+	}
 }

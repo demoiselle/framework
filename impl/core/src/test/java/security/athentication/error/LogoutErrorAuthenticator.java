@@ -36,26 +36,43 @@
  */
 package security.athentication.error;
 
-import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.User;
 
-public class ErrorAuthenticator implements Authenticator {
+public class LogoutErrorAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
+	
+	private User currentUser;
 
 	@Override
-	public void authenticate() throws AuthenticationException {
-		throw new RuntimeException();
+	public void authenticate()  {
+		this.currentUser = new User() {
+
+			private static final long serialVersionUID = 1L;
+
+			public String getId() {
+				return "demoiselle";
+			}
+
+			@Override
+			public Object getAttribute(Object key) {
+				return null;
+			}
+
+			@Override
+			public void setAttribute(Object key, Object value) {
+			}
+		};
 	}
 
 	@Override
-	public void unAuthenticate() {
+	public void unauthenticate() {
 		throw new RuntimeException();
 	}
 
 	@Override
 	public User getUser() {
-		return null;
+		return currentUser;
 	}
 }

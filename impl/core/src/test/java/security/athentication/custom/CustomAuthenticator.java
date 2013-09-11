@@ -36,7 +36,6 @@
  */
 package security.athentication.custom;
 
-import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.User;
 
@@ -47,7 +46,7 @@ public class CustomAuthenticator implements Authenticator {
 	private User currentUser;
 
 	@Override
-	public void authenticate() throws AuthenticationException {
+	public void authenticate() {
 		this.currentUser = new User() {
 
 			private static final long serialVersionUID = 1L;
@@ -68,7 +67,7 @@ public class CustomAuthenticator implements Authenticator {
 	}
 
 	@Override
-	public void unAuthenticate() {
+	public void unauthenticate() {
 		this.currentUser = null;
 	}
 

@@ -34,8 +34,14 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package security.authorization.custom;
+package security.authorization.disable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import junit.framework.Assert;
@@ -43,67 +49,50 @@ import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import security.athentication.custom.CustomAuthenticator;
+import security.authorization.custom.CustomAuthorizer;
 import test.Tests;
+import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import configuration.resource.ConfigurationResourceTest;
 
+@RequestScoped
 @RunWith(Arquillian.class)
-public class CustomAuthorizerTest {
+public class DisabledAuthorizationTest {
+
+	private static final String PATH = "src/test/resources/security/authorization/disabled";
 
 	@Inject
 	private SecurityContext context;
 
+	private AfterLoginSuccessful event;
+
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = Tests.createDeployment(ConfigurationResourceTest.class);
-		deployment.addClass(CustomAuthenticator.class);
 		deployment.addClass(CustomAuthorizer.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
 		return deployment;
 	}
-	
-	@Before
-	public void loginToTest(){
-		context.login();
+
+	public void observer(@Observes AfterLoginSuccessful event) {
+		this.event = event;
 	}
 
 	@Test
-	public void hasPermission(){
+	public void hasPermissionProcess() {
 		Assert.assertTrue(context.hasPermission("resource", "operation"));
+		Assert.assertTrue(context.hasPermission("falseresource", "falseoperation"));
+		assertNull(event);
 	}
-	
+
 	@Test
-	public void hasRole(){
+	public void hasRoleProcess(){
 		Assert.assertTrue(context.hasRole("role"));
+		Assert.assertTrue(context.hasRole("falserole"));
+		assertNull(event);
 	}
-	
-	/**
-	 * Verify if when already exist an authorizer, the things keeps working fine.
-	 */
-	@Test
-	public void hasPermitionAndHasRole(){
-		Assert.assertTrue(context.hasPermission("resource", "operation"));
-		Assert.assertTrue(context.hasRole("role"));
-	}
-	
-	@Test
-	public void denyPermission(){
-		Assert.assertFalse(context.hasPermission("falseresource", "falseoperation"));
-	}
-	
-	@Test
-	public void denyRole(){
-		Assert.assertFalse(context.hasRole("falserole"));
-	}
-	
-	@After
-	public void logoutAfterTest(){
-		context.logout();
-	}
-	
 }

@@ -36,9 +36,10 @@
  */
 package security.authorization.error;
 
-import javax.inject.Inject;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 
-import junit.framework.Assert;
+import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -51,7 +52,6 @@ import org.junit.runner.RunWith;
 import security.athentication.custom.CustomAuthenticator;
 import test.Tests;
 import br.gov.frameworkdemoiselle.security.AuthorizationException;
-import br.gov.frameworkdemoiselle.security.NotLoggedInException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import configuration.resource.ConfigurationResourceTest;
 
@@ -68,43 +68,37 @@ public class ErrorAuthorizerTest {
 		deployment.addClass(ErrorAuthorizer.class);
 		return deployment;
 	}
-	
+
 	@Before
-	public void loginToTest(){
+	public void loginToTest() {
 		context.login();
 	}
 
 	@Test
-	public void errorDuringCheckPermission(){
-		try{
+	public void errorDuringCheckPermission() {
+		try {
 			context.hasPermission("resource", "operation");
-			Assert.fail("Verificar permissão deveria disparar exceção de runtime");
-		}
-		catch(NotLoggedInException ae){
-			Assert.fail("A exceção disparada não foi a esperada");
-		}
-		catch(RuntimeException e){
-			//PASS
+			fail("Verificar permissão deveria disparar exceção de runtime");
+
+		} catch (AuthorizationException cause) {
+			assertEquals(RuntimeException.class, cause.getCause().getClass());
 		}
 	}
-	
+
 	@Test
-	public void errorDuringCheckRole(){
-		try{
+	public void errorDuringCheckRole() {
+		try {
 			context.hasRole("role");
-			Assert.fail("Verificar papel deveria disparar exceção de runtime");
-		}
-		catch(AuthorizationException ae){
-			Assert.fail("A exceção disparada não foi a esperada");
-		}
-		catch(RuntimeException e){
-			//PASS
+			fail("Verificar papel deveria disparar exceção de runtime");
+
+		} catch (AuthorizationException cause) {
+			assertEquals(RuntimeException.class, cause.getCause().getClass());
 		}
 	}
-	
+
 	@After
-	public void logoutAfterTest(){
+	public void logoutAfterTest() {
 		context.logout();
 	}
-	
+
 }

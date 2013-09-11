@@ -52,6 +52,4 @@ public class ErrorAuthorizer implements Authorizer {
 		throw new RuntimeException("Erro desconhecido ao obter permissões");
 	}
 
-
-	
 }

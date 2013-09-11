@@ -34,76 +34,21 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package security.authorization.custom;
+package security.interceptor.loggedin;
 
-import javax.inject.Inject;
+import br.gov.frameworkdemoiselle.security.LoggedIn;
 
-import junit.framework.Assert;
+@LoggedIn
+public class DummyProtectedClass {
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+	private String dummyAttrib;
 
-import security.athentication.custom.CustomAuthenticator;
-import test.Tests;
-import br.gov.frameworkdemoiselle.security.SecurityContext;
-import configuration.resource.ConfigurationResourceTest;
-
-@RunWith(Arquillian.class)
-public class CustomAuthorizerTest {
-
-	@Inject
-	private SecurityContext context;
-
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(ConfigurationResourceTest.class);
-		deployment.addClass(CustomAuthenticator.class);
-		deployment.addClass(CustomAuthorizer.class);
-		return deployment;
-	}
-	
-	@Before
-	public void loginToTest(){
-		context.login();
+	public String getDummyAttrib() {
+		return dummyAttrib;
 	}
 
-	@Test
-	public void hasPermission(){
-		Assert.assertTrue(context.hasPermission("resource", "operation"));
+	public void setDummyAttrib(String dummyAttrib) {
+		this.dummyAttrib = dummyAttrib;
 	}
-	
-	@Test
-	public void hasRole(){
-		Assert.assertTrue(context.hasRole("role"));
-	}
-	
-	/**
-	 * Verify if when already exist an authorizer, the things keeps working fine.
-	 */
-	@Test
-	public void hasPermitionAndHasRole(){
-		Assert.assertTrue(context.hasPermission("resource", "operation"));
-		Assert.assertTrue(context.hasRole("role"));
-	}
-	
-	@Test
-	public void denyPermission(){
-		Assert.assertFalse(context.hasPermission("falseresource", "falseoperation"));
-	}
-	
-	@Test
-	public void denyRole(){
-		Assert.assertFalse(context.hasRole("falserole"));
-	}
-	
-	@After
-	public void logoutAfterTest(){
-		context.logout();
-	}
-	
+
 }

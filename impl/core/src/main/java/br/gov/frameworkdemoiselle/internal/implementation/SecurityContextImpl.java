@@ -38,11 +38,13 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 
 import javax.inject.Named;
 
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.configuration.SecurityConfig;
 import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
 import br.gov.frameworkdemoiselle.security.AfterLogoutSuccessful;
 import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Authenticator;
+import br.gov.frameworkdemoiselle.security.AuthorizationException;
 import br.gov.frameworkdemoiselle.security.Authorizer;
 import br.gov.frameworkdemoiselle.security.NotLoggedInException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
@@ -61,7 +63,7 @@ public class SecurityContextImpl implements SecurityContext {
 
 	private static final long serialVersionUID = 1L;
 
-	private transient  ResourceBundle bundle;
+	private transient ResourceBundle bundle;
 
 	private Authenticator authenticator;
 
@@ -99,26 +101,45 @@ public class SecurityContextImpl implements SecurityContext {
 	 * @see br.gov.frameworkdemoiselle.security.SecurityContext#hasPermission(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean hasPermission(String resource, String operation) throws NotLoggedInException {
+	public boolean hasPermission(String resource, String operation) {
+		boolean result = true;
+
 		if (getConfig().isEnabled()) {
 			checkLoggedIn();
-			return getAuthorizer().hasPermission(resource, operation);
 
-		} else {
-			return true;
+			try {
+				result = getAuthorizer().hasPermission(resource, operation);
+
+			} catch (DemoiselleException cause) {
+				throw cause;
+
+			} catch (Exception cause) {
+				throw new AuthorizationException(cause);
+			}
 		}
+
+		return result;
 	}
 
 	/**
 	 * @see br.gov.frameworkdemoiselle.security.SecurityContext#hasRole(java.lang.String)
 	 */
 	@Override
-	public boolean hasRole(String role) throws NotLoggedInException {
+	public boolean hasRole(String role) {
 		boolean result = true;
 
 		if (getConfig().isEnabled()) {
 			checkLoggedIn();
-			result = getAuthorizer().hasRole(role);
+
+			try {
+				result = getAuthorizer().hasRole(role);
+
+			} catch (DemoiselleException cause) {
+				throw cause;
+
+			} catch (Exception cause) {
+				throw new AuthorizationException(cause);
+			}
 		}
 
 		return result;
@@ -142,9 +163,18 @@ public class SecurityContextImpl implements SecurityContext {
 	 * @see br.gov.frameworkdemoiselle.security.SecurityContext#login()
 	 */
 	@Override
-	public void login() throws AuthenticationException {
+	public void login() {
 		if (getConfig().isEnabled()) {
-			getAuthenticator().authenticate();
+
+			try {
+				getAuthenticator().authenticate();
+
+			} catch (DemoiselleException cause) {
+				throw cause;
+
+			} catch (Exception cause) {
+				throw new AuthenticationException(cause);
+			}
 
 			Beans.getBeanManager().fireEvent(new AfterLoginSuccessful() {
 
@@ -161,7 +191,16 @@ public class SecurityContextImpl implements SecurityContext {
 	public void logout() throws NotLoggedInException {
 		if (getConfig().isEnabled()) {
 			checkLoggedIn();
-			getAuthenticator().unAuthenticate();
+
+			try {
+				getAuthenticator().unauthenticate();
+
+			} catch (DemoiselleException cause) {
+				throw cause;
+
+			} catch (Exception cause) {
+				throw new AuthenticationException(cause);
+			}
 
 			Beans.getBeanManager().fireEvent(new AfterLogoutSuccessful() {
 
@@ -194,7 +233,7 @@ public class SecurityContextImpl implements SecurityContext {
 		}
 	}
 
-	private  ResourceBundle getBundle() {
+	private ResourceBundle getBundle() {
 		if (bundle == null) {
 			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 		}
@@ -202,7 +241,7 @@ public class SecurityContextImpl implements SecurityContext {
 		return bundle;
 	}
 
-	private static class EmptyUser implements User{
+	private static class EmptyUser implements User {
 
 		private static final long serialVersionUID = 1L;
 
