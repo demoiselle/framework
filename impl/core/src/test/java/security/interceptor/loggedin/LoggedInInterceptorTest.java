@@ -37,9 +37,6 @@
 package security.interceptor.loggedin;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
 
@@ -51,16 +48,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import br.gov.frameworkdemoiselle.context.RequestContext;
+import test.Tests;
 import br.gov.frameworkdemoiselle.context.SessionContext;
-import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.NotLoggedInException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
-
-import test.Tests;
 
 @RunWith(Arquillian.class)
 public class LoggedInInterceptorTest {
@@ -98,7 +92,8 @@ public class LoggedInInterceptorTest {
 	@Test
 	public void callProtectedClassAttribLogged() {
 		context.login();
-		protectedClass.getDummyAttrib();
+		protectedClass.setDummyAttrib("Test");
+		assertEquals("Test", protectedClass.getDummyAttrib());
 	}
 	
 	@After
