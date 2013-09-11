@@ -63,22 +63,26 @@ public class LoggedInInterceptorTest {
 	private DummyProtectedClass protectedClass;
 
 	@Inject
+	private DummyProtectedMethods protectedMethods;
+
+	@Inject
 	private SecurityContext context;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = Tests.createDeployment();
 		deployment.addClass(DummyProtectedClass.class);
+		deployment.addClass(DummyProtectedMethods.class);
 		deployment.addClass(CustomAuthenticator.class);
 		return deployment;
 	}
 
 	@Before
-	public void activeContext(){
+	public void activeContext() {
 		SessionContext ctx = Beans.getReference(SessionContext.class);
 		ctx.activate();
 	}
-	
+
 	@Test
 	public void callProtectedClassAttribNotLogged() {
 		try {
@@ -95,9 +99,31 @@ public class LoggedInInterceptorTest {
 		protectedClass.setDummyAttrib("Test");
 		assertEquals("Test", protectedClass.getDummyAttrib());
 	}
-	
+
+	@Test
+	public void callUnprotectedMethod() {
+		assertEquals("Default", protectedMethods.getDummyAttrib());
+	}
+
+	@Test
+	public void callProtectedMethodUnLogged() {
+		try {
+			protectedMethods.setDummyAttrib("Value Changed");
+		} catch (NotLoggedInException cause) {
+			assertEquals(Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"))
+					.getString("user-not-authenticated"), cause.getMessage());
+		}
+	}
+
+	@Test
+	public void callProtectedMethodLogged() {
+		context.login();
+		protectedMethods.setDummyAttrib("Value Changed");
+		assertEquals("Value Changed", protectedMethods.getDummyAttrib());
+	}
+
 	@After
-	public void deactiveContext(){
+	public void deactiveContext() {
 		SessionContext ctx = Beans.getReference(SessionContext.class);
 		ctx.deactivate();
 	}
