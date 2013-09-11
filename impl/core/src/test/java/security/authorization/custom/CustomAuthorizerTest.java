@@ -82,6 +82,15 @@ public class CustomAuthorizerTest {
 		Assert.assertTrue(context.hasRole("role"));
 	}
 	
+	/**
+	 * Verify if when already exist an authorizer, the things keeps working fine.
+	 */
+	@Test
+	public void hasPermitionAndHasRole(){
+		Assert.assertTrue(context.hasPermission("resource", "operation"));
+		Assert.assertTrue(context.hasRole("role"));
+	}
+	
 	@Test
 	public void denyPermission(){
 		Assert.assertFalse(context.hasPermission("falseresource", "falseoperation"));
