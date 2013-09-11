@@ -36,9 +36,7 @@
  */
 package security.authorization.disable;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
@@ -52,7 +50,6 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import security.athentication.custom.CustomAuthenticator;
 import security.authorization.custom.CustomAuthorizer;
 import test.Tests;
 import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
