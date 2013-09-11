@@ -124,7 +124,12 @@ public class RequiredPermissionInterceptor implements Serializable {
 	 *         annotation or the class name itself
 	 */
 	private String getResource(InvocationContext ic) {
-		RequiredPermission requiredPermission = ic.getMethod().getAnnotation(RequiredPermission.class);
+		RequiredPermission requiredPermission;
+		requiredPermission = ic.getMethod().getAnnotation(RequiredPermission.class);
+		
+		if(requiredPermission == null){
+			requiredPermission = ic.getTarget().getClass().getAnnotation(RequiredPermission.class);
+		}
 
 		if (requiredPermission == null || Strings.isEmpty(requiredPermission.resource())) {
 			if (ic.getTarget().getClass().getAnnotation(Name.class) == null) {
@@ -147,8 +152,13 @@ public class RequiredPermissionInterceptor implements Serializable {
 	 *         annotation or the method's name itself
 	 */
 	private String getOperation(InvocationContext ic) {
-		RequiredPermission requiredPermission = ic.getMethod().getAnnotation(RequiredPermission.class);
-
+		RequiredPermission requiredPermission;
+		requiredPermission = ic.getMethod().getAnnotation(RequiredPermission.class);
+		
+		if(requiredPermission == null){
+			requiredPermission = ic.getTarget().getClass().getAnnotation(RequiredPermission.class);
+		}
+		
 		if (requiredPermission == null || Strings.isEmpty(requiredPermission.operation())) {
 			if (ic.getMethod().getAnnotation(Name.class) == null) {
 				return ic.getMethod().getName();
