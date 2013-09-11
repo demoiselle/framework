@@ -46,6 +46,8 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -77,6 +79,12 @@ public class LoggedInInterceptorTest {
 		return deployment;
 	}
 
+	@Before
+	public void activeContext(){
+		SessionContext ctx = Beans.getReference(SessionContext.class);
+		ctx.activate();
+	}
+	
 	@Test
 	public void callProtectedClassAttribNotLogged() {
 		try {
@@ -89,12 +97,13 @@ public class LoggedInInterceptorTest {
 
 	@Test
 	public void callProtectedClassAttribLogged() {
-		SessionContext ctx = Beans.getReference(SessionContext.class);
-		ctx.activate();
-		
 		context.login();
 		protectedClass.getDummyAttrib();
-		
+	}
+	
+	@After
+	public void deactiveContext(){
+		SessionContext ctx = Beans.getReference(SessionContext.class);
 		ctx.deactivate();
 	}
 }
