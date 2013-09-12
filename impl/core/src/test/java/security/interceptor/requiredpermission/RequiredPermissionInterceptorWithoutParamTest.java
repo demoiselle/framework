@@ -37,7 +37,6 @@
 package security.interceptor.requiredpermission;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import javax.inject.Inject;
 
@@ -46,19 +45,17 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import security.interceptor.loggedin.CustomAuthenticator;
 import test.Tests;
 import br.gov.frameworkdemoiselle.context.SessionContext;
-import br.gov.frameworkdemoiselle.security.AuthorizationException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
-public class RequiredPermissionInterceptorTest2 {
+public class RequiredPermissionInterceptorWithoutParamTest {
 
 	@Inject
 	private DummyProtectedClassAuthorizedWithoutParams protectedClassAuthorizedWithoutParams;
@@ -71,7 +68,7 @@ public class RequiredPermissionInterceptorTest2 {
 		JavaArchive deployment = Tests.createDeployment();
 		deployment.addClass(DummyProtectedClassAuthorizedWithoutParams.class);
 		deployment.addClass(CustomAuthenticator.class);
-		deployment.addClass(CustomAuthorizer2.class);
+		deployment.addClass(CustomAuthorizerClassAndMethod.class);
 		return deployment;
 	}
 

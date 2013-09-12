@@ -46,7 +46,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -62,13 +61,13 @@ public class RequiredPermissionInterceptorTest {
 
 	@Inject
 	private DummyProtectedClassAuthorized protectedClassAuthorized;
-	
+
 	@Inject
 	private DummyProtectedClassUnauthorized protectedClassUnAuthorized;
 
 	@Inject
 	private DummyProtectedMethods protectedMethods;
-	
+
 	@Inject
 	private DummyProtectedClassAndMethod protectedClassAndMethod;
 
@@ -91,11 +90,11 @@ public class RequiredPermissionInterceptorTest {
 	public void activeContext() {
 		SessionContext sessionContext = Beans.getReference(SessionContext.class);
 		sessionContext.activate();
-		
+
 		securityContext.login();
 	}
 
-	@Test(expected=AuthorizationException.class)
+	@Test(expected = AuthorizationException.class)
 	public void callProtectedClassAttribNotAuthorized() {
 		protectedClassUnAuthorized.getDummyAttrib();
 	}
@@ -106,37 +105,35 @@ public class RequiredPermissionInterceptorTest {
 		assertEquals("Test", protectedClassAuthorized.getDummyAttrib());
 	}
 
-	@Test(expected=AuthorizationException.class)
-	public void callProtectedMethodNotAuthorized(){
+	@Test(expected = AuthorizationException.class)
+	public void callProtectedMethodNotAuthorized() {
 		protectedMethods.setDummyAttribUnauthorized("Not Authorized");
 	}
-	
+
 	@Test
-	public void callProtectedMethodAuthorized(){
+	public void callProtectedMethodAuthorized() {
 		protectedMethods.setDummyAttribAuthorized("Authorized");
 		assertEquals("Authorized", protectedMethods.getDummyAttrib());
 	}
-	
+
 	/**
 	 * This test aim to verify the priority of method authorization over class authorization
 	 */
 	@Test
-	public void callNotAnnotatedMethod(){
-		try{
+	public void callNotAnnotatedMethod() {
+		try {
 			protectedClassAndMethod.setDummyAttribWithClassAuthorization("Class not authorized");
 			fail();
-		}catch(AuthorizationException cause){
+		} catch (AuthorizationException cause) {
 		}
-		
+
 		protectedClassAndMethod.setDummyAttribWithAuthorization("Method authorized");
 	}
-	
-	
-	
+
 	@After
 	public void deactiveContext() {
 		securityContext.logout();
-		
+
 		SessionContext ctx = Beans.getReference(SessionContext.class);
 		ctx.deactivate();
 	}
