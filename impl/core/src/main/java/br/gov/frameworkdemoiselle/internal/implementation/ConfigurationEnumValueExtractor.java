@@ -55,12 +55,17 @@ public class ConfigurationEnumValueExtractor implements ConfigurationValueExtrac
 	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
 		String value = configuration.getString(prefix + key);
 		
-		Object enums[] = field.getDeclaringClass().getEnumConstants();
-		
-		for (int i=0; i<enums.length; i++){
-			if (enums[i].getClass().getSimpleName().equalsIgnoreCase(value)){
-				return enums[i];
+		if (value!=null){
+			Object enums[] = field.getDeclaringClass().getEnumConstants();
+			
+			for (int i=0; i<enums.length; i++){
+				if (enums[i].getClass().getSimpleName().equalsIgnoreCase(value)){
+					return enums[i];
+				}
 			}
+		}
+		else{
+			return null;
 		}
 		
 		throw new ConversionException(getBundle().getString("configuration-not-conversion",value,field.getDeclaringClass().getCanonicalName()));
@@ -68,7 +73,7 @@ public class ConfigurationEnumValueExtractor implements ConfigurationValueExtrac
 
 	@Override
 	public boolean isSupported(Field field) {
-		return field.getDeclaringClass().isEnum();
+		return field.getType().isEnum();
 	}
 	
 	private ResourceBundle getBundle(){
