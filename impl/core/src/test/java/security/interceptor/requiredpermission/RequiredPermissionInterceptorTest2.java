@@ -34,9 +34,10 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package security.interceptor.loggedin;
+package security.interceptor.requiredpermission;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import javax.inject.Inject;
 
@@ -45,85 +46,53 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import security.interceptor.loggedin.CustomAuthenticator;
 import test.Tests;
 import br.gov.frameworkdemoiselle.context.SessionContext;
-import br.gov.frameworkdemoiselle.security.NotLoggedInException;
+import br.gov.frameworkdemoiselle.security.AuthorizationException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.NameQualifier;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @RunWith(Arquillian.class)
-public class LoggedInInterceptorTest {
+public class RequiredPermissionInterceptorTest2 {
 
 	@Inject
-	private DummyProtectedClass protectedClass;
+	private DummyProtectedClassAuthorizedWithoutParams protectedClassAuthorizedWithoutParams;
 
 	@Inject
-	private DummyProtectedMethods protectedMethods;
-
-	@Inject
-	private SecurityContext context;
+	private SecurityContext securityContext;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = Tests.createDeployment();
-		deployment.addClass(DummyProtectedClass.class);
-		deployment.addClass(DummyProtectedMethods.class);
+		deployment.addClass(DummyProtectedClassAuthorizedWithoutParams.class);
 		deployment.addClass(CustomAuthenticator.class);
+		deployment.addClass(CustomAuthorizer2.class);
 		return deployment;
 	}
 
 	@Before
 	public void activeContext() {
-		SessionContext ctx = Beans.getReference(SessionContext.class);
-		ctx.activate();
+		SessionContext sessionContext = Beans.getReference(SessionContext.class);
+		sessionContext.activate();
+		
+		securityContext.login();
 	}
 
 	@Test
-	public void callProtectedClassAttribNotLogged() {
-		try {
-			protectedClass.getDummyAttrib();
-		} catch (NotLoggedInException cause) {
-			assertEquals(Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"))
-					.getString("user-not-authenticated"), cause.getMessage());
-		}
-	}
-
-	@Test
-	public void callProtectedClassAttribLogged() {
-		context.login();
-		protectedClass.setDummyAttrib("Test");
-		assertEquals("Test", protectedClass.getDummyAttrib());
-	}
-
-	@Test
-	public void callUnprotectedMethod() {
-		assertEquals("Default", protectedMethods.getDummyAttrib());
-	}
-
-	@Test
-	public void callProtectedMethodUnLogged() {
-		try {
-			protectedMethods.setDummyAttrib("Value Changed");
-		} catch (NotLoggedInException cause) {
-			assertEquals(Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"))
-					.getString("user-not-authenticated"), cause.getMessage());
-		}
-	}
-
-	@Test
-	public void callProtectedMethodLogged() {
-		context.login();
-		protectedMethods.setDummyAttrib("Value Changed");
-		assertEquals("Value Changed", protectedMethods.getDummyAttrib());
+	public void callProtectedClassAttribNotAuthorized() {
+		protectedClassAuthorizedWithoutParams.setDummyAttrib("Test");
+		assertEquals("Test", protectedClassAuthorizedWithoutParams.getDummyAttrib());
 	}
 
 	@After
 	public void deactiveContext() {
+		securityContext.logout();
+		
 		SessionContext ctx = Beans.getReference(SessionContext.class);
 		ctx.deactivate();
 	}

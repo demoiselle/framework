@@ -34,62 +34,24 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package security.authorization.disable;
+package security.interceptor.requiredpermission;
 
-import static org.junit.Assert.assertNull;
+import br.gov.frameworkdemoiselle.security.Authorizer;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
+public class CustomAuthorizer2 implements Authorizer {
 
-import junit.framework.Assert;
+	private static final long serialVersionUID = 1L;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import security.authorization.custom.CustomAuthorizer;
-import test.Tests;
-import br.gov.frameworkdemoiselle.security.AfterLoginSuccessful;
-import br.gov.frameworkdemoiselle.security.SecurityContext;
-import configuration.resource.ConfigurationResourceTest;
-
-@RequestScoped
-@RunWith(Arquillian.class)
-public class DisabledAuthorizationTest {
-
-	private static final String PATH = "src/test/resources/security/authorization/disabled";
-
-	@Inject
-	private SecurityContext context;
-
-	private AfterLoginSuccessful event;
-
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(ConfigurationResourceTest.class);
-		deployment.addClass(CustomAuthorizer.class);
-		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
-		return deployment;
+	@Override
+	public boolean hasRole(String role) {
+		return "role".equals(role);
 	}
 
-	public void observer(@Observes AfterLoginSuccessful event) {
-		this.event = event;
+	@Override
+	public boolean hasPermission(String resource, String operation) {
+		System.out.println("###" + resource + " " + operation + "###");
+		return "DummyProtectedClassAuthorizedWithoutParams$Proxy$_$$_WeldSubclass".equals(resource)
+				&& ("setDummyAttrib".equals(operation) || "getDummyAttrib".equals(operation));
 	}
 
-	@Test
-	public void hasPermissionProcess() {
-		Assert.assertTrue(context.hasPermission("resource", "operation"));
-		Assert.assertTrue(context.hasPermission("falseresource", "falseoperation"));
-		assertNull(event);
-	}
-
-	@Test
-	public void hasRoleProcess(){
-		Assert.assertTrue(context.hasRole("role"));
-		Assert.assertTrue(context.hasRole("falserole"));
-		assertNull(event);
-	}
 }
