@@ -121,9 +121,7 @@ public class RequiredRoleInterceptor implements Serializable {
 		String[] roles = {};
 
 		if (ic.getMethod().getAnnotation(RequiredRole.class) == null) {
-			if (ic.getTarget().getClass().getAnnotation(RequiredRole.class) != null) {
-				roles = ic.getTarget().getClass().getAnnotation(RequiredRole.class).value();
-			}
+			roles = ic.getTarget().getClass().getAnnotation(RequiredRole.class).value();
 		} else {
 			roles = ic.getMethod().getAnnotation(RequiredRole.class).value();
 		}

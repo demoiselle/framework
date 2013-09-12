@@ -85,7 +85,7 @@ public class RequiredPermissionInterceptor implements Serializable {
 		String username = null;
 
 		if (getSecurityContext().isLoggedIn()) {
-			username = getUsername();
+			username = getSecurityContext().getUser().getId();
 			getLogger().trace(getBundle().getString("access-checking", username, operation, resource));
 		}
 
@@ -96,22 +96,6 @@ public class RequiredPermissionInterceptor implements Serializable {
 
 		getLogger().debug(getBundle().getString("access-allowed", username, operation, resource));
 		return ic.proceed();
-	}
-
-	/**
-	 * Returns the id of the currently logged in user.
-	 * 
-	 * @return the id of the currently logged in user
-	 */
-	private String getUsername() {
-		String username = "";
-		User user = getSecurityContext().getUser();
-
-		if (user != null && user.getId() != null) {
-			username = user.getId();
-		}
-
-		return username;
 	}
 
 	/**
@@ -131,7 +115,7 @@ public class RequiredPermissionInterceptor implements Serializable {
 			requiredPermission = ic.getTarget().getClass().getAnnotation(RequiredPermission.class);
 		}
 
-		if (requiredPermission == null || Strings.isEmpty(requiredPermission.resource())) {
+		if (Strings.isEmpty(requiredPermission.resource())) {
 			if (ic.getTarget().getClass().getAnnotation(Name.class) == null) {
 				return ic.getTarget().getClass().getSimpleName();
 			} else {
@@ -159,7 +143,7 @@ public class RequiredPermissionInterceptor implements Serializable {
 			requiredPermission = ic.getTarget().getClass().getAnnotation(RequiredPermission.class);
 		}
 		
-		if (requiredPermission == null || Strings.isEmpty(requiredPermission.operation())) {
+		if (Strings.isEmpty(requiredPermission.operation())) {
 			if (ic.getMethod().getAnnotation(Name.class) == null) {
 				return ic.getMethod().getName();
 			} else {

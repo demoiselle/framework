@@ -36,22 +36,39 @@
  */
 package security.interceptor.requiredpermission;
 
-import br.gov.frameworkdemoiselle.security.Authorizer;
+import static org.junit.Assert.fail;
 
-public class CustomAuthorizer2 implements Authorizer {
+import javax.inject.Inject;
 
-	private static final long serialVersionUID = 1L;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	@Override
-	public boolean hasRole(String role) {
-		return "role".equals(role);
+import security.athentication.custom.CustomAuthenticator;
+import test.Tests;
+import br.gov.frameworkdemoiselle.security.NotLoggedInException;
+
+@RunWith(Arquillian.class)
+public class RequiredPermissionInterceptorWithoutLoggedInTest {
+
+	@Inject
+	private DummyProtectedClassAuthorized protectedClassAuthorized;
+
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment();
+		deployment.addClass(CustomAuthenticator.class);
+		deployment.addClass(CustomAuthorizer.class);
+		deployment.addClass(DummyProtectedClassAuthorized.class);
+		return deployment;
 	}
 
-	@Override
-	public boolean hasPermission(String resource, String operation) {
-		System.out.println("###" + resource + " " + operation + "###");
-		return "DummyProtectedClassAuthorizedWithoutParams$Proxy$_$$_WeldSubclass".equals(resource)
-				&& ("setDummyAttrib".equals(operation) || "getDummyAttrib".equals(operation));
+	@Test(expected = NotLoggedInException.class)
+	public void correctRoleOnClass() {
+		protectedClassAuthorized.setDummyAttrib("Not LoggedIn");
+		fail();
 	}
 
 }

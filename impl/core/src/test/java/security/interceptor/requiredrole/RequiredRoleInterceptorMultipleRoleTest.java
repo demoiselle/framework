@@ -34,10 +34,9 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package security.interceptor.requiredpermission;
+package security.interceptor.requiredrole;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import javax.inject.Inject;
 
@@ -52,37 +51,28 @@ import org.junit.runner.RunWith;
 import security.interceptor.loggedin.CustomAuthenticator;
 import test.Tests;
 import br.gov.frameworkdemoiselle.context.SessionContext;
-import br.gov.frameworkdemoiselle.security.AuthorizationException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
-public class RequiredPermissionInterceptorTest {
-
-	@Inject
-	private DummyProtectedClassAuthorized protectedClassAuthorized;
-
-	@Inject
-	private DummyProtectedClassUnauthorized protectedClassUnAuthorized;
-
-	@Inject
-	private DummyProtectedMethods protectedMethods;
-
-	@Inject
-	private DummyProtectedClassAndMethod protectedClassAndMethod;
+public class RequiredRoleInterceptorMultipleRoleTest {
 
 	@Inject
 	private SecurityContext securityContext;
 
+	@Inject
+	private ClassAndMethodWithRole classAndMethodWithRole;
+
+	@Inject
+	private MethodsWithTwoRoles methodsWithTwoRoles;
+
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive deployment = Tests.createDeployment();
-		deployment.addClass(DummyProtectedClassAuthorized.class);
-		deployment.addClass(DummyProtectedClassUnauthorized.class);
-		deployment.addClass(DummyProtectedMethods.class);
-		deployment.addClass(DummyProtectedClassAndMethod.class);
+		deployment.addClass(ClassAndMethodWithRole.class);
+		deployment.addClass(MethodsWithTwoRoles.class);
 		deployment.addClass(CustomAuthenticator.class);
-		deployment.addClass(CustomAuthorizer.class);
+		deployment.addClass(CustomAuthorizerMultipleRoles.class);
 		return deployment;
 	}
 
@@ -90,50 +80,24 @@ public class RequiredPermissionInterceptorTest {
 	public void activeContext() {
 		SessionContext sessionContext = Beans.getReference(SessionContext.class);
 		sessionContext.activate();
-
 		securityContext.login();
 	}
 
-	@Test(expected = AuthorizationException.class)
-	public void callProtectedClassAttribNotAuthorized() {
-		protectedClassUnAuthorized.getDummyAttrib();
-	}
-
 	@Test
-	public void callProtectedClassAttribAuthorized() {
-		protectedClassAuthorized.setDummyAttrib("Test");
-		assertEquals("Test", protectedClassAuthorized.getDummyAttrib());
+	public void roleOnClassAndMethod() {
+		classAndMethodWithRole.setAttr("new value");
+		assertEquals("new value", classAndMethodWithRole.getAttr());
 	}
-
-	@Test(expected = AuthorizationException.class)
-	public void callProtectedMethodNotAuthorized() {
-		protectedMethods.setDummyAttribUnauthorized("Not Authorized");
-	}
-
+	
 	@Test
-	public void callProtectedMethodAuthorized() {
-		protectedMethods.setDummyAttribAuthorized("Authorized");
-		assertEquals("Authorized", protectedMethods.getDummyAttrib());
-	}
-
-	/**
-	 * This test aim to verify the priority of method authorization over class authorization
-	 */
-	@Test
-	public void callNotAnnotatedMethod() {
-		try {
-			protectedClassAndMethod.setDummyAttribWithClassAuthorization("Class not authorized");
-			fail();
-		} catch (AuthorizationException cause) {
-		}
-
-		protectedClassAndMethod.setDummyAttribWithAuthorization("Method authorized");
+	public void methosdWithTwoRoles() {
+		methodsWithTwoRoles.setAttr("new value");
+		assertEquals("new value", methodsWithTwoRoles.getAttr());
 	}
 
 	@After
 	public void deactiveContext() {
 		securityContext.logout();
-
 		SessionContext ctx = Beans.getReference(SessionContext.class);
 		ctx.deactivate();
 	}
