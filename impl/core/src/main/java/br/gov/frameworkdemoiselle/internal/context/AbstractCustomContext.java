@@ -175,6 +175,23 @@ public abstract class AbstractCustomContext implements CustomContext {
 		
 		return logger;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if ( !this.getClass().equals(obj.getClass()) )
+			return false;
+		AbstractCustomContext other = (AbstractCustomContext) obj;
+		if (scope == null) {
+			if (other.scope != null)
+				return false;
+		} else if (!scope.equals(other.scope))
+			return false;
+		return true;
+	}
 
 	static class Store {
 

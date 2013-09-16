@@ -10,17 +10,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
-import javax.enterprise.inject.spi.ProcessManagedBean;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
@@ -42,7 +39,7 @@ public class EntityManagerBootstrap implements Extension {
 	
 	private EntityManagerScope selectedScope;
 	
-	public void replaceAnnotatedType(@Observes final ProcessAnnotatedType<EntityManagerProducer> event , BeanManager manager){
+	public void replaceAnnotatedType(final ProcessAnnotatedType<EntityManagerProducer> event , BeanManager manager){
 		
 		if (event.getAnnotatedType().getJavaClass().equals(EntityManagerProducer.class)){
 			AnnotatedType<EntityManagerProducer> wrapper = new AnnotatedType<EntityManagerProducer>() {
@@ -135,10 +132,7 @@ public class EntityManagerBootstrap implements Extension {
 		}
 	}
 	
-	public void a(@Observes BeforeBeanDiscovery event){
-	}
-	
-	public void configureBean(@Observes ProcessBean<EntityManagerProducer> event , BeanManager manager){
+	public void configureBean(ProcessBean<EntityManagerProducer> event , BeanManager manager){
 		Class<? extends Annotation> beanScope = event.getBean().getScope();
 		System.out.println(beanScope.toString());
 	}

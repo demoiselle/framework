@@ -41,7 +41,6 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Extension;
 
-import br.gov.frameworkdemoiselle.context.ViewContext;
 import br.gov.frameworkdemoiselle.internal.context.CustomContextProducer;
 import br.gov.frameworkdemoiselle.internal.context.FacesViewContextImpl;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
@@ -54,6 +53,7 @@ public class JsfBootstrap implements Extension {
 	//private AfterBeanDiscovery afterBeanDiscoveryEvent;
 	
 	private FacesViewContextImpl context;
+	private boolean contextActivatedHere;
 	
 	public void createCustomContext(@Observes AfterBeanDiscovery event){
 		context = new FacesViewContextImpl();
@@ -65,13 +65,19 @@ public class JsfBootstrap implements Extension {
 		producer.addRegisteredContext(context);
 		
 		//Ativa o ViewContext
-		ViewContext ctx = Beans.getReference(FacesViewContextImpl.class);
-		ctx.activate();
+		if (!context.isActive()){
+			context.activate();
+			contextActivatedHere = true;
+		}
+		else{
+			contextActivatedHere = false;
+		}
 	}
 
 	public void removeContexts(@Observes AfterShutdownProccess event) {
 		//Desativa o ViewContext
-		ViewContext ctx = Beans.getReference(FacesViewContextImpl.class);
-		ctx.deactivate();
+		if (contextActivatedHere){
+			context.deactivate();
+		}
 	}
 }

@@ -103,7 +103,7 @@ public class CustomContextProducer {
 			logger.debug( bundle.getString("bootstrap-context-added", context.getClass().getCanonicalName() , context.getScope().getSimpleName() ) );
 		}
 		else{
-			logger.debug( bundle.getString("bootstrap-context-already-managed", context.getClass().getCanonicalName() , context.getScope().getSimpleName() ) );
+			logger.warn( bundle.getString("bootstrap-context-already-managed", context.getClass().getCanonicalName() , context.getScope().getSimpleName() ) );
 		}
 	}
 

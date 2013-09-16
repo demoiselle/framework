@@ -44,6 +44,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -66,6 +67,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * persistence.xml, demoiselle.properties or @PersistenceUnit annotation.
  * </p>
  */
+@RequestScoped
 public class EntityManagerProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;

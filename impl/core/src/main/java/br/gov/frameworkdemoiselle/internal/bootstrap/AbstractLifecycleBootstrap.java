@@ -51,6 +51,7 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.context.ConversationContext;
 import br.gov.frameworkdemoiselle.context.RequestContext;
 import br.gov.frameworkdemoiselle.context.SessionContext;
 import br.gov.frameworkdemoiselle.context.ViewContext;
@@ -127,11 +128,25 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		RequestContext tempRequestContext = Beans.getReference(RequestContext.class);
 		SessionContext tempSessionContext = Beans.getReference(SessionContext.class);
 		ViewContext tempViewContext = Beans.getReference(ViewContext.class);
+		ConversationContext tempConversationContext = Beans.getReference(ConversationContext.class);
 
+		boolean requestActivatedHere = !tempRequestContext.isActive();
+		boolean sessionActivatedHere = !tempSessionContext.isActive();
+		boolean viewActivatedHere = !tempViewContext.isActive();
+		boolean conversationActivatedHere = !tempConversationContext.isActive();
+		
 		if (!registered) {
-			tempRequestContext.activate();
-			tempSessionContext.activate();
-			tempViewContext.activate();
+			if (!tempRequestContext.isActive())
+				tempRequestContext.activate();
+			
+			if (!tempSessionContext.isActive())
+				tempSessionContext.activate();
+			
+			if (!tempViewContext.isActive())
+				tempViewContext.activate();
+			
+			if (!tempConversationContext.isActive())
+				tempConversationContext.activate();
 
 			registered = true;
 		}
@@ -154,9 +169,21 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		}
 
 		if (processors.isEmpty()) {
-			tempRequestContext.deactivate();
-			tempSessionContext.deactivate();
-			tempViewContext.deactivate();
+			if (requestActivatedHere){
+				tempRequestContext.deactivate();
+			}
+			
+			if (sessionActivatedHere){
+				tempSessionContext.deactivate();
+			}
+			
+			if (viewActivatedHere){
+				tempViewContext.deactivate();
+			}
+			
+			if (conversationActivatedHere){
+				tempConversationContext.deactivate();
+			}
 		}
 
 		if (failure != null) {
