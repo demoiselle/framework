@@ -55,7 +55,6 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  *            bean object type
  * @param <I>
  *            bean id type
- *            
  * @author SERPRO
  * @see EditPageBean
  */
@@ -133,7 +132,7 @@ public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean implem
 		return Faces.getConverter(getIdClass());
 	}
 
-	protected abstract void handleLoad();
+	protected abstract T handleLoad(final I id);
 
 	private void initBean() {
 		if (isUpdateMode()) {
@@ -149,8 +148,7 @@ public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean implem
 	}
 
 	private T loadBean() {
-		this.handleLoad();
-		return this.bean;
+		return handleLoad(getId());
 	}
 
 	protected void setBean(final T bean) {
