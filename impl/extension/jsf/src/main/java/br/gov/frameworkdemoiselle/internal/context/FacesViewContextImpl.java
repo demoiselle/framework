@@ -38,7 +38,6 @@ package br.gov.frameworkdemoiselle.internal.context;
 
 import java.util.Map;
 
-import javax.enterprise.inject.Alternative;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
@@ -57,7 +56,6 @@ import br.gov.frameworkdemoiselle.util.Faces;
  *
  */
 @Priority(Priority.L2_PRIORITY)
-@Alternative
 public class FacesViewContextImpl extends AbstractCustomContext implements ViewContext {
 
 	public FacesViewContextImpl() {

@@ -48,8 +48,6 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
-import javax.enterprise.inject.Alternative;
-
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.annotation.StaticScoped;
 import br.gov.frameworkdemoiselle.context.StaticContext;
@@ -63,7 +61,6 @@ import br.gov.frameworkdemoiselle.context.StaticContext;
  *
  */
 @Priority(Priority.MIN_PRIORITY)
-@Alternative
 public class StaticContextImpl extends AbstractStaticContext implements StaticContext {
 
 	public StaticContextImpl() {

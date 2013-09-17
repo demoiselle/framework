@@ -49,7 +49,6 @@
 package br.gov.frameworkdemoiselle.internal.context;
 
 import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Alternative;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.context.SessionContext;
@@ -66,7 +65,6 @@ import br.gov.frameworkdemoiselle.context.SessionContext;
  *
  */
 @Priority(Priority.MIN_PRIORITY)
-@Alternative
 public class TemporarySessionContextImpl extends AbstractStaticContext implements SessionContext {
 
 	public TemporarySessionContextImpl() {
