@@ -129,7 +129,7 @@
 						<entry>true</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.&#8203;handle.&#8203;application.&#8203;exception</entry>
+						<entry>frameworkdemoiselle.&#8203;exception.&#8203;application.&#8203;handle</entry>
 						<entry>
 							<para>
 								Habilita o tratamento automático das exceções da aplicação anotadas com @ApplicationException.
@@ -138,7 +138,7 @@
 						<entry>true</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.&#8203;handle.&#8203;application.&#8203;exception.&#8203;page</entry>
+						<entry>frameworkdemoiselle.&#8203;exception.&#8203;default.&#8203;redirect.&#8203;page</entry>
 						<entry>
 							<para>
 								Define o redirecionamento das exceções da aplicação anotadas com @ApplicationException ocorridas
