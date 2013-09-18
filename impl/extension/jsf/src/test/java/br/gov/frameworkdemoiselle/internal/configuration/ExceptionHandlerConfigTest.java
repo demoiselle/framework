@@ -16,12 +16,12 @@ public class ExceptionHandlerConfigTest {
 
 	@Test
 	public void testGetExceptionPage() {
-		assertEquals("/application_error", config.getExceptionPage());
+		assertEquals("/application_error", config.getDefaultRedirectExceptionPage());
 	}
 
 	@Test
 	public void testIsHandleApplicationException() {
-		assertEquals(true, config.isHandleApplicationException());
+		assertEquals(true, config.isApplicationExceptionHandle());
 	}
 	
 }
