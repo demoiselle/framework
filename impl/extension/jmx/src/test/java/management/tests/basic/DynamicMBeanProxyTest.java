@@ -105,7 +105,7 @@ public class DynamicMBeanProxyTest {
 
 		ObjectName name = null;
 		try {
-			name = new ObjectName("br.gov.frameworkdemoiselle.jmx.domain:name=ManagedTest");
+			name = new ObjectName("br.gov.frameworkdemoiselle.domain:name=ManagedTest");
 		} catch (MalformedObjectNameException e) {
 			Assert.fail();
 		}
@@ -125,7 +125,7 @@ public class DynamicMBeanProxyTest {
 
 		ObjectName name = null;
 		try {
-			name = new ObjectName("br.gov.frameworkdemoiselle.jmx.domain:name=ManagedTest");
+			name = new ObjectName("br.gov.frameworkdemoiselle.domain:name=ManagedTest");
 		} catch (MalformedObjectNameException e) {
 			Assert.fail();
 		}
@@ -149,7 +149,7 @@ public class DynamicMBeanProxyTest {
 
 		ObjectName name = null;
 		try {
-			name = new ObjectName("br.gov.frameworkdemoiselle.jmx.domain:name=ManagedTest");
+			name = new ObjectName("br.gov.frameworkdemoiselle.domain:name=ManagedTest");
 		} catch (MalformedObjectNameException e) {
 			Assert.fail();
 		}
@@ -172,7 +172,7 @@ public class DynamicMBeanProxyTest {
 
 		ObjectName name = null;
 		try {
-			name = new ObjectName("br.gov.frameworkdemoiselle.jmx.domain:name=ManagedTest");
+			name = new ObjectName("br.gov.frameworkdemoiselle.domain:name=ManagedTest");
 		} catch (MalformedObjectNameException e) {
 			Assert.fail();
 		}

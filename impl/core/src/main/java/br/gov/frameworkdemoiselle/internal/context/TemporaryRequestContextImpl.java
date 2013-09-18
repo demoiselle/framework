@@ -49,7 +49,6 @@
 package br.gov.frameworkdemoiselle.internal.context;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Alternative;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.context.RequestContext;
@@ -65,7 +64,6 @@ import br.gov.frameworkdemoiselle.context.RequestContext;
  *
  */
 @Priority(Priority.MIN_PRIORITY)
-@Alternative
 public class TemporaryRequestContextImpl extends AbstractThreadLocalContext implements RequestContext {
 
 	public TemporaryRequestContextImpl() {

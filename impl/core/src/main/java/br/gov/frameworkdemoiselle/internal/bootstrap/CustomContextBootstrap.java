@@ -6,6 +6,7 @@ import java.util.List;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.context.CustomContext;
 import br.gov.frameworkdemoiselle.context.StaticContext;
@@ -25,6 +26,13 @@ import br.gov.frameworkdemoiselle.internal.context.TemporaryViewContextImpl;
 public class CustomContextBootstrap implements Extension{
 	
 	private List<CustomContext> contexts;
+	
+	public <T extends CustomContext> void vetoCustomContexts(@Observes ProcessAnnotatedType<T> event){
+		//Veta os subtipos de CustomContext, para que não conflitem com o produtor de contextos personalizados. 
+		if( CustomContext.class.isAssignableFrom( event.getAnnotatedType().getJavaClass() )){
+			event.veto();
+		}
+	}
 	
 	public void initializeContexts(@Observes AfterBeanDiscovery event){
 		//Cadastra os contextos contidos no demoiselle-core
