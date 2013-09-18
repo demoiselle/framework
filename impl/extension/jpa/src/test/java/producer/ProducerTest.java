@@ -4,20 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import br.gov.frameworkdemoiselle.context.RequestContext;
 import br.gov.frameworkdemoiselle.internal.proxy.EntityManagerProxy;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
@@ -27,10 +22,7 @@ public class ProducerTest {
 
 	private static final String PATH = "src/test/resources/producer";
 	
-	@Inject
-	private RequestContext ctx;
-
-	@Deployment(name="request_scoped_producer")
+	@Deployment//(name="request_scoped_producer")
 	public static WebArchive createDeployment() {
 		WebArchive deployment = Tests.createDeployment(ProducerTest.class);
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/persistence.xml"), "META-INF/persistence.xml");
@@ -39,27 +31,16 @@ public class ProducerTest {
 		return deployment;
 	}
 	
-	@Deployment(name="no_scoped_producer")
+	/*@Deployment(name="no_scoped_producer")
 	public static WebArchive createNoScopedDeployment() {
 		WebArchive deployment = Tests.createDeployment(ProducerTest.class);
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/persistence.xml"), "META-INF/persistence.xml");
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle_noscoped.properties"), "demoiselle.properties");
 		
 		return deployment;
-	}
+	}*/
 	
-	@Before
-	public void before(){
-		ctx.activate();
-	}
-	
-	@After
-	public void after(){
-		ctx.deactivate();
-	}
-
 	@Test
-	@OperateOnDeployment("request_scoped_producer")
 	public void produceEntityManager() {
 		EntityManager manager = Beans.getReference(EntityManager.class);
 
@@ -68,7 +49,6 @@ public class ProducerTest {
 	}
 
 	@Test
-	@OperateOnDeployment("request_scoped_producer")
 	public void produceMultipleEntityManagers() {
 		EntityManager m1 = Beans.getReference(EntityManager.class, new NameQualifier("pu"));
 
@@ -82,7 +62,6 @@ public class ProducerTest {
 	}
 
 	@Test
-	@OperateOnDeployment("request_scoped_producer")
 	public void produceOneEntityManagerPerRequest() {
 		EntityManager m1 = Beans.getReference(EntityManager.class, new NameQualifier("pu"));
 
@@ -102,8 +81,7 @@ public class ProducerTest {
 		assertTrue(m2.contains(entity));
 	}
 	
-	@Test
-	@OperateOnDeployment("no_scoped_producer")
+	/*@Test
 	public void produceOneEntityManagerPerInjection() {
 		//Testa se ao usar o produtor sem escopo, mais de um entity manager é criado a cada injeção.
 		
@@ -123,7 +101,7 @@ public class ProducerTest {
 		m1.persist(entity);
 
 		assertTrue( ! m2.contains(entity));
-	}
+	}*/
 
 	private String createId(String id) {
 		return this.getClass().getName() + "_" + id;
