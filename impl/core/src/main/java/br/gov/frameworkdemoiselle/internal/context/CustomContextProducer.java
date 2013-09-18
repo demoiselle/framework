@@ -134,27 +134,52 @@ public class CustomContextProducer {
 	
 	@Produces
 	public RequestContext getRequestContext(InjectionPoint ip){
-		return getContext(ip);
+		if (ip!=null){
+			return getContext(ip);
+		}
+		else{
+			return getContext(RequestContext.class);
+		}
 	}
 	
 	@Produces
 	public SessionContext getSessionContext(InjectionPoint ip){
-		return getContext(ip);
+		if (ip!=null){
+			return getContext(ip);
+		}
+		else{
+			return getContext(SessionContext.class);
+		}
 	}
 	
 	@Produces
 	public ViewContext getViewContext(InjectionPoint ip){
-		return getContext(ip);
+		if (ip!=null){
+			return getContext(ip);
+		}
+		else{
+			return getContext(ViewContext.class);
+		}
 	}
 	
 	@Produces
 	public StaticContext getStaticContext(InjectionPoint ip){
-		return getContext(ip);
+		if (ip!=null){
+			return getContext(ip);
+		}
+		else{
+			return getContext(StaticContext.class);
+		}
 	}
 	
 	@Produces
 	public ConversationContext getConversationContext(InjectionPoint ip){
-		return getContext(ip);
+		if (ip!=null){
+			return getContext(ip);
+		}
+		else{
+			return getContext(ConversationContext.class);
+		}
 	}
 	
 	/////////////END OF PRODUCERS///////////////////
@@ -175,7 +200,8 @@ public class CustomContextProducer {
 		return producedContext;
 	}
 	
-	private CustomContext getContext(Class<? extends CustomContext> contextClass){
+	@SuppressWarnings("unchecked")
+	private <T extends CustomContext> T getContext(Class<T> contextClass){
 		CustomContext producedContext = null;
 		
 		ArrayList<CustomContext> selectableContexts = new ArrayList<CustomContext>();
@@ -196,7 +222,7 @@ public class CustomContextProducer {
 			producedContext = StrategySelector.selectInstance(CustomContext.class, selectableContexts);
 		}
 		
-		return producedContext;
+		return (T) producedContext;
 	}
 	
 	private Logger getLogger() {

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -25,6 +26,9 @@ import br.gov.frameworkdemoiselle.util.NameQualifier;
 public class ProducerTest {
 
 	private static final String PATH = "src/test/resources/producer";
+	
+	@Inject
+	private RequestContext ctx;
 
 	@Deployment(name="request_scoped_producer")
 	public static WebArchive createDeployment() {
@@ -46,13 +50,11 @@ public class ProducerTest {
 	
 	@Before
 	public void before(){
-		RequestContext ctx = Beans.getReference(RequestContext.class);
 		ctx.activate();
 	}
 	
 	@After
 	public void after(){
-		RequestContext ctx = Beans.getReference(RequestContext.class);
 		ctx.deactivate();
 	}
 
