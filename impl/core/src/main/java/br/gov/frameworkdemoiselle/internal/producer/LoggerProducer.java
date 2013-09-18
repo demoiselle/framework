@@ -70,7 +70,7 @@ public class LoggerProducer implements Serializable {
 	public Logger create(final InjectionPoint ip) {
 		Class<?> type;
 
-		if (ip.getMember() != null) {
+		if (ip != null && ip.getMember() != null) {
 			type = ip.getMember().getDeclaringClass();
 		} else {
 			type = LoggerProducer.class;
