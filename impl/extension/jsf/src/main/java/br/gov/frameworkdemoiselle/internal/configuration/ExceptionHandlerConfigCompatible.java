@@ -38,25 +38,45 @@ package br.gov.frameworkdemoiselle.internal.configuration;
 
 import java.io.Serializable;
 
+import org.slf4j.Logger;
+
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
+import br.gov.frameworkdemoiselle.util.Beans;
 
-@Configuration(prefix = "frameworkdemoiselle.exception")
-public class ExceptionHandlerConfig implements Serializable {
+@Deprecated
+@Configuration(prefix = "frameworkdemoiselle.handle")
+public class ExceptionHandlerConfigCompatible implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Name("application.handle")
-	private boolean applicationExceptionHandle = true;
+	@Deprecated
+	@Name("application.exception")
+	private boolean handleApplicationException = true;
 
-	@Name("default.redirect.page")
-	private String defaultRedirectExceptionPage = "/application_error";
+	@Deprecated
+	@Name("application.exception.page")
+	private String exceptionPage = "/application_error";
 
-	public boolean isApplicationExceptionHandle() {
-		return applicationExceptionHandle;
+	@Deprecated
+	public boolean isHandleApplicationException() {
+		Logger logger = Beans.getReference(Logger.class);
+		logger.warn("A propriedade frameworkdemoiselle.handle.application.exception="
+				+ handleApplicationException
+				+ " não será suportada nas próximas versões do framework. Para evitar futuros problemas atualize a propriedade para frameworkdemoiselle.exception.application.handle="
+				+ handleApplicationException);
+
+		return handleApplicationException;
 	}
 
-	public String getDefaultRedirectExceptionPage() {
-		return defaultRedirectExceptionPage;
+	@Deprecated
+	public String getExceptionPage() {
+		Logger logger = Beans.getReference(Logger.class);
+		logger.warn("A propriedade frameworkdemoiselle.handle.application.exception.page="
+				+ exceptionPage
+				+ " não será suportada nas próximas versões do framework. Para evitar futuros problemas atualize a propriedade para frameworkdemoiselle.exception.default.redirect.page="
+				+ exceptionPage);
+
+		return exceptionPage;
 	}
 }

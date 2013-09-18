@@ -49,10 +49,17 @@ public class ConfigurationImpl implements Serializable {
 	private boolean loaded = false;
 
 	@SuppressWarnings("unused")
-	private synchronized void load(Object instance) {
+	private synchronized void load(Object instance) throws Throwable {
 		if (!loaded) {
-			Beans.getReference(ConfigurationLoader.class).load(instance);
 			loaded = true;
+
+			try {
+				Beans.getReference(ConfigurationLoader.class).load(instance);
+
+			} catch (Throwable cause) {
+				loaded = false;
+				throw cause;
+			}
 		}
 	}
 }

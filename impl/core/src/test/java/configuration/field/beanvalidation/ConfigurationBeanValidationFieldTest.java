@@ -42,8 +42,6 @@ import static junit.framework.Assert.fail;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 
-import junit.framework.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -107,14 +105,14 @@ public class ConfigurationBeanValidationFieldTest {
 			propertyBeanValidationWithEmptyNotNullFieldConfig.getIntAttributeNull();
 			fail();
 		} catch (ConfigurationException cause) {
-			Assert.assertEquals(ConstraintViolationException.class, cause.getCause().getClass());
+			assertEquals(ConstraintViolationException.class, cause.getCause().getClass());
 		}
 
 		try {
 			xmlBeanValidationWithEmptyNotNullFieldConfig.getIntAttributeNull();
 			fail();
 		} catch (ConfigurationException cause) {
-			Assert.assertEquals(ConstraintViolationException.class, cause.getCause().getClass());
+			assertEquals(ConstraintViolationException.class, cause.getCause().getClass());
 		}
 	}
 
@@ -124,14 +122,14 @@ public class ConfigurationBeanValidationFieldTest {
 			propertyBeanValidationWithEmptyNotNullFieldConfig.getStringAttributeNull();
 			fail();
 		} catch (ConfigurationException cause) {
-			Assert.assertEquals(ConstraintViolationException.class, cause.getCause().getClass());
+			assertEquals(ConstraintViolationException.class, cause.getCause().getClass());
 		}
 
 		try {
 			xmlBeanValidationWithEmptyNotNullFieldConfig.getStringAttributeNull();
 			fail();
 		} catch (ConfigurationException cause) {
-			Assert.assertEquals(ConstraintViolationException.class, cause.getCause().getClass());
+			assertEquals(ConstraintViolationException.class, cause.getCause().getClass());
 		}
 	}
 
@@ -141,7 +139,7 @@ public class ConfigurationBeanValidationFieldTest {
 			propertyWithTwoConstrainViolations.getAttributeWithTwoConstrainValidations();
 			fail();
 		} catch (ConfigurationException cause) {
-			Assert.assertEquals(ConstraintViolationException.class, cause.getCause().getClass());
+			assertEquals(ConstraintViolationException.class, cause.getCause().getClass());
 		}
 	}
 }
