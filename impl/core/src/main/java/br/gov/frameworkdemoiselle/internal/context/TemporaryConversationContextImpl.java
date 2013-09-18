@@ -49,6 +49,7 @@
 package br.gov.frameworkdemoiselle.internal.context;
 
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Alternative;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.context.ConversationContext;
@@ -64,6 +65,7 @@ import br.gov.frameworkdemoiselle.context.ConversationContext;
  *
  */
 @Priority(Priority.MIN_PRIORITY)
+@Alternative
 public class TemporaryConversationContextImpl extends AbstractStaticContext implements ConversationContext {
 
 	public TemporaryConversationContextImpl() {
