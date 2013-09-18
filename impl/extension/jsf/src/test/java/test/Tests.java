@@ -48,6 +48,7 @@ import br.gov.frameworkdemoiselle.annotation.NextView;
 import br.gov.frameworkdemoiselle.annotation.PreviousView;
 import br.gov.frameworkdemoiselle.annotation.Redirect;
 import br.gov.frameworkdemoiselle.internal.bootstrap.JsfBootstrap;
+import br.gov.frameworkdemoiselle.internal.configuration.ExceptionHandlerConfigCompatible;
 import br.gov.frameworkdemoiselle.internal.configuration.ExceptionHandlerConfig;
 import br.gov.frameworkdemoiselle.internal.configuration.JsfSecurityConfig;
 import br.gov.frameworkdemoiselle.internal.context.FacesViewContextImpl;
@@ -102,6 +103,7 @@ public final class Tests {
 				.addClass(Redirector.class)
 				.addClass(FileRenderer.class)
 				.addClass(JsfSecurityConfig.class)
+				.addClass(ExceptionHandlerConfigCompatible.class)
 				.addClass(ExceptionHandlerConfig.class)
 				.addClass(FacesViewContextImpl.class)
 				.addClass(AuthorizationExceptionHandlerFactory.class)
