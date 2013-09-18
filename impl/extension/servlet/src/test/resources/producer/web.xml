@@ -40,6 +40,7 @@
 	<listener>
 		<listener-class>br.gov.frameworkdemoiselle.util.ServletListener</listener-class>
 	</listener>
+	
 	<filter>
 		<filter-name>Demoiselle Servlet Filter</filter-name>
 		<filter-class>br.gov.frameworkdemoiselle.util.ServletFilter</filter-class>
@@ -48,5 +49,24 @@
 		<filter-name>Demoiselle Servlet Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
+	<servlet>
+		<servlet-name>Request Class</servlet-name>
+		<servlet-class>producer.RequestServlet</servlet-class>
+	</servlet>
 
+	<servlet-mapping>
+		<servlet-name>Request Class</servlet-name>
+		<url-pattern>/requestproducer</url-pattern>
+	</servlet-mapping>	
+
+	<servlet>
+		<servlet-name>Response xClass</servlet-name>
+		<servlet-class>producer.ResponseServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Response xClass</servlet-name>
+		<url-pattern>/responseproducer</url-pattern>
+	</servlet-mapping>	
 </web-app>
