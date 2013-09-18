@@ -1,4 +1,4 @@
-package xxxx;
+package security;
 
 import java.io.IOException;
 
@@ -9,11 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpStatus;
+
 import br.gov.frameworkdemoiselle.security.Credentials;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 
 @WebServlet("/login")
-public class XServlet extends HttpServlet {
+public class SecurityServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
@@ -27,11 +29,9 @@ public class XServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		super.doGet(request, response);
 		
-		System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-
-		credentials.setUsername("admin");
-		credentials.setPassword("changeit");
-
+		credentials.setUsername("users");
+		credentials.setPassword("users");
 		securityContext.login();
+		response.setStatus(HttpStatus.SC_OK);
 	}
 }

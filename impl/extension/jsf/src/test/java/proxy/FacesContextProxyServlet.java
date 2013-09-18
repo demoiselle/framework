@@ -34,29 +34,36 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.configuration;
+package proxy;
 
-import java.io.Serializable;
+import java.io.IOException;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.configuration.Configuration;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-@Configuration(prefix = "frameworkdemoiselle.exception")
-public class ExceptionHandlerConfig implements Serializable {
+import org.apache.commons.httpclient.HttpStatus;
+
+import br.gov.frameworkdemoiselle.internal.proxy.FacesContextProxy;
+import br.gov.frameworkdemoiselle.util.Beans;
+
+@WebServlet("/index")
+public class FacesContextProxyServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	@Name("application.handle")
-	private boolean applicationExceptionHandle = true;
+	private FacesContext facesContext;
 
-	@Name("default.redirect.page")
-	private String defaultRedirectExceptionPage = "/application_error";
-
-	public boolean isApplicationExceptionHandle() {
-		return applicationExceptionHandle;
-	}
-
-	public String getDefaultRedirectExceptionPage() {
-		return defaultRedirectExceptionPage;
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		facesContext = Beans.getReference(FacesContext.class);
+		if (facesContext.getClass() == FacesContextProxy.class) {
+			response.setStatus(HttpStatus.SC_OK);
+		} else {
+			response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+		}
 	}
 }

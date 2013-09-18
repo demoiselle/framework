@@ -129,7 +129,7 @@
 						<entry>true</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.&#8203;handle.&#8203;application.&#8203;exception</entry>
+						<entry>frameworkdemoiselle.&#8203;exception.&#8203;application.&#8203;handle</entry>
 						<entry>
 							<para>
 								Habilita o tratamento automático das exceções da aplicação anotadas com @ApplicationException.
@@ -138,7 +138,7 @@
 						<entry>true</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.&#8203;handle.&#8203;application.&#8203;exception.&#8203;page</entry>
+						<entry>frameworkdemoiselle.&#8203;exception.&#8203;default.&#8203;redirect.&#8203;page</entry>
 						<entry>
 							<para>
 								Define o redirecionamento das exceções da aplicação anotadas com @ApplicationException ocorridas
@@ -276,28 +276,28 @@
 				</thead>
 				<tbody>
 					<row valign="top">
-						<entry role="">frameworkdemoiselle.&#8203;management.&#8203;jmx.&#8203;mbean.&#8203;domain</entry>
+						<entry role="">frameworkdemoiselle.&#8203;management.&#8203;mbean.&#8203;domain</entry>
 						<entry>
 							<para>Define o domínio padrão onde classes anotadas com <emphasis>@ManagementController</emphasis> serão registradas no MBeanServer.</para>
 							<para>Na especificação JMX, um MBean é registrado no MBeanServer com um nome no formato <emphasis>domain:name=MBeanName</emphasis>
-							(ex: <emphasis>br.&#8203;gov.&#8203;frameworkdemoiselle.&#8203;jmx.&#8203;name=NotificationBroadcaster</emphasis>). Esse parâmetro controla a porção <emphasis>domain</emphasis>
+							(ex: <emphasis>br.&#8203;gov.&#8203;frameworkdemoiselle:&#8203;name=NotificationBroadcaster</emphasis>). Esse parâmetro controla a porção <emphasis>domain</emphasis>
 							desse formato.</para>
 						</entry>
 						<entry>O pacote da classe anotada com <emphasis>@Management&#8203;Controller</emphasis></entry>
 					</row>
 					<row valign="top">
-						<entry colsep="1">frameworkdemoiselle.&#8203;management.&#8203;jmx.&#8203;notification.&#8203;domain</entry>
+						<entry colsep="1">frameworkdemoiselle.&#8203;management.&#8203;notification.&#8203;domain</entry>
 						<entry colsep="1">
-							<para>O mesmo que <emphasis>frameworkdemoiselle.&#8203;management.&#8203;jmx.&#8203;mbean.&#8203;domain</emphasis>, mas apenas para o domínio do
-							MBean <emphasis role="bold">br.&#8203;gov.&#8203;frameworkdemoiselle.&#8203;jmx.&#8203;internal.&#8203;NotificationBroadcaster</emphasis>. Esse MBean é automaticamente
+							<para>O mesmo que <emphasis>frameworkdemoiselle.&#8203;management.&#8203;mbean.&#8203;domain</emphasis>, mas apenas para o domínio do
+							MBean <emphasis role="bold">br.&#8203;gov.&#8203;frameworkdemoiselle.&#8203;internal.&#8203;NotificationBroadcaster</emphasis>. Esse MBean é automaticamente
 							registrado para receber notificações enviadas usando a classe <emphasis role="bold">br.&#8203;gov.&#8203;frameworkdemoiselle.&#8203;management.&#8203;NotificationManager</emphasis></para>
 						</entry>
 						<entry>br.&#8203;gov.&#8203;frameworkdemoiselle.&#8203;jmx</entry>
 					</row>
 					<row valign="top">
-						<entry>frameworkdemoiselle.&#8203;management.&#8203;jmx.&#8203;notification.&#8203;name</entry>
+						<entry>frameworkdemoiselle.&#8203;management.&#8203;notification.&#8203;name</entry>
 						<entry>
-							<para>O nome usado para registrar a classe <emphasis role="bold">br.&#8203;gov.&#8203;frameworkdemoiselle.&#8203;jmx.&#8203;internal.&#8203;NotificationBroadcaster</emphasis> como MBean.</para>
+							<para>O nome usado para registrar a classe <emphasis role="bold">br.&#8203;gov.&#8203;frameworkdemoiselle.&#8203;internal.&#8203;NotificationBroadcaster</emphasis> como MBean.</para>
 						</entry>
 						<entry>Notification&#8203;Broadcaster</entry>
 					</row>

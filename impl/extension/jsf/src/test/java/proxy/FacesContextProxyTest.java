@@ -34,29 +34,52 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.configuration;
+package proxy;
 
-import java.io.Serializable;
+import static org.junit.Assert.assertEquals;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.configuration.Configuration;
+import java.io.IOException;
+import java.net.URL;
 
-@Configuration(prefix = "frameworkdemoiselle.exception")
-public class ExceptionHandlerConfig implements Serializable {
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	private static final long serialVersionUID = 1L;
+import test.Tests;
 
-	@Name("application.handle")
-	private boolean applicationExceptionHandle = true;
+@RunWith(Arquillian.class)
+public class FacesContextProxyTest {
 
-	@Name("default.redirect.page")
-	private String defaultRedirectExceptionPage = "/application_error";
+	@ArquillianResource
+	private URL deploymentUrl;
 
-	public boolean isApplicationExceptionHandle() {
-		return applicationExceptionHandle;
+	private static final String PATH = "src/test/resources/proxy";
+
+	@Deployment(testable = false)
+	public static WebArchive createDeployment() {
+		return Tests.createDeployment().addClass(FacesContextProxyServlet.class)
+				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml");
 	}
 
-	public String getDefaultRedirectExceptionPage() {
-		return defaultRedirectExceptionPage;
+	@Test
+	public void facesContextProxy() {
+		HttpClient client = new HttpClient();
+		GetMethod method = new GetMethod(deploymentUrl + "/index");
+
+		try {
+			int status = client.executeMethod(method);
+			assertEquals( HttpStatus.SC_OK, status);
+		} catch (HttpException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

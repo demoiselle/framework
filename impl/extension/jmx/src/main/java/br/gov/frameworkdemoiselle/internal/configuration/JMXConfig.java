@@ -65,7 +65,7 @@ import br.gov.frameworkdemoiselle.stereotype.ManagementController;
  * @author serpro
  *
  */
-@Configuration(prefix = "frameworkdemoiselle.management.jmx")
+@Configuration(prefix = "frameworkdemoiselle.management")
 public class JMXConfig {
 	
 	@Name("mbean.domain")
