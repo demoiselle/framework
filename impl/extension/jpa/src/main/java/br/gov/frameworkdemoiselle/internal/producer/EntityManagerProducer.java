@@ -44,7 +44,6 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -67,8 +66,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * persistence.xml, demoiselle.properties or @PersistenceUnit annotation.
  * </p>
  */
-@RequestScoped
-public class EntityManagerProducer implements Serializable {
+public class EntityManagerProducer implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -83,7 +81,7 @@ public class EntityManagerProducer implements Serializable {
 
 	@Inject
 	private EntityManagerFactoryProducer factory;
-
+	
 	/**
 	 * <p>
 	 * Default EntityManager factory. Tries two strategies to produces EntityManager instances.
@@ -98,7 +96,7 @@ public class EntityManagerProducer implements Serializable {
 	 */
 	@Default
 	@Produces
-	public EntityManager createDefault(InjectionPoint ip, EntityManagerConfig config) {
+	protected EntityManager createDefault(InjectionPoint ip, EntityManagerConfig config) {
 		String persistenceUnit = getFromProperties(config);
 
 		if (persistenceUnit == null) {
@@ -108,9 +106,21 @@ public class EntityManagerProducer implements Serializable {
 		return new EntityManagerProxy(persistenceUnit);
 	}
 
+	/**
+	 * 
+	 * <p>
+	 * Factory that reads the {@link Name} qualifier and creates an entity manager with
+	 * a matching persistence unit name. 
+	 * </p>
+	 * 
+	 * 
+	 * @param config
+	 *            Suplies informations about EntityManager defined in properties file.
+	 * @return Produced EntityManager.
+	 */
 	@Name("")
 	@Produces
-	public EntityManager createNamed(InjectionPoint ip, EntityManagerConfig config) {
+	protected EntityManager createNamed(InjectionPoint ip, EntityManagerConfig config) {
 		String persistenceUnit = ip.getAnnotated().getAnnotation(Name.class).value();
 		return new EntityManagerProxy(persistenceUnit);
 	}
@@ -166,16 +176,16 @@ public class EntityManagerProducer implements Serializable {
 			return persistenceUnits.iterator().next();
 		}
 	}
-
+	
 	@PostConstruct
-	public void init() {
+	protected void init() {
 		for (String persistenceUnit : factory.getCache().keySet()) {
 			getEntityManager(persistenceUnit);
 		}
 	}
 
 	@PreDestroy
-	public void close() {
+	protected void close() {
 		for (EntityManager entityManager : cache.values()) {
 			entityManager.close();
 		}
