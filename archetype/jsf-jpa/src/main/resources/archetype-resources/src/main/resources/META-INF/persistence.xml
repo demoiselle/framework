@@ -23,11 +23,14 @@
 		<jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
 		
 		<class>${package}.domain.Bookmark</class>
-
+		
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="false" />
-			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.hbm2ddl.auto" value="update" /> -->
+			<!-- set an appropriate dialect as shown below:-->
+			<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/> 
 			<property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
 		</properties>
 	</persistence-unit>
@@ -54,11 +57,14 @@
 		<jta-data-source>java:/DefaultDS</jta-data-source>
 		
 		<class>${package}.domain.Bookmark</class>
-
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="false" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
+			 -->
+			<!-- set an appropriate dialect as shown below:-->
+			<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
 			<property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup" />
 		</properties>
 	</persistence-unit>
