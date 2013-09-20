@@ -50,7 +50,7 @@ import br.gov.frameworkdemoiselle.util.Strings;
 /**
  * Configuration class responsible for retrieving specific entity manager parameter values from properties file.
  */
-@Configuration(prefix = "frameworkdemoiselle.persistence.")
+@Configuration(prefix = "frameworkdemoiselle.persistence")
 public class EntityManagerConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;

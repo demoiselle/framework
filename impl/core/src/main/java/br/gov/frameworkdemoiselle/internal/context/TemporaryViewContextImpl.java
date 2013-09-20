@@ -48,6 +48,8 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
+import javax.enterprise.inject.Alternative;
+
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.context.ViewContext;
@@ -63,6 +65,7 @@ import br.gov.frameworkdemoiselle.context.ViewContext;
  *
  */
 @Priority(Priority.MIN_PRIORITY)
+@Alternative
 public class TemporaryViewContextImpl extends AbstractThreadLocalContext implements ViewContext {
 
 	public TemporaryViewContextImpl() {

@@ -51,8 +51,15 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.Metamodel;
 
+import org.slf4j.Logger;
+
+import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig;
+import br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig.EntityManagerScope;
 import br.gov.frameworkdemoiselle.internal.producer.EntityManagerProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
  * Delegates all operation invocations to the cached EntityManager.
@@ -62,7 +69,7 @@ import br.gov.frameworkdemoiselle.util.Beans;
 public class EntityManagerProxy implements EntityManager, Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	/**
 	 * Persistence unit of the delegated EntityManager.
 	 */
@@ -95,6 +102,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	@Override
 	public void persist(Object entity) {
 		joinTransactionIfNecessary();
+		checkEntityManagerScopePassivable(entity);
 		getEntityManagerDelegate().persist(entity);
 	}
 
@@ -105,6 +113,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	@Override
 	public <T> T merge(T entity) {
 		joinTransactionIfNecessary();
+		checkEntityManagerScopePassivable(entity);
 		return getEntityManagerDelegate().merge(entity);
 	}
 
@@ -115,6 +124,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	@Override
 	public void remove(Object entity) {
 		joinTransactionIfNecessary();
+		checkEntityManagerScopePassivable(entity);
 		getEntityManagerDelegate().remove(entity);
 	}
 
@@ -509,5 +519,31 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	@Override
 	public String toString() {
 		return getEntityManagerDelegate().toString();
+	}
+	
+	public EntityManagerConfig getConfiguration() {
+		return Beans.getReference(EntityManagerConfig.class);
+	}
+
+	public Logger getLogger() {
+		return Beans.getReference(Logger.class);
+	}
+	
+	public ResourceBundle getBundle(){
+		return Beans.getReference(ResourceBundle.class,new NameQualifier("demoiselle-jpa-bundle"));
+	}
+
+	private void checkEntityManagerScopePassivable(Object entity)  {
+		EntityManagerConfig configuration = getConfiguration();
+		if (configuration.getEntityManagerScope()==EntityManagerScope.CONVERSATION
+				|| configuration.getEntityManagerScope()==EntityManagerScope.SESSION
+				|| configuration.getEntityManagerScope()==EntityManagerScope.VIEW){
+			LockModeType lockMode = getEntityManagerDelegate().getLockMode(entity);
+			if (lockMode != LockModeType.OPTIMISTIC_FORCE_INCREMENT && lockMode != LockModeType.WRITE){
+				String message = getBundle().getString("passivable-scope-with-pessimistic-lock" , configuration.getEntityManagerScope().toString());
+				getLogger().error(message);
+				throw new DemoiselleException(message);
+			}
+		}
 	}
 }

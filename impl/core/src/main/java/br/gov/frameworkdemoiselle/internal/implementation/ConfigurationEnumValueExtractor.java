@@ -56,10 +56,10 @@ public class ConfigurationEnumValueExtractor implements ConfigurationValueExtrac
 		String value = configuration.getString(prefix + key);
 		
 		if (value!=null){
-			Object enums[] = field.getDeclaringClass().getEnumConstants();
+			Object enums[] = field.getType().getEnumConstants();
 			
 			for (int i=0; i<enums.length; i++){
-				if (enums[i].getClass().getSimpleName().equalsIgnoreCase(value)){
+				if ( ((Enum<?>)enums[i]).toString().equalsIgnoreCase(value) ){
 					return enums[i];
 				}
 			}
