@@ -22,7 +22,7 @@ public class ProducerTest {
 
 	private static final String PATH = "src/test/resources/producer";
 	
-	@Deployment//(name="request_scoped_producer")
+	@Deployment
 	public static WebArchive createDeployment() {
 		WebArchive deployment = Tests.createDeployment(ProducerTest.class);
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/persistence.xml"), "META-INF/persistence.xml");
@@ -30,15 +30,6 @@ public class ProducerTest {
 		
 		return deployment;
 	}
-	
-	/*@Deployment(name="no_scoped_producer")
-	public static WebArchive createNoScopedDeployment() {
-		WebArchive deployment = Tests.createDeployment(ProducerTest.class);
-		deployment.addAsResource(Tests.createFileAsset(PATH + "/persistence.xml"), "META-INF/persistence.xml");
-		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle_noscoped.properties"), "demoiselle.properties");
-		
-		return deployment;
-	}*/
 	
 	@Test
 	public void produceEntityManager() {
