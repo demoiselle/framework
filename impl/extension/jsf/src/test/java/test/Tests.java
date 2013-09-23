@@ -134,6 +134,9 @@ public final class Tests {
 				.addAsResource(createFileAsset("src/main/resources/demoiselle-jsf-bundle.properties"),
 						"demoiselle-jsf-bundle.properties")
 				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")
+				.addAsManifestResource(createFileAsset("src/main/resources/META-INF/faces-config.xml"), "faces-config.xml")
+				.addAsManifestResource(createFileAsset("src/main/resources/META-INF/demoiselle-d.taglib.xml"), "demoiselle-d.taglib.xml")
+				.addAsManifestResource(createFileAsset("src/main/resources/META-INF/tags/br/gov/frameworkdemoiselle/checkLoggedIn.xhtml"), "checkedLoggedIn.xhtml")
 				.addAsLibraries(libs);
 	}
 
