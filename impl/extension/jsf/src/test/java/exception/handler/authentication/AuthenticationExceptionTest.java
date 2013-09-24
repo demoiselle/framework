@@ -34,44 +34,57 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.configuration;
+package exception.handler.authentication;
 
-import java.io.Serializable;
+import static org.junit.Assert.assertTrue;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.configuration.Configuration;
+import java.io.IOException;
+import java.net.URL;
 
-@Configuration(prefix = "frameworkdemoiselle.security")
-public class JsfSecurityConfig implements Serializable {
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	private static final long serialVersionUID = 1L;
+import test.Tests;
 
-	@Name("login.page")
-	private String loginPage = "/login";
+@RunWith(Arquillian.class)
+public class AuthenticationExceptionTest {
 
-	@Name("redirect.after.login")
-	private String redirectAfterLogin = "/index";
+	@ArquillianResource
+	private URL deploymentUrl;
 
-	@Name("redirect.after.logout")
-	private String redirectAfterLogout = "/login";
+	private static final String PATH = "src/test/resources/security-authentication";
 
-	@Name("redirect.enabled")
-	private boolean redirectEnabled = true;
-
-	public String getLoginPage() {
-		return loginPage;
+	@Deployment(testable = false)
+	public static WebArchive createDeployment() {
+		return Tests.createDeployment().addClass(AuthenticationExceptionTest.class)
+				.addClass(AuthenticationBean.class)
+				.addAsWebResource(Tests.createFileAsset(PATH + "/index.xhtml"), "index.xhtml")
+				.addAsWebResource(Tests.createFileAsset(PATH + "/login.xhtml"), "login.xhtml")
+				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml");
 	}
 
-	public String getRedirectAfterLogin() {
-		return redirectAfterLogin;
-	}
+	@Test
+	public void authenticationException() {
+		HttpClient client = new HttpClient();
+		GetMethod method = new GetMethod(deploymentUrl + "/index.jsf");
 
-	public String getRedirectAfterLogout() {
-		return redirectAfterLogout;
-	}
+		try {
+			client.executeMethod(method);
+			String message = method.getResponseBodyAsString();
+			System.out.println("MESAGE: " + message);
+			assertTrue(message.contains("Called the page /login"));
 
-	public boolean isRedirectEnabled() {
-		return redirectEnabled;
+		} catch (HttpException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-
 }

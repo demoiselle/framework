@@ -34,44 +34,17 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.configuration;
+package exception.handler.authentication;
 
-import java.io.Serializable;
+import br.gov.frameworkdemoiselle.security.NotLoggedInException;
+import br.gov.frameworkdemoiselle.stereotype.ViewController;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.configuration.Configuration;
+@ViewController
+public class AuthenticationBean {
 
-@Configuration(prefix = "frameworkdemoiselle.security")
-public class JsfSecurityConfig implements Serializable {
+	private String msg = "Authentication Exception";
 
-	private static final long serialVersionUID = 1L;
-
-	@Name("login.page")
-	private String loginPage = "/login";
-
-	@Name("redirect.after.login")
-	private String redirectAfterLogin = "/index";
-
-	@Name("redirect.after.logout")
-	private String redirectAfterLogout = "/login";
-
-	@Name("redirect.enabled")
-	private boolean redirectEnabled = true;
-
-	public String getLoginPage() {
-		return loginPage;
+	public String getMsg() {
+		throw new NotLoggedInException(msg);
 	}
-
-	public String getRedirectAfterLogin() {
-		return redirectAfterLogin;
-	}
-
-	public String getRedirectAfterLogout() {
-		return redirectAfterLogout;
-	}
-
-	public boolean isRedirectEnabled() {
-		return redirectEnabled;
-	}
-
 }
