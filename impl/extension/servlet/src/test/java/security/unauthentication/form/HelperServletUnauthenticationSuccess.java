@@ -1,4 +1,4 @@
-package security.authentication.form;
+package security.unauthentication.form;
 
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -16,7 +16,7 @@ import br.gov.frameworkdemoiselle.security.Credentials;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Beans;
 
-public class HelperServlet extends HttpServlet {
+public class HelperServletUnauthenticationSuccess extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,11 +28,10 @@ public class HelperServlet extends HttpServlet {
 		Credentials credentials = Beans.getReference(Credentials.class);
 		credentials.setUsername(request.getParameter("username"));
 		credentials.setPassword(request.getParameter("password"));
-
 		try {
 			Beans.getReference(SecurityContext.class).login();
+			Beans.getReference(SecurityContext.class).logout();
 			response.setStatus(SC_OK);
-
 		} catch (AuthenticationException e) {
 			response.setStatus(SC_FORBIDDEN);
 		}
