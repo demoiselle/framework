@@ -1,4 +1,4 @@
-package security;
+package security.authentication.form;
 
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -25,22 +25,22 @@ import test.Tests;
 import com.sun.enterprise.security.auth.login.FileLoginModule;
 
 @RunWith(Arquillian.class)
-public class SecurityTest {
+public class ServletAuthenticatorTest {
 
-	private static final String PATH = "src/test/resources/security";
+	private static final String PATH = "src/test/resources/security/authentication/form";
 
 	@ArquillianResource
 	private URL deploymentUrl;
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClasses(SecurityServlet.class, FileLoginModule.class)
+		return Tests.createDeployment().addClasses(HelperServlet.class, FileLoginModule.class)
 				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml");
 	}
 
 	@Test
 	public void loginSucessfull() throws ClientProtocolException, IOException, URISyntaxException {
-		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/login");
+		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/helper");
 		uriBuilder.setParameter("username", "demoiselle");
 		uriBuilder.setParameter("password", "changeit");
 
@@ -53,7 +53,7 @@ public class SecurityTest {
 
 	@Test
 	public void loginFailed() throws ClientProtocolException, IOException, URISyntaxException {
-		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/login");
+		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/helper");
 		uriBuilder.setParameter("username", "invalid");
 		uriBuilder.setParameter("password", "invalid");
 

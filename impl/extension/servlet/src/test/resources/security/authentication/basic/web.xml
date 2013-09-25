@@ -57,25 +57,5 @@
 	<servlet-mapping>
 		<servlet-name>Helper Servlet</servlet-name>
 		<url-pattern>/helper</url-pattern>
-	</servlet-mapping>	
-	
-	<!--
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>Private URL</web-resource-name>
-			<url-pattern>/helper</url-pattern>
-		</web-resource-collection>
-		<auth-constraint>
-			<role-name>*</role-name>
-		</auth-constraint>
-	</security-constraint>
-
-	<login-config>
-		<auth-method>BASIC</auth-method>
-	</login-config>
-
-	<security-role>
-		<role-name>*</role-name>
-	</security-role>
-	-->
+	</servlet-mapping>
 </web-app>

@@ -59,7 +59,7 @@ public class AuthenticationExceptionTest {
 	@ArquillianResource
 	private URL deploymentUrl;
 
-	private static final String PATH = "src/test/resources/security-authentication";
+	private static final String PATH = "src/test/resources/security.authentication.form-authentication";
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {

@@ -1,4 +1,4 @@
-package security;
+package security.authentication.form;
 
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -17,7 +17,7 @@ import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @WebServlet("/login")
-public class SecurityServlet extends HttpServlet {
+public class HelperServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
