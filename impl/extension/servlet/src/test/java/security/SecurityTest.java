@@ -44,9 +44,9 @@ public class SecurityTest {
 		uriBuilder.setParameter("password", "changeit");
 
 		HttpGet httpGet = new HttpGet(uriBuilder.build());
-		HttpResponse response = new DefaultHttpClient().execute(httpGet);
+		HttpResponse httpResponse = new DefaultHttpClient().execute(httpGet);
 
-		int status = response.getStatusLine().getStatusCode();
+		int status = httpResponse.getStatusLine().getStatusCode();
 		assertEquals(HttpStatus.SC_OK, status);
 	}
 
