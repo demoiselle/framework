@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpStatus;
 
+import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Credentials;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -28,8 +29,14 @@ public class SecurityServlet extends HttpServlet {
 		credentials.setUsername(request.getParameter("username"));
 		credentials.setPassword(request.getParameter("password"));
 
-		Beans.getReference(SecurityContext.class).login();
+		try {
+			Beans.getReference(SecurityContext.class).login();
+			response.setStatus(HttpStatus.SC_OK);
+		} catch (AuthenticationException e) {
+			response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+		}
 
-		response.setStatus(HttpStatus.SC_OK);
+		
+		
 	}
 }

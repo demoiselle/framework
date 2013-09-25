@@ -50,16 +50,13 @@ public class SecurityTest {
 		assertEquals(HttpStatus.SC_OK, status);
 	}
 	
-//	@Test
-//	public void loginFailed() throws ClientProtocolException, IOException {
-//		DefaultHttpClient client = new DefaultHttpClient();
-////		HttpGet get = new HttpGet(deploymentUrl + "/login");
-////		get.getParams().setParameter("username", "demoiselle");
-////		get.getParams().setParameter("password", "changeit");
-//		HttpGet get = new HttpGet(deploymentUrl + "/login?username=demoiselle&password=wrongpass");
-//		HttpResponse response = client.execute(get);
-//		
-//		int status = response.getStatusLine().getStatusCode();
-//		assertEquals(HttpStatus.S, status);
-//	}
+	@Test
+	public void loginFailed() throws ClientProtocolException, IOException {
+		DefaultHttpClient client = new DefaultHttpClient();
+		HttpGet get = new HttpGet(deploymentUrl + "/login?username=demoiselle&password=wrongpass");
+		HttpResponse response = client.execute(get);
+		
+		int status = response.getStatusLine().getStatusCode();
+		assertEquals(HttpStatus.SC_UNAUTHORIZED, status);
+	}
 }
