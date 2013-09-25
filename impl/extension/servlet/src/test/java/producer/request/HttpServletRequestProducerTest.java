@@ -1,4 +1,4 @@
-package producer;
+package producer.request;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -20,9 +20,9 @@ import org.junit.runner.RunWith;
 import test.Tests;
 
 @RunWith(Arquillian.class)
-public class HttpServletResponseProducerTest {
+public class HttpServletRequestProducerTest {
 
-	private static final String PATH = "src/test/resources/producer";
+	private static final String PATH = "src/test/resources/producer/request";
 
 	@ArquillianResource
 	private URL deploymentUrl;
@@ -34,14 +34,11 @@ public class HttpServletResponseProducerTest {
 	}
 
 	@Test
-	public void createResponse() throws ClientProtocolException, IOException {
-		DefaultHttpClient client = new DefaultHttpClient();
+	public void createR() throws ClientProtocolException, IOException {
+		HttpGet httpGet = new HttpGet(deploymentUrl + "/servlet");
+		HttpResponse httpResponse = new DefaultHttpClient().execute(httpGet);
 
-		HttpGet get = new HttpGet(deploymentUrl + "/responseproducer");
-		HttpResponse response = client.execute(get);
-
-		int status = response.getStatusLine().getStatusCode();
+		int status = httpResponse.getStatusLine().getStatusCode();
 		assertEquals(HttpStatus.SC_OK, status);
 	}
-
 }

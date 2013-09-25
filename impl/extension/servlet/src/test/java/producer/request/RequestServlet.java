@@ -1,4 +1,4 @@
-package producer;
+package producer.request;
 
 import java.io.IOException;
 

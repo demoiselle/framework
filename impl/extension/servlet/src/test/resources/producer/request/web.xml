@@ -52,21 +52,11 @@
 	
 	<servlet>
 		<servlet-name>Request Class</servlet-name>
-		<servlet-class>producer.RequestServlet</servlet-class>
+		<servlet-class>producer.request.RequestServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>Request Class</servlet-name>
-		<url-pattern>/requestproducer</url-pattern>
-	</servlet-mapping>	
-
-	<servlet>
-		<servlet-name>Response xClass</servlet-name>
-		<servlet-class>producer.ResponseServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>Response xClass</servlet-name>
-		<url-pattern>/responseproducer</url-pattern>
+		<url-pattern>/servlet</url-pattern>
 	</servlet-mapping>	
 </web-app>

@@ -1,4 +1,4 @@
-package producer;
+package producer.response;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -17,12 +17,13 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import producer.request.RequestServlet;
 import test.Tests;
 
 @RunWith(Arquillian.class)
-public class HttpServletRequestProducerTest {
+public class HttpServletResponseProducerTest {
 
-	private static final String PATH = "src/test/resources/producer";
+	private static final String PATH = "src/test/resources/producer/response";
 
 	@ArquillianResource
 	private URL deploymentUrl;
@@ -34,13 +35,12 @@ public class HttpServletRequestProducerTest {
 	}
 
 	@Test
-	public void createR() throws ClientProtocolException, IOException {
-		DefaultHttpClient client = new DefaultHttpClient();
+	public void createResponse() throws ClientProtocolException, IOException {
+		HttpGet httpGet = new HttpGet(deploymentUrl + "/servlet");
+		HttpResponse httpResponse = new DefaultHttpClient().execute(httpGet);
 
-		HttpGet get = new HttpGet(deploymentUrl + "/requestproducer");
-		HttpResponse response = client.execute(get);
-
-		int status = response.getStatusLine().getStatusCode();
+		int status = httpResponse.getStatusLine().getStatusCode();
 		assertEquals(HttpStatus.SC_OK, status);
 	}
+
 }
