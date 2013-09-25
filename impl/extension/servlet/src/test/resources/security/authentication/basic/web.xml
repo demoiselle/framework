@@ -51,19 +51,19 @@
 	</filter-mapping>
 
 	<servlet>
-		<servlet-name>Security Class</servlet-name>
-		<servlet-class>security.SecurityServlet</servlet-class>
+		<servlet-name>Helper Servlet</servlet-name>
+		<servlet-class>security.authentication.basic.HelperServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>Security Class</servlet-name>
-		<url-pattern>/login</url-pattern>
-	</servlet-mapping>
-
+		<servlet-name>Helper Servlet</servlet-name>
+		<url-pattern>/helper</url-pattern>
+	</servlet-mapping>	
+	
 	<!--
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>Private URL</web-resource-name>
-			<url-pattern>/login</url-pattern>
+			<url-pattern>/helper</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>*</role-name>
@@ -72,7 +72,6 @@
 
 	<login-config>
 		<auth-method>BASIC</auth-method>
-		<realm-name>fileRealm</realm-name>
 	</login-config>
 
 	<security-role>

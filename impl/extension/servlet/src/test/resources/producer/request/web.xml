@@ -51,12 +51,12 @@
 	</filter-mapping>
 	
 	<servlet>
-		<servlet-name>Request Class</servlet-name>
-		<servlet-class>producer.request.RequestServlet</servlet-class>
+		<servlet-name>Helper Servlet</servlet-name>
+		<servlet-class>producer.request.HelperServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>Request Class</servlet-name>
-		<url-pattern>/servlet</url-pattern>
+		<servlet-name>Helper Servlet</servlet-name>
+		<url-pattern>/helper</url-pattern>
 	</servlet-mapping>	
 </web-app>

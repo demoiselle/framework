@@ -1,5 +1,8 @@
 package security;
 
+import static org.apache.http.HttpStatus.SC_FORBIDDEN;
+import static org.apache.http.HttpStatus.SC_OK;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -7,8 +10,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.http.HttpStatus;
 
 import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Credentials;
@@ -31,12 +32,10 @@ public class SecurityServlet extends HttpServlet {
 
 		try {
 			Beans.getReference(SecurityContext.class).login();
-			response.setStatus(HttpStatus.SC_OK);
-		} catch (AuthenticationException e) {
-			response.setStatus(HttpStatus.SC_UNAUTHORIZED);
-		}
+			response.setStatus(SC_OK);
 
-		
-		
+		} catch (AuthenticationException e) {
+			response.setStatus(SC_FORBIDDEN);
+		}
 	}
 }

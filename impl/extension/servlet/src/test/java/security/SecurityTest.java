@@ -57,6 +57,6 @@ public class SecurityTest {
 		HttpResponse response = client.execute(get);
 
 		int status = response.getStatusLine().getStatusCode();
-		assertEquals(HttpStatus.SC_UNAUTHORIZED, status);
+		assertEquals(HttpStatus.SC_FORBIDDEN, status);
 	}
 }
