@@ -25,8 +25,8 @@ public class SecurityServlet extends HttpServlet {
 		result = (result == null ? request.getHeader("authorization") : result);
 
 		Credentials credentials = Beans.getReference(Credentials.class);
-		credentials.setUsername("asdrubal");
-		credentials.setPassword("asdrubal");
+		credentials.setUsername(request.getParameter("username"));
+		credentials.setPassword(request.getParameter("password"));
 
 		Beans.getReference(SecurityContext.class).login();
 

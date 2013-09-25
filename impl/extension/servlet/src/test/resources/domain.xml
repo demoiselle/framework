@@ -7,40 +7,28 @@
       </module>
     </application>
   </system-applications>
-  <applications>
-    <application context-root="/AuthenticationPrj01" location="${com.sun.aas.instanceRootURI}/eclipseApps/AuthenticationPrj01/" name="AuthenticationPrj01" directory-deployed="true" object-type="user">
-      <property name="appLocation" value="${com.sun.aas.instanceRootURI}/eclipseApps/AuthenticationPrj01/"></property>
-      <property name="defaultAppName" value="AuthenticationPrj01"></property>
-      <module name="AuthenticationPrj01">
-        <engine sniffer="security"></engine>
-        <engine sniffer="web"></engine>
-      </module>
-    </application>
-  </applications>
+  <applications></applications>
   <resources>
-    <jdbc-connection-pool datasource-classname="org.apache.derby.jdbc.ClientXADataSource" res-type="javax.sql.XADataSource" name="luciano" transaction-isolation-level="serializable">
-      <property name="User" value="APP"></property>
-      <property name="Password" value="APP"></property>
-      <property name="ServerName" value="localhost"></property>
+    <jdbc-resource pool-name="__TimerPool" jndi-name="jdbc/__TimerPool" object-type="system-admin"></jdbc-resource>
+    <jdbc-resource pool-name="DerbyPool" jndi-name="jdbc/__default"></jdbc-resource>
+    <jdbc-connection-pool datasource-classname="org.apache.derby.jdbc.EmbeddedXADataSource" res-type="javax.sql.XADataSource" name="__TimerPool">
+      <property name="databaseName" value="${com.sun.aas.instanceRoot}/lib/databases/ejbtimer"></property>
+      <property name="connectionAttributes" value=";create=true"></property>
+    </jdbc-connection-pool>
+    <jdbc-connection-pool is-isolation-level-guaranteed="false" datasource-classname="org.apache.derby.jdbc.ClientDataSource" res-type="javax.sql.DataSource" name="DerbyPool">
       <property name="PortNumber" value="1527"></property>
-      <property name="DatabaseName" value="luciano"></property>
-    </jdbc-connection-pool>
-    <jdbc-resource pool-name="luciano" jndi-name="jdbc/luciano"></jdbc-resource>
-    <jdbc-connection-pool driver-classname="" datasource-classname="org.postgresql.xa.PGXADataSource" res-type="javax.sql.XADataSource" description="" name="postgresql">
-      <property name="portNumber" value="5432"></property>
-      <property name="databaseName" value="bd1"></property>
+      <property name="Password" value="APP"></property>
+      <property name="User" value="APP"></property>
       <property name="serverName" value="localhost"></property>
-      <property name="user" value="postgres"></property>
-      <property name="password" value="postgres"></property>
+      <property name="DatabaseName" value="sun-appserv-samples"></property>
+      <property name="connectionAttributes" value=";create=true"></property>
     </jdbc-connection-pool>
-    <jdbc-resource pool-name="postgresql" description="" jndi-name="jdbc/postgresql"></jdbc-resource>
   </resources>
   <servers>
     <server name="server" config-ref="server-config">
-      <resource-ref ref="jdbc/luciano"></resource-ref>
-      <resource-ref ref="jdbc/postgresql"></resource-ref>
       <application-ref ref="__admingui" virtual-servers="__asadmin"></application-ref>
-      <application-ref ref="AuthenticationPrj01" virtual-servers="server"></application-ref>
+      <resource-ref ref="jdbc/__TimerPool"></resource-ref>
+      <resource-ref ref="jdbc/__default"></resource-ref>
     </server>
   </servers>
   <nodes>
