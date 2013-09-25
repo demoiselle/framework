@@ -1,7 +1,7 @@
 package security.authentication.basic;
 
-import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -9,14 +9,9 @@ import java.net.URL;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -42,18 +37,14 @@ public class BasicAuthenticationFilterTest {
 
 	@Test
 	public void loginSucessfull() throws ClientProtocolException, IOException {
-		CredentialsProvider credsProvider = new BasicCredentialsProvider();
-		credsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("demoiselle", "changeit"));
-		CloseableHttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
-
 		String username = "demoiselle";
 		String password = "changeit";
-		
+
 		HttpGet httpGet = new HttpGet(deploymentUrl + "/helper");
 		byte[] encoded = Base64.encodeBase64((username + ":" + password).getBytes());
 		httpGet.setHeader("Authorization", "Basic " + new String(encoded));
 
-		HttpResponse httpResponse = httpClient.execute(httpGet);
+		HttpResponse httpResponse = HttpClientBuilder.create().build().execute(httpGet);
 
 		int status = httpResponse.getStatusLine().getStatusCode();
 		assertEquals(SC_OK, status);
@@ -61,18 +52,14 @@ public class BasicAuthenticationFilterTest {
 
 	@Test
 	public void loginFailed() throws ClientProtocolException, IOException {
-		CredentialsProvider credsProvider = new BasicCredentialsProvider();
-		credsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("demoiselle", "changeit"));
-		CloseableHttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
-
 		String username = "invalid";
-		String password = "changeit";
-		
+		String password = "invalid";
+
 		HttpGet httpGet = new HttpGet(deploymentUrl + "/helper");
 		byte[] encoded = Base64.encodeBase64((username + ":" + password).getBytes());
 		httpGet.setHeader("Authorization", "Basic " + new String(encoded));
 
-		HttpResponse httpResponse = httpClient.execute(httpGet);
+		HttpResponse httpResponse = HttpClientBuilder.create().build().execute(httpGet);
 
 		int status = httpResponse.getStatusLine().getStatusCode();
 		assertEquals(SC_FORBIDDEN, status);
