@@ -43,6 +43,12 @@
 		<property name="deploymentExportPath">target/deployments</property>
 	</engine>
 
+	<container qualifier="glassfish-embedded" default="true">
+		<configuration>
+			<property name="resourcesXml">src/test/resources/glassfish-resources.xml</property>
+		</configuration>
+	</container>
+
 	<!--
 	<container qualifier="jbossas-managed" default="true">
 		<protocol type="Servlet 3.0" />

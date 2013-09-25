@@ -49,13 +49,11 @@
 	</extension>
 	-->
 
-	<!--
-	<container qualifier="glassfish" default="true">
+	<container qualifier="glassfish-embedded" default="true">
 		<configuration>
-			<property name="autoDelete">true</property>
+			<property name="configurationXml">src/test/resources/domain.xml</property>
 		</configuration>
 	</container>
-	-->
 
 	<!--
 	<container qualifier="jbossas-managed" default="true">

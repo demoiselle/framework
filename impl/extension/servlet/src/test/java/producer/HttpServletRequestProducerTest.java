@@ -1,16 +1,15 @@
 package producer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static junit.framework.Assert.assertEquals;
 
+import java.io.IOException;
 import java.net.URL;
 
-import javax.inject.Inject;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -19,7 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import br.gov.frameworkdemoiselle.context.RequestContext;
 
 @RunWith(Arquillian.class)
 public class HttpServletRequestProducerTest {
@@ -36,15 +34,13 @@ public class HttpServletRequestProducerTest {
 	}
 
 	@Test
-	public void createR() {
-		HttpClient client = new HttpClient();
-		GetMethod method = new GetMethod(deploymentUrl + "/requestproducer");
-		try {
-			int status = client.executeMethod(method);
-			assertEquals(HttpStatus.SC_OK, status);
-		} catch (Exception e) {
-			fail();
-		}
-	}
+	public void createR() throws ClientProtocolException, IOException {
+		DefaultHttpClient client = new DefaultHttpClient();
 
+		HttpGet get = new HttpGet(deploymentUrl + "/requestproducer");
+		HttpResponse response = client.execute(get);
+
+		int status = response.getStatusLine().getStatusCode();
+		assertEquals(HttpStatus.SC_OK, status);
+	}
 }

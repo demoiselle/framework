@@ -1,15 +1,15 @@
 package security;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.URL;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -18,6 +18,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
+
+import com.sun.enterprise.security.auth.login.FileLoginModule;
 
 @RunWith(Arquillian.class)
 public class SecurityTest {
@@ -29,22 +31,17 @@ public class SecurityTest {
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClass(SecurityServlet.class)
+		return Tests.createDeployment().addClasses(SecurityServlet.class, FileLoginModule.class)
 				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml");
 	}
 
 	@Test
-	public void login() {
-		HttpClient client = new HttpClient();
-		GetMethod method = new GetMethod(deploymentUrl + "/login");
-		try {
-			int status = client.executeMethod(method);
-			assertEquals(HttpStatus.SC_OK, status);
-		} catch (HttpException e) {
-			fail();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	public void login() throws ClientProtocolException, IOException {
+		DefaultHttpClient client = new DefaultHttpClient();
+		HttpGet get = new HttpGet(deploymentUrl + "/login");
+		HttpResponse response = client.execute(get);
 
+		int status = response.getStatusLine().getStatusCode();
+		assertEquals(HttpStatus.SC_OK, status);
+	}
 }
