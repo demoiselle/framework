@@ -56,6 +56,6 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Helper Servlet</servlet-name>
-		<url-pattern>/helper</url-pattern>
+		<url-pattern>/helper/*</url-pattern>
 	</servlet-mapping>
 </web-app>
