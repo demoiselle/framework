@@ -169,8 +169,11 @@ public final class Beans {
 
 	@SuppressWarnings("unchecked")
 	private static <T> T getReference(Set<Bean<?>> beans, Class<T> beanClass, Annotation... qualifiers) {
-		//Bean<?> bean = beans.iterator().next();
-		Bean<?> bean = getBeanManager().resolve( beans );		
+		Bean<?> bean = beans.iterator().next();
+
+		// TODO Esta mudança só deve ser submetida com os testes passando. Esta mudança quebra os testes.
+		// Bean<?> bean = getBeanManager().resolve( beans );
+
 		CreationalContext<?> context = getBeanManager().createCreationalContext(bean);
 		Type beanType = beanClass == null ? bean.getBeanClass() : beanClass;
 		InjectionPoint injectionPoint = new CustomInjectionPoint(bean, beanType, qualifiers);
