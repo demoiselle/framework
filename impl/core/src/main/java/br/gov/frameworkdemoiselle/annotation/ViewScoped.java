@@ -55,7 +55,7 @@ import javax.enterprise.context.NormalScope;
 @Inherited
 @Target({ METHOD, TYPE, FIELD })
 @Retention(RUNTIME)
-@NormalScope
+@NormalScope(passivating=true)
 public @interface ViewScoped {
 
 }
