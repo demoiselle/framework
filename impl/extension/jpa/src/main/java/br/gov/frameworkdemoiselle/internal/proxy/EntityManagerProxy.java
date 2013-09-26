@@ -70,15 +70,18 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	/**
+	/*
 	 * Persistence unit of the delegated EntityManager.
 	 */
 	private String persistenceUnit;
 	
-	/**
+	/*
 	 * demoiselle-jpa configuration options
 	 */
 	private EntityManagerConfig configuration;
+	
+	
+	private EntityManager delegateCache;	
 
 	/**
 	 * Constructor based on persistence unit name.
@@ -96,8 +99,15 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 * @return Cached EntityManager
 	 */
 	private EntityManager getEntityManagerDelegate() {
-		EntityManagerProducer emp = Beans.getReference(EntityManagerProducer.class);
-		return emp.getEntityManager(this.persistenceUnit);
+		//Se o produtor de EntityManager não estiver em um escopo, precisamos guardar em cache o EntityManager produzido,
+		//do contrário, basta solicitar uma instância do produtor (que estará em um escopo) e obter a instância real 
+		//de EntityManager dele.
+		if (getConfiguration().getEntityManagerScope()!=EntityManagerScope.NOSCOPE || delegateCache==null){
+			EntityManagerProducer emp = Beans.getReference(EntityManagerProducer.class);
+			delegateCache = emp.getEntityManager(this.persistenceUnit);
+		}
+		
+		return delegateCache;
 	}
 
 	/*

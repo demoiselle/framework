@@ -37,13 +37,9 @@
 package br.gov.frameworkdemoiselle.internal.producer;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -58,6 +54,7 @@ import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig;
 import br.gov.frameworkdemoiselle.internal.proxy.EntityManagerProxy;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -76,11 +73,14 @@ public class EntityManagerProducer implements Serializable{
 	@Inject
 	@Name("demoiselle-jpa-bundle")
 	private ResourceBundle bundle;
-
-	private final Map<String, EntityManager> cache = Collections.synchronizedMap(new HashMap<String, EntityManager>());
-
+	
 	@Inject
 	private EntityManagerFactoryProducer factory;
+	
+	private AbstractEntityManagerStore entityManagerStore;
+
+	@Inject
+	private EntityManagerConfig configuration;
 	
 	/**
 	 * <p>
@@ -128,14 +128,13 @@ public class EntityManagerProducer implements Serializable{
 	public EntityManager getEntityManager(String persistenceUnit) {
 		EntityManager entityManager = null;
 
-		if (cache.containsKey(persistenceUnit)) {
-			entityManager = cache.get(persistenceUnit);
-
+		if (getCache().containsKey(persistenceUnit)) {
+			entityManager = getCache().get(persistenceUnit);
 		} else {
 			entityManager = factory.create(persistenceUnit).createEntityManager();
 			entityManager.setFlushMode(FlushModeType.AUTO);
 
-			cache.put(persistenceUnit, entityManager);
+			getCache().put(persistenceUnit, entityManager);
 			this.logger.info(bundle.getString("entity-manager-was-created", persistenceUnit));
 		}
 
@@ -177,23 +176,37 @@ public class EntityManagerProducer implements Serializable{
 		}
 	}
 	
-	@PostConstruct
-	protected void init() {
-		for (String persistenceUnit : factory.getCache().keySet()) {
-			getEntityManager(persistenceUnit);
-		}
-	}
-
-	@PreDestroy
-	protected void close() {
-		for (EntityManager entityManager : cache.values()) {
-			entityManager.close();
-		}
-
-		cache.clear();
-	}
-
 	public Map<String, EntityManager> getCache() {
-		return cache;
+		return getStore().getCache();
+	}
+	
+	private AbstractEntityManagerStore getStore(){
+		if (entityManagerStore==null){
+			switch(configuration.getEntityManagerScope()){
+				case APPLICATION:
+					entityManagerStore = Beans.getReference(ApplicationEntityManagerStore.class);
+					break;
+				case CONVERSATION:
+					entityManagerStore = Beans.getReference(ConversationEntityManagerStore.class);
+					break;
+				case NOSCOPE:
+					entityManagerStore = Beans.getReference(DependentEntityManagerStore.class);
+					break;
+				case REQUEST:
+					entityManagerStore = Beans.getReference(RequestEntityManagerStore.class);
+					break;
+				case SESSION:
+					entityManagerStore = Beans.getReference(SessionEntityManagerStore.class);
+					break;
+				case VIEW:
+					entityManagerStore = Beans.getReference(ViewEntityManagerStore.class);
+					break;
+				default:
+					entityManagerStore = Beans.getReference(RequestEntityManagerStore.class);
+					break;
+			}
+		}
+		
+		return entityManagerStore;
 	}
 }

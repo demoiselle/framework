@@ -18,64 +18,21 @@ import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
 
 @RunWith(Arquillian.class)
-public class ProducerTest {
+public class NoScopedProducerTest {
 
 	private static final String PATH = "src/test/resources/producer";
 	
 	@Deployment
 	public static WebArchive createDeployment() {
-		WebArchive deployment = Tests.createDeployment(ProducerTest.class);
+		WebArchive deployment = Tests.createDeployment(NoScopedProducerTest.class);
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/persistence.xml"), "META-INF/persistence.xml");
-		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle_noscoped.properties"), "demoiselle.properties");
 		
 		return deployment;
 	}
 	
 	@Test
-	public void produceEntityManager() {
-		EntityManager manager = Beans.getReference(EntityManager.class);
-
-		assertNotNull(manager);
-		assertEquals(EntityManagerProxy.class, manager.getClass());
-	}
-
-	@Test
-	public void produceMultipleEntityManagers() {
-		EntityManager m1 = Beans.getReference(EntityManager.class, new NameQualifier("pu"));
-
-		assertNotNull(m1);
-		assertEquals(EntityManagerProxy.class, m1.getClass());
-
-		EntityManager m2 = Beans.getReference(EntityManager.class, new NameQualifier("pu2"));
-
-		assertNotNull(m2);
-		assertEquals(EntityManagerProxy.class, m2.getClass());
-	}
-
-	@Test
-	public void produceOneEntityManagerPerRequest() {
-		EntityManager m1 = Beans.getReference(EntityManager.class, new NameQualifier("pu"));
-
-		assertNotNull(m1);
-		assertEquals(EntityManagerProxy.class, m1.getClass());
-
-		EntityManager m2 = Beans.getReference(EntityManager.class, new NameQualifier("pu"));
-
-		assertNotNull(m2);
-		assertEquals(EntityManagerProxy.class, m2.getClass());
-
-		MyEntity entity = new MyEntity();
-		entity.setId(createId("testID"));
-
-		m1.persist(entity);
-
-		assertTrue(m2.contains(entity));
-	}
-	
-	/*@Test
 	public void produceOneEntityManagerPerInjection() {
-		//Testa se ao usar o produtor sem escopo, mais de um entity manager é criado a cada injeção.
-		
 		EntityManager m1 = Beans.getReference(EntityManager.class, new NameQualifier("pu"));
 
 		assertNotNull(m1);
@@ -92,8 +49,9 @@ public class ProducerTest {
 		m1.persist(entity);
 
 		assertTrue( ! m2.contains(entity));
-	}*/
-
+		assertTrue(m1.contains(entity));
+	}
+	
 	private String createId(String id) {
 		return this.getClass().getName() + "_" + id;
 	}
