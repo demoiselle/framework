@@ -34,66 +34,28 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception.handler.configuration;
+package exception.handler.authorization;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
+import br.gov.frameworkdemoiselle.security.AuthorizationException;
+import br.gov.frameworkdemoiselle.stereotype.ViewController;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletResponse;
+@ViewController
+public class AuthorizationBean {
 
-import br.gov.frameworkdemoiselle.util.Beans;
+	private String correctMessage = "Authorization Message.";
 
-public class ExceptionHandlerConfigFilter implements Filter {
+	private String exceptionMessage = "Authorization Exception!";
 
-	private static final long serialVersionUID = 1L;
-	
-	private List<FacesMessage> facesMessage;
-	
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
+	public String getCorrectMessage() {
+		return correctMessage;
 	}
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-			ServletException {
-		
-//		try {
-
-			chain.doFilter(request, response);
-			
-//			String message = response.getContentType();
-//			System.out.println("MESSAGE FILTER: " + message);
-			
-//			facesMessage = FacesContext.getCurrentInstance().getMessageList();
-			
-//			for(FacesMessage fm : FacesContext.getCurrentInstance().getMessageList()) {
-//				System.out.println("Sumary: " + fm.getSummary());
-//				System.out.println("Detail: " + fm.getDetail());
-//				
-//				if(fm.getSummary().equals("DummyException!")) {
-//					((HttpServletResponse)response).setStatus(200);
-//				}else {
-//					((HttpServletResponse)response).setStatus(200);
-//				}
-//			}
-			
-//		}catch(Exception e) {
-//			((HttpServletResponse)response).setStatus(200);
-//		}
+	public String getExceptionMessage() {
+		throw new AuthorizationException(exceptionMessage);
 	}
 
-	@Override
-	public void destroy() {
+	public void loadExceptionMessage() {
+		throw new AuthorizationException(exceptionMessage);
 	}
 
 }
