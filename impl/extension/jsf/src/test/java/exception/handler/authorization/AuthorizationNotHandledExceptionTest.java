@@ -79,7 +79,6 @@ public class AuthorizationNotHandledExceptionTest {
 		try {
 			int status = client.executeMethod(method);
 			String message = method.getResponseBodyAsString();
-			System.out.println("MESAGE: " + message);
 			
 			assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, status);
 			assertTrue(message.contains("Authorization Exception!"));
