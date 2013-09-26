@@ -36,8 +36,11 @@
  */
 package exception.handler.common;
 
+import org.junit.Ignore;
+
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
 
+@Ignore
 @ViewController
 public class ExceptionHandlerConfigBean{
 	

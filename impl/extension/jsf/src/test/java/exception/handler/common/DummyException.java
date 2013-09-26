@@ -36,8 +36,11 @@
  */
 package exception.handler.common;
 
+import org.junit.Ignore;
+
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
 
+@Ignore
 @ApplicationException
 public class DummyException extends RuntimeException{
 

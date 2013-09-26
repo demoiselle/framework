@@ -1,5 +1,7 @@
 package xxxx;
 
+import org.junit.Ignore;
+
 //import java.net.URL;
 
 //import org.jboss.arquillian.container.test.api.Deployment;
@@ -15,6 +17,7 @@ package xxxx;
 //import com.thoughtworks.selenium.DefaultSelenium;
 
 //@RunWith(Arquillian.class)
+@Ignore
 public class XTest {
 
 //	private static final String PATH = "src/test/resources/xxx";
