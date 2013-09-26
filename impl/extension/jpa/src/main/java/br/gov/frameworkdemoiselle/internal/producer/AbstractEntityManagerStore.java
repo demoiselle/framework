@@ -53,6 +53,8 @@ import org.slf4j.Logger;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig;
 import br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig.EntityManagerScope;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -95,24 +97,35 @@ public abstract class AbstractEntityManagerStore implements Serializable {
 			entityManager = cache.get(persistenceUnit);
 
 		} else {
-			entityManager = factory.create(persistenceUnit).createEntityManager();
+			entityManager = getFactory().create(persistenceUnit).createEntityManager();
 			entityManager.setFlushMode(FlushModeType.AUTO);
 
 			cache.put(persistenceUnit, entityManager);
-			this.logger.info(bundle.getString("entity-manager-was-created", persistenceUnit));
+			this.getLogger().info(getBundle().getString("entity-manager-was-created", persistenceUnit));
 		}
 
 		return entityManager;
 	}
 	
-	@PostConstruct
+	/**
+	 * Run this to initialize all persistence units. It's recomended this method
+	 * be annotated with {@link PostConstruct}, so it runs as soon as an EntityManager gets injected.
+	 */
+	public abstract void initialize();
+	
+	/**
+	 * Run this to close all persistence units. It's recomended this method
+	 * be annotated with {@link PreDestroy}, so it runs as soon as the scope the EntityManager is
+	 * attached to ends.
+	 */
+	public abstract void terminate();
+	
 	void init() {
-		for (String persistenceUnit : factory.getCache().keySet()) {
+		for (String persistenceUnit : getFactory().getCache().keySet()) {
 			getEntityManager(persistenceUnit);
 		}
 	}
 
-	@PreDestroy
 	void close() {
 		//Se o produtor não possui escopo, então o ciclo de vida
 		//de EntityManager produzidos é responsabilidade do desenvolvedor. Não
@@ -127,5 +140,26 @@ public abstract class AbstractEntityManagerStore implements Serializable {
 
 	Map<String, EntityManager> getCache() {
 		return cache;
+	}
+	
+	private EntityManagerFactoryProducer getFactory(){
+		if (factory==null){
+			factory = Beans.getReference(EntityManagerFactoryProducer.class);
+		}
+		return factory;
+	}
+	
+	protected Logger getLogger(){
+		if (logger==null){
+			logger = Beans.getReference(Logger.class);
+		}
+		return logger;
+	}
+	
+	protected ResourceBundle getBundle(){
+		if (bundle==null){
+			bundle = Beans.getReference(ResourceBundle.class , new NameQualifier("demoiselle-jpa-bundle"));
+		}
+		return bundle;
 	}
 }

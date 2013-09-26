@@ -427,7 +427,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	protected final void joinTransactionIfNecessary() {
 		try {
-			getEntityManagerDelegate().getTransaction();
+			/*EntityTransaction transaction = */getEntityManagerDelegate().getTransaction();
 		} catch (IllegalStateException cause) {
 			//IllegalStateException is launched if we are on a JTA entity manager, so
 			//we assume we need to join transaction instead of creating one.
@@ -586,4 +586,5 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	private ResourceBundle getBundle(){
 		return Beans.getReference(ResourceBundle.class,new NameQualifier("demoiselle-jpa-bundle"));
 	}
+	
 }

@@ -36,6 +36,8 @@
  */
 package br.gov.frameworkdemoiselle.internal.producer;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 
 /**
@@ -50,5 +52,17 @@ import javax.enterprise.context.Dependent;
 public class DependentEntityManagerStore extends AbstractEntityManagerStore {
 	
 	private static final long serialVersionUID = 1L;
+	
+	@Override
+	@PostConstruct
+	public void initialize() {
+		super.init();
+	}
+
+	@Override
+	@PreDestroy
+	public void terminate() {
+		super.close();
+	}
 
 }

@@ -36,6 +36,8 @@
  */
 package br.gov.frameworkdemoiselle.internal.producer;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
@@ -60,6 +62,18 @@ public class ConversationEntityManagerStore extends AbstractEntityManagerStore {
 	
 	public Conversation getConversation() {
 		return conversation;
+	}
+	
+	@Override
+	@PostConstruct
+	public void initialize() {
+		super.init();
+	}
+
+	@Override
+	@PreDestroy
+	public void terminate() {
+		super.close();
 	}
 	
 }

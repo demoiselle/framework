@@ -36,6 +36,8 @@
  */
 package br.gov.frameworkdemoiselle.internal.producer;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
 
 /**
@@ -49,5 +51,17 @@ import javax.enterprise.context.SessionScoped;
 public class SessionEntityManagerStore extends AbstractEntityManagerStore {
 	
 	private static final long serialVersionUID = 1L;
+	
+	@Override
+	@PostConstruct
+	public void initialize() {
+		super.init();
+	}
+
+	@Override
+	@PreDestroy
+	public void terminate() {
+		super.close();
+	}
 
 }
