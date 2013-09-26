@@ -2,13 +2,9 @@ package security.authentication.form;
 
 import static org.apache.http.HttpStatus.SC_EXPECTATION_FAILED;
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -26,14 +22,10 @@ public class HelperServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String action = getAction(request);
-
-		if ("login".equals(action)) {
+		if (request.getRequestURI().endsWith("/login")) {
 			login(request, response);
-		} else if ("logout".equals(action)) {
-			logout(request, response);
 		} else {
-			response.setStatus(SC_NOT_FOUND);
+			logout(request, response);
 		}
 	}
 
@@ -73,16 +65,5 @@ public class HelperServlet extends HttpServlet {
 		Credentials credentials = Beans.getReference(Credentials.class);
 		credentials.setUsername(request.getParameter("username"));
 		credentials.setPassword(request.getParameter("password"));
-	}
-
-	private String getAction(HttpServletRequest request) {
-		Pattern pattern = Pattern.compile("^.+/(.+)$");
-		Matcher matcher = pattern.matcher(request.getRequestURI());
-
-		if (matcher.matches()) {
-			return matcher.group(1).toLowerCase();
-		} else {
-			throw new InvalidParameterException("Está faltando o parâmetro de ação na URL");
-		}
 	}
 }

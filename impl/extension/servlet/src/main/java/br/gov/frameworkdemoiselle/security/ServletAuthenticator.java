@@ -65,11 +65,14 @@ public class ServletAuthenticator implements Authenticator {
 	@Override
 	public void authenticate() throws AuthenticationException {
 		try {
-			if (getRequest().getUserPrincipal() == null) {
-				getRequest().login(getCredentials().getUsername(), getCredentials().getPassword());
-			}
+			getRequest().login(getCredentials().getUsername(), getCredentials().getPassword());
+
 		} catch (ServletException cause) {
-			throw new AuthenticationException(getBundle().getString("authentication-failed"), cause);
+			if (cause.getMessage().contains("invalid")) {
+				throw new InvalidCredentialsException(getBundle().getString("invalid-credentials"));
+			} else {
+				throw new AuthenticationException(getBundle().getString("authentication-failed"), cause);
+			}
 		}
 	}
 
