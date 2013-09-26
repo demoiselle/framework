@@ -59,12 +59,11 @@ public class AuthenticationExceptionTest {
 	@ArquillianResource
 	private URL deploymentUrl;
 
-	private static final String PATH = "src/test/resources/security.authentication.form-authentication";
+	private static final String PATH = "src/test/resources/security-authentication";
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClass(AuthenticationExceptionTest.class)
-				.addClass(AuthenticationBean.class)
+		return Tests.createDeployment().addClass(AuthenticationExceptionTest.class).addClass(AuthenticationBean.class)
 				.addAsWebResource(Tests.createFileAsset(PATH + "/index.xhtml"), "index.xhtml")
 				.addAsWebResource(Tests.createFileAsset(PATH + "/login.xhtml"), "login.xhtml")
 				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml");
