@@ -34,56 +34,28 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception.handler.authentication;
+package exception.handler.authorization;
 
-import static org.junit.Assert.assertTrue;
+import br.gov.frameworkdemoiselle.security.AuthorizationException;
+import br.gov.frameworkdemoiselle.stereotype.ViewController;
 
-import java.io.IOException;
-import java.net.URL;
+@ViewController
+public class AuthorizationBean {
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+	private String correctMessage = "Authorization Message.";
 
-import test.Tests;
+	private String exceptionMessage = "Authorization Exception!";
 
-@RunWith(Arquillian.class)
-public class AuthenticationExceptionTest {
-
-	@ArquillianResource
-	private URL deploymentUrl;
-
-	private static final String PATH = "src/test/resources/exception-handler-authentication";
-
-	@Deployment(testable = false)
-	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClass(AuthenticationExceptionTest.class).addClass(AuthenticationBean.class)
-				.addAsWebResource(Tests.createFileAsset(PATH + "/index.xhtml"), "index.xhtml")
-				.addAsWebResource(Tests.createFileAsset(PATH + "/login.xhtml"), "login.xhtml")
-				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml");
+	public String getCorrectMessage() {
+		return correctMessage;
 	}
 
-	@Test
-	public void authenticationException() {
-		HttpClient client = new HttpClient();
-		GetMethod method = new GetMethod(deploymentUrl + "/index.jsf");
-
-		try {
-			client.executeMethod(method);
-			String message = method.getResponseBodyAsString();
-			System.out.println("MESAGE: " + message);
-			assertTrue(message.contains("Called the page /login"));
-
-		} catch (HttpException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public String getExceptionMessage() {
+		throw new AuthorizationException(exceptionMessage);
 	}
+
+	public void loadExceptionMessage() {
+		throw new AuthorizationException(exceptionMessage);
+	}
+
 }

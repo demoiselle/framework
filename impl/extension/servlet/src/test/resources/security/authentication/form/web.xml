@@ -52,10 +52,11 @@
 
 	<servlet>
 		<servlet-name>Helper Servlet</servlet-name>
-		<servlet-class>security.authentication.basic.HelperServlet</servlet-class>
+		<servlet-class>security.authentication.form.HelperServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Helper Servlet</servlet-name>
-		<url-pattern>/helper</url-pattern>
+		<url-pattern>/helper/login</url-pattern>
+		<url-pattern>/helper/logout</url-pattern>
 	</servlet-mapping>
 </web-app>

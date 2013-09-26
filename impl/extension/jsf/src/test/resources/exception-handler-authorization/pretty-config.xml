@@ -34,28 +34,16 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.com/prettyfaces/3.3.0
+                                   		http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.3.0.xsd">
 
-	<listener>
-		<listener-class>br.gov.frameworkdemoiselle.util.ServletListener</listener-class>
-	</listener>
+    <rewrite match="^/*(.*)$" substitute="/$1" redirect="301" />
 
-	<filter>
-		<filter-name>Demoiselle Servlet Filter</filter-name>
-		<filter-class>br.gov.frameworkdemoiselle.util.ServletFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>Demoiselle Servlet Filter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	<url-mapping id="index">
+		<pattern value="/index" />
+		<view-id value="/index.jsf" />
+		<action>#{authorizationBean.loadExceptionMessage}</action>
+	</url-mapping>
 
-	<servlet>
-		<servlet-name>Helper Servlet</servlet-name>
-		<servlet-class>security.authentication.basic.HelperServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Helper Servlet</servlet-name>
-		<url-pattern>/helper</url-pattern>
-	</servlet-mapping>
-</web-app>
+</pretty-config>

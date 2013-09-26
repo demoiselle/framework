@@ -51,11 +51,21 @@
 	</filter-mapping>
 
 	<servlet>
-		<servlet-name>Helper Servlet</servlet-name>
-		<servlet-class>security.authentication.basic.HelperServlet</servlet-class>
+		<servlet-name>Helper Servlet Unauth Success</servlet-name>
+		<servlet-class>security.unauthentication.form.HelperServletUnauthenticationSuccess</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>Helper Servlet</servlet-name>
-		<url-pattern>/helper</url-pattern>
+		<servlet-name>Helper Servlet Unauth Success</servlet-name>
+		<url-pattern>/helperauthsuccess</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>Helper Servlet Unauth Fail</servlet-name>
+		<servlet-class>security.unauthentication.form.HelperServletUnauthenticationFail</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Helper Servlet Unauth Fail</servlet-name>
+		<url-pattern>/helperauthfail</url-pattern>
+	</servlet-mapping>
+	
 </web-app>
