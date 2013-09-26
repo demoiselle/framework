@@ -1,0 +1,13 @@
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.com/prettyfaces/3.3.0
+                                   		http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.3.0.xsd">
+
+    <rewrite match="^/*(.*)$" substitute="/$1" redirect="301" />
+
+	<url-mapping id="index">
+		<pattern value="/index" />
+		<view-id value="/index.jsf" />
+		<action>#{authorizationBean.loadExceptionMessage}</action>
+	</url-mapping>
+
+</pretty-config>
