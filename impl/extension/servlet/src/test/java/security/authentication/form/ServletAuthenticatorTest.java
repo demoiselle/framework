@@ -2,6 +2,7 @@ package security.authentication.form;
 
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -78,7 +79,13 @@ public class ServletAuthenticatorTest {
 	}
 
 	@Test
-	public void logoutFailed() throws ClientProtocolException, IOException, URISyntaxException {
+	public void logoutFailedByNotLoggedInException() throws ClientProtocolException, IOException, URISyntaxException {
 		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/helper/logout");
+
+		HttpGet httpGet = new HttpGet(uriBuilder.build());
+		HttpResponse httpResponse = HttpClientBuilder.create().build().execute(httpGet);
+
+		int status = httpResponse.getStatusLine().getStatusCode();
+		assertEquals(SC_UNAUTHORIZED, status);
 	}
 }
