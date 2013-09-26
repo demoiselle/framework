@@ -40,7 +40,7 @@ public class ServletAuthenticatorTest {
 
 	@Test
 	public void loginSucessfull() throws ClientProtocolException, IOException, URISyntaxException {
-		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/helper");
+		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/helper/login");
 		uriBuilder.setParameter("username", "demoiselle");
 		uriBuilder.setParameter("password", "changeit");
 
@@ -53,7 +53,7 @@ public class ServletAuthenticatorTest {
 
 	@Test
 	public void loginFailed() throws ClientProtocolException, IOException, URISyntaxException {
-		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/helper");
+		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/helper/login");
 		uriBuilder.setParameter("username", "invalid");
 		uriBuilder.setParameter("password", "invalid");
 
@@ -62,5 +62,23 @@ public class ServletAuthenticatorTest {
 
 		int status = response.getStatusLine().getStatusCode();
 		assertEquals(SC_FORBIDDEN, status);
+	}
+
+	@Test
+	public void logoutSucessfull() throws ClientProtocolException, IOException, URISyntaxException {
+		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/helper/logout");
+		uriBuilder.setParameter("username", "demoiselle");
+		uriBuilder.setParameter("password", "changeit");
+
+		HttpGet httpGet = new HttpGet(uriBuilder.build());
+		HttpResponse httpResponse = HttpClientBuilder.create().build().execute(httpGet);
+
+		int status = httpResponse.getStatusLine().getStatusCode();
+		assertEquals(SC_OK, status);
+	}
+
+	@Test
+	public void logoutFailed() throws ClientProtocolException, IOException, URISyntaxException {
+		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/helper/logout");
 	}
 }
