@@ -36,13 +36,10 @@
  */
 package br.gov.frameworkdemoiselle.internal.producer;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -71,7 +68,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * @author serpro
  *
  */
-public abstract class AbstractEntityManagerStore implements Serializable {
+public abstract class AbstractEntityManagerStore implements EntityManagerStore {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -90,7 +87,7 @@ public abstract class AbstractEntityManagerStore implements Serializable {
 	@Inject
 	private EntityManagerConfig configuration;
 	
-	EntityManager getEntityManager(String persistenceUnit) {
+	public EntityManager getEntityManager(String persistenceUnit) {
 		EntityManager entityManager = null;
 
 		if (cache.containsKey(persistenceUnit)) {
@@ -106,19 +103,6 @@ public abstract class AbstractEntityManagerStore implements Serializable {
 
 		return entityManager;
 	}
-	
-	/**
-	 * Run this to initialize all persistence units. It's recomended this method
-	 * be annotated with {@link PostConstruct}, so it runs as soon as an EntityManager gets injected.
-	 */
-	public abstract void initialize();
-	
-	/**
-	 * Run this to close all persistence units. It's recomended this method
-	 * be annotated with {@link PreDestroy}, so it runs as soon as the scope the EntityManager is
-	 * attached to ends.
-	 */
-	public abstract void terminate();
 	
 	void init() {
 		for (String persistenceUnit : getFactory().getCache().keySet()) {
@@ -138,7 +122,11 @@ public abstract class AbstractEntityManagerStore implements Serializable {
 		cache.clear();
 	}
 
-	Map<String, EntityManager> getCache() {
+	public Map<String, EntityManager> getCache() {
+		if (cache==null || cache.isEmpty()){
+			init();
+		}
+		
 		return cache;
 	}
 	
@@ -149,14 +137,14 @@ public abstract class AbstractEntityManagerStore implements Serializable {
 		return factory;
 	}
 	
-	protected Logger getLogger(){
+	private Logger getLogger(){
 		if (logger==null){
 			logger = Beans.getReference(Logger.class);
 		}
 		return logger;
 	}
 	
-	protected ResourceBundle getBundle(){
+	private ResourceBundle getBundle(){
 		if (bundle==null){
 			bundle = Beans.getReference(ResourceBundle.class , new NameQualifier("demoiselle-jpa-bundle"));
 		}

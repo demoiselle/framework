@@ -37,20 +37,16 @@
 package br.gov.frameworkdemoiselle.internal.producer;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
 
 import org.slf4j.Logger;
 
@@ -59,8 +55,6 @@ import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig;
 import br.gov.frameworkdemoiselle.internal.proxy.EntityManagerProxy;
-import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -69,8 +63,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * persistence.xml, demoiselle.properties or @PersistenceUnit annotation.
  * </p>
  */
-//TODO Concluir implementação de escopo selecionável, testes revelaram problemas na solução atual.
-@RequestScoped
+@ApplicationScoped
 public class EntityManagerProducer implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -85,13 +78,11 @@ public class EntityManagerProducer implements Serializable{
 	@Inject
 	private EntityManagerFactoryProducer factory;
 	
-	/*@Inject
-	private Instance<AbstractEntityManagerStore> storeInstance;*/
+	@Inject
+	private Instance<EntityManagerStore> storeInstance;
 	
-	private final Map<String, EntityManager> cache = Collections.synchronizedMap(new HashMap<String, EntityManager>());
-
-	/*@Inject
-	private EntityManagerConfig configuration;*/
+	@Inject
+	private EntityManagerConfig configuration;
 	
 	/**
 	 * <p>
@@ -136,47 +127,6 @@ public class EntityManagerProducer implements Serializable{
 		return new EntityManagerProxy(persistenceUnit);
 	}
 
-	/*public EntityManager getEntityManager(String persistenceUnit) {
-		return getStore().getEntityManager(persistenceUnit);
-	}*/
-	
-	@PostConstruct
-	void init() {
-		for (String persistenceUnit : getFactory().getCache().keySet()) {
-			getEntityManager(persistenceUnit);
-		}
-	}
-
-	@PreDestroy
-	void close() {
-		//Se o produtor não possui escopo, então o ciclo de vida
-		//de EntityManager produzidos é responsabilidade do desenvolvedor. Não
-		//fechamos os EntityManagers aqui.
-		//if (configuration.getEntityManagerScope() != EntityManagerScope.NOSCOPE){
-			for (EntityManager entityManager : cache.values()) {
-				entityManager.close();
-			}
-		//}
-		cache.clear();
-	}
-	
-	public EntityManager getEntityManager(String persistenceUnit) {
-		EntityManager entityManager = null;
-
-		if (cache.containsKey(persistenceUnit)) {
-			entityManager = cache.get(persistenceUnit);
-
-		} else {
-			entityManager = getFactory().create(persistenceUnit).createEntityManager();
-			entityManager.setFlushMode(FlushModeType.AUTO);
-
-			cache.put(persistenceUnit, entityManager);
-			this.getLogger().info(getBundle().getString("entity-manager-was-created", persistenceUnit));
-		}
-
-		return entityManager;
-	}
-
 	/**
 	 * Tries to get persistence unit name from demoiselle.properties.
 	 * 
@@ -212,12 +162,15 @@ public class EntityManagerProducer implements Serializable{
 		}
 	}
 	
-	public Map<String, EntityManager> getCache() {
-		//return getStore().getCache();
-		return this.cache;
+	public EntityManager getEntityManager(String persistenceUnit) {
+		return getStore().getEntityManager(persistenceUnit);
 	}
 	
-	/*private AbstractEntityManagerStore getStore(){
+	public Map<String, EntityManager> getCache() {
+		return getStore().getCache();
+	}
+	
+	private EntityManagerStore getStore(){
 		switch(configuration.getEntityManagerScope()){
 			case REQUEST:
 				return storeInstance.select(RequestEntityManagerStore.class).get();
@@ -234,26 +187,6 @@ public class EntityManagerProducer implements Serializable{
 			default:
 				return storeInstance.select(RequestEntityManagerStore.class).get();
 		}
-	}*/
-	
-	protected Logger getLogger(){
-		if (logger==null){
-			logger = Beans.getReference(Logger.class);
-		}
-		return logger;
 	}
 	
-	protected ResourceBundle getBundle(){
-		if (bundle==null){
-			bundle = Beans.getReference(ResourceBundle.class , new NameQualifier("demoiselle-jpa-bundle"));
-		}
-		return bundle;
-	}
-	
-	private EntityManagerFactoryProducer getFactory(){
-		if (factory==null){
-			factory = Beans.getReference(EntityManagerFactoryProducer.class);
-		}
-		return factory;
-	}
 }
