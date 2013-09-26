@@ -45,7 +45,6 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
 
 import org.slf4j.Logger;
 
@@ -126,19 +125,7 @@ public class EntityManagerProducer implements Serializable{
 	}
 
 	public EntityManager getEntityManager(String persistenceUnit) {
-		EntityManager entityManager = null;
-
-		if (getCache().containsKey(persistenceUnit)) {
-			entityManager = getCache().get(persistenceUnit);
-		} else {
-			entityManager = factory.create(persistenceUnit).createEntityManager();
-			entityManager.setFlushMode(FlushModeType.AUTO);
-
-			getCache().put(persistenceUnit, entityManager);
-			this.logger.info(bundle.getString("entity-manager-was-created", persistenceUnit));
-		}
-
-		return entityManager;
+		return getStore().getEntityManager(persistenceUnit);
 	}
 
 	/**
