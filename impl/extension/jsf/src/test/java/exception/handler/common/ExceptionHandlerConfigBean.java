@@ -36,17 +36,21 @@
  */
 package exception.handler.common;
 
+import java.io.Serializable;
+
 import org.junit.Ignore;
 
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
 
 @Ignore
 @ViewController
-public class ExceptionHandlerConfigBean{
-	
+public class ExceptionHandlerConfigBean implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	@SuppressWarnings("unused")
 	private String exp;
-	
+
 	public String getExp() throws DummyException {
 		throw new DummyException("DummyException!");
 	}

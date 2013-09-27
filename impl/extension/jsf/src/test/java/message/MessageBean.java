@@ -36,13 +36,17 @@
  */
 package message;
 
+import java.io.Serializable;
+
 import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.message.MessageContext;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
 
 @ViewController
-public class MessageBean {
+public class MessageBean implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private String msg = "Message shown.";
 

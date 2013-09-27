@@ -48,8 +48,8 @@ import br.gov.frameworkdemoiselle.annotation.NextView;
 import br.gov.frameworkdemoiselle.annotation.PreviousView;
 import br.gov.frameworkdemoiselle.annotation.Redirect;
 import br.gov.frameworkdemoiselle.internal.bootstrap.JsfBootstrap;
-import br.gov.frameworkdemoiselle.internal.configuration.ExceptionHandlerConfigCompatible;
 import br.gov.frameworkdemoiselle.internal.configuration.ExceptionHandlerConfig;
+import br.gov.frameworkdemoiselle.internal.configuration.ExceptionHandlerConfigCompatible;
 import br.gov.frameworkdemoiselle.internal.configuration.JsfSecurityConfig;
 import br.gov.frameworkdemoiselle.internal.context.FacesViewContextImpl;
 import br.gov.frameworkdemoiselle.internal.implementation.AbstractExceptionHandler;
@@ -134,10 +134,13 @@ public final class Tests {
 				.addAsResource(createFileAsset("src/main/resources/demoiselle-jsf-bundle.properties"),
 						"demoiselle-jsf-bundle.properties")
 				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")
-				.addAsManifestResource(createFileAsset("src/main/resources/META-INF/faces-config.xml"), "faces-config.xml")
-				.addAsManifestResource(createFileAsset("src/main/resources/META-INF/demoiselle-d.taglib.xml"), "demoiselle-d.taglib.xml")
-				.addAsManifestResource(createFileAsset("src/main/resources/META-INF/tags/br/gov/frameworkdemoiselle/checkLoggedIn.xhtml"), "checkedLoggedIn.xhtml")
-				.addAsLibraries(libs);
+				.addAsManifestResource(createFileAsset("src/main/resources/META-INF/faces-config.xml"),
+						"faces-config.xml")
+				.addAsManifestResource(createFileAsset("src/main/resources/META-INF/demoiselle-d.taglib.xml"),
+						"demoiselle-d.taglib.xml")
+				.addAsManifestResource(
+						createFileAsset("src/main/resources/META-INF/tags/br/gov/frameworkdemoiselle/checkLoggedIn.xhtml"),
+						"checkedLoggedIn.xhtml").addAsLibraries(libs);
 	}
 
 	public static FileAsset createFileAsset(final String pathname) {

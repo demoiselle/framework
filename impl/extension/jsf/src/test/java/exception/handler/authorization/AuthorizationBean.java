@@ -36,11 +36,15 @@
  */
 package exception.handler.authorization;
 
+import java.io.Serializable;
+
 import br.gov.frameworkdemoiselle.security.AuthorizationException;
 import br.gov.frameworkdemoiselle.stereotype.ViewController;
 
 @ViewController
-public class AuthorizationBean {
+public class AuthorizationBean implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private String correctMessage = "Authorization Message.";
 
