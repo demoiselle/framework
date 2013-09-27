@@ -39,7 +39,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>demoiselle-framework-build</artifactId>
-	<version>2.4.0-BETA4-SNAPSHOT</version>
+	<version>2.4.0-RC1</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -101,7 +101,7 @@
 		<connection>scm:git:git@github.com:demoiselle/${project.alias}.git</connection>
 		<developerConnection>scm:git:git@github.com:demoiselle/${project.alias}.git</developerConnection>
 		<url>http://github.com/demoiselle/${project.alias}</url>
-		<tag>HEAD</tag>
+		<tag>2.4.0-RC1</tag>
 	</scm>
 
 	<repositories>
