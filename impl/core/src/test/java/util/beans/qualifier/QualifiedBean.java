@@ -34,10 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util.beans;
+package util.beans.qualifier;
 
-import javax.inject.Named;
-
-@Named("DummyClass")
-public class DummyEL {
+public interface QualifiedBean {
 }

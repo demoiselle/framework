@@ -34,14 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util.beans;
+package util.beans.simple;
 
-import br.gov.frameworkdemoiselle.annotation.Priority;
-
-@Priority(value = 1)
-public class DummyImplementation implements Dummy {
-
-	@Override
-	public void dummyMethod() {
-	}
+public interface AloneBean {
 }

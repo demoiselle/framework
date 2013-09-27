@@ -47,7 +47,7 @@ import br.gov.frameworkdemoiselle.internal.implementation.Management;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
- * Dummy class that stores managed types detected by the management bootstrap
+ * Bean class that stores managed types detected by the management bootstrap
  * and can read/write properties and invoke operations on them, simulating a management
  * extension like JMX or SNMP. 
  * 

@@ -34,8 +34,48 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util.beans;
+package util.beans.qualifier;
 
-@QualifierTwo
-public class DummyQualifiedTwo implements DummyQualified{
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.util.NoSuchElementException;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import test.Tests;
+import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.util.Beans;
+
+@RunWith(Arquillian.class)
+public class QualifiedBeansTest {
+
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(QualifiedBeansTest.class);
+		return deployment;
+	}
+
+	@Test
+	public void beanClassAndQualifierTest() {
+		assertEquals(QualifiedBeanOne.class,
+				(Beans.getReference(QualifiedBean.class, QualifiedBeanOne.class.getAnnotations())).getClass());
+		assertEquals(QualifiedBeanTwo.class,
+				(Beans.getReference(QualifiedBean.class, QualifiedBeanTwo.class.getAnnotations())).getClass());
+	}
+
+	@Test
+	public void beanClassAndQualifierExceptionTest() {
+		try {
+			Beans.getReference(QualifiedBean.class, QualifiedBeanOne.class.getAnnotations()[0],
+					QualifiedBeanTwo.class.getAnnotations()[0]);
+			fail();
+		} catch (DemoiselleException cause) {
+			assertEquals(NoSuchElementException.class, cause.getCause().getClass());
+		}
+	}
 }

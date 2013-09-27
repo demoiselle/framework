@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util.beans;
+package util.beans.simple;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -52,42 +52,23 @@ import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
-public class BeansTest {
+public class SimpleBeansTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(BeansTest.class);
+		JavaArchive deployment = Tests.createDeployment(SimpleBeansTest.class);
 		return deployment;
 	}
 
 	@Test
-	public void beanClassAndQualifierTest() {
-		assertEquals(DummyQualifiedOne.class,
-				(Beans.getReference(DummyQualified.class, DummyQualifiedOne.class.getAnnotations())).getClass());
-		assertEquals(DummyQualifiedTwo.class,
-				(Beans.getReference(DummyQualified.class, DummyQualifiedTwo.class.getAnnotations())).getClass());
-	}
-
-	@Test
-	public void beanClassAndQualifierExceptionTest() {
-		try {
-			Beans.getReference(DummyQualified.class, DummyQualifiedOne.class.getAnnotations()[0],
-					DummyQualifiedTwo.class.getAnnotations()[0]);
-			fail();
-		} catch (DemoiselleException cause) {
-			assertEquals(NoSuchElementException.class, cause.getCause().getClass());
-		}
-	}
-
-	@Test
 	public void beanClassTest() {
-		assertEquals(DummyImplementation.class, Beans.getReference(Dummy.class).getClass());
+		assertEquals(BeanImpl.class, Beans.getReference(Bean.class).getClass());
 	}
 
 	@Test
 	public void beanClassExceptionTest() {
 		try {
-			Beans.getReference(InexistentImplementationInterface.class);
+			Beans.getReference(AloneBean.class);
 			fail();
 		} catch (DemoiselleException cause) {
 			assertEquals(NoSuchElementException.class, cause.getCause().getClass());
@@ -96,13 +77,13 @@ public class BeansTest {
 
 	@Test
 	public void beanNameTest() {
-		assertEquals(DummyEL.class, Beans.getReference("DummyClass").getClass());
+		assertEquals(NamedBean.class, Beans.getReference("DummyClass").getClass());
 	}
 
 	@Test
 	public void beanNameExceptionTest() {
 		try {
-			Beans.getReference("DummyEL");
+			Beans.getReference("NamedBean");
 			fail();
 		} catch (DemoiselleException cause) {
 			assertEquals(NoSuchElementException.class, cause.getCause().getClass());
