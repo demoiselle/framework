@@ -34,28 +34,34 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.annotation;
+package br.gov.frameworkdemoiselle.internal.producer;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import javax.enterprise.context.NormalScope;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
 
 /**
- * This scope maintains the context for viewed page; when the viewed page change, the data will be lost.
  * 
- * @author SERPRO
+ * Implementation that stores produced entity managers on the application scope.
+ * 
+ * @author serpro
+ *
  */
-@Inherited
-@Target({ METHOD, TYPE, FIELD })
-@Retention(RUNTIME)
-@NormalScope(passivating=true)
-public @interface ViewScoped {
+@ApplicationScoped
+public class ApplicationEntityManagerStore extends AbstractEntityManagerStore {
+	
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	@PostConstruct
+	public void initialize() {
+		super.init();
+	}
+
+	@Override
+	@PreDestroy
+	public void terminate() {
+		super.close();
+	}
 
 }

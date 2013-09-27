@@ -40,10 +40,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -66,24 +63,19 @@ import br.gov.frameworkdemoiselle.DemoiselleException;
  */
 public final class Beans {
 
-	private static final Map<ClassLoader, BeanManager> beanManagerCache = Collections
-			.synchronizedMap(new HashMap<ClassLoader, BeanManager>());
-
+	private static BeanManager beanManager = null;
+	
 	private Beans() {
 	}
 
-	public static void setBeanManager(BeanManager beanManager) {
-		beanManagerCache.put(getCurrentClassLoader(), beanManager);
+	public static void setBeanManager(BeanManager manager) {
+		beanManager = manager;
 	}
 
 	public static BeanManager getBeanManager() {
-		return beanManagerCache.get(getCurrentClassLoader());
+		return beanManager;
 	}
-
-	private static ClassLoader getCurrentClassLoader() {
-		return Thread.currentThread().getContextClassLoader();
-	}
-
+	
 	/**
 	 * Obtains a injectble instance of a bean, which have the given required type and qualifiers, and are available for
 	 * injection in the point where this method was call.

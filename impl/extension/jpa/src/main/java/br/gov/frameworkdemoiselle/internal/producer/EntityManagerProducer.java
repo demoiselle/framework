@@ -37,19 +37,16 @@
 package br.gov.frameworkdemoiselle.internal.producer;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
 
 import org.slf4j.Logger;
 
@@ -66,6 +63,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * persistence.xml, demoiselle.properties or @PersistenceUnit annotation.
  * </p>
  */
+@ApplicationScoped
 public class EntityManagerProducer implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -76,11 +74,15 @@ public class EntityManagerProducer implements Serializable{
 	@Inject
 	@Name("demoiselle-jpa-bundle")
 	private ResourceBundle bundle;
-
-	private final Map<String, EntityManager> cache = Collections.synchronizedMap(new HashMap<String, EntityManager>());
-
+	
 	@Inject
 	private EntityManagerFactoryProducer factory;
+	
+	@Inject
+	private Instance<EntityManagerStore> storeInstance;
+	
+	@Inject
+	private EntityManagerConfig configuration;
 	
 	/**
 	 * <p>
@@ -125,23 +127,6 @@ public class EntityManagerProducer implements Serializable{
 		return new EntityManagerProxy(persistenceUnit);
 	}
 
-	public EntityManager getEntityManager(String persistenceUnit) {
-		EntityManager entityManager = null;
-
-		if (cache.containsKey(persistenceUnit)) {
-			entityManager = cache.get(persistenceUnit);
-
-		} else {
-			entityManager = factory.create(persistenceUnit).createEntityManager();
-			entityManager.setFlushMode(FlushModeType.AUTO);
-
-			cache.put(persistenceUnit, entityManager);
-			this.logger.info(bundle.getString("entity-manager-was-created", persistenceUnit));
-		}
-
-		return entityManager;
-	}
-
 	/**
 	 * Tries to get persistence unit name from demoiselle.properties.
 	 * 
@@ -177,23 +162,31 @@ public class EntityManagerProducer implements Serializable{
 		}
 	}
 	
-	@PostConstruct
-	protected void init() {
-		for (String persistenceUnit : factory.getCache().keySet()) {
-			getEntityManager(persistenceUnit);
-		}
+	public EntityManager getEntityManager(String persistenceUnit) {
+		return getStore().getEntityManager(persistenceUnit);
 	}
-
-	@PreDestroy
-	protected void close() {
-		for (EntityManager entityManager : cache.values()) {
-			entityManager.close();
-		}
-
-		cache.clear();
-	}
-
+	
 	public Map<String, EntityManager> getCache() {
-		return cache;
+		return getStore().getCache();
 	}
+	
+	private EntityManagerStore getStore(){
+		switch(configuration.getEntityManagerScope()){
+			case REQUEST:
+				return storeInstance.select(RequestEntityManagerStore.class).get();
+			case APPLICATION:
+				return storeInstance.select(ApplicationEntityManagerStore.class).get();
+			case CONVERSATION:
+				return storeInstance.select(ConversationEntityManagerStore.class).get();
+			case NOSCOPE:
+				return storeInstance.select(DependentEntityManagerStore.class).get();
+			case SESSION:
+				return storeInstance.select(SessionEntityManagerStore.class).get();
+			case VIEW:
+				return storeInstance.select(ViewEntityManagerStore.class).get();
+			default:
+				return storeInstance.select(RequestEntityManagerStore.class).get();
+		}
+	}
+	
 }

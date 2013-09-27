@@ -70,10 +70,18 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	/**
+	/*
 	 * Persistence unit of the delegated EntityManager.
 	 */
 	private String persistenceUnit;
+	
+	/*
+	 * demoiselle-jpa configuration options
+	 */
+	private EntityManagerConfig configuration;
+	
+	
+	private EntityManager delegateCache;	
 
 	/**
 	 * Constructor based on persistence unit name.
@@ -91,8 +99,15 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 * @return Cached EntityManager
 	 */
 	private EntityManager getEntityManagerDelegate() {
-		EntityManagerProducer emp = Beans.getReference(EntityManagerProducer.class);
-		return emp.getEntityManager(this.persistenceUnit);
+		//Se o produtor de EntityManager não estiver em um escopo, precisamos guardar em cache o EntityManager produzido,
+		//do contrário, basta solicitar uma instância do produtor (que estará em um escopo) e obter a instância real 
+		//de EntityManager dele.
+		if (getConfiguration().getEntityManagerScope()!=EntityManagerScope.NOSCOPE || delegateCache==null){
+			EntityManagerProducer emp = Beans.getReference(EntityManagerProducer.class);
+			delegateCache = emp.getEntityManager(this.persistenceUnit);
+		}
+		
+		return delegateCache;
 	}
 
 	/*
@@ -113,7 +128,8 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	@Override
 	public <T> T merge(T entity) {
 		joinTransactionIfNecessary();
-		checkEntityManagerScopePassivable(entity);
+		T managedEntity = getEntityManagerDelegate().merge(entity);
+		checkEntityManagerScopePassivable(managedEntity);
 		return getEntityManagerDelegate().merge(entity);
 	}
 
@@ -155,6 +171,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	@Override
 	public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode) {
 		joinTransactionIfNecessary();
+		checkEntityManagerScopePassivable(lockMode);
 		return getEntityManagerDelegate().find(entityClass, primaryKey, lockMode);
 	}
 
@@ -166,6 +183,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	@Override
 	public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode, Map<String, Object> properties) {
 		joinTransactionIfNecessary();
+		checkEntityManagerScopePassivable(lockMode);
 		return getEntityManagerDelegate().find(entityClass, primaryKey, lockMode, properties);
 	}
 
@@ -213,6 +231,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	@Override
 	public void lock(Object entity, LockModeType lockMode) {
 		joinTransactionIfNecessary();
+		checkEntityManagerScopePassivable(lockMode);
 		getEntityManagerDelegate().lock(entity, lockMode);
 	}
 
@@ -223,6 +242,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	@Override
 	public void lock(Object entity, LockModeType lockMode, Map<String, Object> properties) {
 		joinTransactionIfNecessary();
+		checkEntityManagerScopePassivable(lockMode);
 		getEntityManagerDelegate().lock(entity, lockMode, properties);
 	}
 
@@ -363,7 +383,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public <T> TypedQuery<T> createNamedQuery(String name, Class<T> resultClass) {
-		return getEntityManagerDelegate().createNamedQuery(name, resultClass);
+		return new TypedQueryProxy<T>(getEntityManagerDelegate().createNamedQuery(name, resultClass),this);
 	}
 
 	/*
@@ -407,7 +427,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	protected final void joinTransactionIfNecessary() {
 		try {
-			getEntityManagerDelegate().getTransaction();
+			/*EntityTransaction transaction = */getEntityManagerDelegate().getTransaction();
 		} catch (IllegalStateException cause) {
 			//IllegalStateException is launched if we are on a JTA entity manager, so
 			//we assume we need to join transaction instead of creating one.
@@ -521,29 +541,50 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 		return getEntityManagerDelegate().toString();
 	}
 	
-	public EntityManagerConfig getConfiguration() {
-		return Beans.getReference(EntityManagerConfig.class);
-	}
-
-	public Logger getLogger() {
-		return Beans.getReference(Logger.class);
-	}
-	
-	public ResourceBundle getBundle(){
-		return Beans.getReference(ResourceBundle.class,new NameQualifier("demoiselle-jpa-bundle"));
-	}
-
 	private void checkEntityManagerScopePassivable(Object entity)  {
 		EntityManagerConfig configuration = getConfiguration();
 		if (configuration.getEntityManagerScope()==EntityManagerScope.CONVERSATION
 				|| configuration.getEntityManagerScope()==EntityManagerScope.SESSION
 				|| configuration.getEntityManagerScope()==EntityManagerScope.VIEW){
-			LockModeType lockMode = getEntityManagerDelegate().getLockMode(entity);
-			if (lockMode != LockModeType.OPTIMISTIC_FORCE_INCREMENT && lockMode != LockModeType.WRITE){
-				String message = getBundle().getString("passivable-scope-with-pessimistic-lock" , configuration.getEntityManagerScope().toString());
+		
+			LockModeType lockMode = null;
+			if (getEntityManagerDelegate().contains(entity)){
+				lockMode = getEntityManagerDelegate().getLockMode(entity);
+			}
+			checkEntityManagerScopePassivable(lockMode);
+		}
+	}
+
+	private void checkEntityManagerScopePassivable(LockModeType lockMode)  {
+		EntityManagerConfig configuration = getConfiguration();
+		if (configuration.getEntityManagerScope()==EntityManagerScope.CONVERSATION
+				|| configuration.getEntityManagerScope()==EntityManagerScope.SESSION
+				|| configuration.getEntityManagerScope()==EntityManagerScope.VIEW){
+			
+			if (lockMode!=null 
+					&& lockMode!=LockModeType.NONE 
+					&& lockMode!=LockModeType.OPTIMISTIC_FORCE_INCREMENT){
+				String message = getBundle().getString("passivable-scope-without-optimistic-lock" , configuration.getEntityManagerScope().toString());
 				getLogger().error(message);
 				throw new DemoiselleException(message);
 			}
 		}
 	}
+	
+	private EntityManagerConfig getConfiguration(){
+		if (configuration==null){
+			configuration = Beans.getReference(EntityManagerConfig.class);
+		}
+		
+		return configuration;
+	}
+	
+	private Logger getLogger() {
+		return Beans.getReference(Logger.class);
+	}
+	
+	private ResourceBundle getBundle(){
+		return Beans.getReference(ResourceBundle.class,new NameQualifier("demoiselle-jpa-bundle"));
+	}
+	
 }

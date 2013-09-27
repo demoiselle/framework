@@ -34,28 +34,46 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.annotation;
+package br.gov.frameworkdemoiselle.internal.producer;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import javax.enterprise.context.NormalScope;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Conversation;
+import javax.enterprise.context.ConversationScoped;
+import javax.inject.Inject;
 
 /**
- * This scope maintains the context for viewed page; when the viewed page change, the data will be lost.
  * 
- * @author SERPRO
+ * Implementation that stores produced entity managers on the conversation scope.
+ * It's the user responsibility to start and end conversations injecting the {@link Conversation} object
+ * inside of a conversation scoped bean that need the entity manager.   
+ * 
+ * @author serpro
+ *
  */
-@Inherited
-@Target({ METHOD, TYPE, FIELD })
-@Retention(RUNTIME)
-@NormalScope(passivating=true)
-public @interface ViewScoped {
+@ConversationScoped
+public class ConversationEntityManagerStore extends AbstractEntityManagerStore {
+	
+	private static final long serialVersionUID = 1L;
+	
+	@Inject
+	private Conversation conversation;
 
+	
+	public Conversation getConversation() {
+		return conversation;
+	}
+	
+	@Override
+	@PostConstruct
+	public void initialize() {
+		super.init();
+	}
+
+	@Override
+	@PreDestroy
+	public void terminate() {
+		super.close();
+	}
+	
 }

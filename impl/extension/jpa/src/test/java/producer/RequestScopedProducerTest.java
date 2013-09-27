@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.context.http.HttpRequestContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -18,27 +19,18 @@ import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
 
 @RunWith(Arquillian.class)
-public class ProducerTest {
+public class RequestScopedProducerTest {
 
 	private static final String PATH = "src/test/resources/producer";
 	
-	@Deployment//(name="request_scoped_producer")
+	@Deployment
 	public static WebArchive createDeployment() {
-		WebArchive deployment = Tests.createDeployment(ProducerTest.class);
+		WebArchive deployment = Tests.createDeployment(RequestScopedProducerTest.class);
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/persistence.xml"), "META-INF/persistence.xml");
 		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
 		
 		return deployment;
 	}
-	
-	/*@Deployment(name="no_scoped_producer")
-	public static WebArchive createNoScopedDeployment() {
-		WebArchive deployment = Tests.createDeployment(ProducerTest.class);
-		deployment.addAsResource(Tests.createFileAsset(PATH + "/persistence.xml"), "META-INF/persistence.xml");
-		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle_noscoped.properties"), "demoiselle.properties");
-		
-		return deployment;
-	}*/
 	
 	@Test
 	public void produceEntityManager() {
@@ -81,28 +73,44 @@ public class ProducerTest {
 		assertTrue(m2.contains(entity));
 	}
 	
-	/*@Test
-	public void produceOneEntityManagerPerInjection() {
-		//Testa se ao usar o produtor sem escopo, mais de um entity manager é criado a cada injeção.
+	@Test
+	public void produceDifferentEntityManagerPerRequest() {
+		HttpRequestContext weldContext = Beans.getReference(HttpRequestContext.class);
+		
+		boolean wasNotActive = false;
+		if (!weldContext.isActive()){
+			wasNotActive = true;
+			weldContext.activate();
+		}
 		
 		EntityManager m1 = Beans.getReference(EntityManager.class, new NameQualifier("pu"));
-
 		assertNotNull(m1);
 		assertEquals(EntityManagerProxy.class, m1.getClass());
-
-		EntityManager m2 = Beans.getReference(EntityManager.class, new NameQualifier("pu"));
-
-		assertNotNull(m2);
-		assertEquals(EntityManagerProxy.class, m2.getClass());
-
+		
 		MyEntity entity = new MyEntity();
 		entity.setId(createId("testID"));
-
+		
 		m1.persist(entity);
-
-		assertTrue( ! m2.contains(entity));
-	}*/
-
+		assertTrue(m1.contains(entity));
+		
+		weldContext.invalidate();
+		weldContext.deactivate();
+		
+		if (!weldContext.isActive()){
+			weldContext.activate();
+		}
+		
+		EntityManager m2 = Beans.getReference(EntityManager.class, new NameQualifier("pu"));
+		
+		assertTrue( m2.isOpen() );
+		assertTrue( !m2.contains(entity));
+		
+		if (wasNotActive && weldContext.isActive()){
+			weldContext.invalidate();
+			weldContext.deactivate();
+		}
+	}
+	
 	private String createId(String id) {
 		return this.getClass().getName() + "_" + id;
 	}

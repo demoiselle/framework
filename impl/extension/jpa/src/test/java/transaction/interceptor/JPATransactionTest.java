@@ -66,7 +66,6 @@ public class JPATransactionTest {
 
 	@Test
 	public void commitWithSuccess() {
-
 		tb.commitWithSuccess();
 
 		MyEntity1 entity1 = em1.find(MyEntity1.class, tb.createId("id-1"));
@@ -78,7 +77,6 @@ public class JPATransactionTest {
 
 	@Test
 	public void rollbackWithSuccess() {
-
 		try {
 			tb.rollbackWithSuccess();
 		} catch (Exception e) {
