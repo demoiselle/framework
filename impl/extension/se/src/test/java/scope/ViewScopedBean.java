@@ -1,10 +1,14 @@
 package scope;
 
+import java.io.Serializable;
+
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 
 @ViewScoped
-public class ViewScopedBean {
-	
+public class ViewScopedBean implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private String value;
 
 	public String getValue() {
@@ -14,5 +18,4 @@ public class ViewScopedBean {
 	public void setValue(String value) {
 		this.value = value;
 	}
-
 }
