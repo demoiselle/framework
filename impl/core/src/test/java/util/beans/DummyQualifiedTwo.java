@@ -37,5 +37,5 @@
 package util.beans;
 
 @QualifierTwo
-public class DummyQualifierTwo implements DummyQualifier{
+public class DummyQualifiedTwo implements DummyQualified{
 }

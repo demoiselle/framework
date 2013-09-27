@@ -36,5 +36,5 @@
  */
 package util.beans;
 
-public interface DummyQualifier {
+public interface DummyQualified {
 }

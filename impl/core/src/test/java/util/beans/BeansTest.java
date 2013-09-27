@@ -62,17 +62,17 @@ public class BeansTest {
 
 	@Test
 	public void beanClassAndQualifierTest() {
-		assertEquals(DummyQualifierOne.class,
-				(Beans.getReference(DummyQualifier.class, DummyQualifierOne.class.getAnnotations())).getClass());
-		assertEquals(DummyQualifierTwo.class,
-				(Beans.getReference(DummyQualifier.class, DummyQualifierTwo.class.getAnnotations())).getClass());
+		assertEquals(DummyQualifiedOne.class,
+				(Beans.getReference(DummyQualified.class, DummyQualifiedOne.class.getAnnotations())).getClass());
+		assertEquals(DummyQualifiedTwo.class,
+				(Beans.getReference(DummyQualified.class, DummyQualifiedTwo.class.getAnnotations())).getClass());
 	}
 
 	@Test
 	public void beanClassAndQualifierExceptionTest() {
 		try {
-			Beans.getReference(DummyQualifier.class, DummyQualifierOne.class.getAnnotations()[0],
-					DummyQualifierTwo.class.getAnnotations()[0]);
+			Beans.getReference(DummyQualified.class, DummyQualifiedOne.class.getAnnotations()[0],
+					DummyQualifiedTwo.class.getAnnotations()[0]);
 			fail();
 		} catch (DemoiselleException cause) {
 			assertEquals(NoSuchElementException.class, cause.getCause().getClass());

@@ -36,6 +36,9 @@
  */
 package util.beans;
 
+import javax.enterprise.inject.Alternative;
+
+@Alternative
 @QualifierOne
-public class DummyQualifierOne implements DummyQualifier {
+public class DummyQualifiedOne implements DummyQualified {
 }
