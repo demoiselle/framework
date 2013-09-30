@@ -37,6 +37,5 @@
 package util.beans.simple;
 
 public interface Bean {
-	
-	public void dummyMethod();
+
 }

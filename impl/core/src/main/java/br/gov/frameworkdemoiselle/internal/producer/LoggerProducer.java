@@ -89,7 +89,7 @@ public class LoggerProducer implements Serializable {
 			type = Reflections.forName(canonicalName);
 
 		} catch (ClassCastException cause) {
-			// TODO Colocar a mensgaem apropriada mostrando como utilizar a anotação @Name corretamente com a injeção de
+			// TODO Colocar a mensgaem apropriada mostrando como utilizar a anotação @AmbiguousQualifier corretamente com a injeção de
 			// Logger.
 			throw new DemoiselleException(null, cause);
 		}

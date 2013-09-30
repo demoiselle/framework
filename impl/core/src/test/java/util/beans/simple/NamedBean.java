@@ -38,6 +38,6 @@ package util.beans.simple;
 
 import javax.inject.Named;
 
-@Named("DummyClass")
+@Named
 public class NamedBean {
 }

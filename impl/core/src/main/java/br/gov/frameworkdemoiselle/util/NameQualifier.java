@@ -41,11 +41,11 @@ import javax.enterprise.util.AnnotationLiteral;
 import br.gov.frameworkdemoiselle.annotation.Name;
 
 /**
- * Creates a instance of an java annotation, specifically for qualification @Name. 
+ * Creates a instance of an java annotation, specifically for qualification @AmbiguousQualifier. 
  * This is required to get some classes by calling Beans.getReference method.
  * 
  * @see Beans
- * @see Name
+ * @see AmbiguousQualifier
  * 
  * @author SERPRO
  */

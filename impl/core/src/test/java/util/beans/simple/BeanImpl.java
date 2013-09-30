@@ -36,12 +36,6 @@
  */
 package util.beans.simple;
 
-import br.gov.frameworkdemoiselle.annotation.Priority;
-
-@Priority(value = 1)
 public class BeanImpl implements Bean {
 
-	@Override
-	public void dummyMethod() {
-	}
 }

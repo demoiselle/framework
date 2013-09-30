@@ -34,59 +34,9 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util.beans.simple;
+package util.beans.ambiguous;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+@AmbiguousQualifier
+public class SecondAmbiguousQualifiedBean implements Bean {
 
-import java.util.NoSuchElementException;
-
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import test.Tests;
-import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.util.Beans;
-
-@RunWith(Arquillian.class)
-public class SimpleBeansTest {
-
-	@Deployment
-	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(SimpleBeansTest.class);
-		return deployment;
-	}
-
-	@Test
-	public void defaultBeanImplementationTest() {
-		assertEquals(BeanImpl.class, Beans.getReference(Bean.class).getClass());
-	}
-
-	@Test
-	public void failOnGetBeanInterfaceWithoutImplementationTest() {
-		try {
-			Beans.getReference(AloneBean.class);
-			fail();
-		} catch (DemoiselleException cause) {
-			assertEquals(NoSuchElementException.class, cause.getCause().getClass());
-		}
-	}
-
-	@Test
-	public void validBeanNameTest() {
-		assertEquals(NamedBean.class, Beans.getReference("namedBean").getClass());
-	}
-
-	@Test
-	public void invalidBeanNameTest() {
-		try {
-			Beans.getReference("wrongNamedBean");
-			fail();
-		} catch (DemoiselleException cause) {
-			assertEquals(NoSuchElementException.class, cause.getCause().getClass());
-		}
-	}
 }
