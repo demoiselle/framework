@@ -41,13 +41,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
 
 import org.slf4j.Logger;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig;
 import br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig.EntityManagerScope;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -73,19 +71,6 @@ public abstract class AbstractEntityManagerStore implements EntityManagerStore {
 	private static final long serialVersionUID = 1L;
 
 	private final Map<String, EntityManager> cache = Collections.synchronizedMap(new HashMap<String, EntityManager>());
-	
-	@Inject
-	private EntityManagerFactoryProducer factory;
-	
-	@Inject
-	private Logger logger;
-
-	@Inject
-	@Name("demoiselle-jpa-bundle")
-	private ResourceBundle bundle;
-	
-	@Inject
-	private EntityManagerConfig configuration;
 	
 	public EntityManager getEntityManager(String persistenceUnit) {
 		EntityManager entityManager = null;
@@ -114,6 +99,7 @@ public abstract class AbstractEntityManagerStore implements EntityManagerStore {
 		//Se o produtor não possui escopo, então o ciclo de vida
 		//de EntityManager produzidos é responsabilidade do desenvolvedor. Não
 		//fechamos os EntityManagers aqui.
+		EntityManagerConfig configuration = getConfiguration();
 		if (configuration.getEntityManagerScope() != EntityManagerScope.NOSCOPE){
 			for (EntityManager entityManager : cache.values()) {
 				entityManager.close();
@@ -131,23 +117,18 @@ public abstract class AbstractEntityManagerStore implements EntityManagerStore {
 	}
 	
 	private EntityManagerFactoryProducer getFactory(){
-		if (factory==null){
-			factory = Beans.getReference(EntityManagerFactoryProducer.class);
-		}
-		return factory;
+		return Beans.getReference(EntityManagerFactoryProducer.class);
 	}
 	
 	private Logger getLogger(){
-		if (logger==null){
-			logger = Beans.getReference(Logger.class);
-		}
-		return logger;
+		return Beans.getReference(Logger.class);
 	}
 	
 	private ResourceBundle getBundle(){
-		if (bundle==null){
-			bundle = Beans.getReference(ResourceBundle.class , new NameQualifier("demoiselle-jpa-bundle"));
-		}
-		return bundle;
+		return Beans.getReference(ResourceBundle.class , new NameQualifier("demoiselle-jpa-bundle"));
+	}
+	
+	private EntityManagerConfig getConfiguration(){
+		return Beans.getReference(EntityManagerConfig.class);
 	}
 }

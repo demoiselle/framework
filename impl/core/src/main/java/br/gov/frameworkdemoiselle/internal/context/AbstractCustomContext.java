@@ -36,6 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashMap;
@@ -156,8 +157,8 @@ public abstract class AbstractCustomContext implements CustomContext {
 		return this.scope;
 	}
 
-	protected static Store createStore() {
-		return new Store();
+	protected static Store createStore(Class<?> owningClass) {
+		return new Store(owningClass);
 	}
 	
 	private ResourceBundle getBundle(){
@@ -193,38 +194,47 @@ public abstract class AbstractCustomContext implements CustomContext {
 		return true;
 	}
 
-	static class Store {
+	static class Store implements Serializable {
 
-		private Map<ClassLoader, Map<Class<?>, Object>> cache = Collections
-				.synchronizedMap(new HashMap<ClassLoader, Map<Class<?>, Object>>());
+		private static final long serialVersionUID = -8237464177510563034L;
+		
+		private final String SEPARATOR = "#";
+		
+		private final String ID_PREFIX;
+		
+		private Map<String, Object> cache = Collections.synchronizedMap(new HashMap<String, Object>());
 
-		private Store() {
+		private Store(Class<?> owningClass) {
+			ID_PREFIX = Thread.currentThread().getContextClassLoader().toString()
+					+ SEPARATOR + owningClass.getCanonicalName();
 		}
 
 		private boolean contains(final Class<?> type) {
-			return this.getMap().containsKey(type);
+			return cache.containsKey( prefixId(type.getCanonicalName()) );
 		}
 
 		private Object get(final Class<?> type) {
-			return this.getMap().get(type);
+			return cache.get( prefixId(type.getCanonicalName()) );
 		}
 
 		private void put(final Class<?> type, final Object instance) {
-			this.getMap().put(type, instance);
+			cache.put( prefixId(type.getCanonicalName()) , instance);
 		}
 
 		public void clear() {
 			cache.clear();
 		}
+		
+		private String prefixId(String id){
+			return ID_PREFIX + SEPARATOR + id;
+		}
 
-		private Map<Class<?>, Object> getMap() {
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
+		/*private Map<String, Object> getMap() {
 			if (!cache.containsKey(classLoader)) {
 				cache.put(classLoader, Collections.synchronizedMap(new HashMap<Class<?>, Object>()));
 			}
 
 			return cache.get(classLoader);
-		}
+		}*/
 	}
 }
