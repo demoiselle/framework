@@ -34,42 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util;
+package util.beans.simple;
 
-import static org.junit.Assert.assertEquals;
-
-import java.lang.reflect.Member;
-
-import org.junit.Test;
-
-import br.gov.frameworkdemoiselle.util.Reflections;
-
-public class ReflectionsTest {
-
-	@Test
-	public void testGetGenericTypeArgumentClass() {
-		assertEquals(Long.class, Reflections.getGenericTypeArgument(OtherClass.class, 0));
-		assertEquals(String.class, Reflections.getGenericTypeArgument(OtherClass.class, 1));
-	}
-
-	@Test
-	public void testGetGenericTypeArgumentMember() throws SecurityException, NoSuchFieldException {
-		Member[] members = OtherClass.class.getFields();
-		assertEquals(Long.class, Reflections.getGenericTypeArgument(members[0], 0));
-		assertEquals(String.class, Reflections.getGenericTypeArgument(members[1], 0));
-	}
-}
-
-class SomeClass<T, I> {
-
-	public void setNumber(final T t) {
-
-	}
-}
-
-class OtherClass extends SomeClass<Long, String> {
-
-	public Class<Long> number;
-
-	public Class<String> text;
+public interface AloneBean {
 }

@@ -34,14 +34,24 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util.beans;
+package util.beans.ambiguous;
 
-import br.gov.frameworkdemoiselle.annotation.Priority;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Priority(value = 1)
-public class DummyImplementation implements Dummy {
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-	@Override
-	public void dummyMethod() {
-	}
+import javax.inject.Qualifier;
+
+@Qualifier
+@Inherited
+@Retention(RUNTIME)
+@Target({ TYPE, FIELD, METHOD, PARAMETER })
+public @interface SecondValidQualifier {
+
 }

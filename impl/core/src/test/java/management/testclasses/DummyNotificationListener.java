@@ -46,7 +46,7 @@ import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 
 /**
- * Dummy class to test receiving of notifications sent by the {@link NotificationManager} 
+ * Bean class to test receiving of notifications sent by the {@link NotificationManager} 
  * 
  * @author SERPRO
  *

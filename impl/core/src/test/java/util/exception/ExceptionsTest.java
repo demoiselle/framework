@@ -34,40 +34,57 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.util;
+package util.exception;
 
-import javax.enterprise.util.AnnotationLiteral;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
+import org.junit.Test;
 
-/**
- * Creates a instance of an java annotation, specifically for qualification @AmbiguousQualifier. 
- * This is required to get some classes by calling Beans.getReference method.
- * 
- * @see Beans
- * @see AmbiguousQualifier
- * 
- * @author SERPRO
- */
-@SuppressWarnings("all")
-public class NameQualifier extends AnnotationLiteral<Name> implements Name {
+import br.gov.frameworkdemoiselle.exception.ApplicationException;
+import br.gov.frameworkdemoiselle.util.Exceptions;
+
+public class ExceptionsTest {
+
+	@Test
+	public void testIsApplicationException() {
+		assertTrue(Exceptions.isApplicationException(new MyException()));
+		assertFalse(Exceptions.isApplicationException(new Exception()));
+	}
+
+	@Test
+	public void testHandleRuntimeException() {
+		try {
+			Exceptions.handleToRuntimeException(new SomeRuntimeException());
+			fail();
+		} catch (Throwable t) {
+			if (!RuntimeException.class.isInstance(t)) {
+				fail();
+			}
+		}
+
+		try {
+			Exceptions.handleToRuntimeException(new Exception());
+			fail();
+		} catch (Throwable t) {
+			if (!RuntimeException.class.isInstance(t)) {
+				fail();
+			}
+		}
+
+	}
+
+}
+
+@ApplicationException
+class MyException extends Exception {
+
+	private static final long serialVersionUID = 1L;
+}
+
+class SomeRuntimeException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	private final String value;
-
-	/**
-	 * Constructor with string value of name qualifier.
-	 * 
-	 * @param value
-	 * 			value of name qualifier.
-	 */
-	public NameQualifier(String value) {
-		this.value = value;
-	}
-
-	@Override
-	public String value() {
-		return this.value;
-	}
 }

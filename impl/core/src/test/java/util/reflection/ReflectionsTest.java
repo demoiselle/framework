@@ -34,21 +34,42 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util.beans;
+package util.reflection;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static org.junit.Assert.assertEquals;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import java.lang.reflect.Member;
 
-import javax.inject.Qualifier;
+import org.junit.Test;
 
-@Qualifier
-@Target({TYPE,  METHOD, PARAMETER, FIELD})
-@Retention(RUNTIME)
-public @interface QualifierTwo {
+import br.gov.frameworkdemoiselle.util.Reflections;
+
+public class ReflectionsTest {
+
+	@Test
+	public void testGetGenericTypeArgumentClass() {
+		assertEquals(Long.class, Reflections.getGenericTypeArgument(OtherClass.class, 0));
+		assertEquals(String.class, Reflections.getGenericTypeArgument(OtherClass.class, 1));
+	}
+
+	@Test
+	public void testGetGenericTypeArgumentMember() throws SecurityException, NoSuchFieldException {
+		Member[] members = OtherClass.class.getFields();
+		assertEquals(Long.class, Reflections.getGenericTypeArgument(members[0], 0));
+		assertEquals(String.class, Reflections.getGenericTypeArgument(members[1], 0));
+	}
+}
+
+class SomeClass<T, I> {
+
+	public void setNumber(final T t) {
+
+	}
+}
+
+class OtherClass extends SomeClass<Long, String> {
+
+	public Class<Long> number;
+
+	public Class<String> text;
 }

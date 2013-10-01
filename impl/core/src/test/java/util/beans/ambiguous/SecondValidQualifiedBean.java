@@ -34,7 +34,9 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util.beans;
+package util.beans.ambiguous;
 
-public interface InexistentImplementationInterface {
+@SecondValidQualifier
+public class SecondValidQualifiedBean implements Bean {
+
 }

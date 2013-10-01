@@ -66,14 +66,14 @@ import javax.inject.Qualifier;
  * <pre>
  * public class NameConfig {
  * 
- * 	&#064;Name("other.name.attrib")
+ * 	&#064;AmbiguousQualifier("other.name.attrib")
  *   private int nameOfAttribute;
  *   ...
  * }
  * 
  * public class NameResourceBundle {
  * 
- * 	&#064;Name("other.name.bundle")
+ * 	&#064;AmbiguousQualifier("other.name.bundle")
  *   &#064;Inject
  *   private ResourceBundle bundle;
  *   ...

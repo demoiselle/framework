@@ -34,40 +34,24 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.util;
+package util.beans.ambiguous;
 
-import javax.enterprise.util.AnnotationLiteral;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-/**
- * Creates a instance of an java annotation, specifically for qualification @AmbiguousQualifier. 
- * This is required to get some classes by calling Beans.getReference method.
- * 
- * @see Beans
- * @see AmbiguousQualifier
- * 
- * @author SERPRO
- */
-@SuppressWarnings("all")
-public class NameQualifier extends AnnotationLiteral<Name> implements Name {
+import javax.inject.Qualifier;
 
-	private static final long serialVersionUID = 1L;
+@Qualifier
+@Inherited
+@Retention(RUNTIME)
+@Target({ TYPE, FIELD, METHOD, PARAMETER })
+public @interface AmbiguousQualifier {
 
-	private final String value;
-
-	/**
-	 * Constructor with string value of name qualifier.
-	 * 
-	 * @param value
-	 * 			value of name qualifier.
-	 */
-	public NameQualifier(String value) {
-		this.value = value;
-	}
-
-	@Override
-	public String value() {
-		return this.value;
-	}
 }

@@ -121,7 +121,7 @@ public class Management implements Serializable {
 	 *            A type annotated with {@link ManagementController}. This method will create an (or obtain an already
 	 *            created) instance of this type and invoke the operation over it.
 	 * @param actionName
-	 *            Name of method to be invoked, the type must have this operation on it's list
+	 *            AmbiguousQualifier of method to be invoked, the type must have this operation on it's list
 	 * @param params
 	 *            List of values for the operation parameters. Can be <code>null</code> if the operation require no
 	 *            parameters.

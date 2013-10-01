@@ -111,7 +111,7 @@ public class EntityManagerProducer implements Serializable{
 	/**
 	 * 
 	 * <p>
-	 * Factory that reads the {@link Name} qualifier and creates an entity manager with
+	 * Factory that reads the {@link AmbiguousQualifier} qualifier and creates an entity manager with
 	 * a matching persistence unit name. 
 	 * </p>
 	 * 
@@ -149,7 +149,7 @@ public class EntityManagerProducer implements Serializable{
 	 * Uses persistence.xml to get informations about which persistence unit to use. Throws DemoiselleException if more
 	 * than one Persistence Unit is defined.
 	 * 
-	 * @return Persistence Unit Name
+	 * @return Persistence Unit AmbiguousQualifier
 	 */
 	private String getFromXML() {
 		Set<String> persistenceUnits = factory.getCache().keySet();

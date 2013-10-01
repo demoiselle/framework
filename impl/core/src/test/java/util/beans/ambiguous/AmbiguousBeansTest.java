@@ -34,40 +34,67 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.util;
+package util.beans.ambiguous;
 
+import static junit.framework.Assert.assertEquals;
+
+import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.util.AnnotationLiteral;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-/**
- * Creates a instance of an java annotation, specifically for qualification @AmbiguousQualifier. 
- * This is required to get some classes by calling Beans.getReference method.
- * 
- * @see Beans
- * @see AmbiguousQualifier
- * 
- * @author SERPRO
- */
-@SuppressWarnings("all")
-public class NameQualifier extends AnnotationLiteral<Name> implements Name {
+import test.Tests;
+import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.util.Beans;
 
-	private static final long serialVersionUID = 1L;
+@RunWith(Arquillian.class)
+public class AmbiguousBeansTest {
 
-	private final String value;
-
-	/**
-	 * Constructor with string value of name qualifier.
-	 * 
-	 * @param value
-	 * 			value of name qualifier.
-	 */
-	public NameQualifier(String value) {
-		this.value = value;
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(AmbiguousBeansTest.class);
+		return deployment;
 	}
 
-	@Override
-	public String value() {
-		return this.value;
+	@Test
+	public void failOnAmbiguousBeansImplementationsTest() {
+		try {
+			Beans.getReference(Bean.class);
+		} catch (DemoiselleException cause) {
+			assertEquals(AmbiguousResolutionException.class, cause.getCause().getClass());
+		}
+	}
+
+	@Test
+	public void failOnAmbiguousQualifiedBeansImplementationsTest() {
+		try {
+			Beans.getReference(Bean.class, new AnnotationLiteral<AmbiguousQualifier>() {
+
+				private static final long serialVersionUID = 1L;
+			});
+		} catch (DemoiselleException cause) {
+			assertEquals(AmbiguousResolutionException.class, cause.getCause().getClass());
+		}
+	}
+
+	@Test
+	public void ambiguityResolvedByQualifiersTest() {
+		Bean bean;
+
+		bean = Beans.getReference(Bean.class, new AnnotationLiteral<FirstValidQualifier>() {
+
+			private static final long serialVersionUID = 1L;
+		});
+		assertEquals(FirstValidQualifiedBean.class, bean.getClass());
+
+		bean = Beans.getReference(Bean.class, new AnnotationLiteral<SecondValidQualifier>() {
+
+			private static final long serialVersionUID = 1L;
+		});
+		assertEquals(SecondValidQualifiedBean.class, bean.getClass());
 	}
 }

@@ -34,21 +34,59 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util.beans;
+package util.beans.simple;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import java.util.NoSuchElementException;
 
-import javax.inject.Qualifier;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-@Qualifier
-@Target({TYPE,  METHOD, PARAMETER, FIELD})
-@Retention(RUNTIME)
-public @interface QualifierOne {
+import test.Tests;
+import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.util.Beans;
+
+@RunWith(Arquillian.class)
+public class SimpleBeansTest {
+
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(SimpleBeansTest.class);
+		return deployment;
+	}
+
+	@Test
+	public void defaultBeanImplementationTest() {
+		assertEquals(BeanImpl.class, Beans.getReference(Bean.class).getClass());
+	}
+
+	@Test
+	public void failOnGetBeanInterfaceWithoutImplementationTest() {
+		try {
+			Beans.getReference(AloneBean.class);
+			fail();
+		} catch (DemoiselleException cause) {
+			assertEquals(NoSuchElementException.class, cause.getCause().getClass());
+		}
+	}
+
+	@Test
+	public void validBeanNameTest() {
+		assertEquals(NamedBean.class, Beans.getReference("namedBean").getClass());
+	}
+
+	@Test
+	public void invalidBeanNameTest() {
+		try {
+			Beans.getReference("wrongNamedBean");
+			fail();
+		} catch (DemoiselleException cause) {
+			assertEquals(NoSuchElementException.class, cause.getCause().getClass());
+		}
+	}
 }

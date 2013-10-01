@@ -34,8 +34,24 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util.beans;
+package util.beans.ambiguous;
 
-@QualifierTwo
-public class DummyQualifierTwo implements DummyQualifier{
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import javax.inject.Qualifier;
+
+@Qualifier
+@Inherited
+@Retention(RUNTIME)
+@Target({ TYPE, FIELD, METHOD, PARAMETER })
+public @interface FirstValidQualifier {
+
 }
