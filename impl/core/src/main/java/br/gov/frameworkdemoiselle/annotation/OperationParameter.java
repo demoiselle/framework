@@ -60,7 +60,7 @@ import javax.enterprise.util.Nonbinding;
 public @interface OperationParameter {
 
 	/**
-	 * Name that will be used to publish this operation's parameter to clients.
+	 * AmbiguousQualifier that will be used to publish this operation's parameter to clients.
 	 */
 	@Nonbinding
 	String name();

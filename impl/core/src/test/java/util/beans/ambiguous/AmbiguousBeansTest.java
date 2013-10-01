@@ -34,12 +34,12 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package util.beans.simple;
+package util.beans.ambiguous;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static junit.framework.Assert.assertEquals;
 
-import java.util.NoSuchElementException;
+import javax.enterprise.inject.AmbiguousResolutionException;
+import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -52,41 +52,49 @@ import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
-public class SimpleBeansTest {
+public class AmbiguousBeansTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(SimpleBeansTest.class);
+		JavaArchive deployment = Tests.createDeployment(AmbiguousBeansTest.class);
 		return deployment;
 	}
 
 	@Test
-	public void defaultBeanImplementationTest() {
-		assertEquals(BeanImpl.class, Beans.getReference(Bean.class).getClass());
-	}
-
-	@Test
-	public void failOnGetBeanInterfaceWithoutImplementationTest() {
+	public void failOnAmbiguousBeansImplementationsTest() {
 		try {
-			Beans.getReference(AloneBean.class);
-			fail();
+			Beans.getReference(Bean.class);
 		} catch (DemoiselleException cause) {
-			assertEquals(NoSuchElementException.class, cause.getCause().getClass());
+			assertEquals(AmbiguousResolutionException.class, cause.getCause().getClass());
 		}
 	}
 
 	@Test
-	public void validBeanNameTest() {
-		assertEquals(NamedBean.class, Beans.getReference("namedBean").getClass());
+	public void failOnAmbiguousQualifiedBeansImplementationsTest() {
+		try {
+			Beans.getReference(Bean.class, new AnnotationLiteral<AmbiguousQualifier>() {
+
+				private static final long serialVersionUID = 1L;
+			});
+		} catch (DemoiselleException cause) {
+			assertEquals(AmbiguousResolutionException.class, cause.getCause().getClass());
+		}
 	}
 
 	@Test
-	public void invalidBeanNameTest() {
-		try {
-			Beans.getReference("wrongNamedBean");
-			fail();
-		} catch (DemoiselleException cause) {
-			assertEquals(NoSuchElementException.class, cause.getCause().getClass());
-		}
+	public void ambiguityResolvedByQualifiersTest() {
+		Bean bean;
+
+		bean = Beans.getReference(Bean.class, new AnnotationLiteral<FirstValidQualifier>() {
+
+			private static final long serialVersionUID = 1L;
+		});
+		assertEquals(FirstValidQualifiedBean.class, bean.getClass());
+
+		bean = Beans.getReference(Bean.class, new AnnotationLiteral<SecondValidQualifier>() {
+
+			private static final long serialVersionUID = 1L;
+		});
+		assertEquals(SecondValidQualifiedBean.class, bean.getClass());
 	}
 }

@@ -45,6 +45,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -64,7 +65,7 @@ import br.gov.frameworkdemoiselle.DemoiselleException;
 public final class Beans {
 
 	private static BeanManager beanManager = null;
-	
+
 	private Beans() {
 	}
 
@@ -75,7 +76,7 @@ public final class Beans {
 	public static BeanManager getBeanManager() {
 		return beanManager;
 	}
-	
+
 	/**
 	 * Obtains a injectble instance of a bean, which have the given required type and qualifiers, and are available for
 	 * injection in the point where this method was call.
@@ -161,11 +162,12 @@ public final class Beans {
 
 	@SuppressWarnings("unchecked")
 	private static <T> T getReference(Set<Bean<?>> beans, Class<T> beanClass, Annotation... qualifiers) {
+		if (beans.size() > 1) {
+			String message = getBundle().getString("ambiguous-bean-resolution", beanClass.getName(), beans.toString());
+			throw new DemoiselleException(message, new AmbiguousResolutionException());
+		}
+
 		Bean<?> bean = beans.iterator().next();
-
-		// TODO Esta mudança só deve ser submetida com os testes passando. Esta mudança quebra os testes.
-		// Bean<?> bean = getBeanManager().resolve( beans );
-
 		CreationalContext<?> context = getBeanManager().createCreationalContext(bean);
 		Type beanType = beanClass == null ? bean.getBeanClass() : beanClass;
 		InjectionPoint injectionPoint = new CustomInjectionPoint(bean, beanType, qualifiers);

@@ -72,13 +72,13 @@ public class ManagementTest {
 	@Test
 	public void readProperty() {
 		DummyManagedClass managedClass = Beans.getReference(DummyManagedClass.class);
-		managedClass.setName("Test Name");
+		managedClass.setName("Test AmbiguousQualifier");
 
 		// store é nossa extensão de gerenciamento falsa, então estamos testando um "cliente" acessando
 		// nosso tipo gerenciado DummyManagedClass remotamente.
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
 		Object name = store.getProperty(DummyManagedClass.class, "name");
-		Assert.assertEquals("Test Name", name);
+		Assert.assertEquals("Test AmbiguousQualifier", name);
 	}
 
 	@Test
@@ -86,10 +86,10 @@ public class ManagementTest {
 		// store é nossa extensão de gerenciamento falsa, então estamos testando um "cliente" definindo
 		// um novo valor em uma propriedade de nosso tipo gerenciado DummyManagedClass remotamente.
 		ManagedClassStore store = Beans.getReference(ManagedClassStore.class);
-		store.setProperty(DummyManagedClass.class, "name", "Test Name");
+		store.setProperty(DummyManagedClass.class, "name", "Test AmbiguousQualifier");
 
 		DummyManagedClass managedClass = Beans.getReference(DummyManagedClass.class);
-		Assert.assertEquals("Test Name", managedClass.getName());
+		Assert.assertEquals("Test AmbiguousQualifier", managedClass.getName());
 	}
 
 	@Test

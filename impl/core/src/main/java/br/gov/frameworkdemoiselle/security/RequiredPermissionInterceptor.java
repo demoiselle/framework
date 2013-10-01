@@ -99,12 +99,12 @@ public class RequiredPermissionInterceptor implements Serializable {
 	}
 
 	/**
-	 * Returns the resource defined in {@code @RequiredPermission} annotation, the name defined in {@code @Name}
+	 * Returns the resource defined in {@code @RequiredPermission} annotation, the name defined in {@code @AmbiguousQualifier}
 	 * annotation or the class name itself
 	 * 
 	 * @param ic
 	 *            the {@code InvocationContext} in which the method is being called
-	 * @return the resource defined in {@code @RequiredPermission} annotation, the name defined in {@code @Name}
+	 * @return the resource defined in {@code @RequiredPermission} annotation, the name defined in {@code @AmbiguousQualifier}
 	 *         annotation or the class name itself
 	 */
 	private String getResource(InvocationContext ic) {
@@ -127,12 +127,12 @@ public class RequiredPermissionInterceptor implements Serializable {
 	}
 
 	/**
-	 * Returns the operation defined in {@code @RequiredPermission} annotation, the name defined in {@code @Name}
+	 * Returns the operation defined in {@code @RequiredPermission} annotation, the name defined in {@code @AmbiguousQualifier}
 	 * annotation or the method's name itself
 	 * 
 	 * @param ic
 	 *            the {@code InvocationContext} in which the method is being called
-	 * @return the operation defined in {@code @RequiredPermission} annotation, the name defined in {@code @Name}
+	 * @return the operation defined in {@code @RequiredPermission} annotation, the name defined in {@code @AmbiguousQualifier}
 	 *         annotation or the method's name itself
 	 */
 	private String getOperation(InvocationContext ic) {
