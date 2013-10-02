@@ -54,6 +54,7 @@ import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.PageNotFoundException;
 import br.gov.frameworkdemoiselle.util.Redirector;
 
+@SuppressWarnings("deprecation")
 public class ApplicationExceptionHandler extends AbstractExceptionHandler {
 
 	public ApplicationExceptionHandler(final ExceptionHandler wrapped) {
