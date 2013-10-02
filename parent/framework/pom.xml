@@ -55,6 +55,26 @@
 		Se você é usuário do framework, certamente este POM não servirá para você.
 	</description>
 	<url>http://www.frameworkdemoiselle.gov.br</url>
+	
+	<!--
+	<dependencyManagement>
+		<dependency>
+			<groupId>org.jboss.arquillian.container</groupId>
+			<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
+			<version>${arquillian.weld.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.container</groupId>
+			<artifactId>arquillian-glassfish-embedded-3.1</artifactId>
+			<version>${arquillian.container.glassfish.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.main.extras</groupId>
+			<artifactId>glassfish-embedded-all</artifactId>
+			<version>${glassfish.embedded.version}</version>
+		</dependency>
+	</dependencyManagement>
+	-->
 
 	<licenses>
 		<license>
@@ -92,4 +112,14 @@
 			</releases>
 		</repository>
 	</repositories>
+
+	<!--
+	<properties>
+		<arquillian.bom.version>1.1.1.Final</arquillian.bom.version>
+		<arquillian.weld.version>1.0.0.CR7</arquillian.weld.version>
+		<arquillian.container.glassfish.version>1.0.0.CR4</arquillian.container.glassfish.version>
+		<arquillian.container.weld.version>1.0.0.CR7</arquillian.container.weld.version>
+		<glassfish.embedded.version>3.2.1.1</glassfish.embedded.version>
+	</properties>
+	-->
 </project>

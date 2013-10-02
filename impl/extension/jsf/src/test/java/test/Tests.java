@@ -80,6 +80,7 @@ import br.gov.frameworkdemoiselle.util.PageNotFoundException;
 import br.gov.frameworkdemoiselle.util.Parameter;
 import br.gov.frameworkdemoiselle.util.Redirector;
 
+@SuppressWarnings("deprecation")
 @Ignore
 public final class Tests {
 
