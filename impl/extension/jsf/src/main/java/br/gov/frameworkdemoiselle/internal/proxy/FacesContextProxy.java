@@ -5,7 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.el.ELContext;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.Default;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
@@ -26,8 +28,16 @@ public class FacesContextProxy extends FacesContext implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private FacesContext getDelegate() {
-		return FacesContext.getCurrentInstance();
+	@PostConstruct
+	public FacesContext getDelegate() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+
+		if (facesContext == null) {
+			// TODO Colocar a mensagem correta
+			throw new ContextNotActiveException();
+		}
+
+		return facesContext;
 	}
 
 	public int hashCode() {
