@@ -37,18 +37,26 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import static br.gov.frameworkdemoiselle.annotation.Priority.L3_PRIORITY;
+
+import javax.enterprise.context.ContextNotActiveException;
+
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.message.Message;
-import br.gov.frameworkdemoiselle.message.MessageAppender;
 import br.gov.frameworkdemoiselle.util.Faces;
 
 @Priority(L3_PRIORITY)
-public class FacesMessageAppender implements MessageAppender {
+public class FacesMessageAppender extends LoggerMessageAppender {
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void append(Message message) {
-		Faces.addMessage(message);
+		try {
+			Faces.addMessage(message);
+		} catch (ContextNotActiveException cause) {
+			// TODO Logar warning...
+
+			super.append(message);
+		}
 	}
 }

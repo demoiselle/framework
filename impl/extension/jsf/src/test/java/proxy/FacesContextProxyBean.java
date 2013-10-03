@@ -37,54 +37,25 @@
 package proxy;
 
 import static javax.servlet.http.HttpServletResponse.SC_ACCEPTED;
-import static javax.servlet.http.HttpServletResponse.SC_EXPECTATION_FAILED;
-import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.net.URL;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import br.gov.frameworkdemoiselle.util.Beans;
 
-import test.Tests;
+@Named
+public class FacesContextProxyBean {
 
-@RunWith(Arquillian.class)
-public class FacesContextProxyTest {
+	@Inject
+	private HttpServletResponse response;
 
-	@ArquillianResource
-	private URL deploymentUrl;
+	public String getOk() {
+		FacesContext facesContext = Beans.getReference(FacesContext.class);
+		facesContext.responseComplete();
 
-	private static final String PATH = "src/test/resources/proxy";
-
-	@Deployment(testable = false)
-	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClasses(FacesContextProxyServlet.class, FacesContextProxyBean.class)
-				.addAsWebResource(Tests.createFileAsset(PATH + "/index.xhtml"), "index.xhtml")
-				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml");
-	}
-
-	@Test
-	public void validProxyCreated() throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		GetMethod method = new GetMethod(deploymentUrl + "/index.jsf");
-
-		int status = client.executeMethod(method);
-		assertEquals(SC_ACCEPTED, status);
-	}
-
-	@Test
-	public void inValidProxyCreatedCausedByContextNotActiveException() throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		GetMethod method = new GetMethod(deploymentUrl + "/index");
-
-		int status = client.executeMethod(method);
-		assertEquals(SC_EXPECTATION_FAILED, status);
+		response.setStatus(SC_ACCEPTED);
+		return null;
 	}
 }
