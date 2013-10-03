@@ -36,7 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import static org.apache.http.HttpStatus.SC_FORBIDDEN;
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.FacesContext;
