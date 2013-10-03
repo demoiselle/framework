@@ -251,11 +251,33 @@
 						<entry>frameworkdemoiselle.&#8203;persistence.&#8203;default.&#8203;unit.&#8203;name</entry>
 						<entry>
 							<para>
-								Define a unidade de persistência padrão para aplicações que possuem mais
-								de um persistence-unit definido no arquivo persistence.xml.
+								Define o nome da unidade de persistência padrão (configurada em <code>persistence.xml</code>) que será injetada
+								caso a anotação <code>@Name</code> não seja usada. Não é necessário se apenas uma unidade de persistência for configurada.
 							</para>
 						</entry>
 						<entry></entry>
+					</row>
+					
+					<row valign="top">
+						<entry>frameworkdemoiselle.&#8203;persistence.&#8203;entitymanager.&#8203;scope</entry>
+						<entry>
+							<para>
+								Permite determinar o escopo de unidades de persistência injetadas. Dentro do escopo determinado, todos os pontos
+								de injeção receberão a mesma instância de <code>EntityManager</code>.
+							</para>
+							<para>
+								Os valores possíveis são:
+								<simplelist type="inline">
+									<member>request</member>
+									<member>session</member>
+									<member>view</member>
+									<member>conversation</member>
+									<member>application</member>
+									<member>noscope</member>
+								</simplelist>
+							</para>
+						</entry>
+						<entry>request</entry>
 					</row>
 				</tbody>
 			</tgroup>
