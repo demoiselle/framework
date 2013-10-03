@@ -73,7 +73,7 @@ public abstract class AbstractThreadLocalContext extends AbstractCustomContext {
 	@Override
 	protected Store getStore() {
 		if (this.threadLocal.get() == null) {
-			this.threadLocal.set(createStore(getClass()));
+			this.threadLocal.set(createStore());
 		}
 
 		return this.threadLocal.get();

@@ -75,7 +75,7 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 		String key = Store.class.getName();
 
 		if (!viewMap.containsKey(key)) {
-			viewMap.put(key, createStore( getClass() ));
+			viewMap.put(key, createStore());
 		}
 
 		return (Store) viewMap.get(key);

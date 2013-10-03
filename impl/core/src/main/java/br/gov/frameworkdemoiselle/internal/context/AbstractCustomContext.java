@@ -157,8 +157,8 @@ public abstract class AbstractCustomContext implements CustomContext {
 		return this.scope;
 	}
 
-	protected static Store createStore(Class<?> owningClass) {
-		return new Store(owningClass);
+	protected static Store createStore() {
+		return new Store();
 	}
 	
 	private ResourceBundle getBundle(){
@@ -200,33 +200,26 @@ public abstract class AbstractCustomContext implements CustomContext {
 		
 		private final String SEPARATOR = "#";
 		
-		private final String ID_PREFIX;
-		
 		private Map<String, Object> cache = Collections.synchronizedMap(new HashMap<String, Object>());
 
-		private Store(Class<?> owningClass) {
-			ID_PREFIX = Thread.currentThread().getContextClassLoader().toString()
-					+ SEPARATOR + owningClass.getCanonicalName();
-		}
-
 		private boolean contains(final Class<?> type) {
-			return cache.containsKey( prefixId(type.getCanonicalName()) );
+			return cache.containsKey( prefixId(type) );
 		}
 
 		private Object get(final Class<?> type) {
-			return cache.get( prefixId(type.getCanonicalName()) );
+			return cache.get( prefixId(type) );
 		}
 
 		private void put(final Class<?> type, final Object instance) {
-			cache.put( prefixId(type.getCanonicalName()) , instance);
+			cache.put( prefixId(type) , instance);
 		}
 
 		public void clear() {
 			cache.clear();
 		}
 		
-		private String prefixId(String id){
-			return ID_PREFIX + SEPARATOR + id;
+		private String prefixId(Class<?> type){
+			return Thread.currentThread().getContextClassLoader().toString() + SEPARATOR + type.getCanonicalName();
 		}
 
 		/*private Map<String, Object> getMap() {

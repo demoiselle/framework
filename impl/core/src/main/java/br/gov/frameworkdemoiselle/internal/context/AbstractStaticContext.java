@@ -37,9 +37,6 @@
 package br.gov.frameworkdemoiselle.internal.context;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.annotation.StaticScoped;
@@ -61,7 +58,7 @@ import br.gov.frameworkdemoiselle.configuration.Configuration;
 @Priority(Priority.MIN_PRIORITY)
 public abstract class AbstractStaticContext extends AbstractCustomContext {
 
-	private static Map<String, Store> cache = Collections.synchronizedMap( new HashMap<String, Store>() );
+	private final static Store store = createStore();
 	
 	/**
 	 * Constructs this context to control the provided scope
@@ -72,16 +69,11 @@ public abstract class AbstractStaticContext extends AbstractCustomContext {
 
 	@Override
 	protected Store getStore() {
-		Store store = cache.get( this.getClass().getCanonicalName() );
-		if ( store==null ){
-			store = createStore(this.getClass());
-			cache.put(this.getClass().getCanonicalName(), store);
-		}
 		return store;
 	}
 
 	@Override
 	protected boolean isStoreInitialized() {
-		return cache.get( this.getClass().getCanonicalName() )!=null;
+		return store!=null;
 	}
 }
