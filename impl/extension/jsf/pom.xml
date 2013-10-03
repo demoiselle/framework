@@ -80,22 +80,27 @@
 			<artifactId>el-impl</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- For Tests -->
+
+		<!-- for tests -->
 		<dependency>
 			<groupId>com.sun.faces</groupId>
 			<artifactId>jsf-impl</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
+			<groupId>org.jboss.arquillian.container</groupId>
+			<artifactId>arquillian-glassfish-embedded-3.1</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.ocpsoft</groupId>
-			<artifactId>prettyfaces-jsf2</artifactId>
-			<version>3.3.0</version>
+			<groupId>org.glassfish.main.extras</groupId>
+			<artifactId>glassfish-embedded-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -124,4 +129,37 @@
 			</releases>
 		</repository>
 	</repositories>
+
+	<profiles>
+		<profile>
+			<id>arquillian-test</id>
+			<dependencies>
+				<dependency>
+					<groupId>com.sun.faces</groupId>
+					<artifactId>jsf-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>br.gov.frameworkdemoiselle</groupId>
+					<artifactId>demoiselle-servlet</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>javax.servlet</groupId>
+							<artifactId>javax.servlet-api</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+				<!--
+				-->
+				<dependency>
+					<groupId>com.ocpsoft</groupId>
+					<artifactId>prettyfaces-jsf2</artifactId>
+					<version>3.3.0</version>
+					<scope>runtime</scope>
+				</dependency>
+				<!--
+				-->
+			</dependencies>
+		</profile>
+	</profiles>
 </project>

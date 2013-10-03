@@ -50,7 +50,7 @@ import br.gov.frameworkdemoiselle.pagination.Pagination;
 import br.gov.frameworkdemoiselle.pagination.PaginationContext;
 import br.gov.frameworkdemoiselle.util.Reflections;
 /**
- * Template Managed Bean class that implements the methods defined by the interface ListPageBean.
+ * Template Managed AuthenticationBean class that implements the methods defined by the interface ListPageBean.
  * 
  * @param <T>
  *            bean object type

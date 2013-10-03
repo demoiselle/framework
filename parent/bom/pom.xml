@@ -347,6 +347,25 @@
 				<artifactId>easymock</artifactId>
 				<version>${easymock.version}</version>
 			</dependency>
+			
+			<!-- arquillian -->
+			<!--
+			-->
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
+				<version>${arquillian.container.weld.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-glassfish-embedded-3.1</artifactId>
+				<version>${arquillian.container.glassfish.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.main.extras</groupId>
+				<artifactId>glassfish-embedded-all</artifactId>
+				<version>${glassfish.embedded.version}</version>
+			</dependency>
 
 			<!-- Plug-ins -->
 			<dependency>
@@ -394,6 +413,14 @@
 
 		<hibernate.version>4.1.7.Final</hibernate.version>
 		<hibernate.validator.version>4.2.0.Final</hibernate.validator.version>
+
+		<!--
+		<arquillian.bom.version>1.1.1.Final</arquillian.bom.version>
+		-->
+		<arquillian.weld.version>1.0.0.CR7</arquillian.weld.version>
+		<arquillian.container.glassfish.version>1.0.0.CR4</arquillian.container.glassfish.version>
+		<arquillian.container.weld.version>1.0.0.CR7</arquillian.container.weld.version>
+		<glassfish.embedded.version>3.1.2.2</glassfish.embedded.version>
 
 		<junit.version>4.8.1</junit.version>
 		<easymock.version>3.0</easymock.version>

@@ -69,17 +69,11 @@ public class FacesContextProxyTest {
 	}
 
 	@Test
-	public void facesContextProxy() {
+	public void facesContextProxy() throws HttpException, IOException {
 		HttpClient client = new HttpClient();
 		GetMethod method = new GetMethod(deploymentUrl + "/index");
 
-		try {
-			int status = client.executeMethod(method);
-			assertEquals( HttpStatus.SC_OK, status);
-		} catch (HttpException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		int status = client.executeMethod(method);
+		assertEquals(HttpStatus.SC_OK, status);
 	}
 }

@@ -43,7 +43,7 @@
 	<url-mapping id="index">
 		<pattern value="/index" />
 		<view-id value="/index.jsf" />
-		<action>#{authorizationBean.loadExceptionMessage}</action>
+		<action>#{authorizationBean.getThrowExceptionMessage}</action>
 	</url-mapping>
 
 </pretty-config>

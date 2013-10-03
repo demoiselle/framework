@@ -81,13 +81,10 @@ import br.gov.frameworkdemoiselle.util.Parameter;
 import br.gov.frameworkdemoiselle.util.Redirector;
 
 @Ignore
+@SuppressWarnings("deprecation")
 public final class Tests {
 
 	private Tests() {
-	}
-
-	public static WebArchive createDeployment(final Class<?> baseClass) {
-		return createDeployment().addPackages(true, baseClass.getPackage()).addClass(Tests.class);
 	}
 
 	public static WebArchive createDeployment() {

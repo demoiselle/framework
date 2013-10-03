@@ -66,8 +66,7 @@ public class ExceptionNotHandlerConfigTest {
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClass(ExceptionNotHandlerConfigTest.class).addClass(DummyException.class)
-				.addClass(ExceptionHandlerConfigBean.class)
+		return Tests.createDeployment().addClasses(DummyException.class, ExceptionHandlerConfigBean.class)
 				.addAsWebResource(Tests.createFileAsset(PATH + "/index.xhtml"), "index.xhtml")
 				.addAsWebResource(Tests.createFileAsset(PATH + "/application_error.xhtml"), "application_error.xhtml")
 				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml")
@@ -75,17 +74,10 @@ public class ExceptionNotHandlerConfigTest {
 	}
 
 	@Test
-	public void notHandlerConfiguration() {
+	public void notHandlerConfiguration() throws HttpException, IOException {
 		HttpClient client = new HttpClient();
 		GetMethod method = new GetMethod(deploymentUrl + "/index.jsf");
 
-		try {
-			assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, client.executeMethod(method));
-
-		} catch (HttpException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, client.executeMethod(method));
 	}
 }

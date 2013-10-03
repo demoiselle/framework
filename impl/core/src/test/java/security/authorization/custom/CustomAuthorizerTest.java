@@ -36,9 +36,10 @@
  */
 package security.authorization.custom;
 
-import javax.inject.Inject;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
-import junit.framework.Assert;
+import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -66,44 +67,43 @@ public class CustomAuthorizerTest {
 		deployment.addClass(CustomAuthorizer.class);
 		return deployment;
 	}
-	
+
 	@Before
-	public void loginToTest(){
+	public void loginToTest() {
 		context.login();
 	}
 
 	@Test
-	public void hasPermission(){
-		Assert.assertTrue(context.hasPermission("resource", "operation"));
+	public void hasPermission() {
+		assertTrue(context.hasPermission("resource", "operation"));
 	}
-	
+
 	@Test
-	public void hasRole(){
-		Assert.assertTrue(context.hasRole("role"));
+	public void hasRole() {
+		assertTrue(context.hasRole("role"));
 	}
-	
+
 	/**
 	 * Verify if when already exist an authorizer, the things keeps working fine.
 	 */
 	@Test
-	public void hasPermitionAndHasRole(){
-		Assert.assertTrue(context.hasPermission("resource", "operation"));
-		Assert.assertTrue(context.hasRole("role"));
+	public void hasPermitionAndHasRole() {
+		assertTrue(context.hasPermission("resource", "operation"));
+		assertTrue(context.hasRole("role"));
 	}
-	
+
 	@Test
-	public void denyPermission(){
-		Assert.assertFalse(context.hasPermission("falseresource", "falseoperation"));
+	public void denyPermission() {
+		assertFalse(context.hasPermission("falseresource", "falseoperation"));
 	}
-	
+
 	@Test
-	public void denyRole(){
-		Assert.assertFalse(context.hasRole("falserole"));
+	public void denyRole() {
+		assertFalse(context.hasRole("falserole"));
 	}
-	
+
 	@After
-	public void logoutAfterTest(){
+	public void logoutAfterTest() {
 		context.logout();
 	}
-	
 }

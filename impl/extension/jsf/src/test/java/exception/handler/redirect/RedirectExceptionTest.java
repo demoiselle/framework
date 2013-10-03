@@ -25,20 +25,18 @@ public class RedirectExceptionTest {
 
 	@ArquillianResource
 	private URL deploymentUrl;
-	
+
 	private static final String PATH = "src/test/resources/exception-handler-redirect";
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClass(RedirectExceptionTest.class)
-				.addClass(RedirectBean.class)
-				.addClass(ExceptionWithCorrectRedirect.class)
+		return Tests.createDeployment().addClasses(RedirectBean.class, ExceptionWithCorrectRedirect.class)
 				.addAsWebResource(Tests.createFileAsset(PATH + "/index.xhtml"), "index.xhtml")
 				.addAsWebResource(Tests.createFileAsset(PATH + "/page.xhtml"), "page.xhtml")
 				.addAsWebResource(Tests.createFileAsset(PATH + "/redirect.xhtml"), "redirect.xhtml")
 				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml");
 	}
-	
+
 	@Test
 	public void handleExceptionWithCorrectRedirect() {
 		HttpClient client = new HttpClient();
@@ -47,7 +45,7 @@ public class RedirectExceptionTest {
 		try {
 			int status = client.executeMethod(method);
 			String message = method.getResponseBodyAsString();
-			
+
 			assertEquals(HttpStatus.SC_OK, status);
 			assertFalse(message.contains("Correct Redirect Exception!"));
 			assertTrue(message.contains("Page redirected!"));
@@ -58,7 +56,7 @@ public class RedirectExceptionTest {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Test
 	public void handleExceptionWithWrongRedirect() {
 		HttpClient client = new HttpClient();
@@ -75,4 +73,3 @@ public class RedirectExceptionTest {
 		}
 	}
 }
-

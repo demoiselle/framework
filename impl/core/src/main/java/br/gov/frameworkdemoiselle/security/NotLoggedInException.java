@@ -44,7 +44,7 @@ package br.gov.frameworkdemoiselle.security;
 public class NotLoggedInException extends AuthenticationException {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * Constructs an <code>NotLoggedInException</code> with a message.
 	 */

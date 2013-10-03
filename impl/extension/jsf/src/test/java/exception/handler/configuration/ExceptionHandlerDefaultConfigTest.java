@@ -51,48 +51,33 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import test.Tests;
 import exception.handler.common.DummyException;
 import exception.handler.common.ExceptionHandlerConfigBean;
-import test.Tests;
 
 @RunWith(Arquillian.class)
-public class ExceptionHandlerDefaultConfigTest{
+public class ExceptionHandlerDefaultConfigTest {
 
 	@ArquillianResource
 	private URL deploymentUrl;
-	
+
 	private static final String PATH = "src/test/resources/exception-handler-config";
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClass(ExceptionHandlerDefaultConfigTest.class)
-				.addClass(DummyException.class)
-				.addClass(ExceptionHandlerConfigBean.class)
+		return Tests.createDeployment().addClasses(DummyException.class, ExceptionHandlerConfigBean.class)
 				.addAsWebResource(Tests.createFileAsset(PATH + "/index.xhtml"), "index.xhtml")
 				.addAsWebResource(Tests.createFileAsset(PATH + "/application_error.xhtml"), "application_error.xhtml")
 				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml");
 	}
-	
+
 	@Test
-	public void defaultConfiguration() {
+	public void defaultConfiguration() throws HttpException, IOException {
 		HttpClient client = new HttpClient();
 		GetMethod method = new GetMethod(deploymentUrl + "/index.jsf");
-		
-		try {
-			client.executeMethod(method);
-			String message = method.getResponseBodyAsString();
-			assertTrue(message.contains("Called the page /application_error"));
-			
-		} catch (HttpException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+		client.executeMethod(method);
+		String message = method.getResponseBodyAsString();
+		assertTrue(message.contains("Called the page /application_error"));
 	}
 }
-
-
-
-
-
-

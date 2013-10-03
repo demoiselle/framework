@@ -53,7 +53,21 @@
 		Extensão para aplicações SE
 	</description>
 	<url>http://www.frameworkdemoiselle.gov.br</url>
-	
+
+	<dependencies>
+		<!-- for tests -->
+		<dependency>
+			<groupId>org.jboss.arquillian.container</groupId>
+			<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.weld.se</groupId>
+			<artifactId>weld-se-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License, Version 3</name>
