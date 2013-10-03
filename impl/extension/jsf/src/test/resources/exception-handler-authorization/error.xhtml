@@ -34,16 +34,10 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://ocpsoft.com/prettyfaces/3.3.0
-                                   		http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.3.0.xsd">
+<html xmlns:h="http://java.sun.com/jsf/html">
 
-    <rewrite match="^/*(.*)$" substitute="/$1" redirect="301" />
+	<h:body>
+		#{authorizationBean.throwExceptionMessage}
+	</h:body>
 
-	<url-mapping id="index">
-		<pattern value="/index" />
-		<view-id value="/index.jsf" />
-		<action>#{authorizationBean.getThrowExceptionMessage}</action>
-	</url-mapping>
-
-</pretty-config>
+</html>

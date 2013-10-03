@@ -36,13 +36,19 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import static org.apache.http.HttpStatus.SC_FORBIDDEN;
+
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
 
+import br.gov.frameworkdemoiselle.internal.configuration.JsfSecurityConfig;
 import br.gov.frameworkdemoiselle.security.NotLoggedInException;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 public class AuthenticationExceptionHandler extends AbstractExceptionHandler {
+
+	private transient JsfSecurityConfig config;
 
 	public AuthenticationExceptionHandler(final ExceptionHandler wrapped) {
 		super(wrapped);
@@ -53,10 +59,25 @@ public class AuthenticationExceptionHandler extends AbstractExceptionHandler {
 
 		if (cause instanceof NotLoggedInException) {
 			handled = true;
-			//TODO Inter [NQ]: remover referência a SecurityObserver criando uma classe comum que faz o redirecionamento e que é compartilhada entre elas. 
-			Beans.getReference(SecurityObserver.class).redirectToLoginPage();
+			// TODO Inter [NQ]: remover referência a SecurityObserver criando uma classe comum que faz o
+			// redirecionamento e que é compartilhada entre elas.
+
+			if (getConfig().isRedirectEnabled()) {
+				Beans.getReference(SecurityObserver.class).redirectToLoginPage();
+			} else {
+				HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+				response.setStatus(SC_FORBIDDEN);
+			}
 		}
 
 		return handled;
+	}
+
+	public JsfSecurityConfig getConfig() {
+		if (this.config == null) {
+			this.config = Beans.getReference(JsfSecurityConfig.class);
+		}
+
+		return this.config;
 	}
 }

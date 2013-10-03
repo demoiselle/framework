@@ -43,7 +43,7 @@ import br.gov.frameworkdemoiselle.annotation.NextView;
 import br.gov.frameworkdemoiselle.annotation.PreviousView;
 
 /**
- * Template Managed Bean class that implements the methods defined by the interface PageBean.
+ * Template Managed AuthenticationBean class that implements the methods defined by the interface PageBean.
  * 
  * @author SERPRO
  * @see PageBean

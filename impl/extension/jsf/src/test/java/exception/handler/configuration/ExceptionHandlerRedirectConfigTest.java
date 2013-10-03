@@ -65,8 +65,7 @@ public class ExceptionHandlerRedirectConfigTest {
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClass(ExceptionHandlerRedirectConfigTest.class)
-				.addClass(DummyException.class).addClass(ExceptionHandlerConfigBean.class)
+		return Tests.createDeployment().addClasses(DummyException.class, ExceptionHandlerConfigBean.class)
 				.addAsWebResource(Tests.createFileAsset(PATH + "/index.xhtml"), "index.xhtml")
 				.addAsWebResource(Tests.createFileAsset(PATH + "/error_page.xhtml"), "error_page.xhtml")
 				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml")

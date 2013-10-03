@@ -46,20 +46,7 @@ public class AuthorizationBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String correctMessage = "Authorization Message.";
-
-	private String exceptionMessage = "Authorization Exception!";
-
-	public String getCorrectMessage() {
-		return correctMessage;
+	public String getThrowExceptionMessage() {
+		throw new AuthorizationException("Authorization Exception!");
 	}
-
-	public String getExceptionMessage() {
-		throw new AuthorizationException(exceptionMessage);
-	}
-
-	public void loadExceptionMessage() {
-		throw new AuthorizationException(exceptionMessage);
-	}
-
 }

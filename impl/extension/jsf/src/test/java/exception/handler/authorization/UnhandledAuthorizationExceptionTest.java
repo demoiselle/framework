@@ -34,9 +34,10 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception.handler.authentication;
+package exception.handler.authorization;
 
-import static org.junit.Assert.assertTrue;
+import static org.apache.commons.httpclient.HttpStatus.SC_UNAUTHORIZED;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URL;
@@ -54,36 +55,26 @@ import org.junit.runner.RunWith;
 import test.Tests;
 
 @RunWith(Arquillian.class)
-public class AuthenticationExceptionTest {
+public class UnhandledAuthorizationExceptionTest {
 
 	@ArquillianResource
 	private URL deploymentUrl;
 
-	private static final String PATH = "src/test/resources/exception-handler-authentication";
+	private static final String PATH = "src/test/resources/exception-handler-authorization";
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClass(AuthenticationExceptionTest.class).addClass(AuthenticationBean.class)
-				.addAsWebResource(Tests.createFileAsset(PATH + "/index.xhtml"), "index.xhtml")
-				.addAsWebResource(Tests.createFileAsset(PATH + "/login.xhtml"), "login.xhtml")
+		return Tests.createDeployment().addClasses(AuthorizationBean.class)
+				.addAsWebResource(Tests.createFileAsset(PATH + "/error.xhtml"), "error.xhtml")
 				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml");
 	}
 
 	@Test
-	public void authenticationException() {
+	public void authorizationException() throws HttpException, IOException {
 		HttpClient client = new HttpClient();
-		GetMethod method = new GetMethod(deploymentUrl + "/index.jsf");
+		GetMethod method = new GetMethod(deploymentUrl + "/error.jsf");
 
-		try {
-			client.executeMethod(method);
-			String message = method.getResponseBodyAsString();
-			System.out.println("MESAGE: " + message);
-			assertTrue(message.contains("Called the page /login"));
-
-		} catch (HttpException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		int status = client.executeMethod(method);
+		assertEquals(SC_UNAUTHORIZED, status);
 	}
 }
