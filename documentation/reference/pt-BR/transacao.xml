@@ -135,7 +135,7 @@ public class AbacaxiException {
 		<para>
 			Esta estratégia, que está disponível na extensão <literal>demoiselle-jpa</literal>, delega o
 			controle das transações para o <literal>javax.persistence.EntityManager</literal> da
-			especificação JPA. Você deve escolher esta estratégia quando estiver persisteindo dados
+			especificação JPA. Você deve escolher esta estratégia quando estiver persistindo dados
 			com JPA e utilizando apenas uma base de dados em sua aplicação. Como um <literal>EntityManager</literal>
 			acessa apenas uma unidade de persistência, não há como fazer o controle transacional de unidades distintas.
 		</para>

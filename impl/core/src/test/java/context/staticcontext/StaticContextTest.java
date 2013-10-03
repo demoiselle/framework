@@ -34,55 +34,55 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.context;
+package context.staticcontext;
 
-import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import javax.enterprise.inject.spi.Bean;
 
-import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.annotation.StaticScoped;
-import br.gov.frameworkdemoiselle.configuration.Configuration;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-/**
- * 
- * <p>This context has a unified static store that keeps all scoped beans available
- * to all threads of an application. It is intended to keep beans avaliable to
- * long lasting scopes (like the Session scope and Application scope) on environments
- * that lack those scopes by default (like desktop Swing applications).</p>
- * 
- * <p>This context also keeps beans of the custom {@link StaticScoped} scope, like the beans
- * annotated with {@link Configuration}.</p>
- * 
- * @author serpro
- *
- */
-@Priority(Priority.MIN_PRIORITY)
-public abstract class AbstractStaticContext extends AbstractCustomContext {
+import br.gov.frameworkdemoiselle.context.ConversationContext;
+import br.gov.frameworkdemoiselle.context.SessionContext;
+import br.gov.frameworkdemoiselle.util.Beans;
+import test.Tests;
 
-	private final static Map<String, Store> staticStore = Collections.synchronizedMap(new HashMap<String, Store>());
+@RunWith(Arquillian.class)
+public class StaticContextTest {
 	
-	/**
-	 * Constructs this context to control the provided scope
-	 */
-	AbstractStaticContext(Class<? extends Annotation> scope) {
-		super(scope);
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(StaticContextTest.class);
+		return deployment;
 	}
-
-	@Override
-	protected Store getStore() {
-		Store store = staticStore.get( this.getClass().getCanonicalName() );
-		if (store==null){
-			store = createStore();
-			staticStore.put(this.getClass().getCanonicalName(), store);
-		}
+	
+	@Test
+	public void checkSeparatedStores(){
 		
-		return store;
+		ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
+		SessionContext sessionContext = Beans.getReference(SessionContext.class);
+		
+		conversationContext.activate();
+		sessionContext.activate();
+		
+		ConversationBean conversationBean = Beans.getReference(ConversationBean.class);
+		conversationBean.getData();
+		
+		SessionBean sessionBean = Beans.getReference(SessionBean.class);
+		sessionBean.getData();
+		
+		Bean<?> conversationContextual = Beans.getBeanManager().getBeans(ConversationBean.class).iterator().next();
+		Bean<?> sessionContextual = Beans.getBeanManager().getBeans(SessionBean.class).iterator().next();
+		
+		Assert.assertNotNull( conversationContext.get(conversationContextual) );
+		Assert.assertNull( conversationContext.get(sessionContextual) );
+		
+		Assert.assertNotNull( sessionContext.get(sessionContextual) );
+		Assert.assertNull( sessionContext.get(conversationContextual) );
+		
 	}
 
-	@Override
-	protected boolean isStoreInitialized() {
-		return staticStore!=null;
-	}
 }

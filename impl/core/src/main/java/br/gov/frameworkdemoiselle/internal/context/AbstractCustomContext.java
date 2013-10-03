@@ -36,6 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashMap;
@@ -193,38 +194,40 @@ public abstract class AbstractCustomContext implements CustomContext {
 		return true;
 	}
 
-	static class Store {
+	static class Store implements Serializable {
 
-		private Map<ClassLoader, Map<Class<?>, Object>> cache = Collections
-				.synchronizedMap(new HashMap<ClassLoader, Map<Class<?>, Object>>());
-
-		private Store() {
-		}
+		private static final long serialVersionUID = -8237464177510563034L;
+		
+		private final String SEPARATOR = "#";
+		
+		private Map<String, Object> cache = Collections.synchronizedMap(new HashMap<String, Object>());
 
 		private boolean contains(final Class<?> type) {
-			return this.getMap().containsKey(type);
+			return cache.containsKey( prefixId(type) );
 		}
 
 		private Object get(final Class<?> type) {
-			return this.getMap().get(type);
+			return cache.get( prefixId(type) );
 		}
 
 		private void put(final Class<?> type, final Object instance) {
-			this.getMap().put(type, instance);
+			cache.put( prefixId(type) , instance);
 		}
 
 		public void clear() {
 			cache.clear();
 		}
+		
+		private String prefixId(Class<?> type){
+			return Thread.currentThread().getContextClassLoader().toString() + SEPARATOR + type.getCanonicalName();
+		}
 
-		private Map<Class<?>, Object> getMap() {
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
+		/*private Map<String, Object> getMap() {
 			if (!cache.containsKey(classLoader)) {
 				cache.put(classLoader, Collections.synchronizedMap(new HashMap<Class<?>, Object>()));
 			}
 
 			return cache.get(classLoader);
-		}
+		}*/
 	}
 }

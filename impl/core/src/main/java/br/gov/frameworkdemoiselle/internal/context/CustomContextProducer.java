@@ -60,6 +60,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.context.ConversationContext;
 import br.gov.frameworkdemoiselle.context.CustomContext;
 import br.gov.frameworkdemoiselle.context.RequestContext;
@@ -133,7 +134,7 @@ public class CustomContextProducer {
 	/////////////PRODUCERS///////////////////
 	
 	@Produces
-	public RequestContext getRequestContext(InjectionPoint ip){
+	protected RequestContext getRequestContext(InjectionPoint ip){
 		if (ip!=null){
 			return getContext(ip);
 		}
@@ -143,7 +144,7 @@ public class CustomContextProducer {
 	}
 	
 	@Produces
-	public SessionContext getSessionContext(InjectionPoint ip){
+	protected SessionContext getSessionContext(InjectionPoint ip){
 		if (ip!=null){
 			return getContext(ip);
 		}
@@ -153,7 +154,7 @@ public class CustomContextProducer {
 	}
 	
 	@Produces
-	public ViewContext getViewContext(InjectionPoint ip){
+	protected ViewContext getViewContext(InjectionPoint ip){
 		if (ip!=null){
 			return getContext(ip);
 		}
@@ -163,7 +164,7 @@ public class CustomContextProducer {
 	}
 	
 	@Produces
-	public StaticContext getStaticContext(InjectionPoint ip){
+	protected StaticContext getStaticContext(InjectionPoint ip){
 		if (ip!=null){
 			return getContext(ip);
 		}
@@ -173,7 +174,7 @@ public class CustomContextProducer {
 	}
 	
 	@Produces
-	public ConversationContext getConversationContext(InjectionPoint ip){
+	protected ConversationContext getConversationContext(InjectionPoint ip){
 		if (ip!=null){
 			return getContext(ip);
 		}
@@ -184,8 +185,17 @@ public class CustomContextProducer {
 	
 	/////////////END OF PRODUCERS///////////////////
 	
+	/**
+	 * Obtain a custom context for the provided injection point.
+	 * 
+	 * @param ip The object containing information about the injection point - most importantly
+	 * the declared type of the injection point, to decide the context to return
+	 * 
+	 * @return A context of a type compatible with the type of the injection point, or <code>null</code> if there is
+	 * no such context.
+	 */
 	@SuppressWarnings("unchecked")
-	private <T extends CustomContext> T getContext(InjectionPoint ip){
+	public <T extends CustomContext> T getContext(InjectionPoint ip){
 		T producedContext = null;
 		
 		if (ip!=null){
@@ -200,8 +210,16 @@ public class CustomContextProducer {
 		return producedContext;
 	}
 	
+	/**
+	 * Obtain a context compatible with the provided type.
+	 * 
+	 * @param contextClass The type of the desired context. The returned context will be compatible with this type, if there
+	 * is more than one compatible type, this method will decide witch one to return based on the {@link Priority} annotation. 
+	 * 
+	 * @return A context of a type compatible with the informed type, or <code>null</code> if there is no such context.
+	 */
 	@SuppressWarnings("unchecked")
-	private <T extends CustomContext> T getContext(Class<T> contextClass){
+	public <T extends CustomContext> T getContext(Class<T> contextClass){
 		CustomContext producedContext = null;
 		
 		ArrayList<CustomContext> selectableContexts = new ArrayList<CustomContext>();
