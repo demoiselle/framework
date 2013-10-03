@@ -277,6 +277,41 @@ ALUNO_EXCLUIR_OK=L'étudiant {0} a été supprimé avec succès]]></programlisti
 			</para>
 		</note>
 	</section>
+	
+	<section>
+		<title>Destino das mensagens</title>
+		
+		<para>
+			O Framework Demoiselle permite configurar o destino das mensagens enviadas. Por padrão, mensagens enviadas em um ambiente SE (Swing por exemplo)
+			são exibidas como registros de log no console, já mensagens enviadas em um ambiente WEB usando JSF 2.0 são redirecionadas para a classe
+			<code>FacesContext</code>. Caso esse comportamento padrão não seja suficiente para você, é possível personalizar o mecanismo de redirecionamento
+			de mensagens, fazendo-o enviar as mensagens para um local de seu interesse.
+		</para>
+		
+		<para>
+			Para isso existe a interface <code>MessageAppender</code>. Para toda mensagem enviada, o Framework Demoiselle vai determinar a implementação
+			mais adequada de <code>MessageAppender</code> a utilizar e vai redirecionar qualquer mensagem para essa implementação.
+		</para>
+		
+		<programlisting role="JAVA">public interface MessageAppender extends Serializable {
+	
+	/**
+	 * Method that must hold message in an appropriate way and in an appropriate local.
+	 * Demoiselle holds a message in a Logger or in a FacesContext, depending on the project.
+	 * 
+	 * @param message
+	 * 			message to be stored.
+	 */
+	void append(Message message);
+}</programlisting>
+
+		<para>
+			Para criar seu próprio <code>MessageAppender</code>, implemente essa interface e anote-a com a anotação <code>@Priority</code> - o Framework
+			Demoiselle irá selecionar a implementação adequada paseada na maior prioridade. Não é necessário configurar mais nada, o Framework Demoiselle
+			selecionará a implementação automaticamente. Cabe-lhe então a tarefa de implementar o método <code>append(Message message)</code> para tratar
+			a mensagem da forma que melhor se adequar a seu projeto.
+		</para>
+	</section>
 
 	<section>
 		<title>Exemplos de implementação</title>
