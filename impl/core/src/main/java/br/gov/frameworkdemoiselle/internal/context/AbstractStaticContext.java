@@ -61,7 +61,9 @@ import br.gov.frameworkdemoiselle.configuration.Configuration;
 @Priority(Priority.MIN_PRIORITY)
 public abstract class AbstractStaticContext extends AbstractCustomContext {
 
-	private final static Map<String, Store> staticStore = Collections.synchronizedMap(new HashMap<String, Store>());
+	private final static Map<String, BeanStore> staticBeanStore = Collections.synchronizedMap(new HashMap<String, BeanStore>());
+	
+	private final static Map<String, ContextualStore> staticContextualStore = Collections.synchronizedMap(new HashMap<String, ContextualStore>());
 	
 	/**
 	 * Constructs this context to control the provided scope
@@ -71,11 +73,22 @@ public abstract class AbstractStaticContext extends AbstractCustomContext {
 	}
 
 	@Override
-	protected Store getStore() {
-		Store store = staticStore.get( this.getClass().getCanonicalName() );
+	protected BeanStore getStore() {
+		BeanStore store = staticBeanStore.get( this.getClass().getCanonicalName() );
 		if (store==null){
 			store = createStore();
-			staticStore.put(this.getClass().getCanonicalName(), store);
+			staticBeanStore.put(this.getClass().getCanonicalName(), store);
+		}
+		
+		return store;
+	}
+	
+	@Override
+	protected ContextualStore getContextualStore() {
+		ContextualStore store = staticContextualStore.get( this.getClass().getCanonicalName() );
+		if (store==null){
+			store = createContextualStore();
+			staticContextualStore.put(this.getClass().getCanonicalName(), store);
 		}
 		
 		return store;
@@ -83,6 +96,6 @@ public abstract class AbstractStaticContext extends AbstractCustomContext {
 
 	@Override
 	protected boolean isStoreInitialized() {
-		return staticStore!=null;
+		return staticBeanStore!=null;
 	}
 }

@@ -15,6 +15,7 @@ import br.gov.frameworkdemoiselle.internal.context.TemporarySessionContextImpl;
 import br.gov.frameworkdemoiselle.internal.context.StaticContextImpl;
 import br.gov.frameworkdemoiselle.internal.context.TemporaryConversationContextImpl;
 import br.gov.frameworkdemoiselle.internal.context.TemporaryViewContextImpl;
+import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 
 /**
  * This portable extension registers and starts custom contexts used by
@@ -71,13 +72,17 @@ public class CustomContextBootstrap implements Extension{
 		}
 	}
 	
+	public void terminateContexts(@Observes AfterShutdownProccess event){
+		if (contexts!=null){
+			for (CustomContext context : contexts){
+				context.deactivate();
+			}
+			
+			contexts.clear();
+		}
+	}
+	
 	public List<CustomContext> getCustomContexts(){
 		return this.contexts;
 	}
-	
-	/*public void storeContexts(@Observes AfterDeploymentValidation event){
-		CustomContextProducer producer = Beans.getReference(CustomContextProducer.class);
-		producer.addRegisteredContexts(contexts);
-	}*/
-	
 }

@@ -59,7 +59,9 @@ import java.lang.annotation.Annotation;
  */
 public abstract class AbstractThreadLocalContext extends AbstractCustomContext {
 
-	private final ThreadLocal<Store> threadLocal = new ThreadLocal<Store>();
+	private final ThreadLocal<BeanStore> threadLocalBeans = new ThreadLocal<BeanStore>();
+	
+	private final ThreadLocal<ContextualStore> threadLocalContextual = new ThreadLocal<ContextualStore>();
 
 	AbstractThreadLocalContext(final Class<? extends Annotation> scope) {
 		super(scope);
@@ -67,15 +69,24 @@ public abstract class AbstractThreadLocalContext extends AbstractCustomContext {
 	
 	@Override
 	protected boolean isStoreInitialized() {
-		return threadLocal.get()!=null;
+		return threadLocalBeans.get()!=null;
 	}
 
 	@Override
-	protected Store getStore() {
-		if (this.threadLocal.get() == null) {
-			this.threadLocal.set(createStore());
+	protected BeanStore getStore() {
+		if (this.threadLocalBeans.get() == null) {
+			this.threadLocalBeans.set(createStore());
 		}
 
-		return this.threadLocal.get();
+		return this.threadLocalBeans.get();
+	}
+	
+	@Override
+	protected ContextualStore getContextualStore() {
+		if (this.threadLocalContextual.get() == null) {
+			this.threadLocalContextual.set(createContextualStore());
+		}
+
+		return this.threadLocalContextual.get();
 	}
 }

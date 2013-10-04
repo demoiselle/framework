@@ -70,14 +70,26 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 	}
 
 	@Override
-	protected Store getStore() {
+	protected BeanStore getStore() {
 		Map<String, Object> viewMap = Faces.getViewMap();
-		String key = Store.class.getName();
+		String key = BeanStore.class.getName();
 
 		if (!viewMap.containsKey(key)) {
 			viewMap.put(key, createStore());
 		}
 
-		return (Store) viewMap.get(key);
+		return (BeanStore) viewMap.get(key);
+	}
+
+	@Override
+	protected ContextualStore getContextualStore() {
+		Map<String, Object> viewMap = Faces.getViewMap();
+		String key = ContextualStore.class.getName();
+
+		if (!viewMap.containsKey(key)) {
+			viewMap.put(key, createContextualStore());
+		}
+
+		return (ContextualStore) viewMap.get(key);
 	}
 }

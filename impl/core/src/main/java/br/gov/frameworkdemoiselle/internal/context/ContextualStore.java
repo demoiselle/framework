@@ -8,7 +8,8 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 
-public class ContextualStore<T> implements Serializable {
+@SuppressWarnings("rawtypes")
+public class ContextualStore implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -16,11 +17,18 @@ public class ContextualStore<T> implements Serializable {
 	
 	private AtomicInteger idGenerator = new AtomicInteger();
 	
-	private HashMap<String, Contextual<T>> idToContextual = new HashMap<String, Contextual<T>>();
+	private HashMap<String, Contextual> idToContextual = new HashMap<String, Contextual>();
 	
-	private HashMap<Contextual<T>, String> contextualToId = new HashMap<Contextual<T>, String>();
+	private HashMap<Contextual, String> contextualToId = new HashMap<Contextual, String>();
 	
-	public String tryRegisterAndGetId(Contextual<T> contextual){
+	/**
+	 * The an unique ID for the given contextual. If it's the first time
+	 * this contextual is accessed, registers the contextual for latter retrieval. 
+	 * 
+	 * @param contextual The contextual to generate an ID
+	 * @return The unique ID for the contextual
+	 */
+	public String tryRegisterAndGetId(Contextual contextual){
 		String returnedId;
 		
 		if (contextualToId.containsKey(contextual)){
@@ -40,7 +48,7 @@ public class ContextualStore<T> implements Serializable {
 		return returnedId;
 	}
 	
-	public Contextual<T> getContextual(String id){
+	public Contextual getContextual(String id){
 		return idToContextual.get(id);
 	}
 	
