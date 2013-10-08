@@ -14,15 +14,14 @@
 				<listitem>
 					<para>
 						<emphasis>arquivo de propriedades</emphasis>: tratam-se de simples arquivos de texto nomeados com a 
-						extensão <filename>.properties</filename>, os quais são escritos com a sintaxe <literal>chave=valor
-						</literal>, armazenando uma única chave por linha;
+						extensão <filename>.properties</filename>, os quais são escritos com a sintaxe <literal>chave=valor</literal>, 
+						armazenando uma única chave por linha;
 					</para>
 				</listitem>
 				<listitem>
 					<para>
 						<emphasis>arquivo XML</emphasis>: são arquivos de texto altamente estruturados com a sintaxe de tags e 
-						que	permitem uma maior validação dos seus valores, sendo geralmente nomeados com a extensão 
-						<filename>.xml</filename>;
+						que	permitem uma maior validação dos seus valores, sendo geralmente nomeados com a extensão<filename>.xml</filename>;
 					</para>
 				</listitem>
 				<listitem>
@@ -35,7 +34,7 @@
 		</para>
 		<para>
 			Esse capítulo mostra de que maneira o <emphasis>Demoiselle Framework</emphasis> pode facilitar a utilização dessas 
-			formas de configuração, oferencendo vários recursos interessantes e poderosos para a sua aplicação.
+			formas de configuração, oferencendo vários recursos interessantes para a sua aplicação.
 		</para>	 
 
 	</section>
@@ -549,7 +548,7 @@ public class BookmarkConfig {
 								o atributo passando como parâmetro o nome pelo qual você deseja que ele seja procurado no arquivo de propriedades,
 								como mostra o exemplo abaixo:
 							</para>
-								<programlisting role="JAVA"><![CDATA[@Configuration(resource = "bookmark", prefix = "general.")
+								<programlisting role="JAVA"><![CDATA[@Configuration
 public class BookmarkConfig {
 
 	@Name("app.title")
