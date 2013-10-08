@@ -59,7 +59,7 @@ import br.gov.frameworkdemoiselle.message.SeverityType;
  * Utility class to insert messages in the FacesContext.
  * 
  * @author SERPRO
- * */
+ */
 public class Faces {
 
 	private Faces() {

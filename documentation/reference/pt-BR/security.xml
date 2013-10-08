@@ -129,11 +129,16 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 		comum e exibir uma tela HTML contendo um formulario que solicita as informacoes.
 		*/
 		
-		securityContext.login();
+		try{
+			securityContext.login();
 		
-		//Executa codigo que requer autenticacao
+			//Executa codigo que requer autenticacao
 		
-		securityContext.logout();
+			securityContext.logout();
+		}
+		catch(InvalidCredentialsException exception){
+			//Trata credenciais inválidas
+		}
 		 
 	} 
 }]]></programlisting>

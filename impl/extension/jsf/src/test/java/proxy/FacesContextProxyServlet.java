@@ -36,8 +36,12 @@
  */
 package proxy;
 
+import static javax.servlet.http.HttpServletResponse.SC_EXPECTATION_FAILED;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+
 import java.io.IOException;
 
+import javax.enterprise.context.ContextNotActiveException;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,9 +49,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.HttpStatus;
-
-import br.gov.frameworkdemoiselle.internal.proxy.FacesContextProxy;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @WebServlet("/index")
@@ -55,15 +56,14 @@ public class FacesContextProxyServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private FacesContext facesContext;
-
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		facesContext = Beans.getReference(FacesContext.class);
-		if (facesContext.getClass() == FacesContextProxy.class) {
-			response.setStatus(HttpStatus.SC_OK);
-		} else {
-			response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+		try {
+			Beans.getReference(FacesContext.class);
+			response.setStatus(SC_OK);
+
+		} catch (ContextNotActiveException cause) {
+			response.setStatus(SC_EXPECTATION_FAILED);
 		}
 	}
 }

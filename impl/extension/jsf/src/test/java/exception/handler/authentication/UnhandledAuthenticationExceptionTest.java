@@ -34,9 +34,10 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception.handler.configuration.compatibility;
+package exception.handler.authentication;
 
-import static org.junit.Assert.assertTrue;
+import static org.apache.http.HttpStatus.SC_FORBIDDEN;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URL;
@@ -52,33 +53,29 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import exception.handler.common.DummyException;
-import exception.handler.common.ExceptionHandlerConfigBean;
 
 @RunWith(Arquillian.class)
-public class ExceptionHandlerRedirectConfigTest {
+public class UnhandledAuthenticationExceptionTest {
 
 	@ArquillianResource
 	private URL deploymentUrl;
 
-	private static final String PATH = "src/test/resources/exception-handler-redirect-config-compatibility";
+	private static final String PATH = "src/test/resources/exception-handler-authentication";
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClasses(DummyException.class, ExceptionHandlerConfigBean.class)
+		return Tests.createDeployment().addClasses(AuthenticationBean.class)
 				.addAsWebResource(Tests.createFileAsset(PATH + "/index.xhtml"), "index.xhtml")
-				.addAsWebResource(Tests.createFileAsset(PATH + "/error_page.xhtml"), "error_page.xhtml")
 				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml")
 				.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
 	}
 
 	@Test
-	public void notHandlerConfiguration() throws HttpException, IOException {
+	public void authenticationException() throws HttpException, IOException {
 		HttpClient client = new HttpClient();
 		GetMethod method = new GetMethod(deploymentUrl + "/index.jsf");
 
-		client.executeMethod(method);
-		String message = method.getResponseBodyAsString();
-		assertTrue(message.contains("Called the page /error_page"));
+		int status = client.executeMethod(method);
+		assertEquals(SC_FORBIDDEN, status);
 	}
 }

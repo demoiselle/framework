@@ -34,9 +34,10 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception.handler.configuration.compatibility;
+package exception.handler.authorization;
 
-import static org.junit.Assert.assertTrue;
+import static org.apache.commons.httpclient.HttpStatus.SC_UNAUTHORIZED;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URL;
@@ -52,33 +53,28 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
-import exception.handler.common.DummyException;
-import exception.handler.common.ExceptionHandlerConfigBean;
 
 @RunWith(Arquillian.class)
-public class ExceptionHandlerRedirectConfigTest {
+public class UnhandledAuthorizationExceptionTest {
 
 	@ArquillianResource
 	private URL deploymentUrl;
 
-	private static final String PATH = "src/test/resources/exception-handler-redirect-config-compatibility";
+	private static final String PATH = "src/test/resources/exception-handler-authorization";
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClasses(DummyException.class, ExceptionHandlerConfigBean.class)
-				.addAsWebResource(Tests.createFileAsset(PATH + "/index.xhtml"), "index.xhtml")
-				.addAsWebResource(Tests.createFileAsset(PATH + "/error_page.xhtml"), "error_page.xhtml")
-				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml")
-				.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
+		return Tests.createDeployment().addClasses(AuthorizationBean.class)
+				.addAsWebResource(Tests.createFileAsset(PATH + "/error.xhtml"), "error.xhtml")
+				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml");
 	}
 
 	@Test
-	public void notHandlerConfiguration() throws HttpException, IOException {
+	public void authorizationException() throws HttpException, IOException {
 		HttpClient client = new HttpClient();
-		GetMethod method = new GetMethod(deploymentUrl + "/index.jsf");
+		GetMethod method = new GetMethod(deploymentUrl + "/error.jsf");
 
-		client.executeMethod(method);
-		String message = method.getResponseBodyAsString();
-		assertTrue(message.contains("Called the page /error_page"));
+		int status = client.executeMethod(method);
+		assertEquals(SC_UNAUTHORIZED, status);
 	}
 }

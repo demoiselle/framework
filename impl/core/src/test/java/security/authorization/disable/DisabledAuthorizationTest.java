@@ -36,13 +36,12 @@
  */
 package security.authorization.disable;
 
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-
-import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -69,10 +68,8 @@ public class DisabledAuthorizationTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-		JavaArchive deployment = Tests.createDeployment(ConfigurationResourceTest.class);
-		deployment.addClass(CustomAuthorizer.class);
-		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
-		return deployment;
+		return Tests.createDeployment(ConfigurationResourceTest.class).addClasses(CustomAuthorizer.class)
+				.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
 	}
 
 	public void observer(@Observes AfterLoginSuccessful event) {
@@ -81,15 +78,15 @@ public class DisabledAuthorizationTest {
 
 	@Test
 	public void hasPermissionProcess() {
-		Assert.assertTrue(context.hasPermission("resource", "operation"));
-		Assert.assertTrue(context.hasPermission("falseresource", "falseoperation"));
+		assertTrue(context.hasPermission("resource", "operation"));
+		assertTrue(context.hasPermission("falseresource", "falseoperation"));
 		assertNull(event);
 	}
 
 	@Test
-	public void hasRoleProcess(){
-		Assert.assertTrue(context.hasRole("role"));
-		Assert.assertTrue(context.hasRole("falserole"));
+	public void hasRoleProcess() {
+		assertTrue(context.hasRole("role"));
+		assertTrue(context.hasRole("falserole"));
 		assertNull(event);
 	}
 }

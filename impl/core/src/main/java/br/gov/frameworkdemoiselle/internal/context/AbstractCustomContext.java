@@ -37,16 +37,12 @@
 package br.gov.frameworkdemoiselle.internal.context;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.slf4j.Logger;
@@ -71,7 +67,9 @@ public abstract class AbstractCustomContext implements CustomContext {
 		this.active = false;
 	}
 
-	protected abstract Store getStore();
+	protected abstract BeanStore getStore();
+	
+	protected abstract ContextualStore getContextualStore();
 	
 	protected abstract boolean isStoreInitialized();
 
@@ -89,22 +87,22 @@ public abstract class AbstractCustomContext implements CustomContext {
 			throw new ContextNotActiveException();
 		}
 
-		Class<?> type = getType(contextual);
-		if (getStore().contains(type)) {
-			instance = (T) getStore().get(type);
-
-		} else if (creationalContext != null) {
+		String id = getContextualStore().tryRegisterAndGetId(contextual);
+		if (getStore().contains(id)) {
+			instance = (T) getStore().getInstance(id);
+		} 
+		else if (creationalContext!=null){
 			instance = contextual.create(creationalContext);
-			getStore().put(type, instance);
+			getStore().put(id, instance,creationalContext);
 		}
 
 		return instance;
 	}
 
-	private <T> Class<?> getType(final Contextual<T> contextual) {
+	/*private <T> Class<?> getType(final Contextual<T> contextual) {
 		Bean<T> bean = (Bean<T>) contextual;
 		return bean.getBeanClass();
-	}
+	}*/
 
 	@Override
 	public boolean isActive() {
@@ -136,15 +134,27 @@ public abstract class AbstractCustomContext implements CustomContext {
 		return this.active;
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void deactivate(){
 		if (this.active){
 			if (isStoreInitialized()){
+				for (String id : getStore()){
+					Contextual contextual = getContextualStore().getContextual(id);
+					Object instance = getStore().getInstance(id);
+					CreationalContext creationalContext = getStore().getCreationalContext(id);
+					
+					if (contextual!=null && instance!=null){
+						contextual.destroy(instance, creationalContext);
+					}
+				}
+
 				getStore().clear();
+				getContextualStore().clear();
 			}
-			
+
 			this.active = false;
-			
+
 			Logger logger = getLogger();
 			ResourceBundle bundle = getBundle();
 			logger.debug( bundle.getString("custom-context-was-deactivated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() ) );
@@ -156,8 +166,12 @@ public abstract class AbstractCustomContext implements CustomContext {
 		return this.scope;
 	}
 
-	protected static Store createStore() {
-		return new Store();
+	protected static BeanStore createStore() {
+		return new BeanStore();
+	}
+	
+	protected static ContextualStore createContextualStore() {
+		return new ContextualStore();
 	}
 	
 	private ResourceBundle getBundle(){
@@ -191,40 +205,5 @@ public abstract class AbstractCustomContext implements CustomContext {
 		} else if (!scope.equals(other.scope))
 			return false;
 		return true;
-	}
-
-	static class Store {
-
-		private Map<ClassLoader, Map<Class<?>, Object>> cache = Collections
-				.synchronizedMap(new HashMap<ClassLoader, Map<Class<?>, Object>>());
-
-		private Store() {
-		}
-
-		private boolean contains(final Class<?> type) {
-			return this.getMap().containsKey(type);
-		}
-
-		private Object get(final Class<?> type) {
-			return this.getMap().get(type);
-		}
-
-		private void put(final Class<?> type, final Object instance) {
-			this.getMap().put(type, instance);
-		}
-
-		public void clear() {
-			cache.clear();
-		}
-
-		private Map<Class<?>, Object> getMap() {
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
-			if (!cache.containsKey(classLoader)) {
-				cache.put(classLoader, Collections.synchronizedMap(new HashMap<Class<?>, Object>()));
-			}
-
-			return cache.get(classLoader);
-		}
 	}
 }
