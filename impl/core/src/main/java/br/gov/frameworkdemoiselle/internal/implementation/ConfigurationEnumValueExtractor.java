@@ -36,6 +36,9 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import static br.gov.frameworkdemoiselle.annotation.Priority.L2_PRIORITY;
+
+
 import java.lang.reflect.Field;
 import java.util.Locale;
 
@@ -46,7 +49,7 @@ import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
-@Priority(Priority.L2_PRIORITY)
+@Priority(L2_PRIORITY)
 public class ConfigurationEnumValueExtractor implements ConfigurationValueExtractor{
 	
 	private transient ResourceBundle bundle;
@@ -63,8 +66,7 @@ public class ConfigurationEnumValueExtractor implements ConfigurationValueExtrac
 					return enums[i];
 				}
 			}
-		}
-		else{
+		}else{
 			return null;
 		}
 		
