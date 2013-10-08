@@ -43,11 +43,14 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.context.CustomContext;
+import br.gov.frameworkdemoiselle.internal.bootstrap.CustomContextBootstrap;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
@@ -58,7 +61,7 @@ public abstract class AbstractCustomContext implements CustomContext {
 
 	private final Class<? extends Annotation> scope;
 	
-	private Logger logger;
+	private transient Logger logger;
 	
 	private transient ResourceBundle bundle;
 
@@ -68,8 +71,6 @@ public abstract class AbstractCustomContext implements CustomContext {
 	}
 
 	protected abstract BeanStore getStore();
-	
-	protected abstract ContextualStore getContextualStore();
 	
 	protected abstract boolean isStoreInitialized();
 
@@ -87,22 +88,23 @@ public abstract class AbstractCustomContext implements CustomContext {
 			throw new ContextNotActiveException();
 		}
 
-		String id = getContextualStore().tryRegisterAndGetId(contextual);
-		if (getStore().contains(id)) {
-			instance = (T) getStore().getInstance(id);
-		} 
-		else if (creationalContext!=null){
-			instance = contextual.create(creationalContext);
-			getStore().put(id, instance,creationalContext);
+		String id = getContextualStore().putIfAbsentAndGetId(contextual);
+		BeanStore store = getStore();
+		if (store!=null){
+			if (store.contains(id)) {
+				instance = (T) store.getInstance(id);
+			} 
+			else if (creationalContext!=null){
+				instance = contextual.create(creationalContext);
+				store.put(id, instance,creationalContext);
+			}
+		}
+		else{
+			throw new DemoiselleException(getBundle().getString("store-not-found" , ((Bean<?>)contextual).getBeanClass().getName() , getScope().getName()));
 		}
 
 		return instance;
 	}
-
-	/*private <T> Class<?> getType(final Contextual<T> contextual) {
-		Bean<T> bean = (Bean<T>) contextual;
-		return bean.getBeanClass();
-	}*/
 
 	@Override
 	public boolean isActive() {
@@ -134,20 +136,11 @@ public abstract class AbstractCustomContext implements CustomContext {
 		return this.active;
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void deactivate(){
 		if (this.active){
 			if (isStoreInitialized()){
-				for (String id : getStore()){
-					Contextual contextual = getContextualStore().getContextual(id);
-					Object instance = getStore().getInstance(id);
-					CreationalContext creationalContext = getStore().getCreationalContext(id);
-					
-					if (contextual!=null && instance!=null){
-						contextual.destroy(instance, creationalContext);
-					}
-				}
+				clearInstances();
 
 				getStore().clear();
 				getContextualStore().clear();
@@ -160,7 +153,23 @@ public abstract class AbstractCustomContext implements CustomContext {
 			logger.debug( bundle.getString("custom-context-was-deactivated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() ) );
 		}
 	}
-
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void clearInstances(){
+		BeanStore store = getStore();
+		if (store!=null){
+			for (String id : store){
+				Contextual contextual = getContextualStore().getContextual(id);
+				Object instance = store.getInstance(id);
+				CreationalContext creationalContext = store.getCreationalContext(id);
+				
+				if (contextual!=null && instance!=null){
+					contextual.destroy(instance, creationalContext);
+				}
+			}
+		}
+	}
+	
 	@Override
 	public Class<? extends Annotation> getScope() {
 		return this.scope;
@@ -188,6 +197,11 @@ public abstract class AbstractCustomContext implements CustomContext {
 		}
 		
 		return logger;
+	}
+	
+	ContextualStore getContextualStore(){
+		CustomContextBootstrap bootstrap = Beans.getReference(CustomContextBootstrap.class);
+		return bootstrap.getContextualStore();
 	}
 	
 	@Override

@@ -61,8 +61,6 @@ public abstract class AbstractThreadLocalContext extends AbstractCustomContext {
 
 	private final ThreadLocal<BeanStore> threadLocalBeans = new ThreadLocal<BeanStore>();
 	
-	private final ThreadLocal<ContextualStore> threadLocalContextual = new ThreadLocal<ContextualStore>();
-
 	AbstractThreadLocalContext(final Class<? extends Annotation> scope) {
 		super(scope);
 	}
@@ -79,14 +77,5 @@ public abstract class AbstractThreadLocalContext extends AbstractCustomContext {
 		}
 
 		return this.threadLocalBeans.get();
-	}
-	
-	@Override
-	protected ContextualStore getContextualStore() {
-		if (this.threadLocalContextual.get() == null) {
-			this.threadLocalContextual.set(createContextualStore());
-		}
-
-		return this.threadLocalContextual.get();
 	}
 }

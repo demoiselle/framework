@@ -34,55 +34,26 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.context;
+package br.gov.frameworkdemoiselle.internal.configuration;
 
-import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.Serializable;
 
-import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.annotation.StaticScoped;
+import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-/**
- * 
- * <p>This context has a unified static store that keeps all scoped beans available
- * to all threads of an application. It is intended to keep beans avaliable to
- * long lasting scopes (like the Session scope and Application scope) on environments
- * that lack those scopes by default (like desktop Swing applications).</p>
- * 
- * <p>This context also keeps beans of the custom {@link StaticScoped} scope, like the beans
- * annotated with {@link Configuration}.</p>
- * 
- * @author serpro
- *
- */
-@Priority(Priority.MIN_PRIORITY)
-public abstract class AbstractStaticContext extends AbstractCustomContext {
+@Configuration(prefix = "frameworkdemoiselle.scope.view")
+public class ViewScopeConfig implements Serializable {
 
-	private final static Map<String, BeanStore> staticBeanStore = Collections.synchronizedMap(new HashMap<String, BeanStore>());
-	
-	/**
-	 * Constructs this context to control the provided scope
-	 */
-	AbstractStaticContext(Class<? extends Annotation> scope) {
-		super(scope);
+	private static final long serialVersionUID = 1L;
+
+	@Name("timeout")
+	private int viewScopeTimeout = 1800;
+
+	public int getViewScopeTimeout() {
+		return viewScopeTimeout;
 	}
 
-	@Override
-	protected BeanStore getStore() {
-		BeanStore store = staticBeanStore.get( this.getClass().getCanonicalName() );
-		if (store==null){
-			store = createStore();
-			staticBeanStore.put(this.getClass().getCanonicalName(), store);
-		}
-		
-		return store;
-	}
-	
-	@Override
-	protected boolean isStoreInitialized() {
-		return staticBeanStore!=null;
+	public void setViewScopeTimeout(int viewScopeTimeout) {
+		this.viewScopeTimeout = viewScopeTimeout;
 	}
 }

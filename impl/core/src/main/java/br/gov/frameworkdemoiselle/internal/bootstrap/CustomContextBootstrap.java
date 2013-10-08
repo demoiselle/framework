@@ -10,10 +10,11 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import br.gov.frameworkdemoiselle.context.CustomContext;
 import br.gov.frameworkdemoiselle.context.StaticContext;
-import br.gov.frameworkdemoiselle.internal.context.TemporaryRequestContextImpl;
-import br.gov.frameworkdemoiselle.internal.context.TemporarySessionContextImpl;
+import br.gov.frameworkdemoiselle.internal.context.ContextualStore;
 import br.gov.frameworkdemoiselle.internal.context.StaticContextImpl;
 import br.gov.frameworkdemoiselle.internal.context.TemporaryConversationContextImpl;
+import br.gov.frameworkdemoiselle.internal.context.TemporaryRequestContextImpl;
+import br.gov.frameworkdemoiselle.internal.context.TemporarySessionContextImpl;
 import br.gov.frameworkdemoiselle.internal.context.TemporaryViewContextImpl;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 
@@ -27,6 +28,8 @@ import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 public class CustomContextBootstrap implements Extension{
 	
 	private List<CustomContext> contexts;
+	
+	private final ContextualStore contextualStore = new ContextualStore();
 	
 	public <T extends CustomContext> void vetoCustomContexts(@Observes ProcessAnnotatedType<T> event){
 		//Veta os subtipos de CustomContext, para que não conflitem com o produtor de contextos personalizados. 
@@ -79,10 +82,15 @@ public class CustomContextBootstrap implements Extension{
 			}
 			
 			contexts.clear();
+			contextualStore.clear();
 		}
 	}
 	
 	public List<CustomContext> getCustomContexts(){
 		return this.contexts;
+	}
+	
+	public ContextualStore getContextualStore(){
+		return this.contextualStore;
 	}
 }

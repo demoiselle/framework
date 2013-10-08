@@ -171,4 +171,9 @@ public class Faces {
 		UIViewRoot viewRoot = getFacesContext().getViewRoot();
 		return viewRoot.getViewMap(true);
 	}
+	
+	public static String getCurrentViewId(){
+		return getFacesContext().getViewRoot().getViewId();
+	}
+	
 }
