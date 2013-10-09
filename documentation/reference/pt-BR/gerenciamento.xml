@@ -171,6 +171,50 @@ public class MonitorLogin{
 		<para>Como é possível ver, classes anotadas com <emphasis>@ManagementController</emphasis> podem ser injetadas em qualquer ponto do código. Valores definidos
 		para seus atributos retêm seu estado, então um cliente que acesse remotamente o sistema e monitore o valor do atributo <emphasis>contadorLogin</emphasis> verá
 		a quantidade de logins efetuados no momento da consulta.</para>
+		
+		<section>
+			<title>Enviando notificações da aplicação</title>
+			
+			<para>
+				É comum que aplicações monitoradas permaneçam em estado de espera - é função do cliente de monitoração acessar a aplicação e obter
+				as informações necessárias.
+			</para>
+			
+			<para>
+				No entanto existem casos onde é necessário que a aplicação comunique clientes de eventos ocorridos no sistema. Um exemplo é um monitor
+				de espaço em disco que envia um alerta quando esse espaço for menor que 20% do total. 
+			</para>
+			
+			<para>
+				Para essa funcionalidade o <emphasis>Demoiselle Framework</emphasis> disponibiliza o utilitário <emphasis>NotificationManager</emphasis>, que
+				pode ser injetado em sua aplicação a qualquer momento para notificar clientes externos de eventos importantes. 
+			</para>
+			
+			<para>Considere o exemplo abaixo:</para>
+			
+			<programlisting role="JAVA"><![CDATA[
+public class DiskWritter{
+
+  @Inject
+  private NotificationManager notificationManager;
+
+  public void writeFile(byte[] data , File fileToWrite){
+    // ... implementação da escrita de arquivo
+    
+    if (fileToWrite.getUsableSpace() / (float)fileToWrite.getTotalSpace() <= 0.2f){
+    	Notification notification = new GenericNotification("O espaço disponível no disco é inferior a 20% do total");
+    	notificationManager.sendNotification( notification );
+    }
+  }
+}]]></programlisting>
+
+			<para>
+				Nesse exemplo podemos ver como enviar uma notificação em decorrência de um evento gerado pela aplicação. Dessa forma
+				a aplicação pode comunicar a um agente de monitoração sobre o espaço disponível no disco, ao invés de aguardar que o agente
+				conecte-se à aplicação para solicitar essa informação explicitamente.
+			</para>
+		</section>
+		
 	</section>
 	
 	<section>
@@ -200,22 +244,22 @@ public class MonitorLogin{
 			individualmente, as classes monitoradas serão então expostas para todas as extensões escolhidas.</para>
 		</tip>
 		
-		<para>A figura <xref linkend="exemplo_jconsole" /> mostra como uma classe monitorada na aplicação <emphasis>Bookmark</emphasis> é exibida no <emphasis>JConsole</emphasis>.</para>
+		<para>A figura <xref linkend="exemplo_jconsole" /> mostra como uma classe monitorada é exibida no <emphasis>JConsole</emphasis>.</para>
 		
-		<programlisting role="JAVA"><![CDATA[
-@ManagementController
-public class BookmarkMonitor {
+		<programlisting role="JAVA"><![CDATA[@ManagementController
+public class HelloWorldManager {
+	
+	@Inject
+	private HelloWorld helloWorld;
 
-  @Inject
-  private BookmarkDAO bookmarkDAO;
+	@ManagedOperation(type=OperationType.ACTION)
+	public void saySomething(String whatToSay){
+		helloWorld.say(whatToSay);
+	}
 
-  @ManagedOperation(type=OperationType.INFO , description="Informa quantos bookmarks estao salvos no sistema")
-  public int countSavedBookmarks(){
-      return bookmarkDAO.findAll().size();
-  }
 }]]></programlisting>
 		
-		<figure id="exemplo_jconsole"><title>JConsole acessando a aplicação <emphasis>Bookmark</emphasis></title>
+		<figure id="exemplo_jconsole"><title>JConsole acessando uma aplicação monitorada</title>
 			<mediaobject>
 				<imageobject>
 					<imagedata fileref="images/jmx-jconsole-example.png" width="90%" />
@@ -223,6 +267,21 @@ public class BookmarkMonitor {
 				<textobject><phrase>JConsole acessando a aplicação <emphasis>Bookmark</emphasis></phrase></textobject>
 			</mediaobject>
 		</figure>
+		
+		<para>
+			É possível perceber os seguintes elementos nessa imagem:
+			<itemizedlist>
+				<listitem>Uma classe gerenciada <emphasis>HelloWorldManager</emphasis> com uma operação chamada <emphasis>saySomething</emphasis></listitem>
+				<listitem>Uma classe geradora de notificações <emphasis>NotificationBroadcaster</emphasis> responsável por converter as notificações para a API JMX</listitem>
+			</itemizedlist>
+		</para>
+		
+		<para>
+			Através do <emphasis>JConsole</emphasis> é possível invocar comandos e acessar atributos em todas as classes anotadas com <emphasis>@ManagementController</emphasis>
+			em aplicações que usam o <emphasis>demoiselle-jmx</emphasis>. Também é possível inscrever-se às notificações enviadas por <emphasis>NotificationBroadcaster</emphasis>
+			e receber todas as notificações enviadas pela aplicação.
+		</para>
+		
 	</section>
 		
 
