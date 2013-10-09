@@ -160,15 +160,15 @@ public class BookmarkConfig {
 	<section>
 		<title>Especificando os parâmetros</title>
 		<para>
-			Atualmente são suportados nativamente pelo <emphasis>Demoiselle Framework</emphasis> parâmetros de cinco tipos 
-			diferentes, são eles: <emphasis>primitivo</emphasis>, <emphasis>wrapped</emphasis>, <emphasis>String</emphasis>,
-			<emphasis>class</emphasis>, <emphasis>map</emphasis> e <emphasis>array</emphasis>, sendo que os três últimos
-			são suportados a partir da versão 2.4.0. A seguir vamos explicar e exemplificar como utilizar cada um desses 
+			Atualmente são suportados nativamente pelo <emphasis>Demoiselle Framework</emphasis> parâmetros de sete categorias 
+			diferentes. São eles: tipos primitivos (<emphasis>int, float, boolean, etc</emphasis>), classes <emphasis>wrapper</emphasis> (<emphasis>Integer, Float, Boolean, etc.</emphasis>)
+			, <emphasis>String</emphasis>, <emphasis>Class</emphasis>, <emphasis>Map</emphasis>, <emphasis>Array</emphasis> e instâncias de <emphasis>Enum</emphasis>.
+			A seguir vamos explicar e exemplificar como utilizar cada um desses 
 			tipos, e alertar para as possíveis exceções que poderão ser lançadas para sua aplicação.
 		</para>
 		<caution>
 			<para>
-				A partir da versão 2.4.0 não são mais reconhecidas as convenções. Os parâmetros serão procurados exatamente
+				A partir da versão 2.4.0 não são mais reconhecidas as convenções de substituição de nomes. Os parâmetros serão procurados exatamente
 				como foram definidos na classe de configuração.
 			</para>
 		</caution>
@@ -332,58 +332,42 @@ untypedClass=package.MyOtherClass
 						<entry>
 							<para>
 								Para utilizar parâmetros do tipo <emphasis>Map</emphasis>, o arquivo de configurações deve usar a seguinte 
-								estrutura na formação da chave: <emphasis>prefixo+chavedomap+nomedoatributo</emphasis>. Vejamos um exemplo.
+								estrutura na formação da chave: <emphasis>prefixo+nomedoatributo+chavedomap</emphasis>. Vejamos um exemplo.
 								Se temos em nossa aplicação uma classe de configuração como a mostrada abaixo: 
 							</para>	 
 								<programlisting role="JAVA"><![CDATA[
 @Configuration
 public class BookmarkConfig {
 
-	private Map<String, String> url;
+	private Map<String, String> connectionConfiguration;
 	
-	private Map<String, String> driverClass;
-
-	public Map<String, String> getUrl() {
-		return url;
-	}
-	
-	public Map<String, String> DriverClass() {
-		return driverClass;
+	public Map<String, String> getConnectionConfiguration() {
+		return connectionConfiguration;
 	}
 }
 								]]></programlisting> 
 								<para>
-									O arquivo de configuração deverá ser preenchido no formato seguinte (se for do tipo <emphasis>properties</emphasis>):
+									O arquivo de configuração deverá ser preenchido no seguinte formato (se for do tipo <emphasis>properties</emphasis>):
 								</para>
-								<programlisting role="PROPERTIES"><![CDATA[
-mapkey1.url=jdbc:postgresql://localhost:5432/app
-mapkey2.url=jdbc:mysql://localhost:3306/app
-mapkey1.driverClass=org.postgresql.Driver
-mapkey2.driverClass=com.mysql.Driver
-								]]></programlisting>
+								<programlisting role="PROPERTIES"><![CDATA[connectionConfiguration.ip=192.168.0.120
+connectionConfiguration.gateway=192.168.0.1
+connectionConfiguration.dns1=200.10.128.99
+connectionConfiguration.dns2=200.10.128.88]]></programlisting>
 							<para>
-								Dessa forma, ao fazer a chamada <emphasis>url.get("mapkey2");</emphasis>por exemplo, o valor retornado será 
-								<emphasis>jdbc:mysql://localhost:3306/app</emphasis>.
+								Dessa forma, ao fazer a chamada <emphasis>connectionConfiguration.get("gateway");</emphasis> por exemplo, o valor retornado será 
+								<emphasis>192.168.0.1</emphasis>.
 							</para>
-							<note>
-								<para>
-									O ponto entre a chave do <emphasis>Map</emphasis> e o nome do parâmetro é adicionado automaticamente pelo 
-									framework. 
-								</para>
-							</note>
+
 							<tip>
 								<para>
 									Você pode utilizar a chave do Map com nome "default" para indicar que, no arquivo de configuração, a chave é formada
-									apenas pela junção do prefixo com o atributo, sem utilizar a própria chave do Map. Por exemplo, se na sua classe 
-									existir um comando como este:
-								</para> 
-					    		<programlisting role="JAVA"><![CDATA[
-									myMap.get("default");
-								]]></programlisting>
-								<para>o framework irá procurar no arquivo de configuração uma linha como esta:</para>
-								<programlisting role="JAVA"><![CDATA[
-									prefix.myMap=Default Value
-								]]></programlisting>
+									apenas pela junção do prefixo com o atributo, sem utilizar a própria chave do Map. Por exemplo, se o seu arquivo de propriedades
+									contiver uma chave:
+								</para>
+								<programlisting role="JAVA"><![CDATA[prefix.myMap=Default Value]]></programlisting>
+								<para>então seu código poderá ter um comando:</para>
+					    		<programlisting role="JAVA"><![CDATA[String value = myMap.get("default");]]></programlisting>
+					    		<para>e o valor de <emphasis>value</emphasis> será <emphasis>"Default Value"</emphasis>.</para>
 							</tip>
 							<para>
 								Caso a classe de configuração não esteja associada a um arquivo que contenha a chave de um de seus parâmetros
@@ -427,7 +411,66 @@ integerArray=1
 					</row>
 				</tbody>
 			</tgroup>
-		</informaltable>		
+		</informaltable>
+		
+		<informaltable>
+			<tgroup cols="1">
+				<colspec colwidth="100*" />
+				<tbody>
+					<row>
+						<entry>
+							<emphasis role="bold">Enum</emphasis>
+						</entry>
+					</row>
+					<row>
+						<entry>
+							<para>
+								É possível criar uma lista de constantes do tipo <emphasis>Enum</emphasis> e carregar um valor de constante
+								através de um arquivo de configuração. Por exemplo, caso exista o seguinte <emphasis>Enum</emphasis>
+							</para>
+							
+							<programlisting role="JAVA"><![CDATA[public enum ConfigurationType {
+	
+	PROPERTIES , XML , SYSTEM;
+
+}]]></programlisting>
+
+							<para>e ele seja usado no seguinte arquivo de configuração</para>
+							
+							<programlisting role="JAVA"><![CDATA[@Configuration
+public class ConfigurationLoader {
+	
+	private ConfigurationType loadedConfigurationType;
+	
+	public ConfigurationType getLoadedConfigurationType(){
+		return loadedConfigurationType;
+	}
+}]]></programlisting>
+							
+							<para>O arquivo do tipo <emphasis>properties</emphasis> pode ser criado assim:</para>
+							
+							<programlisting role="PROPERTIES"><![CDATA[loadedConfigurationType=SYSTEM]]></programlisting>
+							
+							<note>
+								<para>
+									O valor definido no arquivo de configuração para atributos do tipo <emphasis>Enum</emphasis> deve
+									ser idêntico ao nome da constante definida no <emphasis>Enum</emphasis>, inclusive casando letras maiúsculas e
+									minúsculas. De fato, o valor da propriedade deve casar com o valor retornado no código:
+									<emphasis>Enum.name()</emphasis>.
+								</para>
+								
+								<para>
+									Caso o valor definido no arquivo de configuração não case com nenhuma constante definida no <emphasis>Enum</emphasis>,
+									uma exceção de tipo <emphasis>ConfigurationException</emphasis> de causa <emphasis>ConversionException</emphasis>
+									será lançada. Já se à propriedade for atribuido um valor vazio, o atributo do tipo <emphasis>Enum</emphasis> receberá
+									o valor <emphasis>null</emphasis>. 
+								</para>
+							</note>
+						</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</informaltable>
 		
 	</section>
 	

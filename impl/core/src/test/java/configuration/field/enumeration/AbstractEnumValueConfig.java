@@ -46,11 +46,17 @@ public abstract class AbstractEnumValueConfig implements Serializable {
 	
 	private ListOfEnum anotherValue;
 	
+	private ListOfEnum emptyValue;
+	
 	public ListOfEnum getEnumValue() {
 		return enumValue;
 	}
 
 	public ListOfEnum getAnotherValue() {
 		return anotherValue;
+	}
+
+	public ListOfEnum getEmptyValue() {
+		return emptyValue;
 	}
 }

@@ -74,6 +74,7 @@ public class ConfigurationEnumValueTest {
 	public void loadEnumConfig(){
 		Assert.assertEquals(ListOfEnum.VALUE_2, propertiesEnumConfig.getEnumValue());
 		Assert.assertEquals(ListOfEnum.VALUE_2, xmlEnumConfig.getEnumValue());
+		Assert.assertNull(propertiesEnumConfig.getEmptyValue());
 	}
 	
 	@Test(expected=ConfigurationException.class)
