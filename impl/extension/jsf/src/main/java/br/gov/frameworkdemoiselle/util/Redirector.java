@@ -48,11 +48,10 @@ import javax.faces.application.ViewHandler;
 import javax.faces.context.FacesContext;
 
 /**
- * 
  * Utility class to redirect determined page to another one.
  * 
  * @author SERPRO
- * */
+ */
 public class Redirector {
 
 	private Redirector() {
@@ -74,6 +73,7 @@ public class Redirector {
 			}
 
 		} catch (NullPointerException cause) {
+			cause.printStackTrace();
 			throw new PageNotFoundException(viewId);
 
 		} catch (IOException cause) {

@@ -39,6 +39,6 @@ package configuration.field.map;
 import static br.gov.frameworkdemoiselle.configuration.ConfigType.PROPERTIES;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-@Configuration(type = PROPERTIES)
+@Configuration(type = PROPERTIES,prefix="configuration.test")
 public class PropertiesMapFieldConfig extends AbstractMapFieldConfig {
 }

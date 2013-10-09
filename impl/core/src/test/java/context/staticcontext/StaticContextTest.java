@@ -34,60 +34,55 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package exception.handler.authorization;
+package context.staticcontext;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import javax.enterprise.inject.spi.Bean;
 
-import java.io.IOException;
-import java.net.URL;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import br.gov.frameworkdemoiselle.context.ConversationContext;
+import br.gov.frameworkdemoiselle.context.SessionContext;
+import br.gov.frameworkdemoiselle.util.Beans;
 import test.Tests;
 
 @RunWith(Arquillian.class)
-public class AuthorizationNotHandledExceptionTest {
-
-	@ArquillianResource
-	private URL deploymentUrl;
-
-	private static final String PATH = "src/test/resources/exception-handler-authorization";
+public class StaticContextTest {
 	
-	@Deployment(testable = false)
-	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClass(AuthorizationNotHandledExceptionTest.class).addClass(AuthorizationBean.class)
-				.addAsWebResource(Tests.createFileAsset(PATH + "/page.xhtml"), "page.xhtml")
-				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml");
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(StaticContextTest.class);
+		return deployment;
 	}
 	
 	@Test
-	public void authorizationNotHandledException() {
-		HttpClient client = new HttpClient();
-		GetMethod method = new GetMethod(deploymentUrl + "/page.jsf");
-
-		try {
-			int status = client.executeMethod(method);
-			String message = method.getResponseBodyAsString();
-			
-			assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, status);
-			assertTrue(message.contains("Authorization Exception!"));
-			assertFalse(message.contains("Authorization Message."));
-
-		} catch (HttpException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void checkSeparatedStores(){
+		
+		ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
+		SessionContext sessionContext = Beans.getReference(SessionContext.class);
+		
+		conversationContext.activate();
+		sessionContext.activate();
+		
+		ConversationBean conversationBean = Beans.getReference(ConversationBean.class);
+		conversationBean.getData();
+		
+		SessionBean sessionBean = Beans.getReference(SessionBean.class);
+		sessionBean.getData();
+		
+		Bean<?> conversationContextual = Beans.getBeanManager().getBeans(ConversationBean.class).iterator().next();
+		Bean<?> sessionContextual = Beans.getBeanManager().getBeans(SessionBean.class).iterator().next();
+		
+		Assert.assertNotNull( conversationContext.get(conversationContextual) );
+		Assert.assertNull( conversationContext.get(sessionContextual) );
+		
+		Assert.assertNotNull( sessionContext.get(sessionContextual) );
+		Assert.assertNull( sessionContext.get(conversationContextual) );
+		
 	}
+
 }

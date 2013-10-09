@@ -117,8 +117,8 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	@Override
 	public void persist(Object entity) {
 		joinTransactionIfNecessary();
-		checkEntityManagerScopePassivable(entity);
 		getEntityManagerDelegate().persist(entity);
+		checkEntityManagerScopePassivable(entity);
 	}
 
 	/*

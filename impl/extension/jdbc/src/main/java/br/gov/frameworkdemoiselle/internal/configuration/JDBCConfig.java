@@ -37,10 +37,10 @@
 package br.gov.frameworkdemoiselle.internal.configuration;
 
 import java.io.Serializable;
-import java.util.Map;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
+
 /**
  * Provide used to access the configurations of the JDBC connection
  * 
@@ -56,41 +56,41 @@ public class JDBCConfig implements Serializable {
 	private String defaultDataSourceName;
 
 	@Name("jndi.name")
-	private Map<String, String> jndiName;
+	private JDBCConfigurationStore jndiName;
 
 	@Name("driver.class")
-	private Map<String, String> driverClass;
+	private JDBCConfigurationStore driverClass;
 
 	@Name("url")
-	private Map<String, String> url;
+	private JDBCConfigurationStore url;
 
 	@Name("username")
-	private Map<String, String> username;
+	private JDBCConfigurationStore username;
 
 	@Name("password")
-	private Map<String, String> password;
+	private JDBCConfigurationStore password;
 
 	public String getDefaultDataSourceName() {
 		return defaultDataSourceName;
 	}
 
-	public Map<String, String> getJndiName() {
+	public JDBCConfigurationStore getJndiName() {
 		return jndiName;
 	}
 
-	public Map<String, String> getDriverClass() {
+	public JDBCConfigurationStore getDriverClass() {
 		return driverClass;
 	}
 
-	public Map<String, String> getUrl() {
+	public JDBCConfigurationStore getUrl() {
 		return url;
 	}
 
-	public Map<String, String> getUsername() {
+	public JDBCConfigurationStore getUsername() {
 		return username;
 	}
 
-	public Map<String, String> getPassword() {
+	public JDBCConfigurationStore getPassword() {
 		return password;
 	}
 }

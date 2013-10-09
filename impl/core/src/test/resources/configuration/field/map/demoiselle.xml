@@ -36,17 +36,15 @@
 -->
 
 <configuration>
-	<item1>
-		<stringWithDefinedKeyMap>demoiselle</stringWithDefinedKeyMap>
-	</item1>
-	<item2>
-		<stringWithDefinedKeyMap>framework</stringWithDefinedKeyMap>
-	</item2>
-		<stringWithUndefinedKeyMap>undefined</stringWithUndefinedKeyMap>
-	<item1>
-		<emptyValueMap></emptyValueMap>
-	</item1>
-	<item2>
-		<emptyValueMap></emptyValueMap>
-	</item2>	
+	<stringWithDefinedKeyMap>
+		<item1>demoiselle</item1>
+		<item2>framework</item2>
+	</stringWithDefinedKeyMap>
+	
+	<stringWithUndefinedKeyMap>undefined</stringWithUndefinedKeyMap>
+	
+	<emptyValueMap>
+		<item1></item1>
+		<item2></item2>
+	</emptyValueMap>
 </configuration>

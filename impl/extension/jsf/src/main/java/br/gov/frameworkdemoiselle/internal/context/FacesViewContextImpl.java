@@ -36,11 +36,14 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.enterprise.inject.Alternative;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
@@ -59,25 +62,80 @@ import br.gov.frameworkdemoiselle.util.Faces;
 @Priority(Priority.L2_PRIORITY)
 @Alternative
 public class FacesViewContextImpl extends AbstractCustomContext implements ViewContext {
-
+	
+	private final AtomicLong atomicLong = new AtomicLong();
+	
+	private ConcurrentHashMap<String, SessionBeanStore> sessionBeanStore = new ConcurrentHashMap<String, SessionBeanStore>();
+	
+	private static final String FACES_KEY = FacesViewContextImpl.class.getCanonicalName();
+	
 	public FacesViewContextImpl() {
 		super(ViewScoped.class);
 	}
 	
 	@Override
 	protected boolean isStoreInitialized() {
-		return FacesContext.getCurrentInstance()!=null;
+		return FacesContext.getCurrentInstance()!=null && getSessionId()!=null;
 	}
 
 	@Override
-	protected Store getStore() {
-		Map<String, Object> viewMap = Faces.getViewMap();
-		String key = Store.class.getName();
-
-		if (!viewMap.containsKey(key)) {
-			viewMap.put(key, createStore());
+	protected BeanStore getStore() {
+		clearInvalidatedSession();
+		
+		final String sessionId = getSessionId();
+		
+		if (sessionId==null){
+			return null;
+		}
+		
+		Long viewId = (Long)Faces.getViewMap().get(FACES_KEY);
+		if (viewId==null){
+			synchronized (this) {
+				viewId = (Long)Faces.getViewMap().get(FACES_KEY);
+				if (viewId==null){
+					viewId = atomicLong.incrementAndGet();
+					Faces.getViewMap().put(FACES_KEY, viewId);
+				}
+			}
 		}
 
-		return (Store) viewMap.get(key);
+		SessionBeanStore currentStore = sessionBeanStore.get(sessionId);
+		if (currentStore==null){
+			synchronized (this) {
+				currentStore = (SessionBeanStore) sessionBeanStore.get(sessionId);
+				if (currentStore==null){
+					currentStore = new SessionBeanStore();
+					sessionBeanStore.put(sessionId, currentStore);
+				}
+			}
+		}
+		
+		return currentStore.getStore(viewId, this);
+	}
+	
+	private synchronized void clearInvalidatedSession(){
+		if (wasSessionInvalidated()){
+			final String requestedSessionId = getRequestedSessionId();
+			final SessionBeanStore store = sessionBeanStore.get(requestedSessionId);
+			if (store!=null){
+				store.clear(this);
+				sessionBeanStore.remove(requestedSessionId);
+			}
+		}
+	}
+	
+	private String getSessionId(){
+		final HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+		return session!=null ? session.getId() : null;
+	}
+	
+	private String getRequestedSessionId(){
+		final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		return request!=null ? request.getRequestedSessionId() : null;
+	}
+	
+	private boolean wasSessionInvalidated(){
+		final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		return request!=null && request.getRequestedSessionId() != null && !request.isRequestedSessionIdValid();
 	}
 }

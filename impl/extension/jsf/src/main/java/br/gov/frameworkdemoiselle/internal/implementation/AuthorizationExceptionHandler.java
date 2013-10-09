@@ -36,9 +36,12 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
+import javax.servlet.http.HttpServletResponse;
 
 import br.gov.frameworkdemoiselle.security.AuthorizationException;
 import br.gov.frameworkdemoiselle.util.Faces;
@@ -53,9 +56,15 @@ public class AuthorizationExceptionHandler extends AbstractExceptionHandler {
 		boolean handled = false;
 		boolean rendering = PhaseId.RENDER_RESPONSE.equals(facesContext.getCurrentPhaseId());
 
-		if (!rendering && cause instanceof AuthorizationException) {
-			Faces.addMessage(cause);
+		if (cause instanceof AuthorizationException) {
 			handled = true;
+
+			if (rendering) {
+				HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+				response.setStatus(SC_UNAUTHORIZED);
+			} else {
+				Faces.addMessage(cause);
+			}
 		}
 
 		return handled;

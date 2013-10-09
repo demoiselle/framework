@@ -59,7 +59,7 @@ import br.gov.frameworkdemoiselle.message.SeverityType;
  * Utility class to insert messages in the FacesContext.
  * 
  * @author SERPRO
- * */
+ */
 public class Faces {
 
 	private Faces() {
@@ -171,4 +171,9 @@ public class Faces {
 		UIViewRoot viewRoot = getFacesContext().getViewRoot();
 		return viewRoot.getViewMap(true);
 	}
+	
+	public static String getCurrentViewId(){
+		return getFacesContext().getViewRoot().getViewId();
+	}
+	
 }

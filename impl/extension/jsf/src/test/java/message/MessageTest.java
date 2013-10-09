@@ -63,26 +63,18 @@ public class MessageTest {
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClass(MessageTest.class)
-				.addClass(MessageBean.class)
+		return Tests.createDeployment().addClasses(MessageBean.class)
 				.addAsWebResource(Tests.createFileAsset(PATH + "/index.xhtml"), "index.xhtml")
 				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml");
 	}
 
 	@Test
-	public void showMessage() {
+	public void showMessage() throws HttpException, IOException {
 		HttpClient client = new HttpClient();
 		GetMethod method = new GetMethod(deploymentUrl + "/index.jsf");
 
-		try {
-			client.executeMethod(method);
-			String message = method.getResponseBodyAsString();
-			assertTrue(message.contains("Message shown."));
-
-		} catch (HttpException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		client.executeMethod(method);
+		String message = method.getResponseBodyAsString();
+		assertTrue(message.contains("Message shown."));
 	}
 }

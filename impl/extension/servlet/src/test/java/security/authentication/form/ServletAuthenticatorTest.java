@@ -23,8 +23,6 @@ import org.junit.runner.RunWith;
 
 import test.Tests;
 
-import com.sun.enterprise.security.auth.login.FileLoginModule;
-
 @RunWith(Arquillian.class)
 public class ServletAuthenticatorTest {
 
@@ -35,7 +33,7 @@ public class ServletAuthenticatorTest {
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClasses(HelperServlet.class, FileLoginModule.class)
+		return Tests.createDeployment().addClasses(HelperServlet.class)
 				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml");
 	}
 

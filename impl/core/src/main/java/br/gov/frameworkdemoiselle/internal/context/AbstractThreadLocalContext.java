@@ -59,23 +59,23 @@ import java.lang.annotation.Annotation;
  */
 public abstract class AbstractThreadLocalContext extends AbstractCustomContext {
 
-	private final ThreadLocal<Store> threadLocal = new ThreadLocal<Store>();
-
+	private final ThreadLocal<BeanStore> threadLocalBeans = new ThreadLocal<BeanStore>();
+	
 	AbstractThreadLocalContext(final Class<? extends Annotation> scope) {
 		super(scope);
 	}
 	
 	@Override
 	protected boolean isStoreInitialized() {
-		return threadLocal.get()!=null;
+		return threadLocalBeans.get()!=null;
 	}
 
 	@Override
-	protected Store getStore() {
-		if (this.threadLocal.get() == null) {
-			this.threadLocal.set(createStore());
+	protected BeanStore getStore() {
+		if (this.threadLocalBeans.get() == null) {
+			this.threadLocalBeans.set(createStore());
 		}
 
-		return this.threadLocal.get();
+		return this.threadLocalBeans.get();
 	}
 }

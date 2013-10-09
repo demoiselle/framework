@@ -145,41 +145,15 @@ private MessageContext messageContext;]]></programlisting>
 		<programlisting role="JAVA"><![CDATA[Message message = new DefaultMessage("Ocorreu um erro ao excluir o aluno!", SeverityType.ERROR);
 messageContext.add(message);]]></programlisting>
 		<para>
-			Uma vez inseridas no contexto em determinada camada da aplicação, as mensagens podem ser posteriormente
-			recuperadas. Para tal, é preciso invocar o método <function>getMessages()</function> da interface
-			<literal>MessageContext</literal>, o qual retornará uma coleção de objetos do tipo <literal>Message</literal>.
+			A extensão para <emphasis>demoiselle-jsf</emphasis> 
+			transfere automaticamente as mensagens incluídas no <literal>MessageContext</literal>
+			para o <literal>FacesContext</literal>.
 		</para>
-		<note>
-			<para>
-				A extensão para <emphasis>JavaServer Faces</emphasis> no <emphasis>Demoiselle Framework</emphasis>
-				transfere automaticamente as mensagens incluídas no <literal>MessageContext</literal> para a apresentação
-				durante a renderização da página pelo <emphasis>JSF</emphasis>.
-			</para>
-		</note>
 		<para>
-			Para remover todas as mensagens existentes no contexto, basta invocar o método <function>clear()</function> da
-			interface <literal>MessageContext</literal>.
+			O contexto de mensagens, representado pela interface <literal>MessageContext</literal>, é capaz de
+			armazenar diversas mensagens em uma mesma requisição. Ele não é restrito a aplicações do tipo Web,
+			isto é, pode ser usado também para aplicações do tipo desktop (i.e., Swing).
 		</para>
-		<note>
-			<para>
-				Especificamente para aplicações Java Web, o contexto de mensagens é automaticamente reinicializado a cada
-				requisição HTTP. Ou seja, as mensagens incluídas no contexto por uma determinada sessão de usuário não
-				interferem nas demais sessões existentes no servidor de aplicações. Além disso, ao final da requisição as
-				mensagens existentes são automaticamente excluídas do contexto.
-			</para>
-		</note>
-		<para>
-			O contexto de mensagens <literal>MessageContext</literal> tem o seu ciclo de vida gerenciado pelo CDI e pertence
-			ao escopo de sessão (i.e., <literal>@SessionScoped</literal>). Ou seja, mensagens incluídas na requisição de um
-			determinado usuário não serão exibidas para um outro usuário, pois cada um possuirá a sua sessão.
-		</para>
-		<note>
-			<para>
-				O contexto de mensagens, representado pela interface <literal>MessageContext</literal>, é capaz de
-				armazenar diversas mensagens em uma mesma requisição. Ele não é restrito a aplicações do tipo Web,
-				isto é, pode ser usado também para aplicações do tipo desktop (i.e., Swing).
-			</para>
-		</note>
 	</section>
 	
 	<section>
@@ -302,6 +276,41 @@ ALUNO_EXCLUIR_OK=L'étudiant {0} a été supprimé avec succès]]></programlisti
 				</itemizedlist>
 			</para>
 		</note>
+	</section>
+	
+	<section>
+		<title>Destino das mensagens</title>
+		
+		<para>
+			O Framework Demoiselle permite configurar o destino das mensagens enviadas. Por padrão, mensagens enviadas em um ambiente SE (Swing por exemplo)
+			são exibidas como registros de log no console, já mensagens enviadas em um ambiente WEB usando JSF 2.0 são redirecionadas para a classe
+			<code>FacesContext</code>. Caso esse comportamento padrão não seja suficiente para você, é possível personalizar o mecanismo de redirecionamento
+			de mensagens, fazendo-o enviar as mensagens para um local de seu interesse.
+		</para>
+		
+		<para>
+			Para isso existe a interface <code>MessageAppender</code>. Para toda mensagem enviada, o Framework Demoiselle vai determinar a implementação
+			mais adequada de <code>MessageAppender</code> a utilizar e vai redirecionar qualquer mensagem para essa implementação.
+		</para>
+		
+		<programlisting role="JAVA">public interface MessageAppender extends Serializable {
+	
+	/**
+	 * Method that must hold message in an appropriate way and in an appropriate local.
+	 * Demoiselle holds a message in a Logger or in a FacesContext, depending on the project.
+	 * 
+	 * @param message
+	 * 			message to be stored.
+	 */
+	void append(Message message);
+}</programlisting>
+
+		<para>
+			Para criar seu próprio <code>MessageAppender</code>, implemente essa interface e anote-a com a anotação <code>@Priority</code> - o Framework
+			Demoiselle irá selecionar a implementação adequada paseada na maior prioridade. Não é necessário configurar mais nada, o Framework Demoiselle
+			selecionará a implementação automaticamente. Cabe-lhe então a tarefa de implementar o método <code>append(Message message)</code> para tratar
+			a mensagem da forma que melhor se adequar a seu projeto.
+		</para>
 	</section>
 
 	<section>

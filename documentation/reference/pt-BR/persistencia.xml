@@ -18,6 +18,181 @@
 		&eacute; apenas injetar o recurso adequado em seu c&oacute;digo e o Framework Demoiselle se encarregar&aacute; de
 		produzi-lo e configur&aacute;-lo. 
 	</para>
+	
+	<section>
+		<title>JPA</title>
+		
+		<para>
+			O Framework Demoiselle fornece um produtor padrão para contextos de persistência da JPA. Esse produtor lê o arquivo
+			de configuração <code>persistence.xml</code> de seu projeto e toma as providências necessárias para fabricar uma instância
+			da classe <code>EntityManager</code> que pode ser usada para gerenciar as entidades de sua aplicação. Além disso, instâncias
+			de <code>EntityManager</code> produzidas pelo Framework Demoiselle participam automaticamente de transações abertas através da
+			anotação <code>@Transactional</code>, conforme apresentado no capítulo sobre <link linkend="transacao">Transações</link>.
+		</para>
+		
+		<tip>
+	 		<para>
+	 			Para acrescentar a dependência à extensão <literal>demoiselle-jpa</literal>, adicione esse código
+	 			em seu arquivo <literal>pom.xml</literal>, na seção <literal>dependencies</literal>.
+	 		</para>
+	 	
+	 		<programlisting role="XML"><![CDATA[<dependency>
+	<groupId>br.gov.frameworkdemoiselle</groupId>
+	<artifactId>demoiselle-jpa</artifactId>
+	<scope>compile</scope>
+</dependency>]]></programlisting>
+		</tip>
+		
+		<section>
+			<title>Introdução ao mecanismo</title>
+			
+			<para>
+				Para injetar uma instância de <code>EntityManager</code> em sua aplicação, basta usar a anotação <code>@Inject</code>.
+			</para>
+			
+			<programlisting role="JAVA">@PersistenceController
+public class BookmarkDAO extends JPACrud&lt;Bookmark, Long&gt; {
+	
+	private static final long serialVersionUID = 1L;
+	
+	@Inject
+	private EntityManager entityManager;
+	
+	public void persistBookmark(Bookmark bookmark){
+		entityManager.persist(bookmark);
+	}
+	
+}</programlisting>
+
+			<para>
+				O produtor padrão injetará o <code>EntityManager</code> configurado no arquivo <code>persistence.xml</code>. Se houver
+				mais de um contexto de persistência configurado em <code>persistence.xml</code>, será necessário especificar qual será
+				injetado no ponto de injeção. Para isso use a anotação <code>@Name</code>.
+			</para>
+			
+			<programlisting role="JAVA">@PersistenceController
+public class BookmarkDAO extends JPACrud&lt;Bookmark, Long&gt; {
+	
+	private static final long serialVersionUID = 1L;
+	
+	@Inject
+	@Name("persistence_unit_1")
+	private EntityManager entityManager;
+	
+	public void persistBookmark(Bookmark bookmark){
+		entityManager.persist(bookmark);
+	}
+	
+}</programlisting>
+
+			<para>
+				É possível invocar o utilitário <code>Beans</code> para injetar instâncias de <code>EntityManager</code> programaticamente. 
+			</para>
+			
+			<programlisting role="JAVA">@PersistenceController
+public class BookmarkDAO extends JPACrud&lt;Bookmark, Long&gt; {
+	
+	private static final long serialVersionUID = 1L;
+	
+	public void persistBookmark(Bookmark bookmark){
+		EntityManager entityManager = Beans.getReference(EntityManager.class);
+		entityManager.persist(bookmark);
+	}
+	
+	public void persistBookmarkInHistory(Bookmark bookmark){
+		EntityManager entityManager = Beans.getReference(EntityManager.class , new NameQualifier("history_persistence_unit"));
+		entityManager.persist(bookmark);
+	}
+	
+}</programlisting>
+		</section>
+		
+		<section>
+			<title>Configuração</title>
+			
+			<para>
+				Alguns comportamentos do produtor podem ser configurados através das propriedades abaixo, que devem ser configuradas
+				no arquivo <code>demoiselle.properties</code>.
+			</para>
+			
+			<informaltable width="100%">
+				<tgroup cols="3">
+					<colspec align="left"/>
+					<colspec align="left"/>
+					<colspec align="right"/>
+					
+					<thead>
+						<row valign="top">
+							<entry><emphasis role="bold">Propriedade</emphasis></entry>
+							<entry><emphasis role="bold">Descrição</emphasis></entry>
+							<entry><emphasis role="bold">Padrão</emphasis></entry>
+						</row>
+					</thead>
+					
+					<tbody>
+						<row valign="top">
+							<entry>frameworkdemoiselle.&#8203;persistence.&#8203;default.&#8203;unit.&#8203;name</entry>
+							<entry>
+								<para>
+									Define o nome da unidade de persistência padrão (configurada em <code>persistence.xml</code>) que será injetada
+									caso a anotação <code>@Name</code> não seja usada. Não é necessário se apenas uma unidade de persistência for configurada.
+								</para>
+							</entry>
+							<entry></entry>
+						</row>
+						
+						<row valign="top">
+							<entry>frameworkdemoiselle.&#8203;persistence.&#8203;entitymanager.&#8203;scope</entry>
+							<entry>
+								<para>
+									Permite determinar o escopo de unidades de persistência injetadas. Dentro do escopo determinado, todos os pontos
+									de injeção receberão a mesma instância de <code>EntityManager</code>.
+								</para>
+								<para>
+									Os valores possíveis são:
+									<simplelist type="inline">
+										<member>request</member>
+										<member>session</member>
+										<member>view</member>
+										<member>conversation</member>
+										<member>application</member>
+										<member>noscope</member>
+									</simplelist>
+								</para>
+							</entry>
+							<entry>request</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</informaltable>
+			
+			<tip>
+				<para>
+					O escopo especial <emphasis>noscope</emphasis> desliga o gerenciamento de escopo de instâncias de <code>EntityManager</code>
+					produzidas pelo Framework Demoiselle. Isso permite ao desenvolvedor controlar totalmente o ciclo de vida de um
+					<code>EntityManager</code> injetado e ainda reter o recurso do produtor padrão. 
+				</para>
+				<para>
+					Note que ao usar a opção <emphasis>noscope</emphasis>, o desenvolvedor é o responsável por controlar o ciclo de vida do gerenciador
+					de persistência. Ele não participará de transações JPA abertas através da anotação <code>@Transactional</code> (transações JTA funcionam normalmente)
+					e multiplos pontos de injeção durante uma requisição receberão múltiplas instâncias de <code>EntityManager</code>.
+				</para>
+			</tip>
+			
+			<caution>
+				<para>
+					Deve-se usar cautela ao alterar o escopo padrão das instâncias de <code>EntityManager</code>. Na grande maioria dos casos o escopo
+					padrão <emphasis>request</emphasis> é o suficiente e alterar esse padrão deve ser feito apenas após extensa análise dos prós e contras
+					de cada escopo.
+				</para>
+				<para>
+					Dê especial atenção aos escopos que podem ser serializados pelo servidor de aplicação (<emphasis>session</emphasis>, <emphasis>view</emphasis>
+					e <emphasis>conversation</emphasis>) pois a especificação não define o comportamento de instâncias de <code>EntityManager</code> que são
+					serializadas.
+				</para>
+			</caution>
+		</section>
+	</section>
 
 	<section>
 		

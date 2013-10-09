@@ -65,8 +65,7 @@ public class ExceptionHandlerRedirectConfigTest {
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
-		return Tests.createDeployment().addClass(ExceptionHandlerRedirectConfigTest.class)
-				.addClass(DummyException.class).addClass(ExceptionHandlerConfigBean.class)
+		return Tests.createDeployment().addClasses(DummyException.class, ExceptionHandlerConfigBean.class)
 				.addAsWebResource(Tests.createFileAsset(PATH + "/index.xhtml"), "index.xhtml")
 				.addAsWebResource(Tests.createFileAsset(PATH + "/error_page.xhtml"), "error_page.xhtml")
 				.addAsWebInfResource(Tests.createFileAsset(PATH + "/web.xml"), "web.xml")
@@ -74,19 +73,12 @@ public class ExceptionHandlerRedirectConfigTest {
 	}
 
 	@Test
-	public void notHandlerConfiguration() {
+	public void notHandlerConfiguration() throws HttpException, IOException {
 		HttpClient client = new HttpClient();
 		GetMethod method = new GetMethod(deploymentUrl + "/index.jsf");
 
-		try {
-			client.executeMethod(method);
-			String message = method.getResponseBodyAsString();
-			assertTrue(message.contains("Called the page /error_page"));
-
-		} catch (HttpException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		client.executeMethod(method);
+		String message = method.getResponseBodyAsString();
+		assertTrue(message.contains("Called the page /error_page"));
 	}
 }

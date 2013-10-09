@@ -49,7 +49,7 @@ import br.gov.frameworkdemoiselle.util.Reflections;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
- * Template Managed Bean class that implements the methods defined by the interface EditPageBean.
+ * Template Managed AuthenticationBean class that implements the methods defined by the interface EditPageBean.
  * 
  * @param <T>
  *            bean object type

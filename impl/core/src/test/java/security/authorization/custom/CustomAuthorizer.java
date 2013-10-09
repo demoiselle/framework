@@ -51,7 +51,4 @@ public class CustomAuthorizer implements Authorizer {
 	public boolean hasPermission(String resource, String operation) {
 		return "resource".equals(resource) && "operation".equals(operation);
 	}
-
-
-	
 }

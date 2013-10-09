@@ -130,22 +130,22 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		ViewContext tempViewContext = Beans.getReference(ViewContext.class);
 		ConversationContext tempConversationContext = Beans.getReference(ConversationContext.class);
 
-		boolean requestActivatedHere = !tempRequestContext.isActive();
-		boolean sessionActivatedHere = !tempSessionContext.isActive();
-		boolean viewActivatedHere = !tempViewContext.isActive();
-		boolean conversationActivatedHere = !tempConversationContext.isActive();
+		boolean requestActivatedHere = tempRequestContext!=null && !tempRequestContext.isActive();
+		boolean sessionActivatedHere = tempSessionContext!=null && !tempSessionContext.isActive();
+		boolean viewActivatedHere = tempViewContext!=null && !tempViewContext.isActive();
+		boolean conversationActivatedHere = tempConversationContext!=null && !tempConversationContext.isActive();
 		
 		if (!registered) {
-			if (!tempRequestContext.isActive())
+			if (tempRequestContext!=null && !tempRequestContext.isActive())
 				tempRequestContext.activate();
 			
-			if (!tempSessionContext.isActive())
+			if (tempSessionContext!=null && !tempSessionContext.isActive())
 				tempSessionContext.activate();
 			
-			if (!tempViewContext.isActive())
+			if (tempViewContext!=null && !tempViewContext.isActive())
 				tempViewContext.activate();
 			
-			if (!tempConversationContext.isActive())
+			if (tempConversationContext!=null && !tempConversationContext.isActive())
 				tempConversationContext.activate();
 
 			registered = true;

@@ -34,19 +34,10 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+<html xmlns:h="http://java.sun.com/jsf/html">
 
-	<listener>
-		<listener-class>br.gov.frameworkdemoiselle.util.ServletListener</listener-class>
-	</listener>
-	<filter>
-		<filter-name>Demoiselle Servlet Filter</filter-name>
-		<filter-class>br.gov.frameworkdemoiselle.util.ServletFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>Demoiselle Servlet Filter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	<h:body>
+		#{facesContextProxyBean.ok}
+	</h:body>
 
-</web-app>
+</html>

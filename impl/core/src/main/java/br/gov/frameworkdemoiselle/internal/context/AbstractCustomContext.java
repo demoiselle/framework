@@ -37,10 +37,7 @@
 package br.gov.frameworkdemoiselle.internal.context;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Context;
@@ -51,7 +48,9 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.slf4j.Logger;
 
+import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.context.CustomContext;
+import br.gov.frameworkdemoiselle.internal.bootstrap.CustomContextBootstrap;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
@@ -62,7 +61,7 @@ public abstract class AbstractCustomContext implements CustomContext {
 
 	private final Class<? extends Annotation> scope;
 	
-	private Logger logger;
+	private transient Logger logger;
 	
 	private transient ResourceBundle bundle;
 
@@ -71,7 +70,7 @@ public abstract class AbstractCustomContext implements CustomContext {
 		this.active = false;
 	}
 
-	protected abstract Store getStore();
+	protected abstract BeanStore getStore();
 	
 	protected abstract boolean isStoreInitialized();
 
@@ -89,21 +88,22 @@ public abstract class AbstractCustomContext implements CustomContext {
 			throw new ContextNotActiveException();
 		}
 
-		Class<?> type = getType(contextual);
-		if (getStore().contains(type)) {
-			instance = (T) getStore().get(type);
-
-		} else if (creationalContext != null) {
-			instance = contextual.create(creationalContext);
-			getStore().put(type, instance);
+		String id = getContextualStore().putIfAbsentAndGetId(contextual);
+		BeanStore store = getStore();
+		if (store!=null){
+			if (store.contains(id)) {
+				instance = (T) store.getInstance(id);
+			} 
+			else if (creationalContext!=null){
+				instance = contextual.create(creationalContext);
+				store.put(id, instance,creationalContext);
+			}
+		}
+		else{
+			throw new DemoiselleException(getBundle().getString("store-not-found" , ((Bean<?>)contextual).getBeanClass().getName() , getScope().getName()));
 		}
 
 		return instance;
-	}
-
-	private <T> Class<?> getType(final Contextual<T> contextual) {
-		Bean<T> bean = (Bean<T>) contextual;
-		return bean.getBeanClass();
 	}
 
 	@Override
@@ -140,24 +140,47 @@ public abstract class AbstractCustomContext implements CustomContext {
 	public void deactivate(){
 		if (this.active){
 			if (isStoreInitialized()){
+				clearInstances();
+
 				getStore().clear();
+				getContextualStore().clear();
 			}
-			
+
 			this.active = false;
-			
+
 			Logger logger = getLogger();
 			ResourceBundle bundle = getBundle();
 			logger.debug( bundle.getString("custom-context-was-deactivated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() ) );
 		}
 	}
-
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void clearInstances(){
+		BeanStore store = getStore();
+		if (store!=null){
+			for (String id : store){
+				Contextual contextual = getContextualStore().getContextual(id);
+				Object instance = store.getInstance(id);
+				CreationalContext creationalContext = store.getCreationalContext(id);
+				
+				if (contextual!=null && instance!=null){
+					contextual.destroy(instance, creationalContext);
+				}
+			}
+		}
+	}
+	
 	@Override
 	public Class<? extends Annotation> getScope() {
 		return this.scope;
 	}
 
-	protected static Store createStore() {
-		return new Store();
+	protected static BeanStore createStore() {
+		return new BeanStore();
+	}
+	
+	protected static ContextualStore createContextualStore() {
+		return new ContextualStore();
 	}
 	
 	private ResourceBundle getBundle(){
@@ -176,6 +199,11 @@ public abstract class AbstractCustomContext implements CustomContext {
 		return logger;
 	}
 	
+	ContextualStore getContextualStore(){
+		CustomContextBootstrap bootstrap = Beans.getReference(CustomContextBootstrap.class);
+		return bootstrap.getContextualStore();
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -191,40 +219,5 @@ public abstract class AbstractCustomContext implements CustomContext {
 		} else if (!scope.equals(other.scope))
 			return false;
 		return true;
-	}
-
-	static class Store {
-
-		private Map<ClassLoader, Map<Class<?>, Object>> cache = Collections
-				.synchronizedMap(new HashMap<ClassLoader, Map<Class<?>, Object>>());
-
-		private Store() {
-		}
-
-		private boolean contains(final Class<?> type) {
-			return this.getMap().containsKey(type);
-		}
-
-		private Object get(final Class<?> type) {
-			return this.getMap().get(type);
-		}
-
-		private void put(final Class<?> type, final Object instance) {
-			this.getMap().put(type, instance);
-		}
-
-		public void clear() {
-			cache.clear();
-		}
-
-		private Map<Class<?>, Object> getMap() {
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
-			if (!cache.containsKey(classLoader)) {
-				cache.put(classLoader, Collections.synchronizedMap(new HashMap<Class<?>, Object>()));
-			}
-
-			return cache.get(classLoader);
-		}
 	}
 }

@@ -129,11 +129,16 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 		comum e exibir uma tela HTML contendo um formulario que solicita as informacoes.
 		*/
 		
-		securityContext.login();
+		try{
+			securityContext.login();
 		
-		//Executa codigo que requer autenticacao
+			//Executa codigo que requer autenticacao
 		
-		securityContext.logout();
+			securityContext.logout();
+		}
+		catch(InvalidCredentialsException exception){
+			//Trata credenciais inválidas
+		}
 		 
 	} 
 }]]></programlisting>
@@ -503,13 +508,13 @@ class GerenciadorBookmark {
 		<programlisting role="JAVA"><![CDATA[public class MeuAuthenticator implements Authenticator { 
 
 	@Override 
-	public boolean authenticate() { 
+	public boolean authenticate() throws Exception { 
 		// Escreva aqui seu codigo de autenticacao e retorne true caso o processo seja um sucesso 
 		return true; 
 	} 
 
 	@Override 
-	public Principal getUser() { 
+	public User getUser(){ 
 		// Obtenha dados sobre o usuario autenticado e retorne na forma da interface javax.security.Principal 
 		return new Principal(){
 			public String getName(){
@@ -519,7 +524,7 @@ class GerenciadorBookmark {
 	} 
 
 	@Override 
-	public void unAuthenticate() { 
+	public void unauthenticate() throws Exception { 
 		// Remova qualquer informacao de autenticacao do usuario, apas o retorno deste metodo o usuario
 		// deve ser considerado nao autenticado. 
 	} 
@@ -527,13 +532,13 @@ class GerenciadorBookmark {
 		<programlisting role="JAVA"><![CDATA[public class MeuAuthorizer implements Authorizer { 
 
 	@Override 
-	public boolean hasRole(String role) { 
+	public boolean hasRole(String role) throws Exception { 
 		// Verifique se o usuario autenticado tem o papel informado, retorne true em caso positivo 
 		return false; 
 	} 
 
 	@Override 
-	public boolean hasPermission(String resource, String operation) { 
+	public boolean hasPermission(String resource, String operation) throws Exception { 
 		// Escreva aqui seu codigo de verificação de permissao 
 		return false; 
 	} 
