@@ -1,0 +1,4 @@
+br.gov.frameworkdemoiselle.internal.environment.JndiEnvironmentVariableResolver
+br.gov.frameworkdemoiselle.internal.environment.SystemPropertyResolver
+br.gov.frameworkdemoiselle.internal.environment.TomcatSixJndiEnvironmentVariableResolver
+br.gov.frameworkdemoiselle.internal.environment.TomcatSevenJndiEnvironmentVariableResolver
