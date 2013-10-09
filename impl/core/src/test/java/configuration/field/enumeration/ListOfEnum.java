@@ -34,56 +34,11 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.implementation;
-
-import static br.gov.frameworkdemoiselle.annotation.Priority.L2_PRIORITY;
+package configuration.field.enumeration;
 
 
-import java.lang.reflect.Field;
-import java.util.Locale;
-
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConversionException;
-
-import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
-
-@Priority(L2_PRIORITY)
-public class ConfigurationEnumValueExtractor implements ConfigurationValueExtractor{
+public enum ListOfEnum {
 	
-	private transient ResourceBundle bundle;
-
-	@Override
-	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
-		String value = configuration.getString(prefix + key);
-		
-		if (value!=null){
-			Object enums[] = field.getType().getEnumConstants();
-			
-			for (int i=0; i<enums.length; i++){
-				if ( ((Enum<?>)enums[i]).name().equals(value) ){
-					return enums[i];
-				}
-			}
-		}else{
-			return null;
-		}
-		
-		throw new ConversionException(getBundle().getString("configuration-not-conversion",value,field.getDeclaringClass().getCanonicalName()));
-	}
-
-	@Override
-	public boolean isSupported(Field field) {
-		return field.getType().isEnum();
-	}
-	
-	private ResourceBundle getBundle(){
-		if (bundle==null){
-			bundle = new ResourceBundle("demoiselle-core-bundle", Locale.getDefault());
-		}
-		
-		return bundle;
-	}
+	VALUE_1 , VALUE_2 , VALUE_3;
 
 }
