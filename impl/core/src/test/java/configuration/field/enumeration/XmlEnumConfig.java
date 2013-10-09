@@ -34,63 +34,14 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.configuration;
+package configuration.field.enumeration;
 
-import java.io.Serializable;
-
-import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.configuration.ConfigType;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-/**
- * Provide used to access the configurations of the JDBC connection
- * 
- * @author SERPRO
- *
- */
-@Configuration(prefix = "frameworkdemoiselle.persistence.")
-public class JDBCConfig implements Serializable {
+@Configuration(resource="demoiselle" , type=ConfigType.XML , prefix="prefix1")
+public class XmlEnumConfig extends AbstractEnumValueConfig {
 
 	private static final long serialVersionUID = 1L;
 
-	@Name("default.datasource.name")
-	private String defaultDataSourceName;
-
-	@Name("jndi.name")
-	private JDBCConfigurationStore jndiName;
-
-	@Name("driver.class")
-	private JDBCConfigurationStore driverClass;
-
-	@Name("url")
-	private JDBCConfigurationStore url;
-
-	@Name("username")
-	private JDBCConfigurationStore username;
-
-	@Name("password")
-	private JDBCConfigurationStore password;
-
-	public String getDefaultDataSourceName() {
-		return defaultDataSourceName;
-	}
-
-	public JDBCConfigurationStore getJndiName() {
-		return jndiName;
-	}
-
-	public JDBCConfigurationStore getDriverClass() {
-		return driverClass;
-	}
-
-	public JDBCConfigurationStore getUrl() {
-		return url;
-	}
-
-	public JDBCConfigurationStore getUsername() {
-		return username;
-	}
-
-	public JDBCConfigurationStore getPassword() {
-		return password;
-	}
 }

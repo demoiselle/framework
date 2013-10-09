@@ -34,63 +34,51 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.configuration;
+package configuration.field.enumeration;
 
-import java.io.Serializable;
+import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.configuration.Configuration;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-/**
- * Provide used to access the configurations of the JDBC connection
- * 
- * @author SERPRO
- *
- */
-@Configuration(prefix = "frameworkdemoiselle.persistence.")
-public class JDBCConfig implements Serializable {
+import test.Tests;
+import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 
-	private static final long serialVersionUID = 1L;
-
-	@Name("default.datasource.name")
-	private String defaultDataSourceName;
-
-	@Name("jndi.name")
-	private JDBCConfigurationStore jndiName;
-
-	@Name("driver.class")
-	private JDBCConfigurationStore driverClass;
-
-	@Name("url")
-	private JDBCConfigurationStore url;
-
-	@Name("username")
-	private JDBCConfigurationStore username;
-
-	@Name("password")
-	private JDBCConfigurationStore password;
-
-	public String getDefaultDataSourceName() {
-		return defaultDataSourceName;
+@RunWith(Arquillian.class)
+public class ConfigurationEnumValueTest {
+	
+	private static final String PATH = "src/test/resources/configuration/field/enumeration";
+	
+	@Inject
+	private PropertiesEnumConfig propertiesEnumConfig;
+	
+	@Inject
+	private XmlEnumConfig xmlEnumConfig;
+	
+	@Inject
+	private WrongPropertyEnumConfig wrongPropertyEnumConfig;
+	
+	@Deployment
+	public static JavaArchive createDeployment() {
+		JavaArchive deployment = Tests.createDeployment(ConfigurationEnumValueTest.class);
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.properties"), "demoiselle.properties");
+		deployment.addAsResource(Tests.createFileAsset(PATH + "/demoiselle.xml"), "demoiselle.xml");
+		return deployment;
 	}
-
-	public JDBCConfigurationStore getJndiName() {
-		return jndiName;
+	
+	@Test
+	public void loadEnumConfig(){
+		Assert.assertEquals(ListOfEnum.VALUE_2, propertiesEnumConfig.getEnumValue());
+		Assert.assertEquals(ListOfEnum.VALUE_2, xmlEnumConfig.getEnumValue());
+		Assert.assertNull(propertiesEnumConfig.getEmptyValue());
 	}
-
-	public JDBCConfigurationStore getDriverClass() {
-		return driverClass;
-	}
-
-	public JDBCConfigurationStore getUrl() {
-		return url;
-	}
-
-	public JDBCConfigurationStore getUsername() {
-		return username;
-	}
-
-	public JDBCConfigurationStore getPassword() {
-		return password;
+	
+	@Test(expected=ConfigurationException.class)
+	public void checkConverstionException(){
+		wrongPropertyEnumConfig.getAnotherValue();
 	}
 }
