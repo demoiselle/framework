@@ -36,61 +36,55 @@
  */
 package br.gov.frameworkdemoiselle.internal.configuration;
 
-import java.io.Serializable;
+import static br.gov.frameworkdemoiselle.annotation.Priority.L2_PRIORITY;
 
-import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.configuration.Configuration;
+import java.lang.reflect.Field;
+import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.configuration.Configuration;
+
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 
 /**
- * Provide used to access the configurations of the JDBC connection
  * 
- * @author SERPRO
+ * TODO Adicionar verificação da existência de duas ou mais configurações JDBC com mesmo nome. Lançar INFO ou Exceção.
  *
  */
-@Configuration(prefix = "frameworkdemoiselle.persistence.")
-public class JDBCConfig implements Serializable {
+@Priority(L2_PRIORITY)
+public class JDBCConfigValueExtractor implements ConfigurationValueExtractor {
 
-	private static final long serialVersionUID = 1L;
+	@Override
+	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
+		JDBCConfigurationStore value = null;
 
-	@Name("default.datasource.name")
-	private String defaultDataSourceName;
+		String regexp = "^(" + prefix + ")((.+)\\.)?(" + key + ")$";
+		Pattern pattern = Pattern.compile(regexp);
 
-	@Name("jndi.name")
-	private JDBCConfigurationStore jndiName;
+		for (Iterator<String> iter = configuration.getKeys(); iter.hasNext();) {
+			String iterKey = iter.next();
+			Matcher matcher = pattern.matcher(iterKey);
 
-	@Name("driver.class")
-	private JDBCConfigurationStore driverClass;
+			if (matcher.matches()) {
+				String confKey = matcher.group(1) + (matcher.group(2) == null ? "" : matcher.group(2))
+						+ matcher.group(4);
 
-	@Name("url")
-	private JDBCConfigurationStore url;
+				if (value == null) {
+					value = new JDBCConfigurationStore();
+				}
 
-	@Name("username")
-	private JDBCConfigurationStore username;
+				String mapKey = matcher.group(3) == null ? "default" : matcher.group(3);
+				value.put(mapKey, configuration.getString(confKey));
+			}
+		}
 
-	@Name("password")
-	private JDBCConfigurationStore password;
-
-	public String getDefaultDataSourceName() {
-		return defaultDataSourceName;
+		return value;
 	}
 
-	public JDBCConfigurationStore getJndiName() {
-		return jndiName;
-	}
-
-	public JDBCConfigurationStore getDriverClass() {
-		return driverClass;
-	}
-
-	public JDBCConfigurationStore getUrl() {
-		return url;
-	}
-
-	public JDBCConfigurationStore getUsername() {
-		return username;
-	}
-
-	public JDBCConfigurationStore getPassword() {
-		return password;
+	@Override
+	public boolean isSupported(Field field) {
+		return field.getType() == JDBCConfigurationStore.class;
 	}
 }
