@@ -36,7 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import br.gov.frameworkdemoiselle.management.GenericNotification;
+import br.gov.frameworkdemoiselle.management.Notification;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 
 /**
@@ -49,17 +49,17 @@ import br.gov.frameworkdemoiselle.management.NotificationManager;
  */
 public class ManagementNotificationEventImpl implements br.gov.frameworkdemoiselle.management.ManagementNotificationEvent {
 	
-	private GenericNotification notification;
+	private Notification notification;
 	
-	public ManagementNotificationEventImpl(GenericNotification notification){
+	public ManagementNotificationEventImpl(Notification notification){
 		this.notification = notification;
 	}
 
-	public GenericNotification getNotification() {
+	public Notification getNotification() {
 		return notification;
 	}
 
-	public void setNotification(GenericNotification notification) {
+	public void setNotification(Notification notification) {
 		this.notification = notification;
 	}
 }

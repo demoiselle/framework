@@ -61,8 +61,9 @@ import br.gov.frameworkdemoiselle.internal.configuration.JMXConfig;
 import br.gov.frameworkdemoiselle.internal.implementation.MBeanManager;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
-import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
+import br.gov.frameworkdemoiselle.management.AttributeChangeMessage;
 import br.gov.frameworkdemoiselle.management.GenericNotification;
+import br.gov.frameworkdemoiselle.management.Notification;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 import br.gov.frameworkdemoiselle.util.Beans;
 
@@ -171,8 +172,7 @@ public class NotificationBroadcasterTest {
 		}
 
 		// Manda a notificação pelo Demoiselle
-		AttributeChangeNotification notification = new AttributeChangeNotification("Attribute Changed", "name",
-				String.class, "Demoiselle 1", "Demoiselle 2");
+		Notification notification = new GenericNotification( new AttributeChangeMessage("Attribute Changed", "name", String.class, "Demoiselle 1", "Demoiselle 2") );
 		notificationManager.sendNotification(notification);
 
 		// Se o componente funcionou, o Demoiselle propagou a notificação para o servidor MBean e o listener preencheu

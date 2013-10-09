@@ -37,12 +37,14 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.management.AttributeChangeNotification;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 
 import br.gov.frameworkdemoiselle.internal.configuration.JMXConfig;
+import br.gov.frameworkdemoiselle.management.AttributeChangeMessage;
 import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 
@@ -58,25 +60,26 @@ public final class NotificationBroadcaster extends NotificationBroadcasterSuppor
 	
 	private static final long serialVersionUID = 1L;
 
-	private int sequenceNumber = 1;
+	private AtomicInteger sequence = new AtomicInteger();
 
 	private static final String NOTIFICATION_TYPE_GENERIC = "jmx.message";
 
 	protected void sendNotification( ManagementNotificationEvent event , JMXConfig config ) {
-		br.gov.frameworkdemoiselle.management.GenericNotification demoiselleNotification = event.getNotification();
-		Notification n = new Notification(NOTIFICATION_TYPE_GENERIC, config.getNotificationMBeanName(), sequenceNumber++, System.currentTimeMillis(), demoiselleNotification.getMessage().toString());
+		br.gov.frameworkdemoiselle.management.Notification demoiselleNotification = event.getNotification();
+		Object message = demoiselleNotification.getMessage();
+		Notification n;
+		
+		if (AttributeChangeMessage.class.isInstance( message )){
+			AttributeChangeMessage attributeChangeMessage = (AttributeChangeMessage) message;
+			
+			n = new AttributeChangeNotification(config.getNotificationMBeanName(), sequence.incrementAndGet()
+					, System.currentTimeMillis(), attributeChangeMessage.getDescription()
+					, attributeChangeMessage.getAttributeName(), attributeChangeMessage.getAttributeType().getSimpleName()
+					, attributeChangeMessage.getOldValue(), attributeChangeMessage.getNewValue());
+		}
+		else{
+			n = new Notification(NOTIFICATION_TYPE_GENERIC, config.getNotificationMBeanName(), sequence.incrementAndGet(), System.currentTimeMillis(), demoiselleNotification.getMessage().toString());
+		}
 		sendNotification(n);
 	}
-	
-	protected void sendAttributeChangedMessage( ManagementNotificationEvent event , JMXConfig config ) {
-		br.gov.frameworkdemoiselle.management.AttributeChangeNotification demoiselleNotification = (br.gov.frameworkdemoiselle.management.AttributeChangeNotification)event.getNotification();
-		
-		AttributeChangeNotification n = new AttributeChangeNotification(config.getNotificationMBeanName(), sequenceNumber++
-				, System.currentTimeMillis(), demoiselleNotification.getMessage().toString()
-				, demoiselleNotification.getAttributeName(), demoiselleNotification.getAttributeType().getSimpleName()
-				, demoiselleNotification.getOldValue(), demoiselleNotification.getNewValue());
-		
-		sendNotification(n);
-	}
-
 }

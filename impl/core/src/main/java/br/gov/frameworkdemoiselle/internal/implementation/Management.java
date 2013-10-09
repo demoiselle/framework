@@ -59,12 +59,13 @@ import br.gov.frameworkdemoiselle.context.ConversationContext;
 import br.gov.frameworkdemoiselle.context.RequestContext;
 import br.gov.frameworkdemoiselle.context.SessionContext;
 import br.gov.frameworkdemoiselle.context.ViewContext;
-import br.gov.frameworkdemoiselle.internal.implementation.ManagedType;
 import br.gov.frameworkdemoiselle.internal.implementation.ManagedType.MethodDetail;
-import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
+import br.gov.frameworkdemoiselle.management.AttributeChangeMessage;
+import br.gov.frameworkdemoiselle.management.GenericNotification;
 import br.gov.frameworkdemoiselle.management.ManagedAttributeNotFoundException;
 import br.gov.frameworkdemoiselle.management.ManagedInvokationException;
 import br.gov.frameworkdemoiselle.management.ManagementExtension;
+import br.gov.frameworkdemoiselle.management.Notification;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -280,9 +281,12 @@ public class Management implements Serializable {
 					NotificationManager notificationManager = Beans.getReference(NotificationManager.class);
 					Class<? extends Object> attributeType = newValue != null ? newValue.getClass() : null;
 
-					AttributeChangeNotification notification = new AttributeChangeNotification(bundle.getString(
-							"management-notification-attribute-changed", propertyName, managedType.getType()
-									.getCanonicalName()), propertyName, attributeType, oldValue, newValue);
+					Notification notification = new GenericNotification( new AttributeChangeMessage(
+							bundle.getString("management-notification-attribute-changed", propertyName, managedType.getType().getCanonicalName())
+							, propertyName
+							, attributeType
+							, oldValue
+							, newValue) );
 					notificationManager.sendNotification(notification);
 
 				} catch (ConstraintViolationException ce) {

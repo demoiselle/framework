@@ -39,9 +39,7 @@ package management.testclasses;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
-import br.gov.frameworkdemoiselle.internal.implementation.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.implementation.Generic;
-import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
+import br.gov.frameworkdemoiselle.management.AttributeChangeMessage;
 import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 
@@ -56,13 +54,16 @@ public class DummyNotificationListener {
 	
 	private String message = null;
 	
-	public void listenNotification(@Observes @Generic ManagementNotificationEvent event){
-		message = event.getNotification().getMessage().toString();
-	}
-	
-	public void listenAttributeChangeNotification(@Observes @AttributeChange ManagementNotificationEvent event){
-		AttributeChangeNotification notification = (AttributeChangeNotification)event.getNotification();
-		message = notification.getMessage().toString() + " - " + notification.getAttributeName();
+	public void listenNotification(@Observes ManagementNotificationEvent event){
+		Object lMessage = event.getNotification().getMessage();
+		
+		if (AttributeChangeMessage.class.isInstance(lMessage)){
+			AttributeChangeMessage lAttrMessage = (AttributeChangeMessage)lMessage;
+			message = lAttrMessage.getDescription() + " - " + lAttrMessage.getAttributeName();
+		}
+		else{
+			message = lMessage.toString();
+		}
 	}
 	
 	public String getMessage() {

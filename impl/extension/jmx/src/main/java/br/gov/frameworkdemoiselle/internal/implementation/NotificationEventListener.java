@@ -59,12 +59,8 @@ public class NotificationEventListener implements Serializable {
 	
 	private NotificationBroadcaster notificationBroadcaster;
 	
-	public void sendNotification( @Observes @Generic ManagementNotificationEvent event , JMXConfig config ) {
+	public void sendNotification( @Observes ManagementNotificationEvent event , JMXConfig config ) {
 		createNotificationBroadcaster().sendNotification(event,config);
-	}
-	
-	public void sendAttributeChangedMessage( @Observes @AttributeChange ManagementNotificationEvent event , JMXConfig config ) {
-		createNotificationBroadcaster().sendAttributeChangedMessage(event, config);
 	}
 	
 	public NotificationBroadcaster createNotificationBroadcaster(){
@@ -74,5 +70,4 @@ public class NotificationEventListener implements Serializable {
 		
 		return notificationBroadcaster;
 	}
-
 }

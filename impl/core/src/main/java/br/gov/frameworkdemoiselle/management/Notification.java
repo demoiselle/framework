@@ -34,29 +34,20 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.implementation;
+package br.gov.frameworkdemoiselle.management;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import javax.inject.Qualifier;
-
-import br.gov.frameworkdemoiselle.management.AttributeChangeNotification;
-import br.gov.frameworkdemoiselle.management.ManagementNotificationEvent;
+import java.io.Serializable;
 
 /**
  * 
- * Enables {@link ManagementNotificationEvent} observers to trigger only with notifications
- * of the specialized type {@link AttributeChangeNotification}.
+ * A notification is a message an application can send to remote clients, usually to inform
+ * about events that needs special attention. 
  * 
- * @author SERPRO
+ * @author serpro
  *
  */
-@Qualifier
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
-public @interface AttributeChange {
-
+public interface Notification extends Serializable {
+	
+	Object getMessage();
+	
 }
