@@ -177,11 +177,7 @@ public class MonitorLogin{
 			
 			<para>
 				É comum que aplicações monitoradas permaneçam em estado de espera - é função do cliente de monitoração acessar a aplicação e obter
-				as informações necessárias.
-			</para>
-			
-			<para>
-				No entanto existem casos onde é necessário que a aplicação comunique clientes de eventos ocorridos no sistema. Um exemplo é um monitor
+				as informações necessárias. No entanto existem casos onde é necessário que a aplicação comunique clientes de eventos ocorridos no sistema. Um exemplo é um monitor
 				de espaço em disco que envia um alerta quando esse espaço for menor que 20% do total. 
 			</para>
 			
@@ -209,9 +205,30 @@ public class DiskWritter{
 }]]></programlisting>
 
 			<para>
-				Nesse exemplo podemos ver como enviar uma notificação em decorrência de um evento gerado pela aplicação. Dessa forma
-				a aplicação pode comunicar a um agente de monitoração sobre o espaço disponível no disco, ao invés de aguardar que o agente
-				conecte-se à aplicação para solicitar essa informação explicitamente.
+				Como é possível ver no exemplo, o utilitário <emphasis>NotificationManager</emphasis> é usado para enviar notificações em decorrência
+				de eventos ocorridos na sua aplicação. O uso mais comum é notificar avisos ou problemas para que ações sejam tomadas, mas é possível também
+				usar essa técnica para tomar ações preventivas ou informativas - uma notificação que o backup noturno foi feito com sucesso por exemplo.
+			</para>
+			
+			<para>
+				A interface <emphasis>Notification</emphasis> é a base das notificações enviadas e possui apenas um método:
+				<emphasis>Object getMessage()</emphasis>. A API de monitoração não força o tipo específico da mensagem e usualmente essa mensagem
+				será uma <emphasis>String</emphasis> (como no exemplo acima), mas algumas extensões podem utilizar tipos específicos de mensagem
+				capazes de carregar mais informações.
+			</para>
+			
+			<para>
+				O <emphasis>demoiselle-core</emphasis> disponibiliza por padrão o tipo concreto de notificação <emphasis>GenericNotification</emphasis> - uma
+				implementação direta da interface <emphasis>Notification</emphasis> que permite definir a mensagem a ser retornada por <emphasis>getMessage()</emphasis>.
+				Além disso o <emphasis>demoiselle-core</emphasis> disponibiliza o tipo especial de mensagem <emphasis>AttributeChangeMessage</emphasis>, que permite
+				especificar além do texto da mensagem enviada, dados sobre a mudança de valor de um atributo, como o nome do atributo alterado, o valor antigo e o novo.
+			</para>
+			<para>
+				Notificações contendo mensagens do tipo <emphasis>AttributeChangeMessage</emphasis> são automaticamente enviadas por padrão pelo framework quando um
+				agente de monitoração altera o valor de uma propriedade anotada com <emphasis>@ManagedProperty</emphasis>, mas você também pode enviar mensagens desse tipo
+				quando propriedades de sua aplicação são alteradas. Extensões e componentes compatíveis com a API de monitoração do <emphasis>Demoiselle Framework</emphasis>
+				(por exemplo, a extensão <emphasis>demoiselle-jmx</emphasis>) podem fornecer implementações específicas da interface <emphasis>Notification</emphasis> e
+				tipos especializados de mensagem. Consulte a documentação desses componentes para aprender sobre seus usos. 
 			</para>
 		</section>
 		
