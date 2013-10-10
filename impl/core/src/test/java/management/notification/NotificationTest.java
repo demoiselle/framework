@@ -53,7 +53,7 @@ import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.implementation.ManagedType;
 import br.gov.frameworkdemoiselle.internal.implementation.Management;
 import br.gov.frameworkdemoiselle.management.AttributeChangeMessage;
-import br.gov.frameworkdemoiselle.management.GenericNotification;
+import br.gov.frameworkdemoiselle.management.DefaultNotification;
 import br.gov.frameworkdemoiselle.management.Notification;
 import br.gov.frameworkdemoiselle.management.NotificationManager;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -85,7 +85,7 @@ public class NotificationTest {
 	 */
 	@Test
 	public void sendGenericNotification() {
-		manager.sendNotification(new GenericNotification("Test Message"));
+		manager.sendNotification(new DefaultNotification("Test Message"));
 		DummyNotificationListener listener = Beans.getReference(DummyNotificationListener.class);
 		Assert.assertEquals("Test Message", listener.getMessage());
 	}
@@ -95,7 +95,7 @@ public class NotificationTest {
 	 */
 	@Test
 	public void sendAttributeChangeNotification() {
-		Notification n = new GenericNotification( new AttributeChangeMessage("Test Message", "attribute", String.class, "old", "new") );
+		Notification n = new DefaultNotification( new AttributeChangeMessage("Test Message", "attribute", String.class, "old", "new") );
 		manager.sendNotification(n);
 		
 		DummyNotificationListener listener = Beans.getReference(DummyNotificationListener.class);

@@ -198,7 +198,7 @@ public class DiskWritter{
     // ... implementação da escrita de arquivo
     
     if (fileToWrite.getUsableSpace() / (float)fileToWrite.getTotalSpace() <= 0.2f){
-    	Notification notification = new GenericNotification("O espaço disponível no disco é inferior a 20% do total");
+    	Notification notification = new DefaultNotification("O espaço disponível no disco é inferior a 20% do total");
     	notificationManager.sendNotification( notification );
     }
   }
@@ -218,7 +218,7 @@ public class DiskWritter{
 			</para>
 			
 			<para>
-				O <emphasis>demoiselle-core</emphasis> disponibiliza por padrão o tipo concreto de notificação <emphasis>GenericNotification</emphasis> - uma
+				O <emphasis>demoiselle-core</emphasis> disponibiliza por padrão o tipo concreto de notificação <emphasis>DefaultNotification</emphasis> - uma
 				implementação direta da interface <emphasis>Notification</emphasis> que permite definir a mensagem a ser retornada por <emphasis>getMessage()</emphasis>.
 				Além disso o <emphasis>demoiselle-core</emphasis> disponibiliza o tipo especial de mensagem <emphasis>AttributeChangeMessage</emphasis>, que permite
 				especificar além do texto da mensagem enviada, dados sobre a mudança de valor de um atributo, como o nome do atributo alterado, o valor antigo e o novo.
