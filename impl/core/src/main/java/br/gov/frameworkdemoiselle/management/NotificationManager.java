@@ -40,8 +40,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.internal.implementation.AttributeChange;
-import br.gov.frameworkdemoiselle.internal.implementation.Generic;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
@@ -55,9 +53,7 @@ import br.gov.frameworkdemoiselle.util.Beans;
  * is {@link ApplicationScoped}, so you can inject it as many times as needed and still have only one instance per application.</p>
  * 
  * <p>Implementators of management protocols must observe the {@link ManagementNotificationEvent} event (using the {@link Observes} annotation), this way
- * they will receive an event containing the original notification and can translate this notification to a specific protocol. Optionaly,
- * the implementator can use qualifiers like the {@link Generic} and {@link AttributeChange} qualifiers
- * to filter what king of notifications they will handle. One example of an implementator is the <b>demoiselle-jmx</b> extension.</p>
+ * they will receive an event containing the original notification and can translate this notification to a specific protocol.</p>
  * 
  * @author SERPRO
  *
@@ -70,6 +66,6 @@ public interface NotificationManager {
 	 * 
 	 * @param notification The notification to send
 	 */
-	public void sendNotification(GenericNotification notification);
+	public void sendNotification(Notification notification);
 
 }

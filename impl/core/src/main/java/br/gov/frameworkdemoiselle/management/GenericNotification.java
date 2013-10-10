@@ -36,13 +36,17 @@
  */
 package br.gov.frameworkdemoiselle.management;
 
+
 /**
- * Notification that can be sent by the {@link NotificationManager}.
+ * Notification that can be sent by the {@link NotificationManager}. This generic
+ * notification only has a simple message.
  * 
  * @author SERPRO
  */
-public class GenericNotification {
+public class GenericNotification implements Notification {
 
+	private static final long serialVersionUID = 4861136187996412275L;
+	
 	private Object message;
 
 	/**
@@ -70,12 +74,12 @@ public class GenericNotification {
 		this.message = message;
 	}
 
-	public Class<? extends Object> getType() {
+	/*public Class<? extends Object> getType() {
 		if (message != null) {
 			return message.getClass();
 		}
 
 		return null;
-	}
+	}*/
 
 }

@@ -46,6 +46,6 @@ package br.gov.frameworkdemoiselle.management;
  */
 public interface ManagementNotificationEvent {
 	
-	public GenericNotification getNotification();
+	public Notification getNotification();
 
 }
