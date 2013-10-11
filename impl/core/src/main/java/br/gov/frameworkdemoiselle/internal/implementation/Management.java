@@ -61,7 +61,7 @@ import br.gov.frameworkdemoiselle.context.SessionContext;
 import br.gov.frameworkdemoiselle.context.ViewContext;
 import br.gov.frameworkdemoiselle.internal.implementation.ManagedType.MethodDetail;
 import br.gov.frameworkdemoiselle.management.AttributeChangeMessage;
-import br.gov.frameworkdemoiselle.management.GenericNotification;
+import br.gov.frameworkdemoiselle.management.DefaultNotification;
 import br.gov.frameworkdemoiselle.management.ManagedAttributeNotFoundException;
 import br.gov.frameworkdemoiselle.management.ManagedInvokationException;
 import br.gov.frameworkdemoiselle.management.ManagementExtension;
@@ -281,7 +281,7 @@ public class Management implements Serializable {
 					NotificationManager notificationManager = Beans.getReference(NotificationManager.class);
 					Class<? extends Object> attributeType = newValue != null ? newValue.getClass() : null;
 
-					Notification notification = new GenericNotification( new AttributeChangeMessage(
+					Notification notification = new DefaultNotification( new AttributeChangeMessage(
 							bundle.getString("management-notification-attribute-changed", propertyName, managedType.getType().getCanonicalName())
 							, propertyName
 							, attributeType

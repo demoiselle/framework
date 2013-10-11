@@ -43,7 +43,7 @@ package br.gov.frameworkdemoiselle.management;
  * 
  * @author SERPRO
  */
-public class GenericNotification implements Notification {
+public class DefaultNotification implements Notification {
 
 	private static final long serialVersionUID = 4861136187996412275L;
 	
@@ -52,7 +52,7 @@ public class GenericNotification implements Notification {
 	/**
 	 * Constructor without params.
 	 */
-	public GenericNotification() {
+	public DefaultNotification() {
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class GenericNotification implements Notification {
 	 * @param message
 	 * 			message to notification.
 	 */
-	public GenericNotification(Object message) {
+	public DefaultNotification(Object message) {
 		super();
 		this.message = message;
 	}
