@@ -65,7 +65,7 @@ public abstract class AbstractCustomContext implements CustomContext {
 	
 	private transient ResourceBundle bundle;
 
-	AbstractCustomContext(final Class<? extends Annotation> scope) {
+	protected AbstractCustomContext(final Class<? extends Annotation> scope) {
 		this.scope = scope;
 		this.active = false;
 	}
@@ -199,7 +199,7 @@ public abstract class AbstractCustomContext implements CustomContext {
 		return logger;
 	}
 	
-	ContextualStore getContextualStore(){
+	protected ContextualStore getContextualStore(){
 		CustomContextBootstrap bootstrap = Beans.getReference(CustomContextBootstrap.class);
 		return bootstrap.getContextualStore();
 	}
