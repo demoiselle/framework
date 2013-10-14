@@ -43,6 +43,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 
 import br.gov.frameworkdemoiselle.internal.configuration.JsfSecurityConfig;
+import br.gov.frameworkdemoiselle.security.InvalidCredentialsException;
 import br.gov.frameworkdemoiselle.security.NotLoggedInException;
 import br.gov.frameworkdemoiselle.util.Beans;
 
@@ -57,7 +58,7 @@ public class AuthenticationExceptionHandler extends AbstractExceptionHandler {
 	protected boolean handleException(final Throwable cause, FacesContext facesContext) {
 		boolean handled = false;
 
-		if (cause instanceof NotLoggedInException) {
+		if (cause instanceof NotLoggedInException || cause instanceof InvalidCredentialsException) {
 			handled = true;
 			// TODO Inter [NQ]: remover referência a SecurityObserver criando uma classe comum que faz o
 			// redirecionamento e que é compartilhada entre elas.
