@@ -63,14 +63,14 @@ public class ServletAuthenticator implements Authenticator {
 	private static ResourceBundle bundle;
 
 	@Override
-	public void authenticate() throws AuthenticationException {
+	public void authenticate() throws Exception {
 		try {
 			getRequest().login(getCredentials().getUsername(), getCredentials().getPassword());
 
 		} catch (ServletException cause) {
 			if (cause.getMessage().toLowerCase().contains("invalid")
 					|| cause.getMessage().toLowerCase().contains("incorrect")
-					|| cause.getMessage().toLowerCase().contains("failed") ) {
+					|| cause.getMessage().toLowerCase().contains("failed")) {
 				throw new InvalidCredentialsException(getBundle().getString("invalid-credentials"));
 			} else {
 				throw new AuthenticationException(getBundle().getString("authentication-failed"), cause);
@@ -79,7 +79,7 @@ public class ServletAuthenticator implements Authenticator {
 	}
 
 	@Override
-	public void unauthenticate() {
+	public void unauthenticate() throws Exception {
 		getCredentials().clear();
 		try {
 			getRequest().logout();

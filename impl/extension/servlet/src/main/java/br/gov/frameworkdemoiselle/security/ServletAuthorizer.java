@@ -61,12 +61,12 @@ public class ServletAuthorizer implements Authorizer {
 	private transient ResourceBundle bundle;
 
 	@Override
-	public boolean hasRole(String role) {
+	public boolean hasRole(String role) throws Exception {
 		return getRequest().isUserInRole(role);
 	}
 
 	@Override
-	public boolean hasPermission(String resource, String operation) {
+	public boolean hasPermission(String resource, String operation) throws Exception {
 		throw new DemoiselleException(getBundle().getString("has-permission-not-supported",
 				RequiredPermission.class.getSimpleName()));
 	}
