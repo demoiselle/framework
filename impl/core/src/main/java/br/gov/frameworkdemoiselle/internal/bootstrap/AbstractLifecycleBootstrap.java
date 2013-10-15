@@ -39,6 +39,7 @@ package br.gov.frameworkdemoiselle.internal.bootstrap;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -69,9 +70,11 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 	private List<AnnotatedMethodProcessor> processors = Collections
 			.synchronizedList(new ArrayList<AnnotatedMethodProcessor>());
 
-	private boolean registered = false;
-
 	private transient static ResourceBundle bundle;
+	
+	private boolean registered = false;
+	
+	private HashMap<String, Boolean> startedContextHere = new HashMap<String, Boolean>();
 
 	protected abstract Logger getLogger();
 
@@ -106,18 +109,6 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		}
 	}
 
-	/*public void loadTempContexts(@Observes final AfterBeanDiscovery event) {
-		// Caso este bootstrap rode antes do CoreBootstrap. Não há problemas em chamar este método várias vezes, ele
-		// ignora chamadas adicionais.
-		ContextManager.initialize(event);
-
-		// Não registrar o contexto de aplicação pq ele já é registrado pela implementação do CDI
-		ContextManager.add(new ThreadLocalContext(ViewScoped.class), event);
-		ContextManager.add(new ThreadLocalContext(SessionScoped.class), event);
-		ContextManager.add(new ThreadLocalContext(ConversationScoped.class), event);
-		ContextManager.add(new ThreadLocalContext(RequestScoped.class), event);
-	}*/
-
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected synchronized void proccessEvent() {
 		getLogger().debug(getBundle().getString("executing-all", getAnnotationClass().getSimpleName()));
@@ -125,32 +116,8 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		Collections.sort(processors);
 		Exception failure = null;
 		
-		RequestContext tempRequestContext = Beans.getReference(RequestContext.class);
-		SessionContext tempSessionContext = Beans.getReference(SessionContext.class);
-		ViewContext tempViewContext = Beans.getReference(ViewContext.class);
-		ConversationContext tempConversationContext = Beans.getReference(ConversationContext.class);
-
-		boolean requestActivatedHere = tempRequestContext!=null && !tempRequestContext.isActive();
-		boolean sessionActivatedHere = tempSessionContext!=null && !tempSessionContext.isActive();
-		boolean viewActivatedHere = tempViewContext!=null && !tempViewContext.isActive();
-		boolean conversationActivatedHere = tempConversationContext!=null && !tempConversationContext.isActive();
+		startContexts();
 		
-		if (!registered) {
-			if (tempRequestContext!=null && !tempRequestContext.isActive())
-				tempRequestContext.activate();
-			
-			if (tempSessionContext!=null && !tempSessionContext.isActive())
-				tempSessionContext.activate();
-			
-			if (tempViewContext!=null && !tempViewContext.isActive())
-				tempViewContext.activate();
-			
-			if (tempConversationContext!=null && !tempConversationContext.isActive())
-				tempConversationContext.activate();
-
-			registered = true;
-		}
-
 		for (Iterator<AnnotatedMethodProcessor> iter = processors.iterator(); iter.hasNext();) {
 			AnnotatedMethodProcessor<?> processor = iter.next();
 
@@ -167,27 +134,63 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 				failure = cause;
 			}
 		}
-
-		if (processors.isEmpty()) {
-			if (requestActivatedHere){
-				tempRequestContext.deactivate();
-			}
-			
-			if (sessionActivatedHere){
-				tempSessionContext.deactivate();
-			}
-			
-			if (viewActivatedHere){
-				tempViewContext.deactivate();
-			}
-			
-			if (conversationActivatedHere){
-				tempConversationContext.deactivate();
-			}
-		}
+		
+		stopContexts();
 
 		if (failure != null) {
 			throw new DemoiselleException(failure);
+		}
+	}
+	
+	private void startContexts(){
+		if (!registered){
+			RequestContext requestContext = Beans.getReference(RequestContext.class);
+			SessionContext sessionContext = Beans.getReference(SessionContext.class);
+			ViewContext viewContext = Beans.getReference(ViewContext.class);
+			ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
+			
+			if (requestContext!=null){
+				startedContextHere.put("request", requestContext.activate());
+			}
+			
+			if (sessionContext!=null){
+				startedContextHere.put("session", sessionContext.activate());
+			}
+			
+			if (viewContext!=null){
+				startedContextHere.put("view", viewContext.activate());
+			}
+			
+			if (conversationContext!=null){
+				startedContextHere.put("conversation", conversationContext.activate());
+			}
+			
+			registered = true;
+		}
+	}
+	
+	private void stopContexts(){
+		if (registered){
+			RequestContext requestContext = Beans.getReference(RequestContext.class);
+			SessionContext sessionContext = Beans.getReference(SessionContext.class);
+			ViewContext viewContext = Beans.getReference(ViewContext.class);
+			ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
+			
+			if (requestContext!=null && Boolean.TRUE.equals(startedContextHere.get("request"))){
+				requestContext.deactivate();
+			}
+			
+			if (sessionContext!=null && Boolean.TRUE.equals(startedContextHere.get("session"))){
+				sessionContext.deactivate();
+			}
+			
+			if (viewContext!=null && Boolean.TRUE.equals(startedContextHere.get("view"))){
+				viewContext.deactivate();
+			}
+			
+			if (conversationContext!=null && Boolean.TRUE.equals(startedContextHere.get("conversation"))){
+				conversationContext.deactivate();
+			}
 		}
 	}
 }
