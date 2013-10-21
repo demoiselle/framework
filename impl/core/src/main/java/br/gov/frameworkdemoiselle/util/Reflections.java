@@ -58,7 +58,19 @@ public final class Reflections {
 	}
 
 	/**
-	 * TODO 
+	 * Return the parametized type used with a concrete implementation of
+	 * a class that accepts generics.
+	 * 
+	 * Ex: If you declare
+	 * <pre><code>
+	 * public class SpecializedCollection implements Collection<SpecializedType> {
+	 *   // ...
+	 * }
+	 * </code></pre>
+	 * 
+	 * then the code <code>getGenericTypeArgument(SpecializedCollection.class , 0);</code> will
+	 * return the type <code>SpecializedType</code>.
+	 * 
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getGenericTypeArgument(final Class<?> clazz, final int idx) {
@@ -75,13 +87,24 @@ public final class Reflections {
 	}
 
 	/**
-	 * TODO 
+	 * <p>Return the parametized type passed to field types that accepts Generics.</p>
+	 * 
+	 * <p>Ex: If you declare
+	 * <pre><code>
+	 * public class MyClass{
+	 *    private Collection&lt;String&gt; myStringCollection;
+	 * }
+	 * </code></pre>
+	 * 
+	 * then the code <code>getGenericTypeArgument( MyClass.class.getDeclaredField("myStringCollection") , 0);</code> will
+	 * return the type <code>String</code>.
+	 * 
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getGenericTypeArgument(final Field field, final int idx) {
 		final Type type = field.getGenericType();
 		final ParameterizedType paramType = (ParameterizedType) type;
-
+		
 		return (Class<T>) paramType.getActualTypeArguments()[idx];
 	}
 
