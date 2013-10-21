@@ -52,9 +52,11 @@ import java.util.List;
  * 
  * @author SERPRO
  */
-public final class Reflections {
+public class Reflections {
 
-	private Reflections() {
+	protected Reflections() {
+		//Impede instanciar subclasses desse tipo.
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -109,7 +111,10 @@ public final class Reflections {
 	}
 
 	/**
-	 * TODO 
+	 * <p>Return the parametized type passed to members (fields or methods) that accepts Generics.</p>
+	 * 
+	 * @see #getGenericTypeArgument(Field field, int idx)
+	 * 
 	 */
 	public static <T> Class<T> getGenericTypeArgument(final Member member, final int idx) {
 		Class<T> result = null;
@@ -124,7 +129,10 @@ public final class Reflections {
 	}
 
 	/**
-	 * TODO 
+	 * <p>Return the parametized type passed to methods that accepts Generics.</p>
+	 * 
+	 * @see #getGenericTypeArgument(Field field, int idx)
+	 * 
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getGenericTypeArgument(final Method method, final int pos) {
@@ -180,7 +188,8 @@ public final class Reflections {
 	}
 
 	/**
-	 * TODO 
+	 * @return All non static fields from a certain type. Inherited fields are not returned, so if you
+	 * need to get inherited fields you must iterate over this type's hierarchy.  
 	 */
 	public static Field[] getNonStaticDeclaredFields(Class<?> type) {
 		List<Field> fields = new ArrayList<Field>();
@@ -197,21 +206,24 @@ public final class Reflections {
 	}
 
 	/**
-	 * TODO 
+	 * @return All non static fields from a certain type, including fields declared in superclasses of this type. 
 	 */
 	public static List<Field> getNonStaticFields(Class<?> type) {
 		List<Field> fields = new ArrayList<Field>();
 
 		if (type != null) {
-			fields.addAll(Arrays.asList(getNonStaticDeclaredFields(type)));
-			fields.addAll(getNonStaticFields(type.getSuperclass()));
+			Class<?> currentType = type;
+			while(currentType!=null && !"java.lang.Object".equals(currentType.getCanonicalName())){
+				fields.addAll(Arrays.asList(getNonStaticDeclaredFields(currentType)));
+				currentType = currentType.getSuperclass();
+			}
 		}
 
 		return fields;
 	}
 
 	/**
-	 * TODO 
+	 * Instantiate an object of the given type. The default constructor with no parameters is used. 
 	 */
 	public static <T> T instantiate(Class<T> clazz) {
 		T object = null;
@@ -282,7 +294,7 @@ public final class Reflections {
 	}
 
 	/**
-	 * TODO 
+	 * Return an URL to access a resource available to the active classloader for the calling thread.
 	 */
 	public static URL getResourceAsURL(final String resource) {
 		ClassLoader classLoader = getClassLoaderForResource(resource);
@@ -290,7 +302,7 @@ public final class Reflections {
 	}
 
 	/**
-	 * TODO 
+	 * Loads a class with the given name using the active classloader for the current thread.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> forName(final String className) throws ClassNotFoundException {
