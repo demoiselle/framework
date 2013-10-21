@@ -58,6 +58,12 @@ public class ReflectionsTest {
 		assertEquals(Long.class, Reflections.getGenericTypeArgument(members[0], 0));
 		assertEquals(String.class, Reflections.getGenericTypeArgument(members[1], 0));
 	}
+
+	@Test
+	public void testGetGenericTypeArgumentClassMultipleChildren() {
+		assertEquals(Long.class, Reflections.getGenericTypeArgument(OtherClass3.class, 0));
+		assertEquals(String.class, Reflections.getGenericTypeArgument(OtherClass3.class, 1));
+	}
 }
 
 class SomeClass<T, I> {
@@ -72,4 +78,12 @@ class OtherClass extends SomeClass<Long, String> {
 	public Class<Long> number;
 
 	public Class<String> text;
+}
+
+class OtherClass2 extends OtherClass {
+
+}
+
+class OtherClass3 extends OtherClass2 {
+
 }

@@ -68,7 +68,7 @@ public final class Reflections {
 		try {
 			paramType = (ParameterizedType) type;
 		} catch (ClassCastException cause) {
-			paramType = (ParameterizedType) ((Class<T>) type).getGenericSuperclass();
+			return getGenericTypeArgument((Class<T>) type, idx);
 		}
 
 		return (Class<T>) paramType.getActualTypeArguments()[idx];
