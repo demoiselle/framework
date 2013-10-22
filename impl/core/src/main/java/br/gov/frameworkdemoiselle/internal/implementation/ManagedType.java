@@ -220,7 +220,7 @@ public class ManagedType {
 			getterMethodName = new StringBuffer()
 				.append("is")
 				.append(field.getName().substring(0, 1).toUpperCase())
-				.append(field.getName().substring(1).toUpperCase());
+				.append(field.getName().substring(1));
 
 			try {
 				getterMethod = type.getMethod(getterMethodName.toString());
