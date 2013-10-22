@@ -113,6 +113,8 @@ public abstract class AbstractCustomContext implements CustomContext {
 
 	@Override
 	public boolean activate() {
+		boolean success = false;
+		
 		if (!this.active){
 			BeanManager beanManager = Beans.getBeanManager();
 			if (beanManager!=null){
@@ -123,17 +125,17 @@ public abstract class AbstractCustomContext implements CustomContext {
 					}
 				}
 				catch(ContextNotActiveException ce){
-					this.active = true;
+					success = this.active = true;
 					getLogger().debug( getBundle().getString("custom-context-was-activated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() ) );
 				}
 			}
 			else{
-				this.active = true;
+				success = this.active = true;
 				getLogger().debug( getBundle().getString("custom-context-was-activated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() ) );
 			}
 		}
 		
-		return this.active;
+		return success;
 	}
 	
 	@Override

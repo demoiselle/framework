@@ -66,8 +66,7 @@ public class JsfBootstrap implements Extension {
 		
 		//Ativa o ViewContext
 		if (!context.isActive()){
-			context.activate();
-			contextActivatedHere = true;
+			contextActivatedHere = context.activate();
 		}
 		else{
 			contextActivatedHere = false;

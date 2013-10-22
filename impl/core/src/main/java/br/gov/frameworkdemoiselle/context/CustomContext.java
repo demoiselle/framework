@@ -51,7 +51,8 @@ public interface CustomContext extends Context {
 	 * Activates a custom context
 	 * 
 	 * @return <code>true</code> if context was activated, <code>false</code> if there was already another active
-	 * context for the same scope and the activation of this scope failed.
+	 * context for the same scope and the activation of this scope failed, or if it was already activated before
+	 * this call.
 	 */
 	boolean activate();
 	
