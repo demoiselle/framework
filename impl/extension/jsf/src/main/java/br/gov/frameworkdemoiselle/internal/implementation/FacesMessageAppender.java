@@ -50,7 +50,7 @@ public class FacesMessageAppender extends LoggerMessageAppender {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void append(Message message) {
+	public void append(Message message , Object... params) {
 		try {
 			Faces.addMessage(message);
 		} catch (ContextNotActiveException cause) {

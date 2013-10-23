@@ -51,6 +51,8 @@ public interface MessageAppender extends Serializable {
 	 * 
 	 * @param message
 	 * 			message to be stored.
+	 * @param params
+	 * 			optional params to replace variables in the message
 	 */
-	void append(Message message);
+	void append(Message message , Object... params);
 }
