@@ -37,8 +37,10 @@
 package br.gov.frameworkdemoiselle.util;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.Locale;
 
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -49,25 +51,85 @@ import javax.inject.Named;
  * @author SERPRO
  * */
 @Named
+@SessionScoped
 public class Locales implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Locale PT_BR = new Locale("pt", "BR");
+	
+	private Locale locale = Locale.getDefault();
 
 	@Inject
 	private FacesContext facesContext;
 
+	/**
+	 * Set the language to "en_US". This is a shorthand to <code>setLocale(Locale.US)</code>.
+	 */
 	public void setEnglish() {
 		setLocale(Locale.US);
 	}
 
+	/**
+	 * Set the language to "pt_BR". This is a shorthand to <code>setLocale(Locales.PT_BR)</code>.
+	 */
 	public void setPortuguese() {
 		setLocale(PT_BR);
 	}
-
-	protected void setLocale(Locale locale) {
-		facesContext.getApplication().setDefaultLocale(locale);
+	
+	/**
+	 * @return The current locale, or {@link Locale#getDefault()} if one has not been set.
+	 */
+	public Locale getLocale(){
+		return this.locale!=null ? this.locale : Locale.getDefault();
 	}
 
+	/**
+	 * Set the locale for the current view
+	 * 
+	 * @param locale The new locale
+	 */
+	public void setLocale(Locale locale) {
+		Iterator<Locale> supportedLocales = getContext().getApplication().getSupportedLocales();
+		if (supportedLocales==null){
+			this.locale = locale;
+			getContext().getViewRoot().setLocale(this.locale);
+		}
+		else{
+			boolean selectedLocale = false;
+			while(supportedLocales.hasNext()){
+				Locale supportedLocale = supportedLocales.next();
+				if (supportedLocale.equals(locale)){
+					this.locale = locale;
+					getContext().getViewRoot().setLocale(this.locale);
+					selectedLocale = true;
+					break;
+				}
+			}
+			
+			if (!selectedLocale && this.locale==null){
+				this.locale = Locale.getDefault();
+			}
+		}
+	}
+	
+	/**
+	 * Set the default locale for the entire application. After this call
+	 * all views from this application will use this locale (unless a specific
+	 * session defined a different locale using {@link #setLocale(Locale locale)}).
+	 * 
+	 * @param locale The locale to set
+	 */
+	public void setApplicationLocale(Locale locale) {
+		setLocale(locale);
+		getContext().getApplication().setDefaultLocale(this.locale);
+	}
+	
+	private FacesContext getContext(){
+		if (facesContext==null){
+			facesContext = Beans.getReference(FacesContext.class);
+		}
+		
+		return facesContext;
+	}
 }
