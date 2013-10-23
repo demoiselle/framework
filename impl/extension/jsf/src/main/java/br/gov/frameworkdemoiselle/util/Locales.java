@@ -67,20 +67,20 @@ public class Locales implements Serializable {
 	 * Set the language to "en_US". This is a shorthand to <code>setLocale(Locale.US)</code>.
 	 */
 	public void setEnglish() {
-		setLocale(Locale.US);
+		setCurrentLocale(Locale.US);
 	}
 
 	/**
 	 * Set the language to "pt_BR". This is a shorthand to <code>setLocale(Locales.PT_BR)</code>.
 	 */
 	public void setPortuguese() {
-		setLocale(PT_BR);
+		setCurrentLocale(PT_BR);
 	}
 	
 	/**
 	 * @return The current locale, or {@link Locale#getDefault()} if one has not been set.
 	 */
-	public Locale getLocale(){
+	public Locale getCurrentLocale(){
 		return this.locale!=null ? this.locale : Locale.getDefault();
 	}
 
@@ -89,7 +89,7 @@ public class Locales implements Serializable {
 	 * 
 	 * @param locale The new locale
 	 */
-	public void setLocale(Locale locale) {
+	public void setCurrentLocale(Locale locale) {
 		Iterator<Locale> supportedLocales = getContext().getApplication().getSupportedLocales();
 		if (supportedLocales==null){
 			this.locale = locale;
@@ -114,6 +114,18 @@ public class Locales implements Serializable {
 	}
 	
 	/**
+	 * Set the locale for the current view. The language will be parsed
+	 * into an instance of {@link Locale} and then {@link #setLocale(Locale locale)} will
+	 * be called using the parsed language.
+	 * 
+	 * @param language String language code that will be parsed into a locale.
+	 */
+	public void setCurrentLocale(String language){
+		Locale locale = new Locale(language);
+		setCurrentLocale(locale);
+	}
+	
+	/**
 	 * Set the default locale for the entire application. After this call
 	 * all views from this application will use this locale (unless a specific
 	 * session defined a different locale using {@link #setLocale(Locale locale)}).
@@ -121,7 +133,7 @@ public class Locales implements Serializable {
 	 * @param locale The locale to set
 	 */
 	public void setApplicationLocale(Locale locale) {
-		setLocale(locale);
+		setCurrentLocale(locale);
 		getContext().getApplication().setDefaultLocale(this.locale);
 	}
 	
