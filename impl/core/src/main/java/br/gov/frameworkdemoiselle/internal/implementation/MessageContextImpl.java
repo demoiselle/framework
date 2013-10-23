@@ -66,17 +66,24 @@ public class MessageContextImpl implements Serializable, MessageContext {
 	private transient  Logger logger;
 
 	@Override
+	@Deprecated
 	public void add(final Message message, Object... params) {
-		Message aux;
-
-		if (params != null) {
-			aux = new DefaultMessage(message.getText(), message.getSeverity(), params);
-		} else {
-			aux = message;
-		}
-
+		
 		getLogger().debug(getBundle().getString("adding-message-to-context", message.toString()));
-		getAppender().append(aux);
+		if (params == null || params.length == 0) {
+			getAppender().append(message);
+		} else {
+			getLogger().warn("Atualmente, ao chamar o método add do MessageContext passando um objeto" 
+					+ " do tipo Message e mais parâmetros, será recriando um objeto" +"\n"
+					+ " Message, na implementação DefaultMessage para que os parâmetros sejam utilizados."
+					+ " Note que isso poderá trazer problemas para sua aplicação, caso" +"\n"
+					+ " a implementação de Message utilizada não seja a DefaultMessage. Para evitar esse tipo de problema"
+					+ " e garantir compatibilidade com versões futuras, recomendamos que" +"\n"
+					+ " o objeto message seja criado com os parâmetros, e que para o método add apenas seja passado"
+					+ " esse objeto como parâmetro.");
+			
+			getAppender().append(new DefaultMessage(message.getText(), message.getSeverity(), params));
+		}
 	}
 
 	private MessageAppender getAppender() {
