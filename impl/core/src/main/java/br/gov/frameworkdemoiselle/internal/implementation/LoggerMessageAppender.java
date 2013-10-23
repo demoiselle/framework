@@ -55,7 +55,7 @@ public class LoggerMessageAppender implements MessageAppender {
 	private Logger logger;
 
 	@Override
-	public void append(Message message) {
+	public void append(Message message, Object... params) {
 		String text = message.getText();
 
 		switch (message.getSeverity()) {

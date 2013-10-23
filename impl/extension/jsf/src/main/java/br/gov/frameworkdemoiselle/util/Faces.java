@@ -54,6 +54,7 @@ import javax.faces.convert.Converter;
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.SeverityType;
+import br.gov.frameworkdemoiselle.message.ValidationFailedMessage;
 
 /**
  * Utility class to insert messages in the FacesContext.
@@ -75,6 +76,9 @@ public class Faces {
 
 	public static void addMessage(final Message message) {
 		getFacesContext().addMessage(null, parse(message));
+		if (message instanceof ValidationFailedMessage) {
+			getFacesContext().validationFailed();
+		}
 	}
 
 	public static void addMessage(final String clientId, final Message message) {

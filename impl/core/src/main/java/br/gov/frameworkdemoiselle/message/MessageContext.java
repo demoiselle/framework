@@ -55,7 +55,7 @@ public interface MessageContext {
 	 * 
 	 * @param message
 	 */
-
+	@Deprecated
 	void add(Message message, Object... params);
 
 	void add(String text, Object... params);
