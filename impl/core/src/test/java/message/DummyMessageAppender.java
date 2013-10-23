@@ -52,7 +52,7 @@ public class DummyMessageAppender implements MessageAppender {
 	private List<Message> messages = new ArrayList<Message>();
 
 	@Override
-	public void append(Message message) {
+	public void append(Message message,  Object... params) {
 		messages.add(message);
 	}
 
