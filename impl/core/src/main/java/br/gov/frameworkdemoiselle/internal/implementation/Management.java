@@ -57,8 +57,6 @@ import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.context.ConversationContext;
 import br.gov.frameworkdemoiselle.context.RequestContext;
-import br.gov.frameworkdemoiselle.context.SessionContext;
-import br.gov.frameworkdemoiselle.context.ViewContext;
 import br.gov.frameworkdemoiselle.internal.implementation.ManagedType.MethodDetail;
 import br.gov.frameworkdemoiselle.management.AttributeChangeMessage;
 import br.gov.frameworkdemoiselle.management.DefaultNotification;
@@ -307,10 +305,7 @@ public class Management implements Serializable {
 	}
 
 	private void activateContexts(Class<?> managedType) {
-		
 		RequestContext requestContext = Beans.getReference(RequestContext.class);
-		ViewContext viewContext = Beans.getReference(ViewContext.class);
-		SessionContext sessionContext = Beans.getReference(SessionContext.class);
 		ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
 		
 		if (!requestContext.isActive()){
@@ -318,20 +313,6 @@ public class Management implements Serializable {
 					requestContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
 			
 			requestContext.activate();
-		}
-		
-		if (!viewContext.isActive()){
-			logger.debug(bundle.getString("management-debug-starting-custom-context",
-					viewContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
-			
-			viewContext.activate();
-		}
-
-		if (!sessionContext.isActive()){
-			logger.debug(bundle.getString("management-debug-starting-custom-context",
-					sessionContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
-			
-			sessionContext.activate();
 		}
 		
 		if (!conversationContext.isActive()){
@@ -344,8 +325,6 @@ public class Management implements Serializable {
 
 	private void deactivateContexts(Class<?> managedType) {
 		RequestContext requestContext = Beans.getReference(RequestContext.class);
-		ViewContext viewContext = Beans.getReference(ViewContext.class);
-		SessionContext sessionContext = Beans.getReference(SessionContext.class);
 		ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
 		
 		if (requestContext.isActive()){
@@ -355,25 +334,11 @@ public class Management implements Serializable {
 			requestContext.deactivate();
 		}
 		
-		if (!viewContext.isActive()){
+		if (conversationContext.isActive()){
 			logger.debug(bundle.getString("management-debug-stoping-custom-context",
-					viewContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
-			
-			viewContext.deactivate();
-		}
-
-		if (!sessionContext.isActive()){
-			logger.debug(bundle.getString("management-debug-stoping-custom-context",
-					sessionContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
-			
-			sessionContext.deactivate();
-		}
-		
-		if (!conversationContext.isActive()){
-			logger.debug(bundle.getString("management-debug-starting-custom-context",
 					conversationContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
 			
-			conversationContext.activate();
+			conversationContext.deactivate();
 		}
 	}
 
