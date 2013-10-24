@@ -96,9 +96,15 @@ public class DynamicMBeanProxy implements DynamicMBean {
 			initializeMBeanInfo();
 		}
 
-		Management manager = Beans.getReference(Management.class);
+		
+		//Define temporariamente o classloader para o classloader que carregou a classe Management.
+		//Isso evita problemas onde recursos necessários para executar o ManagementController não estão disponíveis
+		//para o classloader da chamada JMX.
+		final ClassLoader originalClassloader = Thread.currentThread().getContextClassLoader();
 		
 		try{
+			Thread.currentThread().setContextClassLoader( Management.class.getClassLoader() );
+			Management manager = Beans.getReference(Management.class);
 			return manager.getProperty(managedType, attribute);
 		}
 		catch(DemoiselleException de){
@@ -112,6 +118,10 @@ public class DynamicMBeanProxy implements DynamicMBean {
 				throw de;
 			}
 		}
+		finally{
+			//Devolve o classloader original.
+			Thread.currentThread().setContextClassLoader( originalClassloader );
+		}
 	}
 
 	@Override
@@ -123,9 +133,15 @@ public class DynamicMBeanProxy implements DynamicMBean {
 			initializeMBeanInfo();
 		}
 
-		Management manager = Beans.getReference(Management.class);
+		
+		//Define temporariamente o classloader para o classloader que carregou a classe Management.
+		//Isso evita problemas onde recursos necessários para executar o ManagementController não estão disponíveis
+		//para o classloader da chamada JMX.
+		final ClassLoader originalClassloader = Thread.currentThread().getContextClassLoader();
 		
 		try{
+			Thread.currentThread().setContextClassLoader( Management.class.getClassLoader() );
+			Management manager = Beans.getReference(Management.class);
 			manager.setProperty(managedType, attribute.getName(), attribute.getValue());
 		}
 		catch(DemoiselleException de){
@@ -138,6 +154,10 @@ public class DynamicMBeanProxy implements DynamicMBean {
 			else{
 				throw de;
 			}
+		}
+		finally{
+			//Devolve o classloader original.
+			Thread.currentThread().setContextClassLoader( originalClassloader );
 		}
 	}
 
@@ -190,13 +210,23 @@ public class DynamicMBeanProxy implements DynamicMBean {
 			initializeMBeanInfo();
 		}
 
-		Management manager = Beans.getReference(Management.class);
+		
+		//Define temporariamente o classloader para o classloader que carregou a classe Management.
+		//Isso evita problemas onde recursos necessários para executar o ManagementController não estão disponíveis
+		//para o classloader da chamada JMX.
+		final ClassLoader originalClassloader = Thread.currentThread().getContextClassLoader();
 		
 		try{
+			Thread.currentThread().setContextClassLoader( Management.class.getClassLoader() );
+			Management manager = Beans.getReference(Management.class);
 			return manager.invoke(managedType, actionName, params);
 		}
 		catch(DemoiselleException de){
 			throw new MBeanException(new Exception(de.getMessage()));
+		}
+		finally{
+			//Devolve o classloader original.
+			Thread.currentThread().setContextClassLoader( originalClassloader );
 		}
 	}
 
