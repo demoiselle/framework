@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TreeMap;
 
+import javax.inject.Named;
 import javax.inject.Qualifier;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
@@ -52,6 +53,7 @@ import br.gov.frameworkdemoiselle.annotation.ManagedProperty.ManagedPropertyAcce
 import br.gov.frameworkdemoiselle.annotation.OperationParameter;
 import br.gov.frameworkdemoiselle.annotation.OperationType;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
+import br.gov.frameworkdemoiselle.util.NamedQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
@@ -273,17 +275,28 @@ public class ManagedType {
 		return ((ManagedType) other).getType().getCanonicalName().equals(this.getType().getCanonicalName());
 	}
 	
-	private synchronized Annotation[] getQualifierAnnotations(Class<?> beanClass){
-		Annotation[] annotations = beanClass.getAnnotations();
+	private synchronized Annotation[] getQualifierAnnotations(final Class<?> beanClass){
+		Annotation[] annotations = beanClass.getDeclaredAnnotations();
 		ArrayList<Annotation> qualifiers = new ArrayList<Annotation>(annotations.length);
-
+		
 		for (int i=0; i<annotations.length; i++){
 			if (annotations[i].annotationType().getAnnotation(Qualifier.class) != null){
-				qualifiers.add(annotations[i]);
+				if (annotations[i].annotationType().equals(Named.class)
+						&& "".equals( ((Named)annotations[i]).value() )
+						){
+					qualifiers.add( new NamedQualifier(formatClassName(beanClass)) );
+				}
+				else{
+					qualifiers.add(annotations[i]);
+				}
 			}
 		}
 		
 		return qualifiers.toArray(new Annotation[0]);
+	}
+		
+	private String formatClassName(Class<?> type){
+		return type.getSimpleName().substring(0, 1).toLowerCase() +type.getSimpleName().substring(1);
 	}
 
 	public final class FieldDetail {
