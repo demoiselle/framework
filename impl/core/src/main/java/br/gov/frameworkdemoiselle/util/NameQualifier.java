@@ -41,9 +41,9 @@ import javax.enterprise.util.AnnotationLiteral;
 import br.gov.frameworkdemoiselle.annotation.Name;
 
 /**
- * Creates a instance of an java annotation, specifically for qualification @AmbiguousQualifier. 
- * This is required to get some classes by calling Beans.getReference method.
- * 
+ * Annotation litteral that allows to create instances of the {@link Name} qualifier.
+ * The created instance can then be used to call {@link Beans#getReference(Class type, Annotation... qualifiers)}.
+ *  
  * @see Beans
  * @see AmbiguousQualifier
  * 
