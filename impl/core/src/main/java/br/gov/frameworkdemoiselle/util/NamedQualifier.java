@@ -41,8 +41,6 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Named;
 
-import util.beans.ambiguous.AmbiguousQualifier;
-
 /**
  * Annotation litteral that allows to create instances of the {@link Named} qualifier.
  * Those instances can then be used to call {@link Beans#getReference(Class type, Annotation... qualifiers)}.
