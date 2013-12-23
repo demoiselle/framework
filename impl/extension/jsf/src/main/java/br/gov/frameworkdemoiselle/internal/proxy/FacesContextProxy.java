@@ -22,19 +22,30 @@ import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.PhaseId;
 import javax.faces.render.RenderKit;
+import javax.inject.Inject;
+
+import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @Default
 public class FacesContextProxy extends FacesContext implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
+	@Inject
+	@Name("demoiselle-jsf-bundle")
+	private ResourceBundle bundle;
+	
 	@PostConstruct
+	protected void initialize() {
+		getDelegate();
+	}
+
 	public FacesContext getDelegate() {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 
 		if (facesContext == null) {
-			// TODO Colocar a mensagem correta
-			throw new ContextNotActiveException();
+			throw new ContextNotActiveException(bundle.getString("faces-context-not-available"));
 		}
 
 		return facesContext;
