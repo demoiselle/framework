@@ -8,6 +8,8 @@ import static junit.framework.Assert.assertTrue;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import junit.framework.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -18,6 +20,7 @@ import org.junit.runner.RunWith;
 import test.Tests;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.transaction.TransactionContext;
+import br.gov.frameworkdemoiselle.transaction.TransactionException;
 
 @RunWith(Arquillian.class)
 public class JPATransactionTest {
@@ -73,6 +76,20 @@ public class JPATransactionTest {
 
 		assertEquals("desc-1", entity1.getDescription());
 		assertEquals("desc-2", entity2.getDescription());
+	}
+	
+	@Test
+	public void commitWithException() {
+		tb.commitWithException();
+
+		try {
+			tb.commitWithException();
+			Assert.fail();
+		}
+		catch(TransactionException te) {
+			te.printStackTrace();
+			//success
+		}
 	}
 
 	@Test

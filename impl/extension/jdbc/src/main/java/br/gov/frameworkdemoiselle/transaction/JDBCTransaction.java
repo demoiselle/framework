@@ -94,7 +94,7 @@ public class JDBCTransaction implements Transaction {
 				status = getProducer().getStatus(connection);
 				status.setActive(false);
 			} catch (Exception cause) {
-				throw new DemoiselleException(cause);
+				throw new TransactionException(cause);
 			}
 		}
 	}
@@ -112,7 +112,7 @@ public class JDBCTransaction implements Transaction {
 				status = getProducer().getStatus(connection);
 				status.setActive(false);
 			} catch (Exception cause) {
-				throw new DemoiselleException(cause);
+				throw new TransactionException(cause);
 			}
 		}
 	}

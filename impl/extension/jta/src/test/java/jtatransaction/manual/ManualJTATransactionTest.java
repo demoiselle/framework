@@ -9,6 +9,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TransactionRequiredException;
 
+import junit.framework.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -20,6 +22,7 @@ import test.Tests;
 import br.gov.frameworkdemoiselle.transaction.JTATransaction;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.TransactionContext;
+import br.gov.frameworkdemoiselle.transaction.TransactionException;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
@@ -96,6 +99,47 @@ public class ManualJTATransactionTest {
 
 		assertEquals("desc-1", persisted1.getDescription());
 		assertEquals("desc-2", persisted2.getDescription());
+	}
+	
+	@Test
+	public void commitWithException() {
+		Transaction transaction = transactionContext.getCurrentTransaction();
+
+		MyEntity1 entity1 = new MyEntity1();
+		entity1.setId(createId("id-1"));
+		entity1.setDescription("desc-1");
+
+		assertFalse(transaction.isActive());
+		
+		transaction.begin();
+		assertTrue(transaction.isActive());
+		
+		em1.joinTransaction();
+
+		em1.persist(entity1);
+		
+		transaction.commit();
+		em1.clear();
+
+		entity1 = new MyEntity1();
+		entity1.setId(createId("id-1"));
+		entity1.setDescription("desc-1");
+		
+		assertFalse(transaction.isActive());
+		transaction.begin();
+		assertTrue(transaction.isActive());
+		
+		em1.joinTransaction();
+		em1.persist(entity1);
+		
+		try {
+			transaction.commit();
+			Assert.fail();
+		}
+		catch(TransactionException e) {
+			e.printStackTrace();
+			//success
+		}
 	}
 
 	@Test(expected = TransactionRequiredException.class)
