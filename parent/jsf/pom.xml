@@ -118,6 +118,16 @@
 			</dependencies>
 		</profile>
 		<profile>
+			<id>weblogic12</id>
+			<dependencies>
+				<dependency>
+					<groupId>com.sun.faces</groupId>
+					<artifactId>jsf-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
 			<id>jboss6</id>
 			<dependencies>
 				<dependency>
