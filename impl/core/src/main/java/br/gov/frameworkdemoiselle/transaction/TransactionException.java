@@ -36,61 +36,29 @@
  */
 package br.gov.frameworkdemoiselle.transaction;
 
-import java.io.Serializable;
+import br.gov.frameworkdemoiselle.DemoiselleException;
+
 
 /**
- * This interface improves UserTransaction by defining additional methods to it, allowing an application to explicitly
- * manage transaction boundaries.
+ * Represents exceptions that occur during framework managed transactions. A transaction
+ * exception will be thrown when a transaction can't be started, commited or rolled back.
  * 
- * @author SERPRO
- * @see UserTransaction
+ * @author serpro
+ *
  */
-public interface Transaction extends Serializable {
+public class TransactionException extends DemoiselleException {
 
-	/**
-	 * Indicates whether the given transaction is still active.
-	 * 
-	 * @return a boolean
-	 * @throws TransactionException if an unexpected error occurs
-	 */
-	boolean isActive();
+	private static final long serialVersionUID = 1L;
+	
+	public TransactionException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-	/**
-	 * Indicates whether the given transaction is already marked to be rolled back.
-	 * 
-	 * @return a boolean
-	 * @throws TransactionException if an unexpected error occurs
-	 */
-	boolean isMarkedRollback();
+	public TransactionException(Throwable cause) {
+		super(cause);
+	}
 
-	/**
-	 * Create a new transaction and associate it with the current thread.
-	 * 
-	 * @throws TransactionException if the transaction can't be started
-	 */
-	void begin();
-
-	/**
-	 * Complete the transaction associated with the current thread. When this method completes, the thread is no longer
-	 * associated with a transaction.
-	 * 
-	 * @throws TransactionException if the transaction can't be commited
-	 */
-	void commit();
-
-	/**
-	 * Roll back the transaction associated with the current thread. When this method completes, the thread is no longer
-	 * associated with a transaction.
-	 * 
-	 * @throws TransactionException if the transaction can't be rolled back
-	 */
-	void rollback();
-
-	/**
-	 * Modify the transaction associated with the current thread such that the only possible outcome of the transaction
-	 * is to roll back the transaction.
-	 * 
-	 * @throws TransactionException if an unexpected error occurs
-	 */
-	void setRollbackOnly();
+	public TransactionException(String message) {
+		super(message);
+	}
 }
