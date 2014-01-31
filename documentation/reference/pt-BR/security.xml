@@ -137,7 +137,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 			securityContext.logout();
 		}
 		catch(InvalidCredentialsException exception){
-			//Trata credenciais inválidas
+			//Trata credenciais invalidas
 		}
 		 
 	} 
@@ -508,25 +508,21 @@ class GerenciadorBookmark {
 		<programlisting role="JAVA"><![CDATA[public class MeuAuthenticator implements Authenticator { 
 
 	@Override 
-	public boolean authenticate() throws Exception { 
-		// Escreva aqui seu codigo de autenticacao e retorne true caso o processo seja um sucesso 
-		return true; 
+	public void authenticate() throws Exception { 
+		// Execute o procedimento necessario para autenticar o usuario 
+		// Apos isso, a chamada ao metodo getUser() deve returnar o usuario corrente autenticado,
+		// e ira retornar nulo (null) se o processo de autenticacao falhar
 	} 
 
 	@Override 
 	public User getUser(){ 
-		// Obtenha dados sobre o usuario autenticado e retorne na forma da interface javax.security.Principal 
-		return new Principal(){
-			public String getName(){
-				return "usuario";
-			}
-		}; 
+		// Retorna o usuario que esta autenticado, ou nulo (null) se nao houver usuario autenticado
 	} 
 
 	@Override 
 	public void unauthenticate() throws Exception { 
-		// Remova qualquer informacao de autenticacao do usuario, apas o retorno deste metodo o usuario
-		// deve ser considerado nao autenticado. 
+		// Execute o procedimento necessario para desautenticar um usuario
+		// Apos isso,  a chamada ao metodo getUser() deve returnar nulo (null)
 	} 
 }]]></programlisting>
 		<programlisting role="JAVA"><![CDATA[public class MeuAuthorizer implements Authorizer { 
@@ -539,11 +535,17 @@ class GerenciadorBookmark {
 
 	@Override 
 	public boolean hasPermission(String resource, String operation) throws Exception { 
-		// Escreva aqui seu codigo de verificação de permissao 
+		// Escreva aqui seu codigo de verificacao de permissao 
 		return false; 
 	} 
 }]]></programlisting>
-
+		<note>
+			<para>
+				Fique atento! Note que para garantir que o usuário não esteja logado, não basta lançar uma
+				exceção (InvalidCredencialsException) no método authenticator.autenticate(), mas é preciso que o método
+				authenticator.getUser() retorne null para que o método securityContext.isLoggedIn() retorne false.
+			</para>
+		</note>
 		<para>
 			Pronto! Sua aplicação já possui uma implementação de segurança definida.
 		</para>
