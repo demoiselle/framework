@@ -129,6 +129,7 @@ public class ConnectionProducer implements Serializable {
 		} else {
 			try {
 				connection = producer.create(name).getConnection();
+				setTransactionIsolationLevel(connection);
 				disableAutoCommit(connection);
 
 				cache.put(name, connection);
@@ -141,6 +142,14 @@ public class ConnectionProducer implements Serializable {
 		}
 
 		return connection;
+	}
+
+	private void setTransactionIsolationLevel(Connection connection) {
+		try {
+			connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+		} catch (SQLException cause) {
+			getLogger().debug(getBundle().getString("set-autocommit-failed"));
+		}
 	}
 
 	private void disableAutoCommit(Connection connection) {

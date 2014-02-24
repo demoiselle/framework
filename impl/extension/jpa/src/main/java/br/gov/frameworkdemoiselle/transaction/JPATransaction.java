@@ -46,6 +46,8 @@ import javax.persistence.EntityTransaction;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.internal.producer.EntityManagerProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
  * Represents the strategy destinated to manage JPA transactions.
@@ -59,6 +61,8 @@ public class JPATransaction implements Transaction {
 	private static final long serialVersionUID = 1L;
 
 	private EntityManagerProducer producer;
+	
+	private ResourceBundle bundle;
 
 	private EntityManagerProducer getProducer() {
 		if (producer == null) {
@@ -66,6 +70,14 @@ public class JPATransaction implements Transaction {
 		}
 
 		return producer;
+	}
+	
+	private ResourceBundle getBundle() {
+		if (bundle==null) {
+			bundle = Beans.getReference(ResourceBundle.class , new NameQualifier("demoiselle-jpa-bundle"));
+		}
+		
+		return bundle;
 	}
 
 	public Collection<EntityManager> getDelegate() {
@@ -75,23 +87,58 @@ public class JPATransaction implements Transaction {
 	@Override
 	public void begin() {
 		EntityTransaction transaction;
-		for (EntityManager entityManager : getDelegate()) {
-			transaction = entityManager.getTransaction();
-
-			if (!transaction.isActive()) {
-				transaction.begin();
+		
+		try {
+			for (EntityManager entityManager : getDelegate()) {
+				transaction = entityManager.getTransaction();
+	
+				if (!transaction.isActive()) {
+					transaction.begin();
+				}
 			}
+		}
+		catch(Exception e) {
+			/*
+			Precisamos marcar para rollback todos os EntityManagers que conseguimos iniciar
+			antes da exceção ser disparada.
+			*/
+			setRollbackOnly();
+			
+			throw new TransactionException(e);
 		}
 	}
 
 	@Override
 	public void commit() {
 		EntityTransaction transaction;
-		for (EntityManager entityManager : getDelegate()) {
-			transaction = entityManager.getTransaction();
-
-			if (transaction.isActive()) {
-				transaction.commit();
+		
+		int commitedEntityManagers = 0;
+		try {
+			for (EntityManager entityManager : getDelegate()) {
+				transaction = entityManager.getTransaction();
+	
+				if (transaction.isActive()) {
+					transaction.commit();
+					commitedEntityManagers++;
+				}
+			}
+		}
+		catch(Exception e) {
+			/*
+			Precisamos marcar para rollback todos os EntityManagers que conseguimos iniciar
+			antes da exceção ser disparada.
+			*/
+			setRollbackOnly();
+			
+			/*
+			Esse erro pode ser bastante problemático, pois EntityManagers já encerrados com commit
+			não podem ser revertidos. Por isso anexamos uma mensagem recomendando ao usuário que considere o uso de JTA em sua aplicação.
+			*/
+			if (commitedEntityManagers>0) {
+				throw new TransactionException(getBundle().getString("partial-rollback-problem"),e);
+			}
+			else {
+				throw new TransactionException(e);
 			}
 		}
 	}
@@ -99,24 +146,36 @@ public class JPATransaction implements Transaction {
 	@Override
 	public void rollback() {
 		EntityTransaction transaction;
-		for (EntityManager entityManager : getDelegate()) {
-			transaction = entityManager.getTransaction();
-
-			if (transaction.isActive()) {
-				transaction.rollback();
+		
+		try {
+			for (EntityManager entityManager : getDelegate()) {
+				transaction = entityManager.getTransaction();
+	
+				if (transaction.isActive()) {
+					transaction.rollback();
+				}
 			}
+		}
+		catch(Exception e) {
+			throw new TransactionException(e);
 		}
 	}
 
 	@Override
 	public void setRollbackOnly() {
 		EntityTransaction transaction;
-		for (EntityManager entityManager : getDelegate()) {
-			transaction = entityManager.getTransaction();
-
-			if (transaction.isActive()) {
-				transaction.setRollbackOnly();
+		
+		try {
+			for (EntityManager entityManager : getDelegate()) {
+				transaction = entityManager.getTransaction();
+	
+				if (transaction.isActive()) {
+					transaction.setRollbackOnly();
+				}
 			}
+		}
+		catch(Exception e) {
+			throw new TransactionException(e);
 		}
 	}
 
@@ -125,13 +184,18 @@ public class JPATransaction implements Transaction {
 		boolean active = false;
 
 		EntityTransaction transaction;
-		for (EntityManager entityManager : getDelegate()) {
-			transaction = entityManager.getTransaction();
-
-			if (transaction.isActive()) {
-				active = true;
-				break;
+		try {
+			for (EntityManager entityManager : getDelegate()) {
+				transaction = entityManager.getTransaction();
+	
+				if (transaction.isActive()) {
+					active = true;
+					break;
+				}
 			}
+		}
+		catch (Exception e) {
+			throw new TransactionException(e);
 		}
 
 		return active;
@@ -142,13 +206,18 @@ public class JPATransaction implements Transaction {
 		boolean rollbackOnly = false;
 
 		EntityTransaction transaction;
-		for (EntityManager entityManager : getDelegate()) {
-			transaction = entityManager.getTransaction();
-
-			if (transaction.isActive() && transaction.getRollbackOnly()) {
-				rollbackOnly = true;
-				break;
+		try {
+			for (EntityManager entityManager : getDelegate()) {
+				transaction = entityManager.getTransaction();
+	
+				if (transaction.isActive() && transaction.getRollbackOnly()) {
+					rollbackOnly = true;
+					break;
+				}
 			}
+		}
+		catch(Exception e) {
+			throw new TransactionException(e);
 		}
 
 		return rollbackOnly;

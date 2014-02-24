@@ -35,6 +35,16 @@ public class TransactionalBusiness {
 		em1.flush();
 		em2.flush();
 	}
+	
+	@Transactional
+	public void commitWithException() {
+		MyEntity1 entity1 = new MyEntity1();
+		entity1.setId(createId("id-1"));
+		entity1.setDescription("desc-1");
+
+		em1.joinTransaction();
+		em1.persist(entity1);
+	}
 
 	public void checkNoTransactionAutomaticallyLoaded() {
 		MyEntity1 entity = new MyEntity1();

@@ -77,7 +77,7 @@ public class JTATransaction implements Transaction {
 			return getDelegate().getStatus() != STATUS_NO_TRANSACTION;
 
 		} catch (SystemException cause) {
-			throw new DemoiselleException(cause);
+			throw new TransactionException(cause);
 		}
 	}
 
@@ -91,7 +91,7 @@ public class JTATransaction implements Transaction {
 					|| getDelegate().getStatus() == STATUS_ROLLEDBACK;
 
 		} catch (SystemException cause) {
-			throw new DemoiselleException(cause);
+			throw new TransactionException(cause);
 		}
 	}
 
@@ -104,7 +104,7 @@ public class JTATransaction implements Transaction {
 			getDelegate().begin();
 
 		} catch (Exception cause) {
-			throw new DemoiselleException(cause);
+			throw new TransactionException(cause);
 		}
 	}
 
@@ -117,7 +117,7 @@ public class JTATransaction implements Transaction {
 			getDelegate().commit();
 
 		} catch (Exception cause) {
-			throw new DemoiselleException(cause);
+			throw new TransactionException(cause);
 		}
 	}
 
@@ -130,7 +130,7 @@ public class JTATransaction implements Transaction {
 			getDelegate().rollback();
 
 		} catch (SystemException cause) {
-			throw new DemoiselleException(cause);
+			throw new TransactionException(cause);
 		}
 	}
 
@@ -143,7 +143,7 @@ public class JTATransaction implements Transaction {
 			getDelegate().setRollbackOnly();
 
 		} catch (SystemException cause) {
-			throw new DemoiselleException(cause);
+			throw new TransactionException(cause);
 		}
 	}
 }

@@ -8,6 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TransactionRequiredException;
 
+import junit.framework.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -19,6 +21,7 @@ import test.Tests;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.transaction.JTATransaction;
 import br.gov.frameworkdemoiselle.transaction.TransactionContext;
+import br.gov.frameworkdemoiselle.transaction.TransactionException;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
@@ -78,6 +81,23 @@ public class InterceptorJTATransactionTest {
 		
 		assertFalse(transactionContext.getCurrentTransaction().isActive());
 		
+	}
+	
+	@Test
+	public void commitWithException() {
+		
+		TransactionalBusiness business = Beans.getReference(TransactionalBusiness.class);
+		
+		business.commitWithException();
+
+		try {
+			business.commitWithException();
+			Assert.fail();
+		}
+		catch(TransactionException te) {
+			te.printStackTrace();
+			//sucess
+		}
 	}
 
 	@Test(expected = TransactionRequiredException.class)
