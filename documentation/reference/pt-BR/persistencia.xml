@@ -378,14 +378,14 @@ frameworkdemoiselle.&#8203;persistence.&#8203;<emphasis role="bold">conn2</empha
 			</para>
 			
 			<programlisting role="JAVA"><![CDATA[public class ClasseDAO {
- 	
+
  	@Inject
  	private Connection conn1;
- 	
+
+ 	@Transactional
  	public void metodoPersistir(){
  		conn1.prepareStatement("INSERT INTO TAB_1 VALUES (1,'JDBC')").execute();
  	}
- 	
 }]]></programlisting>
 
 			<para>
@@ -394,23 +394,24 @@ frameworkdemoiselle.&#8203;persistence.&#8203;<emphasis role="bold">conn2</empha
 			</para>
 			
 			<programlisting role="JAVA"><![CDATA[public class ClasseDAO {
- 	
+
  	@Inject
  	@Name("conn1")
  	private Connection conn1;
- 	
+
  	@Inject
  	@Name("conn2")
  	private Connection conn2;
- 	
+
+	@Transactional
  	public void metodoPersistirEmConn1(){
  		conn1.prepareStatement("INSERT INTO TAB_1 VALUES (1,'JDBC')").execute();
  	}
- 	
+
+	@Transactional
  	public void metodoPersistirEmConn2(){
  		conn2.prepareStatement("INSERT INTO TAB_2 VALUES (1,'JDBC')").execute();
  	}
- 	
 }]]></programlisting>
 
 			<caution>
