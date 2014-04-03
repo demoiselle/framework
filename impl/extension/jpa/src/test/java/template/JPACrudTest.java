@@ -24,6 +24,9 @@ public class JPACrudTest {
 
 	@Inject
 	private MyCrud crud;
+	
+	@Inject
+	private MyNamedCrud namedCrud;
 
 	@Deployment(name = "1")
 	public static WebArchive createDeployment() {
@@ -80,6 +83,17 @@ public class JPACrudTest {
 		
 		assertEquals(list.size(), 4);
 	}
+	
+	@Test
+	public void findAllNamedEntity() {
+		populateNamedEntity(4, 0);
+
+		List<MyNamedEntity> list;
+		list = namedCrud.findAll();
+		
+		assertEquals(list.size(), 4);
+	}
+
 
 	private void populate(int size, int offset) {
 		MyEntity entity;
@@ -93,6 +107,18 @@ public class JPACrudTest {
 		}
 	}
 
+	private void populateNamedEntity(int size, int offset) {
+		MyNamedEntity entity;
+
+		for (int i = 0; i < size; i++) {
+			entity = new MyNamedEntity();
+			entity.setId(createId("id-" + (i + 1 + offset)));
+			entity.setDescription("desc-" + (i + 1 + offset));
+
+			namedCrud.insert(entity);
+		}
+	}
+	
 	private String createId(String id) {
 		return this.getClass().getName() + "_" + id;
 	}
