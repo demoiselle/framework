@@ -47,6 +47,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.Enumerated;
@@ -195,7 +196,17 @@ public class JPACrud<T, I> implements Crud<T, I> {
 
 	@Override
 	public List<T> findAll() {
-		return findByJPQL("select this from " + getBeanClass().getSimpleName() + " this");
+		Entity entityAnnotation = getBeanClass().getAnnotation(Entity.class);
+		String entityName = null;
+		if (entityAnnotation!=null 
+				&& entityAnnotation.name()!=null
+				&& !entityAnnotation.name().trim().equals("")) {
+			entityName = entityAnnotation.name();
+		}
+		else {
+			entityName = getBeanClass().getSimpleName();
+		}
+		return findByJPQL("select this from " + entityName + " this");
 	}
 
 	/**
