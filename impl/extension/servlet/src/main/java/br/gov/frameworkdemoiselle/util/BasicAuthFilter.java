@@ -34,10 +34,13 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.implementation;
+package br.gov.frameworkdemoiselle.util;
+
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -46,15 +49,15 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 
-import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Credentials;
+import br.gov.frameworkdemoiselle.security.InvalidCredentialsException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
-import br.gov.frameworkdemoiselle.util.Beans;
 
-public class BasicAuthenticationFilter implements Filter {
+public class BasicAuthFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -63,45 +66,76 @@ public class BasicAuthenticationFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
+		try {
+			boolean isLoggedIn = performLogin(getAuthHeader(request), (HttpServletRequest) request);
 
-		String[] basicCredentials = getCredentials((HttpServletRequest) request);
+			chain.doFilter(request, response);
 
-		if (basicCredentials != null) {
+			if (isLoggedIn) {
+				performLogout();
+			}
+
+		} catch (InvalidCredentialsException cause) {
+			setUnauthorizedStatus((HttpServletResponse) response, cause);
+		}
+	}
+
+	private boolean performLogin(String header, HttpServletRequest request) {
+		SecurityContext securityContext = Beans.getReference(SecurityContext.class);
+
+		if (header != null) {
+			String[] basicCredentials = getCredentials(header);
+
 			Credentials credentials = Beans.getReference(Credentials.class);
 			credentials.setUsername(basicCredentials[0]);
 			credentials.setPassword(basicCredentials[1]);
 
-			try {
-				Beans.getReference(SecurityContext.class).login();
-
-			} catch (AuthenticationException cause) {
-				// TODO Informar via logger que a autenticação não foi bem sucedida.
-			}
+			securityContext.login();
 		}
 
-		chain.doFilter(request, response);
+		return securityContext.isLoggedIn();
 	}
 
-	private String getAuthHeader(HttpServletRequest request) {
-		String result = request.getHeader("Authorization");
-		result = (result == null ? request.getHeader("authorization") : result);
+	private void performLogout() {
+		Beans.getReference(SecurityContext.class).logout();
+	}
+
+	private void setUnauthorizedStatus(HttpServletResponse response, Exception cause) throws IOException {
+		response.setStatus(SC_UNAUTHORIZED);
+		response.setContentType("text/html");
+
+		response.getWriter().write(cause.getMessage());
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
+
+	private String getAuthHeader(ServletRequest request) {
+		String result = null;
+
+		if (request instanceof HttpServletRequest) {
+			HttpServletRequest httpRequest = ((HttpServletRequest) request);
+
+			result = httpRequest.getHeader("Authorization");
+			result = (result == null ? httpRequest.getHeader("authorization") : result);
+		}
 
 		return result;
 	}
 
-	private String[] getCredentials(HttpServletRequest request) {
+	private static String[] getCredentials(String header) throws InvalidCredentialsException {
 		String[] result = null;
-		String header = getAuthHeader(request);
 
-		if (header != null) {
-			byte[] decoded = Base64.decodeBase64(header.substring(6));
+		String regexp = "^Basic[ \\n]+(.+)$";
+		Pattern pattern = Pattern.compile(regexp);
+		Matcher matcher = pattern.matcher(header);
+
+		if (matcher.matches()) {
+			byte[] decoded = Base64.decodeBase64(matcher.group(1));
 			result = new String(decoded).split(":");
 		}
 
-		if (result != null && Arrays.asList(result).size() != 2) {
-			result = null;
-
-			// TODO Informar via logger que o header Authorization não contém as informações de username e password
+		if (result == null || result.length != 2) {
+			throw new InvalidCredentialsException("Formato inválido do cabeçalho");
 		}
 
 		return result;

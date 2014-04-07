@@ -36,7 +36,6 @@
  */
 package br.gov.frameworkdemoiselle.bootstrap;
 
-import br.gov.frameworkdemoiselle.Demoiselle;
 
 /**
  * Simple interface a class must implement to be started by the {@link Demoiselle#runStarterClass(Class, String[])} utility method.

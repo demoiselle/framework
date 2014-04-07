@@ -42,13 +42,11 @@ import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
 
 /**
- * Implements the {@link javax.servlet.ServletContextListener} interface, and fire two events: 
+ * Implements the {@link javax.servlet.ServletContextListener} interface, and fire two events:
  * {@link AfterStartupProccess} and {@link AfterShutdownProccess}.
  * 
  * @author SERPRO
- *
  */
-
 public class ServletListener implements javax.servlet.ServletContextListener {
 
 	@Override

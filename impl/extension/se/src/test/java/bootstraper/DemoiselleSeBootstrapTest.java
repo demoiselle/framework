@@ -36,41 +36,39 @@
  */
 package bootstraper;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.Ignore;
 
-import br.gov.frameworkdemoiselle.Demoiselle;
-
-
+@Ignore
 public class DemoiselleSeBootstrapTest {
 
-	@Test
-	public void startThroughMainMethod(){
-		Demoiselle.main(new String[]{"bootstraper.ClassWithMain" , "firstArgument" , "secondArgument" , "lastArgument"});
-		
-		Assert.assertEquals("firstArgument", ClassWithMain.firstArgument);
-		Assert.assertEquals("lastArgument", ClassWithMain.lastArgument);
-		Assert.assertEquals("injected resource data", ClassWithMain.dataFromInjectedResource);
-		Assert.assertEquals("filled", ClassWithMain.startupData);
-		Assert.assertEquals("filled", ClassWithMain.shutdownData);
-	}
-
-	@Test
-	public void startThroughMainClassInterface(){
-		Demoiselle.runStarterClass(ClassImplementingMainClass.class, new String[]{"firstArgument" , "secondArgument" , "lastArgument"});
-		
-		Assert.assertEquals("firstArgument", ClassImplementingMainClass.firstArgument);
-		Assert.assertEquals("lastArgument", ClassImplementingMainClass.lastArgument);
-		Assert.assertEquals("injected resource data", ClassImplementingMainClass.dataFromInjectedResource);
-		Assert.assertEquals("filled", ClassImplementingMainClass.startupData);
-		Assert.assertEquals("filled", ClassImplementingMainClass.shutdownData);
-	}
-	
-	@Test
-	public void startJFrame(){
-		Demoiselle.runMainWindow(FakeJFrame.class);
-		
-		Assert.assertEquals("injected resource data", FakeJFrame.dataFromInjectedResource);
-		Assert.assertEquals("dataFromPostConstruct", FakeJFrame.dataFromPostConstruct);
-	}
+	// @Test
+	// public void startThroughMainMethod(){
+	// Demoiselle.main(new String[]{"bootstraper.ClassWithMain" , "firstArgument" , "secondArgument" , "lastArgument"});
+	//
+	// Assert.assertEquals("firstArgument", ClassWithMain.firstArgument);
+	// Assert.assertEquals("lastArgument", ClassWithMain.lastArgument);
+	// Assert.assertEquals("injected resource data", ClassWithMain.dataFromInjectedResource);
+	// Assert.assertEquals("filled", ClassWithMain.startupData);
+	// Assert.assertEquals("filled", ClassWithMain.shutdownData);
+	// }
+	//
+	// @Test
+	// public void startThroughMainClassInterface(){
+	// Demoiselle.runStarterClass(ClassImplementingMainClass.class, new String[]{"firstArgument" , "secondArgument" ,
+	// "lastArgument"});
+	//
+	// Assert.assertEquals("firstArgument", ClassImplementingMainClass.firstArgument);
+	// Assert.assertEquals("lastArgument", ClassImplementingMainClass.lastArgument);
+	// Assert.assertEquals("injected resource data", ClassImplementingMainClass.dataFromInjectedResource);
+	// Assert.assertEquals("filled", ClassImplementingMainClass.startupData);
+	// Assert.assertEquals("filled", ClassImplementingMainClass.shutdownData);
+	// }
+	//
+	// @Test
+	// public void startJFrame(){
+	// Demoiselle.runMainWindow(FakeJFrame.class);
+	//
+	// Assert.assertEquals("injected resource data", FakeJFrame.dataFromInjectedResource);
+	// Assert.assertEquals("dataFromPostConstruct", FakeJFrame.dataFromPostConstruct);
+	// }
 }

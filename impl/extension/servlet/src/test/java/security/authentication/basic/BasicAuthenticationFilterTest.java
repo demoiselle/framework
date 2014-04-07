@@ -1,6 +1,6 @@
 package security.authentication.basic;
 
-import static org.apache.http.HttpStatus.SC_FORBIDDEN;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertEquals;
 
@@ -62,6 +62,6 @@ public class BasicAuthenticationFilterTest {
 		HttpResponse httpResponse = HttpClientBuilder.create().build().execute(httpGet);
 
 		int status = httpResponse.getStatusLine().getStatusCode();
-		assertEquals(SC_FORBIDDEN, status);
+		assertEquals(SC_UNAUTHORIZED, status);
 	}
 }

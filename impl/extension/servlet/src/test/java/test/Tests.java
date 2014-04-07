@@ -44,10 +44,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Ignore;
 
-import br.gov.frameworkdemoiselle.internal.implementation.BasicAuthenticationFilter;
-import br.gov.frameworkdemoiselle.internal.implementation.HttpServletRequestProducerFilter;
-import br.gov.frameworkdemoiselle.internal.implementation.HttpServletResponseProducerFilter;
-import br.gov.frameworkdemoiselle.internal.implementation.InternalProcessorFilterImpl;
 import br.gov.frameworkdemoiselle.internal.producer.HttpServletRequestProducer;
 import br.gov.frameworkdemoiselle.internal.producer.HttpServletResponseProducer;
 import br.gov.frameworkdemoiselle.internal.producer.HttpSessionProducer;
@@ -55,6 +51,7 @@ import br.gov.frameworkdemoiselle.internal.producer.ServletLocaleProducer;
 import br.gov.frameworkdemoiselle.security.Credentials;
 import br.gov.frameworkdemoiselle.security.ServletAuthenticator;
 import br.gov.frameworkdemoiselle.security.ServletAuthorizer;
+import br.gov.frameworkdemoiselle.util.BasicAuthFilter;
 import br.gov.frameworkdemoiselle.util.ServletFilter;
 import br.gov.frameworkdemoiselle.util.ServletListener;
 
@@ -83,10 +80,7 @@ public final class Tests {
 				.addClass(HttpServletResponseProducer.class)
 				.addClass(HttpSessionProducer.class)
 				.addClass(ServletLocaleProducer.class)
-				.addClass(BasicAuthenticationFilter.class)
-				.addClass(HttpServletRequestProducerFilter.class)
-				.addClass(HttpServletResponseProducerFilter.class)
-				.addClass(InternalProcessorFilterImpl.class)
+				.addClass(BasicAuthFilter.class)
 				.addAsResource(createFileAsset("src/main/resources/demoiselle-servlet-bundle.properties"),
 						"demoiselle-servlet-bundle.properties")
 				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")

@@ -44,34 +44,41 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import br.gov.frameworkdemoiselle.internal.producer.HttpServletRequestProducer;
+import br.gov.frameworkdemoiselle.internal.producer.HttpServletResponseProducer;
 
 /**
  * Implements the {@link javax.servlet.Filter} interface.
  * 
  * @author SERPRO
- *
  */
-
 public class ServletFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig config) throws ServletException {
-		Beans.getReference(InternalProcessorFilter.class).init(config);
 	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
-		Beans.getReference(InternalProcessorFilter.class).doFilter(request, response, chain);
-
+		setDelegate(request, response);
 		chain.doFilter(request, response);
+	}
+
+	private void setDelegate(ServletRequest request, ServletResponse response) {
+		if (request instanceof HttpServletRequest) {
+			Beans.getReference(HttpServletRequestProducer.class).setDelegate((HttpServletRequest) request);
+		}
+
+		if (response instanceof HttpServletResponse) {
+			Beans.getReference(HttpServletResponseProducer.class).setDelegate((HttpServletResponse) response);
+		}
 	}
 
 	@Override
 	public void destroy() {
-		Beans.getReference(InternalProcessorFilter.class).destroy();
-	}
-
-	public interface InternalProcessorFilter extends Filter {
 	}
 }

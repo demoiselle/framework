@@ -50,6 +50,15 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+	<filter>
+		<filter-name>Demoiselle BasicAuth Filter</filter-name>
+		<filter-class>br.gov.frameworkdemoiselle.util.BasicAuthFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Demoiselle BasicAuth Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<servlet>
 		<servlet-name>Helper Servlet</servlet-name>
 		<servlet-class>security.authentication.basic.HelperServlet</servlet-class>
