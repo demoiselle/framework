@@ -77,9 +77,10 @@ public class MessageContextTest {
 	}
 
 	@Test
+	@Deprecated
 	public void testAddMessageWithoutParams() {
 		RequestContext context = Beans.getReference(RequestContext.class);
-		
+
 		context.activate();
 		Message message = new DefaultMessage("Menssage without param");
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
@@ -90,9 +91,10 @@ public class MessageContextTest {
 	}
 
 	@Test
+	@Deprecated
 	public void testAddMessageWithoutParamsIfSeverityIsInfo() {
 		RequestContext context = Beans.getReference(RequestContext.class);
-		
+
 		context.activate();
 		Message message = new DefaultMessage("Menssage without param");
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
@@ -103,9 +105,10 @@ public class MessageContextTest {
 	}
 
 	@Test
+	@Deprecated
 	public void testAddMessageWitSeverityInfo() {
 		RequestContext context = Beans.getReference(RequestContext.class);
-		
+
 		context.activate();
 		Message message = new DefaultMessage("Menssage without param", SeverityType.INFO);
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
@@ -116,9 +119,10 @@ public class MessageContextTest {
 	}
 
 	@Test
+	@Deprecated
 	public void testAddMessageWitSeverityWarn() {
 		RequestContext context = Beans.getReference(RequestContext.class);
-		
+
 		context.activate();
 		Message message = new DefaultMessage("Menssage without param", SeverityType.WARN);
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
@@ -129,9 +133,10 @@ public class MessageContextTest {
 	}
 
 	@Test
+	@Deprecated
 	public void testAddMessageWitSeverityErro() {
 		RequestContext context = Beans.getReference(RequestContext.class);
-		
+
 		context.activate();
 		Message message = new DefaultMessage("Menssage without param", SeverityType.ERROR);
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
@@ -144,7 +149,7 @@ public class MessageContextTest {
 	@Test
 	public void testRecoverStringMessageWithParams() {
 		RequestContext context = Beans.getReference(RequestContext.class);
-		
+
 		context.activate();
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
 
@@ -154,9 +159,10 @@ public class MessageContextTest {
 	}
 
 	@Test
+	@Deprecated
 	public void testRecoverMessageWithParams() {
 		RequestContext context = Beans.getReference(RequestContext.class);
-		
+
 		context.activate();
 		Message message = new DefaultMessage("Message with {0} param");
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
@@ -177,7 +183,7 @@ public class MessageContextTest {
 	@Test
 	public void testMessageParsedText() {
 		RequestContext context = Beans.getReference(RequestContext.class);
-		
+
 		context.activate();
 		Message MESSAGE_PARSED = new DefaultMessage("{MESSAGE_PARSED}");
 		String expected = "Message parsed";
@@ -189,7 +195,7 @@ public class MessageContextTest {
 	@Test
 	public void testMessageIsNull() {
 		RequestContext context = Beans.getReference(RequestContext.class);
-		
+
 		context.activate();
 		Message NULL_MESSAGE = new DefaultMessage(null);
 		String expected = null;

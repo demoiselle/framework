@@ -49,7 +49,7 @@ import br.gov.frameworkdemoiselle.security.Authorizer;
  * 
  * @author SERPRO
  */
-@Configuration(prefix = "frameworkdemoiselle.security.")
+@Configuration(prefix = "frameworkdemoiselle.security")
 public class SecurityConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
