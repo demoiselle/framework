@@ -1,6 +1,7 @@
 package security.authentication.basic;
 
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
+import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertEquals;
 
@@ -11,6 +12,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -37,17 +39,24 @@ public class BasicAuthenticationFilterTest {
 
 	@Test
 	public void loginSucessfull() throws ClientProtocolException, IOException {
+		CloseableHttpClient client = HttpClientBuilder.create().build();
+		HttpGet get;
+		HttpResponse response;
+		int status;
+
 		String username = "demoiselle";
 		String password = "changeit";
-
-		HttpGet httpGet = new HttpGet(deploymentUrl + "/helper");
+		get = new HttpGet(deploymentUrl + "/helper");
 		byte[] encoded = Base64.encodeBase64((username + ":" + password).getBytes());
-		httpGet.setHeader("Authorization", "Basic " + new String(encoded));
-
-		HttpResponse httpResponse = HttpClientBuilder.create().build().execute(httpGet);
-
-		int status = httpResponse.getStatusLine().getStatusCode();
+		get.setHeader("Authorization", "Basic " + new String(encoded));
+		response = client.execute(get);
+		status = response.getStatusLine().getStatusCode();
 		assertEquals(SC_OK, status);
+
+		get = new HttpGet(deploymentUrl + "/helper");
+		response = client.execute(get);
+		status = response.getStatusLine().getStatusCode();
+		assertEquals(SC_FORBIDDEN, status);
 	}
 
 	@Test
@@ -55,13 +64,13 @@ public class BasicAuthenticationFilterTest {
 		String username = "invalid";
 		String password = "invalid";
 
-		HttpGet httpGet = new HttpGet(deploymentUrl + "/helper");
+		HttpGet get = new HttpGet(deploymentUrl + "/helper");
 		byte[] encoded = Base64.encodeBase64((username + ":" + password).getBytes());
-		httpGet.setHeader("Authorization", "Basic " + new String(encoded));
+		get.setHeader("Authorization", "Basic " + new String(encoded));
 
-		HttpResponse httpResponse = HttpClientBuilder.create().build().execute(httpGet);
+		HttpResponse response = HttpClientBuilder.create().build().execute(get);
 
-		int status = httpResponse.getStatusLine().getStatusCode();
+		int status = response.getStatusLine().getStatusCode();
 		assertEquals(SC_UNAUTHORIZED, status);
 	}
 }
