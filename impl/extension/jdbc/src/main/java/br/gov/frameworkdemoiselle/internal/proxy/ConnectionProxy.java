@@ -54,6 +54,7 @@ import java.sql.Statement;
 import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 import br.gov.frameworkdemoiselle.internal.producer.ConnectionProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -63,6 +64,10 @@ public class ConnectionProxy implements Connection, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private final String dataSourceName;
+	
+	//TODO determinar o que fazer para manter compatibilidade com Java 6 e 7, pois a interface
+	// Connection ganhou métodos novos no Java 7. 
+	private final int javaVersion = Integer.valueOf( System.getProperty("java.version").substring(2, 3) );
 	
 	public ConnectionProxy(String dataSourceName) {
 		this.dataSourceName = dataSourceName;
@@ -271,6 +276,81 @@ public class ConnectionProxy implements Connection, Serializable {
 
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		return getDelegate().unwrap(iface);
+	}
+
+	//TODO Método novo do Java 7, estudar solução de compatibilidade
+	public void setSchema(String schema) throws SQLException {
+		if (!isJavaSeven()){
+			throw new UnsupportedOperationException();
+		}
+		else{
+			try {
+				Connection.class.getMethod("setSchema",String.class).invoke(getDelegate(),schema);
+			} catch (Exception e) {
+				throw new UnsupportedOperationException();
+			}
+		}
+	}
+
+	//TODO Método novo do Java 7, estudar solução de compatibilidade
+	public String getSchema() throws SQLException {
+		if (!isJavaSeven()){
+			throw new UnsupportedOperationException();
+		}
+		else{
+			try {
+				return (String)Connection.class.getMethod("getSchema").invoke(getDelegate());
+			} catch (Exception e) {
+				throw new UnsupportedOperationException();
+			}
+		}
+	}
+
+	//TODO Método novo do Java 7, estudar solução de compatibilidade
+	public void abort(Executor executor) throws SQLException {
+		if (!isJavaSeven()){
+			throw new UnsupportedOperationException();
+		}
+		else{
+			try {
+				Connection.class.getMethod("abort",Executor.class).invoke(getDelegate(),executor);
+			} catch (Exception e) {
+				throw new UnsupportedOperationException();
+			}
+		}
+	}
+
+	//TODO Método novo do Java 7, estudar solução de compatibilidade
+	public void setNetworkTimeout(Executor executor, int milliseconds)
+			throws SQLException {
+		if (!isJavaSeven()){
+			throw new UnsupportedOperationException();
+		}
+		else{
+			try {
+				Connection.class.getMethod("setNetworkTimeout",Executor.class,Integer.TYPE).invoke(getDelegate(),executor,milliseconds);
+			} catch (Exception e) {
+				throw new UnsupportedOperationException();
+			}
+		}		
+	}
+
+	//TODO Método novo do Java 7, estudar solução de compatibilidade
+	public int getNetworkTimeout() throws SQLException {
+		if (!isJavaSeven()){
+			throw new UnsupportedOperationException();
+		}
+		else{
+			try {
+				return (Integer)Connection.class.getMethod("getNetworkTimeout").invoke(getDelegate());
+			} catch (Exception e) {
+				throw new UnsupportedOperationException();
+			}
+		}
+	}
+	
+	private boolean isJavaSeven(){
+		return javaVersion>=7;
 	}
 	
 }
