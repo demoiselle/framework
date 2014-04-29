@@ -81,6 +81,7 @@ public class BasicAuthFilter implements Filter {
 	}
 
 	private boolean performLogin(String header, HttpServletRequest request) {
+		boolean result = false;
 		SecurityContext securityContext = Beans.getReference(SecurityContext.class);
 
 		if (header != null) {
@@ -91,9 +92,10 @@ public class BasicAuthFilter implements Filter {
 			credentials.setPassword(basicCredentials[1]);
 
 			securityContext.login();
+			result = securityContext.isLoggedIn();
 		}
 
-		return securityContext.isLoggedIn();
+		return result;
 	}
 
 	private void performLogout() {
