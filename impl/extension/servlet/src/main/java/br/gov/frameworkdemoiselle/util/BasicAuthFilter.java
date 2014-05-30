@@ -53,6 +53,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 
+import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Credentials;
 import br.gov.frameworkdemoiselle.security.InvalidCredentialsException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
@@ -102,7 +103,7 @@ public class BasicAuthFilter implements Filter {
 		Beans.getReference(SecurityContext.class).logout();
 	}
 
-	private void setUnauthorizedStatus(HttpServletResponse response, Exception cause) throws IOException {
+	private void setUnauthorizedStatus(HttpServletResponse response, AuthenticationException cause) throws IOException {
 		response.setStatus(SC_UNAUTHORIZED);
 		response.setContentType("text/html");
 

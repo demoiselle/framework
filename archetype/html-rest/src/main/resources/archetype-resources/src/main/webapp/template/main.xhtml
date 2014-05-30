@@ -1,0 +1,51 @@
+<html xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<f:view contentType="text/html" locale="#{locales.currentLocale}" />
+
+<h:head>
+	<title>#{messages['main.app.title']}</title>
+	<link type="text/css" rel="stylesheet" href="css/styles.css" />
+</h:head>
+
+<h:body style="background-color:#f1f1f1">
+	<table style="width: 100%">
+		<tr>
+			<td height="70" align="left">
+				<a href="index.jsf"><img src="images/logo.png" border="0" /></a>
+				<div style="float: right;">
+					<h:form id="language_form" prependId="true">
+						<h:commandLink action="#{locales.setCurrentLocale('pt')}">
+							<span class="ui-icon-locale-pt" ></span>
+						</h:commandLink>
+						<h:commandLink action="#{locales.setCurrentLocale('en')}">
+							<span class="ui-icon-locale-en" ></span>
+						</h:commandLink>
+					</h:form>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td height="20"><ui:include src="/menu.xhtml" /></td>
+		</tr>
+		<tr valign="top">
+			<td height="400"><ui:insert name="body" /></td>
+		</tr>
+		<tr align="center">
+			<td height="20" align="center" class="text-input">#{messages['main.footer.text']}</td>
+		</tr>
+	</table>
+
+	<p:growl id="messages" globalOnly="true" />
+
+	<p:ajaxStatus style="width:16px;height:16px;">
+		<f:facet name="start">
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+	<link type="text/css" rel="stylesheet" href="css/aristo/skin.css" />
+</h:body>
+</html>

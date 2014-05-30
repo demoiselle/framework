@@ -1,0 +1,44 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" template="/template/main.xhtml">
+
+	<ui:define name="body">
+		<h:form prependId="false">
+			<p:toolbar>
+				<p:toolbarGroup align="left">
+					<p:commandButton value="#{messages['button.save']}" action="#{bookmarkEditMB.insert}"
+						rendered="#{!bookmarkEditMB.updateMode}" ajax="false" />
+					<p:commandButton value="#{messages['button.save']}" action="#{bookmarkEditMB.update}"
+						rendered="#{bookmarkEditMB.updateMode}" ajax="false" />
+					<p:commandButton value="#{messages['button.delete']}" onclick="confirmation.show()"
+						rendered="#{bookmarkEditMB.updateMode}" type="button" immediate="true" ajax="false" />
+					<p:confirmDialog message="#{messages['label.confirm.delete']}" showEffect="bounce" hideEffect="explode"
+						header="#{messages['label.dialog.delete']}" severity="alert" widgetVar="confirmation">
+						<h:commandButton value="#{messages['button.dialog.yes']}" action="#{bookmarkEditMB.delete}" immediate="true"
+							ajax="false" />
+						<h:commandButton value="#{messages['button.dialog.no']}" onclick="confirmation.hide()" type="button" />
+					</p:confirmDialog>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<br />
+
+			<p:fieldset legend="#{messages['bookmark.label']}" toggleable="true" toggleSpeed="500">
+				<h:panelGrid id="fields" columns="3">
+					<h:outputLabel value="#{messages['bookmark.label.id']}: " for="id" styleClass="text-input" />
+					<h:outputText id="id" value="#{bookmarkEditMB.bean.id}" />
+					<p:message for="id" />
+
+					<h:outputLabel value="#{messages['bookmark.label.description']}: " for="description" styleClass="text-input" />
+					<h:inputText id="description" value="#{bookmarkEditMB.bean.description}"
+						title="#{messages['bookmark.alt.description']}" />
+					<p:message for="description" />
+
+					<h:outputLabel value="#{messages['bookmark.label.link']}: " for="link" styleClass="text-input" />
+					<h:inputText id="link" value="#{bookmarkEditMB.bean.link}" title="#{messages['bookmark.alt.link']}" />
+					<p:message for="link" />
+				</h:panelGrid>
+			</p:fieldset>
+		</h:form>
+	</ui:define>
+</ui:composition>

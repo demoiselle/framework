@@ -71,12 +71,6 @@
 			<groupId>br.gov.frameworkdemoiselle</groupId>
 			<artifactId>demoiselle-rest</artifactId>
 			<scope>compile</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.ws.rs</groupId>
-					<artifactId>jsr311-api</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 	</dependencies>
 

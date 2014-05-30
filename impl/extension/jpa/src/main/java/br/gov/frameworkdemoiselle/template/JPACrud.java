@@ -218,7 +218,7 @@ public class JPACrud<T, I> implements Crud<T, I> {
 	 */
 	protected List<T> findByJPQL(String jpql) {
 		TypedQuery<T> listQuery = getEntityManager().createQuery(jpql, getBeanClass());
-
+		
 		if (getPagination() != null) {
 			String countQuery = createCountQuery(jpql);
 			Query query = getEntityManager().createQuery(countQuery);

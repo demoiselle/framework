@@ -1,0 +1,17 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<h:form>
+		<p:menubar>
+			<p:submenu label="#{messages['menu.bookmark']}">
+				<p:menuitem value="#{messages['menu.menuitem.new']}" url="/bookmark_edit.jsf" />
+				<p:menuitem value="#{messages['menu.menuitem.list']}" url="/bookmark_list.jsf" />
+			</p:submenu>
+
+			<p:menuitem value="#{messages['menu.menuitem.quit']}" url="http://www.frameworkdemoiselle.gov.br/"
+				action="#{securityContext.logout}" />
+		</p:menubar>
+	</h:form>
+
+</ui:composition>
