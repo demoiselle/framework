@@ -8,6 +8,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -21,9 +22,7 @@ import br.gov.frameworkdemoiselle.BadRequestException;
 import br.gov.frameworkdemoiselle.NotFoundException;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 
-//@ValidateRequest
 @Path("bookmark")
-// @Consumes(APPLICATION_JSON)
 public class BookmarkREST {
 
 	@Inject
@@ -50,8 +49,8 @@ public class BookmarkREST {
 
 	@POST
 	@Transactional
-	@Consumes("application/json")
 	@Produces("text/plain")
+	@Consumes("application/json")
 	public Response insert(Bookmark entity, @Context UriInfo uriInfo) {
 		if (entity.getId() != null) {
 			throw new BadRequestException();
@@ -63,6 +62,23 @@ public class BookmarkREST {
 		return Response.created(location).entity(id).build();
 	}
 
+	@PUT
+	@Path("{id}")
+	@Transactional
+	@Consumes("application/json")
+	public void update(@PathParam("id") Long id, Bookmark entity) {
+		if (entity.getId() != null) {
+			throw new BadRequestException();
+		}
+
+		if (bc.load(id) == null) {
+			throw new NotFoundException();
+		}
+
+		entity.setId(id);
+		bc.update(entity);
+	}
+	
 	@DELETE
 	@Transactional
 	@Consumes("application/json")
