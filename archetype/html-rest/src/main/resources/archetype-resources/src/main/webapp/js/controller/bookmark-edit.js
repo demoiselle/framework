@@ -48,7 +48,8 @@ function loadOk(data) {
 function loadFailed(request) {
 	switch (request.status) {
 		case 404:
-			console.log(request);
+			alert('Você está tentando acessar um registro inexistente.\r\nVocê será redirecionado.')
+			location.href = "bookmark-list.html";
 			break;
 
 		default:
