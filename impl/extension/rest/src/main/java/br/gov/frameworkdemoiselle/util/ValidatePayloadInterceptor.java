@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.validation;
+package br.gov.frameworkdemoiselle.util;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -50,13 +50,13 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 /**
- * Intercepts calls with {@code @Validate} annotations.
+ * Intercepts calls with {@code @ValidatePayload} annotations.
  * 
  * @author SERPRO
  */
-@Validate
+@ValidatePayload
 @Interceptor
-public class ValidateInterceptor implements Serializable {
+public class ValidatePayloadInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -65,10 +65,11 @@ public class ValidateInterceptor implements Serializable {
 		Set<ConstraintViolation<?>> violations = new HashSet<ConstraintViolation<?>>();
 
 		for (Object params : ic.getParameters()) {
-			ValidatorFactory dfv = Validation.buildDefaultValidatorFactory();
-			Validator validator = dfv.getValidator();
-
-			violations.addAll(validator.validate(params));
+			if (params != null) {
+				ValidatorFactory dfv = Validation.buildDefaultValidatorFactory();
+				Validator validator = dfv.getValidator();
+				violations.addAll(validator.validate(params));
+			}
 		}
 
 		if (!violations.isEmpty()) {

@@ -5,7 +5,7 @@
 		<class>br.gov.frameworkdemoiselle.security.LoggedInInterceptor</class>
 		<class>br.gov.frameworkdemoiselle.security.RequiredPermissionInterceptor</class>
 		<class>br.gov.frameworkdemoiselle.security.RequiredRoleInterceptor</class>
-		<class>br.gov.frameworkdemoiselle.validation.ValidateInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.util.ValidateInterceptor</class>
 		<class>br.gov.frameworkdemoiselle.transaction.TransactionalInterceptor</class>
 		<class>br.gov.frameworkdemoiselle.exception.ExceptionHandlerInterceptor</class>
 	</interceptors>

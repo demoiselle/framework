@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.validation;
+package br.gov.frameworkdemoiselle.util;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
@@ -50,6 +50,6 @@ import javax.interceptor.InterceptorBinding;
 @InterceptorBinding
 @Target({ METHOD, TYPE })
 @Retention(RUNTIME)
-public @interface Validate {
+public @interface ValidatePayload {
 
 }

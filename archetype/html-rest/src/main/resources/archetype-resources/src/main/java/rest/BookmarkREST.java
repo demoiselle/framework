@@ -21,7 +21,7 @@ import ${package}.entity.Bookmark;
 import br.gov.frameworkdemoiselle.BadRequestException;
 import br.gov.frameworkdemoiselle.NotFoundException;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
-import br.gov.frameworkdemoiselle.validation.Validate;
+import br.gov.frameworkdemoiselle.util.ValidatePayload;
 
 @Path("bookmark")
 public class BookmarkREST {
@@ -49,8 +49,8 @@ public class BookmarkREST {
 	}
 
 	@POST
-	@Validate
 	@Transactional
+	@ValidatePayload
 	@Produces("text/plain")
 	@Consumes("application/json")
 	public Response insert(Bookmark entity, @Context UriInfo uriInfo) {
@@ -63,9 +63,9 @@ public class BookmarkREST {
 	}
 
 	@PUT
-	@Validate
 	@Path("{id}")
 	@Transactional
+	@ValidatePayload
 	@Produces("application/json")
 	@Consumes("application/json")
 	public void update(@PathParam("id") Long id, Bookmark entity) {

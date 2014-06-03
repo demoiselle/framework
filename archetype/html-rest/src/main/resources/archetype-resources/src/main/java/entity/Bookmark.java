@@ -26,7 +26,7 @@ public class Bookmark implements Serializable {
 	private String description;
 
 	@NotNull
-	@Pattern(regexp = "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$", message = "formato inválido")
+	@Pattern(regexp = "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$", message = "{invalid.url}")
 	private String link;
 
 	public Bookmark() {
