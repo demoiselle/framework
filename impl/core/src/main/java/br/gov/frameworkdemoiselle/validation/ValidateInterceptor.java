@@ -34,36 +34,47 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.interceptor;
+package br.gov.frameworkdemoiselle.validation;
 
-import javax.inject.Inject;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-
-import org.slf4j.Logger;
-
-import br.gov.frameworkdemoiselle.security.RequiredPermission;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 /**
  * Intercepts calls with {@code @Validate} annotations.
  * 
  * @author SERPRO
  */
-@Deprecated
+@Validate
 @Interceptor
-@RequiredPermission
-public class RequiredPermissionInterceptor extends br.gov.frameworkdemoiselle.security.RequiredPermissionInterceptor {
+public class ValidateInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	private Logger logger;
-
-	@Override
 	@AroundInvoke
-	public Object manage(InvocationContext ic) throws Exception {
-		logger.warn("ATENÇÃO! Substitua a entrada \"br.gov.frameworkdemoiselle.internal.interceptor.RequiredPermissionInterceptor\" no beans.xml por \"br.gov.frameworkdemoiselle.security.RequiredPermissionInterceptor\" para garantir a compatibilidade com futuras versões.");
-		return super.manage(ic);
+	public Object manage(final InvocationContext ic) throws Exception {
+		Set<ConstraintViolation<?>> violations = new HashSet<ConstraintViolation<?>>();
+
+		for (Object params : ic.getParameters()) {
+			ValidatorFactory dfv = Validation.buildDefaultValidatorFactory();
+			Validator validator = dfv.getValidator();
+
+			violations.addAll(validator.validate(params));
+		}
+
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
+		}
+
+		return ic.proceed();
 	}
 }

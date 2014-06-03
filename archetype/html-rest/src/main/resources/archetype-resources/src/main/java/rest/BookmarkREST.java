@@ -37,7 +37,7 @@ public class BookmarkREST {
 	@GET
 	@Path("{id}")
 	@Produces("application/json")
-	public Bookmark load(@PathParam("id") Long id) throws Exception {
+	public Bookmark load(@PathParam("id") Long id) {
 		Bookmark result = bc.load(id);
 
 		if (result == null) {
@@ -52,9 +52,7 @@ public class BookmarkREST {
 	@Produces("text/plain")
 	@Consumes("application/json")
 	public Response insert(Bookmark entity, @Context UriInfo uriInfo) {
-		if (entity.getId() != null) {
-			throw new BadRequestException();
-		}
+		checkId(entity);
 
 		String id = bc.insert(entity).getId().toString();
 		URI location = uriInfo.getRequestUriBuilder().path(id).build();
@@ -67,29 +65,24 @@ public class BookmarkREST {
 	@Transactional
 	@Consumes("application/json")
 	public void update(@PathParam("id") Long id, Bookmark entity) {
-		if (entity.getId() != null) {
-			throw new BadRequestException();
-		}
-
-		if (bc.load(id) == null) {
-			throw new NotFoundException();
-		}
+		checkId(entity);
+		load(id);
 
 		entity.setId(id);
 		bc.update(entity);
-	}
-	
-	@DELETE
-	@Transactional
-	@Consumes("application/json")
-	public void delete(List<Long> ids) {
-		bc.delete(ids);
 	}
 
 	@DELETE
 	@Path("{id}")
 	@Transactional
 	public void delete(@PathParam("id") Long id) {
+		load(id);
 		bc.delete(id);
+	}
+
+	private void checkId(Bookmark entity) throws BadRequestException {
+		if (entity.getId() != null) {
+			throw new BadRequestException();
+		}
 	}
 }

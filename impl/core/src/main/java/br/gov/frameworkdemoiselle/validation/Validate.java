@@ -34,36 +34,22 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.interceptor;
+package br.gov.frameworkdemoiselle.validation;
 
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import org.slf4j.Logger;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import br.gov.frameworkdemoiselle.security.RequiredPermission;
+import javax.interceptor.InterceptorBinding;
 
-/**
- * Intercepts calls with {@code @Validate} annotations.
- * 
- * @author SERPRO
- */
-@Deprecated
-@Interceptor
-@RequiredPermission
-public class RequiredPermissionInterceptor extends br.gov.frameworkdemoiselle.security.RequiredPermissionInterceptor {
+@Inherited
+@InterceptorBinding
+@Target({ METHOD, TYPE })
+@Retention(RUNTIME)
+public @interface Validate {
 
-	private static final long serialVersionUID = 1L;
-
-	@Inject
-	private Logger logger;
-
-	@Override
-	@AroundInvoke
-	public Object manage(InvocationContext ic) throws Exception {
-		logger.warn("ATENÇÃO! Substitua a entrada \"br.gov.frameworkdemoiselle.internal.interceptor.RequiredPermissionInterceptor\" no beans.xml por \"br.gov.frameworkdemoiselle.security.RequiredPermissionInterceptor\" para garantir a compatibilidade com futuras versões.");
-		return super.manage(ic);
-	}
 }

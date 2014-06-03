@@ -51,7 +51,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
 
 /**
- * Intercepts calls with {@code @RequiredPermission} annotations.
+ * Intercepts calls with {@code @Validate} annotations.
  * 
  * @author SERPRO
  */
@@ -66,7 +66,7 @@ public class RequiredPermissionInterceptor implements Serializable {
 	private static transient Logger logger;
 
 	/**
-	 * Gets the values for both resource and operation properties of {@code @RequiredPermission}. Delegates to
+	 * Gets the values for both resource and operation properties of {@code @Validate}. Delegates to
 	 * {@code SecurityContext} check permissions. If the user has the required permission it executes the mehtod,
 	 * otherwise throws an exception. Returns what is returned from the intercepted method. If the method's return type
 	 * is {@code void} returns {@code null}.
@@ -99,12 +99,12 @@ public class RequiredPermissionInterceptor implements Serializable {
 	}
 
 	/**
-	 * Returns the resource defined in {@code @RequiredPermission} annotation, the name defined in {@code @AmbiguousQualifier}
+	 * Returns the resource defined in {@code @Validate} annotation, the name defined in {@code @AmbiguousQualifier}
 	 * annotation or the class name itself
 	 * 
 	 * @param ic
 	 *            the {@code InvocationContext} in which the method is being called
-	 * @return the resource defined in {@code @RequiredPermission} annotation, the name defined in {@code @AmbiguousQualifier}
+	 * @return the resource defined in {@code @Validate} annotation, the name defined in {@code @AmbiguousQualifier}
 	 *         annotation or the class name itself
 	 */
 	private String getResource(InvocationContext ic) {
@@ -127,12 +127,12 @@ public class RequiredPermissionInterceptor implements Serializable {
 	}
 
 	/**
-	 * Returns the operation defined in {@code @RequiredPermission} annotation, the name defined in {@code @AmbiguousQualifier}
+	 * Returns the operation defined in {@code @Validate} annotation, the name defined in {@code @AmbiguousQualifier}
 	 * annotation or the method's name itself
 	 * 
 	 * @param ic
 	 *            the {@code InvocationContext} in which the method is being called
-	 * @return the operation defined in {@code @RequiredPermission} annotation, the name defined in {@code @AmbiguousQualifier}
+	 * @return the operation defined in {@code @Validate} annotation, the name defined in {@code @AmbiguousQualifier}
 	 *         annotation or the method's name itself
 	 */
 	private String getOperation(InvocationContext ic) {
