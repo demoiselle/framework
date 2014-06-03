@@ -45,9 +45,7 @@ BookmarkProxy.update = function($id, $form, $success, $error) {
 BookmarkProxy.remove = function($id, $success, $error) {
 	$.ajax({
 		type : "DELETE",
-		url : this.url,
-		data : JSON.stringify($id),
-		contentType : "application/json",
+		url : this.url + "/" + $id,
 		success : $success,
 		error : $error
 	});

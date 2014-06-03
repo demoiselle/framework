@@ -27,7 +27,7 @@ $(function() {
 
 	$("#delete").click(function() {
 		if (confirm('Tem certeza que deseja apagar?')) {
-			BookmarkProxy.remove([ $("#id").val() ], removeOk);
+			BookmarkProxy.remove($("#id").val(), removeOk);
 		}
 	});
 
@@ -57,7 +57,7 @@ function loadFailed(request) {
 }
 
 function saveOk(data) {
-	history.back();
+	location.href = 'bookmark-list.html';
 }
 
 function saveFailed(request) {
