@@ -7,7 +7,7 @@
 	-->
 	<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
 
-		<class>${package}.domain.Bookmark</class>
+		<class>${package}.entity.Bookmark</class>
 
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver" />
@@ -30,7 +30,7 @@
 	<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
 		<non-jta-data-source>java:/DefaultDS</non-jta-data-source>
 
-		<class>${package}.domain.Bookmark</class>
+		<class>${package}.entity.Bookmark</class>
 
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
@@ -46,7 +46,7 @@
 	<persistence-unit name="bookmark-ds" transaction-type="JTA">
 		<jta-data-source>java:/DefaultDS</jta-data-source>
 
-		<class>${package}.domain.Bookmark</class>
+		<class>${package}.entity.Bookmark</class>
 
 		<properties>
 			<property name="hibernate.show_sql" value="true" />

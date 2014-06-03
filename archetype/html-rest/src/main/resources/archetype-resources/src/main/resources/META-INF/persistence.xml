@@ -8,7 +8,7 @@
 	<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
 		<non-jta-data-source>java:jboss/datasources/ExampleDS</non-jta-data-source>
 
-		<class>${package}.domain.Bookmark</class>
+		<class>${package}.entity.Bookmark</class>
 
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
@@ -23,7 +23,7 @@
 	<persistence-unit name="bookmark-ds" transaction-type="JTA">
 		<jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
 		
-		<class>${package}.domain.Bookmark</class>
+		<class>${package}.entity.Bookmark</class>
 		
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
@@ -41,7 +41,7 @@
 	<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
 		<non-jta-data-source>java:/DefaultDS</non-jta-data-source>
 		
-		<class>${package}.domain.Bookmark</class>
+		<class>${package}.entity.Bookmark</class>
 
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
@@ -57,7 +57,7 @@
 	<persistence-unit name="bookmark-ds" transaction-type="JTA">
 		<jta-data-source>java:/DefaultDS</jta-data-source>
 		
-		<class>${package}.domain.Bookmark</class>
+		<class>${package}.entity.Bookmark</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
@@ -74,7 +74,7 @@
 	<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
 		<non-jta-data-source>jdbc/__default</non-jta-data-source>
 
-		<class>${package}.domain.Bookmark</class>
+		<class>${package}.entity.Bookmark</class>
 
 		<properties>
 			<property name="eclipselink.logging.level" value="FINE" />
@@ -89,7 +89,7 @@
 	<persistence-unit name="bookmark-ds" transaction-type="JTA">
 		<jta-data-source>jdbc/__TimerPool</jta-data-source>
 
-		<class>${package}.domain.Bookmark</class>
+		<class>${package}.entity.Bookmark</class>
 
 		<properties>
 			<property name="eclipselink.logging.level" value="FINE" />
@@ -103,7 +103,7 @@
 	<!--
 	<persistence-unit name="bookmark-ds" transaction-type="RESOURCE_LOCAL">
 
-		<class>${package}.domain.Bookmark</class>
+		<class>${package}.entity.Bookmark</class>
 		
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver" />

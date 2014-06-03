@@ -1,20 +1,15 @@
 package br.gov.frameworkdemoiselle;
 
-import static javax.servlet.http.HttpServletResponse.SC_PRECONDITION_FAILED;
-
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.xml.ws.http.HTTPException;
-
-public class PreconditionFailedException extends HTTPException {
+public class PreconditionFailedException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
 	private Set<Violation> violations = new HashSet<Violation>();
 
 	public PreconditionFailedException() {
-		super(SC_PRECONDITION_FAILED);
 	}
 
 	public PreconditionFailedException addViolation(String property, String message) {

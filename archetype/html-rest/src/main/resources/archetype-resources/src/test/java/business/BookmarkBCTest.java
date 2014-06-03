@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import br.gov.frameworkdemoiselle.junit.DemoiselleRunner;
-import ${package}.domain.Bookmark;
+import ${package}.entity.Bookmark;
 
 @RunWith(DemoiselleRunner.class)
 public class BookmarkBCTest {

@@ -1,5 +1,7 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import static javax.ws.rs.core.Response.Status.PRECONDITION_FAILED;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -11,6 +13,6 @@ public class PreconditionFailedExceptionMapper implements ExceptionMapper<Precon
 
 	@Override
 	public Response toResponse(PreconditionFailedException exception) {
-		return Response.status(exception.getStatusCode()).entity(exception.getViolations()).build();
+		return Response.status(PRECONDITION_FAILED).entity(exception.getViolations()).build();
 	}
 }

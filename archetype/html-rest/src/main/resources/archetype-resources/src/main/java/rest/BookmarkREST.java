@@ -17,10 +17,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ${package}.business.BookmarkBC;
-import ${package}.domain.Bookmark;
+import ${package}.entity.Bookmark;
 import br.gov.frameworkdemoiselle.BadRequestException;
 import br.gov.frameworkdemoiselle.NotFoundException;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
+import br.gov.frameworkdemoiselle.validation.Validate;
 
 @Path("bookmark")
 public class BookmarkREST {
@@ -48,6 +49,7 @@ public class BookmarkREST {
 	}
 
 	@POST
+	@Validate
 	@Transactional
 	@Produces("text/plain")
 	@Consumes("application/json")
@@ -61,9 +63,11 @@ public class BookmarkREST {
 	}
 
 	@PUT
+	@Validate
 	@Path("{id}")
 	@Transactional
 	@Consumes("application/json")
+	@Produces("application/json")
 	public void update(@PathParam("id") Long id, Bookmark entity) {
 		checkId(entity);
 		load(id);

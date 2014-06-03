@@ -5,7 +5,7 @@ import br.gov.frameworkdemoiselle.stereotype.BusinessController;
 import br.gov.frameworkdemoiselle.template.DelegateCrud;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 
-import ${package}.domain.Bookmark;
+import ${package}.entity.Bookmark;
 import ${package}.persistence.BookmarkDAO;
 
 @BusinessController
