@@ -133,6 +133,9 @@
 	<profiles>
 		<profile>
 			<id>arquillian-test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<dependencies>
 				<dependency>
 					<groupId>com.sun.faces</groupId>
