@@ -52,6 +52,7 @@
 				<exclude>**/*.png</exclude>
 				<exclude>**/*.gif</exclude>
 				<exclude>**/*.jpg</exclude>
+				<exclude>**/*.js</exclude>
 			</excludes>
 		</fileSet>
 		<fileSet filtered="false" packaged="false">
@@ -60,6 +61,7 @@
 				<include>**/*.png</include>
 				<include>**/*.gif</include>
 				<include>**/*.jpg</include>
+				<include>**/*.js</include>
 			</includes>
 		</fileSet>
 		<fileSet filtered="true" packaged="true">
