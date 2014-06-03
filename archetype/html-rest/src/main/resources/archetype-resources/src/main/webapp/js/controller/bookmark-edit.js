@@ -89,5 +89,5 @@ function saveFailed(request) {
 }
 
 function removeOk(data) {
-	history.back();
+	location.href = 'bookmark-list.html';
 }
