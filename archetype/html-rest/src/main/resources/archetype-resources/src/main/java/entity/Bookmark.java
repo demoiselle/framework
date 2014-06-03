@@ -1,4 +1,4 @@
-package ${package}.domain;
+package ${package}.entity;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
