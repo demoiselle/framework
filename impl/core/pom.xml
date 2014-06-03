@@ -189,7 +189,6 @@
 	</repositories>
 
 	<properties>
-		<demoiselle.validation.version>2.4.0-BETA2-SNAPSHOT</demoiselle.validation.version>
 		<arquillian.bom.version>1.1.1.Final</arquillian.bom.version>
 	</properties>
 </project>
