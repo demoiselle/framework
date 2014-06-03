@@ -66,8 +66,8 @@ public class BookmarkREST {
 	@Validate
 	@Path("{id}")
 	@Transactional
-	@Consumes("application/json")
 	@Produces("application/json")
+	@Consumes("application/json")
 	public void update(@PathParam("id") Long id, Bookmark entity) {
 		checkId(entity);
 		load(id);
