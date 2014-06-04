@@ -2,7 +2,6 @@ package ${package}.business;
 
 import ${package}.entity.Bookmark;
 import ${package}.persistence.BookmarkDAO;
-import a8.a8.entity.Bookmark;
 import br.gov.frameworkdemoiselle.lifecycle.Startup;
 import br.gov.frameworkdemoiselle.stereotype.BusinessController;
 import br.gov.frameworkdemoiselle.template.DelegateCrud;
