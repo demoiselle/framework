@@ -40,7 +40,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 
 import br.gov.frameworkdemoiselle.internal.configuration.PaginationConfig;
 import br.gov.frameworkdemoiselle.pagination.Pagination;
@@ -54,7 +54,7 @@ import br.gov.frameworkdemoiselle.util.Beans;
  * @author SERPRO
  * @see PaginationContext
  */
-@SessionScoped
+@RequestScoped
 public class PaginationContextImpl implements Serializable, PaginationContext {
 
 	private static final long serialVersionUID = 1L;
@@ -62,6 +62,10 @@ public class PaginationContextImpl implements Serializable, PaginationContext {
 	private PaginationConfig config;
 
 	private final Map<Class<?>, Pagination> cache = new HashMap<Class<?>, Pagination>();
+
+	public PaginationContextImpl() {
+		System.out.println();
+	}
 
 	public Pagination getPagination(final Class<?> clazz) {
 		return this.getPagination(clazz, false);

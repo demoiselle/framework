@@ -20,6 +20,7 @@ import ${package}.business.BookmarkBC;
 import ${package}.entity.Bookmark;
 import br.gov.frameworkdemoiselle.BadRequestException;
 import br.gov.frameworkdemoiselle.NotFoundException;
+import br.gov.frameworkdemoiselle.security.LoggedIn;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.ValidatePayload;
 
@@ -49,6 +50,7 @@ public class BookmarkREST {
 	}
 
 	@POST
+	@LoggedIn
 	@Transactional
 	@ValidatePayload
 	@Produces("text/plain")
@@ -63,6 +65,7 @@ public class BookmarkREST {
 	}
 
 	@PUT
+	@LoggedIn
 	@Path("{id}")
 	@Transactional
 	@ValidatePayload
@@ -77,6 +80,7 @@ public class BookmarkREST {
 	}
 
 	@DELETE
+	@LoggedIn
 	@Path("{id}")
 	@Transactional
 	public void delete(@PathParam("id") Long id) {
@@ -84,7 +88,7 @@ public class BookmarkREST {
 		bc.delete(id);
 	}
 
-	private void checkId(Bookmark entity) throws BadRequestException {
+	private void checkId(Bookmark entity) {
 		if (entity.getId() != null) {
 			throw new BadRequestException();
 		}

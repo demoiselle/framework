@@ -67,8 +67,17 @@ public class BasicAuthFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
+		if (request instanceof HttpServletRequest && ((HttpServletRequest) request).getUserPrincipal() == null) {
+			tryLogin((HttpServletRequest) request, (HttpServletResponse) response, chain);
+		} else {
+			chain.doFilter(request, response);
+		}
+	}
+
+	private void tryLogin(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
 		try {
-			boolean isLoggedIn = performLogin(getAuthHeader(request), (HttpServletRequest) request);
+			boolean isLoggedIn = performLogin(getAuthHeader(request), request);
 
 			chain.doFilter(request, response);
 
@@ -77,7 +86,7 @@ public class BasicAuthFilter implements Filter {
 			}
 
 		} catch (InvalidCredentialsException cause) {
-			setUnauthorizedStatus((HttpServletResponse) response, cause);
+			setUnauthorizedStatus(response, cause);
 		}
 	}
 
@@ -112,17 +121,9 @@ public class BasicAuthFilter implements Filter {
 		response.getWriter().close();
 	}
 
-	private String getAuthHeader(ServletRequest request) {
-		String result = null;
-
-		if (request instanceof HttpServletRequest) {
-			HttpServletRequest httpRequest = ((HttpServletRequest) request);
-
-			result = httpRequest.getHeader("Authorization");
-			result = (result == null ? httpRequest.getHeader("authorization") : result);
-		}
-
-		return result;
+	private String getAuthHeader(HttpServletRequest request) {
+		String result = request.getHeader("Authorization");
+		return (result == null ? request.getHeader("authorization") : result);
 	}
 
 	private static String[] getCredentials(String header) throws InvalidCredentialsException {

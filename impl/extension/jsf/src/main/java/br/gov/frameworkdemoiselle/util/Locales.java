@@ -59,6 +59,10 @@ public class Locales implements Serializable {
 	private static final Locale PT_BR = new Locale("pt", "BR");
 	
 	private Locale locale = Locale.getDefault();
+	
+	public Locales() {
+		System.out.println();
+	}
 
 	@Inject
 	private FacesContext facesContext;

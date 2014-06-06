@@ -66,6 +66,14 @@ public class ServletFilter implements Filter {
 			ServletException {
 		setDelegate(request, response);
 		chain.doFilter(request, response);
+
+		// if (request instanceof HttpServletRequest) {
+		// Object attribute = ((HttpServletRequest) request).getAttribute("x");
+		// ((HttpServletResponse) response).setHeader("Set-Cookie", "");
+		// ((HttpServletResponse) response).setHeader("XXXX", "CCCC");
+		// response.getWriter().flush();
+		// response.getWriter().close();
+		// }
 	}
 
 	private void setDelegate(ServletRequest request, ServletResponse response) {

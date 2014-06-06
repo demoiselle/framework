@@ -50,7 +50,7 @@ import org.junit.runner.RunWith;
 
 import test.Tests;
 import transaction.defaultstrategy.TransactionDefaultTest;
-import br.gov.frameworkdemoiselle.context.SessionContext;
+import br.gov.frameworkdemoiselle.context.RequestContext;
 import br.gov.frameworkdemoiselle.internal.configuration.PaginationConfig;
 import br.gov.frameworkdemoiselle.pagination.Pagination;
 import br.gov.frameworkdemoiselle.pagination.PaginationContext;
@@ -95,14 +95,16 @@ public class PaginationContextBasicTest {
 
 	@Before
 	public void activeContext() {
-		SessionContext context = Beans.getReference(SessionContext.class);
+		// SessionContext context = Beans.getReference(SessionContext.class);
+		RequestContext context = Beans.getReference(RequestContext.class);
 		context.activate();
 		pagination = paginationContext.getPagination(DummyEntity.class, true);
 	}
 
 	@After
 	public void deactiveContext() {
-		SessionContext context = Beans.getReference(SessionContext.class);
+		// SessionContext context = Beans.getReference(SessionContext.class);
+		RequestContext context = Beans.getReference(RequestContext.class);
 		context.deactivate();
 	}
 

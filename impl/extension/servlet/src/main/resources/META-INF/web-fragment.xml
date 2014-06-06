@@ -52,6 +52,8 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+	<!--
+	-->
 	<filter>
 		<filter-name>Demoiselle BasicAuth Filter</filter-name>
 		<filter-class>br.gov.frameworkdemoiselle.util.BasicAuthFilter</filter-class>

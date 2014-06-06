@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Bookmark implements Serializable {
@@ -23,14 +24,15 @@ public class Bookmark implements Serializable {
 	private Long id;
 
 	@NotNull
+	@Size(min = 1, message = "{required.field}")
 	private String description;
 
 	@NotNull
-	@Pattern(regexp = "^([a-zA-Z]+://)?(\\w+\\.\\w+)(.+)?$", message = "{invalid.url}")
+	@Size(min = 1, message = "{required.field}")
+	@Pattern(regexp = "^|([a-zA-Z]+://)(\\w+\\.\\w+)(.+)?$", message = "{invalid.url}")
 	private String link;
 
 	public Bookmark() {
-		super();
 	}
 
 	public Bookmark(String description, String link) {

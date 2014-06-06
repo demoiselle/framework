@@ -37,6 +37,8 @@
 package br.gov.frameworkdemoiselle.util;
 
 import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
@@ -47,7 +49,8 @@ import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
  * 
  * @author SERPRO
  */
-public class ServletListener implements javax.servlet.ServletContextListener {
+@WebListener
+public class ServletListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
