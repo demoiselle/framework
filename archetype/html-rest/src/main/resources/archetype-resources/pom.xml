@@ -20,12 +20,13 @@
 	</parent>
 
 	<dependencies>
+		<!-- Demoiselle dependencies -->
 		<dependency>
 			<groupId>br.gov.frameworkdemoiselle</groupId>
 			<artifactId>demoiselle-jpa</artifactId>
 			<scope>compile</scope>
 		</dependency>
-		<!-- If you are using a JTA transaction then use this extension -->
+		<!-- Uncomment this dependency if you are using a JTA -->
 		<!--
 		<dependency>
 		    <groupId>br.gov.frameworkdemoiselle</groupId>
@@ -34,16 +35,12 @@
 		</dependency>
 		-->
 
+		<!-- Jackson dependencies -->
 		<dependency>
-			<groupId>br.gov.frameworkdemoiselle.component</groupId>
-			<artifactId>demoiselle-junit</artifactId>
-			<version>2.3.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<scope>test</scope>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.9</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>
