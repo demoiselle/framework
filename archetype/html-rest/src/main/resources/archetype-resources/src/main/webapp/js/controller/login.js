@@ -15,14 +15,23 @@ $(function() {
 
 });
 
+// Função utilitária
+function make_base_auth(user, password) {
+  var tok = user + ':' + password;
+  var hash = btoa(tok);
+  return "Basic " + hash;
+}
+
 // Funções de Callback
 
 function loginOk(data) {
-	location.href = "pendencies.html";
+	sessionStorage.setItem('credential', 
+							make_base_auth($("#username").val().trim(), $("#password").val().trim()));
+	location.href = "bookmark-list.html";
 }
 
 function loginFail(request) {
-
+	sessionStorage.clear();
 	switch (request.status) {
 		case 401:
 			$("#global-message").html("Usuário ou senha inválidos.").show();

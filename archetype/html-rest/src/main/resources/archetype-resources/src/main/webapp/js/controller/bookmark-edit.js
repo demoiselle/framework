@@ -63,6 +63,9 @@ function saveOk(data) {
 
 function saveFailed(request) {
 	switch (request.status) {
+		case 401:
+			alert('Você não está autenticado.');
+			break;
 		case 412:
 			$($("form input").get().reverse()).each(function() {
 				var id = $(this).attr('id');
