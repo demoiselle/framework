@@ -27,7 +27,10 @@ BookmarkProxy.insert = function($form, $success, $error) {
 		data : JSON.stringify($form),
 		contentType : "application/json",
 		success : $success,
-		error : $error
+		error : $error,
+		beforeSend: function (xhr) {
+		    xhr.setRequestHeader ("Authorization", AuthProxy.getCredential());
+		}
 	});
 };
 
@@ -38,7 +41,10 @@ BookmarkProxy.update = function($id, $form, $success, $error) {
 		data : JSON.stringify($form),
 		contentType : "application/json",
 		success : $success,
-		error : $error
+		error : $error,
+		beforeSend: function (xhr) {
+		    xhr.setRequestHeader ("Authorization", AuthProxy.getCredential());
+		}
 	});
 };
 
@@ -47,6 +53,9 @@ BookmarkProxy.remove = function($id, $success, $error) {
 		type : "DELETE",
 		url : this.url + "/" + $id,
 		success : $success,
-		error : $error
+		error : $error,
+		beforeSend: function (xhr) {
+		    xhr.setRequestHeader ("Authorization", AuthProxy.getCredential());
+		}
 	});
 };

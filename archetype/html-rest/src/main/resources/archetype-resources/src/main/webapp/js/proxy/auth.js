@@ -30,3 +30,7 @@ AuthProxy.getUser = function($success, $error) {
 		error : $error
 	});
 };
+
+AuthProxy.getCredential = function(){
+	return sessionStorage.getItem('credential');
+}
