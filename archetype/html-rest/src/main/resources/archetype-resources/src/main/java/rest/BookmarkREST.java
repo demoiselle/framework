@@ -53,7 +53,7 @@ public class BookmarkREST {
 	@LoggedIn
 	@Transactional
 	@ValidatePayload
-	@Produces("text/plain")
+	@Produces("application/json")
 	@Consumes("application/json")
 	public Response insert(Bookmark entity, @Context UriInfo uriInfo) {
 		checkId(entity);

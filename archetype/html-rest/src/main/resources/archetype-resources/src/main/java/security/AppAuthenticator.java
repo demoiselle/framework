@@ -9,7 +9,7 @@ import br.gov.frameworkdemoiselle.security.InvalidCredentialsException;
 import br.gov.frameworkdemoiselle.security.User;
 
 @RequestScoped
-public class SimpleAuthenticator implements Authenticator {
+public class AppAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
 
@@ -20,32 +20,11 @@ public class SimpleAuthenticator implements Authenticator {
 
 	@Override
 	public void authenticate() throws Exception {
-		if (credentials.getUsername().equalsIgnoreCase("admin") && credentials.getPassword().equalsIgnoreCase("admin")) {
-			this.user = createUser();
+		if ("admin".equals(credentials.getUsername()) && "admin".equals(credentials.getPassword())) {
+			this.user = new AppUser(credentials.getUsername());
 		} else {
 			throw new InvalidCredentialsException("usuário ou senha inválidos");
 		}
-	}
-
-	private User createUser() {
-		return new User() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public String getId() {
-				return credentials.getUsername();
-			}
-
-			@Override
-			public void setAttribute(Object key, Object value) {
-			}
-
-			@Override
-			public Object getAttribute(Object key) {
-				return null;
-			}
-		};
 	}
 
 	@Override
