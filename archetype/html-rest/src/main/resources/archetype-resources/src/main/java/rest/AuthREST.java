@@ -1,7 +1,6 @@
 package ${package}.rest;
 
 import javax.inject.Inject;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
@@ -28,7 +27,7 @@ public class AuthREST {
 	@ValidatePayload
 	@Produces("application/json")
 	@Consumes("application/json")
-	public void login(@Valid CredentialsForm form) {
+	public void login(CredentialsForm form) {
 		Credentials credentials = Beans.getReference(Credentials.class);
 		credentials.setUsername(form.username);
 		credentials.setPassword(form.password);
