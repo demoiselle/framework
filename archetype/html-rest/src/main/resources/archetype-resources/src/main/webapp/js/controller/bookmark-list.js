@@ -23,10 +23,7 @@ $(function() {
 		if (ids.length == 0) {
 			alert('Nenhum registro selecionado');
 		} else if (confirm('Tem certeza que deseja apagar?')) {
-			$.each(ids, function(key, id){
-				BookmarkProxy.remove(id, removeOk);
-			})
-			
+			BookmarkProxy.remove(ids, removeOk, removeFailed);
 		}
 	});
 });
@@ -34,7 +31,6 @@ $(function() {
 var oTable;
 
 function findAllOk(data) {
-
 	oTable = $('#resultList').dataTable({
 		"aoColumns" : [ {
 			"aTargets" : [ 0 ],
@@ -77,4 +73,15 @@ function findAllOk(data) {
 
 function removeOk() {
 	BookmarkProxy.findAll(findAllOk);
+}
+
+function removeFailed(request) {
+	switch (request.status) {
+		case 401:
+			alert('Você não está autenticado.');
+			break;
+
+		default:
+			break;
+	}
 }

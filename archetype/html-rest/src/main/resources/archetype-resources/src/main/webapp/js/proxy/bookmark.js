@@ -48,10 +48,12 @@ BookmarkProxy.update = function($id, $form, $success, $error) {
 	});
 };
 
-BookmarkProxy.remove = function($id, $success, $error) {
+BookmarkProxy.remove = function($ids, $success, $error) {
 	$.ajax({
 		type : "DELETE",
-		url : this.url + "/" + $id,
+		url : this.url,
+		data : JSON.stringify($ids),
+		contentType : "application/json",
 		success : $success,
 		error : $error,
 		beforeSend: function (xhr) {

@@ -88,6 +88,13 @@ public class BookmarkREST {
 		bc.delete(id);
 	}
 
+	@DELETE
+	@LoggedIn
+	@Transactional
+	public void delete(List<Long> ids) {
+		bc.delete(ids);
+	}
+
 	private void checkId(Bookmark entity) {
 		if (entity.getId() != null) {
 			throw new BadRequestException();
