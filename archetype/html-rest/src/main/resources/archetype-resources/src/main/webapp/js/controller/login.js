@@ -24,7 +24,7 @@ function make_base_auth(user, password) {
 // Funções de Callback
 
 function loginOk(data) {
-	sessionStorage.setItem('credential', make_base_auth($("#username").val().trim(), $("#password").val().trim()));
+	sessionStorage.setItem('credentials', make_base_auth($("#username").val().trim(), $("#password").val().trim()));
 	location.href = "bookmark-list.html";
 }
 

@@ -28,8 +28,8 @@ BookmarkProxy.insert = function($form, $success, $error) {
 		contentType : "application/json",
 		success : $success,
 		error : $error,
-		beforeSend: function (xhr) {
-		    xhr.setRequestHeader ("Authorization", AuthProxy.getCredential());
+		beforeSend : function(xhr) {
+			xhr.setRequestHeader("Authorization", AuthProxy.getCredentials());
 		}
 	});
 };
@@ -42,8 +42,8 @@ BookmarkProxy.update = function($id, $form, $success, $error) {
 		contentType : "application/json",
 		success : $success,
 		error : $error,
-		beforeSend: function (xhr) {
-		    xhr.setRequestHeader ("Authorization", AuthProxy.getCredential());
+		beforeSend : function(xhr) {
+			xhr.setRequestHeader("Authorization", AuthProxy.getCredentials());
 		}
 	});
 };
@@ -56,8 +56,8 @@ BookmarkProxy.remove = function($ids, $success, $error) {
 		contentType : "application/json",
 		success : $success,
 		error : $error,
-		beforeSend: function (xhr) {
-		    xhr.setRequestHeader ("Authorization", AuthProxy.getCredential());
+		beforeSend : function(xhr) {
+			xhr.setRequestHeader("Authorization", AuthProxy.getCredentials());
 		}
 	});
 };

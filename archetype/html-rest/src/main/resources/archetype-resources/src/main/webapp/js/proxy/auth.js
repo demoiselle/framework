@@ -31,6 +31,6 @@ AuthProxy.getUser = function($success, $error) {
 	});
 };
 
-AuthProxy.getCredential = function(){
-	return sessionStorage.getItem('credential');
+AuthProxy.getCredentials = function(){
+	return sessionStorage.getItem('credentials');
 }
