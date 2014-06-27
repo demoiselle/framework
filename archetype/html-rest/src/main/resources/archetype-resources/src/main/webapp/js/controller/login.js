@@ -1,5 +1,4 @@
 $(function() {
-
 	$("#username").focus();
 
 	$("form").submit(function(event) {
@@ -17,16 +16,15 @@ $(function() {
 
 // Função utilitária
 function make_base_auth(user, password) {
-  var tok = user + ':' + password;
-  var hash = btoa(tok);
-  return "Basic " + hash;
+	var tok = user + ':' + password;
+	var hash = btoa(tok);
+	return "Basic " + hash;
 }
 
 // Funções de Callback
 
 function loginOk(data) {
-	sessionStorage.setItem('credential', 
-							make_base_auth($("#username").val().trim(), $("#password").val().trim()));
+	sessionStorage.setItem('credential', make_base_auth($("#username").val().trim(), $("#password").val().trim()));
 	location.href = "bookmark-list.html";
 }
 
@@ -36,6 +34,7 @@ function loginFail(request) {
 		case 401:
 			$("#global-message").html("Usuário ou senha inválidos.").show();
 			break;
+
 		case 412:
 			$($("form input").get().reverse()).each(function() {
 				var id = $(this).attr('id');

@@ -1,29 +1,28 @@
 package ${package}.security;
 
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.Credentials;
 import br.gov.frameworkdemoiselle.security.InvalidCredentialsException;
 import br.gov.frameworkdemoiselle.security.User;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 @RequestScoped
 public class AppAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	private Credentials credentials;
-
 	private User user;
 
 	@Override
 	public void authenticate() throws Exception {
-		if ("admin".equals(credentials.getUsername()) && "admin".equals(credentials.getPassword())) {
+		Credentials credentials = Beans.getReference(Credentials.class);
+
+		if (credentials.getUsername().equals("admin") && credentials.getPassword().equals("admin")) {
 			this.user = new AppUser(credentials.getUsername());
 		} else {
-			throw new InvalidCredentialsException("usuário ou senha inválidos");
+			throw new InvalidCredentialsException();
 		}
 	}
 

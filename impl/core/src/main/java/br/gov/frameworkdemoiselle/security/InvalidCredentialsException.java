@@ -1,5 +1,9 @@
 package br.gov.frameworkdemoiselle.security;
 
+import java.util.ResourceBundle;
+
+import br.gov.frameworkdemoiselle.util.Beans;
+
 /**
  * Thrown when the user's credentials are invalid.
  * 
@@ -8,6 +12,10 @@ package br.gov.frameworkdemoiselle.security;
 public class InvalidCredentialsException extends AuthenticationException {
 
 	private static final long serialVersionUID = 1L;
+
+	public InvalidCredentialsException() {
+		super(Beans.getReference(ResourceBundle.class).getString("invalid-credentials"));
+	}
 
 	/**
 	 * Constructs an <code>InvalidCredentialsException</code> with a message.

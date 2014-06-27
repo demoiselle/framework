@@ -71,7 +71,7 @@ public class ServletAuthenticator implements Authenticator {
 			if (cause.getMessage().toLowerCase().contains("invalid")
 					|| cause.getMessage().toLowerCase().contains("incorrect")
 					|| cause.getMessage().toLowerCase().contains("failed")) {
-				throw new InvalidCredentialsException(getBundle().getString("invalid-credentials"), cause);
+				throw new InvalidCredentialsException();
 			} else {
 				throw new AuthenticationException(getBundle().getString("authentication-failed"), cause);
 			}
