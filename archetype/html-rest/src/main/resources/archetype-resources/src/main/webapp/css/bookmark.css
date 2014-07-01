@@ -1,7 +1,7 @@
 body {
 	padding-top: 20px;
 	padding-bottom: 20px;
-	margin-top: 60px;
+	margin-top: 20px;
 }
 
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button {

@@ -27,7 +27,10 @@ AuthProxy.getUser = function($success, $error) {
 		url : this.url,
 		type : "GET",
 		success : $success,
-		error : $error
+		error : $error,
+		beforeSend : function(xhr) {
+			xhr.setRequestHeader("Authorization", AuthProxy.getCredentials());
+		}
 	});
 };
 

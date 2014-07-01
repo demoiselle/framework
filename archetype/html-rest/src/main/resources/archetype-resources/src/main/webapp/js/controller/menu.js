@@ -1,11 +1,9 @@
 $(function() {
-
 	AuthProxy.getUser(getUserOk, getUserFailed);
-	
 });
 
 function getUserOk(data){
-	console.log('getUserOk');
+	$("#username").html(data.username);
 }
 
 function getUserFailed(request){

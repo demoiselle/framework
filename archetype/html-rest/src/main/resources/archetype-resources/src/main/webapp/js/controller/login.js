@@ -25,7 +25,7 @@ function make_base_auth(user, password) {
 
 function loginOk(data) {
 	sessionStorage.setItem('credentials', make_base_auth($("#username").val().trim(), $("#password").val().trim()));
-	location.href = "bookmark-list.html";
+	location.href = "home.html";
 }
 
 function loginFail(request) {
