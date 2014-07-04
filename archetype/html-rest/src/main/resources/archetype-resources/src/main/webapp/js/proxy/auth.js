@@ -18,7 +18,11 @@ AuthProxy.logout = function($success, $error) {
 		url : this.url,
 		type : "DELETE",
 		success : $success,
-		error : $error
+		error : $error,
+		beforeSend : function(xhr) {
+			console.log(AuthProxy.getCredentials());
+			xhr.setRequestHeader("Authorization", AuthProxy.getCredentials());
+		}
 	});
 };
 
@@ -34,6 +38,6 @@ AuthProxy.getUser = function($success, $error) {
 	});
 };
 
-AuthProxy.getCredentials = function(){
+AuthProxy.getCredentials = function() {
 	return sessionStorage.getItem('credentials');
 }
