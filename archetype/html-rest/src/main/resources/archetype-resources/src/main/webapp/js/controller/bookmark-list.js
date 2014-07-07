@@ -1,4 +1,17 @@
 $(function() {
+	
+	// Carregando o menu na página home
+	$("#menu").load("menu.html", function() {
+
+		AuthProxy.getUser(getUserOk, getUserFailed);
+
+		$("#logout").on("click", function() {
+			sessionStorage.removeItem('credentials');
+			location.href = "home.html";
+		});
+
+	});
+	
 	$("#new").focus();
 
 	$(document).ready(function() {
@@ -21,9 +34,14 @@ $(function() {
 		});
 
 		if (ids.length == 0) {
-			alert('Nenhum registro selecionado');
-		} else if (confirm('Tem certeza que deseja apagar?')) {
-			BookmarkProxy.remove(ids, removeOk, removeFailed);
+			bootbox.alert({message: "Nenhum registro selecionado"});
+		} else {
+			bootbox.confirm("Tem certeza que deseja apagar?", function(result) {
+				console.log(result);
+				if(result) {
+					BookmarkProxy.remove(ids, removeOk, removeFailed);
+				}
+			}); 
 		}
 	});
 });
