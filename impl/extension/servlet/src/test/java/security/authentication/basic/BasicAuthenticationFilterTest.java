@@ -9,9 +9,11 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -63,6 +65,12 @@ public class BasicAuthenticationFilterTest {
 	public void loginFailed() throws ClientProtocolException, IOException {
 		String username = "invalid";
 		String password = "invalid";
+		
+		
+		HttpPost x = new HttpPost();
+		x.setEntity(null);
+		
+		//HttpEntity entity
 
 		HttpGet get = new HttpGet(deploymentUrl + "/helper");
 		byte[] encoded = Base64.encodeBase64((username + ":" + password).getBytes());

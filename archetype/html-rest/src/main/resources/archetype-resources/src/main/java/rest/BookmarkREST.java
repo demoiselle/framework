@@ -12,6 +12,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -22,6 +23,7 @@ import br.gov.frameworkdemoiselle.BadRequestException;
 import br.gov.frameworkdemoiselle.NotFoundException;
 import br.gov.frameworkdemoiselle.security.LoggedIn;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
+import br.gov.frameworkdemoiselle.util.Strings;
 import br.gov.frameworkdemoiselle.util.ValidatePayload;
 
 @Path("bookmark")
@@ -32,8 +34,16 @@ public class BookmarkREST {
 
 	@GET
 	@Produces("application/json")
-	public List<Bookmark> find() throws Exception {
-		return bc.findAll();
+	public List<Bookmark> find(@QueryParam("q") String query) throws Exception {
+		List<Bookmark> result;
+
+		if (Strings.isEmpty(query)) {
+			result = bc.findAll();
+		} else {
+			result = bc.find(query);
+		}
+
+		return result;
 	}
 
 	@GET

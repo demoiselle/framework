@@ -4,7 +4,6 @@ import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -40,12 +39,6 @@ public class AuthREST {
 	@Produces("application/json")
 	public User getLoggedInUser() {
 		return securityContext.getUser();
-	}
-
-	@DELETE
-	@LoggedIn
-	public void logout() {
-		securityContext.logout();
 	}
 
 	public static class CredentialsForm {

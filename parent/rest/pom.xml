@@ -34,7 +34,8 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -66,11 +67,43 @@
 		<url>http://www.serpro.gov.br</url>
 	</organization>
 
+	<!--
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<version>${arquillian.bom.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	-->
+
 	<dependencies>
 		<dependency>
 			<groupId>br.gov.frameworkdemoiselle</groupId>
 			<artifactId>demoiselle-rest</artifactId>
 			<scope>compile</scope>
+		</dependency>
+		
+		
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.resolver</groupId>
+			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.protocol</groupId>
+			<artifactId>arquillian-protocol-servlet</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -95,14 +128,108 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
+			<!--
+			<dependencyManagement>
+				<dependencies>
+					<dependency>
+						<groupId>org.jboss.as</groupId>
+						<artifactId>jboss-as-parent</artifactId>
+						<version>${jboss.as.version}</version>
+						<type>pom</type>
+						<scope>import</scope>
+					</dependency>
+				</dependencies>
+			</dependencyManagement>
+			-->
 			<dependencies>
 				<dependency>
 					<groupId>javax.ws.rs</groupId>
 					<artifactId>jsr311-api</artifactId>
 					<scope>provided</scope>
 				</dependency>
+				
+				<!-- Test dependencies -->
+				<!--
+				<dependency>
+					<groupId>org.jboss.as</groupId>
+					<artifactId>jboss-as-arquillian-container-remote</artifactId>
+					<scope>test</scope>
+				</dependency>
+				-->
+			</dependencies>
+			<!--
+			<properties>
+				<jboss.as.version>7.2.0.Final</jboss.as.version>
+			</properties>
+			-->
+		</profile>
+		<!--
+		<profile>
+			<id>arquillian-test</id>
+			<dependencies>
+				<dependency>
+					<groupId>br.gov.frameworkdemoiselle</groupId>
+					<artifactId>demoiselle-core</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>javax.enterprise</groupId>
+							<artifactId>cdi-api</artifactId>
+						</exclusion>
+						<exclusion>
+							<artifactId>validation-api</artifactId>
+							<groupId>javax.validation</groupId>
+						</exclusion>
+						<exclusion>
+							<groupId>org.slf4j</groupId>
+							<artifactId>slf4j-api</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>org.javassist</groupId>
+							<artifactId>javassist</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>commons-configuration</groupId>
+							<artifactId>commons-configuration</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+				<dependency>
+					<groupId>br.gov.frameworkdemoiselle</groupId>
+					<artifactId>demoiselle-servlet</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>javax.servlet</groupId>
+							<artifactId>javax.servlet-api</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>commons-codec</groupId>
+							<artifactId>commons-codec</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+				<dependency>
+					<groupId>br.gov.frameworkdemoiselle</groupId>
+					<artifactId>demoiselle-jpa</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>org.eclipse.persistence</groupId>
+							<artifactId>javax.persistence</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+				<dependency>
+					<groupId>br.gov.frameworkdemoiselle</groupId>
+					<artifactId>demoiselle-jta</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>javax.transaction</groupId>
+							<artifactId>jta</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
 			</dependencies>
 		</profile>
+		-->
 	</profiles>
 
 	<repositories>
@@ -129,4 +256,10 @@
 			</releases>
 		</repository>
 	</repositories>
+
+	<!--
+	<properties>
+		<arquillian.bom.version>1.1.1.Final</arquillian.bom.version>
+	</properties>
+	-->
 </project>

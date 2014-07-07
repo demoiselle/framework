@@ -1,5 +1,7 @@
 package ${package}.business;
 
+import java.util.List;
+
 import ${package}.entity.Bookmark;
 import ${package}.persistence.BookmarkDAO;
 import br.gov.frameworkdemoiselle.lifecycle.Startup;
@@ -30,5 +32,9 @@ public class BookmarkBC extends DelegateCrud<Bookmark, Long, BookmarkDAO> {
 					"http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22br.gov.frameworkdemoiselle%22"));
 			insert(new Bookmark("Binários", "http://sourceforge.net/projects/demoiselle/files/framework"));
 		}
+	}
+
+	public List<Bookmark> find(String filter) {
+		return getDelegate().find(filter);
 	}
 }
