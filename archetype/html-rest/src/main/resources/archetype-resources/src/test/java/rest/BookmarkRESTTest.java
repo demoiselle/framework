@@ -52,7 +52,7 @@ public class BookmarkRESTTest {
 		client = HttpClientBuilder.create().build();
 		mapper = new ObjectMapper();
 
-		Configuration config = new PropertiesConfiguration("demoiselle.properties");
+		Configuration config = new PropertiesConfiguration("test.properties");
 		url = config.getString("services.url");
 	}
 
