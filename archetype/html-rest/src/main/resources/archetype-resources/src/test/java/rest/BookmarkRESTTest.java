@@ -15,8 +15,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -38,19 +39,21 @@ import br.gov.frameworkdemoiselle.PreconditionFailedException;
 
 public class BookmarkRESTTest {
 
-	private HttpHost host;
-
 	private static final String BASIC_CREDENTIALS = "Basic " + Base64.encodeBase64String("admin:admin".getBytes());
 
 	private CloseableHttpClient client;
 
 	private ObjectMapper mapper;
 
+	private String url;
+
 	@Before
-	public void before() {
-		host = new HttpHost("localhost", 8080, "http");
+	public void before() throws Exception {
 		client = HttpClientBuilder.create().build();
 		mapper = new ObjectMapper();
+
+		Configuration config = new PropertiesConfiguration("demoiselle.properties");
+		url = config.getString("services.url");
 	}
 
 	@After
@@ -63,8 +66,8 @@ public class BookmarkRESTTest {
 		HttpGet request;
 		CloseableHttpResponse response;
 
-		request = new HttpGet("/a15/api/bookmark");
-		response = client.execute(host, request);
+		request = new HttpGet(url + "/bookmark");
+		response = client.execute(request);
 		response.close();
 		List<Bookmark> listAll = mapper.readValue(response.getEntity().getContent(),
 				new TypeReference<List<Bookmark>>() {
@@ -72,8 +75,8 @@ public class BookmarkRESTTest {
 		assertEquals(SC_OK, response.getStatusLine().getStatusCode());
 
 		String filter = "po";
-		request = new HttpGet("/a15/api/bookmark?q=" + filter);
-		response = client.execute(host, request);
+		request = new HttpGet(url + "/bookmark?q=" + filter);
+		response = client.execute(request);
 		response.close();
 		List<Bookmark> filteredList = mapper.readValue(response.getEntity().getContent(),
 				new TypeReference<List<Bookmark>>() {
@@ -91,8 +94,8 @@ public class BookmarkRESTTest {
 	public void loadSuccessful() throws Exception {
 		Long id = parseEntity(createSample().getEntity(), Long.class);
 
-		HttpGet request = new HttpGet("/a15/api/bookmark/" + id);
-		CloseableHttpResponse response = client.execute(host, request);
+		HttpGet request = new HttpGet(url + "/bookmark/" + id);
+		CloseableHttpResponse response = client.execute(request);
 		response.close();
 		assertEquals(SC_OK, response.getStatusLine().getStatusCode());
 
@@ -106,8 +109,8 @@ public class BookmarkRESTTest {
 
 	@Test
 	public void loadFailed() throws ClientProtocolException, IOException {
-		HttpGet get = new HttpGet("/a15/api/bookmark/99999999");
-		CloseableHttpResponse response = client.execute(host, get);
+		HttpGet request = new HttpGet(url + "/bookmark/99999999");
+		CloseableHttpResponse response = client.execute(request);
 		response.close();
 		assertEquals(SC_NOT_FOUND, response.getStatusLine().getStatusCode());
 	}
@@ -116,9 +119,9 @@ public class BookmarkRESTTest {
 	public void deleteSuccessful() throws Exception {
 		Long id = parseEntity(createSample().getEntity(), Long.class);
 
-		HttpDelete request = new HttpDelete("/a15/api/bookmark/" + id);
+		HttpDelete request = new HttpDelete(url + "/bookmark/" + id);
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
-		CloseableHttpResponse response = client.execute(host, request);
+		CloseableHttpResponse response = client.execute(request);
 		response.close();
 		assertEquals(SC_NO_CONTENT, response.getStatusLine().getStatusCode());
 	}
@@ -129,15 +132,15 @@ public class BookmarkRESTTest {
 		CloseableHttpResponse response;
 
 		Long id = parseEntity(createSample().getEntity(), Long.class);
-		request = new HttpDelete("/a15/api/bookmark/" + id);
-		response = client.execute(host, request);
+		request = new HttpDelete(url + "/bookmark/" + id);
+		response = client.execute(request);
 		response.close();
 		assertEquals(SC_UNAUTHORIZED, response.getStatusLine().getStatusCode());
 		destroySample(id);
 
-		request = new HttpDelete("/a15/api/bookmark/99999999");
+		request = new HttpDelete(url + "/bookmark/99999999");
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
-		response = client.execute(host, request);
+		response = client.execute(request);
 		response.close();
 		assertEquals(SC_NOT_FOUND, response.getStatusLine().getStatusCode());
 	}
@@ -150,12 +153,12 @@ public class BookmarkRESTTest {
 		Long id = parseEntity(response.getEntity(), Long.class);
 		assertNotNull(id);
 
-		String expectedLocation = host.toString() + "/a15/api/bookmark/" + id;
+		String expectedLocation = url + "/bookmark/" + id;
 		String returnedLocation = response.getHeaders("Location")[0].getValue();
 		assertEquals(expectedLocation, returnedLocation);
 
 		HttpGet request = new HttpGet(returnedLocation);
-		response = client.execute(host, request);
+		response = client.execute(request);
 		response.close();
 
 		destroySample(id);
@@ -172,19 +175,19 @@ public class BookmarkRESTTest {
 		bookmark = new Bookmark();
 		bookmark.setDescription("Google");
 		bookmark.setLink("http://google.com");
-		request = new HttpPost("/a15/api/bookmark");
+		request = new HttpPost(url + "/bookmark");
 		request.setEntity(createEntity(bookmark));
 		request.addHeader("Content-Type", "application/json");
-		response = client.execute(host, request);
+		response = client.execute(request);
 		response.close();
 		assertEquals(SC_UNAUTHORIZED, response.getStatusLine().getStatusCode());
 
 		bookmark = new Bookmark();
-		request = new HttpPost("/a15/api/bookmark");
+		request = new HttpPost(url + "/bookmark");
 		request.setEntity(createEntity(bookmark));
 		request.addHeader("Content-Type", "application/json");
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
-		response = client.execute(host, request);
+		response = client.execute(request);
 		response.close();
 		assertEquals(SC_PRECONDITION_FAILED, response.getStatusLine().getStatusCode());
 		violations = mapper.readValue(response.getEntity().getContent(),
@@ -198,11 +201,11 @@ public class BookmarkRESTTest {
 		bookmark = new Bookmark();
 		bookmark.setDescription("Google");
 		bookmark.setLink("http: // google . com");
-		request = new HttpPost("/a15/api/bookmark");
+		request = new HttpPost(url + "/bookmark");
 		request.setEntity(createEntity(bookmark));
 		request.addHeader("Content-Type", "application/json");
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
-		response = client.execute(host, request);
+		response = client.execute(request);
 		response.close();
 		assertEquals(SC_PRECONDITION_FAILED, response.getStatusLine().getStatusCode());
 		violations = mapper.readValue(response.getEntity().getContent(),
@@ -215,11 +218,11 @@ public class BookmarkRESTTest {
 		bookmark.setId(Long.valueOf(123456789));
 		bookmark.setDescription("Test");
 		bookmark.setLink("http://test.com");
-		request = new HttpPost("/a15/api/bookmark");
+		request = new HttpPost(url + "/bookmark");
 		request.setEntity(createEntity(bookmark));
 		request.addHeader("Content-Type", "application/json");
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
-		response = client.execute(host, request);
+		response = client.execute(request);
 		response.close();
 		assertEquals(SC_BAD_REQUEST, response.getStatusLine().getStatusCode());
 	}
@@ -235,18 +238,18 @@ public class BookmarkRESTTest {
 		bookmark.setLink("http://maps.google.com");
 
 		Long id = parseEntity(response.getEntity(), Long.class);
-		String url = "/a15/api/bookmark/" + id;
+		String resourceUrl = url + "/bookmark/" + id;
 
-		request = new HttpPut(url);
+		request = new HttpPut(resourceUrl);
 		((HttpPut) request).setEntity(createEntity(bookmark));
 		request.addHeader("Content-Type", "application/json");
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
-		response = client.execute(host, request);
+		response = client.execute(request);
 		response.close();
 		assertEquals(SC_NO_CONTENT, response.getStatusLine().getStatusCode());
 
-		request = new HttpGet(url);
-		response = client.execute(host, request);
+		request = new HttpGet(resourceUrl);
+		response = client.execute(request);
 		response.close();
 		Bookmark result = parseEntity(response.getEntity(), Bookmark.class);
 		assertEquals(id, result.getId());
@@ -269,19 +272,19 @@ public class BookmarkRESTTest {
 		bookmark = new Bookmark();
 		bookmark.setDescription("Google");
 		bookmark.setLink("http://google.com");
-		request = new HttpPut("/a15/api/bookmark/" + id);
+		request = new HttpPut(url + "/bookmark/" + id);
 		request.setEntity(createEntity(bookmark));
 		request.addHeader("Content-Type", "application/json");
-		response = client.execute(host, request);
+		response = client.execute(request);
 		response.close();
 		assertEquals(SC_UNAUTHORIZED, response.getStatusLine().getStatusCode());
 
 		bookmark = new Bookmark();
-		request = new HttpPut("/a15/api/bookmark/" + id);
+		request = new HttpPut(url + "/bookmark/" + id);
 		request.setEntity(createEntity(bookmark));
 		request.addHeader("Content-Type", "application/json");
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
-		response = client.execute(host, request);
+		response = client.execute(request);
 		response.close();
 		assertEquals(SC_PRECONDITION_FAILED, response.getStatusLine().getStatusCode());
 		violations = mapper.readValue(response.getEntity().getContent(),
@@ -295,11 +298,11 @@ public class BookmarkRESTTest {
 		bookmark = new Bookmark();
 		bookmark.setDescription("Google");
 		bookmark.setLink("http: // google . com");
-		request = new HttpPut("/a15/api/bookmark/" + id);
+		request = new HttpPut(url + "/bookmark/" + id);
 		request.setEntity(createEntity(bookmark));
 		request.addHeader("Content-Type", "application/json");
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
-		response = client.execute(host, request);
+		response = client.execute(request);
 		response.close();
 		assertEquals(SC_PRECONDITION_FAILED, response.getStatusLine().getStatusCode());
 		violations = mapper.readValue(response.getEntity().getContent(),
@@ -312,11 +315,11 @@ public class BookmarkRESTTest {
 		bookmark.setId(Long.valueOf(123456789));
 		bookmark.setDescription("Test");
 		bookmark.setLink("http://test.com");
-		request = new HttpPut("/a15/api/bookmark/" + id);
+		request = new HttpPut(url + "/bookmark/" + id);
 		request.setEntity(createEntity(bookmark));
 		request.addHeader("Content-Type", "application/json");
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
-		response = client.execute(host, request);
+		response = client.execute(request);
 		response.close();
 		assertEquals(SC_BAD_REQUEST, response.getStatusLine().getStatusCode());
 
@@ -328,21 +331,21 @@ public class BookmarkRESTTest {
 		bookmark.setDescription("Google");
 		bookmark.setLink("http://google.com");
 
-		HttpPost request = new HttpPost("/a15/api/bookmark");
+		HttpPost request = new HttpPost(url + "/bookmark");
 		request.setEntity(EntityBuilder.create().setText(mapper.writeValueAsString(bookmark)).build());
 		request.addHeader("Content-Type", "application/json");
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
 
-		CloseableHttpResponse response = client.execute(host, request);
+		CloseableHttpResponse response = client.execute(request);
 		response.close();
 
 		return response;
 	}
 
 	private void destroySample(Long id) throws Exception {
-		HttpDelete request = new HttpDelete("/a15/api/bookmark/" + id);
+		HttpDelete request = new HttpDelete(url + "/bookmark/" + id);
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
-		client.execute(host, request).close();
+		client.execute(request).close();
 	}
 
 	private <T> T parseEntity(HttpEntity entity, Class<T> type) throws Exception {
