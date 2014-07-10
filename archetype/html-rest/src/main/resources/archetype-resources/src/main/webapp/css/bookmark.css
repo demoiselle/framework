@@ -16,3 +16,12 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   padding: 15px 15px;
 	position: relative;
 }
+
+.demoiselle {
+	position: fixed;
+	text-align: center;
+	margin-bottom: 100px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
