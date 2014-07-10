@@ -39,9 +39,11 @@ $(function() {
 	});
 
 	$("#delete").click(function() {
-		if (confirm('Tem certeza que deseja apagar?')) {
-			BookmarkProxy.remove([$("#id").val()], removeOk);
-		}
+		bootbox.confirm("Tem certeza que deseja apagar?", function(result) {
+			if(result) {
+				BookmarkProxy.remove([$("#id").val()], removeOk, removeFailed);
+			}
+		}); 
 	});
 
 	$("#back").click(function() {
@@ -108,4 +110,15 @@ function saveFailed(request) {
 
 function removeOk(data) {
 	location.href = 'bookmark-list.html';
+}
+
+function removeFailed(request) {
+	switch (request.status) {
+		case 401:
+			alert('Você não está autenticado.');
+			break;
+
+		default:
+			break;
+	}
 }

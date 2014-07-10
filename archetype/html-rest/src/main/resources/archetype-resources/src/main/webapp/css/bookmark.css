@@ -8,3 +8,11 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 	-webkit-appearance: none;
 	margin: 0;
 }
+
+#username {
+  color: #777;
+  display: block;
+	line-height: 20px;
+  padding: 15px 15px;
+	position: relative;
+}
