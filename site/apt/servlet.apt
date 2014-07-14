@@ -34,9 +34,10 @@
 ~~ 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 
                                     ------
-                                    JPA extension
+                                    Servlet extension
                                     
-JPA extension
+Servlet extension
   
-  Esta extensão habilita o uso de JPA para tratar a persistência. Nela são disponibilizados uma fábrica de EntityManager, 
-  um mecanismo de transação para JPA e um template para o DAO.
+  Esta extensão possibilita a injeção de elementos da especificação Servlet. Nela são disponibilidos fábricas de
+  HttpServletResponse, HttpServletRequest, HttpSession; implementação do mecanismo de controle de acesso que delega
+  a responsabilidade para o login-config definido no web.xml; além de filtros e listeners.  

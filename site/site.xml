@@ -63,13 +63,15 @@
 		<menu name="Demoiselle 2">
 			<item name="Sobre" href="index.html" />
 			<item name="Documentação" href="http://demoiselle.sourceforge.net/docs" />
-			<item name="Notas de Versão" href="release-notes.html" />
+			<item name="Notas de Versão" href="https://demoiselle.atlassian.net/browse/FWK/?selectedTab=com.atlassian.jira.jira-projects-plugin:versions-panel" />
 		</menu>
 
 		<menu name="Módulos">
 			<item name="Core" href="/core.html" />
 			<item name="JPA extension" href="/jpa.html" />
+			<item name="Servlet extension" href="/servlet.html" />
 			<item name="JSF extension" href="/jsf.html" />
+			<item name="REST extension" href="/rest.html" />
 			<item name="SE extension" href="/se.html" />
 			<item name="JTA extension" href="/jta.html" />
 		</menu>

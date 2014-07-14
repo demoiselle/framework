@@ -34,9 +34,9 @@
 ~~ 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 
                                     ------
-                                    JPA extension
+                                    REST extension
                                     
-JPA extension
+REST extension
   
-  Esta extensão habilita o uso de JPA para tratar a persistência. Nela são disponibilizados uma fábrica de EntityManager, 
-  um mecanismo de transação para JPA e um template para o DAO.
+  Esta extensão habilita o uso da especificação JAX-RS para expor serviços. Nela são disponibilizadas exceções,
+  mapeadores de exceção, interceptadores para validação.
