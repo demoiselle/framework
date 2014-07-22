@@ -1,27 +1,25 @@
 body {
-	padding-top: 20px;
-	padding-bottom: 20px;
-	margin-top: 20px;
+	padding-top: 30px;
 }
 
-input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button {
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button
+	{
 	-webkit-appearance: none;
 	margin: 0;
 }
 
 #username {
-  color: #777;
-  display: block;
+	color: #777;
+	display: block;
 	line-height: 20px;
-  padding: 15px 15px;
+	padding: 15px 15px;
 	position: relative;
 }
 
 .demoiselle {
-	position: fixed;
 	text-align: center;
-	margin-bottom: 100px;
-	bottom: 0;
-	left: 0;
-	right: 0;
+}
+
+.navbar-brand {
+	font-size: 22pt;
 }
