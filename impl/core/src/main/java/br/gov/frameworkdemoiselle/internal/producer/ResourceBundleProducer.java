@@ -57,28 +57,6 @@ public class ResourceBundleProducer implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * This method should be used by classes that can not inject ResourceBundle, to create the ResourceBundle.
-	 * 
-	 * @param String
-	 *            baseName
-	 */
-	@Deprecated
-	public ResourceBundle create(String baseName) {
-		return create(baseName, Beans.getReference(Locale.class));
-	}
-
-	/**
-	 * This method should be used by classes that can not inject ResourceBundle, to create the ResourceBundle.
-	 * 
-	 * @param String
-	 *            baseName
-	 */
-	@Deprecated
-	public ResourceBundle create(String baseName, Locale locale) {
-		return new ResourceBundle(baseName, locale);
-	}
-
-	/**
 	 * This method is the factory default for ResourceBundle. It creates the ResourceBundle based on a file called
 	 * messages.properties.
 	 */
