@@ -8,20 +8,15 @@ $(function() {
 			'username' : $("#username").val().trim(),
 			'password' : $("#password").val().trim()
 		};
-
 		AuthProxy.login(form, loginOk, loginFail);
 	});
-
 });
 
-// Função utilitária
 function make_base_auth(user, password) {
 	var tok = user + ':' + password;
 	var hash = btoa(tok);
 	return "Basic " + hash;
 }
-
-// Funções de Callback
 
 function loginOk(data) {
 	sessionStorage.setItem('credentials', make_base_auth($("#username").val().trim(), $("#password").val().trim()));
