@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.util;
+package br.gov.frameworkdemoiselle.security;
 
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
@@ -57,6 +57,7 @@ import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Credentials;
 import br.gov.frameworkdemoiselle.security.InvalidCredentialsException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 public class BasicAuthFilter implements Filter {
 
@@ -67,11 +68,11 @@ public class BasicAuthFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
-		if (request instanceof HttpServletRequest && ((HttpServletRequest) request).getUserPrincipal() == null) {
-			tryLogin((HttpServletRequest) request, (HttpServletResponse) response, chain);
-		} else {
+//		if (request instanceof HttpServletRequest && ((HttpServletRequest) request).getUserPrincipal() == null) {
+//			tryLogin((HttpServletRequest) request, (HttpServletResponse) response, chain);
+//		} else {
 			chain.doFilter(request, response);
-		}
+//		}
 	}
 
 	private void tryLogin(HttpServletRequest request, HttpServletResponse response, FilterChain chain)

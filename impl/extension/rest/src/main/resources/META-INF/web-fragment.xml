@@ -35,26 +35,23 @@
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
 <web-fragment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd" version="3.0" id="demoiselle-servlet">
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd" version="3.0"
+	id="demoiselle-servlet">
 
-	<name>demoiselle_servlet</name>
-
-	<listener>
-		<listener-class>br.gov.frameworkdemoiselle.util.ServletListener</listener-class>
-	</listener>
+	<name>demoiselle_rest</name>
 
 	<filter>
-		<filter-name>Demoiselle Servlet Filter</filter-name>
-		<filter-class>br.gov.frameworkdemoiselle.util.ServletFilter</filter-class>
+		<filter-name>Demoiselle Token Auth Filter</filter-name>
+		<filter-class>br.gov.frameworkdemoiselle.security.TokenAuthFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>Demoiselle Servlet Filter</filter-name>
+		<filter-name>Demoiselle Token Auth Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
 	<ordering>
-		<before>
-			<others />
-		</before>
+		<after>
+			<name>demoiselle_servlet</name>
+		</after>
 	</ordering>
 </web-fragment>

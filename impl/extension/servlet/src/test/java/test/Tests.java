@@ -51,7 +51,7 @@ import br.gov.frameworkdemoiselle.internal.producer.ServletLocaleProducer;
 import br.gov.frameworkdemoiselle.security.Credentials;
 import br.gov.frameworkdemoiselle.security.ServletAuthenticator;
 import br.gov.frameworkdemoiselle.security.ServletAuthorizer;
-import br.gov.frameworkdemoiselle.util.BasicAuthFilter;
+//import br.gov.frameworkdemoiselle.util.BasicAuthFilter;
 import br.gov.frameworkdemoiselle.util.ServletFilter;
 import br.gov.frameworkdemoiselle.util.ServletListener;
 
@@ -80,7 +80,7 @@ public final class Tests {
 				.addClass(HttpServletResponseProducer.class)
 				.addClass(HttpSessionProducer.class)
 				.addClass(ServletLocaleProducer.class)
-				.addClass(BasicAuthFilter.class)
+//				.addClass(BasicAuthFilter.class)
 				.addAsResource(createFileAsset("src/main/resources/demoiselle-servlet-bundle.properties"),
 						"demoiselle-servlet-bundle.properties")
 				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")
