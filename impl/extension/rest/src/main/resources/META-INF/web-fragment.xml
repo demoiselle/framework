@@ -41,6 +41,15 @@
 	<name>demoiselle_rest</name>
 
 	<filter>
+		<filter-name>Demoiselle BasicAuth Filter</filter-name>
+		<filter-class>br.gov.frameworkdemoiselle.security.BasicAuthFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Demoiselle BasicAuth Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
 		<filter-name>Demoiselle Token Auth Filter</filter-name>
 		<filter-class>br.gov.frameworkdemoiselle.security.TokenAuthFilter</filter-class>
 	</filter>

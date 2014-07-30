@@ -36,98 +36,41 @@
  */
 package br.gov.frameworkdemoiselle.security;
 
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
-
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.codec.binary.Base64;
 
-import br.gov.frameworkdemoiselle.security.AuthenticationException;
-import br.gov.frameworkdemoiselle.security.Credentials;
-import br.gov.frameworkdemoiselle.security.InvalidCredentialsException;
-import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.Strings;
 
-public class BasicAuthFilter implements Filter {
+public class BasicAuthFilter extends AbstractHTTPAuthorizationFilter {
+
+	private String header;
 
 	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
+	protected boolean isSupported(String authHeader) {
+		header = authHeader;
+		return !Strings.isEmpty(header);
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-			ServletException {
-//		if (request instanceof HttpServletRequest && ((HttpServletRequest) request).getUserPrincipal() == null) {
-//			tryLogin((HttpServletRequest) request, (HttpServletResponse) response, chain);
-//		} else {
-			chain.doFilter(request, response);
-//		}
-	}
-
-	private void tryLogin(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
-		try {
-			boolean isLoggedIn = performLogin(getAuthHeader(request), request);
-
-			chain.doFilter(request, response);
-
-			if (isLoggedIn) {
-				performLogout();
-			}
-
-		} catch (InvalidCredentialsException cause) {
-			setUnauthorizedStatus(response, cause);
-		}
-	}
-
-	private boolean performLogin(String header, HttpServletRequest request) {
-		boolean result = false;
-		SecurityContext securityContext = Beans.getReference(SecurityContext.class);
-
+	protected void prepareForLogin() {
 		if (header != null) {
 			String[] basicCredentials = getCredentials(header);
 
 			Credentials credentials = Beans.getReference(Credentials.class);
 			credentials.setUsername(basicCredentials[0]);
 			credentials.setPassword(basicCredentials[1]);
-
-			securityContext.login();
-			result = securityContext.isLoggedIn();
 		}
-
-		return result;
 	}
 
-	private void performLogout() {
-		Beans.getReference(SecurityContext.class).logout();
+	@Override
+	protected void prepareForLogout() {
 	}
 
-	private void setUnauthorizedStatus(HttpServletResponse response, AuthenticationException cause) throws IOException {
-		response.setStatus(SC_UNAUTHORIZED);
-		response.setContentType("text/html");
-
-		response.getWriter().write(cause.getMessage());
-		response.getWriter().flush();
-		response.getWriter().close();
-	}
-
-	private String getAuthHeader(HttpServletRequest request) {
-		String result = request.getHeader("Authorization");
-		return (result == null ? request.getHeader("authorization") : result);
-	}
-
-	private static String[] getCredentials(String header) throws InvalidCredentialsException {
+	private static String[] getCredentials(String header)
+			throws InvalidCredentialsException {
 		String[] result = null;
 
 		String regexp = "^Basic[ \\n]+(.+)$";
@@ -140,13 +83,11 @@ public class BasicAuthFilter implements Filter {
 		}
 
 		if (result == null || result.length != 2) {
-			throw new InvalidCredentialsException("Formato inválido do cabeçalho");
+			throw new InvalidCredentialsException(
+					"Formato inválido do cabeçalho");
 		}
 
 		return result;
 	}
 
-	@Override
-	public void destroy() {
-	}
 }
