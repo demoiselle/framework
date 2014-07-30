@@ -1,19 +1,12 @@
 $(function() {
 	
-	$("#menu").load("menu.html", function() {
-		AuthProxy.getUser(getUserOk, getUserFailed);
-		$("#logout").on("click", function() {
-			sessionStorage.removeItem('credentials');
-			location.href = "home.html";
-		});
-	});
-	
 	$("#delete").hide();
+
 	$("#description").focus();
 
 	$(document).ready(function() {
 		if (id = $.url().param('id')) {
-			BookmarkProxy.load(id, loadOk, loadFailed);
+			BookmarkProxy.load(id).done(loadOk).fail(loadFailed);
 		}
 	});
 
@@ -28,16 +21,16 @@ $(function() {
 		};
 
 		if (id = $("#id").val()) {
-			BookmarkProxy.update(id, form, saveOk, saveFailed);
+			BookmarkProxy.update(id, form).done(saveOk).fail(saveFailed);
 		} else {
-			BookmarkProxy.insert(form, saveOk, saveFailed);
+			BookmarkProxy.insert(form).done(saveOk).fail(saveFailed);
 		}
 	});
 
 	$("#delete").click(function() {
 		bootbox.confirm("Tem certeza que deseja apagar?", function(result) {
 			if(result) {
-				BookmarkProxy.remove([$("#id").val()], removeOk, removeFailed);
+				BookmarkProxy.remove([$("#id").val()]).done(removeOk);
 			}
 		}); 
 	});
@@ -59,8 +52,9 @@ function loadOk(data) {
 function loadFailed(request) {
 	switch (request.status) {
 		case 404:
-			alert('Você está tentando acessar um registro inexistente.\r\nVocê será redirecionado.')
-			location.href = "bookmark-list.html";
+			bootbox.alert("Você está tentando acessar um registro inexistente!", function(){
+				location.href = "bookmark-list.html";
+			});
 			break;
 
 		default:
@@ -74,10 +68,6 @@ function saveOk(data) {
 
 function saveFailed(request) {
 	switch (request.status) {
-		case 401:
-			alert('Você não está autenticado.');
-			break;
-
 		case 412:
 			$($("form input").get().reverse()).each(function() {
 				var id = $(this).attr('id');
@@ -106,15 +96,4 @@ function saveFailed(request) {
 
 function removeOk(data) {
 	location.href = 'bookmark-list.html';
-}
-
-function removeFailed(request) {
-	switch (request.status) {
-		case 401:
-			alert('Você não está autenticado.');
-			break;
-
-		default:
-			break;
-	}
 }

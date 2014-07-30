@@ -1,17 +1,9 @@
 $(function() {
 	
-	$("#menu").load("menu.html", function() {
-		AuthProxy.getUser(getUserOk, getUserFailed);
-		$("#logout").on("click", function() {
-			sessionStorage.removeItem('credentials');
-			location.href = "home.html";
-		});
-	});
-	
 	$("#new").focus();
 
 	$(document).ready(function() {
-		BookmarkProxy.findAll(findAllOk);
+		BookmarkProxy.findAll().done(findAllOk);
 	});
 
 	$("form").submit(function(event) {
@@ -33,19 +25,16 @@ $(function() {
 			bootbox.alert({message: "Nenhum registro selecionado"});
 		} else {
 			bootbox.confirm("Tem certeza que deseja apagar?", function(result) {
-				console.log(result);
 				if(result) {
-					BookmarkProxy.remove(ids, removeOk, removeFailed);
+					BookmarkProxy.remove(ids).done(removeOk);
 				}
 			}); 
 		}
 	});
 });
 
-var oTable;
-
 function findAllOk(data) {
-	oTable = $('#resultList').dataTable({
+	var oTable = $('#resultList').dataTable({
 		"aoColumns" : [ {
 			"aTargets" : [ 0 ],
 			"mDataProp" : "id",
@@ -86,16 +75,5 @@ function findAllOk(data) {
 }
 
 function removeOk() {
-	BookmarkProxy.findAll(findAllOk);
-}
-
-function removeFailed(request) {
-	switch (request.status) {
-		case 401:
-			alert('Você não está autenticado.');
-			break;
-
-		default:
-			break;
-	}
+	BookmarkProxy.findAll().done(findAllOk);
 }

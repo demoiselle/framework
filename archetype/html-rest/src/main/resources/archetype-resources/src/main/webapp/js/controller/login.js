@@ -3,12 +3,15 @@ $(function() {
 
 	$("form").submit(function(event) {
 		event.preventDefault();
+		
 		$("[id$='-message']").hide();
+		
 		var form = {
 			'username' : $("#username").val().trim(),
 			'password' : $("#password").val().trim()
 		};
-		AuthProxy.login(form, loginOk, loginFail);
+		
+		AuthProxy.login(form).done(loginOk).fail(loginFail);
 	});
 });
 
@@ -19,12 +22,11 @@ function make_base_auth(user, password) {
 }
 
 function loginOk(data) {
-	sessionStorage.setItem('credentials', make_base_auth($("#username").val().trim(), $("#password").val().trim()));
+	App.setToken(make_base_auth($("#username").val().trim(), $("#password").val().trim()));
 	location.href = "home.html";
 }
 
 function loginFail(request) {
-	sessionStorage.clear();
 	switch (request.status) {
 		case 401:
 			$("#global-message").html("Usuário ou senha inválidos.").show();

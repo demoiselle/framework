@@ -1,43 +1,35 @@
-var AuthProxy = {};
+var AuthProxy = {
 
-AuthProxy.url = "api/auth";
+	url : "api/auth",
 
-AuthProxy.login = function($credentials, $success, $error) {
-	$.ajax({
-		url : this.url,
-		type : "POST",
-		data : JSON.stringify($credentials),
-		contentType : "application/json",
-		success : $success,
-		error : $error
-	});
-};
+	login : function($credentials) {
+		return $.ajax({
+			url : this.url,
+			type : "POST",
+			data : JSON.stringify($credentials),
+			contentType : "application/json",
+			error: function(){ } 
+		});
+	},
 
-AuthProxy.logout = function($success, $error) {
-	$.ajax({
-		url : this.url,
-		type : "DELETE",
-		success : $success,
-		error : $error,
-		beforeSend : function(xhr) {
-			console.log(AuthProxy.getCredentials());
-			xhr.setRequestHeader("Authorization", AuthProxy.getCredentials());
-		}
-	});
-};
+	logout : function() {
+		return $.ajax({
+			url : this.url,
+			type : "DELETE",
+			beforeSend : function(request) {
+				request.setRequestHeader("Authorization", App.getToken());
+			}
+		});
+	},
 
-AuthProxy.getUser = function($success, $error) {
-	$.ajax({
-		url : this.url,
-		type : "GET",
-		success : $success,
-		error : $error,
-		beforeSend : function(xhr) {
-			xhr.setRequestHeader("Authorization", AuthProxy.getCredentials());
-		}
-	});
-};
+	getUser : function() {
+		return $.ajax({
+			url : this.url,
+			type : "GET",
+			beforeSend : function(request) {
+				request.setRequestHeader("Authorization", App.getToken());
+			}
+		});
+	}
 
-AuthProxy.getCredentials = function() {
-	return sessionStorage.getItem('credentials');
 }
