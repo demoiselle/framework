@@ -10,14 +10,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import br.gov.frameworkdemoiselle.PreconditionFailedException;
+import br.gov.frameworkdemoiselle.UnprocessableEntityException;
 
 @Provider
 public class ConstraintViolationExceptionMapper implements ExceptionMapper<ConstraintViolationException> {
 
 	@Override
 	public Response toResponse(ConstraintViolationException exception) {
-		PreconditionFailedException failed = new PreconditionFailedException();
+		UnprocessableEntityException failed = new UnprocessableEntityException();
 
 		for (Iterator<ConstraintViolation<?>> iter = exception.getConstraintViolations().iterator(); iter.hasNext();) {
 			ConstraintViolation<?> violation = iter.next();

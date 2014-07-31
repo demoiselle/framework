@@ -36,9 +36,6 @@
  */
 package br.gov.frameworkdemoiselle.security;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.codec.binary.Base64;
 
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -46,48 +43,37 @@ import br.gov.frameworkdemoiselle.util.Strings;
 
 public class BasicAuthFilter extends AbstractHTTPAuthorizationFilter {
 
-	private String header;
+	private String credentials;
 
 	@Override
 	protected boolean isSupported(String authHeader) {
-		header = authHeader;
-		return !Strings.isEmpty(header);
+		credentials = extractCredentials("Basic", authHeader);
+		return !Strings.isEmpty(credentials);
 	}
 
 	@Override
 	protected void prepareForLogin() {
-		if (header != null) {
-			String[] basicCredentials = getCredentials(header);
+		String[] basicCredentials = getCredentials(credentials);
 
-			Credentials credentials = Beans.getReference(Credentials.class);
-			credentials.setUsername(basicCredentials[0]);
-			credentials.setPassword(basicCredentials[1]);
-		}
+		Credentials credentials = Beans.getReference(Credentials.class);
+		credentials.setUsername(basicCredentials[0]);
+		credentials.setPassword(basicCredentials[1]);
 	}
 
 	@Override
 	protected void prepareForLogout() {
 	}
 
-	private static String[] getCredentials(String header)
-			throws InvalidCredentialsException {
+	private static String[] getCredentials(String header) throws InvalidCredentialsException {
 		String[] result = null;
 
-		String regexp = "^Basic[ \\n]+(.+)$";
-		Pattern pattern = Pattern.compile(regexp);
-		Matcher matcher = pattern.matcher(header);
-
-		if (matcher.matches()) {
-			byte[] decoded = Base64.decodeBase64(matcher.group(1));
-			result = new String(decoded).split(":");
-		}
+		byte[] decoded = Base64.decodeBase64(header);
+		result = new String(decoded).split(":");
 
 		if (result == null || result.length != 2) {
-			throw new InvalidCredentialsException(
-					"Formato inválido do cabeçalho");
+			throw new InvalidCredentialsException("Formato inválido do cabeçalho");
 		}
 
 		return result;
 	}
-
 }

@@ -3,16 +3,19 @@ package br.gov.frameworkdemoiselle;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PreconditionFailedException extends Exception {
+public class HttpViolationException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
 	private Set<Violation> violations = new HashSet<Violation>();
 
-	public PreconditionFailedException() {
+	private int statusCode;
+
+	public HttpViolationException(int statusCode) {
+		this.statusCode = statusCode;
 	}
 
-	public PreconditionFailedException addViolation(String property, String message) {
+	public HttpViolationException addViolation(String property, String message) {
 		this.violations.add(new Violation(property, message));
 		return this;
 	}
@@ -86,5 +89,9 @@ public class PreconditionFailedException extends Exception {
 		public String toString() {
 			return this.property + " " + this.message;
 		}
+	}
+
+	public int getStatusCode() {
+		return statusCode;
 	}
 }
