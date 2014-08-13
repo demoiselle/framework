@@ -49,7 +49,7 @@ public class BookmarkREST {
 	@GET
 	@Path("{id}")
 	@Produces("application/json")
-	public Bookmark load(@PathParam("id") Long id) {
+	public Bookmark load(@PathParam("id") Long id) throws Exception {
 		Bookmark result = bc.load(id);
 
 		if (result == null) {
@@ -65,7 +65,7 @@ public class BookmarkREST {
 	@ValidatePayload
 	@Produces("application/json")
 	@Consumes("application/json")
-	public Response insert(Bookmark entity, @Context UriInfo uriInfo) {
+	public Response insert(Bookmark entity, @Context UriInfo uriInfo) throws Exception {
 		checkId(entity);
 
 		String id = bc.insert(entity).getId().toString();
@@ -81,7 +81,7 @@ public class BookmarkREST {
 	@ValidatePayload
 	@Produces("application/json")
 	@Consumes("application/json")
-	public void update(@PathParam("id") Long id, Bookmark entity) {
+	public void update(@PathParam("id") Long id, Bookmark entity) throws Exception {
 		checkId(entity);
 		load(id);
 
@@ -93,7 +93,7 @@ public class BookmarkREST {
 	@LoggedIn
 	@Path("{id}")
 	@Transactional
-	public void delete(@PathParam("id") Long id) {
+	public void delete(@PathParam("id") Long id) throws Exception {
 		load(id);
 		bc.delete(id);
 	}
@@ -101,11 +101,11 @@ public class BookmarkREST {
 	@DELETE
 	@LoggedIn
 	@Transactional
-	public void delete(List<Long> ids) {
+	public void delete(List<Long> ids) throws Exception {
 		bc.delete(ids);
 	}
 
-	private void checkId(Bookmark entity) {
+	private void checkId(Bookmark entity) throws Exception {
 		if (entity.getId() != null) {
 			throw new BadRequestException();
 		}

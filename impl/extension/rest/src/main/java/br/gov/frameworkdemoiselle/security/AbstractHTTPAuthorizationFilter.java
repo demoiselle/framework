@@ -51,9 +51,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import br.gov.frameworkdemoiselle.security.AuthenticationException;
-import br.gov.frameworkdemoiselle.security.InvalidCredentialsException;
-import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Strings;
 
@@ -70,7 +67,11 @@ public abstract class AbstractHTTPAuthorizationFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
-		if (request instanceof HttpServletRequest && isSupported(getAuthHeader((HttpServletRequest) request))) {
+		
+		RESTSecurityConfig config = Beans.getReference(RESTSecurityConfig.class);
+		
+		if (request instanceof HttpServletRequest && isActive(config)
+				&& isSupported(getAuthHeader((HttpServletRequest) request))) {
 			try {
 				performLogin((HttpServletRequest) request);
 				chain.doFilter((HttpServletRequest) request, (HttpServletResponse) response);
@@ -91,6 +92,8 @@ public abstract class AbstractHTTPAuthorizationFilter implements Filter {
 	}
 
 	protected abstract boolean isSupported(String authHeader);
+
+	protected abstract boolean isActive(RESTSecurityConfig config);
 
 	protected abstract void prepareForLogin();
 

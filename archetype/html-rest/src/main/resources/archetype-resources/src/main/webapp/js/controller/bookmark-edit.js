@@ -68,7 +68,7 @@ function saveOk(data) {
 
 function saveFailed(request) {
 	switch (request.status) {
-		case 412:
+		case 422:
 			$($("form input").get().reverse()).each(function() {
 				var id = $(this).attr('id');
 				var message = null;

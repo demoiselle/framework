@@ -49,6 +49,11 @@ public class TokenAuthFilter extends AbstractHTTPAuthorizationFilter {
 	}
 
 	@Override
+	protected boolean isActive(RESTSecurityConfig config) {
+		return config.isTokenFilterActive();
+	}
+
+	@Override
 	protected void prepareForLogin() {
 		Beans.getReference(Token.class).setValue(token);
 	}

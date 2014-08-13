@@ -52,6 +52,11 @@ public class BasicAuthFilter extends AbstractHTTPAuthorizationFilter {
 	}
 
 	@Override
+	protected boolean isActive(RESTSecurityConfig config) {
+		return config.isBasicFilterActive();
+	}
+
+	@Override
 	protected void prepareForLogin() {
 		String[] basicCredentials = getCredentials(credentials);
 

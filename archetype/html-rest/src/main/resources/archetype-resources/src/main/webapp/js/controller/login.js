@@ -3,14 +3,14 @@ $(function() {
 
 	$("form").submit(function(event) {
 		event.preventDefault();
-		
+
 		$("[id$='-message']").hide();
-		
+
 		var form = {
 			'username' : $("#username").val().trim(),
 			'password' : $("#password").val().trim()
 		};
-		
+
 		AuthProxy.login(form).done(loginOk).fail(loginFail);
 	});
 });
@@ -32,7 +32,7 @@ function loginFail(request) {
 			$("#global-message").html("Usuário ou senha inválidos.").show();
 			break;
 
-		case 412:
+		case 422:
 			$($("form input").get().reverse()).each(function() {
 				var id = $(this).attr('id');
 				var message = null;

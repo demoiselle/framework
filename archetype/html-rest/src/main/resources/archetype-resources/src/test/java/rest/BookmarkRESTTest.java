@@ -35,7 +35,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ${package}.entity.Bookmark;
-import br.gov.frameworkdemoiselle.PreconditionFailedException;
+import br.gov.frameworkdemoiselle.HttpViolationException;
+import br.gov.frameworkdemoiselle.UnprocessableEntityException;
 
 public class BookmarkRESTTest {
 
@@ -169,8 +170,8 @@ public class BookmarkRESTTest {
 		HttpPost request;
 		CloseableHttpResponse response;
 		Bookmark bookmark;
-		Set<PreconditionFailedException.Violation> violations;
-		PreconditionFailedException expected;
+		Set<UnprocessableEntityException.Violation> violations;
+		HttpViolationException expected;
 
 		bookmark = new Bookmark();
 		bookmark.setDescription("Google");
@@ -191,9 +192,9 @@ public class BookmarkRESTTest {
 		response.close();
 		assertEquals(SC_PRECONDITION_FAILED, response.getStatusLine().getStatusCode());
 		violations = mapper.readValue(response.getEntity().getContent(),
-				new TypeReference<Set<PreconditionFailedException.Violation>>() {
+				new TypeReference<Set<UnprocessableEntityException.Violation>>() {
 				});
-		expected = new PreconditionFailedException();
+		expected = new UnprocessableEntityException();
 		expected.addViolation("description", "não pode ser nulo");
 		expected.addViolation("link", "não pode ser nulo");
 		assertEquals(expected.getViolations(), violations);
@@ -209,9 +210,9 @@ public class BookmarkRESTTest {
 		response.close();
 		assertEquals(SC_PRECONDITION_FAILED, response.getStatusLine().getStatusCode());
 		violations = mapper.readValue(response.getEntity().getContent(),
-				new TypeReference<Set<PreconditionFailedException.Violation>>() {
+				new TypeReference<Set<UnprocessableEntityException.Violation>>() {
 				});
-		expected = new PreconditionFailedException().addViolation("link", "formato inválido");
+		expected = new UnprocessableEntityException().addViolation("link", "formato inválido");
 		assertEquals(expected.getViolations(), violations);
 
 		bookmark = new Bookmark();
@@ -266,8 +267,8 @@ public class BookmarkRESTTest {
 		response.close();
 		Long id = parseEntity(response.getEntity(), Long.class);
 		Bookmark bookmark;
-		Set<PreconditionFailedException.Violation> violations;
-		PreconditionFailedException expected;
+		Set<UnprocessableEntityException.Violation> violations;
+		HttpViolationException expected;
 
 		bookmark = new Bookmark();
 		bookmark.setDescription("Google");
@@ -288,9 +289,9 @@ public class BookmarkRESTTest {
 		response.close();
 		assertEquals(SC_PRECONDITION_FAILED, response.getStatusLine().getStatusCode());
 		violations = mapper.readValue(response.getEntity().getContent(),
-				new TypeReference<Set<PreconditionFailedException.Violation>>() {
+				new TypeReference<Set<UnprocessableEntityException.Violation>>() {
 				});
-		expected = new PreconditionFailedException();
+		expected = new UnprocessableEntityException();
 		expected.addViolation("description", "não pode ser nulo");
 		expected.addViolation("link", "não pode ser nulo");
 		assertEquals(expected.getViolations(), violations);
@@ -306,9 +307,9 @@ public class BookmarkRESTTest {
 		response.close();
 		assertEquals(SC_PRECONDITION_FAILED, response.getStatusLine().getStatusCode());
 		violations = mapper.readValue(response.getEntity().getContent(),
-				new TypeReference<Set<PreconditionFailedException.Violation>>() {
+				new TypeReference<Set<UnprocessableEntityException.Violation>>() {
 				});
-		expected = new PreconditionFailedException().addViolation("link", "formato inválido");
+		expected = new UnprocessableEntityException().addViolation("link", "formato inválido");
 		assertEquals(expected.getViolations(), violations);
 
 		bookmark = new Bookmark();

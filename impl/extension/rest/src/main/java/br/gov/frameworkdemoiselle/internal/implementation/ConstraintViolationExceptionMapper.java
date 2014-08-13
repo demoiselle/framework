@@ -1,7 +1,5 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import static javax.ws.rs.core.Response.Status.PRECONDITION_FAILED;
-
 import java.util.Iterator;
 
 import javax.validation.ConstraintViolation;
@@ -24,6 +22,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
 			failed.addViolation(violation.getPropertyPath().toString(), violation.getMessage());
 		}
 
-		return Response.status(PRECONDITION_FAILED).entity(failed.getViolations()).build();
+		int status = new UnprocessableEntityException().getStatusCode();
+		return Response.status(status).entity(failed.getViolations()).build();
 	}
 }
