@@ -34,37 +34,14 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+<beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 
-	<listener>
-		<listener-class>br.gov.frameworkdemoiselle.util.ServletListener</listener-class>
-	</listener>
+	<interceptors>
+		<class>br.gov.frameworkdemoiselle.transaction.TransactionalInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.security.RequiredPermissionInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.security.RequiredRoleInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.exception.ExceptionHandlerInterceptor</class>
+	</interceptors>
 
-	<filter>
-		<filter-name>Demoiselle Servlet Filter</filter-name>
-		<filter-class>br.gov.frameworkdemoiselle.util.ServletFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>Demoiselle Servlet Filter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-	<filter>
-		<filter-name>Demoiselle BasicAuth Filter</filter-name>
-		<filter-class>br.gov.frameworkdemoiselle.util.BasicAuthFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>Demoiselle BasicAuth Filter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-	<servlet>
-		<servlet-name>Helper Servlet</servlet-name>
-		<servlet-class>security.authentication.basic.HelperServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Helper Servlet</servlet-name>
-		<url-pattern>/helper</url-pattern>
-	</servlet-mapping>
-</web-app>
+</beans>
