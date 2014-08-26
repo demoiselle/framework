@@ -16,14 +16,31 @@ import br.gov.frameworkdemoiselle.util.NameQualifier;
 @Provider
 public class DefaultExceptionMapper implements ExceptionMapper<Throwable> {
 
+	private transient ResourceBundle bundle;
+
+	private transient Logger logger;
+
 	@Override
 	public Response toResponse(Throwable exception) {
-		ResourceBundle bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-rest-bundle"));
-		Logger logger = Beans.getReference(Logger.class);
+		String message = getBundle().getString("internal.server.error");
+		getLogger().error(message, exception);
 
-		logger.error(exception.getMessage(), exception);
-
-		String message = bundle.getString("internal.server.error");
 		return Response.status(INTERNAL_SERVER_ERROR).entity(message).build();
+	}
+
+	private ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-rest-bundle"));
+		}
+
+		return bundle;
+	}
+
+	private Logger getLogger() {
+		if (logger == null) {
+			logger = Beans.getReference(Logger.class, new NameQualifier(DefaultExceptionMapper.class.getName()));
+		}
+
+		return logger;
 	}
 }

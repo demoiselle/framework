@@ -121,17 +121,17 @@ public abstract class AbstractCustomContext implements CustomContext {
 				try{
 					Context ctx = beanManager.getContext(this.getScope());
 					if (ctx!=null){
-						getLogger().debug( getBundle().getString("custom-context-already-activated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() , ctx.getClass().getCanonicalName() ) );
+						getLogger().trace( getBundle().getString("custom-context-already-activated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() , ctx.getClass().getCanonicalName() ) );
 					}
 				}
 				catch(ContextNotActiveException ce){
 					success = this.active = true;
-					getLogger().debug( getBundle().getString("custom-context-was-activated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() ) );
+					getLogger().trace( getBundle().getString("custom-context-was-activated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() ) );
 				}
 			}
 			else{
 				success = this.active = true;
-				getLogger().debug( getBundle().getString("custom-context-was-activated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() ) );
+				getLogger().trace( getBundle().getString("custom-context-was-activated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() ) );
 			}
 		}
 		
@@ -152,7 +152,7 @@ public abstract class AbstractCustomContext implements CustomContext {
 
 			Logger logger = getLogger();
 			ResourceBundle bundle = getBundle();
-			logger.debug( bundle.getString("custom-context-was-deactivated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() ) );
+			logger.trace( bundle.getString("custom-context-was-deactivated" , this.getClass().getCanonicalName() , this.getScope().getSimpleName() ) );
 		}
 	}
 	

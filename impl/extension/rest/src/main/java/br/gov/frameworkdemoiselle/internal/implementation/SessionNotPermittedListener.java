@@ -9,8 +9,8 @@ public class SessionNotPermittedListener implements HttpSessionListener {
 
 	@Override
 	public void sessionCreated(HttpSessionEvent event) {
-//		event.getSession().invalidate();
-//		throw new IllegalStateException("Session use is not permitted.");
+		// event.getSession().invalidate();
+		// throw new IllegalStateException("Session use is not permitted.");
 	}
 
 	@Override

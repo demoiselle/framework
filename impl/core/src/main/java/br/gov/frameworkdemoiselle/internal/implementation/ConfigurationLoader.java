@@ -100,11 +100,11 @@ public class ConfigurationLoader implements Serializable {
 	private Collection<Field> fields;
 
 	public void load(Object object) throws ConfigurationException {
-		load(object,true);
+		load(object, true);
 	}
-	
-	public void load(Object object,boolean logLoadingProcess) throws ConfigurationException {
-		if (logLoadingProcess){
+
+	public void load(Object object, boolean logLoadingProcess) throws ConfigurationException {
+		if (logLoadingProcess) {
 			getLogger().debug(getBundle().getString("loading-configuration-class", object.getClass().getName()));
 		}
 
@@ -223,7 +223,7 @@ public class ConfigurationLoader implements Serializable {
 		Object finalValue = (loadedValue == null ? defaultValue : loadedValue);
 
 		if (loadedValue == null) {
-			getLogger().debug(getBundle().getString("configuration-key-not-found", this.prefix + getKey(field)));
+			getLogger().trace(getBundle().getString("configuration-key-not-found", this.prefix + getKey(field)));
 		}
 
 		Reflections.setFieldValue(field, this.object, finalValue);
@@ -248,7 +248,8 @@ public class ConfigurationLoader implements Serializable {
 		}
 
 		catch (Exception cause) {
-			throw new ConfigurationException(getBundle().getString("configuration-generic-extraction-error", field.getType().toString(), getValueExtractor(field).getClass().getCanonicalName()), cause);
+			throw new ConfigurationException(getBundle().getString("configuration-generic-extraction-error",
+					field.getType().toString(), getValueExtractor(field).getClass().getCanonicalName()), cause);
 		}
 
 		return value;

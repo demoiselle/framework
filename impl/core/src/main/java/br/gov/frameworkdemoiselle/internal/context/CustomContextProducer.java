@@ -101,7 +101,7 @@ public class CustomContextProducer {
 		
 		if (!getContexts().contains(context)){
 			getContexts().add(context);
-			logger.debug( bundle.getString("bootstrap-context-added", context.getClass().getCanonicalName() , context.getScope().getSimpleName() ) );
+			logger.trace( bundle.getString("bootstrap-context-added", context.getClass().getCanonicalName() , context.getScope().getSimpleName() ) );
 		}
 		else{
 			logger.warn( bundle.getString("bootstrap-context-already-managed", context.getClass().getCanonicalName() , context.getScope().getSimpleName() ) );
@@ -204,7 +204,7 @@ public class CustomContextProducer {
 		}
 		
 		if (producedContext!=null){
-			getLogger().debug( getBundle().getString("custom-context-selected" , producedContext.getClass().getCanonicalName()) );
+			getLogger().trace( getBundle().getString("custom-context-selected" , producedContext.getClass().getCanonicalName()) );
 		}
 		
 		return producedContext;

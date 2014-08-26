@@ -46,19 +46,21 @@ public class ConfigurationImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Ignore
-	private boolean loaded = false;
+	private Boolean loaded = false;
 
 	@SuppressWarnings("unused")
-	private synchronized void load(Object instance) throws Throwable {
-		if (!loaded) {
-			loaded = true;
+	private void load(Object instance) throws Throwable {
+		synchronized (loaded) {
+			if (!loaded) {
+				loaded = true;
 
-			try {
-				Beans.getReference(ConfigurationLoader.class).load(instance);
+				try {
+					Beans.getReference(ConfigurationLoader.class).load(instance);
 
-			} catch (Throwable cause) {
-				loaded = false;
-				throw cause;
+				} catch (Throwable cause) {
+					loaded = false;
+					throw cause;
+				}
 			}
 		}
 	}

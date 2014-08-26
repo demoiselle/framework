@@ -77,14 +77,14 @@ public class CoreBootstrap implements Extension {
 		getLogger().info(getBundle().getString("engine-on"));
 
 		Beans.setBeanManager(beanManager);
-		getLogger().info(getBundle().getString("setting-up-bean-manager", Beans.class.getCanonicalName()));
+		getLogger().trace(getBundle().getString("setting-up-bean-manager", Beans.class.getCanonicalName()));
 	}
 	
 	public void takeOff(@Observes final AfterDeploymentValidation event) {
-		getLogger().info(getBundle().getString("taking-off"));
+		getLogger().trace(getBundle().getString("taking-off"));
 	}
 
 	public void engineOff(@Observes final BeforeShutdown event) {
-		getLogger().info(getBundle().getString("engine-off"));
+		getLogger().trace(getBundle().getString("engine-off"));
 	}
 }
