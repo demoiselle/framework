@@ -5,7 +5,7 @@
     <xi:include href="bookinfo.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 	<preface>
-		<title>Sobre o QuickStart</title>
+		<title>Sobre o QuickStart - versão &version;</title>
 		<para>
 			Este documento é um tutorial do tipo "passo a passo" que visa ilustrar de forma rápida, clara e prática a criação 
 			de uma aplicação simples utilizando o <emphasis>Demoiselle Framework &version;</emphasis>.
@@ -26,7 +26,7 @@
 		</note>
 		<note>
   		<para>
-			Esta documentação refere-se à release &version; do <emphasis>Demoiselle Framework</emphasis> e pode diferir 
+			Esta documentação refere-se à versão &version; do <emphasis>Demoiselle Framework</emphasis> e pode diferir 
 			significativamente das versões anteriores.
 		</para>
 		</note>
