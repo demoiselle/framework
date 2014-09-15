@@ -19,7 +19,7 @@ public class AppAuthenticator implements Authenticator {
 	public void authenticate() throws Exception {
 		Credentials credentials = Beans.getReference(Credentials.class);
 
-		if (credentials.getUsername().equals("admin") && credentials.getPassword().equals("admin")) {
+		if (credentials.getPassword().equals("secret")) {
 			this.user = new AppUser(credentials.getUsername());
 		} else {
 			throw new InvalidCredentialsException();
