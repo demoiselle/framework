@@ -37,17 +37,11 @@
 package br.gov.frameworkdemoiselle.util;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Intercepts calls with {@code @ValidatePayload} annotations.
@@ -55,27 +49,18 @@ import javax.validation.ValidatorFactory;
  * @author SERPRO
  */
 @Interceptor
-@ValidatePayload
-public class ValidatePayloadInterceptor implements Serializable {
+@Cache(value = "")
+public class CacheInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@AroundInvoke
 	public Object manage(final InvocationContext ic) throws Exception {
-		Set<ConstraintViolation<?>> violations = new HashSet<ConstraintViolation<?>>();
+		Object result = ic.proceed();
 
-		for (Object params : ic.getParameters()) {
-			if (params != null) {
-				ValidatorFactory dfv = Validation.buildDefaultValidatorFactory();
-				Validator validator = dfv.getValidator();
-				violations.addAll(validator.validate(params));
-			}
-		}
+		HttpServletResponse response = Beans.getReference(HttpServletResponse.class);
+		response.setHeader("Cache-Control", ic.getMethod().getAnnotation(Cache.class).value());
 
-		if (!violations.isEmpty()) {
-			throw new ConstraintViolationException(violations);
-		}
-
-		return ic.proceed();
+		return result;
 	}
 }

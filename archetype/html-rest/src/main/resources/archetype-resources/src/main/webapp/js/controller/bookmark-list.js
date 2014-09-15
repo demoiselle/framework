@@ -1,6 +1,9 @@
 $(function() {
-	
 	$("#new").focus();
+
+	MetadataProxy.getDemoiselleVersion().done(function(data) {
+		$("#demoiselle-version").html(data);
+	});
 
 	$(document).ready(function() {
 		BookmarkProxy.findAll().done(findAllOk);
@@ -22,19 +25,21 @@ $(function() {
 		});
 
 		if (ids.length == 0) {
-			bootbox.alert({message: "Nenhum registro selecionado"});
+			bootbox.alert({
+				message : "Nenhum registro selecionado"
+			});
 		} else {
 			bootbox.confirm("Tem certeza que deseja apagar?", function(result) {
-				if(result) {
+				if (result) {
 					BookmarkProxy.remove(ids).done(removeOk);
 				}
-			}); 
+			});
 		}
 	});
 });
 
 function findAllOk(data) {
-	var oTable = $('#resultList').dataTable({
+	$('#resultList').dataTable({
 		"aoColumns" : [ {
 			"aTargets" : [ 0 ],
 			"mDataProp" : "id",
@@ -70,7 +75,7 @@ function findAllOk(data) {
 		"bDestroy" : true,
 		"sPaginationType" : "bs_full",
 		"aaData" : data,
-		"bSort" : false
+		"bSort" : true
 	});
 }
 

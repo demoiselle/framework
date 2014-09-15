@@ -8,6 +8,7 @@
 		<class>br.gov.frameworkdemoiselle.util.ValidatePayloadInterceptor</class>
 		<class>br.gov.frameworkdemoiselle.transaction.TransactionalInterceptor</class>
 		<class>br.gov.frameworkdemoiselle.exception.ExceptionHandlerInterceptor</class>
+		<class>br.gov.frameworkdemoiselle.util.CacheInterceptor</class>
 	</interceptors>
 
 </beans>

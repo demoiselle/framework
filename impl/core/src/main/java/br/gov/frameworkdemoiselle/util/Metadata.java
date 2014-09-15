@@ -36,46 +36,13 @@
  */
 package br.gov.frameworkdemoiselle.util;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+public final class Metadata {
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+	private Metadata() {
+	}
 
-/**
- * Intercepts calls with {@code @ValidatePayload} annotations.
- * 
- * @author SERPRO
- */
-@Interceptor
-@ValidatePayload
-public class ValidatePayloadInterceptor implements Serializable {
-
-	private static final long serialVersionUID = 1L;
-
-	@AroundInvoke
-	public Object manage(final InvocationContext ic) throws Exception {
-		Set<ConstraintViolation<?>> violations = new HashSet<ConstraintViolation<?>>();
-
-		for (Object params : ic.getParameters()) {
-			if (params != null) {
-				ValidatorFactory dfv = Validation.buildDefaultValidatorFactory();
-				Validator validator = dfv.getValidator();
-				violations.addAll(validator.validate(params));
-			}
-		}
-
-		if (!violations.isEmpty()) {
-			throw new ConstraintViolationException(violations);
-		}
-
-		return ic.proceed();
+	public static String getVersion() {
+		ResourceBundle bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
+		return bundle.getString("version");
 	}
 }

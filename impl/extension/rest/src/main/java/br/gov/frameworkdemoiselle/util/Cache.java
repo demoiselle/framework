@@ -36,46 +36,23 @@
  */
 package br.gov.frameworkdemoiselle.util;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-/**
- * Intercepts calls with {@code @ValidatePayload} annotations.
- * 
- * @author SERPRO
- */
-@Interceptor
-@ValidatePayload
-public class ValidatePayloadInterceptor implements Serializable {
+import javax.enterprise.util.Nonbinding;
+import javax.interceptor.InterceptorBinding;
 
-	private static final long serialVersionUID = 1L;
+@Inherited
+@InterceptorBinding
+@Target({ METHOD, TYPE })
+@Retention(RUNTIME)
+public @interface Cache {
 
-	@AroundInvoke
-	public Object manage(final InvocationContext ic) throws Exception {
-		Set<ConstraintViolation<?>> violations = new HashSet<ConstraintViolation<?>>();
-
-		for (Object params : ic.getParameters()) {
-			if (params != null) {
-				ValidatorFactory dfv = Validation.buildDefaultValidatorFactory();
-				Validator validator = dfv.getValidator();
-				violations.addAll(validator.validate(params));
-			}
-		}
-
-		if (!violations.isEmpty()) {
-			throw new ConstraintViolationException(violations);
-		}
-
-		return ic.proceed();
-	}
+	@Nonbinding
+	String value();
 }

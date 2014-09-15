@@ -1,17 +1,21 @@
 $(function() {
 	$("#username").focus();
 
+	MetadataProxy.getDemoiselleVersion().done(function(data) {
+		$("#demoiselle-version").html(data);
+	});
+
 	$("form").submit(function(event) {
 		event.preventDefault();
 
 		$("[id$='-message']").hide();
 
-		var form = {
+		var data = {
 			'username' : $("#username").val().trim(),
 			'password' : $("#password").val().trim()
 		};
 
-		AuthProxy.login(form).done(loginOk).fail(loginFail);
+		AuthProxy.login(data).done(loginOk).fail(loginFail);
 	});
 });
 

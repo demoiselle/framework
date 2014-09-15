@@ -1,8 +1,10 @@
 $(function() {
-	
 	$("#delete").hide();
-
 	$("#description").focus();
+
+	MetadataProxy.getDemoiselleVersion().done(function(data) {
+		$("#demoiselle-version").html(data);
+	});
 
 	$(document).ready(function() {
 		if (id = $.url().param('id')) {
@@ -15,24 +17,24 @@ $(function() {
 	});
 
 	$("#save").click(function() {
-		var form = {
+		var data = {
 			description : $("#description").val(),
 			link : $("#link").val()
 		};
 
 		if (id = $("#id").val()) {
-			BookmarkProxy.update(id, form).done(saveOk).fail(saveFailed);
+			BookmarkProxy.update(id, data).done(saveOk).fail(saveFailed);
 		} else {
-			BookmarkProxy.insert(form).done(saveOk).fail(saveFailed);
+			BookmarkProxy.insert(data).done(saveOk).fail(saveFailed);
 		}
 	});
 
 	$("#delete").click(function() {
 		bootbox.confirm("Tem certeza que deseja apagar?", function(result) {
-			if(result) {
-				BookmarkProxy.remove([$("#id").val()]).done(removeOk);
+			if (result) {
+				BookmarkProxy.remove([ $("#id").val() ]).done(removeOk);
 			}
-		}); 
+		});
 	});
 
 	$("#back").click(function() {
@@ -52,7 +54,7 @@ function loadOk(data) {
 function loadFailed(request) {
 	switch (request.status) {
 		case 404:
-			bootbox.alert("Você está tentando acessar um registro inexistente!", function(){
+			bootbox.alert("Você está tentando acessar um registro inexistente!", function() {
 				location.href = "bookmark-list.html";
 			});
 			break;

@@ -1,7 +1,7 @@
 var BookmarkProxy = {
-	
+
 	url : "api/bookmark",
-	
+
 	findAll : function() {
 		return $.ajax({
 			type : "GET",
@@ -11,7 +11,7 @@ var BookmarkProxy = {
 			}
 		});
 	},
-	
+
 	load : function($id) {
 		return $.ajax({
 			type : "GET",
@@ -21,12 +21,12 @@ var BookmarkProxy = {
 			}
 		});
 	},
-	
-	insert : function($form) {
+
+	insert : function($data) {
 		return $.ajax({
 			type : "POST",
 			url : this.url,
-			data : JSON.stringify($form),
+			data : JSON.stringify($data),
 			contentType : "application/json",
 			beforeSend : function(request) {
 				request.setRequestHeader("Authorization", App.getToken());
@@ -45,7 +45,7 @@ var BookmarkProxy = {
 			}
 		});
 	},
-	
+
 	remove : function($ids) {
 		return $.ajax({
 			type : "DELETE",
@@ -57,5 +57,4 @@ var BookmarkProxy = {
 			}
 		});
 	}
-	
-}
+};

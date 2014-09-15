@@ -8,7 +8,7 @@ var AuthProxy = {
 			type : "POST",
 			data : JSON.stringify($credentials),
 			contentType : "application/json",
-			error: function(){ } 
+			error : function() {}
 		});
 	},
 
@@ -31,5 +31,4 @@ var AuthProxy = {
 			}
 		});
 	}
-
-}
+};
