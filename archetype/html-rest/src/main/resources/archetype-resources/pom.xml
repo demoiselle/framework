@@ -43,6 +43,14 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- GZip dependencies -->
+		<dependency>
+			<groupId>org.tuckey</groupId>
+			<artifactId>urlrewritefilter</artifactId>
+			<version>4.0.4</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<!-- Tests dependencies -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
