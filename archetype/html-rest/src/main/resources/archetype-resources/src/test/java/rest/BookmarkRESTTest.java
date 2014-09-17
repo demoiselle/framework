@@ -4,7 +4,6 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static javax.servlet.http.HttpServletResponse.SC_PRECONDITION_FAILED;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -190,7 +189,7 @@ public class BookmarkRESTTest {
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
 		response = client.execute(request);
 		response.close();
-		assertEquals(SC_PRECONDITION_FAILED, response.getStatusLine().getStatusCode());
+		assertEquals(422, response.getStatusLine().getStatusCode());
 		violations = mapper.readValue(response.getEntity().getContent(),
 				new TypeReference<Set<UnprocessableEntityException.Violation>>() {
 				});
@@ -208,7 +207,7 @@ public class BookmarkRESTTest {
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
 		response = client.execute(request);
 		response.close();
-		assertEquals(SC_PRECONDITION_FAILED, response.getStatusLine().getStatusCode());
+		assertEquals(422, response.getStatusLine().getStatusCode());
 		violations = mapper.readValue(response.getEntity().getContent(),
 				new TypeReference<Set<UnprocessableEntityException.Violation>>() {
 				});
@@ -287,7 +286,7 @@ public class BookmarkRESTTest {
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
 		response = client.execute(request);
 		response.close();
-		assertEquals(SC_PRECONDITION_FAILED, response.getStatusLine().getStatusCode());
+		assertEquals(422, response.getStatusLine().getStatusCode());
 		violations = mapper.readValue(response.getEntity().getContent(),
 				new TypeReference<Set<UnprocessableEntityException.Violation>>() {
 				});
@@ -305,7 +304,7 @@ public class BookmarkRESTTest {
 		request.addHeader("Authorization", BASIC_CREDENTIALS);
 		response = client.execute(request);
 		response.close();
-		assertEquals(SC_PRECONDITION_FAILED, response.getStatusLine().getStatusCode());
+		assertEquals(422, response.getStatusLine().getStatusCode());
 		violations = mapper.readValue(response.getEntity().getContent(),
 				new TypeReference<Set<UnprocessableEntityException.Violation>>() {
 				});
