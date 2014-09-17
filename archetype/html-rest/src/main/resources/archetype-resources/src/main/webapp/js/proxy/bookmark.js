@@ -34,11 +34,11 @@ var BookmarkProxy = {
 		});
 	},
 
-	update : function($id, $form) {
+	update : function($id, $data) {
 		return $.ajax({
 			type : "PUT",
 			url : this.url + "/" + $id,
-			data : JSON.stringify($form),
+			data : JSON.stringify($data),
 			contentType : "application/json",
 			beforeSend : function(request) {
 				request.setRequestHeader("Authorization", App.getToken());
