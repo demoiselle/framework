@@ -39,7 +39,7 @@ import br.gov.frameworkdemoiselle.UnprocessableEntityException;
 
 public class BookmarkRESTTest {
 
-	private static final String BASIC_CREDENTIALS = "Basic " + Base64.encodeBase64String("admin:admin".getBytes());
+	private static final String BASIC_CREDENTIALS = "Basic " + Base64.encodeBase64String("test:secret".getBytes());
 
 	private CloseableHttpClient client;
 
