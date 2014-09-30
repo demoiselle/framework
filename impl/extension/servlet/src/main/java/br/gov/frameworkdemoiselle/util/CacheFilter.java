@@ -56,13 +56,19 @@ public class CacheFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-			ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response,
+			FilterChain chain) throws IOException, ServletException {
 		if (response instanceof HttpServletResponse) {
-			((HttpServletResponse) response).setHeader("Cache-Control", value);
+			setCacheControl((HttpServletResponse) response);
 		}
 
 		chain.doFilter(request, response);
+	}
+
+	protected void setCacheControl(HttpServletResponse response) {
+		if (Strings.isEmpty(response.getHeader("Cache-Control"))) {
+			response.setHeader("Cache-Control", value);
+		}
 	}
 
 	@Override
