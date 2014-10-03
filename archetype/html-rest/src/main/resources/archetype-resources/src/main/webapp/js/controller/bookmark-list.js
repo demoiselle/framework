@@ -1,12 +1,10 @@
 $(function() {
 	$("#new").focus();
 
+	BookmarkProxy.findAll().done(findAllOk);
+
 	MetadataProxy.getDemoiselleVersion().done(function(data) {
 		$("#demoiselle-version").html(data);
-	});
-
-	$(document).ready(function() {
-		BookmarkProxy.findAll().done(findAllOk);
 	});
 
 	$("form").submit(function(event) {

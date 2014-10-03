@@ -12,16 +12,6 @@ var AuthProxy = {
 		});
 	},
 
-	logout : function() {
-		return $.ajax({
-			url : this.url,
-			type : "DELETE",
-			beforeSend : function(request) {
-				request.setRequestHeader("Authorization", App.getToken());
-			}
-		});
-	},
-
 	getUser : function() {
 		return $.ajax({
 			url : this.url,

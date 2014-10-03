@@ -2,14 +2,12 @@ $(function() {
 	$("#delete").hide();
 	$("#description").focus();
 
+	if (id = $.url().param('id')) {
+		BookmarkProxy.load(id).done(loadOk).fail(loadFailed);
+	}
+
 	MetadataProxy.getDemoiselleVersion().done(function(data) {
 		$("#demoiselle-version").html(data);
-	});
-
-	$(document).ready(function() {
-		if (id = $.url().param('id')) {
-			BookmarkProxy.load(id).done(loadOk).fail(loadFailed);
-		}
 	});
 
 	$("form").submit(function(event) {

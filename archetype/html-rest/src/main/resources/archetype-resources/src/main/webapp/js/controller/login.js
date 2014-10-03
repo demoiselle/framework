@@ -33,7 +33,7 @@ function loginOk(data) {
 function loginFail(request) {
 	switch (request.status) {
 		case 401:
-			$("#global-message").html("Usuário ou senha inválidos.").show();
+			$("#global-message").html(request.responseText).show();
 			break;
 
 		case 422:
