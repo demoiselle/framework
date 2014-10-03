@@ -10,5 +10,5 @@ $(function() {
 });
 
 function getUserOk(data) {
-	$("#username").html(data.username);
+	$("#username").html(data.id);
 }
