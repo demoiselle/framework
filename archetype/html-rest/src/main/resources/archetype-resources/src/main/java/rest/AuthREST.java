@@ -1,5 +1,7 @@
 package ${package}.rest;
 
+import java.security.Principal;
+
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -12,7 +14,6 @@ import javax.ws.rs.Produces;
 import br.gov.frameworkdemoiselle.security.Credentials;
 import br.gov.frameworkdemoiselle.security.LoggedIn;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
-import br.gov.frameworkdemoiselle.security.User;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ValidatePayload;
 
@@ -37,7 +38,7 @@ public class AuthREST {
 	@GET
 	@LoggedIn
 	@Produces("application/json")
-	public User getLoggedInUser() {
+	public Principal getLoggedInUser() {
 		return securityContext.getUser();
 	}
 

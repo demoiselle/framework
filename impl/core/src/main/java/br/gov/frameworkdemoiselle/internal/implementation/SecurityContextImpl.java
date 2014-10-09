@@ -36,6 +36,9 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import java.io.Serializable;
+import java.security.Principal;
+
 import javax.inject.Named;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
@@ -48,7 +51,6 @@ import br.gov.frameworkdemoiselle.security.AuthorizationException;
 import br.gov.frameworkdemoiselle.security.Authorizer;
 import br.gov.frameworkdemoiselle.security.NotLoggedInException;
 import br.gov.frameworkdemoiselle.security.SecurityContext;
-import br.gov.frameworkdemoiselle.security.User;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
@@ -213,8 +215,8 @@ public class SecurityContextImpl implements SecurityContext {
 	 * @see br.gov.frameworkdemoiselle.security.SecurityContext#getUser()
 	 */
 	@Override
-	public User getUser() {
-		User user = getAuthenticator().getUser();
+	public Principal getUser() {
+		Principal user = getAuthenticator().getUser();
 
 		if (!getConfig().isEnabled() && user == null) {
 			user = new EmptyUser();
@@ -241,22 +243,13 @@ public class SecurityContextImpl implements SecurityContext {
 		return bundle;
 	}
 
-	private static class EmptyUser implements User {
+	private static class EmptyUser implements Principal, Serializable {
 
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public String getId() {
+		public String getName() {
 			return "demoiselle";
-		}
-
-		@Override
-		public Object getAttribute(Object key) {
-			return null;
-		}
-
-		@Override
-		public void setAttribute(Object key, Object value) {
 		}
 	}
 }

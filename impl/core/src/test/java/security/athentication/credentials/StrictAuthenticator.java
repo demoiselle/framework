@@ -36,37 +36,28 @@
  */
 package security.athentication.credentials;
 
+import java.security.Principal;
+
 import br.gov.frameworkdemoiselle.security.AuthenticationException;
 import br.gov.frameworkdemoiselle.security.Authenticator;
-import br.gov.frameworkdemoiselle.security.User;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 public class StrictAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
 
-	private User currentUser;
+	private Principal currentUser;
 
 	@Override
-	public void authenticate()  {
+	public void authenticate() {
 
 		Credentials c = Beans.getReference(Credentials.class);
 		if ("demoiselle".equals(c.getLogin())) {
-			this.currentUser = new User() {
+			this.currentUser = new Principal() {
 
-				private static final long serialVersionUID = 1L;
-
-				public String getId() {
+				@Override
+				public String getName() {
 					return "demoiselle";
-				}
-
-				@Override
-				public Object getAttribute(Object key) {
-					return null;
-				}
-
-				@Override
-				public void setAttribute(Object key, Object value) {
 				}
 			};
 		} else {
@@ -80,7 +71,7 @@ public class StrictAuthenticator implements Authenticator {
 	}
 
 	@Override
-	public User getUser() {
+	public Principal getUser() {
 		return this.currentUser;
 	}
 }

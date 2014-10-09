@@ -87,7 +87,7 @@ public class CustomAuthenticatorTest {
 		context.login();
 		assertTrue(context.isLoggedIn());
 		assertNotNull(observer.getEvent());
-		assertEquals("demoiselle", context.getUser().getId());
+		assertEquals("demoiselle", context.getUser().getName());
 
 		ctx.deactivate();
 	}

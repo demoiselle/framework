@@ -84,7 +84,7 @@ public class RequiredRoleInterceptor implements Serializable {
 
 		if (getSecurityContext().isLoggedIn()) {
 			getLogger().info(
-					getBundle().getString("has-role-verification", getSecurityContext().getUser().getId(),
+					getBundle().getString("has-role-verification", getSecurityContext().getUser().getName(),
 							roles));
 		}
 
@@ -98,14 +98,14 @@ public class RequiredRoleInterceptor implements Serializable {
 
 		if (userRoles.isEmpty()) {
 			getLogger()
-					.error(getBundle().getString("does-not-have-role", getSecurityContext().getUser().getId(),
+					.error(getBundle().getString("does-not-have-role", getSecurityContext().getUser().getName(),
 							roles));
 
 			throw new AuthorizationException(getBundle().getString("does-not-have-role-ui", roles));
 		}
 
 		getLogger().debug(
-				getBundle().getString("user-has-role", getSecurityContext().getUser().getId(), userRoles));
+				getBundle().getString("user-has-role", getSecurityContext().getUser().getName(), userRoles));
 
 		return ic.proceed();
 	}

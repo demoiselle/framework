@@ -85,7 +85,7 @@ public class RequiredPermissionInterceptor implements Serializable {
 		String username = null;
 
 		if (getSecurityContext().isLoggedIn()) {
-			username = getSecurityContext().getUser().getId();
+			username = getSecurityContext().getUser().getName();
 			getLogger().trace(getBundle().getString("access-checking", username, operation, resource));
 		}
 

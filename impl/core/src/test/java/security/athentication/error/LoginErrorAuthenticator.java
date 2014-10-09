@@ -36,15 +36,16 @@
  */
 package security.athentication.error;
 
+import java.security.Principal;
+
 import br.gov.frameworkdemoiselle.security.Authenticator;
-import br.gov.frameworkdemoiselle.security.User;
 
 public class LoginErrorAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void authenticate()  {
+	public void authenticate() {
 		throw new RuntimeException();
 	}
 
@@ -54,7 +55,7 @@ public class LoginErrorAuthenticator implements Authenticator {
 	}
 
 	@Override
-	public User getUser() {
+	public Principal getUser() {
 		return null;
 	}
 }

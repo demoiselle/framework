@@ -1,11 +1,12 @@
 package ${package}.security;
 
+import java.security.Principal;
+
 import javax.enterprise.context.RequestScoped;
 
 import br.gov.frameworkdemoiselle.security.Authenticator;
 import br.gov.frameworkdemoiselle.security.Credentials;
 import br.gov.frameworkdemoiselle.security.InvalidCredentialsException;
-import br.gov.frameworkdemoiselle.security.User;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RequestScoped
@@ -13,14 +14,21 @@ public class AppAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
 
-	private User user;
+	private Principal user;
 
 	@Override
 	public void authenticate() throws Exception {
-		Credentials credentials = Beans.getReference(Credentials.class);
+		final Credentials credentials = Beans.getReference(Credentials.class);
 
 		if (credentials.getPassword().equals("secret")) {
-			this.user = new AppUser(credentials.getUsername());
+			this.user = new Principal() {
+
+				@Override
+				public String getName() {
+					return credentials.getUsername();
+				}
+			};
+
 		} else {
 			throw new InvalidCredentialsException();
 		}
@@ -32,7 +40,7 @@ public class AppAuthenticator implements Authenticator {
 	}
 
 	@Override
-	public User getUser() {
+	public Principal getUser() {
 		return this.user;
 	}
 }

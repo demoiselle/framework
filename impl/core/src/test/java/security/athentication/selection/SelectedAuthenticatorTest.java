@@ -72,6 +72,6 @@ public class SelectedAuthenticatorTest {
 	@Test
 	public void selectedAuthenticatorStrategy() {
 		context.login();
-		assertEquals("demoiselle", context.getUser().getId());
+		assertEquals("demoiselle", context.getUser().getName());
 	}
 }

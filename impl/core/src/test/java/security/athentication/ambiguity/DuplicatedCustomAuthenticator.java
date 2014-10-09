@@ -36,8 +36,9 @@
  */
 package security.athentication.ambiguity;
 
+import java.security.Principal;
+
 import br.gov.frameworkdemoiselle.security.Authenticator;
-import br.gov.frameworkdemoiselle.security.User;
 
 public class DuplicatedCustomAuthenticator implements Authenticator {
 
@@ -52,7 +53,7 @@ public class DuplicatedCustomAuthenticator implements Authenticator {
 	}
 
 	@Override
-	public User getUser() {
+	public Principal getUser() {
 		return null;
 	}
 }

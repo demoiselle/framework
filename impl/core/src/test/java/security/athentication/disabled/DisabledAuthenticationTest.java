@@ -82,7 +82,7 @@ public class DisabledAuthenticationTest {
 	@Test
 	public void unauthenticated() {
 		assertTrue(context.isLoggedIn());
-		assertEquals("demoiselle", context.getUser().getId());
+		assertEquals("demoiselle", context.getUser().getName());
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class DisabledAuthenticationTest {
 		context.login();
 		assertTrue(context.isLoggedIn());
 		assertNull(event);
-		assertEquals("demoiselle", context.getUser().getId());
+		assertEquals("demoiselle", context.getUser().getName());
 	}
 
 	@Test
@@ -98,6 +98,6 @@ public class DisabledAuthenticationTest {
 		context.login();
 		context.logout();
 		assertTrue(context.isLoggedIn());
-		assertEquals("demoiselle", context.getUser().getId());
+		assertEquals("demoiselle", context.getUser().getName());
 	}
 }

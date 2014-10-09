@@ -36,32 +36,23 @@
  */
 package security.athentication.error;
 
+import java.security.Principal;
+
 import br.gov.frameworkdemoiselle.security.Authenticator;
-import br.gov.frameworkdemoiselle.security.User;
 
 public class LogoutErrorAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
-	
-	private User currentUser;
+
+	private Principal currentUser;
 
 	@Override
-	public void authenticate()  {
-		this.currentUser = new User() {
+	public void authenticate() {
+		this.currentUser = new Principal() {
 
-			private static final long serialVersionUID = 1L;
-
-			public String getId() {
+			@Override
+			public String getName() {
 				return "demoiselle";
-			}
-
-			@Override
-			public Object getAttribute(Object key) {
-				return null;
-			}
-
-			@Override
-			public void setAttribute(Object key, Object value) {
 			}
 		};
 	}
@@ -72,7 +63,7 @@ public class LogoutErrorAuthenticator implements Authenticator {
 	}
 
 	@Override
-	public User getUser() {
+	public Principal getUser() {
 		return currentUser;
 	}
 }
