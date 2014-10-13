@@ -4,7 +4,7 @@ $(function() {
 
 		$("#logout").on("click", function() {
 			App.removeToken();
-			location.href = "login.html";
+			location.href = "index.html";
 		});
 	});
 });
