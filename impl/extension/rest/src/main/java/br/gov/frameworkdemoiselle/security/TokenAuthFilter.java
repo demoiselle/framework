@@ -36,29 +36,55 @@
  */
 package br.gov.frameworkdemoiselle.security;
 
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.Strings;
 
 public class TokenAuthFilter extends AbstractHTTPAuthorizationFilter {
 
-	private String token;
-
-	protected boolean isSupported(String authHeader) {
-		token = extractCredentials("Token", authHeader);
-		return !Strings.isEmpty(token);
+	@Override
+	protected String getType() {
+		return "Token";
 	}
 
 	@Override
-	protected boolean isActive(RESTSecurityConfig config) {
-		return config.isTokenFilterActive();
+	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		String authData = getAuthData(request);
+
+		super.doFilter(request, response, chain);
+
+		String value = Beans.getReference(Token.class).getValue();
+		if (value != null && !value.equals(authData)) {
+			response.setHeader("Set-Token", value);
+		}
 	}
 
 	@Override
-	protected void prepareForLogin() {
-		Beans.getReference(Token.class).setValue(token);
+	protected boolean isActive() {
+		return Beans.getReference(RESTSecurityConfig.class).isTokenFilterActive();
 	}
 
 	@Override
-	protected void prepareForLogout() {
+	protected void performLogin(HttpServletRequest request, HttpServletResponse response) {
+		Token token = Beans.getReference(Token.class);
+		String authData = getAuthData(request);
+		token.setValue(authData);
+
+		super.performLogin(request, response);
 	}
+
+	// public void setHeader(@Observes AfterLoginSuccessful event) {
+	// Token token = Beans.getReference(Token.class);
+	//
+	// if (!token.isEmpty()) {
+	// HttpServletResponse response = Beans.getReference(HttpServletResponse.class);
+	// response.setHeader("Set-Token", token.getValue());
+	// }
+	// }
 }

@@ -2,8 +2,6 @@ package br.gov.frameworkdemoiselle.security;
 
 import javax.enterprise.context.RequestScoped;
 
-import br.gov.frameworkdemoiselle.util.Strings;
-
 @RequestScoped
 public class Token {
 
@@ -16,8 +14,12 @@ public class Token {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
+
 	public boolean isEmpty() {
-		return Strings.isEmpty(value);
+		return this.value == null;
+	}
+
+	public void clear() {
+		this.value = null;
 	}
 }

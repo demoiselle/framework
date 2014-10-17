@@ -36,37 +36,36 @@
  */
 package br.gov.frameworkdemoiselle.security;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.codec.binary.Base64;
 
 import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.Strings;
 
 public class BasicAuthFilter extends AbstractHTTPAuthorizationFilter {
 
 	private String credentials;
 
 	@Override
-	protected boolean isSupported(String authHeader) {
-		credentials = extractCredentials("Basic", authHeader);
-		return !Strings.isEmpty(credentials);
+	protected String getType() {
+		return "Basic";
 	}
 
 	@Override
-	protected boolean isActive(RESTSecurityConfig config) {
-		return config.isBasicFilterActive();
+	protected boolean isActive() {
+		return Beans.getReference(RESTSecurityConfig.class).isBasicFilterActive();
 	}
 
 	@Override
-	protected void prepareForLogin() {
+	protected void performLogin(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 		String[] basicCredentials = getCredentials(credentials);
 
 		Credentials credentials = Beans.getReference(Credentials.class);
 		credentials.setUsername(basicCredentials[0]);
 		credentials.setPassword(basicCredentials[1]);
-	}
 
-	@Override
-	protected void prepareForLogout() {
+		super.performLogin(httpRequest, httpResponse);
 	}
 
 	private static String[] getCredentials(String header) throws InvalidCredentialsException {

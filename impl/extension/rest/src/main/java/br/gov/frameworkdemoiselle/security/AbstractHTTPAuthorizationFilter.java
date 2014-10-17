@@ -36,9 +36,11 @@
  */
 package br.gov.frameworkdemoiselle.security;
 
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,18 +69,52 @@ public abstract class AbstractHTTPAuthorizationFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
-		
-		RESTSecurityConfig config = Beans.getReference(RESTSecurityConfig.class);
-		
-		if (request instanceof HttpServletRequest && isActive(config)
-				&& isSupported(getAuthHeader((HttpServletRequest) request))) {
+
+		if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
+			doFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
+		} else {
+			chain.doFilter(request, response);
+		}
+
+		// boolean processed = false;
+		//
+		// if (request instanceof HttpServletRequest) {
+		// HttpServletRequest httpRequest = (HttpServletRequest) request;
+		// HttpServletResponse httpResponse = (HttpServletResponse) response;
+		//
+		// String authHeader = getAuthHeader(httpRequest);
+		// String httpCredentials = extractCredentials(authHeader);
+		//
+		// RESTSecurityConfig config = Beans.getReference(RESTSecurityConfig.class);
+		// if (isActive(config) && isSupported(httpCredentials)) {
+		// processed = true;
+		//
+		// try {
+		// performLogin(httpCredentials, httpRequest, httpResponse);
+		// chain.doFilter(httpRequest, httpResponse);
+		// performLogout(httpCredentials, httpRequest, httpResponse);
+		//
+		// } catch (InvalidCredentialsException cause) {
+		// setUnauthorizedStatus(httpResponse, cause);
+		// }
+		// }
+		// }
+		//
+		// if (!processed) {
+		// chain.doFilter(request, response);
+		// }
+	}
+
+	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		if (isActive() && isSupported(request)) {
 			try {
-				performLogin((HttpServletRequest) request);
-				chain.doFilter((HttpServletRequest) request, (HttpServletResponse) response);
-				performLogout();
+				performLogin(request, response);
+				chain.doFilter(request, response);
+				performLogout(request, response);
 
 			} catch (InvalidCredentialsException cause) {
-				setUnauthorizedStatus((HttpServletResponse) response, cause);
+				setUnauthorizedStatus(response, cause);
 			}
 
 		} else {
@@ -86,27 +122,54 @@ public abstract class AbstractHTTPAuthorizationFilter implements Filter {
 		}
 	}
 
-	private String getAuthHeader(HttpServletRequest request) {
-		String result = request.getHeader("Authorization");
-		return (result == null ? request.getHeader("authorization") : result);
+	protected String getAuthHeader(HttpServletRequest request) {
+		String value = null;
+
+		for (final Enumeration<String> names = request.getHeaderNames(); names.hasMoreElements();) {
+			String name = names.nextElement();
+
+			if ("authorization".equalsIgnoreCase(name)) {
+				value = request.getHeader(name);
+				break;
+			}
+		}
+
+		return value;
 	}
 
-	protected abstract boolean isSupported(String authHeader);
+	protected String getAuthData(HttpServletRequest request) throws InvalidCredentialsException {
+		String authData = null;
+		String authHeader = getAuthHeader(request);
+		String type = getType();
 
-	protected abstract boolean isActive(RESTSecurityConfig config);
+		if (!Strings.isEmpty(type) && !Strings.isEmpty(authHeader)) {
+			String regexp = "^" + type + "[ \\n]+(.+)$";
+			Pattern pattern = Pattern.compile(regexp, CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(authHeader);
 
-	protected abstract void prepareForLogin();
+			if (matcher.matches()) {
+				authData = matcher.group(1);
+			}
+		}
 
-	private void performLogin(HttpServletRequest request) {
-		prepareForLogin();
+		return authData;
+	}
+
+	protected boolean isSupported(HttpServletRequest request) {
+		String data = getAuthData(request);
+		return !Strings.isEmpty(data);
+	}
+
+	protected abstract boolean isActive();
+
+	protected abstract String getType();
+
+	protected void performLogin(HttpServletRequest request, HttpServletResponse response) {
 		Beans.getReference(SecurityContext.class).login();
 	}
 
-	protected abstract void prepareForLogout();
-
-	private void performLogout() {
+	protected void performLogout(HttpServletRequest request, HttpServletResponse response) {
 		if (Beans.getReference(SecurityContext.class).isLoggedIn()) {
-			prepareForLogout();
 			Beans.getReference(SecurityContext.class).logout();
 		}
 	}
@@ -115,21 +178,5 @@ public abstract class AbstractHTTPAuthorizationFilter implements Filter {
 		response.setStatus(SC_UNAUTHORIZED);
 		response.setContentType("text/plain");
 		response.getWriter().write(cause.getMessage());
-	}
-
-	protected static String extractCredentials(String type, String authHeader) throws InvalidCredentialsException {
-		String result = null;
-
-		if (!Strings.isEmpty(type) && !Strings.isEmpty(authHeader)) {
-			String regexp = "^" + type + "[ \\n]+(.+)$";
-			Pattern pattern = Pattern.compile(regexp);
-			Matcher matcher = pattern.matcher(authHeader);
-
-			if (matcher.matches()) {
-				result = matcher.group(1);
-			}
-		}
-
-		return result;
 	}
 }
