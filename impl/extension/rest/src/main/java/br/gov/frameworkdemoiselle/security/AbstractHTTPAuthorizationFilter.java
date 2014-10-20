@@ -75,34 +75,6 @@ public abstract class AbstractHTTPAuthorizationFilter implements Filter {
 		} else {
 			chain.doFilter(request, response);
 		}
-
-		// boolean processed = false;
-		//
-		// if (request instanceof HttpServletRequest) {
-		// HttpServletRequest httpRequest = (HttpServletRequest) request;
-		// HttpServletResponse httpResponse = (HttpServletResponse) response;
-		//
-		// String authHeader = getAuthHeader(httpRequest);
-		// String httpCredentials = extractCredentials(authHeader);
-		//
-		// RESTSecurityConfig config = Beans.getReference(RESTSecurityConfig.class);
-		// if (isActive(config) && isSupported(httpCredentials)) {
-		// processed = true;
-		//
-		// try {
-		// performLogin(httpCredentials, httpRequest, httpResponse);
-		// chain.doFilter(httpRequest, httpResponse);
-		// performLogout(httpCredentials, httpRequest, httpResponse);
-		//
-		// } catch (InvalidCredentialsException cause) {
-		// setUnauthorizedStatus(httpResponse, cause);
-		// }
-		// }
-		// }
-		//
-		// if (!processed) {
-		// chain.doFilter(request, response);
-		// }
 	}
 
 	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -176,7 +148,7 @@ public abstract class AbstractHTTPAuthorizationFilter implements Filter {
 
 	private void setUnauthorizedStatus(HttpServletResponse response, AuthenticationException cause) throws IOException {
 		response.setStatus(SC_UNAUTHORIZED);
-		response.setContentType("text/plain");
+		response.setContentType("text/plain; charset=UTF-8");
 		response.getWriter().write(cause.getMessage());
 	}
 }

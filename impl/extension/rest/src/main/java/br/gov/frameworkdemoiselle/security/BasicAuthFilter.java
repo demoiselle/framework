@@ -45,39 +45,38 @@ import br.gov.frameworkdemoiselle.util.Beans;
 
 public class BasicAuthFilter extends AbstractHTTPAuthorizationFilter {
 
-	private String credentials;
-
 	@Override
 	protected String getType() {
 		return "Basic";
 	}
 
 	@Override
-	protected boolean isActive() {
-		return Beans.getReference(RESTSecurityConfig.class).isBasicFilterActive();
-	}
-
-	@Override
-	protected void performLogin(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-		String[] basicCredentials = getCredentials(credentials);
+	protected void performLogin(HttpServletRequest request, HttpServletResponse response) {
+		String[] decoded = decodeCredentials(request);
 
 		Credentials credentials = Beans.getReference(Credentials.class);
-		credentials.setUsername(basicCredentials[0]);
-		credentials.setPassword(basicCredentials[1]);
+		credentials.setUsername(decoded[0]);
+		credentials.setPassword(decoded[1]);
 
-		super.performLogin(httpRequest, httpResponse);
+		super.performLogin(request, response);
 	}
 
-	private static String[] getCredentials(String header) throws InvalidCredentialsException {
+	private String[] decodeCredentials(HttpServletRequest request) throws InvalidCredentialsException {
 		String[] result = null;
 
-		byte[] decoded = Base64.decodeBase64(header);
+		String authData = getAuthData(request);
+		byte[] decoded = Base64.decodeBase64(authData);
 		result = new String(decoded).split(":");
 
 		if (result == null || result.length != 2) {
-			throw new InvalidCredentialsException("Formato inválido do cabeçalho");
+			throw new InvalidCredentialsException("formato inválido do cabeçalho");
 		}
 
 		return result;
+	}
+
+	@Override
+	protected boolean isActive() {
+		return Beans.getReference(RESTSecurityConfig.class).isBasicFilterActive();
 	}
 }

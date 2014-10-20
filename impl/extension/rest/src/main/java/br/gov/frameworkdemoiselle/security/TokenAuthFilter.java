@@ -66,11 +66,6 @@ public class TokenAuthFilter extends AbstractHTTPAuthorizationFilter {
 	}
 
 	@Override
-	protected boolean isActive() {
-		return Beans.getReference(RESTSecurityConfig.class).isTokenFilterActive();
-	}
-
-	@Override
 	protected void performLogin(HttpServletRequest request, HttpServletResponse response) {
 		Token token = Beans.getReference(Token.class);
 		String authData = getAuthData(request);
@@ -79,12 +74,9 @@ public class TokenAuthFilter extends AbstractHTTPAuthorizationFilter {
 		super.performLogin(request, response);
 	}
 
-	// public void setHeader(@Observes AfterLoginSuccessful event) {
-	// Token token = Beans.getReference(Token.class);
-	//
-	// if (!token.isEmpty()) {
-	// HttpServletResponse response = Beans.getReference(HttpServletResponse.class);
-	// response.setHeader("Set-Token", token.getValue());
-	// }
-	// }
+	@Override
+	protected boolean isActive() {
+		return Beans.getReference(RESTSecurityConfig.class).isTokenFilterActive();
+	}
+
 }

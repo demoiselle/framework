@@ -7,7 +7,7 @@ var BookmarkProxy = {
 			type : "GET",
 			url : this.url,
 			beforeSend : function(request) {
-				request.setRequestHeader("Authorization", App.getToken());
+				App.setHeader(request)
 			}
 		});
 	},
@@ -17,7 +17,7 @@ var BookmarkProxy = {
 			type : "GET",
 			url : this.url + "/" + $id,
 			beforeSend : function(request) {
-				request.setRequestHeader("Authorization", App.getToken());
+				App.setHeader(request)
 			}
 		});
 	},
@@ -29,7 +29,7 @@ var BookmarkProxy = {
 			data : JSON.stringify($data),
 			contentType : "application/json",
 			beforeSend : function(request) {
-				request.setRequestHeader("Authorization", App.getToken());
+				App.setHeader(request)
 			}
 		});
 	},
@@ -41,7 +41,7 @@ var BookmarkProxy = {
 			data : JSON.stringify($data),
 			contentType : "application/json",
 			beforeSend : function(request) {
-				request.setRequestHeader("Authorization", App.getToken());
+				App.setHeader(request)
 			}
 		});
 	},
@@ -53,7 +53,7 @@ var BookmarkProxy = {
 			data : JSON.stringify($ids),
 			contentType : "application/json",
 			beforeSend : function(request) {
-				request.setRequestHeader("Authorization", App.getToken());
+				App.setHeader(request)
 			}
 		});
 	}

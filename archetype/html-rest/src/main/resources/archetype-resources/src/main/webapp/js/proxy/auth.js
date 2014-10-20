@@ -17,7 +17,7 @@ var AuthProxy = {
 			url : this.url,
 			type : "GET",
 			beforeSend : function(request) {
-				request.setRequestHeader("Authorization", App.getToken());
+				App.setHeader(request)
 			}
 		});
 	}
