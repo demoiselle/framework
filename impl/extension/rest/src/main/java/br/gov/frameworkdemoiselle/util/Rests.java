@@ -47,9 +47,9 @@ public final class Rests {
 	private Rests() {
 	}
 
-	public static Set<Class<?>> getClasses() {
+	public static Set<Class<?>> getExceptionMappers() {
 		Set<Class<?>> result = new HashSet<Class<?>>();
-		ClassLoader extensionClassLoader = Rests.class.getClassLoader();
+		// ClassLoader extensionClassLoader = Rests.class.getClassLoader();
 
 		Set<Class<?>> specClasses = new HashSet<Class<?>>();
 		specClasses.add(ExceptionMapper.class);
@@ -58,9 +58,9 @@ public final class Rests {
 			for (Bean<?> bean : Beans.getBeanManager().getBeans(specClass)) {
 				Class<?> type = bean.getBeanClass();
 
-				if (type.getClassLoader() == extensionClassLoader) {
-
-				}
+				// if (type.getClassLoader() == extensionClassLoader) {
+				//
+				// }
 
 				result.add(type);
 			}

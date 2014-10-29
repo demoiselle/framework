@@ -15,6 +15,10 @@ public class HttpViolationException extends Exception {
 		this.statusCode = statusCode;
 	}
 
+	public HttpViolationException addViolation(String message) {
+		return addViolation(null, message);
+	}
+
 	public HttpViolationException addViolation(String property, String message) {
 		this.violations.add(new Violation(property, message));
 		return this;
