@@ -36,18 +36,19 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import static java.util.logging.Level.WARNING;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Logger;
 
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.FileRenderer;
@@ -69,38 +70,40 @@ public class FileRendererImpl implements FileRenderer {
 	private FacesContext context;
 
 	@Override
-	public void render(final byte[] byteArray, final ContentType contentType, final String fileName, boolean forceDownload) {
-		logger.debug("Renderizando para o arquivo " + fileName + ".");
+	public void render(final byte[] byteArray, final ContentType contentType, final String fileName,
+			boolean forceDownload) {
+		logger.fine("Renderizando para o arquivo " + fileName + ".");
 
 		try {
 			response.setContentType(contentType.getContentType());
 			response.setContentLength(byteArray.length);
-			
+
 			String forceDownloadCommand = forceDownload ? "attachment; " : "";
 			response.setHeader("Content-Disposition", forceDownloadCommand + "filename=\"" + fileName + "\"");
 
-			logger.debug("Escrevendo o arquivo " + fileName + " no response.");
+			logger.fine("Escrevendo o arquivo " + fileName + " no response.");
 			response.getOutputStream().write(byteArray, 0, byteArray.length);
 			response.getOutputStream().flush();
 			response.getOutputStream().close();
 		} catch (IOException e) {
-			logger.info("Erro na geração do relatório. Incluíndo a exceção de erro em um FacesMessage", e);
+			logger.log(WARNING, "Erro na geração do relatório. Incluíndo a exceção de erro em um FacesMessage", e);
 			Faces.addMessage(e);
 		}
 		context.responseComplete();
 	}
-	
+
 	@Override
 	public void render(final byte[] byteArray, final ContentType contentType, final String fileName) {
 		render(byteArray, contentType, fileName, false);
 	}
 
 	@Override
-	public void render(final InputStream stream, final ContentType contentType, final String fileName, boolean forceDownload) {
-		logger.debug("Renderizando o arquivo " + fileName + ".");
+	public void render(final InputStream stream, final ContentType contentType, final String fileName,
+			boolean forceDownload) {
+		logger.fine("Renderizando o arquivo " + fileName + ".");
 		render(getBytes(stream), contentType, fileName, forceDownload);
 	}
-	
+
 	@Override
 	public void render(final InputStream stream, final ContentType contentType, final String fileName) {
 		render(stream, contentType, fileName, false);
@@ -108,15 +111,15 @@ public class FileRendererImpl implements FileRenderer {
 
 	@Override
 	public void render(File file, ContentType contentType, String fileName, boolean forceDownload) {
-		logger.debug("Renderizando para o arquivo " + fileName + ".");
+		logger.fine("Renderizando para o arquivo " + fileName + ".");
 		try {
 			render(new FileInputStream(file), contentType, fileName, forceDownload);
 		} catch (FileNotFoundException e) {
-			logger.info("Erro na geração do relatório. Incluíndo a exceção de erro em um FacesMessage", e);
+			logger.log(WARNING, "Erro na geração do relatório. Incluíndo a exceção de erro em um FacesMessage", e);
 			Faces.addMessage(e);
 		}
 	}
-	
+
 	@Override
 	public void render(File file, ContentType contentType, String fileName) {
 		render(file, contentType, fileName, false);

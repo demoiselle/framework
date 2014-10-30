@@ -43,10 +43,7 @@ import javax.faces.context.ExceptionHandler;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 
-import org.slf4j.Logger;
-
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.internal.configuration.ExceptionHandlerConfigCompatible;
 import br.gov.frameworkdemoiselle.internal.configuration.ExceptionHandlerConfig;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Exceptions;
@@ -54,7 +51,6 @@ import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.PageNotFoundException;
 import br.gov.frameworkdemoiselle.util.Redirector;
 
-@SuppressWarnings("deprecation")
 public class ApplicationExceptionHandler extends AbstractExceptionHandler {
 
 	public ApplicationExceptionHandler(final ExceptionHandler wrapped) {
@@ -62,20 +58,6 @@ public class ApplicationExceptionHandler extends AbstractExceptionHandler {
 	}
 
 	protected boolean handleException(final Throwable cause, FacesContext facesContext) {
-		// Apenas para manter compatibilidade entre 2.3.x e 2.4.0-RCx
-		ExceptionHandlerConfigCompatible compatibleConfig = Beans.getReference(ExceptionHandlerConfigCompatible.class);
-		// Usuário está utilizando pelo menos uma das propriedades com a forma depreciada de forma explícita
-		if (!(compatibleConfig.getExceptionPage().equals("/application_error") && compatibleConfig.isHandleApplicationException())) {
-			Logger logger = Beans.getReference(Logger.class);
-			logger.warn("As propriedades frameworkdemoiselle.handle.application.exception e"
-					+ " frameworkdemoiselle.handle.application.exception.page"
-					+ " não serão suportadas nas próximas versões do framework."
-					+ " Para evitar futuros problemas atualize as propriedades para"
-					+ " frameworkdemoiselle.exception.application.handle e"
-					+ " frameworkdemoiselle.exception.default.redirect.page, respectivamente.");
-			return handleExceptionCompatibleConfiguration(compatibleConfig, cause, facesContext);
-		}
-		
 		boolean handled = false;
 		ExceptionHandlerConfig config = Beans.getReference(ExceptionHandlerConfig.class);
 
@@ -89,42 +71,6 @@ public class ApplicationExceptionHandler extends AbstractExceptionHandler {
 			}
 		}
 
-		return handled;
-	}
-
-	@Deprecated
-	private boolean handleExceptionCompatibleConfiguration(ExceptionHandlerConfigCompatible config, final Throwable cause,
-			FacesContext facesContext) {
-		boolean handled = false;
-
-		if (config.isHandleApplicationException() && Exceptions.isApplicationException(cause)) {
-
-			if (isRendering(facesContext)) {
-				handled = handlingDuringRenderResponseCompatible(cause, config);
-			} else {
-				Faces.addMessage(cause);
-				handled = true;
-			}
-		}
-		return handled;
-	}
-
-	@Deprecated
-	private boolean handlingDuringRenderResponseCompatible(final Throwable cause, final ExceptionHandlerConfigCompatible config) {
-		boolean handled = false;
-		try {
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("exception", cause.getMessage());
-			Redirector.redirect(config.getExceptionPage(), map);
-			handled = true;
-		} catch (PageNotFoundException ex) {
-			// TODO Colocar a mensagem no bundle
-			throw new DemoiselleException(
-					"A tela de exibição de erros: \""
-							+ ex.getViewId()
-							+ "\" não foi encontrada. Caso o seu projeto possua outra, defina no arquivo de configuração a chave \""
-							+ "frameworkdemoiselle.handle.application.exception.page" + "\"", ex);
-		}
 		return handled;
 	}
 

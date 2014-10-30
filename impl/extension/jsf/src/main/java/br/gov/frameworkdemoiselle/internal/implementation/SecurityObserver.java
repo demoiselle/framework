@@ -39,14 +39,13 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
@@ -71,7 +70,7 @@ public class SecurityObserver implements Serializable {
 
 	@Inject
 	private Logger logger;
-	
+
 	@Inject
 	@Name("demoiselle-jsf-bundle")
 	private ResourceBundle bundle;
@@ -113,7 +112,7 @@ public class SecurityObserver implements Serializable {
 			Redirector.redirect(getConfig().getLoginPage());
 
 		} catch (PageNotFoundException cause) {
-			throw new ConfigurationException( bundle.getString("login-page-not-found",cause.getViewId()) , cause);
+			throw new ConfigurationException(bundle.getString("login-page-not-found", cause.getViewId()), cause);
 		}
 	}
 
@@ -131,7 +130,8 @@ public class SecurityObserver implements Serializable {
 
 		} catch (PageNotFoundException cause) {
 			if (redirectedFromConfig) {
-				throw new ConfigurationException( bundle.getString("after-login-page-not-found",cause.getViewId()) , cause);
+				throw new ConfigurationException(bundle.getString("after-login-page-not-found", cause.getViewId()),
+						cause);
 			} else {
 				throw cause;
 			}
@@ -148,14 +148,15 @@ public class SecurityObserver implements Serializable {
 			}
 
 		} catch (PageNotFoundException cause) {
-			throw new ConfigurationException( bundle.getString("after-logout-page-not-found",cause.getViewId()) , cause);
+			throw new ConfigurationException(bundle.getString("after-logout-page-not-found", cause.getViewId()), cause);
 
 		} finally {
 			try {
-				HttpSession session = (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+				HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext()
+						.getSession(false);
 				session.invalidate();
 			} catch (IllegalStateException e) {
-				logger.debug("Esta sessão já foi invalidada.");
+				logger.fine("Esta sessão já foi invalidada.");
 			}
 		}
 	}
