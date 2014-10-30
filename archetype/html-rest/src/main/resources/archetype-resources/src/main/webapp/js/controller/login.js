@@ -22,11 +22,15 @@ $(function() {
 function make_base_auth(user, password) {
 	var tok = user + ':' + password;
 	var hash = btoa(tok);
-	return "Basic " + hash;
+	return hash;
 }
 
 function loginOk(data) {
-	App.setToken(make_base_auth($("#username").val().trim(), $("#password").val().trim()));
+	var username = $("#username").val().trim();
+	var password = $("#password").val().trim();
+	var encoded = btoa(username + ':' + password);
+
+	App.setToken(encoded);
 	location.href = "home.html";
 }
 

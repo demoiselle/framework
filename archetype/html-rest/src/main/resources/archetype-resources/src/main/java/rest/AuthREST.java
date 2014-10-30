@@ -27,10 +27,10 @@ public class AuthREST {
 	@ValidatePayload
 	@Produces("application/json")
 	@Consumes("application/json")
-	public void login(CredentialsForm form) {
+	public void login(CredentialsData data) {
 		Credentials credentials = Beans.getReference(Credentials.class);
-		credentials.setUsername(form.username);
-		credentials.setPassword(form.password);
+		credentials.setUsername(data.username);
+		credentials.setPassword(data.password);
 
 		securityContext.login();
 	}
@@ -42,7 +42,7 @@ public class AuthREST {
 		return securityContext.getUser();
 	}
 
-	public static class CredentialsForm {
+	public static class CredentialsData {
 
 		@NotNull(message = "{required.field}")
 		@Size(min = 1, message = "{required.field}")
