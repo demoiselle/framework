@@ -39,12 +39,11 @@ package br.gov.frameworkdemoiselle.internal.producer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig;
 import br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig.EntityManagerScope;
@@ -53,25 +52,25 @@ import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
- * 
- * <p>Stores produced entity managers. When the {@link EntityManagerProducer} try to create an entity manager it will
- * seach this store for a cached instance, only creating a new instance if this cache doesn't contain a suitable one.</p>
- * 
- * <p>There are several concrete implementations of this class, each one corresponding to a scoped cache (ex: {@link RequestEntityManagerStore}
- * stores Entity Managers on the request scope). To select witch implementation is used (and with that, what scope is used to store Entity Managers)
- * open the "demoiselle.properties" file and edit the property "frameworkdemoiselle.persistence.entitymanager.scope". The default scope is the
- * {@link RequestScoped}.</p>
- * 
+ * <p>
+ * Stores produced entity managers. When the {@link EntityManagerProducer} try to create an entity manager it will seach
+ * this store for a cached instance, only creating a new instance if this cache doesn't contain a suitable one.
+ * </p>
+ * <p>
+ * There are several concrete implementations of this class, each one corresponding to a scoped cache (ex:
+ * {@link RequestEntityManagerStore} stores Entity Managers on the request scope). To select witch implementation is
+ * used (and with that, what scope is used to store Entity Managers) open the "demoiselle.properties" file and edit the
+ * property "frameworkdemoiselle.persistence.entitymanager.scope". The default scope is the {@link RequestScoped}.
+ * </p>
  * 
  * @author serpro
- *
  */
 public abstract class AbstractEntityManagerStore implements EntityManagerStore {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private final Map<String, EntityManager> cache = Collections.synchronizedMap(new HashMap<String, EntityManager>());
-	
+
 	public EntityManager getEntityManager(String persistenceUnit) {
 		EntityManager entityManager = null;
 
@@ -88,7 +87,7 @@ public abstract class AbstractEntityManagerStore implements EntityManagerStore {
 
 		return entityManager;
 	}
-	
+
 	void init() {
 		for (String persistenceUnit : getFactory().getCache().keySet()) {
 			getEntityManager(persistenceUnit);
@@ -96,11 +95,11 @@ public abstract class AbstractEntityManagerStore implements EntityManagerStore {
 	}
 
 	void close() {
-		//Se o produtor não possui escopo, então o ciclo de vida
-		//de EntityManager produzidos é responsabilidade do desenvolvedor. Não
-		//fechamos os EntityManagers aqui.
+		// Se o produtor não possui escopo, então o ciclo de vida
+		// de EntityManager produzidos é responsabilidade do desenvolvedor. Não
+		// fechamos os EntityManagers aqui.
 		EntityManagerConfig configuration = getConfiguration();
-		if (configuration.getEntityManagerScope() != EntityManagerScope.NOSCOPE){
+		if (configuration.getEntityManagerScope() != EntityManagerScope.NOSCOPE) {
 			for (EntityManager entityManager : cache.values()) {
 				entityManager.close();
 			}
@@ -109,26 +108,26 @@ public abstract class AbstractEntityManagerStore implements EntityManagerStore {
 	}
 
 	public Map<String, EntityManager> getCache() {
-		if (cache==null || cache.isEmpty()){
+		if (cache == null || cache.isEmpty()) {
 			init();
 		}
-		
+
 		return cache;
 	}
-	
-	private EntityManagerFactoryProducer getFactory(){
+
+	private EntityManagerFactoryProducer getFactory() {
 		return Beans.getReference(EntityManagerFactoryProducer.class);
 	}
-	
-	private Logger getLogger(){
-		return Beans.getReference(Logger.class);
+
+	private Logger getLogger() {
+		return Beans.getReference(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.util"));
 	}
-	
-	private ResourceBundle getBundle(){
-		return Beans.getReference(ResourceBundle.class , new NameQualifier("demoiselle-jpa-bundle"));
+
+	private ResourceBundle getBundle() {
+		return Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-jpa-bundle"));
 	}
-	
-	private EntityManagerConfig getConfiguration(){
+
+	private EntityManagerConfig getConfiguration() {
 		return Beans.getReference(EntityManagerConfig.class);
 	}
 }

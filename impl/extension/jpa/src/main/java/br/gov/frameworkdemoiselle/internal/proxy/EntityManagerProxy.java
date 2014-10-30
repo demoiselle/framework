@@ -38,6 +38,7 @@ package br.gov.frameworkdemoiselle.internal.proxy;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -50,8 +51,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.Metamodel;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig;
@@ -69,19 +68,18 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 public class EntityManagerProxy implements EntityManager, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	/*
 	 * Persistence unit of the delegated EntityManager.
 	 */
 	private String persistenceUnit;
-	
+
 	/*
 	 * demoiselle-jpa configuration options
 	 */
 	private EntityManagerConfig configuration;
-	
-	
-	private EntityManager delegateCache;	
+
+	private EntityManager delegateCache;
 
 	/**
 	 * Constructor based on persistence unit name.
@@ -99,14 +97,15 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 * @return Cached EntityManager
 	 */
 	private EntityManager getEntityManagerDelegate() {
-		//Se o produtor de EntityManager não estiver em um escopo, precisamos guardar em cache o EntityManager produzido,
-		//do contrário, basta solicitar uma instância do produtor (que estará em um escopo) e obter a instância real 
-		//de EntityManager dele.
-		if (getConfiguration().getEntityManagerScope()!=EntityManagerScope.NOSCOPE || delegateCache==null){
+		// Se o produtor de EntityManager não estiver em um escopo, precisamos guardar em cache o EntityManager
+		// produzido,
+		// do contrário, basta solicitar uma instância do produtor (que estará em um escopo) e obter a instância real
+		// de EntityManager dele.
+		if (getConfiguration().getEntityManagerScope() != EntityManagerScope.NOSCOPE || delegateCache == null) {
 			EntityManagerProducer emp = Beans.getReference(EntityManagerProducer.class);
 			delegateCache = emp.getEntityManager(this.persistenceUnit);
 		}
-		
+
 		return delegateCache;
 	}
 
@@ -347,7 +346,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public Query createQuery(String qlString) {
-		return new QueryProxy(getEntityManagerDelegate().createQuery(qlString) , this) ;
+		return new QueryProxy(getEntityManagerDelegate().createQuery(qlString), this);
 	}
 
 	/*
@@ -356,7 +355,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public <T> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
-		return new TypedQueryProxy<T>( getEntityManagerDelegate().createQuery(criteriaQuery) , this );
+		return new TypedQueryProxy<T>(getEntityManagerDelegate().createQuery(criteriaQuery), this);
 	}
 
 	/*
@@ -365,7 +364,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public <T> TypedQuery<T> createQuery(String qlString, Class<T> resultClass) {
-		return new TypedQueryProxy<T>(getEntityManagerDelegate().createQuery(qlString, resultClass),this);
+		return new TypedQueryProxy<T>(getEntityManagerDelegate().createQuery(qlString, resultClass), this);
 	}
 
 	/*
@@ -383,7 +382,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public <T> TypedQuery<T> createNamedQuery(String name, Class<T> resultClass) {
-		return new TypedQueryProxy<T>(getEntityManagerDelegate().createNamedQuery(name, resultClass),this);
+		return new TypedQueryProxy<T>(getEntityManagerDelegate().createNamedQuery(name, resultClass), this);
 	}
 
 	/*
@@ -410,7 +409,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	@Override
 	public Query createNativeQuery(String sqlString, String resultSetMapping) {
-		return new QueryProxy(getEntityManagerDelegate().createNativeQuery(sqlString, resultSetMapping),this);
+		return new QueryProxy(getEntityManagerDelegate().createNativeQuery(sqlString, resultSetMapping), this);
 	}
 
 	/*
@@ -427,17 +426,16 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	 */
 	protected final void joinTransactionIfNecessary() {
 		try {
-			/*EntityTransaction transaction = */getEntityManagerDelegate().getTransaction();
+			/* EntityTransaction transaction = */getEntityManagerDelegate().getTransaction();
 		} catch (IllegalStateException cause) {
-			//IllegalStateException is launched if we are on a JTA entity manager, so
-			//we assume we need to join transaction instead of creating one.
-			
-			try{
+			// IllegalStateException is launched if we are on a JTA entity manager, so
+			// we assume we need to join transaction instead of creating one.
+
+			try {
 				getEntityManagerDelegate().joinTransaction();
-			}
-			catch(TransactionRequiredException te){
-				//It get's launched if there is no JTA transaction opened. It usually means we are
-				//being launched inside a method not marked with @Transactional so we ignore the exception.
+			} catch (TransactionRequiredException te) {
+				// It get's launched if there is no JTA transaction opened. It usually means we are
+				// being launched inside a method not marked with @Transactional so we ignore the exception.
 			}
 		}
 	}
@@ -540,51 +538,51 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 	public String toString() {
 		return getEntityManagerDelegate().toString();
 	}
-	
-	private void checkEntityManagerScopePassivable(Object entity)  {
+
+	private void checkEntityManagerScopePassivable(Object entity) {
 		EntityManagerConfig configuration = getConfiguration();
-		if (configuration.getEntityManagerScope()==EntityManagerScope.CONVERSATION
-				|| configuration.getEntityManagerScope()==EntityManagerScope.SESSION
-				|| configuration.getEntityManagerScope()==EntityManagerScope.VIEW){
-		
+		if (configuration.getEntityManagerScope() == EntityManagerScope.CONVERSATION
+				|| configuration.getEntityManagerScope() == EntityManagerScope.SESSION
+				|| configuration.getEntityManagerScope() == EntityManagerScope.VIEW) {
+
 			LockModeType lockMode = null;
-			if (getEntityManagerDelegate().contains(entity)){
+			if (getEntityManagerDelegate().contains(entity)) {
 				lockMode = getEntityManagerDelegate().getLockMode(entity);
 			}
 			checkEntityManagerScopePassivable(lockMode);
 		}
 	}
 
-	private void checkEntityManagerScopePassivable(LockModeType lockMode)  {
+	private void checkEntityManagerScopePassivable(LockModeType lockMode) {
 		EntityManagerConfig configuration = getConfiguration();
-		if (configuration.getEntityManagerScope()==EntityManagerScope.CONVERSATION
-				|| configuration.getEntityManagerScope()==EntityManagerScope.SESSION
-				|| configuration.getEntityManagerScope()==EntityManagerScope.VIEW){
-			
-			if (lockMode!=null 
-					&& lockMode!=LockModeType.NONE 
-					&& lockMode!=LockModeType.OPTIMISTIC_FORCE_INCREMENT){
-				String message = getBundle().getString("passivable-scope-without-optimistic-lock" , configuration.getEntityManagerScope().toString());
-				getLogger().error(message);
+		if (configuration.getEntityManagerScope() == EntityManagerScope.CONVERSATION
+				|| configuration.getEntityManagerScope() == EntityManagerScope.SESSION
+				|| configuration.getEntityManagerScope() == EntityManagerScope.VIEW) {
+
+			if (lockMode != null && lockMode != LockModeType.NONE
+					&& lockMode != LockModeType.OPTIMISTIC_FORCE_INCREMENT) {
+				String message = getBundle().getString("passivable-scope-without-optimistic-lock",
+						configuration.getEntityManagerScope().toString());
+				getLogger().severe(message);
 				throw new DemoiselleException(message);
 			}
 		}
 	}
-	
-	private EntityManagerConfig getConfiguration(){
-		if (configuration==null){
+
+	private EntityManagerConfig getConfiguration() {
+		if (configuration == null) {
 			configuration = Beans.getReference(EntityManagerConfig.class);
 		}
-		
+
 		return configuration;
 	}
-	
+
 	private Logger getLogger() {
-		return Beans.getReference(Logger.class);
+		return Beans.getReference(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.util"));
 	}
-	
-	private ResourceBundle getBundle(){
-		return Beans.getReference(ResourceBundle.class,new NameQualifier("demoiselle-jpa-bundle"));
+
+	private ResourceBundle getBundle() {
+		return Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-jpa-bundle"));
 	}
-	
+
 }

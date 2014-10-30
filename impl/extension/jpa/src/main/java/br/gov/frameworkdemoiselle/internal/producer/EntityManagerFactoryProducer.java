@@ -36,11 +36,14 @@
  */
 package br.gov.frameworkdemoiselle.internal.producer;
 
+import static java.util.logging.Level.SEVERE;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -54,7 +57,6 @@ import javax.persistence.Persistence;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.slf4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -72,20 +74,20 @@ public class EntityManagerFactoryProducer implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private static final String ENTITY_MANAGER_RESOURCE = "META-INF/persistence.xml";
-	
+
 	@Inject
 	protected Logger logger;
 
 	@Inject
 	@Name("demoiselle-jpa-bundle")
 	protected ResourceBundle bundle;
-	
+
 	@Inject
 	private Persistences persistenceUnitReader;
 
 	private final Map<ClassLoader, Map<String, EntityManagerFactory>> factoryCache = Collections
 			.synchronizedMap(new HashMap<ClassLoader, Map<String, EntityManagerFactory>>());
-	
+
 	@Default
 	@Produces
 	protected EntityManagerFactory createDefault(EntityManagerConfig config) {
@@ -104,7 +106,7 @@ public class EntityManagerFactoryProducer implements Serializable {
 		String persistenceUnit = ip.getAnnotated().getAnnotation(Name.class).value();
 		return create(persistenceUnit);
 	}
-	
+
 	public EntityManagerFactory create(String persistenceUnit) {
 		EntityManagerFactory factory;
 
@@ -151,7 +153,7 @@ public class EntityManagerFactoryProducer implements Serializable {
 
 		} catch (Exception cause) {
 			String message = bundle.getString("can-not-get-persistence-unit-from-persistence");
-			logger.error(message, cause);
+			logger.log(SEVERE, message, cause);
 
 			throw new DemoiselleException(message, cause);
 		}
@@ -169,7 +171,7 @@ public class EntityManagerFactoryProducer implements Serializable {
 				throw new DemoiselleException(cause);
 			}
 
-			logger.debug(bundle.getString("persistence-unit-name-found", persistenceUnit));
+			logger.fine(bundle.getString("persistence-unit-name-found", persistenceUnit));
 		}
 	}
 
@@ -188,7 +190,7 @@ public class EntityManagerFactoryProducer implements Serializable {
 		Map<String, EntityManagerFactory> result = factoryCache.get(classLoader);
 
 		if (result == null || result.isEmpty()) {
-			logger.debug(bundle.getString("entity-manager-factory-not-found-in-cache"));
+			logger.fine(bundle.getString("entity-manager-factory-not-found-in-cache"));
 			for (String persistenceUnit : loadPersistenceUnitFromClassloader(classLoader)) {
 				create(persistenceUnit);
 				result = factoryCache.get(classLoader);

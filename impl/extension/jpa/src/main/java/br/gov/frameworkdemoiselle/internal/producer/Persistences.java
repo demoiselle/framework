@@ -36,16 +36,16 @@
  */
 package br.gov.frameworkdemoiselle.internal.producer;
 
+import static br.gov.frameworkdemoiselle.configuration.Configuration.DEFAULT_RESOURCE;
+
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.slf4j.Logger;
-
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -73,8 +73,7 @@ public class Persistences {
 		String persistenceUnit = config.getDefaultPersistenceUnitName();
 
 		if (persistenceUnit != null) {
-			this.logger.debug(bundle.getString("getting-persistence-unit-from-properties",
-					Configuration.DEFAULT_RESOURCE));
+			this.logger.fine(bundle.getString("getting-persistence-unit-from-properties", DEFAULT_RESOURCE));
 		}
 
 		return persistenceUnit;
