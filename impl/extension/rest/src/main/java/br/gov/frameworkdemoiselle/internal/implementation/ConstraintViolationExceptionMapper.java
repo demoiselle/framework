@@ -1,14 +1,13 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.UnprocessableEntityException;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -32,7 +31,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
 			failed.addViolation(violation.getPropertyPath().toString(), violation.getMessage());
 		}
 
-		getLogger().debug(getBundle().getString("mapping-violations", status, failed.getViolations().toString()));
+		getLogger().fine(getBundle().getString("mapping-violations", status, failed.getViolations().toString()));
 		return Response.status(status).entity(failed.getViolations()).build();
 	}
 

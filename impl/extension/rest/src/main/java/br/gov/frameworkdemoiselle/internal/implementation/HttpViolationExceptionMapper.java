@@ -1,12 +1,11 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.HttpViolationException;
 import br.gov.frameworkdemoiselle.HttpViolationException.Violation;
@@ -29,7 +28,7 @@ public class HttpViolationExceptionMapper implements ExceptionMapper<HttpViolati
 		if (violations.isEmpty()) {
 			violations = null;
 		} else {
-			getLogger().debug(getBundle().getString("mapping-violations", status, violations.toString()));
+			getLogger().fine(getBundle().getString("mapping-violations", status, violations.toString()));
 		}
 
 		return Response.status(status).entity(violations).build();

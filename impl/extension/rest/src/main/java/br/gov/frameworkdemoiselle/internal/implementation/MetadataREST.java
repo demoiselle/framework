@@ -3,14 +3,13 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.NotFoundException;
 import br.gov.frameworkdemoiselle.ServiceUnavailableException;

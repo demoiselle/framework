@@ -1,14 +1,14 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import static java.util.logging.Level.SEVERE;
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
@@ -23,7 +23,7 @@ public class DefaultExceptionMapper implements ExceptionMapper<Throwable> {
 	@Override
 	public Response toResponse(Throwable exception) {
 		String message = getBundle().getString("internal.server.error");
-		getLogger().error(message, exception);
+		getLogger().log(SEVERE, message, exception);
 
 		return Response.status(INTERNAL_SERVER_ERROR).entity(message).build();
 	}
