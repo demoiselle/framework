@@ -36,14 +36,15 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import static java.util.logging.Level.SEVERE;
+
 import java.lang.management.ManagementFactory;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
@@ -56,8 +57,8 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  */
 public class MBeanHelper {
 
-	private static final Logger logger = LoggerProducer.create(MBeanHelper.class);
-	
+	private static final Logger logger = LoggerProducer.create("br.gov.frameworkdemoiselle.management");
+
 	private static ResourceBundle bundle = new ResourceBundle("demoiselle-jmx-bundle", Locale.getDefault());
 
 	private static final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
@@ -82,20 +83,20 @@ public class MBeanHelper {
 	 */
 	public static ObjectInstance register(final Object mbean, final String name) {
 
-		logger.info(bundle.getString("mbean-registration",name));
+		logger.fine(bundle.getString("mbean-registration", name));
 
 		ObjectInstance instance = null;
 		try {
 			ObjectName objectName = new ObjectName(name);
 			instance = server.registerMBean(mbean, objectName);
 		} catch (Exception e) {
-			logger.error(bundle.getString("mbean-registration-error",name),e);
-			throw new DemoiselleException(bundle.getString("mbean-registration-error",name), e);
+			logger.log(SEVERE, bundle.getString("mbean-registration-error", name), e);
+			throw new DemoiselleException(bundle.getString("mbean-registration-error", name), e);
 		}
 
 		return instance;
 	}
-	
+
 	/**
 	 * Remove the registration of a mbean.
 	 * 
@@ -104,13 +105,13 @@ public class MBeanHelper {
 	 */
 	public static void unregister(final ObjectName objectName) {
 
-		logger.info(bundle.getString("mbean-deregistration",objectName.getCanonicalName()));
+		logger.fine(bundle.getString("mbean-deregistration", objectName.getCanonicalName()));
 
 		try {
 			server.unregisterMBean(objectName);
 		} catch (Exception e) {
-			logger.error(bundle.getString("mbean-deregistration",objectName.getCanonicalName()),e);
-			throw new DemoiselleException(bundle.getString("mbean-deregistration",objectName.getCanonicalName()), e);
+			logger.log(SEVERE, bundle.getString("mbean-deregistration", objectName.getCanonicalName()), e);
+			throw new DemoiselleException(bundle.getString("mbean-deregistration", objectName.getCanonicalName()), e);
 		}
 	}
 }
