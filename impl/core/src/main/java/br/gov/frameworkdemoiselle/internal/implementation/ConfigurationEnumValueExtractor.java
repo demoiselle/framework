@@ -38,7 +38,6 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 
 import static br.gov.frameworkdemoiselle.annotation.Priority.L2_PRIORITY;
 
-
 import java.lang.reflect.Field;
 import java.util.Locale;
 

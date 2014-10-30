@@ -44,12 +44,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.stereotype.Controller;
@@ -92,6 +91,9 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * 	...
  * }
  * }
+ * 
+ * 
+ * 
  * 
  * </pre>
  * 
@@ -255,7 +257,7 @@ public class ExceptionHandlerInterceptor implements Serializable {
 
 	private Logger getLogger() {
 		if (logger == null) {
-			logger = Beans.getReference(Logger.class, new NameQualifier(ExceptionHandlerInterceptor.class.getName()));
+			logger = Beans.getReference(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.exception"));
 		}
 
 		return logger;

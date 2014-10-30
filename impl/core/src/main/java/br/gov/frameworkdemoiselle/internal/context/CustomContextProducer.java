@@ -51,14 +51,13 @@ package br.gov.frameworkdemoiselle.internal.context;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.InjectionPoint;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.context.ConversationContext;
@@ -74,37 +73,38 @@ import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
- * Produces instances of {@link CustomContext} to control contexts not activated
- * by the container
+ * Produces instances of {@link CustomContext} to control contexts not activated by the container
  * 
  * @author serpro
- *
  */
 @ApplicationScoped
 public class CustomContextProducer {
-	
+
 	private Logger logger;
 
 	private transient ResourceBundle bundle;
-	
+
 	/**
-	 * <p>Store a context into this producer. The context must have
-	 * been registered into CDI (unsing {@link AfterBeanDiscovery#addContext(javax.enterprise.context.spi.Context context)}) by a portable extension,
-	 * this method will not do this.</p>
-	 * 
-	 * <p>This producer can only produce contexts registered through this method.</p>
-	 *  
+	 * <p>
+	 * Store a context into this producer. The context must have been registered into CDI (unsing
+	 * {@link AfterBeanDiscovery#addContext(javax.enterprise.context.spi.Context context)}) by a portable extension,
+	 * this method will not do this.
+	 * </p>
+	 * <p>
+	 * This producer can only produce contexts registered through this method.
+	 * </p>
 	 */
-	public void addRegisteredContext(CustomContext context){
+	public void addRegisteredContext(CustomContext context) {
 		Logger logger = getLogger();
 		ResourceBundle bundle = getBundle();
-		
-		if (!getContexts().contains(context)){
+
+		if (!getContexts().contains(context)) {
 			getContexts().add(context);
-			logger.trace( bundle.getString("bootstrap-context-added", context.getClass().getCanonicalName() , context.getScope().getSimpleName() ) );
-		}
-		else{
-			logger.warn( bundle.getString("bootstrap-context-already-managed", context.getClass().getCanonicalName() , context.getScope().getSimpleName() ) );
+			logger.finest(bundle.getString("bootstrap-context-added", context.getClass().getCanonicalName(), context
+					.getScope().getSimpleName()));
+		} else {
+			logger.finest(bundle.getString("bootstrap-context-already-managed", context.getClass().getCanonicalName(),
+					context.getScope().getSimpleName()));
 		}
 	}
 
@@ -112,140 +112,138 @@ public class CustomContextProducer {
 	 * Deactivates all registered contexts and clear the context collection
 	 */
 	@PreDestroy
-	public void closeContexts(){
-		//Desativa todos os contextos registrados.
-		for (CustomContext context : getContexts()){
+	public void closeContexts() {
+		// Desativa todos os contextos registrados.
+		for (CustomContext context : getContexts()) {
 			context.deactivate();
 		}
-		
+
 		getContexts().clear();
 	}
-	
-	private List<CustomContext> getContexts(){
-		/* The demoiselle-core CustomContextBootstrap class creates default contexts for the main
-		 * scopes of an application (request, session and conversation) and some custom contexts
-		 * (view and static). This method injects a reference to the CustomContextBootstrap to obtain those
-		 * contexts. Also any context registered after application start-up will be obtained by this method. */
-		
+
+	private List<CustomContext> getContexts() {
+		/*
+		 * The demoiselle-core CustomContextBootstrap class creates default contexts for the main scopes of an
+		 * application (request, session and conversation) and some custom contexts (view and static). This method
+		 * injects a reference to the CustomContextBootstrap to obtain those contexts. Also any context registered after
+		 * application start-up will be obtained by this method.
+		 */
+
 		CustomContextBootstrap contextBootstrap = Beans.getReference(CustomContextBootstrap.class);
 		return contextBootstrap.getCustomContexts();
 	}
-	
-	/////////////PRODUCERS///////////////////
-	
+
+	// ///////////PRODUCERS///////////////////
+
 	@Produces
-	protected RequestContext getRequestContext(InjectionPoint ip){
-		if (ip!=null){
+	protected RequestContext getRequestContext(InjectionPoint ip) {
+		if (ip != null) {
 			return getContext(ip);
-		}
-		else{
+		} else {
 			return getContext(RequestContext.class);
 		}
 	}
-	
+
 	@Produces
-	protected SessionContext getSessionContext(InjectionPoint ip){
-		if (ip!=null){
+	protected SessionContext getSessionContext(InjectionPoint ip) {
+		if (ip != null) {
 			return getContext(ip);
-		}
-		else{
+		} else {
 			return getContext(SessionContext.class);
 		}
 	}
-	
+
 	@Produces
-	protected ViewContext getViewContext(InjectionPoint ip){
-		if (ip!=null){
+	protected ViewContext getViewContext(InjectionPoint ip) {
+		if (ip != null) {
 			return getContext(ip);
-		}
-		else{
+		} else {
 			return getContext(ViewContext.class);
 		}
 	}
-	
+
 	@Produces
-	protected StaticContext getStaticContext(InjectionPoint ip){
-		if (ip!=null){
+	protected StaticContext getStaticContext(InjectionPoint ip) {
+		if (ip != null) {
 			return getContext(ip);
-		}
-		else{
+		} else {
 			return getContext(StaticContext.class);
 		}
 	}
-	
+
 	@Produces
-	protected ConversationContext getConversationContext(InjectionPoint ip){
-		if (ip!=null){
+	protected ConversationContext getConversationContext(InjectionPoint ip) {
+		if (ip != null) {
 			return getContext(ip);
-		}
-		else{
+		} else {
 			return getContext(ConversationContext.class);
 		}
 	}
-	
-	/////////////END OF PRODUCERS///////////////////
-	
+
+	// ///////////END OF PRODUCERS///////////////////
+
 	/**
 	 * Obtain a custom context for the provided injection point.
 	 * 
-	 * @param ip The object containing information about the injection point - most importantly
-	 * the declared type of the injection point, to decide the context to return
-	 * 
-	 * @return A context of a type compatible with the type of the injection point, or <code>null</code> if there is
-	 * no such context.
+	 * @param ip
+	 *            The object containing information about the injection point - most importantly the declared type of
+	 *            the injection point, to decide the context to return
+	 * @return A context of a type compatible with the type of the injection point, or <code>null</code> if there is no
+	 *         such context.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends CustomContext> T getContext(InjectionPoint ip){
+	public <T extends CustomContext> T getContext(InjectionPoint ip) {
 		T producedContext = null;
-		
-		if (ip!=null){
+
+		if (ip != null) {
 			Class<T> beanClass = (Class<T>) ip.getType();
 			producedContext = (T) getContext(beanClass);
 		}
-		
-		if (producedContext!=null){
-			getLogger().trace( getBundle().getString("custom-context-selected" , producedContext.getClass().getCanonicalName()) );
+
+		if (producedContext != null) {
+			getLogger().finest(
+					getBundle().getString("custom-context-selected", producedContext.getClass().getCanonicalName()));
 		}
-		
+
 		return producedContext;
 	}
-	
+
 	/**
 	 * Obtain a context compatible with the provided type.
 	 * 
-	 * @param contextClass The type of the desired context. The returned context will be compatible with this type, if there
-	 * is more than one compatible type, this method will decide witch one to return based on the {@link Priority} annotation. 
-	 * 
+	 * @param contextClass
+	 *            The type of the desired context. The returned context will be compatible with this type, if there is
+	 *            more than one compatible type, this method will decide witch one to return based on the
+	 *            {@link Priority} annotation.
 	 * @return A context of a type compatible with the informed type, or <code>null</code> if there is no such context.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends CustomContext> T getContext(Class<T> contextClass){
+	public <T extends CustomContext> T getContext(Class<T> contextClass) {
 		CustomContext producedContext = null;
-		
+
 		ArrayList<CustomContext> selectableContexts = new ArrayList<CustomContext>();
-		
-		for (CustomContext context : getContexts()){
-			if ( contextClass.isAssignableFrom( context.getClass() ) ){
-				if (context.isActive()){
+
+		for (CustomContext context : getContexts()) {
+			if (contextClass.isAssignableFrom(context.getClass())) {
+				if (context.isActive()) {
 					producedContext = context;
 					break;
-				}
-				else{
+				} else {
 					selectableContexts.add(context);
 				}
 			}
 		}
-		
-		if (producedContext==null && !selectableContexts.isEmpty()){
+
+		if (producedContext == null && !selectableContexts.isEmpty()) {
 			producedContext = StrategySelector.selectInstance(CustomContext.class, selectableContexts);
 		}
-		
+
 		return (T) producedContext;
 	}
-	
+
 	private Logger getLogger() {
 		if (this.logger == null) {
-			this.logger = LoggerProducer.create(this.getClass());
+			this.logger = LoggerProducer.create("br.gov.frameworkdemoiselle.context");
 		}
 
 		return this.logger;

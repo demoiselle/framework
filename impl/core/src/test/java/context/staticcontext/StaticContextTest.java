@@ -45,10 +45,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import test.Tests;
 import br.gov.frameworkdemoiselle.context.ConversationContext;
 import br.gov.frameworkdemoiselle.context.SessionContext;
 import br.gov.frameworkdemoiselle.util.Beans;
-import test.Tests;
 
 @RunWith(Arquillian.class)
 public class StaticContextTest {

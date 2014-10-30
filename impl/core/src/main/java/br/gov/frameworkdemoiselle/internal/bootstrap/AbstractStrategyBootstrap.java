@@ -3,13 +3,12 @@ package br.gov.frameworkdemoiselle.internal.bootstrap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.util.Reflections;
 

@@ -45,6 +45,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -58,7 +59,6 @@ import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.Ignore;
 import br.gov.frameworkdemoiselle.annotation.Name;
@@ -105,7 +105,7 @@ public class ConfigurationLoader implements Serializable {
 
 	public void load(Object object, boolean logLoadingProcess) throws ConfigurationException {
 		if (logLoadingProcess) {
-			getLogger().debug(getBundle().getString("loading-configuration-class", object.getClass().getName()));
+			getLogger().fine(getBundle().getString("loading-configuration-class", object.getClass().getName()));
 		}
 
 		this.object = object;
@@ -167,7 +167,7 @@ public class ConfigurationLoader implements Serializable {
 				((FileConfiguration) config).load();
 
 			} catch (org.apache.commons.configuration.ConfigurationException cause) {
-				getLogger().warn(getBundle().getString("file-not-found", this.resource));
+				getLogger().warning(getBundle().getString("file-not-found", this.resource));
 				config = null;
 			}
 		}
@@ -199,7 +199,7 @@ public class ConfigurationLoader implements Serializable {
 		String prefix = this.object.getClass().getAnnotation(Configuration.class).prefix();
 
 		if (prefix.endsWith(".")) {
-			getLogger().warn(getBundle().getString("configuration-dot-after-prefix", this.resource));
+			getLogger().warning(getBundle().getString("configuration-dot-after-prefix", this.resource));
 		} else if (!prefix.isEmpty()) {
 			prefix += ".";
 		}
@@ -223,11 +223,11 @@ public class ConfigurationLoader implements Serializable {
 		Object finalValue = (loadedValue == null ? defaultValue : loadedValue);
 
 		if (loadedValue == null) {
-			getLogger().trace(getBundle().getString("configuration-key-not-found", this.prefix + getKey(field)));
+			getLogger().fine(getBundle().getString("configuration-key-not-found", this.prefix + getKey(field)));
 		}
 
 		Reflections.setFieldValue(field, this.object, finalValue);
-		getLogger().debug(
+		getLogger().finer(
 				getBundle().getString("configuration-field-loaded", this.prefix + getKey(field), field.getName(),
 						finalValue == null ? "null" : finalValue));
 	}
@@ -329,7 +329,8 @@ public class ConfigurationLoader implements Serializable {
 
 	private Logger getLogger() {
 		if (logger == null) {
-			logger = Beans.getReference(Logger.class, new NameQualifier(ConfigurationLoader.class.getName()));
+			logger = Beans.getReference(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.configuration"));
+
 		}
 
 		return logger;

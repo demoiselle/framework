@@ -36,7 +36,6 @@
  */
 package message;
 
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 import javax.inject.Inject;
@@ -54,7 +53,6 @@ import br.gov.frameworkdemoiselle.context.RequestContext;
 import br.gov.frameworkdemoiselle.message.DefaultMessage;
 import br.gov.frameworkdemoiselle.message.Message;
 import br.gov.frameworkdemoiselle.message.MessageContext;
-import br.gov.frameworkdemoiselle.message.SeverityType;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
@@ -77,76 +75,6 @@ public class MessageContextTest {
 	}
 
 	@Test
-	@Deprecated
-	public void testAddMessageWithoutParams() {
-		RequestContext context = Beans.getReference(RequestContext.class);
-
-		context.activate();
-		Message message = new DefaultMessage("Menssage without param");
-		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
-
-		messageContext.add(message);
-		assertEquals(appender.getMessages().size(), 1);
-		context.deactivate();
-	}
-
-	@Test
-	@Deprecated
-	public void testAddMessageWithoutParamsIfSeverityIsInfo() {
-		RequestContext context = Beans.getReference(RequestContext.class);
-
-		context.activate();
-		Message message = new DefaultMessage("Menssage without param");
-		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
-
-		messageContext.add(message);
-		assertEquals(appender.getMessages().get(0).getSeverity(), SeverityType.INFO);
-		context.deactivate();
-	}
-
-	@Test
-	@Deprecated
-	public void testAddMessageWitSeverityInfo() {
-		RequestContext context = Beans.getReference(RequestContext.class);
-
-		context.activate();
-		Message message = new DefaultMessage("Menssage without param", SeverityType.INFO);
-		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
-
-		messageContext.add(message);
-		assertEquals(appender.getMessages().get(0).getSeverity(), SeverityType.INFO);
-		context.deactivate();
-	}
-
-	@Test
-	@Deprecated
-	public void testAddMessageWitSeverityWarn() {
-		RequestContext context = Beans.getReference(RequestContext.class);
-
-		context.activate();
-		Message message = new DefaultMessage("Menssage without param", SeverityType.WARN);
-		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
-
-		messageContext.add(message);
-		assertEquals(appender.getMessages().get(0).getSeverity(), SeverityType.WARN);
-		context.deactivate();
-	}
-
-	@Test
-	@Deprecated
-	public void testAddMessageWitSeverityErro() {
-		RequestContext context = Beans.getReference(RequestContext.class);
-
-		context.activate();
-		Message message = new DefaultMessage("Menssage without param", SeverityType.ERROR);
-		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
-
-		messageContext.add(message);
-		assertEquals(appender.getMessages().get(0).getSeverity(), SeverityType.ERROR);
-		context.deactivate();
-	}
-
-	@Test
 	public void testRecoverStringMessageWithParams() {
 		RequestContext context = Beans.getReference(RequestContext.class);
 
@@ -154,20 +82,6 @@ public class MessageContextTest {
 		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
 
 		messageContext.add("Message with {0} param", 1);
-		assertTrue(appender.getMessages().get(0).getText().equals("Message with 1 param"));
-		context.deactivate();
-	}
-
-	@Test
-	@Deprecated
-	public void testRecoverMessageWithParams() {
-		RequestContext context = Beans.getReference(RequestContext.class);
-
-		context.activate();
-		Message message = new DefaultMessage("Message with {0} param");
-		DummyMessageAppender appender = Beans.getReference(DummyMessageAppender.class);
-
-		messageContext.add(message, 1);
 		assertTrue(appender.getMessages().get(0).getText().equals("Message with 1 param"));
 		context.deactivate();
 	}

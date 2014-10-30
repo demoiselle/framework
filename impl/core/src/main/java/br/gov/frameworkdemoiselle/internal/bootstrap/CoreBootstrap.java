@@ -37,6 +37,7 @@
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
@@ -44,8 +45,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -56,10 +55,10 @@ public class CoreBootstrap implements Extension {
 	private Logger logger;
 
 	private transient ResourceBundle bundle;
-	
+
 	private Logger getLogger() {
 		if (this.logger == null) {
-			this.logger = LoggerProducer.create(CoreBootstrap.class);
+			this.logger = LoggerProducer.create("br.gov.frameworkdemoiselle.lifecycle");
 		}
 
 		return this.logger;
@@ -77,14 +76,14 @@ public class CoreBootstrap implements Extension {
 		getLogger().info(getBundle().getString("engine-on"));
 
 		Beans.setBeanManager(beanManager);
-		getLogger().trace(getBundle().getString("setting-up-bean-manager", Beans.class.getCanonicalName()));
+		getLogger().finer(getBundle().getString("setting-up-bean-manager", Beans.class.getCanonicalName()));
 	}
-	
+
 	public void takeOff(@Observes final AfterDeploymentValidation event) {
-		getLogger().trace(getBundle().getString("taking-off"));
+		getLogger().fine(getBundle().getString("taking-off"));
 	}
 
 	public void engineOff(@Observes final BeforeShutdown event) {
-		getLogger().trace(getBundle().getString("engine-off"));
+		getLogger().fine(getBundle().getString("engine-off"));
 	}
 }

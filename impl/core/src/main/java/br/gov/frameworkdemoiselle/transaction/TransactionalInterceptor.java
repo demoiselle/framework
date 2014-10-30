@@ -37,6 +37,7 @@
 package br.gov.frameworkdemoiselle.transaction;
 
 import java.io.Serializable;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.RequestScoped;
@@ -44,8 +45,6 @@ import javax.enterprise.inject.Any;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -115,7 +114,7 @@ public class TransactionalInterceptor implements Serializable {
 
 		Object result = null;
 		try {
-			getLogger().debug(getBundle().getString("transactional-execution", ic.getMethod().toGenericString()));
+			getLogger().fine(getBundle().getString("transactional-execution", ic.getMethod().toGenericString()));
 			result = ic.proceed();
 
 		} catch (Exception cause) {
@@ -195,7 +194,7 @@ public class TransactionalInterceptor implements Serializable {
 
 	private Logger getLogger() {
 		if (logger == null) {
-			logger = Beans.getReference(Logger.class, new NameQualifier(TransactionalInterceptor.class.getName()));
+			logger = Beans.getReference(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.transaction"));
 		}
 
 		return logger;

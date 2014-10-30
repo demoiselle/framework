@@ -36,48 +36,74 @@
  */
 package logger;
 
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.assertEquals;
+
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
-import logger.appender.LoggerMemory;
+import logger.appender.FakeHandler;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
 
 import test.Tests;
+import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 @RunWith(Arquillian.class)
 public class LoggerTest {
 
-	private static final String LOGGER_MESSAGE = "Testing log4j proxy";
+	@Inject
+	private Logger unnamedLogger;
 
 	@Inject
-	private Logger logger;
-
-	@Inject
-	private LoggerMemory loggerMemory;
+	@Name("just.another.test")
+	private Logger namedLogger;
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-
 		JavaArchive deployment = Tests.createDeployment(LoggerTest.class);
-
 		return deployment;
-		
 	}
 
 	@Test
-	public void testLoggerProducer() {
+	public void unnamedLoggerProducer() {
+		String message = "unnamed producer";
 
-		logger.info(LOGGER_MESSAGE);
+		FakeHandler handler = new FakeHandler();
+		unnamedLogger.addHandler(handler);
+		unnamedLogger.info(message);
 
-		assertTrue(loggerMemory.checkMessage(LOGGER_MESSAGE));
-
+		assertEquals(message, handler.getMessage());
+		assertEquals(LoggerTest.class.getName(), handler.getName());
 	}
 
+	@Test
+	public void namedLoggerProducer() {
+		String message = "named producer";
+
+		FakeHandler handler = new FakeHandler();
+		namedLogger.addHandler(handler);
+		namedLogger.info(message);
+
+		assertEquals(message, handler.getMessage());
+		assertEquals("just.another.test", handler.getName());
+	}
+
+	@Test
+	public void loggerProducedByBeansGetReference() {
+		String message = "beans reference producer";
+
+		FakeHandler handler = new FakeHandler();
+		Logger logger = Beans.getReference(Logger.class);
+		logger.addHandler(handler);
+		logger.info(message);
+
+		assertEquals(message, handler.getMessage());
+		assertEquals("not.categorized", handler.getName());
+	}
 }

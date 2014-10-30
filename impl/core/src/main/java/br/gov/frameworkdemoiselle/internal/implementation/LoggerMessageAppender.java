@@ -38,9 +38,9 @@ package br.gov.frameworkdemoiselle.internal.implementation;
 
 import static br.gov.frameworkdemoiselle.annotation.Priority.L1_PRIORITY;
 
-import javax.inject.Inject;
+import java.util.logging.Logger;
 
-import org.slf4j.Logger;
+import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.message.Message;
@@ -64,11 +64,11 @@ public class LoggerMessageAppender implements MessageAppender {
 				break;
 
 			case WARN:
-				logger.warn(text);
+				logger.warning(text);
 				break;
 
 			default:
-				logger.error(text);
+				logger.severe(text);
 		}
 	}
 }

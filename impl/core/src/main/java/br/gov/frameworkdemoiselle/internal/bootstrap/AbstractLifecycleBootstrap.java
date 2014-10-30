@@ -42,14 +42,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.context.ConversationContext;
@@ -73,11 +72,11 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 			.synchronizedList(new ArrayList<AnnotatedMethodProcessor>());
 
 	private transient static ResourceBundle bundle;
-	
+
 	private boolean registered = false;
-	
+
 	private HashMap<String, Boolean> startedContextHere = new HashMap<String, Boolean>();
-	
+
 	private transient CustomContext backupContext = null;
 
 	protected abstract Logger getLogger();
@@ -115,13 +114,13 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected synchronized void proccessEvent() {
-		getLogger().debug(getBundle().getString("executing-all", getAnnotationClass().getSimpleName()));
+		getLogger().fine(getBundle().getString("executing-all", getAnnotationClass().getSimpleName()));
 
 		Collections.sort(processors);
 		Exception failure = null;
-		
+
 		startContexts();
-		
+
 		for (Iterator<AnnotatedMethodProcessor> iter = processors.iterator(); iter.hasNext();) {
 			AnnotatedMethodProcessor<?> processor = iter.next();
 
@@ -138,49 +137,48 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 				failure = cause;
 			}
 		}
-		
+
 		stopContexts();
 
 		if (failure != null) {
 			throw new DemoiselleException(failure);
 		}
 	}
-	
-	private void startContexts(){
-		if (!registered){
+
+	private void startContexts() {
+		if (!registered) {
 			RequestContext requestContext = Beans.getReference(RequestContext.class);
 			SessionContext sessionContext = Beans.getReference(SessionContext.class);
 			ViewContext viewContext = Beans.getReference(ViewContext.class);
 			ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
-			
-			if (requestContext!=null){
+
+			if (requestContext != null) {
 				startedContextHere.put("request", requestContext.activate());
 			}
-			
-			if (sessionContext!=null){
+
+			if (sessionContext != null) {
 				startedContextHere.put("session", sessionContext.activate());
 			}
-			
-			
-			if (conversationContext!=null){
+
+			if (conversationContext != null) {
 				startedContextHere.put("conversation", conversationContext.activate());
 			}
-			
-			//Contexto temporário de visão precisa de tratamento especial
-			//para evitar conflito com o contexto presente na extensão demoiselle-jsf 
-			if (viewContext!=null){
-				if (TemporaryViewContextImpl.class.isInstance(viewContext)){
+
+			// Contexto temporário de visão precisa de tratamento especial
+			// para evitar conflito com o contexto presente na extensão demoiselle-jsf
+			if (viewContext != null) {
+				if (TemporaryViewContextImpl.class.isInstance(viewContext)) {
 					startedContextHere.put("view", viewContext.activate());
-				}
-				else{
-					//Precisamos desativar temporariamente o contexto 
-					if (viewContext.isActive()){
+				} else {
+					// Precisamos desativar temporariamente o contexto
+					if (viewContext.isActive()) {
 						backupContext = viewContext;
 						viewContext.deactivate();
-						
-						CustomContextBootstrap customContextBootstrap = Beans.getReference(CustomContextBootstrap.class);
-						for (CustomContext customContext : customContextBootstrap.getCustomContexts()){
-							if ( TemporaryViewContextImpl.class.isInstance(customContext) ){
+
+						CustomContextBootstrap customContextBootstrap = Beans
+								.getReference(CustomContextBootstrap.class);
+						for (CustomContext customContext : customContextBootstrap.getCustomContexts()) {
+							if (TemporaryViewContextImpl.class.isInstance(customContext)) {
 								startedContextHere.put("view", customContext.activate());
 								break;
 							}
@@ -188,37 +186,37 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 					}
 				}
 			}
-			
+
 			registered = true;
 		}
 	}
-	
-	private void stopContexts(){
-		if (registered){
+
+	private void stopContexts() {
+		if (registered) {
 			RequestContext requestContext = Beans.getReference(RequestContext.class);
 			SessionContext sessionContext = Beans.getReference(SessionContext.class);
 			ViewContext viewContext = Beans.getReference(ViewContext.class);
 			ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
-			
-			if (requestContext!=null && Boolean.TRUE.equals(startedContextHere.get("request"))){
+
+			if (requestContext != null && Boolean.TRUE.equals(startedContextHere.get("request"))) {
 				requestContext.deactivate();
 			}
-			
-			if (sessionContext!=null && Boolean.TRUE.equals(startedContextHere.get("session"))){
+
+			if (sessionContext != null && Boolean.TRUE.equals(startedContextHere.get("session"))) {
 				sessionContext.deactivate();
 			}
-			
-			if (conversationContext!=null && Boolean.TRUE.equals(startedContextHere.get("conversation"))){
+
+			if (conversationContext != null && Boolean.TRUE.equals(startedContextHere.get("conversation"))) {
 				conversationContext.deactivate();
 			}
-			
-			//Contexto temporário de visão precisa de tratamento especial
-			//para evitar conflito com o contexto presente na extensão demoiselle-jsf 
-			if (viewContext!=null){
-				if (TemporaryViewContextImpl.class.isInstance(viewContext) && startedContextHere.get("view")){
+
+			// Contexto temporário de visão precisa de tratamento especial
+			// para evitar conflito com o contexto presente na extensão demoiselle-jsf
+			if (viewContext != null) {
+				if (TemporaryViewContextImpl.class.isInstance(viewContext) && startedContextHere.get("view")) {
 					viewContext.deactivate();
-					
-					if (backupContext!=null){
+
+					if (backupContext != null) {
 						backupContext.activate();
 						backupContext = null;
 					}

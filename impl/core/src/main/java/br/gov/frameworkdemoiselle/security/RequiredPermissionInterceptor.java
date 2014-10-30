@@ -37,12 +37,11 @@
 package br.gov.frameworkdemoiselle.security;
 
 import java.io.Serializable;
+import java.util.logging.Logger;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -86,15 +85,15 @@ public class RequiredPermissionInterceptor implements Serializable {
 
 		if (getSecurityContext().isLoggedIn()) {
 			username = getSecurityContext().getUser().getName();
-			getLogger().trace(getBundle().getString("access-checking", username, operation, resource));
+			getLogger().finest(getBundle().getString("access-checking", username, operation, resource));
 		}
 
 		if (!getSecurityContext().hasPermission(resource, operation)) {
-			getLogger().error(getBundle().getString("access-denied", username, operation, resource));
+			getLogger().severe(getBundle().getString("access-denied", username, operation, resource));
 			throw new AuthorizationException(getBundle().getString("access-denied-ui", resource, operation));
 		}
 
-		getLogger().debug(getBundle().getString("access-allowed", username, operation, resource));
+		getLogger().fine(getBundle().getString("access-allowed", username, operation, resource));
 		return ic.proceed();
 	}
 
@@ -110,8 +109,8 @@ public class RequiredPermissionInterceptor implements Serializable {
 	private String getResource(InvocationContext ic) {
 		RequiredPermission requiredPermission;
 		requiredPermission = ic.getMethod().getAnnotation(RequiredPermission.class);
-		
-		if(requiredPermission == null){
+
+		if (requiredPermission == null) {
 			requiredPermission = ic.getTarget().getClass().getAnnotation(RequiredPermission.class);
 		}
 
@@ -138,11 +137,11 @@ public class RequiredPermissionInterceptor implements Serializable {
 	private String getOperation(InvocationContext ic) {
 		RequiredPermission requiredPermission;
 		requiredPermission = ic.getMethod().getAnnotation(RequiredPermission.class);
-		
-		if(requiredPermission == null){
+
+		if (requiredPermission == null) {
 			requiredPermission = ic.getTarget().getClass().getAnnotation(RequiredPermission.class);
 		}
-		
+
 		if (Strings.isEmpty(requiredPermission.operation())) {
 			if (ic.getMethod().getAnnotation(Name.class) == null) {
 				return ic.getMethod().getName();

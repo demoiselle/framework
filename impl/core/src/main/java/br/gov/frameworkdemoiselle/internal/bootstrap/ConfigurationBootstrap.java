@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -54,8 +55,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
@@ -139,7 +138,7 @@ public class ConfigurationBootstrap extends AbstractStrategyBootstrap<Configurat
 	@Override
 	protected Logger getLogger() {
 		if (logger == null) {
-			logger = LoggerProducer.create(ConfigurationBootstrap.class);
+			logger = LoggerProducer.create("br.gov.frameworkdemoiselle.configuration");
 		}
 
 		return logger;

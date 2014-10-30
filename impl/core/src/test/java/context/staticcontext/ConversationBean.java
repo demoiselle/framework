@@ -1,7 +1,8 @@
 package context.staticcontext;
 
-import javax.enterprise.context.ConversationScoped;
 import java.io.Serializable;
+
+import javax.enterprise.context.ConversationScoped;
 
 @ConversationScoped
 public class ConversationBean implements Serializable {

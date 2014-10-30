@@ -38,6 +38,7 @@ package br.gov.frameworkdemoiselle.util;
 
 import javax.enterprise.util.AnnotationLiteral;
 
+import util.beans.ambiguous.AmbiguousQualifier;
 import br.gov.frameworkdemoiselle.annotation.Name;
 
 /**

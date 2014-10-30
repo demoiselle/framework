@@ -36,11 +36,12 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import static java.util.logging.Level.SEVERE;
+
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Logger;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.exception.ApplicationException;
@@ -110,11 +111,11 @@ public class AnnotatedMethodProcessor<T> implements Comparable<AnnotatedMethodPr
 					break;
 
 				case WARN:
-					getLogger().warn(cause.getMessage());
+					getLogger().warning(cause.getMessage());
 					break;
 
 				default:
-					getLogger().error(getBundle().getString("processing-fail"), cause);
+					getLogger().log(SEVERE, getBundle().getString("processing-fail"), cause);
 					break;
 			}
 		}
@@ -140,6 +141,6 @@ public class AnnotatedMethodProcessor<T> implements Comparable<AnnotatedMethodPr
 	}
 
 	protected Logger getLogger() {
-		return LoggerProducer.create(this.getClass());
+		return LoggerProducer.create("br.gov.frameworkdemoiselle.lifecycle");
 	}
 }

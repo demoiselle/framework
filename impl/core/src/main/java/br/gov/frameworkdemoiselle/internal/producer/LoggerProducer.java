@@ -49,17 +49,14 @@
 package br.gov.frameworkdemoiselle.internal.producer;
 
 import java.io.Serializable;
+import java.util.logging.Logger;
 
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.slf4j.Logger;
-
-import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.internal.proxy.Slf4jLoggerProxy;
-import br.gov.frameworkdemoiselle.util.Reflections;
+import br.gov.frameworkdemoiselle.internal.proxy.LoggerProxy;
 
 public class LoggerProducer implements Serializable {
 
@@ -68,36 +65,25 @@ public class LoggerProducer implements Serializable {
 	@Default
 	@Produces
 	public Logger create(final InjectionPoint ip) {
-		Class<?> type;
+		String name;
 
 		if (ip != null && ip.getMember() != null) {
-			type = ip.getMember().getDeclaringClass();
+			name = ip.getMember().getDeclaringClass().getName();
 		} else {
-			type = LoggerProducer.class;
+			name = "not.categorized";
 		}
 
-		return create(type);
+		return create(name);
 	}
 
 	@Name("")
 	@Produces
 	public Logger createNamed(final InjectionPoint ip) throws ClassNotFoundException {
-		Class<?> type;
-
-		try {
-			String canonicalName = ip.getAnnotated().getAnnotation(Name.class).value();
-			type = Reflections.forName(canonicalName);
-
-		} catch (ClassCastException cause) {
-			// TODO Colocar a mensgaem apropriada mostrando como utilizar a anotação @AmbiguousQualifier corretamente com a injeção de
-			// Logger.
-			throw new DemoiselleException(null, cause);
-		}
-
-		return create(type);
+		String name = ip.getAnnotated().getAnnotation(Name.class).value();
+		return create(name);
 	}
 
-	public static <T> Logger create(Class<T> type) {
-		return new Slf4jLoggerProxy(type);
+	public static Logger create(String name) {
+		return new LoggerProxy(name);
 	}
 }

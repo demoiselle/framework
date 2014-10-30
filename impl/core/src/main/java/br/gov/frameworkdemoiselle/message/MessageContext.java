@@ -36,8 +36,6 @@
  */
 package br.gov.frameworkdemoiselle.message;
 
-import java.util.List;
-
 /**
  * Context interface reserved for messaging purposes.
  * <p>
@@ -51,27 +49,20 @@ import java.util.List;
 public interface MessageContext {
 
 	/**
-	 * Saves a message into the context.
+	 * Deliver a message to the MessageAppender.
 	 * 
+	 * @see MessageAppender
 	 * @param message
 	 */
-	@Deprecated
-	void add(Message message, Object... params);
-
-	void add(String text, Object... params);
-
-	void add(String text, SeverityType severity, Object... params);
+	void add(String message, Object... params);
 
 	/**
-	 * Returns all messages in the context.
+	 * Deliver a message to the MessageAppender.
+	 * 
+	 * @see MessageAppender
+	 * @param message
+	 * @param severity
+	 * @param params
 	 */
-	@Deprecated
-	List<Message> getMessages();
-
-	/**
-	 * Clears the list of messages in the context.
-	 */
-	@Deprecated
-	void clear();
-
+	void add(String message, SeverityType severity, Object... params);
 }

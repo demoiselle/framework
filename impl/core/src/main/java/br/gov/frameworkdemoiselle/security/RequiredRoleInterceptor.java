@@ -40,12 +40,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
@@ -84,8 +83,7 @@ public class RequiredRoleInterceptor implements Serializable {
 
 		if (getSecurityContext().isLoggedIn()) {
 			getLogger().info(
-					getBundle().getString("has-role-verification", getSecurityContext().getUser().getName(),
-							roles));
+					getBundle().getString("has-role-verification", getSecurityContext().getUser().getName(), roles));
 		}
 
 		List<String> userRoles = new ArrayList<String>();
@@ -97,15 +95,13 @@ public class RequiredRoleInterceptor implements Serializable {
 		}
 
 		if (userRoles.isEmpty()) {
-			getLogger()
-					.error(getBundle().getString("does-not-have-role", getSecurityContext().getUser().getName(),
-							roles));
+			getLogger().severe(
+					getBundle().getString("does-not-have-role", getSecurityContext().getUser().getName(), roles));
 
 			throw new AuthorizationException(getBundle().getString("does-not-have-role-ui", roles));
 		}
 
-		getLogger().debug(
-				getBundle().getString("user-has-role", getSecurityContext().getUser().getName(), userRoles));
+		getLogger().fine(getBundle().getString("user-has-role", getSecurityContext().getUser().getName(), userRoles));
 
 		return ic.proceed();
 	}

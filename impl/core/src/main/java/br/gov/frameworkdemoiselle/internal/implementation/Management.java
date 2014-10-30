@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -50,8 +51,6 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
 import br.gov.frameworkdemoiselle.annotation.Name;
@@ -93,7 +92,7 @@ public class Management implements Serializable {
 
 	public void addManagedType(ManagedType managedType) {
 		managedTypes.add(managedType);
-		logger.debug(bundle.getString("management-debug-registering-managed-type", managedType.getType()
+		logger.fine(bundle.getString("management-debug-registering-managed-type", managedType.getType()
 				.getCanonicalName()));
 	}
 
@@ -134,12 +133,12 @@ public class Management implements Serializable {
 			activateContexts(managedType.getType());
 
 			try {
-				Object delegate = Beans.getReference(managedType.getType() , managedType.getQualifiers());
+				Object delegate = Beans.getReference(managedType.getType(), managedType.getQualifiers());
 				MethodDetail method = managedType.getOperationMethods().get(actionName);
 
 				if (method != null) {
 					try {
-						logger.debug(bundle.getString("management-debug-invoking-operation", actionName, managedType
+						logger.fine(bundle.getString("management-debug-invoking-operation", actionName, managedType
 								.getType().getCanonicalName()));
 						return method.getMethod().invoke(delegate, params);
 					} catch (Exception e) {
@@ -171,8 +170,10 @@ public class Management implements Serializable {
 	 * @param propertyName
 	 *            The name of the property
 	 * @return The current value of the property
-	 * @throws ManagedAttributeNotFoundException If the given property doesn't exist or there was a problem trying to read the property value.
-	 * @throws ManagedInvokationException If there was an error trying to invoke the getter method to read the propery value. 
+	 * @throws ManagedAttributeNotFoundException
+	 *             If the given property doesn't exist or there was a problem trying to read the property value.
+	 * @throws ManagedInvokationException
+	 *             If there was an error trying to invoke the getter method to read the propery value.
 	 */
 	public Object getProperty(ManagedType managedType, String propertyName) {
 
@@ -180,23 +181,24 @@ public class Management implements Serializable {
 			Method getterMethod = managedType.getFields().get(propertyName).getGetterMethod();
 
 			if (getterMethod != null) {
-				logger.debug(bundle.getString("management-debug-acessing-property", getterMethod.getName(), managedType
+				logger.fine(bundle.getString("management-debug-acessing-property", getterMethod.getName(), managedType
 						.getType().getCanonicalName()));
 
 				activateContexts(managedType.getType());
 
 				try {
-					Object delegate = Beans.getReference(managedType.getType() , managedType.getQualifiers());
+					Object delegate = Beans.getReference(managedType.getType(), managedType.getQualifiers());
 
 					return getterMethod.invoke(delegate, (Object[]) null);
 				} catch (Exception e) {
-					throw new ManagedInvokationException(bundle.getString("management-invoke-error", getterMethod.getName()),
-							e);
+					throw new ManagedInvokationException(bundle.getString("management-invoke-error",
+							getterMethod.getName()), e);
 				} finally {
 					deactivateContexts(managedType.getType());
 				}
 			} else {
-				throw new ManagedAttributeNotFoundException(bundle.getString("management-read-value-error", propertyName));
+				throw new ManagedAttributeNotFoundException(bundle.getString("management-read-value-error",
+						propertyName));
 			}
 		} else {
 			throw new ManagedInvokationException(bundle.getString("management-type-not-found"));
@@ -219,9 +221,13 @@ public class Management implements Serializable {
 	 *            The name of the property
 	 * @param newValue
 	 *            The new value of the property
-	 * @throws ManagedInvokationException If there was an error trying to call the setter method for this property.
-	 * @throws ManagedAttributeNotFoundException If the giver property doesn't exist or could'n be written to.
-	 * @throws ConstraintViolationException If the property defined one or more validation constraints and setting this value violates some of those constraints.
+	 * @throws ManagedInvokationException
+	 *             If there was an error trying to call the setter method for this property.
+	 * @throws ManagedAttributeNotFoundException
+	 *             If the giver property doesn't exist or could'n be written to.
+	 * @throws ConstraintViolationException
+	 *             If the property defined one or more validation constraints and setting this value violates some of
+	 *             those constraints.
 	 */
 	@SuppressWarnings("unchecked")
 	public void setProperty(ManagedType managedType, String propertyName, Object newValue) {
@@ -230,7 +236,7 @@ public class Management implements Serializable {
 			// Procura o método set do atributo em questão
 			Method method = managedType.getFields().get(propertyName).getSetterMethod();
 			if (method != null) {
-				logger.debug(bundle.getString("management-debug-setting-property", method.getName(), managedType
+				logger.fine(bundle.getString("management-debug-setting-property", method.getName(), managedType
 						.getType().getCanonicalName()));
 
 				activateContexts(managedType.getType());
@@ -238,7 +244,7 @@ public class Management implements Serializable {
 					// Obtém uma instância da classe gerenciada, lembrando que
 					// classes
 					// anotadas com @ManagementController são sempre singletons.
-					Object delegate = Beans.getReference(managedType.getType() ,  managedType.getQualifiers() );
+					Object delegate = Beans.getReference(managedType.getType(), managedType.getQualifiers());
 
 					// Se houver um validador anexado à propriedade alterada, executa o validador sobre
 					// o novo valor.
@@ -257,12 +263,13 @@ public class Management implements Serializable {
 								errorBuffer.insert(errorBuffer.length(), "\r\n");
 							}
 
-							throw new ConstraintViolationException(bundle.getString("management-validation-constraint-violation"
-										, managedType.getType().getCanonicalName(), propertyName, errorBuffer.toString())
-									, (Set<ConstraintViolation<?>>) violations);
+							throw new ConstraintViolationException(bundle.getString(
+									"management-validation-constraint-violation", managedType.getType()
+											.getCanonicalName(), propertyName, errorBuffer.toString()),
+									(Set<ConstraintViolation<?>>) violations);
 						}
 					} else {
-						logger.warn(bundle.getString("management-validation-validator-not-found"));
+						logger.warning(bundle.getString("management-validation-validator-not-found"));
 					}
 
 					Method getterMethod = managedType.getFields().get(propertyName).getGetterMethod();
@@ -279,24 +286,23 @@ public class Management implements Serializable {
 					NotificationManager notificationManager = Beans.getReference(NotificationManager.class);
 					Class<? extends Object> attributeType = newValue != null ? newValue.getClass() : null;
 
-					Notification notification = new DefaultNotification( new AttributeChangeMessage(
-							bundle.getString("management-notification-attribute-changed", propertyName, managedType.getType().getCanonicalName())
-							, propertyName
-							, attributeType
-							, oldValue
-							, newValue) );
+					Notification notification = new DefaultNotification(new AttributeChangeMessage(bundle.getString(
+							"management-notification-attribute-changed", propertyName, managedType.getType()
+									.getCanonicalName()), propertyName, attributeType, oldValue, newValue));
 					notificationManager.sendNotification(notification);
 
 				} catch (ConstraintViolationException ce) {
 					throw ce;
 				} catch (Exception e) {
-					throw new ManagedInvokationException(bundle.getString("management-invoke-error", method.getName()), e);
+					throw new ManagedInvokationException(bundle.getString("management-invoke-error", method.getName()),
+							e);
 				} finally {
 					deactivateContexts(managedType.getType());
 				}
 
 			} else {
-				throw new ManagedAttributeNotFoundException(bundle.getString("management-write-value-error", propertyName));
+				throw new ManagedAttributeNotFoundException(bundle.getString("management-write-value-error",
+						propertyName));
 			}
 		} else {
 			throw new ManagedInvokationException(bundle.getString("management-type-not-found"));
@@ -307,18 +313,18 @@ public class Management implements Serializable {
 	private void activateContexts(Class<?> managedType) {
 		RequestContext requestContext = Beans.getReference(RequestContext.class);
 		ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
-		
-		if (!requestContext.isActive()){
-			logger.debug(bundle.getString("management-debug-starting-custom-context",
-					requestContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
-			
+
+		if (!requestContext.isActive()) {
+			logger.fine(bundle.getString("management-debug-starting-custom-context", requestContext.getClass()
+					.getCanonicalName(), managedType.getCanonicalName()));
+
 			requestContext.activate();
 		}
-		
-		if (!conversationContext.isActive()){
-			logger.debug(bundle.getString("management-debug-starting-custom-context",
-					conversationContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
-			
+
+		if (!conversationContext.isActive()) {
+			logger.fine(bundle.getString("management-debug-starting-custom-context", conversationContext.getClass()
+					.getCanonicalName(), managedType.getCanonicalName()));
+
 			conversationContext.activate();
 		}
 	}
@@ -326,18 +332,18 @@ public class Management implements Serializable {
 	private void deactivateContexts(Class<?> managedType) {
 		RequestContext requestContext = Beans.getReference(RequestContext.class);
 		ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
-		
-		if (requestContext.isActive()){
-			logger.debug(bundle.getString("management-debug-stoping-custom-context",
-					requestContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
-			
+
+		if (requestContext.isActive()) {
+			logger.fine(bundle.getString("management-debug-stoping-custom-context", requestContext.getClass()
+					.getCanonicalName(), managedType.getCanonicalName()));
+
 			requestContext.deactivate();
 		}
-		
-		if (conversationContext.isActive()){
-			logger.debug(bundle.getString("management-debug-stoping-custom-context",
-					conversationContext.getClass().getCanonicalName(), managedType.getCanonicalName()));
-			
+
+		if (conversationContext.isActive()) {
+			logger.fine(bundle.getString("management-debug-stoping-custom-context", conversationContext.getClass()
+					.getCanonicalName(), managedType.getCanonicalName()));
+
 			conversationContext.deactivate();
 		}
 	}
@@ -347,7 +353,7 @@ public class Management implements Serializable {
 
 			ManagementExtension monitoringExtension = Beans.getReference(monitoringExtensionClass);
 			monitoringExtension.shutdown(this.getManagedTypes());
-			logger.debug(bundle.getString("management-debug-removing-management-extension", monitoringExtension
+			logger.fine(bundle.getString("management-debug-removing-management-extension", monitoringExtension
 					.getClass().getCanonicalName()));
 
 		}
@@ -357,7 +363,7 @@ public class Management implements Serializable {
 		for (Class<? extends ManagementExtension> monitoringExtensionClass : monitoringExtensions) {
 			ManagementExtension monitoringExtension = Beans.getReference(monitoringExtensionClass);
 
-			logger.debug(bundle.getString("management-debug-processing-management-extension", monitoringExtension
+			logger.fine(bundle.getString("management-debug-processing-management-extension", monitoringExtension
 					.getClass().getCanonicalName()));
 
 			monitoringExtension.initialize(this.getManagedTypes());
@@ -375,6 +381,4 @@ public class Management implements Serializable {
 
 		return this.validator;
 	}
-	
-
 }

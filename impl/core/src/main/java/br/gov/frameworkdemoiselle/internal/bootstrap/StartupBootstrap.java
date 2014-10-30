@@ -36,9 +36,9 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
-import javax.enterprise.event.Observes;
+import java.util.logging.Logger;
 
-import org.slf4j.Logger;
+import javax.enterprise.event.Observes;
 
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.lifecycle.AfterStartupProccess;
@@ -54,7 +54,7 @@ public class StartupBootstrap extends AbstractLifecycleBootstrap<Startup> {
 	@Override
 	protected Logger getLogger() {
 		if (logger == null) {
-			logger = LoggerProducer.create(StartupBootstrap.class);
+			logger = LoggerProducer.create("br.gov.frameworkdemoiselle.lifecycle");
 		}
 
 		return logger;
