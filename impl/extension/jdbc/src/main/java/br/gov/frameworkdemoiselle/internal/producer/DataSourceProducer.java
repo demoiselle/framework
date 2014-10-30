@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -50,8 +51,6 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.internal.configuration.JDBCConfig;
@@ -79,7 +78,7 @@ public class DataSourceProducer implements Serializable {
 
 	private Logger getLogger() {
 		if (logger == null) {
-			logger = Beans.getReference(Logger.class, new NameQualifier(DataSourceProducer.class.getName()));
+			logger = Beans.getReference(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.util"));
 		}
 
 		return logger;
@@ -100,7 +99,7 @@ public class DataSourceProducer implements Serializable {
 				throw new DemoiselleException(cause);
 			}
 
-			getLogger().debug(getBundle().getString("datasource-name-found", dataBaseName));
+			getLogger().fine(getBundle().getString("datasource-name-found", dataBaseName));
 		}
 	}
 
@@ -202,7 +201,7 @@ public class DataSourceProducer implements Serializable {
 		Map<String, DataSource> result = cache.get(classLoader);
 
 		if (result == null || result.isEmpty()) {
-			getLogger().debug(getBundle().getString("datasource-not-found-in-cache"));
+			getLogger().fine(getBundle().getString("datasource-not-found-in-cache"));
 
 			for (String name : getDataSourceNames(classLoader)) {
 				create(name);

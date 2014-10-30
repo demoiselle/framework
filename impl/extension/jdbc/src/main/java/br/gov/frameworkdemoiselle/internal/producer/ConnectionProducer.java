@@ -43,6 +43,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -51,8 +52,6 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
-
-import org.slf4j.Logger;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
@@ -81,7 +80,7 @@ public class ConnectionProducer implements Serializable {
 
 	private Logger getLogger() {
 		if (logger == null) {
-			logger = Beans.getReference(Logger.class, new NameQualifier(DataSourceProducer.class.getName()));
+			logger = Beans.getReference(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.util"));
 		}
 
 		return logger;
@@ -148,7 +147,7 @@ public class ConnectionProducer implements Serializable {
 		try {
 			connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 		} catch (SQLException cause) {
-			getLogger().debug(getBundle().getString("set-autocommit-failed"));
+			getLogger().warning(getBundle().getString("set-autocommit-failed"));
 		}
 	}
 
@@ -157,7 +156,7 @@ public class ConnectionProducer implements Serializable {
 			connection.setAutoCommit(false);
 
 		} catch (SQLException cause) {
-			getLogger().debug(getBundle().getString("set-autocommit-failed"));
+			getLogger().warning(getBundle().getString("set-autocommit-failed"));
 		}
 	}
 
@@ -165,7 +164,7 @@ public class ConnectionProducer implements Serializable {
 		String result = config.getDefaultDataSourceName();
 
 		if (result != null) {
-			getLogger().debug(getBundle().getString("getting-default-datasource-name-from-properties", result));
+			getLogger().fine(getBundle().getString("getting-default-datasource-name-from-properties", result));
 		}
 
 		return result;
@@ -194,7 +193,7 @@ public class ConnectionProducer implements Serializable {
 
 			try {
 				if (connection.isClosed()) {
-					getLogger().warn(getBundle().getString("connection-has-already-been-closed", key));
+					getLogger().warning(getBundle().getString("connection-has-already-been-closed", key));
 
 				} else {
 					connection.close();
