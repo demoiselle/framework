@@ -38,16 +38,14 @@ package br.gov.frameworkdemoiselle.util;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-import util.beans.ambiguous.AmbiguousQualifier;
 import br.gov.frameworkdemoiselle.annotation.Name;
 
 /**
- * Annotation litteral that allows to create instances of the {@link Name} qualifier.
- * The created instance can then be used to call {@link Beans#getReference(Class type, Annotation... qualifiers)}.
- *  
+ * Annotation litteral that allows to create instances of the {@link Name} qualifier. The created instance can then be
+ * used to call {@link Beans#getReference(Class type, Annotation... qualifiers)}.
+ * 
  * @see Beans
  * @see AmbiguousQualifier
- * 
  * @author SERPRO
  */
 @SuppressWarnings("all")
@@ -61,7 +59,7 @@ public class NameQualifier extends AnnotationLiteral<Name> implements Name {
 	 * Constructor with string value of name qualifier.
 	 * 
 	 * @param value
-	 * 			value of name qualifier.
+	 *            value of name qualifier.
 	 */
 	public NameQualifier(String value) {
 		this.value = value;

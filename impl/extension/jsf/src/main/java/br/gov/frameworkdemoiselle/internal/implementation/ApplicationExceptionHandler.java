@@ -100,7 +100,7 @@ public class ApplicationExceptionHandler extends AbstractExceptionHandler {
 					"A tela de exibição de erros: \""
 							+ ex.getViewId()
 							+ "\" não foi encontrada. Caso o seu projeto possua outra, defina no arquivo de configuração a chave \""
-							+ "frameworkdemoiselle.handle.application.exception.page" + "\"", ex);
+							+ "frameworkdemoiselle.exception.default.redirect.page" + "\"", ex);
 		}
 		return handled;
 	}
