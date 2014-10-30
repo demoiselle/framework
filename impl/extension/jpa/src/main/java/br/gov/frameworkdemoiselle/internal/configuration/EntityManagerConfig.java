@@ -40,12 +40,8 @@ import java.io.Serializable;
 
 import javax.persistence.EntityManager;
 
-import org.slf4j.Logger;
-
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
-import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.Strings;
 
 /**
  * Configuration class responsible for retrieving specific entity manager parameter values from properties file.
@@ -54,62 +50,34 @@ import br.gov.frameworkdemoiselle.util.Strings;
 public class EntityManagerConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * @deprecated
-	 */
-	// TODO Implementação apenas para manter a compatibilidade entre a versão 2.3 com a 2.4.
-	@Name("unit.name")
-	@Deprecated
-	private String persistenceUnitName;
 
 	@Name("default.unit.name")
 	private String defaultPersistenceUnitName;
-	
+
 	@Name("entitymanager.scope")
 	private EntityManagerScope entityManagerScope = EntityManagerScope.REQUEST;
-	
-	/**
-	 * Getter for persistence unit name.
-	 */
-	// TODO Implementação apenas para manter a compatibilidade entre a versão 2.3 com a 2.4.
-	/**
-	 * @deprecated
-	 * @return
-	 */
-	@Deprecated
-	public String getPersistenceUnitName() {
-		return persistenceUnitName;
-	}
 
 	/**
 	 * Getter for persistence unit name.
 	 */
 	public String getDefaultPersistenceUnitName() {
-		// TODO Implementação apenas para manter a compatibilidade entre a versão 2.3 com a 2.4.
-		if (!Strings.isEmpty(getPersistenceUnitName())) {
-			Logger logger = Beans.getReference(Logger.class);
-			logger.warn("A propriedade frameworkdemoiselle.persistence.unit.name="
-					+ getPersistenceUnitName()
-					+ " não será suportada nas próximas versões do framework. Para evitar futuros problemas atualize a propriedade para frameworkdemoiselle.persistence.default.unit.name="
-					+ getPersistenceUnitName());
-
-			return getPersistenceUnitName();
-		}
-
 		return defaultPersistenceUnitName;
 	}
 
 	/**
-	 * <p>Defines the scope of {@link EntityManager}'s produced by the internal producer.</p>
-	 * 
-	 * <p>Valid values are NOSCOPE,REQUEST,SESSION,VIEW,CONVERSATION and APPLICATION.</p>
-	 * 
-	 * <p>NOSCOPE means every injected entity manager will be a different instance.</p>  
-	 * 
-	 * <p>The default value is REQUEST, meaning the producer will create the same
-	 * entity manager for the duration of the request.</p>
-	 * 
+	 * <p>
+	 * Defines the scope of {@link EntityManager}'s produced by the internal producer.
+	 * </p>
+	 * <p>
+	 * Valid values are NOSCOPE,REQUEST,SESSION,VIEW,CONVERSATION and APPLICATION.
+	 * </p>
+	 * <p>
+	 * NOSCOPE means every injected entity manager will be a different instance.
+	 * </p>
+	 * <p>
+	 * The default value is REQUEST, meaning the producer will create the same entity manager for the duration of the
+	 * request.
+	 * </p>
 	 */
 	public EntityManagerScope getEntityManagerScope() {
 		return entityManagerScope;
@@ -123,9 +91,8 @@ public class EntityManagerConfig implements Serializable {
 	 * Supported scopes for the entity manager
 	 * 
 	 * @author serpro
-	 *
 	 */
-	public enum EntityManagerScope{
-		NOSCOPE,REQUEST,SESSION,VIEW,CONVERSATION,APPLICATION;
+	public enum EntityManagerScope {
+		NOSCOPE, REQUEST, SESSION, VIEW, CONVERSATION, APPLICATION;
 	}
 }
