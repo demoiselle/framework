@@ -43,6 +43,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -51,11 +52,9 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.persistence.PersistenceException;
-
+import test.Tests;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
-import test.Tests;
 
 @RunWith(Arquillian.class)
 public class EntityManagerFactoryProducerUniquePersistenceUnitTest {

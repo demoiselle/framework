@@ -52,9 +52,9 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import test.Tests;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
-import test.Tests;
 
 @RunWith(Arquillian.class)
 public class EntityManagerFactoryProducerMultiPersistenceUnitTest {
