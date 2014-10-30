@@ -128,11 +128,6 @@
 					<scope>runtime</scope>
 				</dependency>
 				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
 					<groupId>hsqldb</groupId>
 					<artifactId>hsqldb</artifactId>
 					<scope>compile</scope>
@@ -165,11 +160,6 @@
 				<dependency>
 					<groupId>org.hibernate</groupId>
 					<artifactId>hibernate-validator</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
 					<scope>runtime</scope>
 				</dependency>
 				<dependency>
@@ -206,11 +196,6 @@
 					<groupId>javax.transaction</groupId>
 					<artifactId>jta</artifactId>
 					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-					<scope>runtime</scope>
 				</dependency>
 				<dependency>
 					<groupId>org.eclipse.persistence</groupId>
@@ -256,11 +241,6 @@
 					<groupId>javax.transaction</groupId>
 					<artifactId>jta</artifactId>
 					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-					<scope>runtime</scope>
 				</dependency>
 				<dependency>
 					<groupId>org.eclipse.persistence</groupId>
@@ -313,11 +293,6 @@
 					<scope>provided</scope>
 				</dependency>
 				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
 					<groupId>org.eclipse.persistence</groupId>
 					<artifactId>javax.persistence</artifactId>
 					<scope>provided</scope>
@@ -363,11 +338,6 @@
 				<dependency>
 					<groupId>javax.transaction</groupId>
 					<artifactId>jta</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
 					<scope>provided</scope>
 				</dependency>
 				<dependency>
