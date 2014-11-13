@@ -82,7 +82,7 @@ public abstract class AbstractEntityManagerStore implements EntityManagerStore {
 			entityManager.setFlushMode(FlushModeType.AUTO);
 
 			cache.put(persistenceUnit, entityManager);
-			this.getLogger().info(getBundle().getString("entity-manager-was-created", persistenceUnit));
+			this.getLogger().fine(getBundle().getString("entity-manager-was-created", persistenceUnit));
 		}
 
 		return entityManager;
