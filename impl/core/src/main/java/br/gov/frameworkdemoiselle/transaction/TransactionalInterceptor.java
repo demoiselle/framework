@@ -114,7 +114,7 @@ public class TransactionalInterceptor implements Serializable {
 
 		Object result = null;
 		try {
-			getLogger().fine(getBundle().getString("transactional-execution", ic.getMethod().toGenericString()));
+			getLogger().finer(getBundle().getString("transactional-execution", ic.getMethod().toGenericString()));
 			result = ic.proceed();
 
 		} catch (Exception cause) {
@@ -134,7 +134,7 @@ public class TransactionalInterceptor implements Serializable {
 		if (!transaction.isActive()) {
 			transaction.begin();
 			getTransactionInfo().markAsOwner();
-			getLogger().info(getBundle().getString("begin-transaction"));
+			getLogger().fine(getBundle().getString("begin-transaction"));
 		}
 
 		getTransactionInfo().incrementCounter();
@@ -153,7 +153,7 @@ public class TransactionalInterceptor implements Serializable {
 
 			if (rollback) {
 				transaction.setRollbackOnly();
-				getLogger().info(getBundle().getString("transaction-marked-rollback", cause.getMessage()));
+				getLogger().fine(getBundle().getString("transaction-marked-rollback", cause.getMessage()));
 			}
 		}
 	}
@@ -169,18 +169,18 @@ public class TransactionalInterceptor implements Serializable {
 					transaction.rollback();
 					getTransactionInfo().clear();
 
-					getLogger().info(getBundle().getString("transaction-rolledback"));
+					getLogger().fine(getBundle().getString("transaction-rolledback"));
 
 				} else {
 					transaction.commit();
 					getTransactionInfo().clear();
 
-					getLogger().info(getBundle().getString("transaction-commited"));
+					getLogger().fine(getBundle().getString("transaction-commited"));
 				}
 			}
 
 		} else if (getTransactionInfo().getCounter() == 0 && !transaction.isActive()) {
-			getLogger().info(getBundle().getString("transaction-already-finalized"));
+			getLogger().fine(getBundle().getString("transaction-already-finalized"));
 		}
 	}
 
