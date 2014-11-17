@@ -39,6 +39,7 @@ package br.gov.frameworkdemoiselle.internal.context;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
@@ -48,6 +49,7 @@ import javax.servlet.http.HttpSession;
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.context.ViewContext;
+import br.gov.frameworkdemoiselle.lifecycle.BeforeSessionDestroyed;
 import br.gov.frameworkdemoiselle.util.Faces;
 
 /**
@@ -80,8 +82,6 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 
 	@Override
 	protected BeanStore getStore() {
-		clearInvalidatedSession();
-		
 		final String sessionId = getSessionId();
 		
 		if (sessionId==null){
@@ -113,13 +113,13 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 		return currentStore.getStore(viewId, this);
 	}
 	
-	private synchronized void clearInvalidatedSession(){
-		if (wasSessionInvalidated()){
-			final String requestedSessionId = getRequestedSessionId();
-			final SessionBeanStore store = sessionBeanStore.get(requestedSessionId);
+	protected void clearInvalidatedSession(@Observes BeforeSessionDestroyed event){
+		String sessionId = event.getSessionId();
+		if (sessionId != null){
+			final SessionBeanStore store = sessionBeanStore.get(sessionId);
 			if (store!=null){
 				store.clear(this);
-				sessionBeanStore.remove(requestedSessionId);
+				sessionBeanStore.remove(sessionId);
 			}
 		}
 	}
@@ -127,15 +127,5 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 	private String getSessionId(){
 		final HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
 		return session!=null ? session.getId() : null;
-	}
-	
-	private String getRequestedSessionId(){
-		final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		return request!=null ? request.getRequestedSessionId() : null;
-	}
-	
-	private boolean wasSessionInvalidated(){
-		final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		return request!=null && request.getRequestedSessionId() != null && !request.isRequestedSessionIdValid();
 	}
 }

@@ -42,6 +42,10 @@
 	<listener>
 		<listener-class>br.gov.frameworkdemoiselle.util.ServletListener</listener-class>
 	</listener>
+	
+	<listener>
+		<listener-class>br.gov.frameworkdemoiselle.util.SessionListener</listener-class>
+	</listener>
 
 	<filter>
 		<filter-name>Demoiselle Servlet Filter</filter-name>
