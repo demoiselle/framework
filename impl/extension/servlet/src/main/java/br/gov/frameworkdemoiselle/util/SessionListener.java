@@ -4,8 +4,8 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import br.gov.frameworkdemoiselle.lifecycle.BeforeSessionDestroyed;
 import br.gov.frameworkdemoiselle.lifecycle.AfterSessionCreated;
+import br.gov.frameworkdemoiselle.lifecycle.BeforeSessionDestroyed;
 
 /**
  * <p>Implements the {@link HttpSessionListener} interface and fires two events.</p>
@@ -19,14 +19,14 @@ import br.gov.frameworkdemoiselle.lifecycle.AfterSessionCreated;
  *
  */
 public class SessionListener implements HttpSessionListener {
-
+	
 	@Override
 	public void sessionCreated(final HttpSessionEvent sessionEvent) {
 		Beans.getBeanManager().fireEvent(new AfterSessionCreated() {
 			@Override
 			public String getSessionId() {
 				HttpSession session = sessionEvent.getSession();
-				return session != null ? session.getId() : null;
+				return session!=null ? session.getId() : null;
 			}
 		});
 	}
@@ -37,7 +37,7 @@ public class SessionListener implements HttpSessionListener {
 			@Override
 			public String getSessionId() {
 				HttpSession session = sessionEvent.getSession();
-				return session != null ? session.getId() : null;
+				return session!=null ? session.getId() : null;
 			}
 		});
 	}
