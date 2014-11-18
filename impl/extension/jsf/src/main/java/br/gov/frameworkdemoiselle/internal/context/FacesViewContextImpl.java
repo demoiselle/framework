@@ -39,15 +39,20 @@ package br.gov.frameworkdemoiselle.internal.context;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.context.ViewContext;
+import br.gov.frameworkdemoiselle.lifecycle.BeforeSessionDestroyed;
+import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Faces;
 
 /**
@@ -65,7 +70,7 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 	
 	private final AtomicLong atomicLong = new AtomicLong();
 	
-	private ConcurrentHashMap<String, SessionBeanStore> sessionBeanStore = new ConcurrentHashMap<String, SessionBeanStore>();
+	private ConcurrentHashMap<String, FacesViewBeanStore> sessionBeanStore = new ConcurrentHashMap<String, FacesViewBeanStore>();
 	
 	private static final String FACES_KEY = FacesViewContextImpl.class.getCanonicalName();
 	
@@ -80,17 +85,22 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 
 	@Override
 	protected BeanStore getStore() {
-		clearInvalidatedSession();
-		
-		final String sessionId = getSessionId();
-		
-		if (sessionId==null){
+		String sessionId = getSessionId();
+		if (sessionId == null){
 			return null;
 		}
 		
+		/*
+		 * Tenta obter o viewID de forma não thread-safe por questões de performance.
+		 * Se o viewID não existe entra em um trecho thread-safe para incrementa-lo, evitando
+		 * conflito entre duas requests tentando incrementar esse número. 
+		 */
 		Long viewId = (Long)Faces.getViewMap().get(FACES_KEY);
 		if (viewId==null){
 			synchronized (this) {
+				
+				//Tenta obte-lo novamente, caso entre a primeira tentativa e o bloqueio
+				//da thread outra thread já tenha criado o número. 
 				viewId = (Long)Faces.getViewMap().get(FACES_KEY);
 				if (viewId==null){
 					viewId = atomicLong.incrementAndGet();
@@ -99,43 +109,70 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 			}
 		}
 
-		SessionBeanStore currentStore = sessionBeanStore.get(sessionId);
+		//A mesma técnica de bloqueio de thread acima é usada aqui para
+		//criar um SessionBeanStore caso o mesmo ainda não exista.
+		FacesViewBeanStore currentStore = sessionBeanStore.get(sessionId);
 		if (currentStore==null){
 			synchronized (this) {
-				currentStore = (SessionBeanStore) sessionBeanStore.get(sessionId);
+				currentStore = (FacesViewBeanStore) sessionBeanStore.get(sessionId);
 				if (currentStore==null){
-					currentStore = new SessionBeanStore();
+					currentStore = new FacesViewBeanStore();
 					sessionBeanStore.put(sessionId, currentStore);
 				}
 			}
 		}
-		
+
 		return currentStore.getStore(viewId, this);
 	}
 	
-	private synchronized void clearInvalidatedSession(){
-		if (wasSessionInvalidated()){
-			final String requestedSessionId = getRequestedSessionId();
-			final SessionBeanStore store = sessionBeanStore.get(requestedSessionId);
+	/*
+	 * Called before the session is invalidated for that user.
+	 * Destroys all view scoped beans stored on that session.
+	 */
+	private void clearInvalidatedSession(String sessionId){
+		if (sessionId != null){
+			final FacesViewBeanStore store = sessionBeanStore.get(sessionId);
 			if (store!=null){
 				store.clear(this);
-				sessionBeanStore.remove(requestedSessionId);
+				sessionBeanStore.remove(sessionId);
 			}
 		}
 	}
 	
+	/*
+	 * Returns the current session ID. Creates a session if one doesn't exist. Returns NULL if the session can't be created.
+	 */
 	private String getSessionId(){
 		final HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
 		return session!=null ? session.getId() : null;
 	}
 	
-	private String getRequestedSessionId(){
-		final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		return request!=null ? request.getRequestedSessionId() : null;
-	}
-	
-	private boolean wasSessionInvalidated(){
-		final HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		return request!=null && request.getRequestedSessionId() != null && !request.isRequestedSessionIdValid();
+	/**
+	 * Observes HTTP session lifecycle and notifies the ViewContext of session events (creation or destruction)
+	 * so view scoped beans can be created or destroyed based on their underlying session scopes.
+	 * 
+	 * @author SERPRO
+	 *
+	 */
+	@ApplicationScoped
+	protected static class FacesViewSessionListener {
+		
+		/**
+		 * Called before the session is invalidated for that user.
+		 * Destroys all view scoped beans stored on that session.
+		 */
+		protected void clearInvalidatedSession(@Observes BeforeSessionDestroyed event){
+			String sessionId = event.getSessionId();
+			try{
+				Context context = Beans.getBeanManager().getContext(ViewScoped.class);
+				if ( FacesViewContextImpl.class.isInstance(context) ){
+					((FacesViewContextImpl)context).clearInvalidatedSession(sessionId);
+				}
+			}
+			catch(ContextNotActiveException ce){
+				//Nada a fazer, contexto não está ativo. 
+			}
+		}
 	}
 }
+
