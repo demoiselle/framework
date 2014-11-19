@@ -130,7 +130,7 @@ public class EntityManagerProxy implements EntityManager, Serializable {
 		joinTransactionIfNecessary();
 		T managedEntity = getEntityManagerDelegate().merge(entity);
 		checkEntityManagerScopePassivable(managedEntity);
-		return getEntityManagerDelegate().merge(entity);
+		return entity;
 	}
 
 	/*
