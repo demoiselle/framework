@@ -1,5 +1,7 @@
 package br.gov.frameworkdemoiselle.lifecycle;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * This interface represents an event fired before an HTTP session is destroyed.
  * 
@@ -9,9 +11,14 @@ package br.gov.frameworkdemoiselle.lifecycle;
 public interface BeforeSessionDestroyed {
 	
 	/**
+	 * <p>When calling this method the session still hasn't been invalidated so
+	 * you can access attributes that are about to be removed from the session.</p>
 	 * 
-	 * @return The session ID of the session about to be destroyed
+	 * <p>Don't call {@link HttpSession#invalidate()} on the returned session, this operation
+	 * is unsupported.</p>
+	 * 
+	 * @return The session about to be destroyed
 	 */
-	public String getSessionId();
+	public HttpSession getSession();
 
 }

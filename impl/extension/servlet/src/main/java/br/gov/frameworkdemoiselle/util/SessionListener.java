@@ -24,9 +24,8 @@ public class SessionListener implements HttpSessionListener {
 	public void sessionCreated(final HttpSessionEvent sessionEvent) {
 		Beans.getBeanManager().fireEvent(new AfterSessionCreated() {
 			@Override
-			public String getSessionId() {
-				HttpSession session = sessionEvent.getSession();
-				return session!=null ? session.getId() : null;
+			public HttpSession getSession() {
+				return sessionEvent.getSession();
 			}
 		});
 	}
@@ -35,9 +34,8 @@ public class SessionListener implements HttpSessionListener {
 	public void sessionDestroyed(final HttpSessionEvent sessionEvent) {
 		Beans.getBeanManager().fireEvent(new BeforeSessionDestroyed() {
 			@Override
-			public String getSessionId() {
-				HttpSession session = sessionEvent.getSession();
-				return session!=null ? session.getId() : null;
+			public HttpSession getSession() {
+				return sessionEvent.getSession();
 			}
 		});
 	}

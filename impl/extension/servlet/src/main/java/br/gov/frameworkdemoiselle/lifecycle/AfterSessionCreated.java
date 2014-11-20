@@ -1,5 +1,7 @@
 package br.gov.frameworkdemoiselle.lifecycle;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * This interface represents an event fired after a new HTTP session is created.
  * 
@@ -10,8 +12,8 @@ public interface AfterSessionCreated {
 	
 	/**
 	 * 
-	 * @return The ID of the recently created session
+	 * @return The recently created session
 	 */
-	public String getSessionId();
+	public HttpSession getSession();
 
 }
