@@ -2,12 +2,20 @@ package br.gov.frameworkdemoiselle.internal.context;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Alternative;
 
-@SessionScoped
-public class SessionBeanStore implements Serializable {
+/**
+ * Store that keeps view scoped beans. It associates all view scoped beans with a view ID.
+ * When the ID changes (meaning the view changed) all old view scoped beans are destroyed
+ * before new beans for the new view are created and stored.
+ * 
+ * @author SERPRO
+ *
+ */
+@Alternative
+public class FacesViewBeanStore implements Serializable {
 
 	private static final long serialVersionUID = -8265458933971929432L;
 

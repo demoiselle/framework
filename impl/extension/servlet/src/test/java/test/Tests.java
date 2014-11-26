@@ -54,6 +54,7 @@ import br.gov.frameworkdemoiselle.security.ServletAuthorizer;
 //import br.gov.frameworkdemoiselle.util.BasicAuthFilter;
 import br.gov.frameworkdemoiselle.util.ServletFilter;
 import br.gov.frameworkdemoiselle.util.ServletListener;
+import br.gov.frameworkdemoiselle.util.SessionListener;
 
 @Ignore
 public final class Tests {
@@ -76,6 +77,7 @@ public final class Tests {
 				.addClass(ServletAuthorizer.class)
 				.addClass(ServletFilter.class)
 				.addClass(ServletListener.class)
+				.addClass(SessionListener.class)
 				.addClass(HttpServletRequestProducer.class)
 				.addClass(HttpServletResponseProducer.class)
 				.addClass(HttpSessionProducer.class)
