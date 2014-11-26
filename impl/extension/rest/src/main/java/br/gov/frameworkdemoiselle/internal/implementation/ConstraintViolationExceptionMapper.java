@@ -32,6 +32,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
 		}
 
 		getLogger().fine(getBundle().getString("mapping-violations", status, failed.getViolations().toString()));
+
 		return Response.status(status).entity(failed.getViolations()).build();
 	}
 
@@ -45,7 +46,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
 
 	private Logger getLogger() {
 		if (logger == null) {
-			logger = Beans.getReference(Logger.class, new NameQualifier(HttpViolationExceptionMapper.class.getName()));
+			logger = Beans.getReference(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.exception"));
 		}
 
 		return logger;

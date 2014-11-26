@@ -36,11 +36,13 @@
  */
 package br.gov.frameworkdemoiselle.security;
 
+import static java.util.logging.Level.FINE;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,9 +56,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
 
 public abstract class AbstractHTTPAuthorizationFilter implements Filter {
+
+	private transient ResourceBundle bundle;
+
+	private transient Logger logger;
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -86,6 +94,9 @@ public abstract class AbstractHTTPAuthorizationFilter implements Filter {
 				performLogout(request, response);
 
 			} catch (InvalidCredentialsException cause) {
+				String message = getBundle().getString("authentication-failed");
+				getLogger().log(FINE, message, cause);
+
 				setUnauthorizedStatus(response, cause);
 			}
 
@@ -150,5 +161,21 @@ public abstract class AbstractHTTPAuthorizationFilter implements Filter {
 		response.setStatus(SC_UNAUTHORIZED);
 		response.setContentType("text/plain; charset=UTF-8");
 		response.getWriter().write(cause.getMessage());
+	}
+
+	private ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-rest-bundle"));
+		}
+
+		return bundle;
+	}
+
+	private Logger getLogger() {
+		if (logger == null) {
+			logger = Beans.getReference(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.security"));
+		}
+
+		return logger;
 	}
 }

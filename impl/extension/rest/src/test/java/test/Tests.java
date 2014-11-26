@@ -56,7 +56,7 @@ import br.gov.frameworkdemoiselle.internal.implementation.AuthorizationException
 import br.gov.frameworkdemoiselle.internal.implementation.ConstraintViolationExceptionMapper;
 import br.gov.frameworkdemoiselle.internal.implementation.DefaultExceptionMapper;
 import br.gov.frameworkdemoiselle.internal.implementation.HttpViolationExceptionMapper;
-import br.gov.frameworkdemoiselle.internal.implementation.NotLoggedInExceptionMapper;
+import br.gov.frameworkdemoiselle.internal.implementation.IllegalArgumentExceptionMapper;
 import br.gov.frameworkdemoiselle.internal.implementation.SessionNotPermittedListener;
 import br.gov.frameworkdemoiselle.security.AbstractHTTPAuthorizationFilter;
 import br.gov.frameworkdemoiselle.security.BasicAuthFilter;
@@ -94,9 +94,10 @@ public final class Tests {
 				.addClass(AuthenticationExceptionMapper.class)
 				.addClass(AuthorizationExceptionMapper.class)
 				.addClass(ConstraintViolationExceptionMapper.class)
+				.addClass(ConstraintViolationExceptionMapper.class)
+				.addClass(IllegalArgumentExceptionMapper.class)
 				.addClass(DefaultExceptionMapper.class)
 				.addClass(HttpViolationExceptionMapper.class)
-				.addClass(NotLoggedInExceptionMapper.class)
 				.addClass(SessionNotPermittedListener.class)
 				.addClass(AbstractHTTPAuthorizationFilter.class)
 				.addClass(BasicAuthFilter.class)

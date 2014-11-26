@@ -1,29 +1,29 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import static java.util.logging.Level.FINE;
-import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
+import java.io.EOFException;
 import java.util.logging.Logger;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import br.gov.frameworkdemoiselle.security.AuthorizationException;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @Provider
-public class AuthorizationExceptionMapper implements ExceptionMapper<AuthorizationException> {
+public class EOFExceptionMapper implements ExceptionMapper<EOFException> {
 
 	private transient ResourceBundle bundle;
 
 	private transient Logger logger;
 
 	@Override
-	public Response toResponse(AuthorizationException exception) {
-		int status = SC_FORBIDDEN;
+	public Response toResponse(EOFException exception) {
+		int status = SC_BAD_REQUEST;
 		String message = getBundle().getString("mapping-violations", status);
 		getLogger().log(FINE, message, exception);
 

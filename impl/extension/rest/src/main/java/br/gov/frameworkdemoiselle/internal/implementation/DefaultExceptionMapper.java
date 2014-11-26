@@ -22,7 +22,7 @@ public class DefaultExceptionMapper implements ExceptionMapper<Throwable> {
 
 	@Override
 	public Response toResponse(Throwable exception) {
-		String message = getBundle().getString("internal.server.error");
+		String message = getBundle().getString("internal-server-error");
 		getLogger().log(SEVERE, message, exception);
 
 		return Response.status(INTERNAL_SERVER_ERROR).entity(message).build();
@@ -38,7 +38,7 @@ public class DefaultExceptionMapper implements ExceptionMapper<Throwable> {
 
 	private Logger getLogger() {
 		if (logger == null) {
-			logger = Beans.getReference(Logger.class, new NameQualifier(DefaultExceptionMapper.class.getName()));
+			logger = Beans.getReference(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.exception"));
 		}
 
 		return logger;

@@ -1,5 +1,7 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
+import static java.util.logging.Level.FINE;
+
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -28,7 +30,7 @@ public class HttpViolationExceptionMapper implements ExceptionMapper<HttpViolati
 		if (violations.isEmpty()) {
 			violations = null;
 		} else {
-			getLogger().fine(getBundle().getString("mapping-violations", status, violations.toString()));
+			getLogger().log(FINE, getBundle().getString("mapping-violations", status), exception);
 		}
 
 		return Response.status(status).entity(violations).build();
@@ -44,7 +46,7 @@ public class HttpViolationExceptionMapper implements ExceptionMapper<HttpViolati
 
 	private Logger getLogger() {
 		if (logger == null) {
-			logger = Beans.getReference(Logger.class, new NameQualifier(HttpViolationExceptionMapper.class.getName()));
+			logger = Beans.getReference(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.exception"));
 		}
 
 		return logger;
