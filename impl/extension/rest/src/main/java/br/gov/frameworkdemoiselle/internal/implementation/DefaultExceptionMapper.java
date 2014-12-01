@@ -25,7 +25,7 @@ public class DefaultExceptionMapper implements ExceptionMapper<Throwable> {
 		String message = getBundle().getString("internal-server-error");
 		getLogger().log(SEVERE, message, exception);
 
-		return Response.status(INTERNAL_SERVER_ERROR).entity(message).build();
+		return Response.status(INTERNAL_SERVER_ERROR).entity(message).type("text/plain").build();
 	}
 
 	private ResourceBundle getBundle() {
