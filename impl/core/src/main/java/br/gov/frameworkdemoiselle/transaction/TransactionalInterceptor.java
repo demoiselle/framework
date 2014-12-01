@@ -110,10 +110,10 @@ public class TransactionalInterceptor implements Serializable {
 	 */
 	@AroundInvoke
 	public Object manage(final InvocationContext ic) throws Exception {
-		initiate();
-
 		Object result = null;
+
 		try {
+			initiate();
 			getLogger().finer(getBundle().getString("transactional-execution", ic.getMethod().toGenericString()));
 			result = ic.proceed();
 
@@ -135,6 +135,7 @@ public class TransactionalInterceptor implements Serializable {
 			transaction.begin();
 			getTransactionInfo().markAsOwner();
 			getLogger().fine(getBundle().getString("begin-transaction"));
+			fireAfterTransactionBegin();
 		}
 
 		getTransactionInfo().incrementCounter();
@@ -152,36 +153,69 @@ public class TransactionalInterceptor implements Serializable {
 			}
 
 			if (rollback) {
-				transaction.setRollbackOnly();
-				getLogger().fine(getBundle().getString("transaction-marked-rollback", cause.getMessage()));
+				setRollbackOnly(transaction, cause);
 			}
 		}
 	}
 
-	private void complete() {
+	private void setRollbackOnly(Transaction transaction, Exception cause) {
+		transaction.setRollbackOnly();
+		getLogger().fine(getBundle().getString("transaction-marked-rollback", cause.getMessage()));
+	}
+
+	private void complete() throws Exception {
 		Transaction transaction = getTransactionContext().getCurrentTransaction();
 		getTransactionInfo().decrementCounter();
 
 		if (getTransactionInfo().getCounter() == 0 && transaction.isActive()) {
-
 			if (getTransactionInfo().isOwner()) {
-				if (transaction.isMarkedRollback()) {
-					transaction.rollback();
-					getTransactionInfo().clear();
-
-					getLogger().fine(getBundle().getString("transaction-rolledback"));
-
-				} else {
-					transaction.commit();
-					getTransactionInfo().clear();
-
-					getLogger().fine(getBundle().getString("transaction-commited"));
-				}
+				complete(transaction);
 			}
 
 		} else if (getTransactionInfo().getCounter() == 0 && !transaction.isActive()) {
 			getLogger().fine(getBundle().getString("transaction-already-finalized"));
 		}
+	}
+
+	private void complete(Transaction transaction) throws Exception {
+		try {
+			fireBeforeTransactionComplete(transaction.isMarkedRollback());
+
+		} catch (Exception cause) {
+			setRollbackOnly(transaction, cause);
+			throw cause;
+
+		} finally {
+			if (transaction.isMarkedRollback()) {
+				transaction.rollback();
+				getTransactionInfo().clear();
+				getLogger().fine(getBundle().getString("transaction-rolledback"));
+
+			} else {
+				transaction.commit();
+				getTransactionInfo().clear();
+				getLogger().fine(getBundle().getString("transaction-commited"));
+			}
+		}
+	}
+
+	private void fireAfterTransactionBegin() {
+		Beans.getBeanManager().fireEvent(new AfterTransactionBegin() {
+
+			private static final long serialVersionUID = 1L;
+		});
+	}
+
+	private void fireBeforeTransactionComplete(final boolean markedRollback) {
+		Beans.getBeanManager().fireEvent(new BeforeTransactionComplete() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isMarkedRollback() {
+				return markedRollback;
+			}
+		});
 	}
 
 	private ResourceBundle getBundle() {
