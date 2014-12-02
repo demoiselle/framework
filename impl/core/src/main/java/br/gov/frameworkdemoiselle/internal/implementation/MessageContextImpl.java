@@ -37,16 +37,12 @@
 package br.gov.frameworkdemoiselle.internal.implementation;
 
 import java.io.Serializable;
-import java.util.logging.Logger;
 
-import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
 import br.gov.frameworkdemoiselle.message.DefaultMessage;
 import br.gov.frameworkdemoiselle.message.MessageAppender;
 import br.gov.frameworkdemoiselle.message.MessageContext;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.NameQualifier;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 /**
  * The message store is designed to provide access to messages. It is shared by every application layer.
@@ -56,10 +52,6 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
 public class MessageContextImpl implements Serializable, MessageContext {
 
 	private static final long serialVersionUID = 1L;
-
-	private transient ResourceBundle bundle;
-
-	private transient Logger logger;
 
 	private MessageAppender getAppender() {
 		Class<? extends MessageAppender> appenderClass = StrategySelector.selectClass(MessageAppender.class);
@@ -75,21 +67,5 @@ public class MessageContextImpl implements Serializable, MessageContext {
 	@Override
 	public void add(String text, SeverityType severity, Object... params) {
 		getAppender().append(new DefaultMessage(text, severity, params));
-	}
-
-	private ResourceBundle getBundle() {
-		if (bundle == null) {
-			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
-		}
-
-		return bundle;
-	}
-
-	private Logger getLogger() {
-		if (logger == null) {
-			logger = LoggerProducer.create("br.gov.frameworkdemoiselle.message");
-		}
-
-		return logger;
 	}
 }
