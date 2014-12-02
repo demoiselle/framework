@@ -5,12 +5,10 @@ import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.net.URL;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -39,7 +37,7 @@ public class BasicAuthenticationFilterTest {
 	}
 
 	@Test
-	public void loginSucessfull() throws ClientProtocolException, IOException {
+	public void loginSucessfull() throws Exception {
 		CloseableHttpClient client = HttpClientBuilder.create().build();
 		HttpGet get;
 		HttpResponse response;
@@ -61,15 +59,14 @@ public class BasicAuthenticationFilterTest {
 	}
 
 	@Test
-	public void loginFailed() throws ClientProtocolException, IOException {
+	public void loginFailed() throws Exception {
 		String username = "invalid";
 		String password = "invalid";
-		
-		
+
 		HttpPost x = new HttpPost();
 		x.setEntity(null);
-		
-		//HttpEntity entity
+
+		// HttpEntity entity
 
 		HttpGet get = new HttpGet(deploymentUrl + "/helper");
 		byte[] encoded = Base64.encodeBase64((username + ":" + password).getBytes());

@@ -51,6 +51,7 @@ import br.gov.frameworkdemoiselle.InternalServerErrorException;
 import br.gov.frameworkdemoiselle.NotFoundException;
 import br.gov.frameworkdemoiselle.ServiceUnavailableException;
 import br.gov.frameworkdemoiselle.UnprocessableEntityException;
+import br.gov.frameworkdemoiselle.internal.configuration.RESTSecurityConfig;
 import br.gov.frameworkdemoiselle.internal.implementation.AuthenticationExceptionMapper;
 import br.gov.frameworkdemoiselle.internal.implementation.AuthorizationExceptionMapper;
 import br.gov.frameworkdemoiselle.internal.implementation.ConstraintViolationExceptionMapper;
@@ -59,7 +60,6 @@ import br.gov.frameworkdemoiselle.internal.implementation.HttpViolationException
 import br.gov.frameworkdemoiselle.internal.implementation.IllegalArgumentExceptionMapper;
 import br.gov.frameworkdemoiselle.security.AbstractHTTPAuthorizationFilter;
 import br.gov.frameworkdemoiselle.security.BasicAuthFilter;
-import br.gov.frameworkdemoiselle.security.RESTSecurityConfig;
 import br.gov.frameworkdemoiselle.security.Token;
 //import br.gov.frameworkdemoiselle.util.BasicAuthFilter;
 import br.gov.frameworkdemoiselle.security.TokenAuthFilter;

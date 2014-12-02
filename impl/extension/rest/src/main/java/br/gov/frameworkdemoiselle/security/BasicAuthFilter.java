@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 
+import br.gov.frameworkdemoiselle.internal.configuration.RESTSecurityConfig;
 import br.gov.frameworkdemoiselle.util.Beans;
 
 public class BasicAuthFilter extends AbstractHTTPAuthorizationFilter {

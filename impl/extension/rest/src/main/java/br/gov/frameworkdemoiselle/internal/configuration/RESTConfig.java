@@ -34,50 +34,22 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.security;
+package br.gov.frameworkdemoiselle.internal.configuration;
 
-import java.io.IOException;
+import java.io.Serializable;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.configuration.Configuration;
 
-import br.gov.frameworkdemoiselle.internal.configuration.RESTSecurityConfig;
-import br.gov.frameworkdemoiselle.util.Beans;
+@Configuration(prefix = "frameworkdemoiselle")
+public class RESTConfig implements Serializable {
 
-public class TokenAuthFilter extends AbstractHTTPAuthorizationFilter {
+	private static final long serialVersionUID = 1L;
 
-	@Override
-	protected String getType() {
-		return "Token";
+	@Name("session.allowed")
+	private boolean sessionAllowed = false;
+
+	public boolean isSessionAllowed() {
+		return sessionAllowed;
 	}
-
-	@Override
-	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
-		String authData = getAuthData(request);
-
-		super.doFilter(request, response, chain);
-
-		String value = Beans.getReference(Token.class).getValue();
-		if (value != null && !value.equals(authData)) {
-			response.setHeader("Set-Token", value);
-		}
-	}
-
-	@Override
-	protected void performLogin(HttpServletRequest request, HttpServletResponse response) {
-		Token token = Beans.getReference(Token.class);
-		String authData = getAuthData(request);
-		token.setValue(authData);
-
-		super.performLogin(request, response);
-	}
-
-	@Override
-	protected boolean isActive() {
-		return Beans.getReference(RESTSecurityConfig.class).isTokenFilterActive();
-	}
-
 }
