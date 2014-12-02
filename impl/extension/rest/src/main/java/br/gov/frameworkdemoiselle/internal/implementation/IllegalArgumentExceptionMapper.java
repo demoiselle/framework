@@ -1,10 +1,10 @@
 /*
- * SERPRO Artifacts
- * Copyright (C) 2014 SERPRO
+ * Demoiselle Framework
+ * Copyright (C) 2010 SERPRO
  * ----------------------------------------------------------------------------
- * This file is part of SERPRO Artifacts.
+ * This file is part of Demoiselle Framework.
  * 
- * SERPRO Artifacts is free software; you can redistribute it and/or
+ * Demoiselle Framework is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License version 3
  * as published by the Free Software Foundation.
  * 
@@ -18,9 +18,9 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  * ----------------------------------------------------------------------------
- * Este arquivo é parte do SERPRO Artifacts.
+ * Este arquivo é parte do Framework Demoiselle.
  * 
- * O SERPRO Artifacts é um software livre; você pode redistribuí-lo e/ou
+ * O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
  * modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
  * do Software Livre (FSF).
  * 
