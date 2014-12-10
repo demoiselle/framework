@@ -91,7 +91,7 @@ public class SessionNotAllowedListener implements ServletContextListener, HttpSe
 	}
 
 	public void beforeTransactionComplete(@Observes BeforeTransactionComplete event, HttpServletRequest request) {
-		if (!getConfig().isSessionAllowed() && ATTR_VALUE.equals(request.getAttribute(ATTR_NAME))) {
+		if (!getConfig().isSessionAllowed() && request != null && ATTR_VALUE.equals(request.getAttribute(ATTR_NAME))) {
 			invalidateSesstion(request);
 			throw new IllegalStateException(getBundle().getString("session-not-allowed"));
 		}
