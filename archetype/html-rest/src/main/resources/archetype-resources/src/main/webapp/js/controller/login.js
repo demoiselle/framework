@@ -19,18 +19,8 @@ $(function() {
 	});
 });
 
-function make_base_auth(user, password) {
-	var tok = user + ':' + password;
-	var hash = btoa(tok);
-	return hash;
-}
-
-function loginOk(data) {
-	var username = $("#username").val().trim();
-	var password = $("#password").val().trim();
-	var encoded = btoa(username + ':' + password);
-
-	App.setToken(encoded);
+function loginOk(data, status, request) {
+	App.setToken(request.getResponseHeader('Set-Token'));
 	location.href = "home.html";
 }
 

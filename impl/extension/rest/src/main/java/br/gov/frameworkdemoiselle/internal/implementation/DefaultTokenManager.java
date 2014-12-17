@@ -66,7 +66,7 @@ public class DefaultTokenManager implements TokenManager {
 		return store.get(token);
 	}
 
-	private class TokenStore implements Serializable {
+	public static class TokenStore implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
