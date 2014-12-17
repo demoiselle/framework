@@ -34,58 +34,66 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.implementation;
+package br.gov.frameworkdemoiselle.security;
 
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static br.gov.frameworkdemoiselle.annotation.Priority.L2_PRIORITY;
 
-import java.util.ResourceBundle;
+import java.security.Principal;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.enterprise.context.RequestScoped;
 
-import br.gov.frameworkdemoiselle.NotFoundException;
-import br.gov.frameworkdemoiselle.ServiceUnavailableException;
-import br.gov.frameworkdemoiselle.util.Metadata;
+import br.gov.frameworkdemoiselle.annotation.Priority;
+import br.gov.frameworkdemoiselle.util.Beans;
 
-@Path("metadata")
-public class MetadataREST {
+@RequestScoped
+@Priority(L2_PRIORITY)
+public class TokenAuthenticator implements Authenticator {
 
-	@Inject
-	private ResourceBundle bundle;
+	private static final long serialVersionUID = 1L;
 
-	@GET
-	@Path("demoiselle/version")
-	@Produces("text/plain")
-	public String getDemoiselleVersion() {
-		return Metadata.getVersion();
+	private Principal user;
+
+	@Override
+	public void authenticate() throws Exception {
+		Token token = Beans.getReference(Token.class);
+		TokenManager tokenManager = Beans.getReference(TokenManager.class);
+
+		if (token.isEmpty()) {
+			this.user = customAuthentication();
+
+			String newToken = tokenManager.persist(this.user);
+			token.setValue(newToken);
+
+		} else {
+			this.user = tokenAuthentication(token, tokenManager);
+		}
 	}
 
-	@GET
-	@Path("version")
-	@Produces("text/plain")
-	public String getAppVersion() throws Exception {
-		String key = "application.version";
+	protected Principal customAuthentication() throws Exception {
+		ServletAuthenticator authenticator = Beans.getReference(ServletAuthenticator.class);
+		authenticator.authenticate();
 
-		if (!bundle.containsKey(key)) {
-			// logger.debug();
-
-			throw new ServiceUnavailableException();
-		}
-
-		return bundle.getString(key);
+		return authenticator.getUser();
 	}
 
-	@GET
-	@Path("message/{key}")
-	@Produces(TEXT_HTML)
-	public String getMessage(@PathParam("key") String key) throws Exception {
-		if (!bundle.containsKey(key)) {
-			throw new NotFoundException();
+	private Principal tokenAuthentication(Token token, TokenManager tokenManager) throws Exception {
+		Principal principal = tokenManager.load(token.getValue());
+
+		if (principal == null) {
+			throw new InvalidCredentialsException("token inválido");
 		}
 
-		return bundle.getString(key);
+		return principal;
+	}
+
+	@Override
+	// TODO Apagar o token
+	public void unauthenticate() {
+		this.user = null;
+	}
+
+	@Override
+	public Principal getUser() {
+		return this.user;
 	}
 }
