@@ -69,7 +69,10 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
 
 		getLogger().fine(getBundle().getString("mapping-violations", status, failed.getViolations().toString()));
 
-		return Response.status(status).entity(failed.getViolations()).build();
+		Object entity = failed.getViolations();
+		String mediaType = failed.getMediaType();
+
+		return Response.status(status).entity(entity).type(mediaType).build();
 	}
 
 	private ResourceBundle getBundle() {
