@@ -34,9 +34,10 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.internal.implementation;
+package br.gov.frameworkdemoiselle.internal.producer;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,7 +63,7 @@ public final class StrategySelector implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T selectInstance(Class<T> type, Collection<? extends T> options) {
+	public static <T> T selectReference(Class<T> type, Collection<? extends T> options) {
 
 		Map<Class<? extends T>, T> map = new HashMap<Class<? extends T>, T>();
 
@@ -74,6 +75,15 @@ public final class StrategySelector implements Serializable {
 
 		Class<? extends T> elected = selectClass(type, map.keySet());
 		return map.get(elected);
+	}
+
+	protected static <T> T selectReference(Class<T> type) {
+		Class<? extends T> selected = selectClass(type, getOptions(type));
+		return Beans.getReference(selected);
+	}
+
+	protected static <T> Class<? extends T> selectClass(Class<T> type) {
+		return selectClass(type, getOptions(type));
 	}
 
 	private static <T> Class<? extends T> selectClass(Class<T> type, Collection<Class<? extends T>> options) {
@@ -92,15 +102,11 @@ public final class StrategySelector implements Serializable {
 		return selected;
 	}
 
-	public static <T> Class<? extends T> selectClass(Class<T> type) {
-		return selectClass(type, getOptions(type));
-	}
-
 	@SuppressWarnings("unchecked")
-	private static <T> Collection<Class<? extends T>> getOptions(Class<T> type) {
+	private static <T> Collection<Class<? extends T>> getOptions(Class<T> type, Annotation... qualifiers) {
 		Set<Class<? extends T>> result = new HashSet<Class<? extends T>>();
 
-		for (Bean<?> bean : Beans.getBeanManager().getBeans(type)) {
+		for (Bean<?> bean : Beans.getBeanManager().getBeans(type, qualifiers)) {
 			result.add((Class<? extends T>) bean.getBeanClass());
 		}
 

@@ -43,6 +43,7 @@ import br.gov.frameworkdemoiselle.message.MessageAppender;
 import br.gov.frameworkdemoiselle.message.MessageContext;
 import br.gov.frameworkdemoiselle.message.SeverityType;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.StrategyQualifier;
 
 /**
  * The message store is designed to provide access to messages. It is shared by every application layer.
@@ -54,9 +55,7 @@ public class MessageContextImpl implements Serializable, MessageContext {
 	private static final long serialVersionUID = 1L;
 
 	private MessageAppender getAppender() {
-		Class<? extends MessageAppender> appenderClass = StrategySelector.selectClass(MessageAppender.class);
-
-		return Beans.getReference(appenderClass);
+		return Beans.getReference(MessageAppender.class, new StrategyQualifier());
 	}
 
 	@Override

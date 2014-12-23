@@ -66,7 +66,7 @@ public class EntityManagerProducer implements Serializable {
 	private Instance<EntityManagerStore> storeInstance;
 
 	@Inject
-	private EntityManagerConfig configuration;
+	private EntityManagerConfig config;
 
 	@Inject
 	private Persistences persistenceUnitReader;
@@ -85,7 +85,7 @@ public class EntityManagerProducer implements Serializable {
 	 */
 	@Default
 	@Produces
-	protected EntityManager createDefault(EntityManagerConfig config) {
+	protected EntityManager createDefault() {
 		String persistenceUnit = persistenceUnitReader.getFromProperties(config);
 
 		if (persistenceUnit == null) {
@@ -121,7 +121,7 @@ public class EntityManagerProducer implements Serializable {
 	}
 
 	private EntityManagerStore getStore() {
-		switch (configuration.getEntityManagerScope()) {
+		switch (config.getEntityManagerScope()) {
 			case REQUEST:
 				return storeInstance.select(RequestEntityManagerStore.class).get();
 			case APPLICATION:

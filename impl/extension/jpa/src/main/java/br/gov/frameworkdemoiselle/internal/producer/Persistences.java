@@ -41,26 +41,18 @@ import static br.gov.frameworkdemoiselle.configuration.Configuration.DEFAULT_RES
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
-@Singleton
 public class Persistences {
 
-	@Inject
-	protected Logger logger;
+	private transient ResourceBundle bundle;
 
-	@Inject
-	@Name("demoiselle-jpa-bundle")
-	protected ResourceBundle bundle;
-
-	@Inject
-	private EntityManagerFactoryProducer factory;
+	private transient Logger logger;
 
 	/**
 	 * Tries to get persistence unit name from demoiselle.properties.
@@ -73,7 +65,7 @@ public class Persistences {
 		String persistenceUnit = config.getDefaultPersistenceUnitName();
 
 		if (persistenceUnit != null) {
-			this.logger.fine(bundle.getString("getting-persistence-unit-from-properties", DEFAULT_RESOURCE));
+			getLogger().fine(getBundle().getString("getting-persistence-unit-from-properties", DEFAULT_RESOURCE));
 		}
 
 		return persistenceUnit;
@@ -86,13 +78,31 @@ public class Persistences {
 	 * @return Persistence Unit AmbiguousQualifier
 	 */
 	protected String getFromXML() {
+		EntityManagerFactoryProducer factory = Beans.getReference(EntityManagerFactoryProducer.class);
 		Set<String> persistenceUnits = factory.getCache().keySet();
 
 		if (persistenceUnits.size() > 1) {
-			throw new DemoiselleException(bundle.getString("more-than-one-persistence-unit-defined",
+			throw new DemoiselleException(getBundle().getString("more-than-one-persistence-unit-defined",
 					Name.class.getSimpleName()));
 		} else {
 			return persistenceUnits.iterator().next();
 		}
+	}
+
+	private ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-jpa-bundle"));
+		}
+
+		return bundle;
+	}
+
+	private Logger getLogger() {
+		if (logger == null) {
+			logger = Beans.getReference(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.util"));
+
+		}
+
+		return logger;
 	}
 }

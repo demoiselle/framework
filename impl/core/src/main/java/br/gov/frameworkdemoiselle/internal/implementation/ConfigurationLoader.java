@@ -67,6 +67,7 @@ import br.gov.frameworkdemoiselle.configuration.Configuration;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationException;
 import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 import br.gov.frameworkdemoiselle.internal.bootstrap.ConfigurationBootstrap;
+import br.gov.frameworkdemoiselle.internal.producer.StrategySelector;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.Reflections;
@@ -267,7 +268,7 @@ public class ConfigurationLoader implements Serializable {
 			}
 		}
 
-		ConfigurationValueExtractor elected = StrategySelector.selectInstance(ConfigurationValueExtractor.class,
+		ConfigurationValueExtractor elected = StrategySelector.selectReference(ConfigurationValueExtractor.class,
 				candidates);
 
 		if (elected == null) {

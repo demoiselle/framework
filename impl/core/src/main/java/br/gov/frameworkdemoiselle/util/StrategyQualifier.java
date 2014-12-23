@@ -36,23 +36,23 @@
  */
 package br.gov.frameworkdemoiselle.util;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Annotation;
 
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import javax.enterprise.util.AnnotationLiteral;
 
-import javax.enterprise.util.Nonbinding;
-import javax.interceptor.InterceptorBinding;
+import util.beans.ambiguous.AmbiguousQualifier;
+import br.gov.frameworkdemoiselle.annotation.Name;
+import br.gov.frameworkdemoiselle.annotation.Strategy;
 
-@Inherited
-@InterceptorBinding
-@Target({ METHOD, TYPE })
-@Retention(RUNTIME)
-public @interface Cache {
+/**
+ * Annotation litteral that allows to create instances of the {@link Name} qualifier. The created instance can then be
+ * used to call {@link Beans#getReference(Class type, Annotation... qualifiers)}.
+ * 
+ * @see Beans
+ * @see AmbiguousQualifier
+ * @author SERPRO
+ */
+@SuppressWarnings("all")
+public class StrategyQualifier extends AnnotationLiteral<Strategy> implements Strategy {
 
-	@Nonbinding
-	String value() default "max-age=9223372036854775807";
 }

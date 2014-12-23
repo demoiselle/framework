@@ -67,8 +67,8 @@ import br.gov.frameworkdemoiselle.context.SessionContext;
 import br.gov.frameworkdemoiselle.context.StaticContext;
 import br.gov.frameworkdemoiselle.context.ViewContext;
 import br.gov.frameworkdemoiselle.internal.bootstrap.CustomContextBootstrap;
-import br.gov.frameworkdemoiselle.internal.implementation.StrategySelector;
 import br.gov.frameworkdemoiselle.internal.producer.LoggerProducer;
+import br.gov.frameworkdemoiselle.internal.producer.StrategySelector;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -235,7 +235,7 @@ public class CustomContextProducer {
 		}
 
 		if (producedContext == null && !selectableContexts.isEmpty()) {
-			producedContext = StrategySelector.selectInstance(CustomContext.class, selectableContexts);
+			producedContext = StrategySelector.selectReference(CustomContext.class, selectableContexts);
 		}
 
 		return (T) producedContext;

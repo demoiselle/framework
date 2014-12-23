@@ -112,30 +112,6 @@ public final class Beans {
 	}
 
 	/**
-	 * Obtains a injectble instance of a bean, which have the given required type and are available for injection in the
-	 * point where this method was call.
-	 * 
-	 * @param beanClass
-	 *            the beanClass which instace is requested to be obtained.
-	 * @return Type a instace of the injected beanClass.
-	 * @throws DemoiselleException
-	 *             if no bean are avaliable to be injected for the given Class.
-	 */
-	public static <T> T getReference(final Class<T> beanClass) {
-		T instance;
-
-		try {
-			instance = (T) getReference(getBeanManager().getBeans(beanClass), beanClass);
-
-		} catch (NoSuchElementException cause) {
-			String message = getBundle().getString("bean-not-found", beanClass.getCanonicalName());
-			throw new DemoiselleException(message, cause);
-		}
-
-		return instance;
-	}
-
-	/**
 	 * Obtains a injectble instance of a bean, which have the given EL name and are available for injection in the point
 	 * where this method was call.
 	 * 

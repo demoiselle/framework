@@ -47,8 +47,22 @@ public class HttpViolationException extends Exception {
 
 	private int statusCode;
 
+	private String mediaType = "application/json";
+
 	public HttpViolationException(int statusCode) {
 		this.statusCode = statusCode;
+	}
+
+	public HttpViolationException(int statusCode, String mediaType) {
+		this.mediaType = mediaType;
+	}
+
+	public int getStatusCode() {
+		return statusCode;
+	}
+
+	public String getMediaType() {
+		return mediaType;
 	}
 
 	public HttpViolationException addViolation(String message) {
@@ -129,9 +143,5 @@ public class HttpViolationException extends Exception {
 		public String toString() {
 			return this.property + " " + this.message;
 		}
-	}
-
-	public int getStatusCode() {
-		return statusCode;
 	}
 }

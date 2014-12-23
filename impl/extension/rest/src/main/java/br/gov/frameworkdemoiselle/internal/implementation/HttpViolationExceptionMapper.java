@@ -62,6 +62,7 @@ public class HttpViolationExceptionMapper implements ExceptionMapper<HttpViolati
 	public Response toResponse(HttpViolationException exception) {
 		Set<Violation> violations = exception.getViolations();
 		int status = exception.getStatusCode();
+		String mediaType = exception.getMediaType();
 
 		if (violations.isEmpty()) {
 			violations = null;
@@ -69,7 +70,7 @@ public class HttpViolationExceptionMapper implements ExceptionMapper<HttpViolati
 			getLogger().log(FINE, getBundle().getString("mapping-violations", status), exception);
 		}
 
-		return Response.status(status).entity(violations).build();
+		return Response.status(status).entity(violations).type(mediaType).build();
 	}
 
 	private ResourceBundle getBundle() {

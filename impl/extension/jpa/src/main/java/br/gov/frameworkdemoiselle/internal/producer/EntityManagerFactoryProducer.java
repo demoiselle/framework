@@ -65,22 +65,20 @@ import org.w3c.dom.NodeList;
 import br.gov.frameworkdemoiselle.DemoiselleException;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.internal.configuration.EntityManagerConfig;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 @ApplicationScoped
-// @StaticScoped
 public class EntityManagerFactoryProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final String ENTITY_MANAGER_RESOURCE = "META-INF/persistence.xml";
 
-	@Inject
-	protected Logger logger;
+	private transient Logger logger;
 
-	@Inject
-	@Name("demoiselle-jpa-bundle")
-	protected ResourceBundle bundle;
+	private transient ResourceBundle bundle;
 
 	@Inject
 	private Persistences persistenceUnitReader;
@@ -143,7 +141,8 @@ public class EntityManagerFactoryProducer implements Serializable {
 				persistenceUnit = ((Element) node).getAttribute("name");
 
 				if ("".equals(persistenceUnit)) {
-					throw new DemoiselleException(bundle.getString("can-not-get-persistence-unit-from-persistence"));
+					throw new DemoiselleException(getBundle()
+							.getString("can-not-get-persistence-unit-from-persistence"));
 				} else {
 					persistenceUnits.add(persistenceUnit);
 				}
@@ -152,8 +151,8 @@ public class EntityManagerFactoryProducer implements Serializable {
 			return persistenceUnits.toArray(new String[0]);
 
 		} catch (Exception cause) {
-			String message = bundle.getString("can-not-get-persistence-unit-from-persistence");
-			logger.log(SEVERE, message, cause);
+			String message = getBundle().getString("can-not-get-persistence-unit-from-persistence");
+			getLogger().log(SEVERE, message, cause);
 
 			throw new DemoiselleException(message, cause);
 		}
@@ -171,7 +170,7 @@ public class EntityManagerFactoryProducer implements Serializable {
 				throw new DemoiselleException(cause);
 			}
 
-			logger.fine(bundle.getString("persistence-unit-name-found", persistenceUnit));
+			getLogger().fine(getBundle().getString("persistence-unit-name-found", persistenceUnit));
 		}
 	}
 
@@ -190,7 +189,7 @@ public class EntityManagerFactoryProducer implements Serializable {
 		Map<String, EntityManagerFactory> result = factoryCache.get(classLoader);
 
 		if (result == null || result.isEmpty()) {
-			logger.fine(bundle.getString("entity-manager-factory-not-found-in-cache"));
+			getLogger().fine(getBundle().getString("entity-manager-factory-not-found-in-cache"));
 			for (String persistenceUnit : loadPersistenceUnitFromClassloader(classLoader)) {
 				create(persistenceUnit);
 				result = factoryCache.get(classLoader);
@@ -198,5 +197,22 @@ public class EntityManagerFactoryProducer implements Serializable {
 		}
 
 		return result;
+	}
+
+	private ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-jpa-bundle"));
+		}
+
+		return bundle;
+	}
+
+	private Logger getLogger() {
+		if (logger == null) {
+			logger = Beans.getReference(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.util"));
+
+		}
+
+		return logger;
 	}
 }

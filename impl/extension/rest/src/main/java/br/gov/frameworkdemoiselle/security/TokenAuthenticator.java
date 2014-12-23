@@ -44,6 +44,7 @@ import javax.enterprise.context.RequestScoped;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.StrategyQualifier;
 
 @RequestScoped
 @Priority(L2_PRIORITY)
@@ -56,7 +57,7 @@ public class TokenAuthenticator implements Authenticator {
 	@Override
 	public void authenticate() throws Exception {
 		Token token = Beans.getReference(Token.class);
-		TokenManager tokenManager = Beans.getReference(TokenManager.class);
+		TokenManager tokenManager = Beans.getReference(TokenManager.class, new StrategyQualifier());
 
 		if (token.isEmpty()) {
 			this.user = customAuthentication();

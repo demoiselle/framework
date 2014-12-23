@@ -54,6 +54,7 @@ import br.gov.frameworkdemoiselle.security.SecurityContext;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
+import br.gov.frameworkdemoiselle.util.StrategyQualifier;
 
 /**
  * This is the default implementation of {@link SecurityContext} interface.
@@ -73,13 +74,13 @@ public class SecurityContextImpl implements SecurityContext {
 
 	private Authenticator getAuthenticator() {
 		if (this.authenticator == null) {
-			Class<? extends Authenticator> clazz = getConfig().getAuthenticatorClass();
+			Class<? extends Authenticator> type = getConfig().getAuthenticatorClass();
 
-			if (clazz == null) {
-				clazz = StrategySelector.selectClass(Authenticator.class);
+			if (type != null) {
+				this.authenticator = Beans.getReference(type);
+			} else {
+				this.authenticator = Beans.getReference(Authenticator.class, new StrategyQualifier());
 			}
-
-			this.authenticator = Beans.getReference(clazz);
 		}
 
 		return this.authenticator;
@@ -87,13 +88,13 @@ public class SecurityContextImpl implements SecurityContext {
 
 	private Authorizer getAuthorizer() {
 		if (this.authorizer == null) {
-			Class<? extends Authorizer> clazz = getConfig().getAuthorizerClass();
+			Class<? extends Authorizer> type = getConfig().getAuthorizerClass();
 
-			if (clazz == null) {
-				clazz = StrategySelector.selectClass(Authorizer.class);
+			if (type != null) {
+				this.authorizer = Beans.getReference(type);
+			} else {
+				this.authorizer = Beans.getReference(Authorizer.class, new StrategyQualifier());
 			}
-
-			this.authorizer = Beans.getReference(clazz);
 		}
 
 		return this.authorizer;

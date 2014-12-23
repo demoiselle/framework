@@ -42,6 +42,7 @@ import br.gov.frameworkdemoiselle.internal.configuration.TransactionConfig;
 import br.gov.frameworkdemoiselle.transaction.Transaction;
 import br.gov.frameworkdemoiselle.transaction.TransactionContext;
 import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.StrategyQualifier;
 
 /**
  * This is the default implementation of {@link TransactionContext} interface.
@@ -58,13 +59,13 @@ public class TransactionContextImpl implements TransactionContext {
 	@Override
 	public Transaction getCurrentTransaction() {
 		if (this.transaction == null) {
-			Class<? extends Transaction> clazz = getConfig().getTransactionClass();
+			Class<? extends Transaction> type = getConfig().getTransactionClass();
 
-			if (clazz == null) {
-				clazz = StrategySelector.selectClass(Transaction.class);
+			if (type != null) {
+				this.transaction = Beans.getReference(type);
+			} else {
+				this.transaction = Beans.getReference(Transaction.class, new StrategyQualifier());
 			}
-
-			this.transaction = Beans.getReference(clazz);
 		}
 
 		return this.transaction;

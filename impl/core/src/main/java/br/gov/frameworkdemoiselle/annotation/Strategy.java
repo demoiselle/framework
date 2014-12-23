@@ -34,9 +34,11 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.util;
+package br.gov.frameworkdemoiselle.annotation;
 
+import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -44,15 +46,44 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.enterprise.util.Nonbinding;
-import javax.interceptor.InterceptorBinding;
+import javax.inject.Qualifier;
 
+/**
+ * This annotation is used to make passible:
+ * <ul>
+ * <li>map an attribute that belongs to a configuration class in a key with a different name of this attribute</li>
+ * <li>map a Resource Bundle object to a file with different name of this object</li>
+ * </ul>
+ * <p>
+ * The examples below shows how these annotation could be used:
+ * <p>
+ * <blockquote>
+ * 
+ * <pre>
+ * public class NameConfig {
+ * 
+ * 	&#064;AmbiguousQualifier("other.name.attrib")
+ *   private int nameOfAttribute;
+ *   ...
+ * }
+ * 
+ * public class NameResourceBundle {
+ * 
+ * 	&#064;AmbiguousQualifier("other.name.bundle")
+ *   &#064;Inject
+ *   private ResourceBundle bundle;
+ *   ...
+ * }
+ * </pre>
+ * 
+ * </blockquote>
+ * 
+ * @author SERPRO
+ */
+@Qualifier
 @Inherited
-@InterceptorBinding
-@Target({ METHOD, TYPE })
 @Retention(RUNTIME)
-public @interface Cache {
+@Target({ TYPE, FIELD, METHOD, PARAMETER })
+public @interface Strategy {
 
-	@Nonbinding
-	String value() default "max-age=9223372036854775807";
 }

@@ -34,25 +34,18 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.util;
+package br.gov.frameworkdemoiselle.internal.producer;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import javax.enterprise.inject.Produces;
 
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import br.gov.frameworkdemoiselle.annotation.Strategy;
+import br.gov.frameworkdemoiselle.configuration.ConfigurationValueExtractor;
 
-import javax.enterprise.util.Nonbinding;
-import javax.interceptor.InterceptorBinding;
+public class ConfigurationValueExtractorProducer {
 
-@Inherited
-@InterceptorBinding
-@Target({ METHOD, TYPE })
-@Retention(RUNTIME)
-public @interface Cache {
-
-	@Nonbinding
-	String value() default "max-age=9223372036854775807";
+	@Produces
+	@Strategy
+	public ConfigurationValueExtractor create() {
+		return StrategySelector.selectReference(ConfigurationValueExtractor.class);
+	}
 }
