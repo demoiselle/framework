@@ -40,7 +40,6 @@ import java.lang.annotation.Annotation;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-import util.beans.ambiguous.AmbiguousQualifier;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.annotation.Strategy;
 
