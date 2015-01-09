@@ -36,7 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.internal.implementation;
 
-import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.SEVERE;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
 import java.util.logging.Logger;
@@ -60,7 +60,7 @@ public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalAr
 	public Response toResponse(IllegalArgumentException exception) {
 		int status = SC_BAD_REQUEST;
 		String message = getBundle().getString("mapping-violations", status);
-		getLogger().log(FINE, message, exception);
+		getLogger().log(SEVERE, message, exception);
 
 		return Response.status(status).build();
 	}
