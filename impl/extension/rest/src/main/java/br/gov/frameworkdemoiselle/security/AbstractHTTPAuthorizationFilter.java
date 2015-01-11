@@ -57,12 +57,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
 import br.gov.frameworkdemoiselle.util.Strings;
 
 public abstract class AbstractHTTPAuthorizationFilter implements Filter {
 
-	private transient ResourceBundle bundle;
+	// private transient ResourceBundle bundle;
 
 	private transient Logger logger;
 
@@ -94,9 +93,8 @@ public abstract class AbstractHTTPAuthorizationFilter implements Filter {
 				performLogout(request, response);
 
 			} catch (InvalidCredentialsException cause) {
-				String message = getBundle().getString("authentication-failed");
-				getLogger().log(FINE, message, cause);
-
+				// String message = getBundle().getString(cause.getMessage());
+				getLogger().log(FINE, cause.getMessage(), cause);
 				setUnauthorizedStatus(response, cause);
 			}
 
@@ -163,13 +161,13 @@ public abstract class AbstractHTTPAuthorizationFilter implements Filter {
 		response.getWriter().write(cause.getMessage());
 	}
 
-	private ResourceBundle getBundle() {
-		if (bundle == null) {
-			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-rest-bundle"));
-		}
-
-		return bundle;
-	}
+	// private ResourceBundle getBundle() {
+	// if (bundle == null) {
+	// bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-rest-bundle"));
+	// }
+	//
+	// return bundle;
+	// }
 
 	private Logger getLogger() {
 		if (logger == null) {
