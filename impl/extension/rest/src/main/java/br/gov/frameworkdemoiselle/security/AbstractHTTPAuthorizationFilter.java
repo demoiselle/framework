@@ -92,7 +92,7 @@ public abstract class AbstractHTTPAuthorizationFilter implements Filter {
 				chain.doFilter(request, response);
 				performLogout(request, response);
 
-			} catch (InvalidCredentialsException cause) {
+			} catch (AuthenticationException cause) {
 				// String message = getBundle().getString(cause.getMessage());
 				getLogger().log(FINE, cause.getMessage(), cause);
 				setUnauthorizedStatus(response, cause);
