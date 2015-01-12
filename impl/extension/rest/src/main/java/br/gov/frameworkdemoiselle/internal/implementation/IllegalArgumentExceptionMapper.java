@@ -43,13 +43,12 @@ import java.util.logging.Logger;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
 
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.NameQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
-@Provider
+//@Provider
 public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
 
 	private transient ResourceBundle bundle;
