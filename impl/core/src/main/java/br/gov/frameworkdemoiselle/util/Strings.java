@@ -36,6 +36,10 @@
  */
 package br.gov.frameworkdemoiselle.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.regex.Matcher;
@@ -57,10 +61,8 @@ public final class Strings {
 	 * Returns if some string matches with the format of a ResourceBundle key or not.
 	 * 
 	 * @param key
-	 * 			string to check if matches with key format of ResourceBundle.
-	 * 
-	 * @return boolean
-	 * 			true if matches and false otherwise.
+	 *            string to check if matches with key format of ResourceBundle.
+	 * @return boolean true if matches and false otherwise.
 	 */
 	public static boolean isResourceBundleKeyFormat(final String key) {
 		return Pattern.matches("^\\{(.+)\\}$", key == null ? "" : key);
@@ -70,13 +72,10 @@ public final class Strings {
 	 * Removes specific characteres from a given string.
 	 * 
 	 * @param string
-	 * 			string to be changed, by the removing of some characters.
-	 * 
+	 *            string to be changed, by the removing of some characters.
 	 * @param chars
-	 * 			characters to be removed from string.
-	 * 
-	 * @return String
-	 * 			returns the given string without the given characters. 
+	 *            characters to be removed from string.
+	 * @return String returns the given string without the given characters.
 	 */
 	public static String removeChars(String string, char... chars) {
 		String result = string;
@@ -89,19 +88,34 @@ public final class Strings {
 		return result;
 	}
 
+	public static String join(String separator, String... strings) {
+		StringBuffer result = new StringBuffer();
+
+		if (strings != null) {
+			for (int i = 0; i < strings.length; i++) {
+				if (i != 0 && separator != null) {
+					result.append(separator);
+				}
+
+				if (strings[i] != null) {
+					result.append(strings[i]);
+				}
+			}
+		}
+
+		return result.length() > 0 ? result.toString() : null;
+	}
+
 	/**
-	 * Inserts the character "0" in the begin of a given string. The quantity of zeros that will be placed 
-	 * depends on the difference between the length of the given string and the value of howMuchZeros.
+	 * Inserts the character "0" in the begin of a given string. The quantity of zeros that will be placed depends on
+	 * the difference between the length of the given string and the value of howMuchZeros.
 	 * 
 	 * @param string
-	 * 			string to insert zeros characthers.
-	 * 
+	 *            string to insert zeros characthers.
 	 * @param howMuchZeros
-	 * 			its controls how much zeros will be insert.  
-	 * 
-	 * @return String
-	 * 			Retuns the string, added with appropriate number of zeros.
-	 * 			For exemplo, if string = "yes" and howMuchZeros = 5, the returned string will be "00yes".
+	 *            its controls how much zeros will be insert.
+	 * @return String Retuns the string, added with appropriate number of zeros. For exemplo, if string = "yes" and
+	 *         howMuchZeros = 5, the returned string will be "00yes".
 	 */
 	public static String insertZeros(String string, int howMuchZeros) {
 		StringBuffer result = new StringBuffer((string == null ? "" : string).trim());
@@ -116,19 +130,18 @@ public final class Strings {
 
 	/**
 	 * <p>
-	 * Replaces the numbers between braces in the given string with the given parameters. 
-	 * The process will replace a number between braces for the parameter for which its order
-	 * in the set of parameters matches with the number of the given string.   
+	 * Replaces the numbers between braces in the given string with the given parameters. The process will replace a
+	 * number between braces for the parameter for which its order in the set of parameters matches with the number of
+	 * the given string.
 	 * <p>
-	 * For exemple, if is received the following string "Treats an {0} exception" and the set of parameters 
-	 * {"DemoiselleException"}, the return will be the following string: "Treats an DemoiselleException exception". 
+	 * For exemple, if is received the following string "Treats an {0} exception" and the set of parameters
+	 * {"DemoiselleException"}, the return will be the following string: "Treats an DemoiselleException exception".
 	 * 
-	 * @param string 
-	 * 			with the numbers with braces to be replaced with the parameters.
+	 * @param string
+	 *            with the numbers with braces to be replaced with the parameters.
 	 * @param params
-	 * 			parameters that will replace the number with braces in the given string.
-	 * @return String
-	 * 			string with numbers replaced with the matching parameter.
+	 *            parameters that will replace the number with braces in the given string.
+	 * @return String string with numbers replaced with the matching parameter.
 	 */
 	public static String getString(final String string, final Object... params) {
 		String result = null;
@@ -152,23 +165,19 @@ public final class Strings {
 	 * Verifies if a given string is empty or null.
 	 * 
 	 * @param string
-	 * 			string to be verified.	
-	 * 
-	 * @return boolean
-	 * 		returns true if the given string is empty or null and returns false otherwise.
+	 *            string to be verified.
+	 * @return boolean returns true if the given string is empty or null and returns false otherwise.
 	 */
 	public static boolean isEmpty(String string) {
 		return string == null || string.trim().isEmpty();
 	}
 
 	/**
-	 * Converts any object to string. 
+	 * Converts any object to string.
 	 * 
 	 * @param object
-	 * 			object to be converted.
-	 * 
-	 * @return String
-	 * 			the given object converted to string.
+	 *            object to be converted.
+	 * @return String the given object converted to string.
 	 */
 	public static String toString(Object object) {
 		StringBuffer result = new StringBuffer();
@@ -202,14 +211,13 @@ public final class Strings {
 	}
 
 	/**
-	 * Replace the camel case string for a lowercase string separated for a given symbol. 
+	 * Replace the camel case string for a lowercase string separated for a given symbol.
 	 * 
 	 * @param string
-	 * 			string that separeted with camel case.
+	 *            string that separeted with camel case.
 	 * @param symbol
-	 * 			simbol to be the new separator for the given string.
-	 * @return String
-	 * 			the given string separated with the given symbol.
+	 *            simbol to be the new separator for the given string.
+	 * @return String the given string separated with the given symbol.
 	 */
 	public static String camelCaseToSymbolSeparated(String string, String symbol) {
 		if (symbol == null) {
@@ -220,12 +228,10 @@ public final class Strings {
 	}
 
 	/**
-	 * Sets the first character of a given string to upper case. 
+	 * Sets the first character of a given string to upper case.
 	 * 
 	 * @param string
-	 * 			
-	 * @return String
-	 * 			the given string with the first character setted to upper case.
+	 * @return String the given string with the first character setted to upper case.
 	 */
 	public static String firstToUpper(String string) {
 		String result = string;
@@ -238,12 +244,10 @@ public final class Strings {
 	}
 
 	/**
-	 * Removes braces from a given string. 
+	 * Removes braces from a given string.
 	 * 
 	 * @param string
-	 * 
-	 * @return String
-	 * 			the given string without braces.
+	 * @return String the given string without braces.
 	 */
 	public static String removeBraces(String string) {
 		String result = string;
@@ -256,12 +260,10 @@ public final class Strings {
 	}
 
 	/**
-	 * Inserts braces in a given string. 
+	 * Inserts braces in a given string.
 	 * 
 	 * @param string
-	 * 
-	 * @return String
-	 * 			the given string with braces.
+	 * @return String the given string with braces.
 	 */
 	public static String insertBraces(String string) {
 		String result = string;
@@ -271,5 +273,29 @@ public final class Strings {
 		}
 
 		return result;
+	}
+
+	public static String parse(InputStream inputStream) throws IOException {
+		StringBuilder result = new StringBuilder();
+
+		if (inputStream != null) {
+			BufferedReader reader = null;
+
+			try {
+				reader = new BufferedReader(new InputStreamReader(inputStream));
+				String line;
+
+				while ((line = reader.readLine()) != null) {
+					result.append(line);
+				}
+
+			} finally {
+				if (reader != null) {
+					reader.close();
+				}
+			}
+		}
+
+		return result.length() > 0 ? result.toString() : null;
 	}
 }

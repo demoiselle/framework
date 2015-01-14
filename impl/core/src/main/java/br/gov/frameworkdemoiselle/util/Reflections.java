@@ -36,6 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.util;
 
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -55,24 +56,24 @@ import java.util.List;
 public class Reflections {
 
 	protected Reflections() {
-		//Impede instanciar subclasses desse tipo.
+		// Impede instanciar subclasses desse tipo.
 		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * Return the parametized type used with a concrete implementation of
-	 * a class that accepts generics.
+	 * Return the parametized type used with a concrete implementation of a class that accepts generics. Ex: If you
+	 * declare
 	 * 
-	 * Ex: If you declare
-	 * <pre><code>
+	 * <pre>
+	 * <code>
 	 * public class SpecializedCollection implements Collection<SpecializedType> {
 	 *   // ...
 	 * }
-	 * </code></pre>
+	 * </code>
+	 * </pre>
 	 * 
-	 * then the code <code>getGenericTypeArgument(SpecializedCollection.class , 0);</code> will
-	 * return the type <code>SpecializedType</code>.
-	 * 
+	 * then the code <code>getGenericTypeArgument(SpecializedCollection.class , 0);</code> will return the type
+	 * <code>SpecializedType</code>.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getGenericTypeArgument(final Class<?> clazz, final int idx) {
@@ -89,32 +90,37 @@ public class Reflections {
 	}
 
 	/**
-	 * <p>Return the parametized type passed to field types that accepts Generics.</p>
+	 * <p>
+	 * Return the parametized type passed to field types that accepts Generics.
+	 * </p>
+	 * <p>
+	 * Ex: If you declare
 	 * 
-	 * <p>Ex: If you declare
-	 * <pre><code>
+	 * <pre>
+	 * <code>
 	 * public class MyClass{
 	 *    private Collection&lt;String&gt; myStringCollection;
 	 * }
-	 * </code></pre>
+	 * </code>
+	 * </pre>
 	 * 
-	 * then the code <code>getGenericTypeArgument( MyClass.class.getDeclaredField("myStringCollection") , 0);</code> will
-	 * return the type <code>String</code>.
-	 * 
+	 * then the code <code>getGenericTypeArgument( MyClass.class.getDeclaredField("myStringCollection") , 0);</code>
+	 * will return the type <code>String</code>.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getGenericTypeArgument(final Field field, final int idx) {
 		final Type type = field.getGenericType();
 		final ParameterizedType paramType = (ParameterizedType) type;
-		
+
 		return (Class<T>) paramType.getActualTypeArguments()[idx];
 	}
 
 	/**
-	 * <p>Return the parametized type passed to members (fields or methods) that accepts Generics.</p>
+	 * <p>
+	 * Return the parametized type passed to members (fields or methods) that accepts Generics.
+	 * </p>
 	 * 
 	 * @see #getGenericTypeArgument(Field field, int idx)
-	 * 
 	 */
 	public static <T> Class<T> getGenericTypeArgument(final Member member, final int idx) {
 		Class<T> result = null;
@@ -129,10 +135,11 @@ public class Reflections {
 	}
 
 	/**
-	 * <p>Return the parametized type passed to methods that accepts Generics.</p>
+	 * <p>
+	 * Return the parametized type passed to methods that accepts Generics.
+	 * </p>
 	 * 
 	 * @see #getGenericTypeArgument(Field field, int idx)
-	 * 
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getGenericTypeArgument(final Method method, final int pos) {
@@ -140,12 +147,12 @@ public class Reflections {
 	}
 
 	/**
-	 * Returns the value contained in the given field. 
+	 * Returns the value contained in the given field.
 	 * 
 	 * @param field
-	 * 			field to be extracted the value.
+	 *            field to be extracted the value.
 	 * @param object
-	 * 			object that contains the field.
+	 *            object that contains the field.
 	 * @return value of the field.
 	 */
 	@SuppressWarnings("unchecked")
@@ -169,11 +176,11 @@ public class Reflections {
 	 * Sets a value in a field.
 	 * 
 	 * @param field
-	 * 			field to be setted.
+	 *            field to be setted.
 	 * @param object
-	 * 			object that contains the field.
+	 *            object that contains the field.
 	 * @param value
-	 * 			value to be setted in the field.
+	 *            value to be setted in the field.
 	 */
 	public static void setFieldValue(Field field, Object object, Object value) {
 		try {
@@ -188,8 +195,8 @@ public class Reflections {
 	}
 
 	/**
-	 * @return All non static fields from a certain type. Inherited fields are not returned, so if you
-	 * need to get inherited fields you must iterate over this type's hierarchy.  
+	 * @return All non static fields from a certain type. Inherited fields are not returned, so if you need to get
+	 *         inherited fields you must iterate over this type's hierarchy.
 	 */
 	public static Field[] getNonStaticDeclaredFields(Class<?> type) {
 		List<Field> fields = new ArrayList<Field>();
@@ -206,14 +213,14 @@ public class Reflections {
 	}
 
 	/**
-	 * @return All non static fields from a certain type, including fields declared in superclasses of this type. 
+	 * @return All non static fields from a certain type, including fields declared in superclasses of this type.
 	 */
 	public static List<Field> getNonStaticFields(Class<?> type) {
 		List<Field> fields = new ArrayList<Field>();
 
 		if (type != null) {
 			Class<?> currentType = type;
-			while(currentType!=null && !"java.lang.Object".equals(currentType.getCanonicalName())){
+			while (currentType != null && !"java.lang.Object".equals(currentType.getCanonicalName())) {
 				fields.addAll(Arrays.asList(getNonStaticDeclaredFields(currentType)));
 				currentType = currentType.getSuperclass();
 			}
@@ -223,7 +230,7 @@ public class Reflections {
 	}
 
 	/**
-	 * Instantiate an object of the given type. The default constructor with no parameters is used. 
+	 * Instantiate an object of the given type. The default constructor with no parameters is used.
 	 */
 	public static <T> T instantiate(Class<T> clazz) {
 		T object = null;
@@ -238,14 +245,13 @@ public class Reflections {
 	}
 
 	/**
-	 * Verifies if a given class could be converted to a given type. 
+	 * Verifies if a given class could be converted to a given type.
 	 * 
 	 * @param clazz
-	 * 			class to be checked.
+	 *            class to be checked.
 	 * @param type
-	 * 			type to be checked.
-	 * @return {@link Boolean}
-	 * 			true if the given class can be converted to a given type, and false otherwise.
+	 *            type to be checked.
+	 * @return {@link Boolean} true if the given class can be converted to a given type, and false otherwise.
 	 */
 	public static boolean isOfType(Class<?> clazz, Class<?> type) {
 		return type.isAssignableFrom(clazz) && clazz != type;
@@ -255,9 +261,8 @@ public class Reflections {
 	 * Obtains the {@link ClassLoader} for the given class, from his canonical name.
 	 * 
 	 * @param canonicalName
-	 * 			canonical name of the the given class.
-	 * @return {@link ClassLoader}
-	 * 			ClassLoader for the given class.
+	 *            canonical name of the the given class.
+	 * @return {@link ClassLoader} ClassLoader for the given class.
 	 */
 	public static ClassLoader getClassLoaderForClass(final String canonicalName) {
 		return Reflections.getClassLoaderForResource(canonicalName.replaceAll("\\.", "/") + ".class");
@@ -267,9 +272,7 @@ public class Reflections {
 	 * Obtains the {@link ClassLoader} for the given resource.
 	 * 
 	 * @param resource
-	 * 			
-	 * @return {@link ClassLoader}
-	 * 			ClassLoader for the given resource.
+	 * @return {@link ClassLoader} ClassLoader for the given resource.
 	 */
 	public static ClassLoader getClassLoaderForResource(final String resource) {
 		final String stripped = resource.charAt(0) == '/' ? resource.substring(1) : resource;
@@ -299,6 +302,14 @@ public class Reflections {
 	public static URL getResourceAsURL(final String resource) {
 		ClassLoader classLoader = getClassLoaderForResource(resource);
 		return classLoader != null ? classLoader.getResource(resource) : null;
+	}
+
+	/**
+	 * Return an InputStream to access a resource available to the active classloader for the calling thread.
+	 */
+	public static InputStream getResourceAsStream(final String resource) {
+		ClassLoader classLoader = getClassLoaderForResource(resource);
+		return classLoader != null ? classLoader.getResourceAsStream(resource) : null;
 	}
 
 	/**

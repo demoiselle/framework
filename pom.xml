@@ -81,9 +81,9 @@
 		<module>archetype/jsf-jpa</module>
 		<module>archetype/html-rest</module>
 		<!--
+		-->
 		<module>documentation/quickstart</module>
 		<module>documentation/reference</module>
-		-->
 	</modules>
 
 	<build>
