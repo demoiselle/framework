@@ -77,6 +77,10 @@ public final class Beans {
 		return beanManager;
 	}
 
+	public static <T> T getReference(final Class<T> beanClass) {
+		return getReference(beanClass, (Annotation[]) null);
+	}
+
 	/**
 	 * Obtains a injectble instance of a bean, which have the given required type and qualifiers, and are available for
 	 * injection in the point where this method was call.
@@ -93,15 +97,24 @@ public final class Beans {
 		T instance;
 
 		try {
-			instance = (T) getReference(getBeanManager().getBeans(beanClass, qualifiers), beanClass, qualifiers);
+			Set<Bean<?>> beans;
+			if (qualifiers == null) {
+				beans = getBeanManager().getBeans(beanClass);
+			} else {
+				beans = getBeanManager().getBeans(beanClass, qualifiers);
+			}
+
+			instance = (T) getReference(beans, beanClass, qualifiers);
 
 		} catch (NoSuchElementException cause) {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append(beanClass.getCanonicalName());
 
-			for (Annotation qualifier : qualifiers) {
-				buffer.append(", ");
-				buffer.append(qualifier.getClass().getCanonicalName());
+			if (qualifiers != null) {
+				for (Annotation qualifier : qualifiers) {
+					buffer.append(", ");
+					buffer.append(qualifier.getClass().getCanonicalName());
+				}
 			}
 
 			String message = getBundle().getString("bean-not-found", buffer.toString());
@@ -146,7 +159,13 @@ public final class Beans {
 		Bean<?> bean = beans.iterator().next();
 		CreationalContext<?> context = getBeanManager().createCreationalContext(bean);
 		Type beanType = beanClass == null ? bean.getBeanClass() : beanClass;
-		InjectionPoint injectionPoint = new CustomInjectionPoint(bean, beanType, qualifiers);
+		InjectionPoint injectionPoint;
+
+		if (qualifiers == null) {
+			injectionPoint = new CustomInjectionPoint(bean, beanType);
+		} else {
+			injectionPoint = new CustomInjectionPoint(bean, beanType, qualifiers);
+		}
 
 		return (T) getBeanManager().getInjectableReference(injectionPoint, context);
 	}
