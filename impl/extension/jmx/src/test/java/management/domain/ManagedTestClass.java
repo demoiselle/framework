@@ -36,11 +36,11 @@
  */
 package management.domain;
 
-import br.gov.frameworkdemoiselle.annotation.ManagedOperation;
-import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
 import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.annotation.OperationParameter;
-import br.gov.frameworkdemoiselle.annotation.OperationType;
+import br.gov.frameworkdemoiselle.management.ManagedOperation;
+import br.gov.frameworkdemoiselle.management.ManagedProperty;
+import br.gov.frameworkdemoiselle.management.OperationParameter;
+import br.gov.frameworkdemoiselle.management.OperationType;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 
 /**
