@@ -36,7 +36,7 @@
  */
 package management.testclasses;
 
-import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
+import br.gov.frameworkdemoiselle.management.ManagedProperty;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 
 

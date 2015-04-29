@@ -54,8 +54,8 @@ import javax.enterprise.util.Nonbinding;
  * this class is in by reading or writing it's attributes and calling it's operations.
  * </p>
  * <p>
- * Only fields annotated with {@link br.gov.frameworkdemoiselle.annotation.ManagedProperty} or methods annotated with
- * {@link br.gov.frameworkdemoiselle.annotation.ManagedOperation} will be exposed to clients.
+ * Only fields annotated with {@link br.gov.frameworkdemoiselle.management.ManagedProperty} or methods annotated with
+ * {@link br.gov.frameworkdemoiselle.management.ManagedOperation} will be exposed to clients.
  * </p>
  * <p>
  * Only bean implementations (concrete classes) can be management controllers. It's a runtime error to mark an interface

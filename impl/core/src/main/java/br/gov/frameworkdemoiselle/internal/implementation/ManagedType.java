@@ -47,11 +47,11 @@ import javax.inject.Named;
 import javax.inject.Qualifier;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.annotation.ManagedOperation;
-import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
-import br.gov.frameworkdemoiselle.annotation.ManagedProperty.ManagedPropertyAccess;
-import br.gov.frameworkdemoiselle.annotation.OperationParameter;
-import br.gov.frameworkdemoiselle.annotation.OperationType;
+import br.gov.frameworkdemoiselle.management.ManagedOperation;
+import br.gov.frameworkdemoiselle.management.ManagedProperty;
+import br.gov.frameworkdemoiselle.management.OperationParameter;
+import br.gov.frameworkdemoiselle.management.OperationType;
+import br.gov.frameworkdemoiselle.management.ManagedProperty.ManagedPropertyAccess;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.NamedQualifier;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;

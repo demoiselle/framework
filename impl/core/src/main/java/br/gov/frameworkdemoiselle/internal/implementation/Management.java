@@ -52,7 +52,6 @@ import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 
-import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
 import br.gov.frameworkdemoiselle.annotation.Name;
 import br.gov.frameworkdemoiselle.context.ConversationContext;
 import br.gov.frameworkdemoiselle.context.RequestContext;
@@ -61,6 +60,7 @@ import br.gov.frameworkdemoiselle.management.AttributeChangeMessage;
 import br.gov.frameworkdemoiselle.management.DefaultNotification;
 import br.gov.frameworkdemoiselle.management.ManagedAttributeNotFoundException;
 import br.gov.frameworkdemoiselle.management.ManagedInvokationException;
+import br.gov.frameworkdemoiselle.management.ManagedProperty;
 import br.gov.frameworkdemoiselle.management.ManagementExtension;
 import br.gov.frameworkdemoiselle.management.Notification;
 import br.gov.frameworkdemoiselle.management.NotificationManager;

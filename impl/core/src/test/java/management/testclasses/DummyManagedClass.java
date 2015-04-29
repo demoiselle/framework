@@ -40,9 +40,9 @@ import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
-import br.gov.frameworkdemoiselle.annotation.ManagedOperation;
-import br.gov.frameworkdemoiselle.annotation.ManagedProperty;
-import br.gov.frameworkdemoiselle.annotation.ManagedProperty.ManagedPropertyAccess;
+import br.gov.frameworkdemoiselle.management.ManagedOperation;
+import br.gov.frameworkdemoiselle.management.ManagedProperty;
+import br.gov.frameworkdemoiselle.management.ManagedProperty.ManagedPropertyAccess;
 import br.gov.frameworkdemoiselle.stereotype.ManagementController;
 import br.gov.frameworkdemoiselle.util.Beans;
 

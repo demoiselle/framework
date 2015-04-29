@@ -42,8 +42,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.annotation.StaticScoped;
 import br.gov.frameworkdemoiselle.configuration.Configuration;
+import br.gov.frameworkdemoiselle.lifecycle.StaticScoped;
 
 /**
  * 
