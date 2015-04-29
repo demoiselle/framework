@@ -34,45 +34,42 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.annotation;
+package br.gov.frameworkdemoiselle.management;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.enterprise.util.Nonbinding;
 
 /**
  * <p>
- * Define the operation type for an operation inside a ManagementController class.
+ * Optional annotation to write additional detail about an operation's parameter.
  * </p>
  * <p>
- * This is an optional annotation and it's significanse will change based on the management extension used. Most
- * extensions will just publish this information to the client so it can better show to the user the inner workings of
- * the annotated operation.
+ * This annotation is ignored for non-operation methods.
  * </p>
  * 
  * @author SERPRO
  */
-public enum OperationType {
+@Documented
+@Target({ ElementType.PARAMETER })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface OperationParameter {
 
 	/**
-	 * ManagedOperation is write-only, it causes the application to change some of it's behaviour but doesn't return any
-	 * kind of information
+	 * AmbiguousQualifier that will be used to publish this operation's parameter to clients.
 	 */
-	ACTION,
+	@Nonbinding
+	String name();
 
 	/**
-	 * ManagedOperation is read-only, it will operate over data provided by the application and return some information,
-	 * but will not change the application in any way.
+	 * Optional description that will be used to publish this operation's parameter to clients. Defaults to an empty
+	 * description.
 	 */
-	INFO,
-	
-	/**
-	 * ManagedOperation is read-write, it will both change the way the application work and return some information
-	 * regarding the result of the operation.
-	 */
-	ACTION_INFO,
+	@Nonbinding
+	String description() default "";
 
-	/**
-	 * The effect of calling this operation is unknown. This is the default type and if this type is assigned to an
-	 * operation, the user must rely on the {@link ManagedOperation#description()} attribute to learn about how the
-	 * operation works.
-	 */
-	UNKNOWN
 }

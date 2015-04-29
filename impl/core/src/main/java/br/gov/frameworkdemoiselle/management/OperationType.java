@@ -34,28 +34,45 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.annotation;
+package br.gov.frameworkdemoiselle.management;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import javax.enterprise.context.NormalScope;
 
 /**
- * This scope maintains the context for viewed page; when the viewed page change, the data will be lost.
+ * <p>
+ * Define the operation type for an operation inside a ManagementController class.
+ * </p>
+ * <p>
+ * This is an optional annotation and it's significanse will change based on the management extension used. Most
+ * extensions will just publish this information to the client so it can better show to the user the inner workings of
+ * the annotated operation.
+ * </p>
  * 
  * @author SERPRO
  */
-@Inherited
-@Target({ METHOD, TYPE, FIELD })
-@Retention(RUNTIME)
-@NormalScope(passivating = true)
-public @interface ViewScoped {
+public enum OperationType {
 
+	/**
+	 * ManagedOperation is write-only, it causes the application to change some of it's behaviour but doesn't return any
+	 * kind of information
+	 */
+	ACTION,
+
+	/**
+	 * ManagedOperation is read-only, it will operate over data provided by the application and return some information,
+	 * but will not change the application in any way.
+	 */
+	INFO,
+	
+	/**
+	 * ManagedOperation is read-write, it will both change the way the application work and return some information
+	 * regarding the result of the operation.
+	 */
+	ACTION_INFO,
+
+	/**
+	 * The effect of calling this operation is unknown. This is the default type and if this type is assigned to an
+	 * operation, the user must rely on the {@link ManagedOperation#description()} attribute to learn about how the
+	 * operation works.
+	 */
+	UNKNOWN
 }
