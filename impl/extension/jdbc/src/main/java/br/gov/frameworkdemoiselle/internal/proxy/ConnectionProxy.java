@@ -54,6 +54,7 @@ import java.sql.Statement;
 import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 import br.gov.frameworkdemoiselle.internal.producer.ConnectionProducer;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -63,7 +64,7 @@ public class ConnectionProxy implements Connection, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private final String dataSourceName;
-	
+
 	public ConnectionProxy(String dataSourceName) {
 		this.dataSourceName = dataSourceName;
 	}
@@ -272,5 +273,28 @@ public class ConnectionProxy implements Connection, Serializable {
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		return getDelegate().unwrap(iface);
 	}
-	
+
+	@Override
+	public void abort(Executor executor) throws SQLException {
+	}
+
+	@Override
+	public int getNetworkTimeout() throws SQLException {
+		return getDelegate().getNetworkTimeout();
+	}
+
+	@Override
+	public String getSchema() throws SQLException {
+		return getDelegate().getSchema();
+	}
+
+	@Override
+	public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+		getDelegate().setNetworkTimeout(executor, milliseconds);
+	}
+
+	@Override
+	public void setSchema(String schema) throws SQLException {
+		getDelegate().setSchema(schema);
+	}
 }
