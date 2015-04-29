@@ -36,8 +36,8 @@
  */
 package lifecycle.shutdown.simple;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -60,7 +60,7 @@ public class ShutdownSimpleTest {
 	@Inject
 	private ShutdownSimple shutdownSimple;
 
-	List<Integer> expected = new ArrayList<Integer>();
+	private Set<Integer> expected = new HashSet<Integer>();
 
 	@Deployment
 	public static JavaArchive createDeployment() {
@@ -80,6 +80,6 @@ public class ShutdownSimpleTest {
 		expected.add(2);
 		expected.add(1);
 
-		Assert.assertEquals(expected, shutdownSimple.getListShutdown());
+		Assert.assertEquals(expected, shutdownSimple.getSet());
 	}
 }

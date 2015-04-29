@@ -47,7 +47,7 @@ import javax.enterprise.inject.Stereotype;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Named;
 
-import br.gov.frameworkdemoiselle.annotation.StaticScoped;
+import br.gov.frameworkdemoiselle.lifecycle.StaticScoped;
 
 /**
  * Identifies a <b>configuration class</b>, that is, a structure reserved to store configuration values retrieved from a

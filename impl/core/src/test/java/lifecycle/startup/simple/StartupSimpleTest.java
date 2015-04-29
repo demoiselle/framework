@@ -36,8 +36,8 @@
  */
 package lifecycle.startup.simple;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -60,7 +60,7 @@ public class StartupSimpleTest {
 	@Inject
 	private StartupSimple startupSimple;
 
-	List<Integer> expected = new ArrayList<Integer>();
+	private Set<Integer> expected = new HashSet<Integer>();
 
 	@Deployment
 	public static JavaArchive createDeployment() {
@@ -80,6 +80,6 @@ public class StartupSimpleTest {
 		expected.add(3);
 		expected.add(2);
 
-		Assert.assertEquals(expected, startupSimple.getListStartup());
+		Assert.assertEquals(expected, startupSimple.getSet());
 	}
 }

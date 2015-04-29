@@ -46,7 +46,7 @@ import java.lang.annotation.Target;
 import javax.enterprise.inject.Stereotype;
 import javax.inject.Named;
 
-import br.gov.frameworkdemoiselle.annotation.ViewScoped;
+import br.gov.frameworkdemoiselle.lifecycle.ViewScoped;
 
 /**
  * Identifies a <b>view controller</b> class. A view controller class is intend to respond to events initiated in the

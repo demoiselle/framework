@@ -36,8 +36,8 @@
  */
 package lifecycle.shutdown.simple;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -46,9 +46,9 @@ import br.gov.frameworkdemoiselle.lifecycle.Shutdown;
 @ApplicationScoped
 public class ShutdownSimple {
 
-	private List<Integer> listShutdown = new ArrayList<Integer>();
+	private Set<Integer> listShutdown = new HashSet<Integer>();
 
-	public List<Integer> getListShutdown() {
+	public Set<Integer> getSet() {
 		return listShutdown;
 	}
 

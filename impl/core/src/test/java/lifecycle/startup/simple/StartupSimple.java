@@ -36,8 +36,8 @@
  */
 package lifecycle.startup.simple;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -46,9 +46,9 @@ import br.gov.frameworkdemoiselle.lifecycle.Startup;
 @ApplicationScoped
 public class StartupSimple {
 
-	private List<Integer> listStartup = new ArrayList<Integer>();
+	private Set<Integer> listStartup = new HashSet<Integer>();
 
-	public List<Integer> getListStartup() {
+	public Set<Integer> getSet() {
 		return listStartup;
 	}
 

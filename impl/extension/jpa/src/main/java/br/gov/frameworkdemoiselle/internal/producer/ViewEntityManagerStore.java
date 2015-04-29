@@ -39,7 +39,7 @@ package br.gov.frameworkdemoiselle.internal.producer;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import br.gov.frameworkdemoiselle.annotation.ViewScoped;
+import br.gov.frameworkdemoiselle.lifecycle.ViewScoped;
 
 /**
  * 
