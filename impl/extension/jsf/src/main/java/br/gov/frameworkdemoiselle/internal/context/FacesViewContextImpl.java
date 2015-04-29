@@ -49,9 +49,9 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
-import br.gov.frameworkdemoiselle.annotation.ViewScoped;
 import br.gov.frameworkdemoiselle.context.ViewContext;
 import br.gov.frameworkdemoiselle.lifecycle.BeforeSessionDestroyed;
+import br.gov.frameworkdemoiselle.lifecycle.ViewScoped;
 import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.Faces;
 

@@ -2,7 +2,7 @@ package scope;
 
 import java.io.Serializable;
 
-import br.gov.frameworkdemoiselle.annotation.ViewScoped;
+import br.gov.frameworkdemoiselle.lifecycle.ViewScoped;
 
 @ViewScoped
 public class ViewScopedBean implements Serializable {

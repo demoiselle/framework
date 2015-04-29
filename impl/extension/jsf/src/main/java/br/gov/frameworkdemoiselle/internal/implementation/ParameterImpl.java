@@ -49,7 +49,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import br.gov.frameworkdemoiselle.annotation.Name;
-import br.gov.frameworkdemoiselle.annotation.ViewScoped;
+import br.gov.frameworkdemoiselle.lifecycle.ViewScoped;
 import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.Parameter;
 import br.gov.frameworkdemoiselle.util.Reflections;
