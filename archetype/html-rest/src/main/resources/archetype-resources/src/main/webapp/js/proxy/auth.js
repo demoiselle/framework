@@ -15,7 +15,10 @@ var AuthProxy = {
 	logout : function() {
 		return $.ajax({
 			url : this.url + "/logout",
-			type : "POST"
+			type : "POST",
+			beforeSend : function(jqXHR) {
+				App.auth.setHeader(jqXHR)
+			}
 		});
 	}
 };
