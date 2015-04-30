@@ -2,23 +2,20 @@ var AuthProxy = {
 
 	url : "api/auth",
 
-	login : function($credentials) {
+	login : function(credentials) {
 		return $.ajax({
-			url : this.url,
+			url : this.url + "/login",
 			type : "POST",
-			data : JSON.stringify($credentials),
+			data : JSON.stringify(credentials),
 			contentType : "application/json",
 			error : function() {}
 		});
 	},
 
-	getUser : function() {
+	logout : function() {
 		return $.ajax({
-			url : this.url,
-			type : "GET",
-			beforeSend : function(request) {
-				App.setHeader(request)
-			}
+			url : this.url + "/logout",
+			type : "POST"
 		});
 	}
 };

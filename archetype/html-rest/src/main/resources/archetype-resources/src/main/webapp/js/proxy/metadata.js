@@ -9,10 +9,10 @@ var MetadataProxy = {
 		});
 	},
 
-	getMessage : function($key) {
+	getMessage : function(key) {
 		return $.ajax({
 			type : "GET",
-			url : this.url + "/message/" + $key
+			url : this.url + "/message/" + key
 		});
 	},
 

@@ -6,7 +6,6 @@ import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -24,25 +23,28 @@ public class AuthREST {
 	private SecurityContext securityContext;
 
 	@POST
+	@Path("login")
 	@ValidatePayload
-	@Produces("application/json")
 	@Consumes("application/json")
-	public void login(CredentialsData data) {
+	@Produces("application/json")
+	public Principal login(CredentialsBody body) {
 		Credentials credentials = Beans.getReference(Credentials.class);
-		credentials.setUsername(data.username);
-		credentials.setPassword(data.password);
+		credentials.setUsername(body.username);
+		credentials.setPassword(body.password);
 
 		securityContext.login();
-	}
-
-	@GET
-	@LoggedIn
-	@Produces("application/json")
-	public Principal getLoggedInUser() {
 		return securityContext.getUser();
 	}
 
-	public static class CredentialsData {
+	@POST
+	@LoggedIn
+	@Path("logout")
+	@ValidatePayload
+	public void logout() {
+		securityContext.logout();
+	}
+
+	public static class CredentialsBody {
 
 		@NotNull(message = "{required.field}")
 		@Size(min = 1, message = "{required.field}")

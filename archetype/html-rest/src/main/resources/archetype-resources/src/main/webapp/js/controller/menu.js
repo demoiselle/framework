@@ -1,14 +1,15 @@
 $(function() {
 	$("#menu").load("menu.html", function() {
-		AuthProxy.getUser().done(getUserOk);
+		$("#username").html(App.auth.getLoggedInUser().name);
 
-		$("#logout").on("click", function() {
-			App.removeToken();
-			location.href = "index.html";
+		$("#logout").click(function(event) {
+			event.preventDefault();
+			AuthProxy.logout().done(logoutOk);
 		});
 	});
 });
 
-function getUserOk(data) {
-	$("#username").html(data.name);
+function logoutOk() {
+	App.auth.clearAuthentication();
+	location.href = "";
 }

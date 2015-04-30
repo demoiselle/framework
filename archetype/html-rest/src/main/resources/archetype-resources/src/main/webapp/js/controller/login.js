@@ -10,24 +10,26 @@ $(function() {
 
 		$("[id$='-message']").hide();
 
-		var data = {
+		var credentials = {
 			'username' : $("#username").val().trim(),
 			'password' : $("#password").val().trim()
 		};
 
-		AuthProxy.login(data).done(loginOk).fail(loginFail);
+		AuthProxy.login(credentials).done(loginOk).fail(loginFail);
 	});
 });
 
-function loginOk(data, status, request) {
-	App.setToken(request.getResponseHeader('Set-Token'));
-	location.href = "home.html";
+function loginOk(data, textStatus, jqXHR) {
+	App.auth.setToken(jqXHR.getResponseHeader('Set-Token'));
+	App.auth.setLoggedInUser(data);
+
+	App.restoreSavedLocation();
 }
 
-function loginFail(request) {
-	switch (request.status) {
+function loginFail(jqXHR, textStatus, errorThrown) {
+	switch (jqXHR.status) {
 		case 401:
-			$("#global-message").html(request.responseText).show();
+			$("#global-message").html(jqXHR.responseText).show();
 			break;
 
 		case 422:
@@ -35,7 +37,7 @@ function loginFail(request) {
 				var id = $(this).attr('id');
 				var message = null;
 
-				$.each(request.responseJSON, function(index, value) {
+				$.each(jqXHR.responseJSON, function(index, value) {
 					if (id == value.property) {
 						message = value.message;
 						return;

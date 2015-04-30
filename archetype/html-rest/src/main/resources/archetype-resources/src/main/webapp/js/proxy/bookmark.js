@@ -6,54 +6,54 @@ var BookmarkProxy = {
 		return $.ajax({
 			type : "GET",
 			url : this.url,
-			beforeSend : function(request) {
-				App.setHeader(request)
+			beforeSend : function(jqXHR) {
+				App.auth.setHeader(jqXHR)
 			}
 		});
 	},
 
-	load : function($id) {
+	load : function(id) {
 		return $.ajax({
 			type : "GET",
-			url : this.url + "/" + $id,
-			beforeSend : function(request) {
-				App.setHeader(request)
+			url : this.url + "/" + id,
+			beforeSend : function(jqXHR) {
+				App.auth.setHeader(jqXHR)
 			}
 		});
 	},
 
-	insert : function($data) {
+	insert : function(bookmark) {
 		return $.ajax({
 			type : "POST",
 			url : this.url,
-			data : JSON.stringify($data),
+			data : JSON.stringify(bookmark),
 			contentType : "application/json",
-			beforeSend : function(request) {
-				App.setHeader(request)
+			beforeSend : function(jqXHR) {
+				App.auth.setHeader(jqXHR)
 			}
 		});
 	},
 
-	update : function($id, $data) {
+	update : function(id, bookmark) {
 		return $.ajax({
 			type : "PUT",
-			url : this.url + "/" + $id,
-			data : JSON.stringify($data),
+			url : this.url + "/" + id,
+			data : JSON.stringify(bookmark),
 			contentType : "application/json",
-			beforeSend : function(request) {
-				App.setHeader(request)
+			beforeSend : function(jqXHR) {
+				App.auth.setHeader(jqXHR)
 			}
 		});
 	},
 
-	remove : function($ids) {
+	remove : function(ids) {
 		return $.ajax({
 			type : "DELETE",
 			url : this.url,
-			data : JSON.stringify($ids),
+			data : JSON.stringify(ids),
 			contentType : "application/json",
-			beforeSend : function(request) {
-				App.setHeader(request)
+			beforeSend : function(jqXHR) {
+				App.auth.setHeader(jqXHR)
 			}
 		});
 	}

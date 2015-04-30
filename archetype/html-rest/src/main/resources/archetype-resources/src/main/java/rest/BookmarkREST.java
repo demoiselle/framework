@@ -65,10 +65,10 @@ public class BookmarkREST {
 	@ValidatePayload
 	@Produces("application/json")
 	@Consumes("application/json")
-	public Response insert(Bookmark entity, @Context UriInfo uriInfo) throws Exception {
-		checkId(entity);
+	public Response insert(Bookmark body, @Context UriInfo uriInfo) throws Exception {
+		checkId(body);
 
-		String id = bc.insert(entity).getId().toString();
+		String id = bc.insert(body).getId().toString();
 		URI location = uriInfo.getRequestUriBuilder().path(id).build();
 
 		return Response.created(location).entity(id).build();
@@ -81,12 +81,12 @@ public class BookmarkREST {
 	@ValidatePayload
 	@Produces("application/json")
 	@Consumes("application/json")
-	public void update(@PathParam("id") Long id, Bookmark entity) throws Exception {
-		checkId(entity);
+	public void update(@PathParam("id") Long id, Bookmark body) throws Exception {
+		checkId(body);
 		load(id);
 
-		entity.setId(id);
-		bc.update(entity);
+		body.setId(id);
+		bc.update(body);
 	}
 
 	@DELETE
