@@ -26,7 +26,7 @@ function loginOk(data, textStatus, jqXHR) {
 	App.restoreSavedLocation();
 }
 
-function loginFail(jqXHR, textStatus, errorThrown) {
+function loginFail(jqXHR) {
 	switch (jqXHR.status) {
 		case 401:
 			$("#global-message").html(jqXHR.responseText).show();

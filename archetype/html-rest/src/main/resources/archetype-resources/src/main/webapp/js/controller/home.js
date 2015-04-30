@@ -1,5 +1,7 @@
 $(function() {
-	MetadataProxy.getDemoiselleVersion().done(function(data) {
-		$("#demoiselle-version").html(data);
-	});
+	MetadataProxy.getDemoiselleVersion().done(getVersionOk);
 });
+
+function getVersionOk(data) {
+	$("#demoiselle-version").html(data);
+}

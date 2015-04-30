@@ -3,7 +3,7 @@ $(function() {
 	$("#description").focus();
 
 	if (id = App.getUrlParameterByName('id')) {
-		BookmarkProxy.load(id).done(loadOk).fail(loadFailed);
+		BookmarkProxy.load(id).done(loadOk).fail(loadFail);
 	}
 
 	MetadataProxy.getDemoiselleVersion().done(function(data) {
@@ -21,9 +21,9 @@ $(function() {
 		};
 
 		if (id = $("#id").val()) {
-			BookmarkProxy.update(id, data).done(saveOk).fail(saveFailed);
+			BookmarkProxy.update(id, data).done(saveOk).fail(saveFail);
 		} else {
-			BookmarkProxy.insert(data).done(saveOk).fail(saveFailed);
+			BookmarkProxy.insert(data).done(saveOk).fail(saveFail);
 		}
 	});
 
@@ -49,8 +49,8 @@ function loadOk(data) {
 	$("#delete").show();
 }
 
-function loadFailed(request) {
-	switch (request.status) {
+function loadFail(jqXHR) {
+	switch (jqXHR.status) {
 		case 404:
 			bootbox.alert("Você está tentando acessar um registro inexistente!", function() {
 				location.href = "bookmark-list.html";
@@ -62,18 +62,18 @@ function loadFailed(request) {
 	}
 }
 
-function saveOk(data) {
+function saveOk() {
 	location.href = 'bookmark-list.html';
 }
 
-function saveFailed(request) {
-	switch (request.status) {
+function saveFail(jqXHR) {
+	switch (jqXHR.status) {
 		case 422:
 			$($("form input").get().reverse()).each(function() {
 				var id = $(this).attr('id');
 				var message = null;
 
-				$.each(request.responseJSON, function(index, value) {
+				$.each(jqXHR.responseJSON, function(index, value) {
 					if (id == value.property) {
 						message = value.message;
 						return;
@@ -94,6 +94,6 @@ function saveFailed(request) {
 	}
 }
 
-function removeOk(data) {
+function removeOk() {
 	location.href = 'bookmark-list.html';
 }
