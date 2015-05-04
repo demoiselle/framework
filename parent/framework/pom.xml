@@ -34,7 +34,8 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -113,13 +114,15 @@
 		</repository>
 	</repositories>
 
-	<!--
 	<properties>
+		<java.version>1.7</java.version>
+		
+		<!--
 		<arquillian.bom.version>1.1.1.Final</arquillian.bom.version>
 		<arquillian.weld.version>1.0.0.CR7</arquillian.weld.version>
 		<arquillian.container.glassfish.version>1.0.0.CR4</arquillian.container.glassfish.version>
 		<arquillian.container.weld.version>1.0.0.CR7</arquillian.container.weld.version>
 		<glassfish.embedded.version>3.2.1.1</glassfish.embedded.version>
+		-->
 	</properties>
-	-->
 </project>
