@@ -107,7 +107,7 @@ var App = {
 		},
 
 		handle500 : function(request) {
-			alert("Ocorreu um erro interno no servidor e o processamento não foi concluído. Informe ao administrador pelo e-mail: contato@soumaisaventura.com.br");
+			alert("Ocorreu um erro interno no servidor e o processamento não foi concluído.");
 		}
 	}
 };
