@@ -34,18 +34,61 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package br.gov.frameworkdemoiselle.lifecycle;
+package br.gov.frameworkdemoiselle.util;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletRequestEvent;
+import javax.servlet.ServletRequestListener;
+import javax.servlet.annotation.WebListener;
+
+import br.gov.frameworkdemoiselle.lifecycle.BeforeRequestDestroyed;
+import br.gov.frameworkdemoiselle.lifecycle.BeforeRequestInitialized;
 
 /**
- * This interface represents an event fired before an HTTP session is destroyed.
+ * <p>
+ * Implements the {@link javax.servlet.ServletRequestListener} interface and fires two events.
+ * </p>
+ * <ul>
+ * <li><strong>{@link BeforeRequestInitialized}</strong>: Just before a new HTTP request comes into scope</li>
+ * <li><strong>{@link BeforeRequestDestroyed}</strong>: Just before an HTTP request will go out of scope</li>
+ * </ul>
  * 
  * @author serpro
  */
-public interface BeforeSessionDestroyed {
+@WebListener
+public class RequestListener implements ServletRequestListener {
 
-	/**
-	 * @return The session ID of the session about to be destroyed
-	 */
-	public String getSessionId();
+	@Override
+	public void requestDestroyed(final ServletRequestEvent sre) {
+		Beans.getBeanManager().fireEvent(new BeforeRequestDestroyed() {
+
+			@Override
+			public ServletRequest getRequest() {
+				return sre.getServletRequest();
+			}
+
+			@Override
+			public ServletContext getServletContext() {
+				return sre.getServletContext();
+			}
+		});
+	}
+
+	@Override
+	public void requestInitialized(final ServletRequestEvent sre) {
+		Beans.getBeanManager().fireEvent(new BeforeRequestDestroyed() {
+
+			@Override
+			public ServletRequest getRequest() {
+				return sre.getServletRequest();
+			}
+
+			@Override
+			public ServletContext getServletContext() {
+				return sre.getServletContext();
+			}
+		});
+	}
 
 }

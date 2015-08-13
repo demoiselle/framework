@@ -48,14 +48,11 @@ import br.gov.frameworkdemoiselle.util.Beans;
 
 public class JsfBootstrap implements Extension {
 
-	//private List<CustomContext> customContexts = new ArrayList<CustomContext>();
-
-	//private AfterBeanDiscovery afterBeanDiscoveryEvent;
-	
 	private FacesViewContextImpl context;
+
 	private boolean contextActivatedHere;
-	
-	public void createCustomContext(@Observes AfterBeanDiscovery event){
+
+	public void createCustomContext(@Observes AfterBeanDiscovery event) {
 		context = new FacesViewContextImpl();
 		event.addContext(context);
 	}
@@ -63,19 +60,18 @@ public class JsfBootstrap implements Extension {
 	public void addContexts(@Observes final AfterDeploymentValidation event) {
 		CustomContextProducer producer = Beans.getReference(CustomContextProducer.class);
 		producer.addRegisteredContext(context);
-		
-		//Ativa o ViewContext
-		if (!context.isActive()){
+
+		// Ativa o ViewContext
+		if (!context.isActive()) {
 			contextActivatedHere = context.activate();
-		}
-		else{
+		} else {
 			contextActivatedHere = false;
 		}
 	}
 
 	public void removeContexts(@Observes AfterShutdownProccess event) {
-		//Desativa o ViewContext
-		if (contextActivatedHere){
+		// Desativa o ViewContext
+		if (contextActivatedHere) {
 			context.deactivate();
 		}
 	}

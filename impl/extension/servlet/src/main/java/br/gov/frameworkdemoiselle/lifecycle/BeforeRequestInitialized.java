@@ -36,16 +36,19 @@
  */
 package br.gov.frameworkdemoiselle.lifecycle;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+
 /**
- * This interface represents an event fired before an HTTP session is destroyed.
+ * Event fired just before a request is about to come into scope.
  * 
  * @author serpro
+ *
  */
-public interface BeforeSessionDestroyed {
+public interface BeforeRequestInitialized {
 
-	/**
-	 * @return The session ID of the session about to be destroyed
-	 */
-	public String getSessionId();
+	public ServletRequest getRequest();
+
+	public ServletContext getServletContext();
 
 }
