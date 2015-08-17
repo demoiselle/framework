@@ -4,7 +4,7 @@ var App = {
 
 	restoreSavedLocation : function() {
 		var url = sessionStorage.getItem(this.savedLocationKey);
-		location.href = (url ? url : "");
+		location.href = (url ? url : "index.html");
 	},
 
 	saveLocation : function(url) {
