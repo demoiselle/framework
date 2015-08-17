@@ -52,7 +52,13 @@
 				<exclude>**/*.png</exclude>
 				<exclude>**/*.gif</exclude>
 				<exclude>**/*.jpg</exclude>
+				<exclude>**/*.jpeg</exclude>
 				<exclude>**/*.js</exclude>
+				<exclude>**/*.eot</exclude>
+				<exclude>**/*.svg</exclude>
+				<exclude>**/*.ttf</exclude>
+				<exclude>**/*.woff</exclude>
+				<exclude>**/*.woff2</exclude>
 			</excludes>
 		</fileSet>
 		<fileSet filtered="false" packaged="false">
@@ -61,7 +67,13 @@
 				<include>**/*.png</include>
 				<include>**/*.gif</include>
 				<include>**/*.jpg</include>
+				<include>**/*.jpeg</include>
 				<include>**/*.js</include>
+				<include>**/*.eot</include>
+				<include>**/*.svg</include>
+				<include>**/*.ttf</include>
+				<include>**/*.woff</include>
+				<include>**/*.woff2</include>
 			</includes>
 		</fileSet>
 		<fileSet filtered="true" packaged="true">
