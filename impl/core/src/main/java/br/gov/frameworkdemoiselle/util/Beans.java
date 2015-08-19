@@ -77,6 +77,30 @@ public final class Beans {
 		return beanManager;
 	}
 
+	/**
+	 * Obtains a injectble instance of a bean, which have the given EL name and are available for injection in the point
+	 * where this method was call.
+	 * 
+	 * @param beanName
+	 *            the EL name for the requested bean.
+	 * @return Type a instace of the injected beanClass.
+	 * @throws DemoiselleException
+	 *             if no bean are avaliable to be injected for the given bean name.
+	 */
+	public static <T> T getReference(String beanName) {
+		T instance;
+
+		try {
+			instance = (T) createReference(getBeanManager().getBeans(beanName), (Class<T>) null);
+
+		} catch (NoSuchElementException cause) {
+			String message = getBundle().getString("bean-not-found", beanName);
+			throw new DemoiselleException(message, cause);
+		}
+
+		return instance;
+	}
+
 	public static <T> T getReference(final Class<T> beanClass) {
 		return getReference(beanClass, (Annotation[]) null);
 	}
@@ -104,7 +128,7 @@ public final class Beans {
 				beans = getBeanManager().getBeans(beanClass, qualifiers);
 			}
 
-			instance = (T) getReference(beans, beanClass, qualifiers);
+			instance = (T) createReference(beans, beanClass, qualifiers);
 
 		} catch (NoSuchElementException cause) {
 			StringBuffer buffer = new StringBuffer();
@@ -124,33 +148,8 @@ public final class Beans {
 		return instance;
 	}
 
-	/**
-	 * Obtains a injectble instance of a bean, which have the given EL name and are available for injection in the point
-	 * where this method was call.
-	 * 
-	 * @param beanName
-	 *            the EL name for the requested bean.
-	 * @return Type a instace of the injected beanClass.
-	 * @throws DemoiselleException
-	 *             if no bean are avaliable to be injected for the given bean name.
-	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T getReference(String beanName) {
-		T instance;
-
-		try {
-			instance = (T) getReference(getBeanManager().getBeans(beanName));
-
-		} catch (NoSuchElementException cause) {
-			String message = getBundle().getString("bean-not-found", beanName);
-			throw new DemoiselleException(message, cause);
-		}
-
-		return instance;
-	}
-
-	@SuppressWarnings("unchecked")
-	private static <T> T getReference(Set<Bean<?>> beans, Class<T> beanClass, Annotation... qualifiers) {
+	private static <T> T createReference(Set<Bean<?>> beans, Class<T> beanClass, Annotation... qualifiers) {
 		if (beans.size() > 1) {
 			String message = getBundle().getString("ambiguous-bean-resolution", beanClass.getName(), beans.toString());
 			throw new DemoiselleException(message, new AmbiguousResolutionException());
@@ -162,23 +161,42 @@ public final class Beans {
 		InjectionPoint injectionPoint;
 
 		if (qualifiers == null) {
-			injectionPoint = new CustomInjectionPoint(bean, beanType);
+			injectionPoint = new ProgramaticInjectionPoint(bean, beanType);
 		} else {
-			injectionPoint = new CustomInjectionPoint(bean, beanType, qualifiers);
+			injectionPoint = new ProgramaticInjectionPoint(bean, beanType, qualifiers);
 		}
 
 		return (T) getBeanManager().getInjectableReference(injectionPoint, context);
 	}
 
-	private static <T> T getReference(Set<Bean<?>> beans) {
-		return getReference(beans, (Class<T>) null);
-	}
+	/*
+	 * private static <T> T getReference(Set<Bean<?>> beans) { return getReference(beans, (Class<T>) null, (Member)
+	 * null); }
+	 */
 
 	private static ResourceBundle getBundle() {
 		return Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"));
 	}
 
-	static class CustomInjectionPoint implements InjectionPoint {
+	/**
+	 * <p>
+	 * A dummy injection point created when getting a new bean through one of the {@link Beans#getReference} methods.
+	 * </p>
+	 * <p>
+	 * This dummy injection point returns valid values for {@link #getBean()}, {@link #getType()} and
+	 * {@link #getQualifiers()} methods, but it always returns <code>null</code> for {@link #getMember()} as there is no
+	 * real class member where the bean was injected.
+	 * </p>
+	 * <p>
+	 * This injection point also always return <code>false</code> for {@link #isDelegate()} and {@link #isTransient()}.
+	 * In the case of {@link #isTransient()} there is no real way to know if the field receiving the value of
+	 * {@link Beans#getReference} is transient, so take special care when assigning non-serializable beans into
+	 * non-transient fields of serializable classes.
+	 * </p>
+	 * 
+	 * @author SERPRO
+	 */
+	public static final class ProgramaticInjectionPoint implements InjectionPoint {
 
 		private final Bean<?> bean;
 
@@ -186,7 +204,7 @@ public final class Beans {
 
 		private final Set<Annotation> qualifiers;
 
-		public CustomInjectionPoint(Bean<?> bean, Type beanType, Annotation... qualifiers) {
+		public ProgramaticInjectionPoint(Bean<?> bean, Type beanType, Annotation... qualifiers) {
 			this.bean = bean;
 			this.beanType = beanType;
 			this.qualifiers = new HashSet<Annotation>(Arrays.asList(qualifiers));

@@ -65,7 +65,6 @@ import br.gov.frameworkdemoiselle.internal.implementation.RedirectExceptionHandl
 import br.gov.frameworkdemoiselle.internal.implementation.RedirectExceptionHandlerFactory;
 import br.gov.frameworkdemoiselle.internal.implementation.SecurityObserver;
 import br.gov.frameworkdemoiselle.internal.procuder.ParameterProducer;
-import br.gov.frameworkdemoiselle.internal.proxy.FacesContextProxy;
 import br.gov.frameworkdemoiselle.template.AbstractEditPageBean;
 import br.gov.frameworkdemoiselle.template.AbstractListPageBean;
 import br.gov.frameworkdemoiselle.template.AbstractPageBean;
@@ -113,7 +112,6 @@ public final class Tests {
 				.addClass(AuthorizationExceptionHandler.class)
 				.addClass(RedirectExceptionHandlerFactory.class)
 				.addClass(AbstractExceptionHandler.class)
-				.addClass(FacesContextProxy.class)
 				.addClass(JsfBootstrap.class)
 				.addClass(ParameterProducer.class)
 				.addClass(AbstractPageBean.class)

@@ -65,7 +65,7 @@ public class Locales implements Serializable {
 	}
 
 	@Inject
-	private FacesContext facesContext;
+	private transient FacesContext facesContext;
 
 	/**
 	 * Set the language to "en_US". This is a shorthand to <code>setLocale(Locale.US)</code>.

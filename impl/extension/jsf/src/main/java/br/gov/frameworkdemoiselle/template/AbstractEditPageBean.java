@@ -76,7 +76,7 @@ public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean implem
 	private ResourceBundle bundle;
 
 	@Inject
-	private FacesContext facesContext;
+	private transient FacesContext facesContext;
 
 	protected void clear() {
 		this.id = null;

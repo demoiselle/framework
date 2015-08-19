@@ -53,7 +53,7 @@ public abstract class AbstractPageBean implements PageBean {
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	private FacesContext facesContext;
+	private transient FacesContext facesContext;
 
 	private String nextView;
 
