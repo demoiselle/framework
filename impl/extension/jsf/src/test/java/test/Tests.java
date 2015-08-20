@@ -64,6 +64,7 @@ import br.gov.frameworkdemoiselle.internal.implementation.ParameterImpl;
 import br.gov.frameworkdemoiselle.internal.implementation.RedirectExceptionHandler;
 import br.gov.frameworkdemoiselle.internal.implementation.RedirectExceptionHandlerFactory;
 import br.gov.frameworkdemoiselle.internal.implementation.SecurityObserver;
+import br.gov.frameworkdemoiselle.internal.procuder.FacesContextProducer;
 import br.gov.frameworkdemoiselle.internal.procuder.ParameterProducer;
 import br.gov.frameworkdemoiselle.template.AbstractEditPageBean;
 import br.gov.frameworkdemoiselle.template.AbstractListPageBean;
@@ -120,6 +121,7 @@ public final class Tests {
 				.addClass(AbstractEditPageBean.class)
 				.addClass(PageBean.class)
 				.addClass(EditPageBean.class)
+				.addClass(FacesContextProducer.class)
 				.addClass(PreviousView.class)
 				.addClass(Redirect.class)
 				.addClass(NextView.class)
