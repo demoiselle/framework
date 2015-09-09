@@ -41,7 +41,6 @@ import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 
 import java.util.logging.Logger;
 
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -59,14 +58,13 @@ public class AuthorizationExceptionMapper implements ExceptionMapper<Authorizati
 	private transient Logger logger;
 
 	@Override
-	@Produces("text/plain")
 	public Response toResponse(AuthorizationException exception) {
 		int status = SC_FORBIDDEN;
 
 		String message = getBundle().getString("mapping-violations", status);
 		getLogger().log(FINE, message, exception);
 
-		return Response.status(status).entity(exception.getMessage()).build();
+		return Response.status(status).entity(exception.getMessage()).type("text/plain").build();
 	}
 
 	private ResourceBundle getBundle() {

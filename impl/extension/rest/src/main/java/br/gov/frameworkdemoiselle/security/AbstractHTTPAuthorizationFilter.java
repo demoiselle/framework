@@ -157,17 +157,13 @@ public abstract class AbstractHTTPAuthorizationFilter implements Filter {
 
 	private void setUnauthorizedStatus(HttpServletResponse response, AuthenticationException cause) throws IOException {
 		response.setStatus(SC_UNAUTHORIZED);
-		response.setContentType("text/plain; charset=UTF-8");
-		response.getWriter().write(cause.getMessage());
-	}
 
-	// private ResourceBundle getBundle() {
-	// if (bundle == null) {
-	// bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-rest-bundle"));
-	// }
-	//
-	// return bundle;
-	// }
+		String message = cause.getMessage();
+		if (!Strings.isEmpty(message)) {
+			response.setContentType("text/plain; charset=UTF-8");
+			response.getWriter().write(message);
+		}
+	}
 
 	private Logger getLogger() {
 		if (logger == null) {
