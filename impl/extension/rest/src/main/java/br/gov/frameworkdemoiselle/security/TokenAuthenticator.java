@@ -36,7 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.security;
 
-import static br.gov.frameworkdemoiselle.annotation.Priority.L2_PRIORITY;
+import static br.gov.frameworkdemoiselle.annotation.Priority.L3_PRIORITY;
 
 import java.security.Principal;
 
@@ -47,7 +47,7 @@ import br.gov.frameworkdemoiselle.util.Beans;
 import br.gov.frameworkdemoiselle.util.StrategyQualifier;
 
 @RequestScoped
-@Priority(L2_PRIORITY)
+@Priority(L3_PRIORITY)
 public class TokenAuthenticator implements Authenticator {
 
 	private static final long serialVersionUID = 1L;
