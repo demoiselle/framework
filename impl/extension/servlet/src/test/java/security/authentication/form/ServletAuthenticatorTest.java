@@ -18,11 +18,13 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import test.Tests;
 
+@Ignore
 @RunWith(Arquillian.class)
 public class ServletAuthenticatorTest {
 
@@ -39,7 +41,7 @@ public class ServletAuthenticatorTest {
 
 	@Test
 	public void loginSucessfull() throws ClientProtocolException, IOException, URISyntaxException {
-		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/helper/login");
+		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "helper/login");
 		uriBuilder.setParameter("username", "demoiselle");
 		uriBuilder.setParameter("password", "changeit");
 
@@ -52,7 +54,7 @@ public class ServletAuthenticatorTest {
 
 	@Test
 	public void loginFailed() throws ClientProtocolException, IOException, URISyntaxException {
-		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/helper/login");
+		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "helper/login");
 		uriBuilder.setParameter("username", "invalid");
 		uriBuilder.setParameter("password", "invalid");
 
@@ -65,7 +67,7 @@ public class ServletAuthenticatorTest {
 
 	@Test
 	public void logoutSucessfull() throws ClientProtocolException, IOException, URISyntaxException {
-		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/helper/logout");
+		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "helper/logout");
 		uriBuilder.setParameter("username", "demoiselle");
 		uriBuilder.setParameter("password", "changeit");
 
@@ -78,7 +80,7 @@ public class ServletAuthenticatorTest {
 
 	@Test
 	public void logoutFailedByNotLoggedInException() throws ClientProtocolException, IOException, URISyntaxException {
-		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "/helper/logout");
+		URIBuilder uriBuilder = new URIBuilder(deploymentUrl + "helper/logout");
 
 		HttpGet httpGet = new HttpGet(uriBuilder.build());
 		HttpResponse httpResponse = HttpClientBuilder.create().build().execute(httpGet);
