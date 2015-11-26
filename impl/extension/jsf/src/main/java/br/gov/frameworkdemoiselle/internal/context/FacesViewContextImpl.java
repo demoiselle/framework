@@ -36,6 +36,7 @@
  */
 package br.gov.frameworkdemoiselle.internal.context;
 
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -90,27 +91,8 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 			return null;
 		}
 		
-		/*
-		 * Tenta obter o viewID de forma não thread-safe por questões de performance.
-		 * Se o viewID não existe entra em um trecho thread-safe para incrementa-lo, evitando
-		 * conflito entre duas requests tentando incrementar esse número. 
-		 */
-		Long viewId = (Long)Faces.getViewMap().get(FACES_KEY);
-		if (viewId==null){
-			synchronized (this) {
-				
-				//Tenta obte-lo novamente, caso entre a primeira tentativa e o bloqueio
-				//da thread outra thread já tenha criado o número. 
-				viewId = (Long)Faces.getViewMap().get(FACES_KEY);
-				if (viewId==null){
-					viewId = atomicLong.incrementAndGet();
-					Faces.getViewMap().put(FACES_KEY, viewId);
-				}
-			}
-		}
-		
-		//A mesma técnica de bloqueio de thread acima é usada aqui para
-		//criar um SessionBeanStore caso o mesmo ainda não exista.
+		// Tenta obter a ViewStore associada a sessão atual. Se uma não existe, entra
+		// em um trecho sincronizado para criar a store de forma atômica.
 		FacesViewBeanStore currentStore = (FacesViewBeanStore) session.getAttribute(VIEW_STORE_KEY);
 		if (currentStore==null){
 			synchronized (this) {
@@ -121,6 +103,27 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 				}
 			}
 		}
+		
+		// Obtém o View ID atualmente associado a essa view. Se um ID não existe (primeira vez
+		// que uma view é acessada) então um ID é criado de forma atômica, assegurando que
+		// cada ID é usado por apenas uma VIEW.
+		Long viewId = (Long)Faces.getViewMap().get(FACES_KEY);
+		if (viewId==null){
+			Map<String, Object> facesViewMap = Faces.getViewMap();
+			
+			synchronized (currentStore) {
+				
+				//Tenta obte-lo novamente, caso entre a primeira tentativa e o bloqueio
+				//da thread outra thread já tenha criado o número. 
+				viewId = (Long)Faces.getViewMap().get(FACES_KEY);
+				if (viewId==null){
+					viewId = atomicLong.incrementAndGet();
+					facesViewMap.put(FACES_KEY, viewId);
+				}
+			}
+		}
+		
+		
 
 		return currentStore.getStore(viewId, this);
 	}
