@@ -95,7 +95,7 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 		// em um trecho sincronizado para criar a store de forma atômica.
 		FacesViewBeanStore currentStore = (FacesViewBeanStore) session.getAttribute(VIEW_STORE_KEY);
 		if (currentStore==null){
-			synchronized (this) {
+			synchronized (session) {
 				currentStore = (FacesViewBeanStore) session.getAttribute(VIEW_STORE_KEY);
 				if (currentStore==null){
 					currentStore = new FacesViewBeanStore();
@@ -111,7 +111,7 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 		if (viewId==null){
 			Map<String, Object> facesViewMap = Faces.getViewMap();
 			
-			synchronized (currentStore) {
+			synchronized (session) {
 				
 				//Tenta obte-lo novamente, caso entre a primeira tentativa e o bloqueio
 				//da thread outra thread já tenha criado o número. 
@@ -123,8 +123,6 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 			}
 		}
 		
-		
-
 		return currentStore.getStore(viewId, this);
 	}
 	
