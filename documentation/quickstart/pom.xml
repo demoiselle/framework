@@ -40,7 +40,7 @@
 
 	<artifactId>demoiselle-framework-quickstart</artifactId>
 	<packaging>jdocbook</packaging>
-	<version>2.4.2</version>
+	<version>2.4.3-SCDP-SNAPSHOT</version>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
@@ -94,6 +94,6 @@
 	</properties>
 
   <scm>
-    <tag>2.4.2</tag>
+    <tag>2.4.3-SCDP-SNAPSHOT</tag>
   </scm>
 </project>
