@@ -42,7 +42,6 @@ import java.util.Locale;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
@@ -63,9 +62,6 @@ public class Locales implements Serializable {
 	public Locales() {
 		System.out.println();
 	}
-
-	@Inject
-	private transient FacesContext facesContext;
 
 	/**
 	 * Set the language to "en_US". This is a shorthand to <code>setLocale(Locale.US)</code>.
@@ -142,10 +138,6 @@ public class Locales implements Serializable {
 	}
 	
 	private FacesContext getContext(){
-		if (facesContext==null){
-			facesContext = Beans.getReference(FacesContext.class);
-		}
-		
-		return facesContext;
+		return Beans.getReference(FacesContext.class);
 	}
 }

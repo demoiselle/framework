@@ -75,9 +75,6 @@ public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean implem
 	@Name("demoiselle-jsf-bundle")
 	private ResourceBundle bundle;
 
-	@Inject
-	private transient FacesContext facesContext;
-
 	protected void clear() {
 		this.id = null;
 		this.bean = null;
@@ -124,6 +121,7 @@ public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean implem
 			throw new DemoiselleException(bundle.getString("id-converter-not-found", getIdClass().getCanonicalName()));
 
 		} else {
+			FacesContext facesContext = Beans.getReference(FacesContext.class);
 			return (I) converter.getAsObject(facesContext, facesContext.getViewRoot(), id.getValue());
 		}
 	}

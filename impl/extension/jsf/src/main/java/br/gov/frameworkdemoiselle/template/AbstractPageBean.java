@@ -37,10 +37,10 @@
 package br.gov.frameworkdemoiselle.template;
 
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.annotation.NextView;
 import br.gov.frameworkdemoiselle.annotation.PreviousView;
+import br.gov.frameworkdemoiselle.util.Beans;
 
 /**
  * Template Managed AuthenticationBean class that implements the methods defined by the interface PageBean.
@@ -52,15 +52,13 @@ public abstract class AbstractPageBean implements PageBean {
 
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	private transient FacesContext facesContext;
-
 	private String nextView;
 
 	private String previousView;
 
 	@Override
 	public String getCurrentView() {
+		FacesContext facesContext = Beans.getReference(FacesContext.class);
 		return facesContext.getViewRoot().getViewId();
 	}
 
