@@ -1,0 +1,7 @@
+/server/target
+/view/nbproject/private/
+/view/bower_components/
+/view/node_modules/
+/view/dist/
+/view/.tmp/
+
