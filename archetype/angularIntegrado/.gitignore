@@ -1,0 +1,17 @@
+/bin
+/target
+/.project
+/.classpath
+/.settings
+/.externalToolBuilders
+/.DS_Store
+/target
+/app/nbproject/private/
+/nbproject/private/
+/bower_components/
+/node_modules/
+/dist/
+/.tmp/
+/src/main/webapp/
+
+

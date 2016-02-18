@@ -1,0 +1,44 @@
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li><a href="#dashboard"><i class="fa fa-dashboard"></i> Início</a></li>
+        <li class="active">Bookmark</li>
+    </ol>
+</section>
+<div class="painel painel-default" has-roles-disable="ADMINISTRADOR">
+    <form name="formFornecedor" role="form">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group row">
+                    <div class="col-md-2">
+                        <input class="form-control" disabled=disabled type="text" id="id" ng-model="bookmark.id">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label for="nome">Descrição:<font color="#FF0000"> *</font></label>
+                        <input type="text" class="form-control" id="nome" ng-model="bookmark.description"	required>
+                        <validation-msg propriedade="description"></validation-msg>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label for="nome">Link:<font color="#FF0000"> *</font></label>
+                        <input type="text" class="form-control" id="nome" ng-model="bookmark.link"	required>
+                        <validation-msg propriedade="link"></validation-msg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div has-roles="ADMINISTRADOR">
+            <button class="btn btn-primary" ng-click="save()">
+                <i class="glyphicon glyphicon-ok-sign"> </i> Salvar
+            </button>
+
+        </div>
+
+    </form>
+    <a class="btn btn-primary pull-right" back-button><i
+            class="glyphicon glyphicon-arrow-left"></i> Voltar</a>
+</div>
