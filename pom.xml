@@ -36,108 +36,110 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<artifactId>demoiselle-framework-build</artifactId>
-	<version>2.5.2-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <artifactId>demoiselle-framework-build</artifactId>
+    <version>2.5.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<parent>
-		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-build-parent</artifactId>
-		<version>9</version>
-		<relativePath>../internal/parent/build/demoiselle</relativePath>
-	</parent>
+    <parent>
+        <groupId>br.gov.frameworkdemoiselle</groupId>
+        <artifactId>demoiselle-build-parent</artifactId>
+        <version>9</version>
+        <relativePath>../internal/parent/build/demoiselle</relativePath>
+    </parent>
 
-	<name>Demoiselle Framework</name>
-	<description>
-		A liberação de versões do framework deve ser feita a partir deste build, que fará automaticamente o build
-		de todos os artefatos com versionamento sincronizado. Jamais gere uma versão do framework sem utilizar este build.
-	</description>
+    <name>Demoiselle Framework</name>
+    <description>
+        A liberação de versões do framework deve ser feita a partir deste build, que fará automaticamente o build
+        de todos os artefatos com versionamento sincronizado. Jamais gere uma versão do framework sem utilizar este build.
+    </description>
 
-	<modules>
-		<module>parent/framework</module>
-		<module>parent/bom</module>
-		<module>parent/minimal</module>
-		<module>parent/extension</module>
-		<module>parent/jsf</module>
-		<module>parent/servlet</module>
-		<module>parent/rest</module>
-		<module>parent/se</module>
-		<module>parent/archetype</module>
-		<module>impl/core</module>
-		<module>impl/extension/jdbc</module>
-		<module>impl/extension/jpa</module>
-		<module>impl/extension/jsf</module>
-		<module>impl/extension/jta</module>
-		<module>impl/extension/se</module>
-		<module>impl/extension/servlet</module>
-		<module>impl/extension/rest</module>
-		<module>impl/extension/jmx</module>
-		<!--
-		<module>impl/extension/jaas</module>
-		-->
-		<module>archetype/minimal</module>
-		<module>archetype/jsf-jpa</module>
-		<module>archetype/html-rest</module>
-	</modules>
+    <modules>
+        <module>parent/framework</module>
+        <module>parent/bom</module>
+        <module>parent/minimal</module>
+        <module>parent/extension</module>
+        <module>parent/jsf</module>
+        <module>parent/servlet</module>
+        <module>parent/rest</module>
+        <module>parent/se</module>
+        <module>parent/archetype</module>
+        <module>impl/core</module>
+        <module>impl/extension/jdbc</module>
+        <module>impl/extension/jpa</module>
+        <module>impl/extension/jsf</module>
+        <module>impl/extension/jta</module>
+        <module>impl/extension/se</module>
+        <module>impl/extension/servlet</module>
+        <module>impl/extension/rest</module>
+        <module>impl/extension/jmx</module>
+        <!--
+        <module>impl/extension/jaas</module>
+        -->
+        <module>archetype/angularModular</module>
+        <module>archetype/angularIntegrado</module>
+        <module>archetype/minimal</module>
+        <module>archetype/jsf-jpa</module>
+        <module>archetype/html-rest</module>
+    </modules>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-	<scm>
-		<connection>scm:git:git@github.com:demoiselle/${project.alias}.git</connection>
-		<developerConnection>scm:git:git@github.com:demoiselle/${project.alias}.git</developerConnection>
-		<url>http://github.com/demoiselle/${project.alias}</url>
-		<tag>HEAD</tag>
-	</scm>
+    <scm>
+        <connection>scm:git:git@github.com:demoiselle/${project.alias}.git</connection>
+        <developerConnection>scm:git:git@github.com:demoiselle/${project.alias}.git</developerConnection>
+        <url>http://github.com/demoiselle/${project.alias}</url>
+        <tag>HEAD</tag>
+    </scm>
 
-	<repositories>
-		<repository>
-			<id>sonatype-nexus-snapshots</id>
-			<name>Sonatype Nexus Snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-		<repository>
-			<id>sonatype-nexus-releases</id>
-			<name>Sonatype Nexus Releases</name>
-			<url>https://oss.sonatype.org/content/repositories/releases</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>sonatype-nexus-releases</id>
+            <name>Sonatype Nexus Releases</name>
+            <url>https://oss.sonatype.org/content/repositories/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
 
-	<distributionManagement>
-		<site>
-			<id>demoiselle.sourceforge.net</id>
-			<url>${site.url}</url>
-		</site>
-	</distributionManagement>
+    <distributionManagement>
+        <site>
+            <id>demoiselle.sourceforge.net</id>
+            <url>${site.url}</url>
+        </site>
+    </distributionManagement>
 
-	<properties>
-		<project.alias>framework</project.alias>
-	</properties>
+    <properties>
+        <project.alias>framework</project.alias>
+    </properties>
 </project>
