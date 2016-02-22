@@ -77,8 +77,8 @@
         <!--
         <module>impl/extension/jaas</module>
         -->
-        <module>archetype/angularModular</module>
-        <module>archetype/angularIntegrado</module>
+        <!--<module>archetype/angularModular</module>-->
+        <!--<module>archetype/angularIntegrado</module>-->
         <module>archetype/minimal</module>
         <module>archetype/jsf-jpa</module>
         <module>archetype/html-rest</module>
