@@ -77,7 +77,7 @@
 
 	<profiles>
 		<!-- Os profiles foram replicados do parent pois o Maven 2 não suporta herança de profile. Provavelmente isto estará corrigido no Maven 3 -->
-		<profile>
+		<!--<profile>
 			<id>tomcat6</id>
 			<dependencies>
 				<dependency>
@@ -139,6 +139,19 @@
 		</profile>
 		<profile>
 			<id>jboss7</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.sun.faces</groupId>
+					<artifactId>jsf-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>-->
+		<profile>
+			<id>wildfly8</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>

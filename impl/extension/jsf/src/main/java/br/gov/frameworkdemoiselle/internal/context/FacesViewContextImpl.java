@@ -63,9 +63,13 @@ import br.gov.frameworkdemoiselle.util.Faces;
  * stored on this store are kept as long as the view is still active.
  * 
  * @author serpro
+ *
+ * @deprecated This context is deprecated, it's preferred to use the annotation
+ *             javax.faces.view.ViewScoped
  */
 @Priority(Priority.L2_PRIORITY)
 @Alternative
+@Deprecated
 public class FacesViewContextImpl extends AbstractCustomContext implements ViewContext {
 
 	private final AtomicLong atomicLong = new AtomicLong();

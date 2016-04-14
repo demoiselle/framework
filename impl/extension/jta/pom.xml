@@ -69,7 +69,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>javax.transaction</groupId>
-			<artifactId>jta</artifactId>
+			<artifactId>javax.transaction-api</artifactId>
 		</dependency>
 
 		<!-- for tests -->
@@ -89,6 +89,22 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>wildfly8</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>javax.transaction</groupId>
+					<artifactId>javax.transaction-api</artifactId>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 
 	<repositories>
 		<repository>

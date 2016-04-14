@@ -8,3 +8,4 @@
 /.idea
 /archetype/angularModular/src/main/resources/archetype-resources/view/nbproject/private/
 *.iml
+.directory

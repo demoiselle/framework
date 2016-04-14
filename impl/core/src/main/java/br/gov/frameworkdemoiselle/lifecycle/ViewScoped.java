@@ -51,11 +51,14 @@ import javax.enterprise.context.NormalScope;
  * This scope maintains the context for viewed page; when the viewed page change, the data will be lost.
  * 
  * @author SERPRO
+ *
+ * @deprecated
  */
 @Inherited
 @Target({ METHOD, TYPE, FIELD })
 @Retention(RUNTIME)
 @NormalScope(passivating = true)
+@Deprecated
 public @interface ViewScoped {
 
 }

@@ -34,7 +34,8 @@
  ou escreva para a Fundação do Software Livre (FSF) Inc.,
  51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -120,16 +121,16 @@
 				<groupId>javax.enterprise</groupId>
 				<artifactId>cdi-api</artifactId>
 				<version>${cdi.version}</version>
-				<exclusions>
+				<!--<exclusions>
 					<exclusion>
 						<artifactId>jsr250-api</artifactId>
 						<groupId>javax.annotation</groupId>
 					</exclusion>
-				</exclusions>
+				</exclusions>-->
 			</dependency>
 
 			<!-- jsr-299 impl -->
-			<dependency>
+			<!--<dependency>
 				<groupId>org.jboss.weld</groupId>
 				<artifactId>weld-core</artifactId>
 				<version>${weld.version}</version>
@@ -144,16 +145,16 @@
 				<groupId>org.jboss.weld.servlet</groupId>
 				<artifactId>weld-servlet-core</artifactId>
 				<version>${weld.version}</version>
-			</dependency>
+			</dependency>-->
 
-			<!-- jsr-303 api -->
+			<!-- jsr-349 api -->
 			<dependency>
 				<artifactId>validation-api</artifactId>
 				<groupId>javax.validation</groupId>
 				<version>${validation.version}</version>
 			</dependency>
 
-			<!-- jsr-303 impl -->
+			<!-- jsr-349 impl -->
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
@@ -170,28 +171,31 @@
 				</exclusions>
 			</dependency>
 
-			<!-- jsr-??? api -->
-			<dependency>
+			<!-- jsr-341 api and impl-->
+			<!--<dependency>
 				<groupId>javax.el</groupId>
 				<artifactId>el-api</artifactId>
 				<version>${el.version}</version>
-			</dependency>
-
-			<!-- jsr-??? api -->
-			<dependency>
+			</dependency>-->
+			<!--<dependency>
 				<groupId>org.glassfish.web</groupId>
 				<artifactId>el-impl</artifactId>
 				<version>${el.version}</version>
+			</dependency>-->
+			<dependency>
+				<groupId>org.glassfish</groupId>
+				<artifactId>javax.el</artifactId>
+				<version>${el.version}</version>
 			</dependency>
 
-			<!-- jsr-314 api -->
+			<!-- jsr-344 api -->
 			<dependency>
 				<groupId>com.sun.faces</groupId>
 				<artifactId>jsf-api</artifactId>
 				<version>${jsf.version}</version>
 			</dependency>
 
-			<!-- jsr-314 impl -->
+			<!-- jsr-344 impl -->
 			<dependency>
 				<groupId>com.sun.faces</groupId>
 				<artifactId>jsf-impl</artifactId>
@@ -210,35 +214,35 @@
 				<version>${javaee.version}</version>
 			</dependency>
 
-			<!-- jsr-??? api -->
-			<dependency>
+			<!-- jsr-340 api -->
+			<!--<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
+				<version>${servlet.version}</version>
+			</dependency>-->
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
 				<version>${servlet.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
-				<artifactId>javax.servlet-api</artifactId>
-				<version>3.0.1</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.servlet</groupId>
 				<artifactId>jstl</artifactId>
-				<version>1.2</version>
+				<version>${jstl.version}</version>
 			</dependency>
 
-			<!-- jsr-317 api -->
+			<!-- jsr-338 api -->
 			<dependency>
 				<groupId>org.eclipse.persistence</groupId>
 				<artifactId>javax.persistence</artifactId>
 				<version>${persistence.version}</version>
 			</dependency>
 
-			<!-- jsr-317 impl -->
+			<!-- jsr-338 impl -->
 			<dependency>
 				<groupId>org.eclipse.persistence</groupId>
 				<artifactId>eclipselink</artifactId>
-				<version>2.1.0</version>
+				<version>2.6.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
@@ -247,17 +251,29 @@
 			</dependency>
 
 			<!-- jsr-907 api -->
-			<dependency>
+			<!--<dependency>
 				<groupId>javax.transaction</groupId>
 				<artifactId>jta</artifactId>
 				<version>${transaction.version}</version>
+			</dependency>-->
+			<dependency>
+				<groupId>javax.transaction</groupId>
+				<artifactId>javax.transaction-api</artifactId>
+				<version>${transaction.version}</version>
 			</dependency>
 
-			<!-- jsr-311 api -->
+			<!-- jsr-339 api -->
 			<dependency>
 				<groupId>javax.ws.rs</groupId>
-				<artifactId>jsr311-api</artifactId>
+				<artifactId>javax.ws.rs-api</artifactId>
 				<version>${rest.version}</version>
+			</dependency>
+
+			<!-- jsr-236 api -->
+			<dependency>
+				<groupId>javax.enterprise.concurrent</groupId>
+				<artifactId>javax.enterprise.concurrent-api</artifactId>
+				<version>${concurrent.version}</version>
 			</dependency>
 
 			<!-- logger api -->
@@ -307,7 +323,7 @@
 				<artifactId>commons-dbcp</artifactId>
 				<version>${commons.dbcp.version}</version>
 			</dependency>
-			
+
 			<!-- embedded database -->
 			<dependency>
 				<groupId>hsqldb</groupId>
@@ -347,7 +363,7 @@
 				<artifactId>easymock</artifactId>
 				<version>${easymock.version}</version>
 			</dependency>
-			
+
 			<!-- arquillian -->
 			<!--
 			-->
@@ -402,21 +418,23 @@
 	</repositories>
 
 	<properties>
-		<javaee.version>6.0</javaee.version>
-		<cdi.version>1.0-SP4</cdi.version>
-		<validation.version>1.0.0.GA</validation.version>
+		<javaee.version>7.0</javaee.version>
+		<cdi.version>1.1</cdi.version>
+		<validation.version>1.1.0.Final</validation.version>
 		<transaction.version>1.1</transaction.version>
-		<jsf.version>2.1.11</jsf.version>
-		<el.version>2.2</el.version>
-		<servlet.version>2.5</servlet.version>
-		<persistence.version>2.0.0</persistence.version>
-		<rest.version>1.1.1</rest.version>
+		<jsf.version>2.2.13</jsf.version>
+		<jstl.version>1.2</jstl.version>
+		<el.version>3.0.0</el.version>
+		<servlet.version>3.1.0</servlet.version>
+		<persistence.version>2.1.0</persistence.version>
+		<rest.version>2.0</rest.version>
+		<concurrent.version>1.0</concurrent.version>
 
-		<hibernate.version>4.1.7.Final</hibernate.version>
-		<hibernate.validator.version>4.2.0.Final</hibernate.validator.version>
+		<hibernate.version>5.1.0.Final</hibernate.version>
+		<hibernate.validator.version>5.2.4.Final</hibernate.validator.version>
 
 		<!--
-		<arquillian.bom.version>1.1.1.Final</arquillian.bom.version>
+		<arquillian.bom.version>1.1.11.Final</arquillian.bom.version>
 		-->
 		<arquillian.weld.version>1.0.0.CR7</arquillian.weld.version>
 		<arquillian.container.glassfish.version>1.0.0.CR4</arquillian.container.glassfish.version>
@@ -429,13 +447,13 @@
 		<maven.surefire.plugin.version>2.16</maven.surefire.plugin.version>
 
 		<powermock.version>1.4.6</powermock.version>
-		<slf4j.version>1.6.1</slf4j.version>
+		<slf4j.version>1.7.21</slf4j.version>
 		<weld.version>1.1.8.Final</weld.version>
-		<commons.configuration.version>1.9</commons.configuration.version>
+		<commons.configuration.version>20041012.002804</commons.configuration.version>
 		<commons.dbcp.version>1.4</commons.dbcp.version>
 		<hsqldb.version>1.8.0.10</hsqldb.version>
 		<jasperreports.version>4.0.1</jasperreports.version>
 		<mail.version>1.4.4</mail.version>
-		<javassist.version>3.14.0-GA</javassist.version>
+		<javassist.version>3.20.0-GA</javassist.version>
 	</properties>
 </project>

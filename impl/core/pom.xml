@@ -185,6 +185,6 @@
 	</repositories>
 
 	<properties>
-		<arquillian.bom.version>1.1.1.Final</arquillian.bom.version>
+		<arquillian.bom.version>1.1.11.Final</arquillian.bom.version>
 	</properties>
 </project>
