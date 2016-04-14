@@ -421,7 +421,7 @@
 		<javaee.version>7.0</javaee.version>
 		<cdi.version>1.1</cdi.version>
 		<validation.version>1.1.0.Final</validation.version>
-		<transaction.version>1.1</transaction.version>
+		<transaction.version>1.2</transaction.version>
 		<jsf.version>2.2.13</jsf.version>
 		<jstl.version>1.2</jstl.version>
 		<el.version>3.0.0</el.version>
@@ -449,7 +449,7 @@
 		<powermock.version>1.4.6</powermock.version>
 		<slf4j.version>1.7.21</slf4j.version>
 		<weld.version>1.1.8.Final</weld.version>
-		<commons.configuration.version>20041012.002804</commons.configuration.version>
+		<commons.configuration.version>1.10</commons.configuration.version>
 		<commons.dbcp.version>1.4</commons.dbcp.version>
 		<hsqldb.version>1.8.0.10</hsqldb.version>
 		<jasperreports.version>4.0.1</jasperreports.version>
