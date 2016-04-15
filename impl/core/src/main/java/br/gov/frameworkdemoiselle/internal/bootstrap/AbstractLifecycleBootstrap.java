@@ -109,7 +109,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		Collections.sort(processors);
 		Exception failure = null;
 
-		startContexts();
+		//startContexts();
 
 		for (Iterator<AnnotatedMethodProcessor> iter = processors.iterator(); iter.hasNext();) {
 			AnnotatedMethodProcessor<?> processor = iter.next();
@@ -128,7 +128,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 			}
 		}
 
-		stopContexts();
+		//stopContexts();
 
 		if (failure != null) {
 			throw new DemoiselleException(failure);

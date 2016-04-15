@@ -45,14 +45,12 @@ import javax.enterprise.inject.Produces;
 import javax.servlet.http.HttpServletResponse;
 
 @RequestScoped
-@Deprecated
 public class HttpServletResponseProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private transient HttpServletResponse response;
 
-	@Alternative
 	@Produces
 	public HttpServletResponse create() {
 		return this.response;

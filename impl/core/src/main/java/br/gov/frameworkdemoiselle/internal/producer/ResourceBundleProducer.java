@@ -37,6 +37,7 @@
 package br.gov.frameworkdemoiselle.internal.producer;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.util.Locale;
 
 import javax.enterprise.inject.Default;
@@ -75,7 +76,14 @@ public class ResourceBundleProducer implements Serializable {
 	public ResourceBundle createNamed(InjectionPoint ip) {
 		String baseName = "";
 		if (ip != null) {
-			baseName = ip.getAnnotated().getAnnotation(Name.class).value();
+			if (ip.getQualifiers() != null) {
+				for (Annotation qualifier : ip.getQualifiers()) {
+					if (Name.class.isInstance(qualifier)) {
+						baseName = ((Name)qualifier).value();
+						break;
+					}
+				}
+			}
 		}
 		return new ResourceBundle(baseName, Beans.getReference(Locale.class));
 	}

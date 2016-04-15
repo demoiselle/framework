@@ -39,8 +39,11 @@ package br.gov.frameworkdemoiselle.internal.producer;
 import java.io.Serializable;
 import java.util.Locale;
 
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.CDI;
 import javax.servlet.http.HttpServletRequest;
 
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -56,15 +59,17 @@ public class ServletLocaleProducer implements Serializable {
 		HttpServletRequest request;
 
 		try {
+			Beans.getBeanManager().getContext(RequestScoped.class);
 			request = Beans.getReference(HttpServletRequest.class);
-		} catch (Exception cause) {
-			request = null;
-		}
 
-		if (request == null) {
+			if (request == null) {
+				result = Locale.getDefault();
+			} else {
+				result = request.getLocale();
+			}
+		}
+		catch (ContextNotActiveException ce) {
 			result = Locale.getDefault();
-		} else {
-			result = request.getLocale();
 		}
 
 		return result;
