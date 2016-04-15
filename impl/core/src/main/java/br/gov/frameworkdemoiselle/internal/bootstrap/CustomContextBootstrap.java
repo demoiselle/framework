@@ -15,7 +15,6 @@ import br.gov.frameworkdemoiselle.internal.context.StaticContextImpl;
 import br.gov.frameworkdemoiselle.internal.context.TemporaryConversationContextImpl;
 import br.gov.frameworkdemoiselle.internal.context.TemporaryRequestContextImpl;
 import br.gov.frameworkdemoiselle.internal.context.TemporarySessionContextImpl;
-import br.gov.frameworkdemoiselle.internal.context.TemporaryViewContextImpl;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 
 /**
@@ -52,9 +51,6 @@ public class CustomContextBootstrap implements Extension{
 			contexts.add(ctx);
 			
 			ctx = new StaticContextImpl();
-			contexts.add(ctx);
-			
-			ctx = new TemporaryViewContextImpl();
 			contexts.add(ctx);
 			
 			ctx = new TemporaryConversationContextImpl();

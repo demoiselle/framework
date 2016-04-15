@@ -38,16 +38,18 @@ package br.gov.frameworkdemoiselle.internal.producer;
 
 import java.io.Serializable;
 
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+@Deprecated
 public class HttpSessionProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Default
+	@Alternative
 	@Produces
 	public HttpSession create(HttpServletRequest request) {
 		return request != null ? request.getSession() : null;

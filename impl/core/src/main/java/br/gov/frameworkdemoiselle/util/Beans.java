@@ -46,10 +46,8 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.AmbiguousResolutionException;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.*;
 
 import br.gov.frameworkdemoiselle.DemoiselleException;
 
@@ -118,6 +116,16 @@ public final class Beans {
 	 *             if no bean are avaliable to be injected for the given Class and qualifiers.
 	 */
 	public static <T> T getReference(final Class<T> beanClass, Annotation... qualifiers) {
+
+		Instance<T> selectedInstance = CDI.current().select(beanClass, qualifiers);
+		if (selectedInstance != null)
+		{
+			return selectedInstance.get();
+		}
+
+		return null;
+
+		/*
 		T instance;
 
 		try {
@@ -145,7 +153,7 @@ public final class Beans {
 			throw new DemoiselleException(message, cause);
 		}
 
-		return instance;
+		return instance;*/
 	}
 
 	@SuppressWarnings("unchecked")
@@ -158,15 +166,16 @@ public final class Beans {
 		Bean<?> bean = beans.iterator().next();
 		CreationalContext<?> context = getBeanManager().createCreationalContext(bean);
 		Type beanType = beanClass == null ? bean.getBeanClass() : beanClass;
-		InjectionPoint injectionPoint;
+		/*InjectionPoint injectionPoint;
 
 		if (qualifiers == null) {
 			injectionPoint = new ProgramaticInjectionPoint(bean, beanType);
 		} else {
 			injectionPoint = new ProgramaticInjectionPoint(bean, beanType, qualifiers);
-		}
+		}*/
 
-		return (T) getBeanManager().getInjectableReference(injectionPoint, context);
+		//return (T) getBeanManager().getInjectableReference(injectionPoint, context);
+		return (T) getBeanManager().getReference(bean, beanType, context);
 	}
 
 	/*

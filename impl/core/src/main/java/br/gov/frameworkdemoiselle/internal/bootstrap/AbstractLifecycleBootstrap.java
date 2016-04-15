@@ -36,32 +36,22 @@
  */
 package br.gov.frameworkdemoiselle.internal.bootstrap;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
+import br.gov.frameworkdemoiselle.DemoiselleException;
+import br.gov.frameworkdemoiselle.context.*;
+import br.gov.frameworkdemoiselle.internal.implementation.AnnotatedMethodProcessor;
+import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.util.NameQualifier;
+import br.gov.frameworkdemoiselle.util.Reflections;
+import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
-
-import br.gov.frameworkdemoiselle.DemoiselleException;
-import br.gov.frameworkdemoiselle.context.ConversationContext;
-import br.gov.frameworkdemoiselle.context.CustomContext;
-import br.gov.frameworkdemoiselle.context.RequestContext;
-import br.gov.frameworkdemoiselle.context.SessionContext;
-import br.gov.frameworkdemoiselle.context.ViewContext;
-import br.gov.frameworkdemoiselle.internal.context.TemporaryViewContextImpl;
-import br.gov.frameworkdemoiselle.internal.implementation.AnnotatedMethodProcessor;
-import br.gov.frameworkdemoiselle.util.Beans;
-import br.gov.frameworkdemoiselle.util.NameQualifier;
-import br.gov.frameworkdemoiselle.util.Reflections;
-import br.gov.frameworkdemoiselle.util.ResourceBundle;
+import java.lang.annotation.Annotation;
+import java.util.*;
+import java.util.logging.Logger;
 
 public abstract class AbstractLifecycleBootstrap<A extends Annotation> implements Extension {
 
@@ -149,7 +139,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 		if (!registered) {
 			RequestContext requestContext = Beans.getReference(RequestContext.class);
 			SessionContext sessionContext = Beans.getReference(SessionContext.class);
-			ViewContext viewContext = Beans.getReference(ViewContext.class);
+			// ViewContext viewContext = Beans.getReference(ViewContext.class);
 			ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
 
 			if (requestContext != null) {
@@ -166,7 +156,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 
 			// Contexto temporário de visão precisa de tratamento especial
 			// para evitar conflito com o contexto presente na extensão demoiselle-jsf
-			if (viewContext != null) {
+			/*if (viewContext != null) {
 				if (TemporaryViewContextImpl.class.isInstance(viewContext)) {
 					startedContextHere.put("view", viewContext.activate());
 				} else {
@@ -185,7 +175,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 						}
 					}
 				}
-			}
+			}*/
 
 			registered = true;
 		}
@@ -212,7 +202,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 
 			// Contexto temporário de visão precisa de tratamento especial
 			// para evitar conflito com o contexto presente na extensão demoiselle-jsf
-			if (viewContext != null) {
+			/*if (viewContext != null) {
 				if (TemporaryViewContextImpl.class.isInstance(viewContext) && startedContextHere.get("view")) {
 					viewContext.deactivate();
 
@@ -221,7 +211,7 @@ public abstract class AbstractLifecycleBootstrap<A extends Annotation> implement
 						backupContext = null;
 					}
 				}
-			}
+			}*/
 		}
 	}
 }

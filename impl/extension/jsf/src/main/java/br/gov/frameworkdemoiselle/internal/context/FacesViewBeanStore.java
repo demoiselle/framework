@@ -17,6 +17,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * 
  * @author SERPRO
  */
+@Deprecated
 public class FacesViewBeanStore implements Serializable {
 
 	private static final long serialVersionUID = -8265458933971929432L;

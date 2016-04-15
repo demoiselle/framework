@@ -46,9 +46,10 @@ import br.gov.frameworkdemoiselle.internal.context.FacesViewContextImpl;
 import br.gov.frameworkdemoiselle.lifecycle.AfterShutdownProccess;
 import br.gov.frameworkdemoiselle.util.Beans;
 
+@Deprecated
 public class JsfBootstrap implements Extension {
 
-	private FacesViewContextImpl context;
+	/*private FacesViewContextImpl context;
 
 	private boolean contextActivatedHere;
 
@@ -74,5 +75,5 @@ public class JsfBootstrap implements Extension {
 		if (contextActivatedHere) {
 			context.deactivate();
 		}
-	}
+	}*/
 }

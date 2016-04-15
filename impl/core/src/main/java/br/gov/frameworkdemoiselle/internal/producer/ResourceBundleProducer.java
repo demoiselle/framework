@@ -73,7 +73,10 @@ public class ResourceBundleProducer implements Serializable {
 	@Name("")
 	@Produces
 	public ResourceBundle createNamed(InjectionPoint ip) {
-		String baseName = ip.getAnnotated().getAnnotation(Name.class).value();
+		String baseName = "";
+		if (ip != null) {
+			baseName = ip.getAnnotated().getAnnotation(Name.class).value();
+		}
 		return new ResourceBundle(baseName, Beans.getReference(Locale.class));
 	}
 }

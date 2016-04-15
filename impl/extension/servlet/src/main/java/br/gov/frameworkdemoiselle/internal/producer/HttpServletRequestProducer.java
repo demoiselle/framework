@@ -39,18 +39,20 @@ package br.gov.frameworkdemoiselle.internal.producer;
 import java.io.Serializable;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.servlet.http.HttpServletRequest;
 
 @RequestScoped
+@Deprecated
 public class HttpServletRequestProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private transient HttpServletRequest request;
 
-	@Default
+	@Alternative
 	@Produces
 	public HttpServletRequest create() {
 		return this.request;

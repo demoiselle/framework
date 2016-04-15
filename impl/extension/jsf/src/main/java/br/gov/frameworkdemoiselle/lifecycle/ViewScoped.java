@@ -52,13 +52,8 @@ import javax.enterprise.context.NormalScope;
  * 
  * @author SERPRO
  *
- * @deprecated
+ * @deprecated Use {@link javax.faces.view.ViewScoped} instead.
  */
-@Inherited
-@Target({ METHOD, TYPE, FIELD })
-@Retention(RUNTIME)
-@NormalScope(passivating = true)
+@javax.faces.view.ViewScoped
 @Deprecated
-public @interface ViewScoped {
-
-}
+public @interface ViewScoped {}
