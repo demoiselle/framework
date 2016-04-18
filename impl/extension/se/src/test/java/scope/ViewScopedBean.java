@@ -2,9 +2,10 @@ package scope;
 
 import java.io.Serializable;
 
-import br.gov.frameworkdemoiselle.lifecycle.ViewScoped;
+import org.junit.Ignore;
 
-@ViewScoped
+//@ViewScoped
+@Ignore
 public class ViewScopedBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
