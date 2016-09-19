@@ -4,13 +4,13 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.ws.exception;
+package org.demoiselle.jee.security.exception;
 
 import java.util.HashMap;
 
 import org.demoiselle.jee.core.exception.DemoiselleException;
 
-public class DemoiselleRESTException extends DemoiselleException {
+public class DemoiselleSecurityException extends DemoiselleException {
 
 	private static final long serialVersionUID = 519965615171844237L;
 
@@ -18,7 +18,7 @@ public class DemoiselleRESTException extends DemoiselleException {
 
 	private int statusCode;
 
-	public DemoiselleRESTException(String string) {
+	public DemoiselleSecurityException(String string) {
 		super(string);
 	}
 
