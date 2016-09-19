@@ -1,9 +1,9 @@
-package org.demoiselle.util;
+package org.demoiselle.jee.core.util;
+
+import java.lang.annotation.Annotation;
+import java.util.Collection;
 
 import javax.enterprise.inject.spi.InjectionPoint;
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Utility class to peform useful operations on CDI discovered beans.
@@ -22,7 +22,6 @@ public final class CDIUtils {
 	 * @param allAnnotations List of all annotations where to look for.
 	 * @return <code>true</code> if the annotation is present on the list
 	 */
-	@SuppressWarnings("WeakerAccess")
 	public static boolean hasAnnotation(Class<? extends Annotation> annotationType, Annotation... allAnnotations) {
 		for (Annotation currentAnnotation : allAnnotations) {
 			if (currentAnnotation.annotationType().isAssignableFrom(annotationType)) {
@@ -39,7 +38,6 @@ public final class CDIUtils {
 	 * @see #hasAnnotation(Class, Annotation...)
 	 * @return <code>true</code> if the annotation is present on the list
 	 */
-	@SuppressWarnings("WeakerAccess")
 	public static boolean hasAnnotation(Class<? extends Annotation> annotationType,
 			Collection<Annotation> allAnnotations) {
 		return hasAnnotation(annotationType, allAnnotations.toArray(annotationArrayType));
@@ -53,7 +51,6 @@ public final class CDIUtils {
 	 * @see #hasAnnotation(Class, Annotation...)
 	 * @return <code>true</code> if the annotation is present on the list
 	 */
-	@SuppressWarnings("WeakerAccess")
 	public static boolean hasAnnotation(Class<? extends Annotation> annotationType, Class<?> baseType) {
 		return hasAnnotation(annotationType, baseType.getAnnotations());
 	}
@@ -67,7 +64,7 @@ public final class CDIUtils {
 	 * @param <T> Type of the specific annotation returned
 	 * @return The annotation instance found, or <code>null</code> if there is no such annotation present.
 	 */
-	@SuppressWarnings({ "WeakerAccess", "unchecked" })
+	@SuppressWarnings("unchecked")
 	public static <T extends Annotation> T getAnnotation(Class<T> annotationType, Annotation... allAnnotations) {
 		for (Annotation currentAnnotation : allAnnotations) {
 			if (currentAnnotation.annotationType().isAssignableFrom(annotationType)) {
@@ -85,7 +82,6 @@ public final class CDIUtils {
 	 * @see #getAnnotation(Class, Annotation...)
 	 * @return The annotation instance found, or <code>null</code> if there is no such annotation present.
 	 */
-	@SuppressWarnings({ "WeakerAccess" })
 	public static <T extends Annotation> T getAnnotation(Class<T> annotationType,
 			Collection<Annotation> allAnnotations) {
 		return getAnnotation(annotationType, allAnnotations.toArray(annotationArrayType));
@@ -99,7 +95,6 @@ public final class CDIUtils {
 	 * @param ip                      Injection point of a bean type.
 	 * @return <code>true</code> if the annotation is present on the list
 	 */
-	@SuppressWarnings("WeakerAccess")
 	public static boolean hasQualifier(Class<? extends Annotation> qualifierAnnotationType, InjectionPoint ip) {
 		return hasAnnotation(qualifierAnnotationType, ip.getQualifiers());
 	}
@@ -113,7 +108,6 @@ public final class CDIUtils {
 	 * @param <T> Type of the specific annotation returned
 	 * @return The annotation instance found, or <code>null</code> if there is no such annotation present.
 	 */
-	@SuppressWarnings("WeakerAccess")
 	public static <T extends Annotation> T getQualifier(Class<T> qualifierAnnotationType, InjectionPoint ip) {
 		return getAnnotation(qualifierAnnotationType, ip.getQualifiers());
 	}
