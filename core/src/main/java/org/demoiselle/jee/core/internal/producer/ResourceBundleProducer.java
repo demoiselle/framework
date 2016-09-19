@@ -7,14 +7,16 @@ package org.demoiselle.jee.core.internal.producer;
 
 import java.io.Serializable;
 import java.util.Locale;
-import org.demoiselle.jee.core.util.ResourceBundle;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.InjectionPoint;
+
 import org.demoiselle.jee.core.annotation.Name;
-import org.demoiselle.util.CDIUtils;
+import org.demoiselle.jee.core.util.CDIUtils;
+import org.demoiselle.jee.core.util.ResourceBundle;
 
 /**
  *
@@ -53,7 +55,8 @@ public class ResourceBundleProducer implements Serializable {
         return create(baseName);
     }
 
-    public static ResourceBundle create(String baseName) {
+	@SuppressWarnings("serial")
+	public static ResourceBundle create(String baseName) {
         ResourceBundle bundle;
 
         try {

@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.util;
+package org.demoiselle.jee.core.util;
 
 /**
  *Class that offer tow methods that can help with manipulation of throwable exceptions.

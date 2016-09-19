@@ -36,8 +36,6 @@
  */
 package org.demoiselle.jee.core.util;
 
-import org.demoiselle.jee.core.annotation.Ignore;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +44,8 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.demoiselle.util.Reflections;
+
+import org.demoiselle.jee.core.annotation.Ignore;
 
 /**
  * Contain a set of methods that implements a set of functionalities that

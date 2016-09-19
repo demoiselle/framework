@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.util;
+package org.demoiselle.jee.core.util;
 
 import java.io.InputStream;
 import java.lang.reflect.*;

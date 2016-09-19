@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>demoiselle-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

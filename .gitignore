@@ -2,3 +2,5 @@
 /core/target/
 /ws/target/
 /security/target/
+/.project
+/.settings/
