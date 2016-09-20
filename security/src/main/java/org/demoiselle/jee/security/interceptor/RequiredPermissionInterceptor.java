@@ -140,6 +140,5 @@ public class RequiredPermissionInterceptor implements Serializable {
 
     private SecurityContext getSecurityContext() {
         return CDI.current().select(SecurityContext.class).get();
-//		return Beans.getReference(SecurityContext.class);
     }
 }

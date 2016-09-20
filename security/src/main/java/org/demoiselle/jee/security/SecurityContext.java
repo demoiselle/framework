@@ -38,6 +38,10 @@ package org.demoiselle.jee.security;
 
 import java.io.Serializable;
 import java.security.Principal;
+import java.util.Map;
+import java.util.Set;
+import org.demoiselle.jee.security.exception.AuthorizationException;
+import org.demoiselle.jee.security.exception.NotLoggedInException;
 
 /**
  * <p>
@@ -48,72 +52,65 @@ import java.security.Principal;
  */
 public interface SecurityContext extends Serializable {
 
-	/**
-	 * Executes the login of a user to the application.
-	 * 
-	 * @throws AuthenticationException
-	 *             When the logon process fails, this exception is thrown.
-	 * @throws InvalidCredentialsException
-	 *             When the user's credentials coudn't be validated. InvalidCredentialsException is a special case of
-	 *             AuthenticationException.
-	 */
-	void login();
+    /**
+     * Checks if a specific user is logged in.
+     *
+     * @return {@code true} if the user is logged in
+     */
+    boolean isLoggedIn();
 
-	/**
-	 * Executes the logout of a user.
-	 * 
-	 * @throws AuthenticationException
-	 *             When the logout process fails, this exception is thrown.
-	 */
-	void logout();
+    /**
+     * @throws NotLoggedInException if there is no user logged in a specific
+     * session
+     */
+    void checkLoggedIn();
 
-	/**
-	 * Checks if a specific user is logged in.
-	 * 
-	 * @return {@code true} if the user is logged in
-	 */
-	boolean isLoggedIn();
+    /**
+     * Checks if the logged user has permission to execute an specific operation
+     * on a specific resource.
+     *
+     * @param resource resource to be checked
+     * @param operation operation to be checked
+     * @return {@code true} if the user has the permission
+     * @throws AuthorizationException When the permission checking fails, this
+     * exception is thrown.
+     * @throws NotLoggedInException if there is no user logged in a specific
+     * session.
+     */
+    boolean hasPermission(String resource, String operation);
 
-	/**
-	 * @throws NotLoggedInException
-	 *             if there is no user logged in a specific session
-	 */
-	void checkLoggedIn();
+    /**
+     * Checks if the logged user has an specific role
+     *
+     * @param role role to be checked
+     * @return {@code true} if the user has the role
+     * @throws AuthorizationException When the permission checking fails, this
+     * exception is thrown.
+     * @throws NotLoggedInException if there is no user logged in a specific
+     * session.
+     */
+    boolean hasRole(String role);
 
-	/**
-	 * Checks if the logged user has permission to execute an specific operation on a specific resource.
-	 * 
-	 * @param resource
-	 *            resource to be checked
-	 * @param operation
-	 *            operation to be checked
-	 * @return {@code true} if the user has the permission
-	 * @throws AuthorizationException
-	 *             When the permission checking fails, this exception is thrown.
-	 * @throws NotLoggedInException
-	 *             if there is no user logged in a specific session.
-	 */
-	boolean hasPermission(String resource, String operation);
+    /**
+     * Return the user logged in the session.
+     *
+     * @return the user logged in a specific authenticated session. If there is
+     * no active session {@code null} is returned.
+     */
+    Principal getUser();
 
-	/**
-	 * Checks if the logged user has an specific role
-	 * 
-	 * @param role
-	 *            role to be checked
-	 * @return {@code true} if the user has the role
-	 * @throws AuthorizationException
-	 *             When the permission checking fails, this exception is thrown.
-	 * @throws NotLoggedInException
-	 *             if there is no user logged in a specific session.
-	 */
-	boolean hasRole(String role);
+    void setUser(Principal principal);
 
-	/**
-	 * Return the user logged in the session.
-	 * 
-	 * @return the user logged in a specific authenticated session. If there is no active session {@code null} is
-	 *         returned.
-	 */
-	Principal getUser();
+    String getToken();
+
+    void setToken(String token);
+
+    void setRoles(Set<String> roles);
+
+    void setPermission(Map<String, String> permissions);
+
+    Set<String> getResources(String operation);
+
+    Set<String> getOperations(String resources);
 
 }

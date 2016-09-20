@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.demoiselle.jee.ws;
+package org.demoiselle.jee.security;
 
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -30,8 +30,15 @@ public class JaxRsFilter implements ClientRequestFilter, ClientResponseFilter, C
     @Inject
     private Logger LOG;
 
+    @Inject
+    private SecurityContext securityContext;
+
     @Override
     public void filter(ClientRequestContext requestContext) {
+        String token = requestContext.getHeaders().get("Authorization").toString();
+        if (!token.isEmpty()) {
+            securityContext.setToken(token);
+        }
     }
 
     @Override
@@ -43,15 +50,12 @@ public class JaxRsFilter implements ClientRequestFilter, ClientResponseFilter, C
     }
 
     @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext response) {
-        response.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
-        response.getHeaders().putSingle("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, DELETE");
-        response.getHeaders().putSingle("Access-Control-Allow-Headers", "Content-Type");
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
+        responseContext.getHeaders().putSingle("Authorization", "Basic");
     }
 
     @PostConstruct
     public void init() {
-        LOG.info("Demoiselle Module - Rest");
+        LOG.info("Demoiselle Module - Security");
     }
-
 }

@@ -34,7 +34,6 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-
 package org.demoiselle.jee.security.interceptor;
 
 import javax.annotation.Priority;
@@ -48,16 +47,15 @@ import org.demoiselle.jee.security.SecurityContext;
 
 /**
  * <p>
- *Intercepts calls with {@link LoggedIn} annotations.
+ * Intercepts calls with {@link LoggedIn} annotations.
  * </p>
  *
  * @author SERPRO
  */
-
 @LoggedIn
 @Interceptor
 @Priority(Interceptor.Priority.APPLICATION)
-public class LoggedInInterceptor implements Serializable{
+public class LoggedInInterceptor implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

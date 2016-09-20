@@ -4,3 +4,6 @@
 /security/target/
 /.project
 /.settings/
+/basic/target/
+/basic (cópia)/target/
+/jwt/target/

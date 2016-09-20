@@ -23,7 +23,8 @@
         <module>persistence</module>
         <module>ws</module>
         <!--<module>swagger</module>-->
-        <!--<module>security</module>-->
+        <module>security</module>
+        <module>basic</module>
     </modules>
 
     <dependencyManagement>

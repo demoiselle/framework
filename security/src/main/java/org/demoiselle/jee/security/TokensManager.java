@@ -37,39 +37,27 @@
 package org.demoiselle.jee.security;
 
 import java.io.Serializable;
+import java.security.Principal;
+import java.util.Map;
+import java.util.Set;
+import org.demoiselle.jee.security.exception.AuthorizationException;
+import org.demoiselle.jee.security.exception.NotLoggedInException;
 
 /**
  * <p>
- * Defines the methods that should be implemented by anyone who wants an authorization mechanism.
+ * Structure used to handle both authentication and authorizations mechanisms.
  * </p>
  *
  * @author SERPRO
  */
-public interface Authorizer extends Serializable {
+public interface TokensManager extends Serializable {
 
-	/**
-	 * <p>
-	 * Checks if the logged user has a specific role.
-	 * </p>
-	 *
-	 * @param role role to be checked.
-	 * @return {@code true} if the user has the role.
-	 * @throws Exception if the underlying permission checking mechanism throwns any other exception,
-	 * 					just throw it and leave the security context implementation to handle it.
-	 */
-	boolean hasRole(String role) throws Exception;
+    Principal getUser(String token);
 
-	/**
-	 * <p>
-	 * Checks if the logged user has permission to execute a specific operation on a specific resource.
-	 * </p>
-	 *
-	 * @param resource resource to be checked.
-	 * @param operation operation to be checked.
-	 * @return {@code true} if the user has the permission.
-	 * @throws Exception if the underlying permission checking mechanism throwns any other exception,
-	 * 					just throw it and leave the security context implementation to handle it.
-	 */
-	boolean hasPermission(String resource, String operation) throws Exception;
+    String create(Principal user);
+
+    void remove(String token);
+
+    boolean validate(String token);
 
 }
