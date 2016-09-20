@@ -42,7 +42,7 @@ public class TokensManager {
     @Inject
     private Logger logger;
 
-    public void TokensManager() throws JoseException {
+    public TokensManager() throws JoseException {
         RsaJsonWebKey chave = RsaJwkGenerator.generateJwk(2048);
         logger.info("Se você quiser usar sua app em cluster, coloque o parametro jwt.key no app.properties e reinicie a aplicacao");
         logger.log(Level.INFO, "jwt.key={0}", chave);
