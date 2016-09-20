@@ -14,8 +14,8 @@ import static javax.sql.rowset.spi.SyncFactory.getLogger;
 import org.demoiselle.jee.core.annotation.Name;
 import org.demoiselle.jee.core.util.ResourceBundle;
 import org.demoiselle.jee.core.util.Strings;
-import org.demoiselle.jee.security.RequiredPermission;
-import org.demoiselle.jee.security.SecurityContext;
+import org.demoiselle.jee.security.annotations.RequiredPermission;
+import org.demoiselle.jee.security.interfaces.SecurityContext;
 
 /**
  * <p>

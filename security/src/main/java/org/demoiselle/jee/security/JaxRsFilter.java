@@ -5,6 +5,8 @@
  */
 package org.demoiselle.jee.security;
 
+import java.io.IOException;
+import org.demoiselle.jee.security.interfaces.SecurityContext;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -33,29 +35,41 @@ public class JaxRsFilter implements ClientRequestFilter, ClientResponseFilter, C
     @Inject
     private SecurityContext securityContext;
 
-    @Override
-    public void filter(ClientRequestContext requestContext) {
-        String token = requestContext.getHeaders().get("Authorization").toString();
-        if (!token.isEmpty()) {
-            securityContext.setToken(token);
-        }
-    }
-
-    @Override
-    public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) {
-    }
-
-    @Override
-    public void filter(ContainerRequestContext requestContext) {
-    }
-
-    @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
-        responseContext.getHeaders().putSingle("Authorization", "Basic");
-    }
-
     @PostConstruct
     public void init() {
         LOG.info("Demoiselle Module - Security");
     }
+
+    @Override
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
+        responseContext.getHeaders().putSingle("Authorization", "enabled");
+        responseContext.getHeaders().putSingle("x-content-type-options", "nosniff");
+        responseContext.getHeaders().putSingle("x-frame-options", "SAMEORIGIN");
+        responseContext.getHeaders().putSingle("x-xss-protection", "1; mode=block");
+    }
+
+    @Override
+    public void filter(ContainerRequestContext requestContext) throws IOException {
+        try {
+            if (requestContext.getHeaders().containsKey("Authorization")) {
+                String token = requestContext.getHeaders().get("Authorization").toString().replace("[", "").replace("]", "");
+                if (!token.isEmpty()) {
+                    securityContext.setToken(token);
+                }
+            }
+        } catch (Exception e) {
+        }
+
+    }
+
+    @Override
+    public void filter(ClientRequestContext requestContext) throws IOException {
+
+    }
+
+    @Override
+    public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
+
+    }
+
 }

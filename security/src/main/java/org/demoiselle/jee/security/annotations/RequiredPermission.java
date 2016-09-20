@@ -34,7 +34,7 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.jee.security;
+package org.demoiselle.jee.security.annotations;
 
 import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
@@ -47,19 +47,19 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * <p>
- * Indicates that the annotated method or class requires the user to have one or more roles associated in order to be
- * invocated.
- * </p>
- *
+ * Indicates that a specific permission is required in order to invocate the annotated method or class.
+ * 
  * @author SERPRO
  */
 @Inherited
 @InterceptorBinding
 @Target({ METHOD, TYPE })
 @Retention(RUNTIME)
-public @interface RequiredRole {
+public @interface RequiredPermission {
 
 	@Nonbinding
-	String[] value();
+	String resource() default "";
+
+	@Nonbinding
+	String operation() default "";
 }

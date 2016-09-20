@@ -44,6 +44,7 @@ public class JaxRsFilter implements ClientRequestFilter, ClientResponseFilter, C
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext response) {
+        response.getHeaders().putSingle("Demoiselle", "3.0.0");
         response.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
         response.getHeaders().putSingle("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, DELETE");
         response.getHeaders().putSingle("Access-Control-Allow-Headers", "Content-Type");

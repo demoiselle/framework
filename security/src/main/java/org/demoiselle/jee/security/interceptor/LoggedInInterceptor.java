@@ -42,8 +42,8 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import java.io.Serializable;
-import org.demoiselle.jee.security.LoggedIn;
-import org.demoiselle.jee.security.SecurityContext;
+import org.demoiselle.jee.security.annotations.LoggedIn;
+import org.demoiselle.jee.security.interfaces.SecurityContext;
 
 /**
  * <p>

@@ -6,41 +6,49 @@
 package org.demoiselle.jee.security.basic.impl;
 
 import java.security.Principal;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.enterprise.context.Dependent;
-import org.demoiselle.jee.security.TokensManager;
+import java.util.logging.Logger;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
 /**
  *
  * @author 70744416353
  */
-@Dependent
-public class TokensManagerImpl implements TokensManager {
+@ApplicationScoped
+public class TokensManager {
 
     private static ConcurrentHashMap<String, Principal> repo = new ConcurrentHashMap<>();
 
-    @Override
+    @Inject
+    private Logger logger;
+
     public Principal getUser(String token) {
         return repo.get(token);
     }
 
-    @Override
-    public String create(Principal user) {
+    public String getToken(Principal user) {
         String value = null;
         if (!repo.containsValue(user)) {
             value = UUID.randomUUID().toString();
             repo.put(value, user);
+        } else {
+            for (Map.Entry<String, Principal> entry : repo.entrySet()) {
+                if (entry.getValue().equals(user)) {
+                    return entry.getKey();
+                }
+            }
         }
         return value;
     }
 
-    @Override
     public void remove(String token) {
         repo.remove(token);
     }
 
-    @Override
     public boolean validate(String token) {
         return repo.containsKey(token);
     }

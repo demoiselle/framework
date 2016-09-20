@@ -34,30 +34,32 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.jee.security;
+package org.demoiselle.jee.security.annotations;
 
-import java.io.Serializable;
-import java.security.Principal;
-import java.util.Map;
-import java.util.Set;
-import org.demoiselle.jee.security.exception.AuthorizationException;
-import org.demoiselle.jee.security.exception.NotLoggedInException;
+import javax.enterprise.util.Nonbinding;
+import javax.interceptor.InterceptorBinding;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * <p>
- * Structure used to handle both authentication and authorizations mechanisms.
+ * Indicates that the annotated method or class requires the user to have one or more roles associated in order to be
+ * invocated.
  * </p>
  *
  * @author SERPRO
  */
-public interface TokensManager extends Serializable {
+@Inherited
+@InterceptorBinding
+@Target({ METHOD, TYPE })
+@Retention(RUNTIME)
+public @interface RequiredRole {
 
-    Principal getUser(String token);
-
-    String create(Principal user);
-
-    void remove(String token);
-
-    boolean validate(String token);
-
+	@Nonbinding
+	String[] value();
 }

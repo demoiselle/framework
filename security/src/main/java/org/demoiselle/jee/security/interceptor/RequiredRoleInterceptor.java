@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 import org.demoiselle.jee.core.util.ResourceBundle;
-import org.demoiselle.jee.security.RequiredRole;
-import org.demoiselle.jee.security.SecurityContext;
+import org.demoiselle.jee.security.annotations.RequiredRole;
+import org.demoiselle.jee.security.interfaces.SecurityContext;
 
 /**
  * <p>

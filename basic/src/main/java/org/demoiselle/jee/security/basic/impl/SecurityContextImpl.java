@@ -1,14 +1,13 @@
 package org.demoiselle.jee.security.basic.impl;
 
+import org.demoiselle.jee.security.Token;
 import javax.enterprise.context.Dependent;
-import java.io.Serializable;
 import java.security.Principal;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import org.demoiselle.jee.core.util.ResourceBundle;
-import org.demoiselle.jee.security.SecurityContext;
-import org.demoiselle.jee.security.TokensManager;
+import org.demoiselle.jee.security.interfaces.SecurityContext;
 import org.demoiselle.jee.security.exception.NotLoggedInException;
 
 /**
@@ -23,12 +22,11 @@ public class SecurityContextImpl implements SecurityContext {
 
     private static final long serialVersionUID = 1L;
 
-    private String token;
-
-    private Principal user;
-
     @Inject
     private TokensManager tm;
+
+    @Inject
+    private Token token;
 
     @Inject
     private ResourceBundle bundle;
@@ -67,7 +65,10 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public Principal getUser() {
-        return this.user;
+        if (token.getKey() != null && !token.getKey().isEmpty()) {
+            return tm.getUser(token.getKey());
+        }
+        return token.getPrincipal();
     }
 
     public void checkLoggedIn() throws NotLoggedInException {
@@ -98,20 +99,25 @@ public class SecurityContextImpl implements SecurityContext {
 
     @Override
     public void setUser(Principal principal) {
-        this.token = tm.create(principal);
-        this.user = principal;
+        token.setKey(tm.getToken(principal));
+        token.setPrincipal(principal);
     }
 
     @Override
     public String getToken() {
-        return token;
+        if (token.getKey() != null && token.getKey().isEmpty()) {
+            token.setKey(tm.getToken(token.getPrincipal()));
+        }
+        return token.getKey();
     }
 
     @Override
-    public void setToken(String token) {
-        this.user = tm.getUser(token);
-        this.token = token;
+    public void setToken(String chave) {
+        token.setPrincipal(tm.getUser(chave));
+        if (token.getPrincipal() == null) {
+            throw new NotLoggedInException(bundle.getString("user-not-authenticated"));
+        }
+        token.setKey(chave);
     }
-
 
 }
