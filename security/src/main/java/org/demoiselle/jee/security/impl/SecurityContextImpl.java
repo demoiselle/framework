@@ -1,4 +1,4 @@
-package org.demoiselle.jee.security.basic.impl;
+package org.demoiselle.jee.security.impl;
 
 import org.demoiselle.jee.security.Token;
 import javax.enterprise.context.Dependent;
@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import org.demoiselle.jee.core.util.ResourceBundle;
+import org.demoiselle.jee.security.LoggedUser;
 import org.demoiselle.jee.security.interfaces.SecurityContext;
 import org.demoiselle.jee.security.exception.NotLoggedInException;
+import org.demoiselle.jee.security.interfaces.TokensManager;
 
 /**
  * <p>
@@ -27,6 +29,9 @@ public class SecurityContextImpl implements SecurityContext {
 
     @Inject
     private Token token;
+
+    @Inject
+    private LoggedUser loggedUser;
 
     @Inject
     private ResourceBundle bundle;
@@ -65,10 +70,10 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public Principal getUser() {
-        if (token.getKey() != null && !token.getKey().isEmpty()) {
-            return tm.getUser(token.getKey());
-        }
-        return token.getPrincipal();
+//        if (token.getKey() != null && !token.getKey().isEmpty()) {
+//            return tm.getUser(token.getKey());
+//        }
+        return null;//token.getPrincipal();
     }
 
     public void checkLoggedIn() throws NotLoggedInException {
@@ -99,24 +104,24 @@ public class SecurityContextImpl implements SecurityContext {
 
     @Override
     public void setUser(Principal principal) {
-        token.setKey(tm.getToken(principal));
-        token.setPrincipal(principal);
+//        token.setKey(tm.getToken(principal));
+//        token.setPrincipal(principal);
     }
 
     @Override
     public String getToken() {
-        if (token.getKey() != null && token.getKey().isEmpty()) {
-            token.setKey(tm.getToken(token.getPrincipal()));
-        }
+//        if (token.getKey() != null && token.getKey().isEmpty()) {
+//            token.setKey(tm.getToken(token.getPrincipal()));
+//        }
         return token.getKey();
     }
 
     @Override
     public void setToken(String chave) {
-        token.setPrincipal(tm.getUser(chave));
-        if (token.getPrincipal() == null) {
-            throw new NotLoggedInException(bundle.getString("user-not-authenticated"));
-        }
+//        token.setPrincipal(tm.getUser(chave));
+//        if (token.getPrincipal() == null) {
+//            throw new NotLoggedInException(bundle.getString("user-not-authenticated"));
+//        }
         token.setKey(chave);
     }
 

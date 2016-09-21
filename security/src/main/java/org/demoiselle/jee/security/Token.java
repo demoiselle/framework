@@ -5,7 +5,6 @@
  */
 package org.demoiselle.jee.security;
 
-import java.security.Principal;
 import javax.enterprise.context.RequestScoped;
 
 /**
@@ -15,16 +14,7 @@ import javax.enterprise.context.RequestScoped;
 @RequestScoped
 public class Token {
 
-    private Principal principal;
     private String key;
-
-    public Principal getPrincipal() {
-        return principal;
-    }
-
-    public void setPrincipal(Principal principal) {
-        this.principal = principal;
-    }
 
     public String getKey() {
         return key;

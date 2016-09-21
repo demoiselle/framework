@@ -8,15 +8,12 @@ package org.demoiselle.jee.security.jwt.impl;
 import com.google.gson.Gson;
 import java.security.Key;
 import java.security.Principal;
-import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.container.PreMatching;
+import org.demoiselle.jee.security.interfaces.TokensManager;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
 import org.jose4j.jws.AlgorithmIdentifiers;
@@ -31,8 +28,8 @@ import org.jose4j.lang.JoseException;
  *
  * @author 70744416353
  */
-@RequestScoped
-public class TokensManager {
+@Dependent
+public class TokensManagerImpl implements TokensManager {
 
     @Inject
     private HttpServletRequest httpRequest;
@@ -42,7 +39,7 @@ public class TokensManager {
     @Inject
     private Logger logger;
 
-    public TokensManager() throws JoseException {
+    public TokensManagerImpl() throws JoseException {
         RsaJsonWebKey chave = RsaJwkGenerator.generateJwk(2048);
         logger.info("Se você quiser usar sua app em cluster, coloque o parametro jwt.key no app.properties e reinicie a aplicacao");
         logger.log(Level.INFO, "jwt.key={0}", chave);
@@ -51,6 +48,7 @@ public class TokensManager {
         rsaJsonWebKey.setKeyId("demoiselle-security-jwt");
     }
 
+    @Override
     public Principal getUser(String jwt) {
         Principal usuario = null;
         if (jwt != null && !jwt.isEmpty()) {
@@ -77,6 +75,7 @@ public class TokensManager {
         return usuario;
     }
 
+    @Override
     public String getToken(Principal user) {
         try {
             JwtClaims claims = new JwtClaims();

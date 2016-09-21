@@ -10,27 +10,30 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import org.demoiselle.jee.security.Token;
+import org.demoiselle.jee.security.interfaces.TokensManager;
 
 /**
  *
  * @author 70744416353
  */
-@ApplicationScoped
-public class TokensManager {
+@Dependent
+public class TokensManagerImpl implements TokensManager {
 
     private static ConcurrentHashMap<String, Principal> repo = new ConcurrentHashMap<>();
 
     @Inject
     private Logger logger;
 
-    public Principal getUser(String token) {
-        return repo.get(token);
+    @Override
+    public Principal getUser(Token token) {
+        return repo.get(token.getKey());
     }
 
-    public String getToken(Principal user) {
+    @Override
+    public Token getToken(Principal user) {
         String value = null;
         if (!repo.containsValue(user)) {
             value = UUID.randomUUID().toString();
@@ -43,14 +46,6 @@ public class TokensManager {
             }
         }
         return value;
-    }
-
-    public void remove(String token) {
-        repo.remove(token);
-    }
-
-    public boolean validate(String token) {
-        return repo.containsKey(token);
     }
 
 }
