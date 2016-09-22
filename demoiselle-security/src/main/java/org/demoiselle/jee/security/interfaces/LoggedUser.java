@@ -37,8 +37,10 @@
 package org.demoiselle.jee.security.interfaces;
 
 import java.io.Serializable;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.RequestScoped;
 
 /**
@@ -49,7 +51,7 @@ import javax.enterprise.context.RequestScoped;
  * @author SERPRO
  */
 @RequestScoped
-public interface LoggedUser extends Serializable {
+public interface LoggedUser extends Principal, Serializable {
 
     public String getId();
 
