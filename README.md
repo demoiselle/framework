@@ -1,4 +1,4 @@
-Demoiselle 2
+Demoiselle 3
 =============
 
 O framework Demoiselle implementa o conceito de framework integrador.

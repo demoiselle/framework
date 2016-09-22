@@ -24,14 +24,12 @@
     </properties>
 
     <modules>
-        <!--<module>configuration</module>-->
-        <module>core</module>
-        <module>persistence</module>
-        <module>ws</module>
-        <!--<module>swagger</module>-->
-        <module>security</module>
-        <module>basic</module>
-        <module>jwt</module>
+        <module>demoiselle-core</module>
+        <module>demoiselle-persistence-jpa</module>
+        <module>demoiselle-security</module>
+        <!--<module>demoiselle-security-basic</module>-->
+        <!--<module>demoiselle-security-jwt</module>-->
+        <module>demoiselle-ws-jaxrs</module>
     </modules>
 
     <dependencyManagement>
