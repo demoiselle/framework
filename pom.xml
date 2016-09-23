@@ -9,7 +9,7 @@
 	<version>3.0.0-BETA1-SNAPSHOT</version>
 
 	<name>Demoiselle Framework</name>
-	<description>Framework de integração para Java EE 7 baseado na especificação CDI 1.1 (JSR 346).</description>
+	<description>Framework de integração para Java EE 7 baseado na especificação CDI 1.2 (JSR 346).</description>
 	<url>http://demoiselle.io</url>
 
 	<licenses>
@@ -64,6 +64,7 @@
 	</developers>
 	
 	<modules>
+		<module>demoiselle-parent</module>
 		<module>demoiselle-core</module>
 		<module>demoiselle-persistence-jpa</module>
 		<module>demoiselle-security</module>
@@ -91,7 +92,7 @@
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>2.8.2</version>
 			</plugin>
-
+ 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -105,7 +106,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
+<!-- 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -119,7 +120,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
+ -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
