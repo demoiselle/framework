@@ -1,15 +1,23 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.security.impl;
 
-import org.demoiselle.jee.security.Token;
-import javax.enterprise.context.Dependent;
 import java.security.Principal;
 import java.util.Map;
 import java.util.Set;
+
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
 import org.demoiselle.jee.core.util.ResourceBundle;
 import org.demoiselle.jee.security.LoggedUser;
-import org.demoiselle.jee.security.interfaces.SecurityContext;
+import org.demoiselle.jee.security.Token;
 import org.demoiselle.jee.security.exception.NotLoggedInException;
+import org.demoiselle.jee.security.interfaces.SecurityContext;
 import org.demoiselle.jee.security.interfaces.TokensManager;
 
 /**
