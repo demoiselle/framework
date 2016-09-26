@@ -9,11 +9,11 @@ package org.demoiselle.jee.security.interceptor;
 import org.demoiselle.jee.security.exception.AuthorizationException;
 
 import javax.annotation.Priority;
-import javax.enterprise.inject.spi.CDI;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import java.io.Serializable;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 import org.demoiselle.jee.core.util.ResourceBundle;
-import org.demoiselle.jee.security.annotations.RequiredRole;
-import org.demoiselle.jee.security.interfaces.SecurityContext;
+import org.demoiselle.jee.security.annotation.RequiredRole;
+import org.demoiselle.jee.core.interfaces.security.SecurityContext;
 
 /**
  * <p>
@@ -37,6 +37,12 @@ import org.demoiselle.jee.security.interfaces.SecurityContext;
 public class RequiredRoleInterceptor implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Inject
+    private SecurityContext securityContext;
+
+    @Inject
+    private Principal loggedUser;
 
     @Inject
     private ResourceBundle bundle;
@@ -64,27 +70,27 @@ public class RequiredRoleInterceptor implements Serializable {
     public Object manage(final InvocationContext ic) throws Exception {
         List<String> roles = getRoles(ic);
 
-        if (getSecurityContext().isLoggedIn()) {
+        if (securityContext.isLoggedIn()) {
             logger.info(
-                    bundle.getString("has-role-verification", getSecurityContext().getUser().getName(), roles));
+                    bundle.getString("has-role-verification", loggedUser.getName(), roles));
         }
 
         List<String> userRoles = new ArrayList<String>();
 
         for (String role : roles) {
-            if (getSecurityContext().hasRole(role)) {
+            if (securityContext.hasRole(role)) {
                 userRoles.add(role);
             }
         }
 
         if (userRoles.isEmpty()) {
             logger.severe(
-                    bundle.getString("does-not-have-role", getSecurityContext().getUser().getName(), roles));
+                    bundle.getString("does-not-have-role", loggedUser.getName(), roles));
 
             throw new AuthorizationException(bundle.getString("does-not-have-role-ui", roles));
         }
 
-        logger.fine(bundle.getString("user-has-role", getSecurityContext().getUser().getName(), userRoles));
+        logger.fine(bundle.getString("user-has-role", loggedUser.getName(), userRoles));
 
         return ic.proceed();
     }
@@ -108,10 +114,6 @@ public class RequiredRoleInterceptor implements Serializable {
         }
 
         return Arrays.asList(roles);
-    }
-
-    private SecurityContext getSecurityContext() {
-        return CDI.current().select(SecurityContext.class).get();
     }
 
 }

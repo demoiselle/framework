@@ -7,18 +7,17 @@
 package org.demoiselle.jee.security.impl;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.demoiselle.jee.core.util.ResourceBundle;
-import org.demoiselle.jee.security.LoggedUser;
-import org.demoiselle.jee.security.Token;
+
 import org.demoiselle.jee.security.exception.NotLoggedInException;
-import org.demoiselle.jee.security.interfaces.SecurityContext;
-import org.demoiselle.jee.security.interfaces.TokensManager;
+import org.demoiselle.jee.core.interfaces.security.SecurityContext;
+import org.demoiselle.jee.core.interfaces.security.Token;
+import org.demoiselle.jee.core.interfaces.security.TokensManager;
 
 /**
  * <p>
@@ -34,12 +33,6 @@ public class SecurityContextImpl implements SecurityContext {
 
     @Inject
     private TokensManager tm;
-
-    @Inject
-    private Token token;
-
-    @Inject
-    private LoggedUser loggedUser;
 
     @Inject
     private ResourceBundle bundle;
@@ -70,20 +63,10 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public boolean isLoggedIn() {
-        return getUser() != null;
+        return tm.validate();
     }
 
-    /**
-     * @see org.demoiselle.security.SecurityContext#getUser()
-     */
     @Override
-    public Principal getUser() {
-//        if (token.getKey() != null && !token.getKey().isEmpty()) {
-//            return tm.getUser(token.getKey());
-//        }
-        return null;//token.getPrincipal();
-    }
-
     public void checkLoggedIn() throws NotLoggedInException {
         if (!isLoggedIn()) {
             throw new NotLoggedInException(bundle.getString("user-not-authenticated"));
@@ -91,46 +74,13 @@ public class SecurityContextImpl implements SecurityContext {
     }
 
     @Override
-    public void setRoles(Set<String> roles) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Principal getUser() {
+        return tm.getUser();
     }
 
     @Override
-    public void setPermission(Map<String, String> permissions) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Set<String> getResources(String operation) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Set<String> getOperations(String resources) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setUser(Principal principal) {
-//        token.setKey(tm.getToken(principal));
-//        token.setPrincipal(principal);
-    }
-
-    @Override
-    public String getToken() {
-//        if (token.getKey() != null && token.getKey().isEmpty()) {
-//            token.setKey(tm.getToken(token.getPrincipal()));
-//        }
-        return token.getKey();
-    }
-
-    @Override
-    public void setToken(String chave) {
-//        token.setPrincipal(tm.getUser(chave));
-//        if (token.getPrincipal() == null) {
-//            throw new NotLoggedInException(bundle.getString("user-not-authenticated"));
-//        }
-        token.setKey(chave);
+    public void setUser(Principal loggedUser) {
+        tm.setUser(loggedUser);
     }
 
 }

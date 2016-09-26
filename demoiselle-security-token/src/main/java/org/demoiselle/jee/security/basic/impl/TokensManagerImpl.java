@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.interfaces.security.Token;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
 
@@ -65,6 +64,27 @@ public class TokensManagerImpl implements TokensManager {
         return true;//(getUser() != null && repo.get(token.getKey()).);
     }
 
+    @Override
+    public Token getToken() {
+        return token;
+    }
 
+    @Override
+    public void setToken(Token token) {
+        String key = null;
+        if (repo.containsKey(token.getKey())) {
+            loggedUser = repo.get(key);
+        }
+    }
+
+    @Override
+    public void setRoles(List<String> roles) {
+        
+    }
+
+    @Override
+    public void setPermissions(Map<String, String> permissions) {
+        
+    }
 
 }

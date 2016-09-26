@@ -1,181 +1,187 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<artifactId>demoiselle-parent</artifactId>
-	<packaging>pom</packaging>
-	<modelVersion>4.0.0</modelVersion>
+    <artifactId>demoiselle-parent</artifactId>
+    <packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
 
-	<name>Demoiselle Parent POM</name>
+    <name>Demoiselle Parent POM</name>
 
-	<parent>
-		<groupId>org.demoiselle.jee</groupId>
-		<artifactId>demoiselle-build</artifactId>
-		<version>3.0.0-BETA1-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>org.demoiselle.jee</groupId>
+        <artifactId>demoiselle-build</artifactId>
+        <version>3.0.0-BETA1-SNAPSHOT</version>
+    </parent>
 
-	<properties>
-		<!-- General -->
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <properties>
+        <!-- General -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<!-- Dependencies versions -->
-		<javaee.version>7.0</javaee.version>
-		<cdi.version>1.2</cdi.version>
-		<validation.version>1.1.0.Final</validation.version>
-		<transaction.version>1.2</transaction.version>
-		<jstl.version>1.2</jstl.version>
-		<el.version>3.0.0</el.version>
-		<servlet.version>3.1.0</servlet.version>
-		<persistence.version>1.0.2</persistence.version>
-		<rest.version>2.0</rest.version>
-		<concurrent.version>1.0</concurrent.version>
-		<hibernate.version>5.1.0.Final</hibernate.version>
-		<hibernate.validator.version>5.2.4.Final</hibernate.validator.version>
-		<commons.configuration.version>2.0</commons.configuration.version>
-		<jaxrs.version>2.0.1</jaxrs.version>
-		<javaee.version>7.0</javaee.version>
-		<deltaspike.version>1.7.1</deltaspike.version>
-		<ejb.version>3.2</ejb.version>
-		<cache.version>1.0.0</cache.version>
+        <!-- Dependencies versions -->
+        <javaee.version>7.0</javaee.version>
+        <cdi.version>1.2</cdi.version>
+        <validation.version>1.1.0.Final</validation.version>
+        <transaction.version>1.2</transaction.version>
+        <jstl.version>1.2</jstl.version>
+        <el.version>3.0.0</el.version>
+        <servlet.version>3.1.0</servlet.version>
+        <persistence.version>1.0.2</persistence.version>
+        <rest.version>2.0</rest.version>
+        <concurrent.version>1.0</concurrent.version>
+        <hibernate.version>5.1.0.Final</hibernate.version>
+        <hibernate.validator.version>5.2.4.Final</hibernate.validator.version>
+        <commons.configuration.version>2.0</commons.configuration.version>
+        <jaxrs.version>2.0.1</jaxrs.version>
+        <javaee.version>7.0</javaee.version>
+        <deltaspike.version>1.7.1</deltaspike.version>
+        <ejb.version>3.2</ejb.version>
+        <cache.version>1.0.0</cache.version>
 
-		<!-- Maven plugin versions -->
-		<maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
-		<maven.war.plugin.version>2.6</maven.war.plugin.version>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+        <!-- Maven plugin versions -->
+        <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
+        <maven.war.plugin.version>2.6</maven.war.plugin.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
 
-	</properties>
+    </properties>
 
-	<dependencyManagement>
+    <dependencyManagement>
 
-		<dependencies>
+        <dependencies>
 
-			<!-- jsr-299 api -->
-			<dependency>
-				<groupId>javax.enterprise</groupId>
-				<artifactId>cdi-api</artifactId>
-				<scope>provided</scope>
-				<version>${cdi.version}</version>
-			</dependency>
+            <!-- jsr-299 api -->
+            <dependency>
+                <groupId>javax.enterprise</groupId>
+                <artifactId>cdi-api</artifactId>
+                <scope>provided</scope>
+                <version>${cdi.version}</version>
+            </dependency>
 
-			<!-- jsr-349 api -->
-			<dependency>
-				<artifactId>validation-api</artifactId>
-				<groupId>javax.validation</groupId>
-				<scope>provided</scope>
-				<version>${validation.version}</version>
-			</dependency>
+            <!-- jsr-349 api -->
+            <dependency>
+                <artifactId>validation-api</artifactId>
+                <groupId>javax.validation</groupId>
+                <scope>provided</scope>
+                <version>${validation.version}</version>
+            </dependency>
 
-			<!-- jsr-341 api and impl -->
-			<dependency>
-				<groupId>org.glassfish</groupId>
-				<artifactId>javax.el</artifactId>
-				<scope>provided</scope>
-				<version>${el.version}</version>
-			</dependency>
+            <!-- jsr-341 api and impl -->
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.el</artifactId>
+                <scope>provided</scope>
+                <version>${el.version}</version>
+            </dependency>
 
-			<!-- jsr-342 api -->
-			<dependency>
-				<groupId>javax</groupId>
-				<artifactId>javaee-api</artifactId>
-				<scope>provided</scope>
-				<version>${javaee.version}</version>
-			</dependency>
+            <!-- jsr-342 api -->
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-api</artifactId>
+                <scope>provided</scope>
+                <version>${javaee.version}</version>
+            </dependency>
 
-			<!-- jsr-340 api -->
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>javax.servlet-api</artifactId>
-				<scope>provided</scope>
-				<version>${servlet.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>jstl</artifactId>
-				<scope>provided</scope>
-				<version>${jstl.version}</version>
-			</dependency>
+            <!-- jsr-340 api -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <scope>provided</scope>
+                <version>${servlet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jstl</artifactId>
+                <scope>provided</scope>
+                <version>${jstl.version}</version>
+            </dependency>
 
-			<!-- jsr-338 api -->
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-entitymanager</artifactId>
-				<scope>provided</scope>
-				<version>${hibernate.version}</version>
-			</dependency>
+            <!-- jsr-338 api -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <scope>provided</scope>
+                <version>${hibernate.version}</version>
+            </dependency>
 
-			<!-- jsr-339 api -->
-			<dependency>
-				<groupId>javax.ws.rs</groupId>
-				<artifactId>javax.ws.rs-api</artifactId>
-				<scope>provided</scope>
-				<version>${jaxrs.version}</version>
-			</dependency>
+            <!-- jsr-339 api -->
+            <dependency>
+                <groupId>javax.ws.rs</groupId>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <scope>provided</scope>
+                <version>${jaxrs.version}</version>
+            </dependency>
 
-			<!-- jsr-342 api -->
-			<dependency>
-				<groupId>javax</groupId>
-				<artifactId>javaee-web-api</artifactId>
-				<version>${javaee.version}</version>
-			</dependency>
+            <!-- jsr-342 api -->
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-web-api</artifactId>
+                <version>${javaee.version}</version>
+            </dependency>
 
-			<!-- jsr-318 api -->
-			<dependency>
-				<groupId>javax.ejb</groupId>
-				<artifactId>javax.ejb-api</artifactId>
-				<version>${ejb.version}</version>
-				<scope>provided</scope>
-			</dependency>
+            <!-- jsr-318 api -->
+            <dependency>
+                <groupId>javax.ejb</groupId>
+                <artifactId>javax.ejb-api</artifactId>
+                <version>${ejb.version}</version>
+                <scope>provided</scope>
+            </dependency>
 
-			<!-- jsr-107 api -->
-			<dependency>
-				<groupId>javax.cache</groupId>
-				<artifactId>cache-api</artifactId>
-				<version>${cache.version}</version>
-			</dependency>
+            <!-- jsr-107 api -->
+            <dependency>
+                <groupId>javax.cache</groupId>
+                <artifactId>cache-api</artifactId>
+                <version>${cache.version}</version>
+            </dependency>
 
-			<!-- jsr-107 api -->
-			<dependency>
-				<groupId>javax.persistence</groupId>
-				<artifactId>persistence-api</artifactId>
-				<version>${persistence.version}</version>
-			</dependency>
+            <!-- jsr-107 api -->
+            <dependency>
+                <groupId>javax.persistence</groupId>
+                <artifactId>persistence-api</artifactId>
+                <version>${persistence.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>javax.transaction</groupId>
-				<artifactId>javax.transaction-api</artifactId>
-				<version>${transaction.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>javax.transaction</groupId>
+                <artifactId>javax.transaction-api</artifactId>
+                <version>${transaction.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>javax.json</groupId>
-				<artifactId>javax.json-api</artifactId>
-				<version>1.0</version>
-			</dependency>
+            <dependency>
+                <groupId>javax.json</groupId>
+                <artifactId>javax.json-api</artifactId>
+                <version>1.0</version>
+            </dependency>
 
-			<!-- configuration e messages -->
-			<dependency>
-				<groupId>org.apache.deltaspike.core</groupId>
-				<artifactId>deltaspike-core-api</artifactId>
-				<scope>compile</scope>
-				<version>${deltaspike.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.deltaspike.core</groupId>
-				<artifactId>deltaspike-core-impl</artifactId>
-				<scope>runtime</scope>
-				<version>${deltaspike.version}</version>
-			</dependency>
+            <!-- configuration e messages -->
+            <dependency>
+                <groupId>org.apache.deltaspike.core</groupId>
+                <artifactId>deltaspike-core-api</artifactId>
+                <scope>compile</scope>
+                <version>${deltaspike.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.deltaspike.core</groupId>
+                <artifactId>deltaspike-core-impl</artifactId>
+                <scope>runtime</scope>
+                <version>${deltaspike.version}</version>
+            </dependency>
 
-			<!-- demoiselle -->
-			<dependency>
-				<groupId>org.demoiselle.jee</groupId>
-				<artifactId>demoiselle-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+            <!-- demoiselle -->
+            <dependency>
+                <groupId>org.demoiselle.jee</groupId>
+                <artifactId>demoiselle-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+                        
+            <dependency>
+                <groupId>org.demoiselle.jee</groupId>
+                <artifactId>demoiselle-security</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-		</dependencies>
+        </dependencies>
 
-	</dependencyManagement>
+    </dependencyManagement>
 
 </project>

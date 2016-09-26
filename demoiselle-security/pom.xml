@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>demoiselle-security</artifactId>
-	<packaging>jar</packaging>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>demoiselle-security</artifactId>
+    <packaging>jar</packaging>
 
-	<name>Demoiselle Security</name>
-	<description>
-		Demoiselle Security
-	</description>
+    <name>Demoiselle Security</name>
+    <description>
+        Demoiselle Security
+    </description>
 	
-	<parent>
-		<groupId>org.demoiselle.jee</groupId>
-		<artifactId>demoiselle-parent</artifactId>
-		<version>3.0.0-BETA1-SNAPSHOT</version>
-		<relativePath>../demoiselle-parent</relativePath>
-	</parent>	
+    <parent>
+        <groupId>org.demoiselle.jee</groupId>
+        <artifactId>demoiselle-parent</artifactId>
+        <version>3.0.0-BETA1-SNAPSHOT</version>
+        <relativePath>../demoiselle-parent</relativePath>
+    </parent>	
 		
-	<dependencies>
+    <dependencies>
 
-		<dependency>
-			<groupId>org.demoiselle.jee</groupId>
-			<artifactId>demoiselle-core</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.demoiselle.jee</groupId>
+            <artifactId>demoiselle-core</artifactId>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 </project>

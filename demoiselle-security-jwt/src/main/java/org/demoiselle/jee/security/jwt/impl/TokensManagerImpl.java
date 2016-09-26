@@ -13,7 +13,8 @@ import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import org.demoiselle.jee.security.interfaces.TokensManager;
+import org.demoiselle.jee.core.security.LoggedUser;
+import org.demoiselle.jee.core.security.TokensManager;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
 import org.jose4j.jws.AlgorithmIdentifiers;
@@ -49,8 +50,8 @@ public class TokensManagerImpl implements TokensManager {
     }
 
     @Override
-    public Principal getUser(String jwt) {
-        Principal usuario = null;
+    public LoggedUser getUser(String jwt) {
+        LoggedUser usuario = null;
         if (jwt != null && !jwt.isEmpty()) {
             JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                     .setRequireExpirationTime() // the JWT must have an expiration time
@@ -62,7 +63,7 @@ public class TokensManagerImpl implements TokensManager {
 
             try {
                 JwtClaims jwtClaims = jwtConsumer.processToClaims(jwt);
-                usuario = new Gson().fromJson((String) jwtClaims.getClaimValue("user"), Principal.class);
+                usuario = new Gson().fromJson((String) jwtClaims.getClaimValue("user"), LoggedUser.class);
 
                 String ip = httpRequest.getRemoteAddr();
                 if (!ip.equalsIgnoreCase((String) jwtClaims.getClaimValue("ip"))) {
@@ -76,7 +77,7 @@ public class TokensManagerImpl implements TokensManager {
     }
 
     @Override
-    public String getToken(Principal user) {
+    public String setUser(LoggedUser user) {
         try {
             JwtClaims claims = new JwtClaims();
             claims.setIssuer("demoiselle");

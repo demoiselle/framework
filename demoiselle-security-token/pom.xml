@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>demoiselle-security-jwt</artifactId>
+    <artifactId>demoiselle-security-token</artifactId>
     <packaging>jar</packaging>
     
-    <name>Demoiselle Security JWT</name>
+    <name>Demoiselle Security Token</name>
     <description>
-        Demoiselle Security JWT
+        Demoiselle Security Token
     </description>
 	
     <parent>
@@ -22,19 +22,6 @@
             <groupId>org.demoiselle.jee</groupId>
             <artifactId>demoiselle-security</artifactId>
         </dependency>
-        
-        <dependency>
-            <groupId>org.bitbucket.b_c</groupId>
-            <artifactId>jose4j</artifactId>
-            <version>0.4.1</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.2.2</version>
-            <scope>compile</scope>
-        </dependency>
-        
+
     </dependencies>
 </project>

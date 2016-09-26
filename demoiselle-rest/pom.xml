@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>demoiselle-security-jwt</artifactId>
+    <artifactId>demoiselle-rest</artifactId>
     <packaging>jar</packaging>
     
-    <name>Demoiselle Security JWT</name>
+    <name>Demoiselle Rest</name>
     <description>
-        Demoiselle Security JWT
+        Demoiselle Rest
     </description>
 	
     <parent>
@@ -20,20 +20,17 @@
         
         <dependency>
             <groupId>org.demoiselle.jee</groupId>
-            <artifactId>demoiselle-security</artifactId>
+            <artifactId>demoiselle-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
         </dependency>
         
         <dependency>
-            <groupId>org.bitbucket.b_c</groupId>
-            <artifactId>jose4j</artifactId>
-            <version>0.4.1</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.2.2</version>
-            <scope>compile</scope>
+            <groupId>javax.json</groupId>
+            <artifactId>javax.json-api</artifactId>
         </dependency>
         
     </dependencies>

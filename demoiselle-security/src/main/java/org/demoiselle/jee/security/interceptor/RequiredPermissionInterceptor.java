@@ -9,19 +9,18 @@ package org.demoiselle.jee.security.interceptor;
 import org.demoiselle.jee.security.exception.AuthorizationException;
 
 import javax.annotation.Priority;
-import javax.enterprise.inject.spi.CDI;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import java.io.Serializable;
+import java.security.Principal;
 import java.util.logging.Logger;
 import javax.inject.Inject;
-import static javax.sql.rowset.spi.SyncFactory.getLogger;
 import org.demoiselle.jee.core.annotation.Name;
 import org.demoiselle.jee.core.util.ResourceBundle;
 import org.demoiselle.jee.core.util.Strings;
-import org.demoiselle.jee.security.annotations.RequiredPermission;
-import org.demoiselle.jee.security.interfaces.SecurityContext;
+import org.demoiselle.jee.security.annotation.RequiredPermission;
+import org.demoiselle.jee.core.interfaces.security.SecurityContext;
 
 /**
  * <p>
@@ -36,6 +35,12 @@ import org.demoiselle.jee.security.interfaces.SecurityContext;
 public class RequiredPermissionInterceptor implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Inject
+    private SecurityContext securityContext;
+
+    @Inject
+    private Principal loggedUser;
 
     @Inject
     private ResourceBundle bundle;
@@ -66,17 +71,17 @@ public class RequiredPermissionInterceptor implements Serializable {
         String operation = getOperation(ic);
         String username = null;
 
-        if (getSecurityContext().isLoggedIn()) {
-            username = getSecurityContext().getUser().getName();
-            getLogger().finest(bundle.getString("access-checking", username, operation, resource));
+        if (securityContext.isLoggedIn()) {
+            username = loggedUser.getName();
+            logger.finest(bundle.getString("access-checking", username, operation, resource));
         }
 
-        if (!getSecurityContext().hasPermission(resource, operation)) {
-            getLogger().severe(bundle.getString("access-denied", username, operation, resource));
+        if (securityContext.hasPermission(resource, operation)) {
+            logger.severe(bundle.getString("access-denied", username, operation, resource));
             throw new AuthorizationException(bundle.getString("access-denied-ui", resource, operation));
         }
 
-        getLogger().fine(bundle.getString("access-allowed", username, operation, resource));
+        logger.fine(bundle.getString("access-allowed", username, operation, resource));
         return ic.proceed();
     }
 
@@ -144,7 +149,4 @@ public class RequiredPermissionInterceptor implements Serializable {
         }
     }
 
-    private SecurityContext getSecurityContext() {
-        return CDI.current().select(SecurityContext.class).get();
-    }
 }
