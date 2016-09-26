@@ -3,10 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.demoiselle.jee.security.basic.impl;
+package org.demoiselle.jee.security.token.impl;
 
+import java.security.Principal;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.interfaces.security.Token;
@@ -16,8 +20,10 @@ import org.demoiselle.jee.core.interfaces.security.TokensManager;
  *
  * @author 70744416353
  */
-@Dependent
+@RequestScoped
 public class TokensManagerImpl implements TokensManager {
+
+    private final static ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
 
     @Inject
     private Logger logger;
@@ -25,24 +31,22 @@ public class TokensManagerImpl implements TokensManager {
     @Inject
     private Token token;
 
-    @Inject
-    private DemoisellePrincipal loggedUser;
-
     @Override
     public DemoisellePrincipal getUser() {
-        if (loggedUser == null) {
-            if (token.getKey() != null && !token.getKey().isEmpty()) {
-                // desfaz o basic
-                return loggedUser;
-            }
+        if (token.getKey() != null && !token.getKey().isEmpty()) {
+            return repo.get(token.getKey());
         }
-        return loggedUser;
+        return null;
     }
 
     @Override
     public void setUser(DemoisellePrincipal user) {
-        String value = null;
-
+        if (!repo.containsValue(user)) {
+            String value = UUID.randomUUID().toString();
+            repo.put(value, user);
+            token.setKey(value);
+            token.setType("Token");
+        }
     }
 
     @Override

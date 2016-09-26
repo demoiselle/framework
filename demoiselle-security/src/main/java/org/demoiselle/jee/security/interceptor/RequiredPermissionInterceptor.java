@@ -13,10 +13,10 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import java.io.Serializable;
-import java.security.Principal;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 import org.demoiselle.jee.core.annotation.Name;
+import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.util.ResourceBundle;
 import org.demoiselle.jee.core.util.Strings;
 import org.demoiselle.jee.security.annotation.RequiredPermission;
@@ -40,7 +40,7 @@ public class RequiredPermissionInterceptor implements Serializable {
     private SecurityContext securityContext;
 
     @Inject
-    private Principal loggedUser;
+    private DemoisellePrincipal loggedUser;
 
     @Inject
     private ResourceBundle bundle;

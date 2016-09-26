@@ -26,4 +26,6 @@ public interface DemoisellePrincipal extends Principal {
     public List<String> getRoles();
 
     public Map<String, String> getPermissions();
+
+    public void setPermissions(Map<String, String> permissions);
 }

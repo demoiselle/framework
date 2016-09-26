@@ -20,9 +20,9 @@ import java.util.Map;
  */
 public interface TokensManager extends Serializable {
 
-    public Principal getUser();
+    public DemoisellePrincipal getUser();
 
-    public void setUser(Principal user);
+    public void setUser(DemoisellePrincipal user);
 
     public boolean validate();
 

@@ -66,8 +66,8 @@ public interface SecurityContext extends Serializable {
      * @return the user logged in a specific authenticated session. If there is
      * no active session {@code null} is returned.
      */
-    Principal getUser();
+    DemoisellePrincipal getUser();
 
-    void setUser(Principal loggedUser);
+    void setUser(DemoisellePrincipal loggedUser);
     
 }

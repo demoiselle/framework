@@ -6,17 +6,14 @@
  */
 package org.demoiselle.jee.security.impl;
 
-import java.security.Principal;
-import java.util.List;
-import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 
 import org.demoiselle.jee.core.util.ResourceBundle;
 
 import org.demoiselle.jee.security.exception.NotLoggedInException;
 import org.demoiselle.jee.core.interfaces.security.SecurityContext;
-import org.demoiselle.jee.core.interfaces.security.Token;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
 
 /**
@@ -74,12 +71,12 @@ public class SecurityContextImpl implements SecurityContext {
     }
 
     @Override
-    public Principal getUser() {
+    public DemoisellePrincipal getUser() {
         return tm.getUser();
     }
 
     @Override
-    public void setUser(Principal loggedUser) {
+    public void setUser(DemoisellePrincipal loggedUser) {
         tm.setUser(loggedUser);
     }
 

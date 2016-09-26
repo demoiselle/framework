@@ -13,13 +13,13 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import java.io.Serializable;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.util.ResourceBundle;
 import org.demoiselle.jee.security.annotation.RequiredRole;
 import org.demoiselle.jee.core.interfaces.security.SecurityContext;
@@ -42,7 +42,7 @@ public class RequiredRoleInterceptor implements Serializable {
     private SecurityContext securityContext;
 
     @Inject
-    private Principal loggedUser;
+    private DemoisellePrincipal loggedUser;
 
     @Inject
     private ResourceBundle bundle;

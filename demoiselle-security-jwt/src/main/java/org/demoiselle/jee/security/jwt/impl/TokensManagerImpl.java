@@ -13,8 +13,9 @@ import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import org.demoiselle.jee.core.security.LoggedUser;
-import org.demoiselle.jee.core.security.TokensManager;
+import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.interfaces.security.Token;
+import org.demoiselle.jee.core.interfaces.security.TokensManager;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
 import org.jose4j.jws.AlgorithmIdentifiers;
@@ -40,6 +41,12 @@ public class TokensManagerImpl implements TokensManager {
     @Inject
     private Logger logger;
 
+    @Inject
+    private Token token;
+
+    @Inject
+    private DemoisellePrincipal loggedUser;
+
     public TokensManagerImpl() throws JoseException {
         RsaJsonWebKey chave = RsaJwkGenerator.generateJwk(2048);
         logger.info("Se você quiser usar sua app em cluster, coloque o parametro jwt.key no app.properties e reinicie a aplicacao");
@@ -50,34 +57,31 @@ public class TokensManagerImpl implements TokensManager {
     }
 
     @Override
-    public LoggedUser getUser(String jwt) {
-        LoggedUser usuario = null;
-        if (jwt != null && !jwt.isEmpty()) {
-            JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                    .setRequireExpirationTime() // the JWT must have an expiration time
-                    .setAllowedClockSkewInSeconds(60) // allow some leeway in validating time based claims to account for clock skew
-                    .setExpectedIssuer("demoiselle") // whom the JWT needs to have been issued by
-                    .setExpectedAudience("demoiselle") // to whom the JWT is intended for
-                    .setVerificationKey(rsaJsonWebKey.getKey()) // verify the signature with the public key
-                    .build(); // create the JwtConsumer instance
-
+    public DemoisellePrincipal getUser() {
+        if (token.getKey() != null && !token.getKey().isEmpty()) {
             try {
-                JwtClaims jwtClaims = jwtConsumer.processToClaims(jwt);
-                usuario = new Gson().fromJson((String) jwtClaims.getClaimValue("user"), LoggedUser.class);
-
+                JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+                        .setRequireExpirationTime() // the JWT must have an expiration time
+                        .setAllowedClockSkewInSeconds(60) // allow some leeway in validating time based claims to account for clock skew
+                        .setExpectedIssuer("demoiselle") // whom the JWT needs to have been issued by
+                        .setExpectedAudience("demoiselle") // to whom the JWT is intended for
+                        .setVerificationKey(rsaJsonWebKey.getKey()) // verify the signature with the public key
+                        .build(); // create the JwtConsumer instance
+                JwtClaims jwtClaims = jwtConsumer.processToClaims(token.getKey());
+                loggedUser = new Gson().fromJson((String) jwtClaims.getClaimValue("user"), DemoisellePrincipal.class);
                 String ip = httpRequest.getRemoteAddr();
                 if (!ip.equalsIgnoreCase((String) jwtClaims.getClaimValue("ip"))) {
-                    usuario = null;
+                    return null;
                 }
-            } catch (InvalidJwtException e) {
-                //Logger.getLogger(TokenRepository.class.getName()).log(Level.SEVERE, null, e);
+            } catch (InvalidJwtException ex) {
+                logger.severe(ex.getMessage());
             }
         }
-        return usuario;
+        return loggedUser;
     }
 
     @Override
-    public String setUser(LoggedUser user) {
+    public void setUser(DemoisellePrincipal user) {
         try {
             JwtClaims claims = new JwtClaims();
             claims.setIssuer("demoiselle");
@@ -95,12 +99,16 @@ public class TokensManagerImpl implements TokensManager {
             jws.setKey(rsaJsonWebKey.getPrivateKey());
             jws.setKeyIdHeaderValue(rsaJsonWebKey.getKeyId());
             jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
-            return jws.getCompactSerialization();
+            token.setKey(jws.getCompactSerialization());
         } catch (JoseException ex) {
             logger.severe(ex.getMessage());
         }
-        return null;
 
+    }
+
+    @Override
+    public boolean validate() {
+        return true;
     }
 
 }
