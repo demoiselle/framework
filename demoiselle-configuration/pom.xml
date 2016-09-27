@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>demoiselle-configuration</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Demoiselle Configuration</name>
+	<description>
+	  	Demoiselle Configuration habilita os projetos a usarem configurações em arquivos .properties, .xml ou variáveis de ambiente.
+	</description>
+	
+	<parent>
+		<groupId>org.demoiselle.jee</groupId>
+		<artifactId>demoiselle-parent</artifactId>
+		<version>3.0.0-BETA1-SNAPSHOT</version>
+		<relativePath>../demoiselle-parent</relativePath>
+	</parent>
+
+	<dependencies>
+	
+		<dependency>
+			<groupId>org.demoiselle.jee</groupId>
+			<artifactId>demoiselle-core</artifactId>
+		</dependency>
+		
+		<!-- commons-configuration2 -->
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-configuration2</artifactId>
+		    <version>2.0</version>
+		</dependency>
+		
+		
+		<!-- commons-beanutils -->
+		<dependency>
+		    <groupId>commons-beanutils</groupId>
+		    <artifactId>commons-beanutils</artifactId>
+		    <version>1.9.2</version>
+		</dependency>
+				
+	</dependencies>
+</project>

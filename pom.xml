@@ -72,6 +72,7 @@
         <module>demoiselle-security-token</module>
         <module>demoiselle-security-basic</module>
         <module>demoiselle-security-jwt</module>
+        <module>demoiselle-configuration</module>
         <!--<module>demoiselle-security-jwt</module>-->
     </modules>	
 
