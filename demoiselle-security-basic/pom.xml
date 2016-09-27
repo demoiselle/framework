@@ -22,6 +22,11 @@
             <groupId>org.demoiselle.jee</groupId>
             <artifactId>demoiselle-security</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.demoiselle.jee</groupId>
+            <artifactId>demoiselle-persistence-jpa</artifactId>
+        </dependency>
 
     </dependencies>
 </project>

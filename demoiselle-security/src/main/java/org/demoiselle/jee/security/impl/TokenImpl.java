@@ -6,13 +6,14 @@
 package org.demoiselle.jee.security.impl;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import org.demoiselle.jee.core.interfaces.security.Token;
 
 /**
  *
  * @author 70744416353
  */
-@Dependent
+@RequestScoped
 public class TokenImpl implements Token {
 
     private String key;

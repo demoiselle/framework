@@ -12,30 +12,30 @@ import org.demoiselle.jee.core.exception.DemoiselleException;
 
 public class DemoiselleRESTException extends DemoiselleException {
 
-	private static final long serialVersionUID = 519965615171844237L;
+    private static final long serialVersionUID = 519965615171844237L;
 
-	private HashMap<String, String> messages = new HashMap<String, String>();
+    private HashMap<String, String> messages = new HashMap<String, String>();
 
-	private int statusCode;
+    private int statusCode;
 
-	public DemoiselleRESTException() {
+    public DemoiselleRESTException() {
 
-	}
-	
-	public DemoiselleRESTException(String string) {
-		super(string);
-	}
+    }
 
-	public int getStatusCode() {
-		return statusCode;
-	}
+    public DemoiselleRESTException(String string) {
+        super(string);
+    }
 
-	public void addMessage(String field, String msg) {
-		this.statusCode = 422;
-		messages.put(field, msg);
-	}
+    public int getStatusCode() {
+        return statusCode;
+    }
 
-	public HashMap<String, String> getMessages() {
-		return messages;
-	}
+    public void addMessage(String field, String msg) {
+        this.statusCode = 422;
+        messages.put(field, msg);
+    }
+
+    public HashMap<String, String> getMessages() {
+        return messages;
+    }
 }

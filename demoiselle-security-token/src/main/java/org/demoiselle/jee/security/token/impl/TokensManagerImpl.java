@@ -5,7 +5,8 @@
  */
 package org.demoiselle.jee.security.token.impl;
 
-import java.security.Principal;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -20,7 +21,7 @@ import org.demoiselle.jee.core.interfaces.security.TokensManager;
  *
  * @author 70744416353
  */
-@RequestScoped
+@Dependent
 public class TokensManagerImpl implements TokensManager {
 
     private final static ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
@@ -45,13 +46,17 @@ public class TokensManagerImpl implements TokensManager {
             String value = UUID.randomUUID().toString();
             repo.put(value, user);
             token.setKey(value);
-            token.setType("Token");
+        } else {
+            repo.entrySet().parallelStream().filter((e) -> (user.equals(e.getValue()))).forEach((e) -> {
+                token.setKey((String) e.getKey());
+            });
         }
+        token.setType("Token");
     }
 
     @Override
     public boolean validate() {
-        return true;//(getUser() != null && repo.get(token.getKey()).);
+        return getUser() != null;
     }
 
 }

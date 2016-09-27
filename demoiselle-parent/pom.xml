@@ -179,6 +179,18 @@
                 <artifactId>demoiselle-security</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            
+            <dependency>
+                <groupId>org.demoiselle.jee</groupId>
+                <artifactId>demoiselle-rest</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.demoiselle.jee</groupId>
+                <artifactId>demoiselle-persistence-jpa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
         </dependencies>
 

@@ -5,12 +5,11 @@
  */
 package org.demoiselle.jee.security.jwt.impl;
 
-import com.google.gson.Gson;
-import java.security.Key;
-import java.security.Principal;
-import java.util.logging.Level;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
@@ -36,7 +35,7 @@ public class TokensManagerImpl implements TokensManager {
     @Inject
     private HttpServletRequest httpRequest;
 
-    private RsaJsonWebKey rsaJsonWebKey;
+    private static RsaJsonWebKey rsaJsonWebKey;
 
     @Inject
     private Logger logger;
@@ -48,12 +47,14 @@ public class TokensManagerImpl implements TokensManager {
     private DemoisellePrincipal loggedUser;
 
     public TokensManagerImpl() throws JoseException {
-        RsaJsonWebKey chave = RsaJwkGenerator.generateJwk(2048);
-        logger.info("Se você quiser usar sua app em cluster, coloque o parametro jwt.key no app.properties e reinicie a aplicacao");
-        logger.log(Level.INFO, "jwt.key={0}", chave);
-        logger.info("Se você não usar esse parametro, a cada reinicialização será gerada uma nova chave privada, isso inviabiliza o uso em cluster ");
-        rsaJsonWebKey = (RsaJsonWebKey) RsaJsonWebKey.Factory.newPublicJwk((Key) chave);
-        rsaJsonWebKey.setKeyId("demoiselle-security-jwt");
+        if (rsaJsonWebKey == null) {
+//        RsaJsonWebKey chave = RsaJwkGenerator.generateJwk(2048);
+//        logger.info("Se você quiser usar sua app em cluster, coloque o parametro jwt.key no app.properties e reinicie a aplicacao");
+//        logger.log(Level.INFO, "jwt.key={0}", chave);
+//        logger.info("Se você não usar esse parametro, a cada reinicialização será gerada uma nova chave privada, isso inviabiliza o uso em cluster ");
+            rsaJsonWebKey = (RsaJsonWebKey) RsaJsonWebKey.Factory.newPublicJwk(RsaJwkGenerator.generateJwk(2048).getKey());
+            rsaJsonWebKey.setKeyId("demoiselle-security-jwt");
+        }
     }
 
     @Override
@@ -68,12 +69,18 @@ public class TokensManagerImpl implements TokensManager {
                         .setVerificationKey(rsaJsonWebKey.getKey()) // verify the signature with the public key
                         .build(); // create the JwtConsumer instance
                 JwtClaims jwtClaims = jwtConsumer.processToClaims(token.getKey());
-                loggedUser = new Gson().fromJson((String) jwtClaims.getClaimValue("user"), DemoisellePrincipal.class);
+                loggedUser.setId((String) jwtClaims.getClaimValue("id"));
+                loggedUser.setName((String) jwtClaims.getClaimValue("name"));
+                loggedUser.setRoles((List) jwtClaims.getClaimValue("roles"));
+                loggedUser.setPermissions((Map) jwtClaims.getClaimValue("permissions"));
+                //loggedUser = new Gson().fromJson((String) jwtClaims.getClaimValue("user"), DemoisellePrincipal.class);
                 String ip = httpRequest.getRemoteAddr();
                 if (!ip.equalsIgnoreCase((String) jwtClaims.getClaimValue("ip"))) {
                     return null;
                 }
             } catch (InvalidJwtException ex) {
+                loggedUser = null;
+                token.setKey(null);
                 logger.severe(ex.getMessage());
             }
         }
@@ -92,23 +99,27 @@ public class TokensManagerImpl implements TokensManager {
             claims.setNotBeforeMinutesInThePast(1);
 
             claims.setClaim("ip", httpRequest.getRemoteAddr());
-            claims.setClaim("user", new Gson().toJson(user));
+            claims.setClaim("id", (user.getId()));
+            claims.setClaim("name", (user.getName()));
+            claims.setClaim("roles", (user.getRoles()));
+            claims.setClaim("permissions", (user.getPermissions()));
 
             JsonWebSignature jws = new JsonWebSignature();
             jws.setPayload(claims.toJson());
-            jws.setKey(rsaJsonWebKey.getPrivateKey());
+            jws.setKey(rsaJsonWebKey.getKey());
             jws.setKeyIdHeaderValue(rsaJsonWebKey.getKeyId());
-            jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
+            jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.HMAC_SHA512);
             token.setKey(jws.getCompactSerialization());
         } catch (JoseException ex) {
-            logger.severe(ex.getMessage());
+            ex.printStackTrace();
+            //  logger.severe(ex.getMessage());
         }
 
     }
 
     @Override
     public boolean validate() {
-        return true;
+        return getUser() != null;
     }
 
 }

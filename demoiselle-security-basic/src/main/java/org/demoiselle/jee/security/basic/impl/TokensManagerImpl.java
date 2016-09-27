@@ -5,9 +5,12 @@
  */
 package org.demoiselle.jee.security.basic.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.interfaces.security.Token;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
@@ -20,34 +23,40 @@ import org.demoiselle.jee.core.interfaces.security.TokensManager;
 public class TokensManagerImpl implements TokensManager {
 
     @Inject
-    private Logger logger;
+    private DemoisellePrincipal loggedUser;
 
     @Inject
     private Token token;
 
     @Inject
-    private DemoisellePrincipal loggedUser;
+    private Logger logger;
+
+    @Inject
+    private EntityManager entityManager;
 
     @Override
     public DemoisellePrincipal getUser() {
-        if (loggedUser == null) {
-            if (token.getKey() != null && !token.getKey().isEmpty()) {
-                // desfaz o basic
-                return loggedUser;
-            }
+        try {
+
+            byte[] asBytes = Base64.getDecoder().decode(token.getKey());
+            String login = new String(asBytes, "utf-8");
+            loggedUser = (DemoisellePrincipal) entityManager.createNativeQuery("select * from usuario where usuario = " + login.split(":")[0] + " senha = " + login.split(":")[1]).getResultList().get(0);
+
+        } catch (UnsupportedEncodingException ex) {
+            logger.severe(ex.getMessage());
         }
+
         return loggedUser;
     }
 
     @Override
     public void setUser(DemoisellePrincipal user) {
-        String value = null;
-
+        loggedUser = user;
     }
 
     @Override
     public boolean validate() {
-        return true;//(getUser() != null && repo.get(token.getKey()).);
+        return getUser() != null;
     }
 
 }

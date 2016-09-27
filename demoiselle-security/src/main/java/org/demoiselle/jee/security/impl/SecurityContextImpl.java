@@ -6,15 +6,17 @@
  */
 package org.demoiselle.jee.security.impl;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 
-import org.demoiselle.jee.core.util.ResourceBundle;
-
 import org.demoiselle.jee.security.exception.NotLoggedInException;
 import org.demoiselle.jee.core.interfaces.security.SecurityContext;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
+import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
 /**
  * <p>
@@ -32,7 +34,7 @@ public class SecurityContextImpl implements SecurityContext {
     private TokensManager tm;
 
     @Inject
-    private ResourceBundle bundle;
+    private DemoiselleSecurityMessages bundle;
 
     /**
      * @see org.demoiselle.security.SecurityContext#hasPermission(String,
@@ -40,9 +42,11 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public boolean hasPermission(String resource, String operation) {
-        boolean result = true;
-
-        return result;
+        return (tm.getUser().getPermissions().entrySet()
+                .stream()
+                .filter(p -> p.getKey().equalsIgnoreCase(resource))
+                .filter(p -> p.getValue().equalsIgnoreCase(operation))
+                .count() > 0);
     }
 
     /**
@@ -50,9 +54,7 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public boolean hasRole(String role) {
-        boolean result = true;
-
-        return result;
+        return (tm.getUser().getRoles().parallelStream().filter(p -> p.equals(role)).count() > 0);
     }
 
     /**
@@ -66,7 +68,7 @@ public class SecurityContextImpl implements SecurityContext {
     @Override
     public void checkLoggedIn() throws NotLoggedInException {
         if (!isLoggedIn()) {
-            throw new NotLoggedInException(bundle.getString("user-not-authenticated"));
+            throw new NotLoggedInException(bundle.userNotAuthenticated());
         }
     }
 

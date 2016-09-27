@@ -13,7 +13,7 @@ package org.demoiselle.jee.security.exception;
  *
  * @author SERPRO
  */
-public class NotLoggedInException extends AuthenticationException {
+public class NotLoggedInException extends DemoiselleSecurityException {
 
 	private static final long serialVersionUID = 1L;
 
@@ -27,4 +27,6 @@ public class NotLoggedInException extends AuthenticationException {
 	public NotLoggedInException(String message) {
 		super(message);
 	}
+        
+        
 }
