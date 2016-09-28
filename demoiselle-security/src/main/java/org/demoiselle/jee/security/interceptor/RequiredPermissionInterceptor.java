@@ -77,7 +77,7 @@ public class RequiredPermissionInterceptor implements Serializable {
             logger.finest(bundle.accessCheckingPermission(username, operation, resource));
         }
 
-        if (securityContext.hasPermission(resource, operation)) {
+        if (!securityContext.hasPermission(resource, operation)) {
             logger.severe(bundle.doesNotHavePermission(username, operation, resource));
             throw new DemoiselleSecurityException(bundle.doesNotHavePermission(username, operation, resource), Response.Status.UNAUTHORIZED.getStatusCode());
         }

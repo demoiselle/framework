@@ -51,9 +51,9 @@ public class SecurityContextImpl implements SecurityContext {
     @Override
     public boolean hasRole(String role) {
         if (tm.getUser().getRoles().parallelStream().filter(p -> p.equals(role)).count() <= 0) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     /**
