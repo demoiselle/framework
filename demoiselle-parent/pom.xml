@@ -175,41 +175,25 @@
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>
                 <artifactId>demoiselle-core</artifactId>
-<<<<<<< HEAD
-                <version>${version}</version>
-=======
                 <version>3.0.0-BETA1-SNAPSHOT</version>
->>>>>>> 2ba655f539984934e462df007e4c17b6a109c4bd
             </dependency>
                         
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>
                 <artifactId>demoiselle-security</artifactId>
-<<<<<<< HEAD
                 <version>${demoiselle.version}</version>
-=======
-                <version>3.0.0-BETA1-SNAPSHOT</version>
->>>>>>> 2ba655f539984934e462df007e4c17b6a109c4bd
             </dependency>
             
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>
                 <artifactId>demoiselle-rest</artifactId>
-<<<<<<< HEAD
                 <version>${demoiselle.version}</version>
-=======
-                <version>3.0.0-BETA1-SNAPSHOT</version>
->>>>>>> 2ba655f539984934e462df007e4c17b6a109c4bd
             </dependency>
             
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>
                 <artifactId>demoiselle-persistence-jpa</artifactId>
-<<<<<<< HEAD
                 <version>${demoiselle.version}</version>
-=======
-                <version>3.0.0-BETA1-SNAPSHOT</version>
->>>>>>> 2ba655f539984934e462df007e4c17b6a109c4bd
             </dependency>
 
         </dependencies>
