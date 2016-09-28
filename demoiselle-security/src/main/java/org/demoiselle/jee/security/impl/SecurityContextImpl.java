@@ -6,16 +6,14 @@
  */
 package org.demoiselle.jee.security.impl;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 
-import org.demoiselle.jee.security.exception.NotLoggedInException;
 import org.demoiselle.jee.core.interfaces.security.SecurityContext;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
+import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
 /**
@@ -33,20 +31,20 @@ public class SecurityContextImpl implements SecurityContext {
     @Inject
     private TokensManager tm;
 
-    @Inject
-    private DemoiselleSecurityMessages bundle;
-
     /**
      * @see org.demoiselle.security.SecurityContext#hasPermission(String,
      * String)
      */
     @Override
     public boolean hasPermission(String resource, String operation) {
-        return (tm.getUser().getPermissions().entrySet()
+        if ((tm.getUser().getPermissions().entrySet()
                 .stream()
                 .filter(p -> p.getKey().equalsIgnoreCase(resource))
                 .filter(p -> p.getValue().equalsIgnoreCase(operation))
-                .count() > 0);
+                .count() <= 0)) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -54,7 +52,10 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public boolean hasRole(String role) {
-        return (tm.getUser().getRoles().parallelStream().filter(p -> p.equals(role)).count() > 0);
+        if (tm.getUser().getRoles().parallelStream().filter(p -> p.equals(role)).count() <= 0) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -62,14 +63,7 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public boolean isLoggedIn() {
-        return tm.validate();
-    }
-
-    @Override
-    public void checkLoggedIn() throws NotLoggedInException {
-        if (!isLoggedIn()) {
-            throw new NotLoggedInException(bundle.userNotAuthenticated());
-        }
+        return getUser() != null;
     }
 
     @Override

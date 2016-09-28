@@ -6,8 +6,6 @@
  */
 package org.demoiselle.jee.security.interceptor;
 
-import org.demoiselle.jee.security.exception.AuthorizationException;
-
 import javax.annotation.Priority;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -15,12 +13,15 @@ import javax.interceptor.InvocationContext;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 import org.demoiselle.jee.core.annotation.Name;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.util.ResourceBundle;
 import org.demoiselle.jee.core.util.Strings;
 import org.demoiselle.jee.security.annotation.RequiredPermission;
 import org.demoiselle.jee.core.interfaces.security.SecurityContext;
+import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
+import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
 /**
  * <p>
@@ -43,7 +44,7 @@ public class RequiredPermissionInterceptor implements Serializable {
     private DemoisellePrincipal loggedUser;
 
     @Inject
-    private ResourceBundle bundle;
+    private DemoiselleSecurityMessages bundle;
 
     @Inject
     private Logger logger;
@@ -73,15 +74,15 @@ public class RequiredPermissionInterceptor implements Serializable {
 
         if (securityContext.isLoggedIn()) {
             username = loggedUser.getName();
-            logger.finest(bundle.getString("access-checking", username, operation, resource));
+            logger.finest(bundle.accessCheckingPermission(username, operation, resource));
         }
 
         if (securityContext.hasPermission(resource, operation)) {
-            logger.severe(bundle.getString("access-denied", username, operation, resource));
-            throw new AuthorizationException(bundle.getString("access-denied-ui", resource, operation));
+            logger.severe(bundle.doesNotHavePermission(username, operation, resource));
+            throw new DemoiselleSecurityException(bundle.doesNotHavePermission(username, operation, resource), Response.Status.UNAUTHORIZED.getStatusCode());
         }
 
-        logger.fine(bundle.getString("access-allowed", username, operation, resource));
+        logger.fine(bundle.accessAllowed(username, operation, resource));
         return ic.proceed();
     }
 

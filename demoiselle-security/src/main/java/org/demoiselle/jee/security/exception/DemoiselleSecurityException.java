@@ -22,6 +22,12 @@ public class DemoiselleSecurityException extends DemoiselleRESTException {
         super(string);
         this.statusCode = 401;
     }
+    
+    public DemoiselleSecurityException(String string, int statusCode) {
+        super(string);
+        this.statusCode = statusCode;
+    }
+
 
     public int getStatusCode() {
         return statusCode;

@@ -6,8 +6,6 @@
  */
 package org.demoiselle.jee.security.interceptor;
 
-import org.demoiselle.jee.security.exception.AuthorizationException;
-
 import javax.annotation.Priority;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -19,10 +17,13 @@ import java.util.List;
 
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.util.ResourceBundle;
 import org.demoiselle.jee.security.annotation.RequiredRole;
 import org.demoiselle.jee.core.interfaces.security.SecurityContext;
+import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
+import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
 /**
  * <p>
@@ -45,7 +46,7 @@ public class RequiredRoleInterceptor implements Serializable {
     private DemoisellePrincipal loggedUser;
 
     @Inject
-    private ResourceBundle bundle;
+    private DemoiselleSecurityMessages bundle;
 
     @Inject
     private Logger logger;
@@ -70,27 +71,25 @@ public class RequiredRoleInterceptor implements Serializable {
     public Object manage(final InvocationContext ic) throws Exception {
         List<String> roles = getRoles(ic);
 
+        String username = null;
+
         if (securityContext.isLoggedIn()) {
-            logger.info(
-                    bundle.getString("has-role-verification", loggedUser.getName(), roles));
+            username = loggedUser.getName();
         }
 
         List<String> userRoles = new ArrayList<String>();
 
         for (String role : roles) {
             if (securityContext.hasRole(role)) {
+                logger.finest(bundle.accessCheckingRole(username, role));
                 userRoles.add(role);
             }
         }
 
         if (userRoles.isEmpty()) {
-            logger.severe(
-                    bundle.getString("does-not-have-role", loggedUser.getName(), roles));
-
-            throw new AuthorizationException(bundle.getString("does-not-have-role-ui", roles));
+            logger.severe(bundle.doesNotHaveRole(username, roles.toString()));
+            throw new DemoiselleSecurityException(bundle.doesNotHaveRole(username, roles.toString()), Response.Status.UNAUTHORIZED.getStatusCode());
         }
-
-        logger.fine(bundle.getString("user-has-role", loggedUser.getName(), userRoles));
 
         return ic.proceed();
     }

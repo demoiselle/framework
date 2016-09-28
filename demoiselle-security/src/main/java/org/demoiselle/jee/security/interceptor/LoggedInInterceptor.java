@@ -12,8 +12,12 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import java.io.Serializable;
+import java.util.logging.Logger;
+import javax.ws.rs.core.Response;
 import org.demoiselle.jee.security.annotation.LoggedIn;
 import org.demoiselle.jee.core.interfaces.security.SecurityContext;
+import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
+import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
 /**
  * <p>
@@ -32,9 +36,14 @@ public class LoggedInInterceptor implements Serializable {
     @Inject
     private SecurityContext securityContext;
 
+    @Inject
+    private DemoiselleSecurityMessages bundle;
+
     @AroundInvoke
     public Object manage(final InvocationContext ic) throws Exception {
-        securityContext.checkLoggedIn();
+        if (!securityContext.isLoggedIn()) {
+            throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), Response.Status.UNAUTHORIZED.getStatusCode());
+        }
         return ic.proceed();
     }
 }

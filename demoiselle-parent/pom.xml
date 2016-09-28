@@ -3,6 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <artifactId>demoiselle-parent</artifactId>
+    <version>3.0.0-BETA1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,6 +17,7 @@
 
     <properties>
         <!-- General -->
+        <demoiselle.version>3.0.0-BETA1-SNAPSHOT</demoiselle.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependencies versions -->
@@ -37,6 +39,8 @@
         <deltaspike.version>1.7.1</deltaspike.version>
         <ejb.version>3.2</ejb.version>
         <cache.version>1.0.0</cache.version>
+        <!--Microcontainers-->
+        <wildfly-swarm>2016.8</wildfly-swarm>
 
         <!-- Maven plugin versions -->
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
@@ -171,29 +175,29 @@
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>
                 <artifactId>demoiselle-core</artifactId>
-                <version>${project.version}</version>
+                <version>${version}</version>
             </dependency>
                         
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>
                 <artifactId>demoiselle-security</artifactId>
-                <version>${project.version}</version>
+                <version>${demoiselle.version}</version>
             </dependency>
             
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>
                 <artifactId>demoiselle-rest</artifactId>
-                <version>${project.version}</version>
+                <version>${demoiselle.version}</version>
             </dependency>
             
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>
                 <artifactId>demoiselle-persistence-jpa</artifactId>
-                <version>${project.version}</version>
+                <version>${demoiselle.version}</version>
             </dependency>
 
         </dependencies>
 
     </dependencyManagement>
-
+    
 </project>

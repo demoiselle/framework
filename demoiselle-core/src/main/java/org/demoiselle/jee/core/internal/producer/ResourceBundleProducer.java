@@ -56,8 +56,8 @@ public class ResourceBundleProducer implements Serializable {
         return create(baseName);
     }
 
-	@SuppressWarnings("serial")
-	public static ResourceBundle create(String baseName) {
+    @SuppressWarnings("serial")
+    public static ResourceBundle create(String baseName) {
         ResourceBundle bundle;
 
         try {

@@ -91,7 +91,7 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal {
 
     @Override
     public String toString() {
-        return "DemoisellePrincipalImpl{" + "id=" + id + ", name=" + name + ", roles=" + roles + ", permissions=" + permissions + '}';
+        return "DemoisellePrincipal{" + "id=" + id + ", name=" + name + ", roles=" + roles + ", permissions=" + permissions + '}';
     }
 
 }

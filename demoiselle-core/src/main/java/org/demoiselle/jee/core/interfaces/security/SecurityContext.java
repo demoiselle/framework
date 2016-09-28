@@ -28,12 +28,6 @@ public interface SecurityContext extends Serializable {
     boolean isLoggedIn();
 
     /**
-     * @throws NotLoggedInException if there is no user logged in a specific
-     * session
-     */
-    void checkLoggedIn();
-
-    /**
      * Checks if the logged user has permission to execute an specific operation
      * on a specific resource.
      *
@@ -69,5 +63,5 @@ public interface SecurityContext extends Serializable {
     DemoisellePrincipal getUser();
 
     void setUser(DemoisellePrincipal loggedUser);
-    
+
 }
