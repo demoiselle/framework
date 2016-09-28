@@ -171,25 +171,25 @@
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>
                 <artifactId>demoiselle-core</artifactId>
-                <version>${project.version}</version>
+                <version>3.0.0-BETA1-SNAPSHOT</version>
             </dependency>
                         
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>
                 <artifactId>demoiselle-security</artifactId>
-                <version>${project.version}</version>
+                <version>3.0.0-BETA1-SNAPSHOT</version>
             </dependency>
             
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>
                 <artifactId>demoiselle-rest</artifactId>
-                <version>${project.version}</version>
+                <version>3.0.0-BETA1-SNAPSHOT</version>
             </dependency>
             
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>
                 <artifactId>demoiselle-persistence-jpa</artifactId>
-                <version>${project.version}</version>
+                <version>3.0.0-BETA1-SNAPSHOT</version>
             </dependency>
 
         </dependencies>
