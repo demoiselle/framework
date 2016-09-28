@@ -9,6 +9,7 @@ package org.demoiselle.jee.security.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 

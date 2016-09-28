@@ -29,7 +29,7 @@ import org.jose4j.lang.JoseException;
  *
  * @author 70744416353
  */
-@Dependent
+@RequestScoped
 public class TokensManagerImpl implements TokensManager {
 
     @Inject
@@ -49,9 +49,6 @@ public class TokensManagerImpl implements TokensManager {
     public TokensManagerImpl() throws JoseException {
         if (rsaJsonWebKey == null) {
 //        RsaJsonWebKey chave = RsaJwkGenerator.generateJwk(2048);
-//        logger.info("Se você quiser usar sua app em cluster, coloque o parametro jwt.key no app.properties e reinicie a aplicacao");
-//        logger.log(Level.INFO, "jwt.key={0}", chave);
-//        logger.info("Se você não usar esse parametro, a cada reinicialização será gerada uma nova chave privada, isso inviabiliza o uso em cluster ");
             rsaJsonWebKey = (RsaJsonWebKey) RsaJsonWebKey.Factory.newPublicJwk(RsaJwkGenerator.generateJwk(2048).getKey());
             rsaJsonWebKey.setKeyId("demoiselle-security-jwt");
         }
@@ -78,13 +75,14 @@ public class TokensManagerImpl implements TokensManager {
                 if (!ip.equalsIgnoreCase((String) jwtClaims.getClaimValue("ip"))) {
                     return null;
                 }
+                return loggedUser;
             } catch (InvalidJwtException ex) {
                 loggedUser = null;
                 token.setKey(null);
                 logger.severe(ex.getMessage());
             }
         }
-        return loggedUser;
+        return null;
     }
 
     @Override
@@ -110,6 +108,7 @@ public class TokensManagerImpl implements TokensManager {
             jws.setKeyIdHeaderValue(rsaJsonWebKey.getKeyId());
             jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.HMAC_SHA512);
             token.setKey(jws.getCompactSerialization());
+            token.setType("JWT");
         } catch (JoseException ex) {
             ex.printStackTrace();
             //  logger.severe(ex.getMessage());

@@ -7,14 +7,12 @@
 package org.demoiselle.jee.security.impl;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 
 import org.demoiselle.jee.core.interfaces.security.SecurityContext;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
-import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
-import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
 /**
  * <p>
@@ -23,7 +21,7 @@ import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
  *
  * @author SERPRO
  */
-@Dependent
+@RequestScoped
 public class SecurityContextImpl implements SecurityContext {
 
     private static final long serialVersionUID = 1L;
@@ -63,7 +61,7 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public boolean isLoggedIn() {
-        return getUser() != null;
+        return getUser() != null && getUser().getId() != null;
     }
 
     @Override
