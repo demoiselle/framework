@@ -10,7 +10,7 @@ import org.apache.deltaspike.core.api.message.MessageBundle;
 import org.apache.deltaspike.core.api.message.MessageTemplate;
 
 @MessageBundle
-public interface DemoiselleMessages {
+public interface DemoiselleMessage {
 
 	@MessageTemplate("{version}")
 	String version();
