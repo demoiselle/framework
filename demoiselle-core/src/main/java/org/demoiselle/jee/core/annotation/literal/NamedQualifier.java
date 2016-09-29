@@ -11,13 +11,9 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Named;
 
 /**
- * Annotation litteral that allows to create instances of the {@link Named} literal.
+ * Annotation litteral that allows to create instances of the  literal.
  * Those instances can then be used to call
- * {@link javax.enterprise.inject.spi.CDI#select(Class subtype, Annotation... qualifiers)}
  *  
- * @see javax.enterprise.inject.spi.CDI
- * @see Named
- * 
  * @author SERPRO
  */
 @SuppressWarnings("all")

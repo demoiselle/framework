@@ -10,11 +10,9 @@ import javax.enterprise.util.AnnotationLiteral;
 import org.demoiselle.jee.core.annotation.Name;
 
 /**
- * Annotation litteral that allows to create instances of the {@link Name} literal. The created instance can then be
- * used to call {@link javax.enterprise.inject.spi.CDI#select(Class subtype, java.lang.annotation.Annotation... qualifiers)}
+ * Annotation litteral that allows to create instances of the literal. The created instance can then be
  *
  * @author SERPRO
- * @see javax.enterprise.inject.spi.CDI
  */
 @SuppressWarnings("all")
 public class NameQualifier extends AnnotationLiteral<Name> implements Name {

@@ -28,6 +28,12 @@
 		<url>http://www.serpro.gov.br</url>
 	</organization>
 
+	<parent>
+		<groupId>org.demoiselle.jee</groupId>
+		<artifactId>demoiselle-build</artifactId>
+		<version>3.0.0-BETA1-SNAPSHOT</version>
+	</parent>
+
 	<properties>
 		<!-- General -->
 		<demoiselle.version>3.0.0-BETA1-SNAPSHOT</demoiselle.version>
@@ -96,7 +102,7 @@
 				<groupId>org.demoiselle.jee</groupId>
 				<artifactId>demoiselle-security-jwt</artifactId>
 				<version>${demoiselle.version}</version>
-			</dependency>		
+			</dependency>
 
 			<!-- jsr-299 api -->
 			<dependency>
@@ -219,4 +225,6 @@
 
 	</dependencyManagement>
 	
+	
+
 </project>
