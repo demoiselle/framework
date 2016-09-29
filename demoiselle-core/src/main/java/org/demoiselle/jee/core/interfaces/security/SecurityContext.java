@@ -31,9 +31,6 @@ public interface SecurityContext extends Serializable {
      * @param resource resource to be checked
      * @param operation operation to be checked
      * @return {@code true} if the user has the permission
-     * @throws AuthorizationException When the permission checking fails, this
-     * exception is thrown.
-     * @throws NotLoggedInException if there is no user logged in a specific
      * session.
      */
     boolean hasPermission(String resource, String operation);
@@ -43,9 +40,6 @@ public interface SecurityContext extends Serializable {
      *
      * @param role role to be checked
      * @return {@code true} if the user has the role
-     * @throws AuthorizationException When the permission checking fails, this
-     * exception is thrown.
-     * @throws NotLoggedInException if there is no user logged in a specific
      * session.
      */
     boolean hasRole(String role);
@@ -53,7 +47,6 @@ public interface SecurityContext extends Serializable {
     /**
      * Return the user logged in the session.
      *
-     * @param token
      * @return the user logged in a specific authenticated session. If there is
      * no active session {@code null} is returned.
      */

@@ -40,9 +40,6 @@ import javax.inject.Qualifier;
  *
  * @author SERPRO
  *
- * @see org.demoiselle.util.ResourceBundle
- * @see org.demoiselle.internal.producer.ResourceBundleProducer#create(InjectionPoint)
- * @see org.demoiselle.internal.producer.LoggerProducer#createNamed(InjectionPoint)
  */
 @Qualifier
 @Inherited

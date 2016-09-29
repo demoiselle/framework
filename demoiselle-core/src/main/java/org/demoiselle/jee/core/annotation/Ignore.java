@@ -12,11 +12,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
 
 /**
- * <p>Used in fields of classes annotated with {@link org.demoiselle.configuration.Configuration}
+ * <p>Used in fields of classes annotated with
  * to indicate that the system should ignore this field when population the new configuration
  * instance with values extracted from the source file.</p>
  *
- * @see org.demoiselle.configuration.Configuration
  * @author SERPRO
  */
 @Target(FIELD)
