@@ -6,6 +6,7 @@
  */
 package org.demoiselle.jee.security.impl;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -50,7 +51,7 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public boolean hasRole(String role) {
-        if (tm.getUser().getRoles().parallelStream().filter(p -> p.equals(role)).count() <= 0) {
+        if (tm.getUser().getRoles().stream().filter(p -> p.equals(role)).count() <= 0) {
             return false;
         }
         return true;
@@ -61,7 +62,7 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public boolean isLoggedIn() {
-        return getUser() != null && getUser().getId() != null;
+        return tm.validate();
     }
 
     @Override

@@ -16,6 +16,7 @@ import javax.interceptor.InvocationContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.UnexpectedTypeException;
 import javax.validation.Validation;
+import static javax.validation.Validation.buildDefaultValidatorFactory;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
@@ -30,10 +31,10 @@ public class ValidatePayloadInterceptor implements Serializable {
 	@AroundInvoke
 	public Object manage(final InvocationContext ic) throws Exception {
 		DemoiselleRESTException ex = new DemoiselleRESTException();
-		Set<ConstraintViolation<?>> violations = new HashSet<ConstraintViolation<?>>();
+		Set<ConstraintViolation<?>> violations = new HashSet<>();
 		for (Object params : ic.getParameters()) {
 			if (params != null) {
-				ValidatorFactory dfv = Validation.buildDefaultValidatorFactory();
+				ValidatorFactory dfv = buildDefaultValidatorFactory();
 				Validator validator = dfv.getValidator();
 				try {
 					violations.addAll(validator.validate(params));

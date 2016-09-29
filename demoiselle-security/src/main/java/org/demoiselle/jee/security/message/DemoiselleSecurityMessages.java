@@ -13,13 +13,7 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
 public interface DemoiselleSecurityMessages {
 
     @MessageTemplate("{access-checking-permission}")
-    String accessCheckingPermission(String usuario, String operacao, String recurso);
-
-    @MessageTemplate("{access-checking-role}")
-    String accessCheckingRole(String usuario, String role);
-
-    @MessageTemplate("{access-allowed}")
-    String accessAllowed(String usuario, String operacao, String recurso);
+    String accessCheckingPermission(String operacao, String recurso);
 
     @MessageTemplate("{access-denied}")
     String accessDenied(String usuario, String operacao, String recurso);
@@ -31,9 +25,9 @@ public interface DemoiselleSecurityMessages {
     String invalidCredentials();
 
     @MessageTemplate("{does-not-have-role}")
-    String doesNotHaveRole(String usuario, String role);
+    String doesNotHaveRole(String role);
 
     @MessageTemplate("{does-not-have-permission}")
-    String doesNotHavePermission(String usuario, String operacao, String recurso);
+    String doesNotHavePermission(String operacao, String recurso);
 
 }

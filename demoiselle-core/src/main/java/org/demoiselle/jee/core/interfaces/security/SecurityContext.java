@@ -7,9 +7,6 @@
 package org.demoiselle.jee.core.interfaces.security;
 
 import java.io.Serializable;
-import java.security.Principal;
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p>

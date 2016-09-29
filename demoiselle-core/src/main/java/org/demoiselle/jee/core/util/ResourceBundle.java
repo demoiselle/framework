@@ -7,6 +7,7 @@
 package org.demoiselle.jee.core.util;
 
 import java.io.Serializable;
+import static java.lang.Thread.currentThread;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.Locale;
@@ -37,11 +38,11 @@ public class ResourceBundle extends java.util.ResourceBundle implements Serializ
 	private java.util.ResourceBundle getDelegate() {
 		if (delegate == null) {
 			try {
-				ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-				delegate = ResourceBundle.getBundle(baseName, locale, classLoader);
+				ClassLoader classLoader = currentThread().getContextClassLoader();
+				delegate = getBundle(baseName, locale, classLoader);
 
 			} catch (MissingResourceException mre) {
-				delegate = ResourceBundle.getBundle(baseName, locale);
+				delegate = getBundle(baseName, locale);
 			}
 		}
 

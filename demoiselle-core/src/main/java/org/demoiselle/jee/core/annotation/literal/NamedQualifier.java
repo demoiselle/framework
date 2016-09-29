@@ -6,9 +6,9 @@
  */
 package org.demoiselle.jee.core.annotation.literal;
 
+import java.lang.annotation.Annotation;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Named;
-import java.lang.annotation.Annotation;
 
 /**
  * Annotation litteral that allows to create instances of the {@link Named} literal.

@@ -12,7 +12,13 @@ import java.util.HashMap;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import javax.ws.rs.core.Response;
+import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+import static javax.ws.rs.core.Response.status;
+import static javax.ws.rs.core.Response.status;
+import static javax.ws.rs.core.Response.status;
+import static javax.ws.rs.core.Response.status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
@@ -30,16 +36,16 @@ public class GenericExceptionMapper implements ExceptionMapper<Exception> {
         if (ex instanceof DemoiselleRESTException) {
             DemoiselleRESTException exDemoiselleREST = (DemoiselleRESTException) ex;
             if (!exDemoiselleREST.getMessages().isEmpty()) {
-                return Response.status(exDemoiselleREST.getStatusCode()).entity(exDemoiselleREST.getMessages())
-                        .type(MediaType.APPLICATION_JSON).build();
+                return status(exDemoiselleREST.getStatusCode()).entity(exDemoiselleREST.getMessages())
+                        .type(APPLICATION_JSON).build();
             } else if (exDemoiselleREST.getStatusCode() > 0){
-                return Response.status(exDemoiselleREST.getStatusCode()).entity(exDemoiselleREST.getMessage())
-                        .type(MediaType.APPLICATION_JSON).build();
+                return status(exDemoiselleREST.getStatusCode()).entity(exDemoiselleREST.getMessage())
+                        .type(APPLICATION_JSON).build();
             }
 
         }
 
-        HashMap<String, String> entity = new HashMap<String, String>();
+        HashMap<String, String> entity = new HashMap<>();
 
         // No caso de existir message ele mostra a MESSAGE da Exception
         if (ex.getMessage() != null) {
@@ -57,16 +63,16 @@ public class GenericExceptionMapper implements ExceptionMapper<Exception> {
 
             // Por padrão retorna SERVER ERROR, mas tenta encontrar o status do RESPONSE se for WebApplicationException
             // http://docs.oracle.com/javaee/7/api/javax/ws/rs/WebApplicationException.html
-            int responseCode = Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
+            int responseCode = INTERNAL_SERVER_ERROR.getStatusCode();
             if (ex instanceof WebApplicationException) {
                 responseCode = ((WebApplicationException) ex).getResponse().getStatus();
             }
 
-            return Response.status(responseCode).entity(entity).type(MediaType.APPLICATION_JSON).build();
+            return status(responseCode).entity(entity).type(APPLICATION_JSON).build();
         }
 
         entity.put("error", "Erro interno desconhecido no servidor.");
-        return Response.status(500).entity(entity).type(MediaType.APPLICATION_JSON).build();
+        return status(500).entity(entity).type(APPLICATION_JSON).build();
     }
 
 }

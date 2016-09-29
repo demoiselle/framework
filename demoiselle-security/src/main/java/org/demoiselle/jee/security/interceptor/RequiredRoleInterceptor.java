@@ -13,11 +13,14 @@ import javax.interceptor.InvocationContext;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import static java.util.Arrays.asList;
 import java.util.List;
 
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import static javax.interceptor.Interceptor.Priority.APPLICATION;
 import javax.ws.rs.core.Response;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.util.ResourceBundle;
 import org.demoiselle.jee.security.annotation.RequiredRole;
@@ -34,7 +37,7 @@ import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
  */
 @RequiredRole(value = "")
 @Interceptor
-@Priority(Interceptor.Priority.APPLICATION)
+@Priority(APPLICATION)
 public class RequiredRoleInterceptor implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -71,24 +74,17 @@ public class RequiredRoleInterceptor implements Serializable {
     public Object manage(final InvocationContext ic) throws Exception {
         List<String> roles = getRoles(ic);
 
-        String username = null;
-
-        if (securityContext.isLoggedIn()) {
-            username = loggedUser.getName();
-        }
-
-        List<String> userRoles = new ArrayList<String>();
+        List<String> userRoles = new ArrayList<>();
 
         for (String role : roles) {
             if (securityContext.hasRole(role)) {
-                logger.finest(bundle.accessCheckingRole(username, role));
                 userRoles.add(role);
             }
         }
 
         if (userRoles.isEmpty()) {
-            logger.severe(bundle.doesNotHaveRole(username, roles.toString()));
-            throw new DemoiselleSecurityException(bundle.doesNotHaveRole(username, roles.toString()), Response.Status.UNAUTHORIZED.getStatusCode());
+            logger.severe(bundle.doesNotHaveRole(roles.toString()));
+            throw new DemoiselleSecurityException(bundle.doesNotHaveRole(roles.toString()), UNAUTHORIZED.getStatusCode());
         }
 
         return ic.proceed();
@@ -112,7 +108,7 @@ public class RequiredRoleInterceptor implements Serializable {
             roles = ic.getMethod().getAnnotation(RequiredRole.class).value();
         }
 
-        return Arrays.asList(roles);
+        return asList(roles);
     }
 
 }

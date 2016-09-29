@@ -8,6 +8,7 @@ package org.demoiselle.jee.core.internal.producer;
 
 import java.io.Serializable;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
@@ -40,7 +41,7 @@ public class LoggerProducer implements Serializable {
             name = "not.categorized";
         }
 
-        return Logger.getLogger(name);
+        return getLogger(name);
     }
 
 }

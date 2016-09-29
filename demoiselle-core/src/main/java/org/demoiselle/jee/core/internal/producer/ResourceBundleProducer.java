@@ -8,15 +8,14 @@ package org.demoiselle.jee.core.internal.producer;
 
 import java.io.Serializable;
 import java.util.Locale;
-
+import static java.util.Locale.getDefault;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.CDI;
+import static javax.enterprise.inject.spi.CDI.current;
 import javax.enterprise.inject.spi.InjectionPoint;
-
 import org.demoiselle.jee.core.annotation.Name;
-import org.demoiselle.jee.core.util.CDIUtils;
+import static org.demoiselle.jee.core.util.CDIUtils.getQualifier;
 import org.demoiselle.jee.core.util.ResourceBundle;
 
 /**
@@ -44,7 +43,7 @@ public class ResourceBundleProducer implements Serializable {
     public ResourceBundle create(InjectionPoint ip) {
         String baseName = null;
         if (ip != null && ip.getQualifiers() != null) {
-            Name nameQualifier = CDIUtils.getQualifier(Name.class, ip);
+            Name nameQualifier = getQualifier(Name.class, ip);
             if (nameQualifier != null) {
                 baseName = nameQualifier.value();
                 if ("".equals(baseName)) {
@@ -62,13 +61,13 @@ public class ResourceBundleProducer implements Serializable {
 
         try {
             bundle = baseName != null
-                    ? new ResourceBundle(baseName, CDI.current().select(Locale.class).get()) {
+                    ? new ResourceBundle(baseName, current().select(Locale.class).get()) {
             }
-                    : new ResourceBundle("messages", CDI.current().select(Locale.class).get());
+                    : new ResourceBundle("messages", current().select(Locale.class).get());
         } catch (RuntimeException e) {
             bundle = baseName != null
-                    ? new ResourceBundle(baseName, Locale.getDefault())
-                    : new ResourceBundle("messages", Locale.getDefault());
+                    ? new ResourceBundle(baseName, getDefault())
+                    : new ResourceBundle("messages", getDefault());
         }
 
         return bundle;

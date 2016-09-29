@@ -6,16 +6,14 @@
  */
 package org.demoiselle.jee.core.annotation;
 
-import javax.enterprise.inject.spi.InjectionPoint;
+import static java.lang.annotation.ElementType.*;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Target;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Named;
 import javax.inject.Qualifier;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * <p>

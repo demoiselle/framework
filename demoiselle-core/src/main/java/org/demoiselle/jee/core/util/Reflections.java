@@ -7,11 +7,14 @@
 package org.demoiselle.jee.core.util;
 
 import java.io.InputStream;
+import static java.lang.Thread.currentThread;
 import java.lang.reflect.*;
+import static java.lang.reflect.Modifier.isStatic;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
+import static java.util.Arrays.asList;
 import java.util.List;
+import static org.demoiselle.jee.core.util.Exceptions.handleToRuntimeException;
 
 /**
  * Provides some features to do some operations relating to java reflection.
@@ -171,7 +174,7 @@ public class Reflections {
 			field.setAccessible(acessible);
 
 		} catch (Exception e) {
-			Exceptions.handleToRuntimeException(e);
+			handleToRuntimeException(e);
 		}
 
 		return result;
@@ -192,7 +195,7 @@ public class Reflections {
 			field.setAccessible(acessible);
 
 		} catch (Exception e) {
-			Exceptions.handleToRuntimeException(e);
+			handleToRuntimeException(e);
 		}
 	}
 
@@ -202,11 +205,11 @@ public class Reflections {
 	 * inherited fields you must iterate over this type's hierarchy.
 	 */
 	public static Field[] getNonStaticDeclaredFields(Class<?> type) {
-		List<Field> fields = new ArrayList<Field>();
+		List<Field> fields = new ArrayList<>();
 
 		if (type != null) {
 			for (Field field : type.getDeclaredFields()) {
-				if (!Modifier.isStatic(field.getModifiers()) && !field.getType().equals(type.getDeclaringClass())) {
+				if (!isStatic(field.getModifiers()) && !field.getType().equals(type.getDeclaringClass())) {
 					fields.add(field);
 				}
 			}
@@ -220,12 +223,12 @@ public class Reflections {
 	 * @return All non static fields from a certain type, including fields declared in superclasses of this type.
 	 */
 	public static List<Field> getNonStaticFields(Class<?> type) {
-		List<Field> fields = new ArrayList<Field>();
+		List<Field> fields = new ArrayList<>();
 
 		if (type != null) {
 			Class<?> currentType = type;
 			while (currentType != null && !"java.lang.Object".equals(currentType.getCanonicalName())) {
-				fields.addAll(Arrays.asList(getNonStaticDeclaredFields(currentType)));
+				fields.addAll(asList(getNonStaticDeclaredFields(currentType)));
 				currentType = currentType.getSuperclass();
 			}
 		}
@@ -245,7 +248,7 @@ public class Reflections {
 		try {
 			object = clazz.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
-			Exceptions.handleToRuntimeException(e);
+			handleToRuntimeException(e);
 		}
 		return object;
 	}
@@ -268,7 +271,7 @@ public class Reflections {
 	 * @return {@link ClassLoader} ClassLoader for the given class.
 	 */
 	public static ClassLoader getClassLoaderForClass(final String canonicalName) {
-		return Reflections.getClassLoaderForResource(canonicalName.replaceAll("\\.", "/") + ".class");
+		return getClassLoaderForResource(canonicalName.replaceAll("\\.", "/") + ".class");
 	}
 
 	/**
@@ -281,7 +284,7 @@ public class Reflections {
 		final String stripped = resource.charAt(0) == '/' ? resource.substring(1) : resource;
 
 		URL url = null;
-		ClassLoader result = Thread.currentThread().getContextClassLoader();
+		ClassLoader result = currentThread().getContextClassLoader();
 
 		if (result != null) {
 			url = result.getResource(stripped);

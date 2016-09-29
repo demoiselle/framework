@@ -10,12 +10,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import static java.lang.String.valueOf;
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import static java.util.regex.Matcher.quoteReplacement;
+import static java.util.regex.Pattern.matches;
 import org.demoiselle.jee.core.annotation.Ignore;
+import static org.demoiselle.jee.core.util.Reflections.getFieldValue;
+import static org.demoiselle.jee.core.util.Reflections.getNonStaticDeclaredFields;
 
 /**
  * Contain a set of methods that implements a set of functionalities that
@@ -36,7 +38,7 @@ public final class Strings {
      * @return boolean true if matches and false otherwise.
      */
     public static boolean isResourceBundleKeyFormat(final String key) {
-        return Pattern.matches("^\\{(.+)\\}$", key == null ? "" : key);
+        return matches("^\\{(.+)\\}$", key == null ? "" : key);
     }
 
     /**
@@ -51,7 +53,7 @@ public final class Strings {
 
         if (result != null) {
             for (char ch : chars) {
-                result = result.replace(String.valueOf(ch), "");
+                result = result.replace(valueOf(ch), "");
             }
         }
         return result;
@@ -122,7 +124,7 @@ public final class Strings {
         if (params != null && string != null) {
             for (int i = 0; i < params.length; i++) {
                 if (params[i] != null) {
-                    result = result.replaceAll("\\{" + i + "\\}", Matcher.quoteReplacement(params[i].toString()));
+                    result = result.replaceAll("\\{" + i + "\\}", quoteReplacement(params[i].toString()));
                 }
             }
         }
@@ -156,7 +158,7 @@ public final class Strings {
             result.append(" [");
 
             boolean first = true;
-            for (Field field : Reflections.getNonStaticDeclaredFields(object.getClass())) {
+            for (Field field : getNonStaticDeclaredFields(object.getClass())) {
                 if (!field.isAnnotationPresent(Ignore.class)) {
                     if (first) {
                         first = false;
@@ -166,7 +168,7 @@ public final class Strings {
 
                     result.append(field.getName());
                     result.append('=');
-                    fieldValue = Reflections.getFieldValue(field, object);
+                    fieldValue = getFieldValue(field, object);
                     result.append(fieldValue != null && fieldValue.getClass().isArray()
                             ? Arrays.toString((Object[]) fieldValue)
                             : fieldValue);
@@ -205,7 +207,7 @@ public final class Strings {
     public static String firstToUpper(String string) {
         String result = string;
 
-        if (!Strings.isEmpty(string)) {
+        if (!isEmpty(string)) {
             result = string.toUpperCase().charAt(0) + (string.length() > 1 ? string.substring(1) : "");
         }
 
@@ -248,20 +250,13 @@ public final class Strings {
         StringBuilder result = new StringBuilder();
 
         if (inputStream != null) {
-            BufferedReader reader = null;
-
-            try {
-                reader = new BufferedReader(new InputStreamReader(inputStream));
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                 String line;
 
                 while ((line = reader.readLine()) != null) {
                     result.append(line);
                 }
 
-            } finally {
-                if (reader != null) {
-                    reader.close();
-                }
             }
         }
 

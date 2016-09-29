@@ -15,9 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.interfaces.security.Token;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
+import static org.jose4j.jwk.PublicJsonWebKey.Factory.newPublicJwk;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
+import static org.jose4j.jwk.RsaJwkGenerator.generateJwk;
 import org.jose4j.jws.AlgorithmIdentifiers;
+import static org.jose4j.jws.AlgorithmIdentifiers.HMAC_SHA512;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.InvalidJwtException;
@@ -48,8 +51,7 @@ public class TokensManagerImpl implements TokensManager {
 
     public TokensManagerImpl() throws JoseException {
         if (rsaJsonWebKey == null) {
-//        RsaJsonWebKey chave = RsaJwkGenerator.generateJwk(2048);
-            rsaJsonWebKey = (RsaJsonWebKey) RsaJsonWebKey.Factory.newPublicJwk(RsaJwkGenerator.generateJwk(2048).getKey());
+            rsaJsonWebKey = (RsaJsonWebKey) newPublicJwk(generateJwk(2048).getKey());
             rsaJsonWebKey.setKeyId("demoiselle-security-jwt");
         }
     }
@@ -106,7 +108,7 @@ public class TokensManagerImpl implements TokensManager {
             jws.setPayload(claims.toJson());
             jws.setKey(rsaJsonWebKey.getKey());
             jws.setKeyIdHeaderValue(rsaJsonWebKey.getKeyId());
-            jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.HMAC_SHA512);
+            jws.setAlgorithmHeaderValue(HMAC_SHA512);
             token.setKey(jws.getCompactSerialization());
             token.setType("JWT");
         } catch (JoseException ex) {
@@ -118,7 +120,7 @@ public class TokensManagerImpl implements TokensManager {
 
     @Override
     public boolean validate() {
-        return getUser() != null;
+        return getUser() != null && getUser().getId() != null;
     }
 
 }

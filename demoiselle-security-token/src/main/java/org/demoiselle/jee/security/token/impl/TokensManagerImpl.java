@@ -5,11 +5,15 @@
  */
 package org.demoiselle.jee.security.token.impl;
 
+import java.util.Map;
 import java.util.UUID;
+import static java.util.UUID.randomUUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.ws.rs.ApplicationPath;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.interfaces.security.Token;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
@@ -18,10 +22,10 @@ import org.demoiselle.jee.core.interfaces.security.TokensManager;
  *
  * @author 70744416353
  */
-@Dependent
+@ApplicationScoped
 public class TokensManagerImpl implements TokensManager {
 
-    private static ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
 
     @Inject
     private Logger logger;
@@ -39,19 +43,24 @@ public class TokensManagerImpl implements TokensManager {
 
     @Override
     public void setUser(DemoisellePrincipal user) {
-        if (!repo.containsValue(user)) {
-            String value = UUID.randomUUID().toString();
-            repo.put(value, user);
+        token.setKey(null);
+
+        repo.entrySet().stream().parallel().filter((entry) -> (entry.getValue().equals(user))).forEach((entry) -> {
+            token.setKey(entry.getKey());
+        });
+
+        if (token.getKey() == null) {
+            String value = randomUUID().toString();
+            repo.putIfAbsent(value, user);
             token.setKey(value);
-        } else {
-            token.setKey((repo.entrySet().parallelStream().filter((e) -> (user.equals(e.getValue()))).findAny().get()).getKey());
         }
+
         token.setType("Token");
     }
 
     @Override
     public boolean validate() {
-        return getUser() != null;
+        return getUser() != null && getUser().getId() != null;
     }
 
 }

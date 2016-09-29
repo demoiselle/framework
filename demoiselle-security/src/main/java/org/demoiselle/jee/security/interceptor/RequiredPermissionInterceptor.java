@@ -13,13 +13,16 @@ import javax.interceptor.InvocationContext;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import static javax.interceptor.Interceptor.Priority.APPLICATION;
 import javax.ws.rs.core.Response;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import org.demoiselle.jee.core.annotation.Name;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.util.ResourceBundle;
 import org.demoiselle.jee.core.util.Strings;
 import org.demoiselle.jee.security.annotation.RequiredPermission;
 import org.demoiselle.jee.core.interfaces.security.SecurityContext;
+import static org.demoiselle.jee.core.util.Strings.isEmpty;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
@@ -32,7 +35,7 @@ import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
  */
 @RequiredPermission
 @Interceptor
-@Priority(Interceptor.Priority.APPLICATION)
+@Priority(APPLICATION)
 public class RequiredPermissionInterceptor implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -70,19 +73,16 @@ public class RequiredPermissionInterceptor implements Serializable {
     public Object manage(final InvocationContext ic) throws Exception {
         String resource = getResource(ic);
         String operation = getOperation(ic);
-        String username = null;
 
         if (securityContext.isLoggedIn()) {
-            username = loggedUser.getName();
-            logger.finest(bundle.accessCheckingPermission(username, operation, resource));
+            logger.finest(bundle.accessCheckingPermission(operation, resource));
         }
 
         if (!securityContext.hasPermission(resource, operation)) {
-            logger.severe(bundle.doesNotHavePermission(username, operation, resource));
-            throw new DemoiselleSecurityException(bundle.doesNotHavePermission(username, operation, resource), Response.Status.UNAUTHORIZED.getStatusCode());
+            logger.severe(bundle.doesNotHavePermission(operation, resource));
+            throw new DemoiselleSecurityException(bundle.doesNotHavePermission(operation, resource), UNAUTHORIZED.getStatusCode());
         }
 
-        logger.fine(bundle.accessAllowed(username, operation, resource));
         return ic.proceed();
     }
 
@@ -107,7 +107,7 @@ public class RequiredPermissionInterceptor implements Serializable {
             requiredPermission = ic.getTarget().getClass().getAnnotation(RequiredPermission.class);
         }
 
-        if (Strings.isEmpty(requiredPermission.resource())) {
+        if (isEmpty(requiredPermission.resource())) {
             if (ic.getTarget().getClass().getAnnotation(Name.class) == null) {
                 return ic.getTarget().getClass().getSimpleName();
             } else {
@@ -139,7 +139,7 @@ public class RequiredPermissionInterceptor implements Serializable {
             requiredPermission = ic.getTarget().getClass().getAnnotation(RequiredPermission.class);
         }
 
-        if (Strings.isEmpty(requiredPermission.operation())) {
+        if (isEmpty(requiredPermission.operation())) {
             if (ic.getMethod().getAnnotation(Name.class) == null) {
                 return ic.getMethod().getName();
             } else {
