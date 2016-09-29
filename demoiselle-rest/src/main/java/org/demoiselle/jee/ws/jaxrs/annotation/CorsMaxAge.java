@@ -20,10 +20,10 @@ import javax.interceptor.InterceptorBinding;
  */
 @Inherited
 @InterceptorBinding
-@Target({ METHOD, TYPE })
+@Target({METHOD, TYPE})
 @Retention(RUNTIME)
-public @interface Cache {
+public @interface CorsMaxAge {
 
     @Nonbinding
-    String value() default "max-age=0";
+    String value() default "0";
 }

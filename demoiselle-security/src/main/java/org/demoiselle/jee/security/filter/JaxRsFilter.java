@@ -44,6 +44,9 @@ public class JaxRsFilter implements ClientRequestFilter, ClientResponseFilter, C
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
+        responseContext.getHeaders().putSingle("Access-Control-Allow-Headers", "Authorization");
+        responseContext.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
+
         responseContext.getHeaders().putSingle("Authorization", "enabled");
         responseContext.getHeaders().putSingle("x-content-type-options", "nosniff");
         responseContext.getHeaders().putSingle("x-frame-options", "SAMEORIGIN");

@@ -18,7 +18,8 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
 import org.demoiselle.jee.ws.jaxrs.annotation.Cache;
-import org.demoiselle.jee.ws.jaxrs.annotation.Cors;
+import org.demoiselle.jee.ws.jaxrs.annotation.CorsAllowMethods;
+import org.demoiselle.jee.ws.jaxrs.annotation.CorsAllowOrigin;
 
 /**
  *
@@ -41,22 +42,25 @@ public class JaxRsFilter implements ContainerRequestFilter, ContainerResponseFil
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext response) {
 
+        response.getHeaders().putSingle("Demoiselle", "3.0.0");
+
         if (requestContext.getMethod().equals("GET")) {
             Cache max = info.getResourceMethod().getAnnotation(Cache.class);
             if (max != null) {
                 response.getHeaders().putSingle("Cache-Control", max.value());
             }
         }
-        
-//        Cors cors = info.getResourceMethod().getAnnotation(Cors.class);
-//            if (cors != null) {
-//                response.getHeaders().putSingle("Cache-Control", max.value());
-//            }
 
-        response.getHeaders().putSingle("Demoiselle", "3.0.0");
-        response.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
-        response.getHeaders().putSingle("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, DELETE");
-        response.getHeaders().putSingle("Access-Control-Allow-Headers", "Content-Type");
+        CorsAllowMethods corsAllowMethods = info.getResourceMethod().getAnnotation(CorsAllowMethods.class);
+        if (corsAllowMethods != null) {
+            response.getHeaders().putSingle("Access-Control-Allow-Methods", requestContext.getMethod());
+        }
+
+        CorsAllowOrigin corsAllowOrigin = info.getResourceMethod().getAnnotation(CorsAllowOrigin.class);
+        if (corsAllowOrigin != null) {
+            response.getHeaders().putSingle("Access-Control-Allow-Origin", corsAllowOrigin.value());
+        }
+        
     }
 
     @PostConstruct
