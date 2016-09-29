@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 
