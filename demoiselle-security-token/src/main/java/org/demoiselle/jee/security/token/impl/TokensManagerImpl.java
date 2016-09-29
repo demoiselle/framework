@@ -21,7 +21,7 @@ import org.demoiselle.jee.core.interfaces.security.TokensManager;
 @Dependent
 public class TokensManagerImpl implements TokensManager {
 
-    private final static ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
 
     @Inject
     private Logger logger;
@@ -44,9 +44,7 @@ public class TokensManagerImpl implements TokensManager {
             repo.put(value, user);
             token.setKey(value);
         } else {
-            repo.entrySet().parallelStream().filter((e) -> (user.equals(e.getValue()))).forEach((e) -> {
-                token.setKey((String) e.getKey());
-            });
+            token.setKey((repo.entrySet().parallelStream().filter((e) -> (user.equals(e.getValue()))).findAny().get()).getKey());
         }
         token.setType("Token");
     }
