@@ -4,11 +4,13 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.security.jwt.impl;
+package org.demoiselle.jee.security.impl;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
@@ -19,7 +21,7 @@ import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
  * @author 70744416353
  */
 @RequestScoped
-public class DemoisellePrincipalImpl implements DemoisellePrincipal {
+public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
 
     private String id;
     private String name;
@@ -94,6 +96,16 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal {
     @Override
     public String toString() {
         return "DemoisellePrincipal{" + "id=" + id + ", name=" + name + ", roles=" + roles + ", permissions=" + permissions + '}';
+    }
+
+    @Override
+    public DemoisellePrincipal clone() {
+        try {
+            return (DemoisellePrincipal) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(DemoisellePrincipalImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 }

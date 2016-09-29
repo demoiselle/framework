@@ -28,4 +28,6 @@ public interface DemoisellePrincipal extends Principal {
     public Map<String, String> getPermissions();
 
     public void setPermissions(Map<String, String> permissions);
+
+    public DemoisellePrincipal clone();
 }

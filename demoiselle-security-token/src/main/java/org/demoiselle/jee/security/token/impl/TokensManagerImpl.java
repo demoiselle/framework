@@ -5,15 +5,11 @@
  */
 package org.demoiselle.jee.security.token.impl;
 
-import java.util.Map;
-import java.util.UUID;
 import static java.util.UUID.randomUUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.ws.rs.ApplicationPath;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.interfaces.security.Token;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
@@ -22,10 +18,10 @@ import org.demoiselle.jee.core.interfaces.security.TokensManager;
  *
  * @author 70744416353
  */
-@ApplicationScoped
+@Dependent
 public class TokensManagerImpl implements TokensManager {
 
-    private ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
 
     @Inject
     private Logger logger;
@@ -51,7 +47,7 @@ public class TokensManagerImpl implements TokensManager {
 
         if (token.getKey() == null) {
             String value = randomUUID().toString();
-            repo.putIfAbsent(value, user);
+            repo.putIfAbsent(value, user.clone());
             token.setKey(value);
         }
 
