@@ -39,8 +39,6 @@
         <deltaspike.version>1.7.1</deltaspike.version>
         <ejb.version>3.2</ejb.version>
         <cache.version>1.0.0</cache.version>
-        <!--Microcontainers-->
-        <wildfly-swarm>2016.8</wildfly-swarm>
 
         <!-- Maven plugin versions -->
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
