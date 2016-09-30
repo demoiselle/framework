@@ -31,21 +31,22 @@ public class GenericExceptionMapper implements ExceptionMapper<Exception> {
 
         StringWriter errorStackTrace = new StringWriter();
         ex.printStackTrace(new PrintWriter(errorStackTrace));
+        HashMap<String, String> entity = new HashMap<>();
 
         // Verifica se a exception é de validação de PAYLOAD do REST
         if (ex instanceof DemoiselleRESTException) {
             DemoiselleRESTException exDemoiselleREST = (DemoiselleRESTException) ex;
             if (!exDemoiselleREST.getMessages().isEmpty()) {
-                return status(exDemoiselleREST.getStatusCode()).entity(exDemoiselleREST.getMessages())
+                entity.put("error", exDemoiselleREST.getMessages().toString());
+                return status(exDemoiselleREST.getStatusCode()).entity(entity)
                         .type(APPLICATION_JSON).build();
-            } else if (exDemoiselleREST.getStatusCode() > 0){
-                return status(exDemoiselleREST.getStatusCode()).entity(exDemoiselleREST.getMessage())
+            } else if (exDemoiselleREST.getStatusCode() > 0) {
+                entity.put("error", exDemoiselleREST.getMessage());
+                return status(exDemoiselleREST.getStatusCode()).entity(entity)
                         .type(APPLICATION_JSON).build();
             }
 
         }
-
-        HashMap<String, String> entity = new HashMap<>();
 
         // No caso de existir message ele mostra a MESSAGE da Exception
         if (ex.getMessage() != null) {
@@ -55,7 +56,7 @@ public class GenericExceptionMapper implements ExceptionMapper<Exception> {
             int level = 1;
             while (ex.getCause() != null) {
                 ex = (Exception) ex.getCause();
-                if (!ex.getMessage().isEmpty()) {
+                if (ex != null && ex.getMessage() != null && !ex.getMessage().isEmpty()) {
                     entity.put("inner_cause_" + level, ex.getMessage());
                 }
                 level += 1;

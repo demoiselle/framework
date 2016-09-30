@@ -5,15 +5,20 @@
  */
 package org.demoiselle.jee.security.jwt.impl;
 
+import java.security.PublicKey;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.interfaces.security.Token;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
+import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
@@ -43,14 +48,37 @@ public class TokensManagerImpl implements TokensManager {
     @Inject
     private Token token;
 
+//    @Inject
+//    private Config config;
     @Inject
     private DemoisellePrincipal loggedUser;
 
-    public TokensManagerImpl() throws JoseException {
+    //@PostConstruct
+    public TokensManagerImpl() {
         if (rsaJsonWebKey == null) {
-            String chave = RsaJwkGenerator.generateJwk(2048).toJson(JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE);
-            rsaJsonWebKey = (RsaJsonWebKey) RsaJsonWebKey.Factory.newPublicJwk(chave);
-            rsaJsonWebKey.setKeyId("demoiselle-security-jwt");
+//            logger.info("Demoiselle Module - Security - JWT");
+            try {
+
+//                if (config.getType() == null) {
+//                    throw new DemoiselleSecurityException("Escolha o tipo de autenticação, ver documentação", 500);
+//                }
+//
+//                if (config.getType().equalsIgnoreCase("slave") && (config.getPublicKey() == null || config.getPublicKey().isEmpty())) {
+//                    throw new DemoiselleSecurityException("Informe a chave pública no arquivo de configuração do projeto, ver documentação", 500);
+//                } else {
+//                    rsaJsonWebKey = (RsaJsonWebKey) RsaJsonWebKey.Factory.newPublicJwk(config.getPrivateKey());
+//                }
+//
+//                if (config.getType().equalsIgnoreCase("master") && (config.getPrivateKey() == null || config.getPrivateKey().isEmpty())) {
+//                    throw new DemoiselleSecurityException("Informe a chave privada no arquivo de configuração do projeto, ver documentação", 500);
+//                } else {
+//                    rsaJsonWebKey = (RsaJsonWebKey) RsaJsonWebKey.Factory.newPublicJwk(config.getPublicKey());
+//                }
+                rsaJsonWebKey = (RsaJsonWebKey) RsaJsonWebKey.Factory.newPublicJwk(RsaJwkGenerator.generateJwk(2048).toJson(JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE));
+                rsaJsonWebKey.setKeyId("demoiselle-security-jwt");
+            } catch (JoseException ex) {
+                //  logger.severe(ex.getMessage());
+            }
         }
     }
 
@@ -63,7 +91,6 @@ public class TokensManagerImpl implements TokensManager {
                         .setAllowedClockSkewInSeconds(60) // allow some leeway in validating time based claims to account for clock skew
                         .setExpectedIssuer("demoiselle") // whom the JWT needs to have been issued by
                         .setExpectedAudience("demoiselle") // to whom the JWT is intended for
-                        .setDecryptionKey(rsaJsonWebKey.getPrivateKey()) // decrypt with the receiver's private key
                         .setVerificationKey(rsaJsonWebKey.getPublicKey())
                         .build(); // create the JwtConsumer instance
                 JwtClaims jwtClaims = jwtConsumer.processToClaims(token.getKey());
@@ -111,7 +138,6 @@ public class TokensManagerImpl implements TokensManager {
             token.setKey(jws.getCompactSerialization());
             token.setType("JWT");
         } catch (JoseException ex) {
-            //ex.printStackTrace();
             logger.severe(ex.getMessage());
         }
 
@@ -122,4 +148,8 @@ public class TokensManagerImpl implements TokensManager {
         return getUser() != null;
     }
 
+    @Override
+    public PublicKey getPublicKey() {
+        return rsaJsonWebKey.getPublicKey();
+    }
 }

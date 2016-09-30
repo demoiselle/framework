@@ -5,6 +5,7 @@
  */
 package org.demoiselle.jee.security.token.impl;
 
+import java.security.PublicKey;
 import static java.util.UUID.randomUUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -59,4 +60,8 @@ public class TokensManagerImpl implements TokensManager {
         return getUser() != null;
     }
 
+    @Override
+    public PublicKey getPublicKey() {
+        return null;
+    }
 }

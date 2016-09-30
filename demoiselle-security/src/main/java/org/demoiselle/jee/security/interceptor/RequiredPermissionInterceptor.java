@@ -71,8 +71,8 @@ public class RequiredPermissionInterceptor implements Serializable {
         String resource = getResource(ic);
         String operation = getOperation(ic);
 
-        if (securityContext.isLoggedIn()) {
-            logger.finest(bundle.accessCheckingPermission(operation, resource));
+        if (!securityContext.isLoggedIn()) {
+            throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), UNAUTHORIZED.getStatusCode());
         }
 
         if (!securityContext.hasPermission(resource, operation)) {

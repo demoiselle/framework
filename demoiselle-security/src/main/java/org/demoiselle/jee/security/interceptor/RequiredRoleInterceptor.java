@@ -75,6 +75,10 @@ public class RequiredRoleInterceptor implements Serializable {
         List<String> roles = getRoles(ic);
 
         List<String> userRoles = new ArrayList<>();
+        
+        if (!securityContext.isLoggedIn()) {
+            throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), UNAUTHORIZED.getStatusCode());
+        }
 
         for (String role : roles) {
             if (securityContext.hasRole(role)) {
