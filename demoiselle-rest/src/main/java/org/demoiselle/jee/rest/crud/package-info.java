@@ -8,4 +8,4 @@
  * Esta pacote tem o objetivo de conter as classes relacionadas aos
  * facilitadores de CRUD do framework Demoiselle.
  */
-package org.demoiselle.jee.ws.jaxrs.crud;
+package org.demoiselle.jee.rest.crud;

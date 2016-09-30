@@ -4,7 +4,7 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.ws.jaxrs.filter;
+package org.demoiselle.jee.rest.filter;
 
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -17,9 +17,10 @@ import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
-import org.demoiselle.jee.ws.jaxrs.annotation.Cache;
-import org.demoiselle.jee.ws.jaxrs.annotation.CorsAllowMethods;
-import org.demoiselle.jee.ws.jaxrs.annotation.CorsAllowOrigin;
+
+import org.demoiselle.jee.rest.annotation.Cache;
+import org.demoiselle.jee.rest.annotation.CorsAllowMethods;
+import org.demoiselle.jee.rest.annotation.CorsAllowOrigin;
 
 /**
  *

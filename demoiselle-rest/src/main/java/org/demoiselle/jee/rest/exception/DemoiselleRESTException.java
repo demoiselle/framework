@@ -4,7 +4,7 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.ws.jaxrs.exception;
+package org.demoiselle.jee.rest.exception;
 
 import java.util.HashMap;
 

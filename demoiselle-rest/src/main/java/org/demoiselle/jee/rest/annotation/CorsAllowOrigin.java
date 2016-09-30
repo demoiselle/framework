@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.demoiselle.jee.ws.jaxrs.annotation;
+package org.demoiselle.jee.rest.annotation;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
@@ -22,8 +22,8 @@ import javax.interceptor.InterceptorBinding;
 @InterceptorBinding
 @Target({METHOD, TYPE})
 @Retention(RUNTIME)
-public @interface CorsMaxAge {
+public @interface CorsAllowOrigin {
 
     @Nonbinding
-    String value() default "0";
+    String value() default "*";
 }

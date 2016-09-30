@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.demoiselle.jee.ws.jaxrs.annotation;
+package org.demoiselle.jee.rest.annotation;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
@@ -20,10 +20,7 @@ import javax.interceptor.InterceptorBinding;
  */
 @Inherited
 @InterceptorBinding
-@Target({ METHOD, TYPE })
+@Target({METHOD, TYPE})
 @Retention(RUNTIME)
-public @interface Cache {
-
-    @Nonbinding
-    String value() default "max-age=0";
+public @interface CorsAllowMethods {
 }
