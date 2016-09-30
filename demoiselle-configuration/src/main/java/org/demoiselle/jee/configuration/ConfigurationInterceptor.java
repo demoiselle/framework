@@ -9,12 +9,6 @@ import javax.interceptor.InvocationContext;
 
 import org.demoiselle.jee.configuration.annotation.Configuration;
 
-/**
- * <p>
- * Interceptor class that loads the values of configuration files
- * into it's mapped class.
- * </p>
- */
 @Dependent
 @Configuration
 @Interceptor
