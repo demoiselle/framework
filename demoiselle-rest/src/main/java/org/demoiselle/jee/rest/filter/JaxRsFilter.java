@@ -19,8 +19,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.rest.annotation.Cache;
-import org.demoiselle.jee.rest.annotation.CorsAllowMethods;
-import org.demoiselle.jee.rest.annotation.CorsAllowOrigin;
 
 /**
  *
