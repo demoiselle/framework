@@ -6,7 +6,6 @@
  */
 package org.demoiselle.jee.security.impl;
 
-import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
@@ -14,13 +13,7 @@ import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.interfaces.security.SecurityContext;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
 
-/**
- * <p>
- * This is the default implementation of {@link SecurityContext} interface.
- * </p>
- *
- * @author SERPRO
- */
+
 @RequestScoped
 public class SecurityContextImpl implements SecurityContext {
 
@@ -29,10 +22,6 @@ public class SecurityContextImpl implements SecurityContext {
     @Inject
     private TokensManager tm;
 
-    /**
-     * @see org.demoiselle.security.SecurityContext#hasPermission(String,
-     * String)
-     */
     @Override
     public boolean hasPermission(String resource, String operation) {
         if ((tm.getUser().getPermissions().entrySet()
@@ -45,9 +34,6 @@ public class SecurityContextImpl implements SecurityContext {
         return true;
     }
 
-    /**
-     * @see org.demoiselle.security.SecurityContext#hasRole(String)
-     */
     @Override
     public boolean hasRole(String role) {
         if (tm.getUser().getRoles().stream().filter(p -> p.equals(role)).count() <= 0) {
@@ -56,9 +42,6 @@ public class SecurityContextImpl implements SecurityContext {
         return true;
     }
 
-    /**
-     * @see org.demoiselle.security.SecurityContext#isLoggedIn()
-     */
     @Override
     public boolean isLoggedIn() {
         return tm.validate();

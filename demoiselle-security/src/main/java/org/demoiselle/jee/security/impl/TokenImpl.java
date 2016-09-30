@@ -8,10 +8,6 @@ package org.demoiselle.jee.security.impl;
 import javax.enterprise.context.RequestScoped;
 import org.demoiselle.jee.core.interfaces.security.Token;
 
-/**
- *
- * @author 70744416353
- */
 @RequestScoped
 public class TokenImpl implements Token {
 
