@@ -43,13 +43,6 @@ import org.demoiselle.jee.core.annotation.Ignore;
 import org.demoiselle.jee.core.annotation.Name;
 import org.demoiselle.jee.core.annotation.Priority;
 
-/**
- * This component loads a config class annotated with {@link org.demoiselle.jee.configuration.annotation.configuration.Configuration}
- * by filling its attributes with {@link org.demoiselle.jsf.util.Parameter}
- * according to a {@link org.demoiselle.configuration.ConfigType}.
- *
- * @author SERPRO
- */
 @ApplicationScoped
 public class ConfigurationLoader implements Serializable {
 
@@ -316,14 +309,7 @@ public class ConfigurationLoader implements Serializable {
 			throw new ConfigurationException(message.toString(), new ConstraintViolationException(violations));
 		}
 	}
-
 	
-	
-	
-	/**
-	 * @param type Base type to look for fields
-	 * @return All non static fields from a certain type, including fields declared in superclasses of this type.
-	 */
 	public List<Field> getNonStaticFields(Class<?> type) {
 		List<Field> fields = new ArrayList<Field>();
 
@@ -338,11 +324,6 @@ public class ConfigurationLoader implements Serializable {
 		return fields;
 	}
 	
-	/**
-	 * @param type Base type to look for fields
-	 * @return All non static fields from a certain type. Inherited fields are not returned, so if you need to get
-	 * inherited fields you must iterate over this type's hierarchy.
-	 */
 	public Field[] getNonStaticDeclaredFields(Class<?> type) {
 		List<Field> fields = new ArrayList<Field>();
 
@@ -357,23 +338,11 @@ public class ConfigurationLoader implements Serializable {
 		return fields.toArray(new Field[0]);
 	}
 	
-	/**
-	 * Return an URL to access a resource available to the active classloader for the calling thread.
-	 *
-	 * @param resource String representation of the location of the resource on the classpath
-	 * @return The {@link URL} for the resource
-	 */
 	public URL getResourceAsURL(final String resource) {
 		ClassLoader classLoader = getClassLoaderForResource(resource);
 		return classLoader != null ? classLoader.getResource(resource) : null;
 	}
-	
-	/**
-	 * Obtains the {@link ClassLoader} for the given resource.
-	 *
-	 * @param resource String representation of the fully qualified path to the resource on the classpath
-	 * @return {@link ClassLoader} ClassLoader for the given resource.
-	 */
+
 	public ClassLoader getClassLoaderForResource(final String resource) {
 		final String stripped = resource.charAt(0) == '/' ? resource.substring(1) : resource;
 
@@ -413,13 +382,6 @@ public class ConfigurationLoader implements Serializable {
 		return result;
 	}
 	
-	/**
-	 * Sets a value in a field.
-	 *
-	 * @param field  field to be setted.
-	 * @param object object that contains the field.
-	 * @param value  value to be setted in the field.
-	 */
 	public void setFieldValue(Field field, Object object, Object value) {
 		try {
 			boolean acessible = field.isAccessible();

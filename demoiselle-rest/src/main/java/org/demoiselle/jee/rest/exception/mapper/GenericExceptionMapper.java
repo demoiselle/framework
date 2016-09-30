@@ -4,7 +4,7 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.ws.jaxrs.exception.mapper;
+package org.demoiselle.jee.rest.exception.mapper;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -22,7 +22,7 @@ import static javax.ws.rs.core.Response.status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.demoiselle.jee.ws.jaxrs.exception.DemoiselleRESTException;
+import org.demoiselle.jee.rest.exception.DemoiselleRESTException;
 
 @Provider
 public class GenericExceptionMapper implements ExceptionMapper<Exception> {

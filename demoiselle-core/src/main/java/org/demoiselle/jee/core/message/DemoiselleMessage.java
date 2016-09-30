@@ -46,7 +46,7 @@ public interface DemoiselleMessage {
 	String takingOff();
 
 	@MessageTemplate("{engine-off}")
-	String engineOff(String ex);
+	String engineOff();
 
 	@MessageTemplate("{setting-up-bean-manager}")
 	String settingUpBeanManagerException(String util);

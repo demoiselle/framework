@@ -4,26 +4,26 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.ws.jaxrs.interceptor;
+package org.demoiselle.jee.rest.interceptor;
 
-import org.demoiselle.jee.ws.jaxrs.annotation.ValidatePayload;
+import static javax.interceptor.Interceptor.Priority.APPLICATION;
+import static javax.validation.Validation.buildDefaultValidatorFactory;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.annotation.Priority;
 
+import javax.annotation.Priority;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
-import static javax.interceptor.Interceptor.Priority.APPLICATION;
 import javax.interceptor.InvocationContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.UnexpectedTypeException;
-import javax.validation.Validation;
-import static javax.validation.Validation.buildDefaultValidatorFactory;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import org.demoiselle.jee.ws.jaxrs.exception.DemoiselleRESTException;
+import org.demoiselle.jee.rest.annotation.ValidatePayload;
+import org.demoiselle.jee.rest.exception.DemoiselleRESTException;
 
 @Interceptor
 @ValidatePayload

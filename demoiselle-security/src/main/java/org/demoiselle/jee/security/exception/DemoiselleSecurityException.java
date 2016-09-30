@@ -8,7 +8,7 @@ package org.demoiselle.jee.security.exception;
 
 import java.util.HashMap;
 
-import org.demoiselle.jee.ws.jaxrs.exception.DemoiselleRESTException;
+import org.demoiselle.jee.rest.exception.DemoiselleRESTException;
 
 public class DemoiselleSecurityException extends DemoiselleRESTException {
 
