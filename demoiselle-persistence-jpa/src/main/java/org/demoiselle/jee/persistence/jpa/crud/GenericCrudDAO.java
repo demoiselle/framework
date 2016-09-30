@@ -60,13 +60,6 @@ public abstract class GenericCrudDAO<T> {
 	public GenericDataPage pageResult(String sort, String order, Integer from, Integer size, String search,
 			String fields, HashMap<String, String> filter) {
 
-		// TODO: Rever esta validação
-		// if (GPUtils.isEmpty(sort, order) || !((order.equalsIgnoreCase("asc")
-		// || order.equalsIgnoreCase("desc"))
-		// && (GPUtils.fieldInClass(sort, this.entityClass)))) {
-		// throw new GPException(GPMessage.LIST_PARAM_ERROR);
-		// }
-
 		if (from == null) {
 			from = 0;
 		}
