@@ -83,7 +83,6 @@ public class RequiredRoleInterceptor implements Serializable {
         }
 
         if (userRoles.isEmpty()) {
-            logger.severe(bundle.doesNotHaveRole(roles.toString()));
             throw new DemoiselleSecurityException(bundle.doesNotHaveRole(roles.toString()), UNAUTHORIZED.getStatusCode());
         }
 

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.interfaces.security.Token;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
+import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
 import org.jose4j.jws.AlgorithmIdentifiers;
@@ -47,7 +48,8 @@ public class TokensManagerImpl implements TokensManager {
 
     public TokensManagerImpl() throws JoseException {
         if (rsaJsonWebKey == null) {
-            rsaJsonWebKey = (RsaJsonWebKey) RsaJsonWebKey.Factory.newPublicJwk(RsaJwkGenerator.generateJwk(2048).getKey());
+            String chave = RsaJwkGenerator.generateJwk(2048).toJson(JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE);
+            rsaJsonWebKey = (RsaJsonWebKey) RsaJsonWebKey.Factory.newPublicJwk(chave);
             rsaJsonWebKey.setKeyId("demoiselle-security-jwt");
         }
     }
@@ -61,7 +63,8 @@ public class TokensManagerImpl implements TokensManager {
                         .setAllowedClockSkewInSeconds(60) // allow some leeway in validating time based claims to account for clock skew
                         .setExpectedIssuer("demoiselle") // whom the JWT needs to have been issued by
                         .setExpectedAudience("demoiselle") // to whom the JWT is intended for
-                        .setVerificationKey(rsaJsonWebKey.getKey()) // verify the signature with the public key
+                        .setDecryptionKey(rsaJsonWebKey.getPrivateKey()) // decrypt with the receiver's private key
+                        .setVerificationKey(rsaJsonWebKey.getPublicKey())
                         .build(); // create the JwtConsumer instance
                 JwtClaims jwtClaims = jwtConsumer.processToClaims(token.getKey());
                 loggedUser.setId((String) jwtClaims.getClaimValue("id"));
@@ -102,14 +105,14 @@ public class TokensManagerImpl implements TokensManager {
 
             JsonWebSignature jws = new JsonWebSignature();
             jws.setPayload(claims.toJson());
-            jws.setKey(rsaJsonWebKey.getKey());
+            jws.setKey(rsaJsonWebKey.getRsaPrivateKey());
             jws.setKeyIdHeaderValue(rsaJsonWebKey.getKeyId());
-            jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.HMAC_SHA512);
+            jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
             token.setKey(jws.getCompactSerialization());
             token.setType("JWT");
         } catch (JoseException ex) {
-            ex.printStackTrace();
-            //  logger.severe(ex.getMessage());
+            //ex.printStackTrace();
+            logger.severe(ex.getMessage());
         }
 
     }

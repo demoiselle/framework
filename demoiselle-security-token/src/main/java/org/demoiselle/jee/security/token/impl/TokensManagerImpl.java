@@ -8,7 +8,7 @@ package org.demoiselle.jee.security.token.impl;
 import static java.util.UUID.randomUUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.interfaces.security.Token;
@@ -18,10 +18,10 @@ import org.demoiselle.jee.core.interfaces.security.TokensManager;
  *
  * @author 70744416353
  */
-@Dependent
+@ApplicationScoped
 public class TokensManagerImpl implements TokensManager {
 
-    private static ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
 
     @Inject
     private Logger logger;
@@ -56,7 +56,7 @@ public class TokensManagerImpl implements TokensManager {
 
     @Override
     public boolean validate() {
-        return getUser() != null && getUser().getId() != null;
+        return getUser() != null;
     }
 
 }
