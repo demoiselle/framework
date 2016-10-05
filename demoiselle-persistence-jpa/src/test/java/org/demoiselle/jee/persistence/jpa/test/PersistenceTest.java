@@ -17,15 +17,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 
-import org.demoiselle.jee.core.message.DemoiselleMessage;
 import org.demoiselle.jee.persistence.jpa.entity.User;
-import org.demoiselle.jee.persistence.jpa.test.util.ArchiveUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
@@ -44,15 +41,8 @@ public class PersistenceTest {
 	@Inject
 	UserTransaction userTransaction;
 
-	@Inject
-	DemoiselleMessage messsages;
-
 	@Deployment
 	public static Archive<?> createDeployment() {
-
-		final JavaArchive testJar = ShrinkWrap.create(JavaArchive.class, "persistence-test.jar");
-		testJar.addPackage(DemoiselleMessage.class.getPackage());
-		testJar.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
 		// Para rodar JUnit no Eclipse precisa add
 		// -Djava.util.logging.manager=org.jboss.logmanager.LogManager
@@ -62,19 +52,11 @@ public class PersistenceTest {
 		war.addAsWebInfResource("jbossas-ds.xml");
 		war.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
-		// Para funcionar o Delta Spike (Messages) é necessário informar todos
-		// os arquivos
-		war.addAsLibraries(ArchiveUtils.getDeltaSpikeCoreAndJpaArchive());
-		war.addAsLibraries(testJar);
-
 		return war;
 	}
 
 	@Before
 	public void preparePersistenceTest() throws Exception {
-
-		System.out.println(messsages.engineOn());
-
 		clearData();
 		insertData();
 		startTransaction();
