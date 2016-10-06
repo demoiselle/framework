@@ -112,5 +112,25 @@ public class TransactionTest {
 		List<User> list = q.getResultList();
 		Assert.assertEquals(0, list.size());
 	}
+	
+	@Test
+	public void F_transaction_PersistRollback() throws Exception {
+		userTransaction.begin();
+		User user = new User(USER_NAMES[2]);
+		entityManager.persist(user);
+		
+		// Volta o persist
+		userTransaction.rollback();
+		
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void G_transaction_PersistRollback_Verify() throws Exception {
+		TypedQuery<User> q = entityManager.createQuery("SELECT user FROM User user WHERE name = :name", User.class);
+		q.setParameter("name", USER_NAMES[2]);
+		List<User> list = q.getResultList();
+		Assert.assertEquals(0, list.size());
+	}
 
 }
