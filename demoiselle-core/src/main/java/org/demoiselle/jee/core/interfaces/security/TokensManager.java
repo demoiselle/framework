@@ -7,23 +7,13 @@
 package org.demoiselle.jee.core.interfaces.security;
 
 import java.io.Serializable;
-import java.security.PublicKey;
 
-/**
- * <p>
- * Structure used to handle both authentication and authorizations mechanisms.
- * </p>
- *
- * @author SERPRO
- */
-public interface TokensManager extends Serializable {
+public interface TokensManager {
 
     public DemoisellePrincipal getUser();
 
     public void setUser(DemoisellePrincipal user);
 
     public boolean validate();
-
-    public PublicKey getPublicKey();
 
 }

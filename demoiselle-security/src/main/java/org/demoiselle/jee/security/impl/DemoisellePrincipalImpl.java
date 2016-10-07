@@ -6,6 +6,7 @@
  */
 package org.demoiselle.jee.security.impl;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -93,7 +94,7 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
 
     @Override
     public String toString() {
-        return "DemoisellePrincipal{" + "id=" + id + ", name=" + name + ", roles=" + roles + ", permissions=" + permissions + '}';
+        return "{" + "\"id\"=" + id + ", \"name\"=" + name + ", \"roles\"=" + roles + ", \"permissions\"=" + permissions + '}';
     }
 
     @Override

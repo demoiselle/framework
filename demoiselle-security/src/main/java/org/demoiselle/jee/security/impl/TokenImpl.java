@@ -5,6 +5,8 @@
  */
 package org.demoiselle.jee.security.impl;
 
+import java.io.Serializable;
+import java.util.Objects;
 import javax.enterprise.context.RequestScoped;
 import org.demoiselle.jee.core.interfaces.security.Token;
 
@@ -32,6 +34,36 @@ public class TokenImpl implements Token {
     @Override
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 23 * hash + Objects.hashCode(this.key);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TokenImpl other = (TokenImpl) obj;
+        if (!Objects.equals(this.key, other.key)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Token{" + "\"key\"=" + key + ", \"type\"=" + type + '}';
     }
 
 }

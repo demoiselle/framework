@@ -9,10 +9,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * @author 70744416353
- */
 public interface DemoisellePrincipal extends Principal {
 
     public String getId();

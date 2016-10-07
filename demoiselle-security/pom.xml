@@ -17,10 +17,11 @@
     </parent>	
 		
     <dependencies>
-     
+        
         <dependency>
             <groupId>org.demoiselle.jee</groupId>
             <artifactId>demoiselle-rest</artifactId>
         </dependency>
+        
     </dependencies>
 </project>

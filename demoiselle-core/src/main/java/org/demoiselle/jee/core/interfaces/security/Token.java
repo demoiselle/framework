@@ -5,10 +5,7 @@
  */
 package org.demoiselle.jee.core.interfaces.security;
 
-/**
- *
- * @author 70744416353
- */
+
 public interface Token {
 
     public String getKey();

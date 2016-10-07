@@ -13,27 +13,27 @@ import org.demoiselle.jee.core.annotation.Name;
  *
  * @author 70744416353
  */
-@Configuration(resource = "demoiselle-security-jwt")
+@Configuration(resource = "demoiselle-security-jwt", prefix = "")
 public class Config implements Serializable {
 
     private static final long serialVersionUID = 638435989235076782L;
 
-    @Name("jwt.type")
+    @Name("type")
     private String type;
 
-    @Name("jwt.privateKey")
+    @Name("privateKey")
     private String privateKey;
 
-    @Name("jwt.publicKey")
+    @Name("publicKey")
     private String publicKey;
 
-    @Name("jwt.timetolive")
+    @Name("timetolive")
     private Float tempo;
 
-    @Name("jwt.issuer")
+    @Name("issuer")
     private String remetente;
 
-    @Name("jwt.audience")
+    @Name("audience")
     private String destinatario;
 
     public String getType() {
