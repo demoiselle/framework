@@ -39,6 +39,9 @@ public class CrudOperationsTest {
 	public static final String[] NEW_USER_NAMES = { "Homer Simpson", "Marge Simpson", "Bart Simpson", "Lisa Simpson",
 			"Maggie Simpson" };
 
+	public static final String[] USER_EMAILS = { "homer@domain.com", "marge@domain.com", "bart@domain.com",
+			"lisa@domain.com", "maggie@domain.com" };
+
 	@PersistenceContext
 	EntityManager entityManager;
 
@@ -72,16 +75,13 @@ public class CrudOperationsTest {
 	private int count() {
 		String allUsers = "select user from User user order by user.id";
 		List<User> users = entityManager.createQuery(allUsers, User.class).getResultList();
-
 		// System.out.println("users.size(): " + users.size());
-
 		return users.size();
 	}
 
-
 	@Test
 	public void A_insert() throws Exception {
-		
+
 		// System.out.println("======= INSERT =======");
 
 		userTransaction.begin();
@@ -89,8 +89,8 @@ public class CrudOperationsTest {
 		Assert.assertEquals(0, count());
 
 		// Insere os dados no banco
-		for (String name : USER_NAMES) {
-			User user = new User(name);
+		for (int i = 0; i < USER_NAMES.length; i++) {
+			User user = new User(USER_NAMES[i], USER_EMAILS[i]);
 			entityManager.persist(user);
 		}
 
@@ -103,7 +103,7 @@ public class CrudOperationsTest {
 
 	@Test
 	public void B_update() throws Exception {
-		
+
 		// System.out.println("======= UPDATE =======");
 
 		userTransaction.begin();
@@ -128,7 +128,7 @@ public class CrudOperationsTest {
 
 	@Test
 	public void C_delete() throws Exception {
-		
+
 		// System.out.println("======= DELETE =======");
 
 		Assert.assertEquals(USER_NAMES.length, count());
@@ -162,7 +162,7 @@ public class CrudOperationsTest {
 	@Test
 	public void D_finish() throws Exception {
 		// System.out.println("======= FINISH =======");
-		
+
 		Assert.assertEquals((NEW_USER_NAMES.length - 1), count());
 	}
 
