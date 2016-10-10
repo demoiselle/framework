@@ -75,7 +75,7 @@ public class PersistenceTest {
 		entityManager.joinTransaction();
 		System.out.println("Inserting records...");
 		for (String title : USER_NAMES) {
-			User user = new User(title);
+			User user = new User(title, title);
 			entityManager.persist(user);
 		}
 		userTransaction.commit();

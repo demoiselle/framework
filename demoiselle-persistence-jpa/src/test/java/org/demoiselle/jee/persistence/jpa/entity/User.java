@@ -30,11 +30,17 @@ public class User implements Serializable {
 	@Size(min = 3, max = 50)
 	private String name;
 
+	@Column(name = "email", unique = true)
+	@NotNull
+	@Size(min = 3, max = 50)
+	private String email;
+
 	public User() {
 	}
 
-	public User(String name) {
+	public User(String name, String email) {
 		this.name = name;
+		this.email = email;
 	}
 
 	public Long getId() {
@@ -53,8 +59,16 @@ public class User implements Serializable {
 		this.name = name;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	@Override
 	public String toString() {
-		return "User@" + hashCode() + "[id = " + id + "; name = " + name + "]";
+		return "User@" + hashCode() + "[id = " + id + "; name = " + name + "; email = " + getEmail() + "]";
 	}
 }
