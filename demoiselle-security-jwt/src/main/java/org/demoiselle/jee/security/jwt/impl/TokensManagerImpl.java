@@ -117,11 +117,11 @@ public class TokensManagerImpl implements TokensManager {
                 loggedUser.setName((String) jwtClaims.getClaimValue("name"));
                 loggedUser.setRoles((List) jwtClaims.getClaimValue("roles"));
                 loggedUser.setPermissions((Map) jwtClaims.getClaimValue("permissions"));
-                //loggedUser = new Gson().fromJson((String) jwtClaims.getClaimValue("user"), DemoisellePrincipal.class);
-                String ip = httpRequest.getRemoteAddr();
-                if (!ip.equalsIgnoreCase((String) jwtClaims.getClaimValue("ip"))) {
-                    return null;
-                }
+//              loggedUser = new Gson().fromJson((String) jwtClaims.getClaimValue("user"), DemoisellePrincipal.class);
+//                String ip = httpRequest.getRemoteAddr();
+//                if (!ip.equalsIgnoreCase((String) jwtClaims.getClaimValue("ip"))) {
+//                    return null;
+//                }
                 return loggedUser;
             } catch (InvalidJwtException ex) {
                 loggedUser = null;
@@ -143,7 +143,7 @@ public class TokensManagerImpl implements TokensManager {
             claims.setIssuedAtToNow();
             claims.setNotBeforeMinutesInThePast(1);
 
-            claims.setClaim("ip", httpRequest.getRemoteAddr());
+//            claims.setClaim("ip", httpRequest.getRemoteAddr());
             claims.setClaim("identity", (user.getIdentity()));
             claims.setClaim("name", (user.getName()));
             claims.setClaim("roles", (user.getRoles()));
