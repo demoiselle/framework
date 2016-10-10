@@ -65,7 +65,7 @@ public class TokensManagerImpl implements TokensManager {
 
     @PostConstruct
     public void init() {
-        if (publicKey == null || privateKey == null) {
+        if (publicKey == null) {
             logger.info("Demoiselle Module - Security - JWT");
             try {
 
@@ -113,7 +113,7 @@ public class TokensManagerImpl implements TokensManager {
                         .setVerificationKey(publicKey)
                         .build(); // create the JwtConsumer instance
                 JwtClaims jwtClaims = jwtConsumer.processToClaims(token.getKey());
-                loggedUser.setId((String) jwtClaims.getClaimValue("id"));
+                loggedUser.setIdentity((String) jwtClaims.getClaimValue("identity"));
                 loggedUser.setName((String) jwtClaims.getClaimValue("name"));
                 loggedUser.setRoles((List) jwtClaims.getClaimValue("roles"));
                 loggedUser.setPermissions((Map) jwtClaims.getClaimValue("permissions"));
@@ -144,7 +144,7 @@ public class TokensManagerImpl implements TokensManager {
             claims.setNotBeforeMinutesInThePast(1);
 
             claims.setClaim("ip", httpRequest.getRemoteAddr());
-            claims.setClaim("id", (user.getId()));
+            claims.setClaim("identity", (user.getIdentity()));
             claims.setClaim("name", (user.getName()));
             claims.setClaim("roles", (user.getRoles()));
             claims.setClaim("permissions", (user.getPermissions()));

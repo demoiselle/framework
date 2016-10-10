@@ -11,9 +11,9 @@ import java.util.Map;
 
 public interface DemoisellePrincipal extends Principal {
 
-    public String getId();
+    public String getIdentity();
 
-    public void setId(String id);
+    public void setIdentity(String id);
 
     public void setName(String name);
 

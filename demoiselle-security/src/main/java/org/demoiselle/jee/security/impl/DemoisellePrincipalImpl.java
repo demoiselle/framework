@@ -22,19 +22,19 @@ import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 @RequestScoped
 public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
 
-    private String id;
+    private String identity;
     private String name;
     private List<String> roles;
     private Map<String, String> permissions;
 
     @Override
-    public String getId() {
-        return id;
+    public String getIdentity() {
+        return identity;
     }
 
     @Override
-    public void setId(String id) {
-        this.id = id;
+    public void setIdentity(String id) {
+        this.identity = id;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 37 * hash + Objects.hashCode(this.id);
+        hash = 37 * hash + Objects.hashCode(this.identity);
         return hash;
     }
 
@@ -86,7 +86,7 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
             return false;
         }
         final DemoisellePrincipalImpl other = (DemoisellePrincipalImpl) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.identity, other.identity)) {
             return false;
         }
         return true;
@@ -94,7 +94,7 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
 
     @Override
     public String toString() {
-        return "{" + "\"id\"=" + id + ", \"name\"=" + name + ", \"roles\"=" + roles + ", \"permissions\"=" + permissions + '}';
+        return "{" + "\"identity\"=\"" + identity + "\", \"name\"=\"" + name + "\", \"roles\"=" + roles + ", \"permissions\"=" + permissions + '}';
     }
 
     @Override

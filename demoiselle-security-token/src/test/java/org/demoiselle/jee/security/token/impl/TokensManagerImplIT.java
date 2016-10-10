@@ -91,7 +91,7 @@ public class TokensManagerImplIT {
         System.out.println("setUser");
 
         dml.setName("Teste");
-        dml.setId("" + System.currentTimeMillis());
+        dml.setIdentity("" + System.currentTimeMillis());
         ArrayList<String> roles = new ArrayList<>();
         roles.add("ADMINISTRATOR");
         roles.add("MANAGER");

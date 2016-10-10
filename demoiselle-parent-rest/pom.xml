@@ -1,120 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<artifactId>demoiselle-parent-rest</artifactId>
-	<packaging>pom</packaging>
-	<modelVersion>4.0.0</modelVersion>
+    <artifactId>demoiselle-parent-rest</artifactId>
+    <packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
 
-	<name>Demoiselle Parent Rest</name>
+    <name>Demoiselle Parent Rest</name>
 
-	<description>
+    <description>
         Especialização do POM mínimo, contendo configurações úteis para todas as aplicações REST que utilizam o framework.
     </description>
 
-	<parent>
-		<groupId>org.demoiselle.jee</groupId>
-		<artifactId>demoiselle-parent</artifactId>
-		<version>3.0.0-BETA2-SNAPSHOT</version>
-		<relativePath>../demoiselle-parent</relativePath>
-	</parent>
+    <parent>
+        <groupId>org.demoiselle.jee</groupId>
+        <artifactId>demoiselle-parent</artifactId>
+        <version>3.0.0-BETA2-SNAPSHOT</version>
+        <relativePath>../demoiselle-parent</relativePath>
+    </parent>
 
-	<url>http://demoiselle.io</url>
+    <url>http://demoiselle.io</url>
 
-	<licenses>
-		<license>
-			<name>GNU Lesser General Public License, Version 3</name>
-			<url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
-		</license>
-	</licenses>
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License, Version 3</name>
+            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+        </license>
+    </licenses>
 
-	<organization>
-		<name>SERPRO - Serviço Federal de Processamento de Dados</name>
-		<url>http://www.serpro.gov.br</url>
-	</organization>
+    <organization>
+        <name>SERPRO - Serviço Federal de Processamento de Dados</name>
+        <url>http://www.serpro.gov.br</url>
+    </organization>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.demoiselle.jee</groupId>
-			<artifactId>demoiselle-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.demoiselle.jee</groupId>
-			<artifactId>demoiselle-security-jwt</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.demoiselle.jee</groupId>
-			<artifactId>demoiselle-persistence-jpa</artifactId>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.demoiselle.jee</groupId>
+            <artifactId>demoiselle-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.demoiselle.jee</groupId>
+            <artifactId>demoiselle-security-jwt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.demoiselle.jee</groupId>
+            <artifactId>demoiselle-persistence-jpa</artifactId>
+        </dependency>
+    </dependencies>
 
-	<profiles>
-		<profile>
-			<id>wildfly-swarm</id>
-			<properties>
-				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-				<version.wildfly.swarm>2016.9</version.wildfly.swarm>
-				<maven.compiler.source>1.8</maven.compiler.source>
-				<maven.compiler.target>1.8</maven.compiler.target>
-				<failOnMissingWebXml>false</failOnMissingWebXml>
-			</properties>
-			<dependencyManagement>
-				<dependencies>
-					<dependency>
-						<groupId>org.wildfly.swarm</groupId>
-						<artifactId>bom-all</artifactId>
-						<version>${version.wildfly.swarm}</version>
-						<scope>import</scope>
-						<type>pom</type>
-					</dependency>
-				</dependencies>
-			</dependencyManagement>
-			<dependencies>
-				<!-- WildFly Default Swarm Fractions -->
-				<dependency>
-					<groupId>org.wildfly.swarm</groupId>
-					<artifactId>jaxrs-cdi</artifactId>
-				</dependency>
-				<dependency>
-					<groupId>org.wildfly.swarm</groupId>
-					<artifactId>ejb</artifactId>
-					<version>${version.wildfly.swarm}</version>
-				</dependency>
-				<dependency>
-					<groupId>org.wildfly.swarm</groupId>
-					<artifactId>datasources</artifactId>
-					<version>${version.wildfly.swarm}</version>
-				</dependency>
-				<dependency>
-					<groupId>org.wildfly.swarm</groupId>
-					<artifactId>jpa</artifactId>
-					<version>${version.wildfly.swarm}</version>
-				</dependency>
-				<dependency>
-					<groupId>org.wildfly.swarm</groupId>
-					<artifactId>transactions</artifactId>
-					<version>${version.wildfly.swarm}</version>
-				</dependency>
-			</dependencies>
-			<build>
-				<finalName>${project.artifactId}</finalName>
-				<plugins>
-					<plugin>
-						<groupId>org.wildfly.swarm</groupId>
-						<artifactId>wildfly-swarm-plugin</artifactId>
-						<version>${version.wildfly.swarm}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>package</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<!--mvn clean package -Pwildfly-swarm && java -jar -Xmx128m target/produto-swarm.jar -->
-	</profiles>
+    <profiles>
+        <profile>
+            <id>wildfly-swarm</id>
+            <properties>
+                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+                <version.wildfly.swarm>2016.9</version.wildfly.swarm>
+                <maven.compiler.source>1.8</maven.compiler.source>
+                <maven.compiler.target>1.8</maven.compiler.target>
+                <failOnMissingWebXml>false</failOnMissingWebXml>
+            </properties>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.wildfly.swarm</groupId>
+                        <artifactId>bom-all</artifactId>
+                        <version>${version.wildfly.swarm}</version>
+                        <scope>import</scope>
+                        <type>pom</type>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+            <dependencies>
+                <!-- WildFly Default Swarm Fractions -->
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>jaxrs-cdi</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>ejb</artifactId>
+                    <version>${version.wildfly.swarm}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>datasources</artifactId>
+                    <version>${version.wildfly.swarm}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>jpa</artifactId>
+                    <version>${version.wildfly.swarm}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>transactions</artifactId>
+                    <version>${version.wildfly.swarm}</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <finalName>${project.artifactId}</finalName>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.swarm</groupId>
+                        <artifactId>wildfly-swarm-plugin</artifactId>
+                        <version>${version.wildfly.swarm}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>package</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!--mvn clean package -Pwildfly-swarm && java -jar -Xmx128m target/produto-swarm.jar -->
+    </profiles>
 
 </project>
