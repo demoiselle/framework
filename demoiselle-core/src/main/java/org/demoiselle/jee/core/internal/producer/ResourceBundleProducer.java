@@ -23,7 +23,7 @@ import org.demoiselle.jee.core.util.ResourceBundle;
  * @author 70744416353
  */
 @Dependent
-public class ResourceBundleProducer implements Serializable {
+public class ResourceBundleProducer {
 
     private static final long serialVersionUID = 1L;
 

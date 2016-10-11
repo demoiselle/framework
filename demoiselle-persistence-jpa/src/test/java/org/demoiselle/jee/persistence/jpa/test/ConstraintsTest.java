@@ -11,7 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TransactionRequiredException;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.transaction.UserTransaction;
 
@@ -32,14 +32,14 @@ import org.junit.runners.MethodSorters;
 
 @RunWith(Arquillian.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TransactionTest {
+public class ConstraintsTest {
 
 	public static final String[] USER_NAMES = { "Homer Jay Simpson", "Marjorie Jo-Jo Bouvier Simpson",
 			"Bartholomew Jay Jo-Jo Simpson", "Elizabeth Marie Jay Jo-Jo Simpson", "Margaret Simpson" };
 
 	public static final String[] USER_EMAILS = { "homer@domain.com", "marge@domain.com", "bart@domain.com",
 			"lisa@domain.com", "maggie@domain.com" };
-	
+
 	@PersistenceContext
 	EntityManager entityManager;
 
@@ -68,72 +68,34 @@ public class TransactionTest {
 	}
 
 	@Test
-	public void A_noTransaction() throws Exception {
-		try {
-			User user = new User(USER_NAMES[0], USER_EMAILS[0]);
-			entityManager.persist(user);
+	public void A_Unique() throws Exception {
 
-			// Se chegar AQUI tem que FALHAR
-			Assert.fail();
-		} catch (TransactionRequiredException e) {
-			Assert.assertTrue(true);
-		} catch (Exception e) {
-			// Se chegar AQUI tem que FALHAR
-			Assert.fail();
-		}
-	}
-
-	@Test
-	public void B_transaction_PersistCommit() throws Exception {
+		// Primeiro usuário com nome Homer
 		userTransaction.begin();
-		User user = new User(USER_NAMES[0], USER_EMAILS[0]);
-		entityManager.persist(user);
+		User userOne = new User(USER_NAMES[0], USER_EMAILS[0]);
+		entityManager.persist(userOne);
 		userTransaction.commit();
-		Assert.assertTrue(true);
+
+		try {
+			// Segundo usuário com nome Homer
+			userTransaction.begin();
+			User userTwo = new User(USER_NAMES[0], USER_EMAILS[0]);
+			entityManager.persist(userTwo);
+			userTransaction.commit();
+		} catch (Exception e) {
+			Assert.assertEquals(PersistenceException.class, e.getCause().getClass());
+		}
+
 	}
 
 	@Test
-	public void C_transaction_PersistCommit_Verify() throws Exception {
+	public void B_Unique_Verify() throws Exception {
 		TypedQuery<User> q = entityManager.createQuery("SELECT user FROM User user WHERE name = :name", User.class);
 		q.setParameter("name", USER_NAMES[0]);
-		User user = q.getSingleResult();
-		Assert.assertEquals(USER_NAMES[0], user.getName());
-	}
 
-	@Test
-	public void D_transaction_Persist() throws Exception {
-		userTransaction.begin();
-		User user = new User(USER_NAMES[1], USER_EMAILS[1]);
-		entityManager.persist(user);
-		Assert.assertTrue(true);
-	}
+		List<User> listUser = q.getResultList();
 
-	@Test
-	public void E_transaction_Persist_Verify() throws Exception {
-		TypedQuery<User> q = entityManager.createQuery("SELECT user FROM User user WHERE name = :name", User.class);
-		q.setParameter("name", USER_NAMES[1]);
-		List<User> list = q.getResultList();
-		Assert.assertEquals(0, list.size());
-	}
-	
-	@Test
-	public void F_transaction_PersistRollback() throws Exception {
-		userTransaction.begin();
-		User user = new User(USER_NAMES[2], USER_EMAILS[2]);
-		entityManager.persist(user);
-		
-		// Volta o persist
-		userTransaction.rollback();
-		
-		Assert.assertTrue(true);
-	}
-
-	@Test
-	public void G_transaction_PersistRollback_Verify() throws Exception {
-		TypedQuery<User> q = entityManager.createQuery("SELECT user FROM User user WHERE name = :name", User.class);
-		q.setParameter("name", USER_NAMES[2]);
-		List<User> list = q.getResultList();
-		Assert.assertEquals(0, list.size());
+		Assert.assertEquals(1, listUser.size());
 	}
 
 }

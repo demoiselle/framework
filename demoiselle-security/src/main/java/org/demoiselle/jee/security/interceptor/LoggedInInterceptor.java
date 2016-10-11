@@ -14,6 +14,7 @@ import javax.interceptor.InvocationContext;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import static javax.interceptor.Interceptor.Priority.APPLICATION;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import org.demoiselle.jee.security.annotation.LoggedIn;
@@ -30,7 +31,7 @@ import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
  */
 @LoggedIn
 @Interceptor
-@Priority(APPLICATION)
+@Priority(Priorities.AUTHENTICATION)
 public class LoggedInInterceptor implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 import static javax.interceptor.Interceptor.Priority.APPLICATION;
+import javax.ws.rs.Priorities;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import org.demoiselle.jee.core.annotation.Name;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
@@ -32,7 +33,7 @@ import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
  */
 @RequiredPermission
 @Interceptor
-@Priority(APPLICATION)
+@Priority(Priorities.AUTHORIZATION)
 public class RequiredPermissionInterceptor implements Serializable {
 
     private static final long serialVersionUID = 1L;

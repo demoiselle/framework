@@ -19,7 +19,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
  * @author 70744416353
  */
 @Dependent
-public class LoggerProducer implements Serializable {
+public class LoggerProducer {
 
     private static final long serialVersionUID = 1L;
 

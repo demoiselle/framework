@@ -5,12 +5,15 @@
  */
 package org.demoiselle.jee.security.token.impl;
 
-import java.security.PublicKey;
 import static java.util.UUID.randomUUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.Priorities;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.interfaces.security.Token;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
@@ -20,15 +23,21 @@ import org.demoiselle.jee.core.interfaces.security.TokensManager;
  * @author 70744416353
  */
 @ApplicationScoped
+@Priority(Priorities.AUTHENTICATION)
 public class TokensManagerImpl implements TokensManager {
 
-    private ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
-
-    @Inject
-    private Logger logger;
+    private static ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
 
     @Inject
     private Token token;
+
+    @Inject
+    private Config config;
+
+    @PostConstruct
+    public void init() {
+        System.err.println(config.getType());
+    }
 
     @Override
     public DemoisellePrincipal getUser() {
@@ -60,8 +69,4 @@ public class TokensManagerImpl implements TokensManager {
         return getUser() != null;
     }
 
-    @Override
-    public PublicKey getPublicKey() {
-        return null;
-    }
 }

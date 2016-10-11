@@ -14,8 +14,8 @@
         <artifactId>demoiselle-parent</artifactId>		
         <version>3.0.0-BETA2-SNAPSHOT</version>
         <relativePath>../demoiselle-parent</relativePath>
-    </parent>		
-	
+    </parent>
+    	
     <dependencies>
         
         <dependency>
@@ -34,5 +34,47 @@
             <version>0.5.2</version>
         </dependency>
         
+<!--        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>jaxrs-cdi</artifactId>
+            <version>2016.9</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>cdi</artifactId>
+            <version>2016.9</version>
+            <scope>test</scope>
+        </dependency>
+         Brought in via WildFly Swarm `bom` 
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>arquillian</artifactId>
+            <version>2016.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>arquillian-resolver</artifactId>
+            <version>2016.9</version>
+            <scope>test</scope>
+        </dependency>
+         Brought in via Arquillian BOM, see dependencyManagement section above 
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>swarmtool</artifactId>
+            <version>2016.9</version>
+            <classifier>standalone</classifier>
+        </dependency>-->
     </dependencies>
+    
+
 </project>

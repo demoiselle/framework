@@ -57,6 +57,12 @@
         <cache.version>1.0.0</cache.version>
         <!--Microcontainers -->
         <wildfly-swarm>2016.8</wildfly-swarm>
+        
+        <!--Test -->
+        <version.arquillian>1.0.2.Final</version.arquillian>
+        <version.arquillian.container>1.0.0.CR3</version.arquillian.container>
+        <version.junit>4.10</version.junit>
+        <version.specs>3.0.1.Final</version.specs>
 
         <!-- Maven plugin versions -->
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
