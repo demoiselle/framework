@@ -5,7 +5,6 @@
  */
 package org.demoiselle.jee.security.impl;
 
-import java.io.Serializable;
 import java.util.Objects;
 import javax.enterprise.context.RequestScoped;
 import org.demoiselle.jee.core.interfaces.security.Token;

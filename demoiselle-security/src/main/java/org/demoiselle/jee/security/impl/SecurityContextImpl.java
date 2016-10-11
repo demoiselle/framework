@@ -6,17 +6,14 @@
  */
 package org.demoiselle.jee.security.impl;
 
-import javax.annotation.Priority;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Default;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import static javax.interceptor.Interceptor.Priority.APPLICATION;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 
 import org.demoiselle.jee.core.interfaces.security.SecurityContext;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
 
-@RequestScoped
+@ApplicationScoped
 public class SecurityContextImpl implements SecurityContext {
 
     private static final long serialVersionUID = 1L;

@@ -22,9 +22,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.annotation.Priority;
+import javax.ejb.ApplicationException;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Priorities;
 import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.interfaces.security.Token;
 import org.demoiselle.jee.core.interfaces.security.TokensManager;
@@ -42,14 +46,15 @@ import org.jose4j.lang.JoseException;
  *
  * @author 70744416353
  */
-@RequestScoped
+@ApplicationScoped
+@Priority(Priorities.AUTHENTICATION)
 public class TokensManagerImpl implements TokensManager {
 
     @Inject
     private HttpServletRequest httpRequest;
 
-    private static PublicKey publicKey;
-    private static PrivateKey privateKey;
+    private PublicKey publicKey;
+    private PrivateKey privateKey;
 
     @Inject
     private Logger logger;

@@ -26,18 +26,10 @@ import org.demoiselle.jee.core.interfaces.security.TokensManager;
 @Priority(Priorities.AUTHENTICATION)
 public class TokensManagerImpl implements TokensManager {
 
-    private static ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
 
     @Inject
     private Token token;
-
-    @Inject
-    private Config config;
-
-    @PostConstruct
-    public void init() {
-        System.err.println(config.getType());
-    }
 
     @Override
     public DemoisellePrincipal getUser() {
