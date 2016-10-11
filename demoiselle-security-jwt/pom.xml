@@ -4,7 +4,7 @@
     <artifactId>demoiselle-security-jwt</artifactId>
     <packaging>jar</packaging>
     
-    <name>Demoiselle Security JWT</name>
+    <name>Demoiselle JEE Security JWT</name>
     <description>
         Demoiselle Security JWT
     </description>

@@ -4,7 +4,7 @@
     <artifactId>demoiselle-security-token</artifactId>
     <packaging>jar</packaging>
     
-    <name>Demoiselle Security Token</name>
+    <name>Demoiselle JEE Security Token</name>
     <description>
         Demoiselle Security Token
     </description>

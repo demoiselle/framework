@@ -4,7 +4,7 @@
     <artifactId>demoiselle-rest</artifactId>
     <packaging>jar</packaging>
     
-    <name>Demoiselle Rest</name>
+    <name>Demoiselle JEE Rest</name>
     <description>
         Demoiselle Rest
     </description>

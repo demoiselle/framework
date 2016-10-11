@@ -6,7 +6,7 @@
 	<artifactId>demoiselle-persistence-jpa</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Demoiselle Persistence</name>
+	<name>Demoiselle JEE Persistence</name>
 	<description>
 		Demoiselle Persistence
 	</description>

@@ -4,7 +4,7 @@
     <artifactId>demoiselle-security-basic</artifactId>
     <packaging>jar</packaging>
     
-    <name>Demoiselle Security Basic</name>
+    <name>Demoiselle JEE Security Basic</name>
     <description>
         Demoiselle Security Basic
     </description>

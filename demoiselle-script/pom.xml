@@ -4,7 +4,7 @@
     <artifactId>demoiselle-script</artifactId>     
     <packaging>jar</packaging>
     
-    <name>Demoiselle Script</name>
+    <name>Demoiselle JEE Script</name>
     <description>
         Demoiselle Script
     </description>
