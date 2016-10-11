@@ -124,25 +124,30 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.7</version>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.8-SNAPSHOT</version>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.7.201606060606</version>
+				<configuration>
+					<destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
+					<dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
+				</configuration>
 				<executions>
 					<execution>
-						<id>instrument-code</id>
-						<phase>package</phase>
+						<id>jacoco-initialize</id>
 						<goals>
-							<goal>instrument</goal>
+							<goal>prepare-agent</goal>
 						</goals>
-						<configuration>
-							<attach>true</attach>
-						</configuration>
 					</execution>
 					<execution>
-						<id>generate-report</id>
-						<phase>prepare-package</phase>
+						<id>jacoco-site</id>
+						<phase>package</phase>
 						<goals>
-							<goal>cobertura</goal>
+							<goal>report</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -154,14 +159,15 @@
 	<reporting>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<configuration>
-					<formats>
-						<format>html</format>
-						<format>xml</format>
-					</formats>
-				</configuration>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
 			</plugin>
 		</plugins>
 	</reporting>
