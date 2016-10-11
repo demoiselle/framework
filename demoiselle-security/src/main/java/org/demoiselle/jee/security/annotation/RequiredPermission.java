@@ -6,15 +6,14 @@
  */
 package org.demoiselle.jee.security.annotation;
 
-import javax.enterprise.util.Nonbinding;
-import javax.interceptor.InterceptorBinding;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Target;
+import javax.enterprise.util.Nonbinding;
+import javax.interceptor.InterceptorBinding;
 
 /**
  * Indicates that a specific permission is required in order to invocate the annotated method or class.
@@ -27,9 +26,17 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface RequiredPermission {
 
-	@Nonbinding
+    /**
+     *
+     * @return
+     */
+    @Nonbinding
 	String resource() default "";
 
-	@Nonbinding
+    /**
+     *
+     * @return
+     */
+    @Nonbinding
 	String operation() default "";
 }

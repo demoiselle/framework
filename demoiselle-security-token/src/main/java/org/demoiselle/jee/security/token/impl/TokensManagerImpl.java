@@ -1,44 +1,32 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.demoiselle.jee.security.token.impl;
 
 import static java.util.UUID.randomUUID;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.PostConstruct;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.Priorities;
-import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
-import org.demoiselle.jee.core.interfaces.security.Token;
-import org.demoiselle.jee.core.interfaces.security.TokensManager;
+import static javax.ws.rs.Priorities.AUTHENTICATION;
+import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.Token;
+import org.demoiselle.jee.core.api.security.TokensManager;
 
 /**
  *
  * @author 70744416353
  */
 @ApplicationScoped
-@Priority(Priorities.AUTHENTICATION)
+@Priority(AUTHENTICATION)
 public class TokensManagerImpl implements TokensManager {
 
-    private static ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
 
     @Inject
     private Token token;
 
-    @Inject
-    private Config config;
-
-    @PostConstruct
-    public void init() {
-        System.err.println(config.getType());
-    }
-
+    /**
+     *
+     * @return
+     */
     @Override
     public DemoisellePrincipal getUser() {
         if (token.getKey() != null && !token.getKey().isEmpty()) {
@@ -47,6 +35,10 @@ public class TokensManagerImpl implements TokensManager {
         return null;
     }
 
+    /**
+     *
+     * @param user
+     */
     @Override
     public void setUser(DemoisellePrincipal user) {
         token.setKey(null);
@@ -64,6 +56,10 @@ public class TokensManagerImpl implements TokensManager {
         token.setType("Token");
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean validate() {
         return getUser() != null;

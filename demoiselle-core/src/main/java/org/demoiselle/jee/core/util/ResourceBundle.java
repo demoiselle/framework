@@ -83,7 +83,13 @@ public class ResourceBundle extends java.util.ResourceBundle implements Serializ
 		return getDelegate().keySet();
 	}
 
-	public String getString(String key, Object... params) {
+    /**
+     *
+     * @param key
+     * @param params
+     * @return
+     */
+    public String getString(String key, Object... params) {
 		return Strings.getString(getString(key), params);
 	}
 

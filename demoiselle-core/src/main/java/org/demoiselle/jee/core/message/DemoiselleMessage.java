@@ -9,49 +9,120 @@ package org.demoiselle.jee.core.message;
 import org.apache.deltaspike.core.api.message.MessageBundle;
 import org.apache.deltaspike.core.api.message.MessageTemplate;
 
+/**
+ *
+ * @author 70744416353
+ */
 @MessageBundle
 public interface DemoiselleMessage {
 
-	@MessageTemplate("{version}")
+    /**
+     *
+     * @return
+     */
+    @MessageTemplate("{version}")
 	String version();
 
-	@MessageTemplate("{engine-on}")
+    /**
+     *
+     * @return
+     */
+    @MessageTemplate("{engine-on}")
 	String engineOn();
 
-	@MessageTemplate("{resource-not-found}")
+    /**
+     *
+     * @return
+     */
+    @MessageTemplate("{resource-not-found}")
 	String resourceNotFound();
 
-	@MessageTemplate("{key-not-found}")
+    /**
+     *
+     * @param key
+     * @return
+     */
+    @MessageTemplate("{key-not-found}")
 	String keyNotFound(String key);
 
-	@MessageTemplate("{ambiguous-strategy-resolution}")
+    /**
+     *
+     * @param interfaceString
+     * @param implementations
+     * @return
+     */
+    @MessageTemplate("{ambiguous-strategy-resolution}")
 	String ambiguousStrategyResolution(String interfaceString, String implementations);
 
-	@MessageTemplate("{ambiguous-bean-resolution}")
+    /**
+     *
+     * @param implementation
+     * @return
+     */
+    @MessageTemplate("{ambiguous-bean-resolution}")
 	String ambiguousBeanResolution(String implementation);
 
-	@MessageTemplate("{bean-not-found}")
+    /**
+     *
+     * @param bean
+     * @return
+     */
+    @MessageTemplate("{bean-not-found}")
 	String beanNotFound(String bean);
 
-	@MessageTemplate("{store-not-found}")
+    /**
+     *
+     * @param object
+     * @param scope
+     * @return
+     */
+    @MessageTemplate("{store-not-found}")
 	String storeNotFound(String object, String scope);
 
-	@MessageTemplate("{more-than-one-exceptionhandler-defined-for-same-class}")
+    /**
+     *
+     * @param clazz
+     * @param ex
+     * @return
+     */
+    @MessageTemplate("{more-than-one-exceptionhandler-defined-for-same-class}")
 	String moreThanOneExceptionhandlerDefinedForSameClass(String clazz, String ex);
 
-	@MessageTemplate("{handling-exception}")
+    /**
+     *
+     * @param ex
+     * @return
+     */
+    @MessageTemplate("{handling-exception}")
 	String handlingException(String ex);
 
-	@MessageTemplate("{taking-off}")
+    /**
+     *
+     * @return
+     */
+    @MessageTemplate("{taking-off}")
 	String takingOff();
 
-	@MessageTemplate("{engine-off}")
+    /**
+     *
+     * @return
+     */
+    @MessageTemplate("{engine-off}")
 	String engineOff();
 
-	@MessageTemplate("{setting-up-bean-manager}")
+    /**
+     *
+     * @param util
+     * @return
+     */
+    @MessageTemplate("{setting-up-bean-manager}")
 	String settingUpBeanManagerException(String util);
 
-	@MessageTemplate("{processing-fail}")
+    /**
+     *
+     * @return
+     */
+    @MessageTemplate("{processing-fail}")
 	String processingFail();
 
 }

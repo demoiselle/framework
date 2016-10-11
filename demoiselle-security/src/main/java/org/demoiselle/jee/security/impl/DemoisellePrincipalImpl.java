@@ -1,19 +1,12 @@
-/*
- * Demoiselle Framework
- *
- * License: GNU Lesser General Public License (LGPL), version 3 or later.
- * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
- */
 package org.demoiselle.jee.security.impl;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
-import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 
 /**
  *
@@ -27,11 +20,19 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
     private List<String> roles;
     private Map<String, String> permissions;
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getIdentity() {
         return identity;
     }
 
+    /**
+     *
+     * @param id
+     */
     @Override
     public void setIdentity(String id) {
         this.identity = id;
@@ -42,26 +43,46 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
         return name;
     }
 
+    /**
+     *
+     * @param name
+     */
     @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<String> getRoles() {
         return roles;
     }
 
+    /**
+     *
+     * @param roles
+     */
     @Override
     public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Map<String, String> getPermissions() {
         return permissions;
     }
 
+    /**
+     *
+     * @param permissions
+     */
     @Override
     public void setPermissions(Map<String, String> permissions) {
         this.permissions = permissions;
@@ -86,15 +107,12 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
             return false;
         }
         final DemoisellePrincipalImpl other = (DemoisellePrincipalImpl) obj;
-        if (!Objects.equals(this.identity, other.identity)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.identity, other.identity);
     }
 
     @Override
     public String toString() {
-        return "{" + "\"identity\"=\"" + identity + "\", \"name\"=\"" + name + "\", \"roles\"=" + roles + ", \"permissions\"=" + permissions + '}';
+        return "{identity:\"" + identity + "\", name:\"" + name + "\", roles:" + roles + ", permissions:" + permissions + '}';
     }
 
     @Override

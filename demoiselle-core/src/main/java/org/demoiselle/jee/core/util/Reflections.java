@@ -23,7 +23,10 @@ import static org.demoiselle.jee.core.util.Exceptions.handleToRuntimeException;
  */
 public class Reflections {
 
-	protected Reflections() {
+    /**
+     *
+     */
+    protected Reflections() {
 		// Impede instanciar subclasses desse tipo.
 		throw new UnsupportedOperationException();
 	}

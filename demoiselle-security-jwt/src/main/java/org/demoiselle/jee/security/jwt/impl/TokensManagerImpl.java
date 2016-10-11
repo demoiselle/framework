@@ -22,12 +22,16 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.annotation.Priority;
+import javax.ejb.ApplicationException;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
-import org.demoiselle.jee.core.interfaces.security.Token;
-import org.demoiselle.jee.core.interfaces.security.TokensManager;
+import javax.ws.rs.Priorities;
+import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.Token;
+import org.demoiselle.jee.core.api.security.TokensManager;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
@@ -42,14 +46,15 @@ import org.jose4j.lang.JoseException;
  *
  * @author 70744416353
  */
-@RequestScoped
+@ApplicationScoped
+@Priority(Priorities.AUTHENTICATION)
 public class TokensManagerImpl implements TokensManager {
 
     @Inject
     private HttpServletRequest httpRequest;
 
-    private static PublicKey publicKey;
-    private static PrivateKey privateKey;
+    private PublicKey publicKey;
+    private PrivateKey privateKey;
 
     @Inject
     private Logger logger;
@@ -63,6 +68,9 @@ public class TokensManagerImpl implements TokensManager {
     @Inject
     private DemoisellePrincipal loggedUser;
 
+    /**
+     *
+     */
     @PostConstruct
     public void init() {
         if (publicKey == null) {
@@ -101,6 +109,10 @@ public class TokensManagerImpl implements TokensManager {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public DemoisellePrincipal getUser() {
         if (token.getKey() != null && !token.getKey().isEmpty()) {
@@ -132,6 +144,10 @@ public class TokensManagerImpl implements TokensManager {
         return null;
     }
 
+    /**
+     *
+     * @param user
+     */
     @Override
     public void setUser(DemoisellePrincipal user) {
         try {
@@ -162,6 +178,10 @@ public class TokensManagerImpl implements TokensManager {
 
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean validate() {
         return getUser() != null;
