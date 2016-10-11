@@ -1,25 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.demoiselle.jee.security.token.impl;
 
+import static java.lang.System.currentTimeMillis;
+import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
-import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import static org.jboss.shrinkwrap.api.ShrinkWrap.create;
+import static org.jboss.shrinkwrap.api.asset.EmptyAsset.INSTANCE;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -39,30 +35,46 @@ public class TokensManagerImplIT {
     @Inject
     private TokensManagerImpl tokensManagerImpl;
 
+    /**
+     *
+     */
     @BeforeClass
     public static void setUpClass() {
     }
 
+    /**
+     *
+     */
     @AfterClass
     public static void tearDownClass() {
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
         assertNotNull(dml);
         assertNotNull(tokensManagerImpl);
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
         assertNotNull(dml);
         assertNotNull(tokensManagerImpl);
     }
 
+    /**
+     *
+     * @return
+     */
     @Deployment
     public static Archive<?> createDeployment() {
 
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "teste.war");
+        WebArchive war = create(WebArchive.class, "teste.war");
         war.addPackage("org.demoiselle.jee.security.impl");
         war.addPackage("org.demoiselle.jee.security.token.impl");
         war.addPackage("org.demoiselle.jee.core.interfaces.security");
@@ -77,7 +89,7 @@ public class TokensManagerImplIT {
 //        war.addPackage("org.apache.commons.configuration2.io");
 
         war.addAsResource("demoiselle-security-token.properties");
-        war.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        war.addAsWebInfResource(INSTANCE, "beans.xml");
 
         return war;
     }
@@ -88,10 +100,10 @@ public class TokensManagerImplIT {
     @Test
     @InSequence(0)
     public void testSetUser() {
-        System.out.println("setUser");
+        out.println("setUser");
 
         dml.setName("Teste");
-        dml.setIdentity("" + System.currentTimeMillis());
+        dml.setIdentity("" + currentTimeMillis());
         ArrayList<String> roles = new ArrayList<>();
         roles.add("ADMINISTRATOR");
         roles.add("MANAGER");
@@ -103,10 +115,13 @@ public class TokensManagerImplIT {
         tokensManagerImpl.setUser(dml);
     }
 
+    /**
+     *
+     */
     @Test
     @InSequence(1)
     public void testValidate() {
-        System.out.println("validate");
+        out.println("validate");
         assertTrue(tokensManagerImpl.validate());
     }
 
@@ -116,7 +131,7 @@ public class TokensManagerImplIT {
     @Test
     @InSequence(2)
     public void testGetUser() {
-        System.out.println("getUser");
+        out.println("getUser");
         tokensManagerImpl.getUser().toString();
     }
 

@@ -20,8 +20,7 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.ext.Provider;
-import org.demoiselle.jee.core.interfaces.security.SecurityContext;
-import org.demoiselle.jee.core.interfaces.security.Token;
+import org.demoiselle.jee.core.api.security.Token;
 
 /**
  *
@@ -37,11 +36,19 @@ public class JaxRsFilter implements ClientRequestFilter, ClientResponseFilter, C
     @Inject
     private Token token;
 
+    /**
+     *
+     */
     @PostConstruct
     public void init() {
         LOG.info("Demoiselle Module - Security");
     }
 
+    /**
+     *
+     * @param requestContext
+     * @param responseContext
+     */
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
         responseContext.getHeaders().putSingle("Access-Control-Allow-Headers", "Authorization");
@@ -53,6 +60,11 @@ public class JaxRsFilter implements ClientRequestFilter, ClientResponseFilter, C
         responseContext.getHeaders().putSingle("x-xss-protection", "1; mode=block");
     }
 
+    /**
+     *
+     * @param requestContext
+     * @throws IOException
+     */
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         try {
@@ -69,11 +81,22 @@ public class JaxRsFilter implements ClientRequestFilter, ClientResponseFilter, C
 
     }
 
+    /**
+     *
+     * @param requestContext
+     * @throws IOException
+     */
     @Override
     public void filter(ClientRequestContext requestContext) throws IOException {
 
     }
 
+    /**
+     *
+     * @param requestContext
+     * @param responseContext
+     * @throws IOException
+     */
     @Override
     public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
 

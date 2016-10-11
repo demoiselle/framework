@@ -7,29 +7,49 @@ package org.demoiselle.jee.security.impl;
 
 import java.util.Objects;
 import javax.enterprise.context.RequestScoped;
-import org.demoiselle.jee.core.interfaces.security.Token;
+import org.demoiselle.jee.core.api.security.Token;
 
+/**
+ *
+ * @author 70744416353
+ */
 @RequestScoped
 public class TokenImpl implements Token {
 
     private String key;
     private String type;
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getKey() {
         return key;
     }
 
+    /**
+     *
+     * @param key
+     */
     @Override
     public void setKey(String key) {
         this.key = key;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getType() {
         return type;
     }
 
+    /**
+     *
+     * @param type
+     */
     @Override
     public void setType(String type) {
         this.type = type;
@@ -54,10 +74,7 @@ public class TokenImpl implements Token {
             return false;
         }
         final TokenImpl other = (TokenImpl) obj;
-        if (!Objects.equals(this.key, other.key)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.key, other.key);
     }
 
     @Override

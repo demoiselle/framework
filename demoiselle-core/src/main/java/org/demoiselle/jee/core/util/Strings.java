@@ -59,6 +59,12 @@ public final class Strings {
         return result;
     }
 
+    /**
+     *
+     * @param separator
+     * @param strings
+     * @return
+     */
     public static String join(String separator, String... strings) {
         StringBuffer result = new StringBuffer();
 
@@ -246,6 +252,12 @@ public final class Strings {
         return result;
     }
 
+    /**
+     *
+     * @param inputStream
+     * @return
+     * @throws IOException
+     */
     public static String parse(InputStream inputStream) throws IOException {
         StringBuilder result = new StringBuilder();
 

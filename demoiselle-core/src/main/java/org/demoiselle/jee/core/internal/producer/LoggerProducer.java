@@ -30,6 +30,13 @@ public class LoggerProducer {
 	 * the logger won't be categorized.
 	 *
      */
+
+    /**
+     *
+     * @param ip
+     * @return
+     */
+
     @Default
     @Produces
     public static final Logger create(final InjectionPoint ip) {

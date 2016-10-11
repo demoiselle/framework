@@ -29,9 +29,9 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Priorities;
-import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
-import org.demoiselle.jee.core.interfaces.security.Token;
-import org.demoiselle.jee.core.interfaces.security.TokensManager;
+import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.Token;
+import org.demoiselle.jee.core.api.security.TokensManager;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
@@ -68,6 +68,9 @@ public class TokensManagerImpl implements TokensManager {
     @Inject
     private DemoisellePrincipal loggedUser;
 
+    /**
+     *
+     */
     @PostConstruct
     public void init() {
         if (publicKey == null) {
@@ -106,6 +109,10 @@ public class TokensManagerImpl implements TokensManager {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public DemoisellePrincipal getUser() {
         if (token.getKey() != null && !token.getKey().isEmpty()) {
@@ -137,6 +144,10 @@ public class TokensManagerImpl implements TokensManager {
         return null;
     }
 
+    /**
+     *
+     * @param user
+     */
     @Override
     public void setUser(DemoisellePrincipal user) {
         try {
@@ -167,6 +178,10 @@ public class TokensManagerImpl implements TokensManager {
 
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean validate() {
         return getUser() != null;

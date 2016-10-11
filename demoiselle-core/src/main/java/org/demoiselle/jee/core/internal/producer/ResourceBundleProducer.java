@@ -27,6 +27,10 @@ public class ResourceBundleProducer {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     *
+     * @return
+     */
     @Default
     @Produces
     public ResourceBundle createDefault() {
@@ -38,6 +42,13 @@ public class ResourceBundleProducer {
 	 * is defined by the {@link Name} literal. If no value is specified
 	 * then the default "messages.properties" file is loaded.
      */
+
+    /**
+     *
+     * @param ip
+     * @return
+     */
+
     @Name
     @Produces
     public ResourceBundle create(InjectionPoint ip) {
@@ -55,6 +66,11 @@ public class ResourceBundleProducer {
         return create(baseName);
     }
 
+    /**
+     *
+     * @param baseName
+     * @return
+     */
     @SuppressWarnings("serial")
     public static ResourceBundle create(String baseName) {
         ResourceBundle bundle;

@@ -1,9 +1,3 @@
-/*
- * Demoiselle Framework
- *
- * License: GNU Lesser General Public License (LGPL), version 3 or later.
- * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
- */
 package org.demoiselle.jee.security.interceptor;
 
 import javax.annotation.Priority;
@@ -12,20 +6,16 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import static java.util.Arrays.asList;
 import java.util.List;
 
 import java.util.logging.Logger;
 import javax.inject.Inject;
-import static javax.interceptor.Interceptor.Priority.APPLICATION;
-import javax.ws.rs.Priorities;
-import javax.ws.rs.core.Response;
+import static javax.ws.rs.Priorities.AUTHORIZATION;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
-import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
-import org.demoiselle.jee.core.util.ResourceBundle;
+import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.security.annotation.RequiredRole;
-import org.demoiselle.jee.core.interfaces.security.SecurityContext;
+import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
@@ -38,7 +28,7 @@ import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
  */
 @RequiredRole(value = "")
 @Interceptor
-@Priority(Priorities.AUTHORIZATION)
+@Priority(AUTHORIZATION)
 public class RequiredRoleInterceptor implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -76,16 +66,14 @@ public class RequiredRoleInterceptor implements Serializable {
         List<String> roles = getRoles(ic);
 
         List<String> userRoles = new ArrayList<>();
-        
+
         if (!securityContext.isLoggedIn()) {
             throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), UNAUTHORIZED.getStatusCode());
         }
 
-        for (String role : roles) {
-            if (securityContext.hasRole(role)) {
-                userRoles.add(role);
-            }
-        }
+        roles.stream().filter((role) -> (securityContext.hasRole(role))).forEach((role) -> {
+            userRoles.add(role);
+        });
 
         if (userRoles.isEmpty()) {
             throw new DemoiselleSecurityException(bundle.doesNotHaveRole(roles.toString()), UNAUTHORIZED.getStatusCode());

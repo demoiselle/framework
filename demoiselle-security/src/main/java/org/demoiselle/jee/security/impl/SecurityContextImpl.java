@@ -8,11 +8,14 @@ package org.demoiselle.jee.security.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.SecurityContext;
+import org.demoiselle.jee.core.api.security.TokensManager;
 
-import org.demoiselle.jee.core.interfaces.security.SecurityContext;
-import org.demoiselle.jee.core.interfaces.security.TokensManager;
-
+/**
+ *
+ * @author 70744416353
+ */
 @ApplicationScoped
 public class SecurityContextImpl implements SecurityContext {
 
@@ -21,36 +24,53 @@ public class SecurityContextImpl implements SecurityContext {
     @Inject
     private TokensManager tm;
 
+    /**
+     *
+     * @param resource
+     * @param operation
+     * @return
+     */
     @Override
     public boolean hasPermission(String resource, String operation) {
-        if ((tm.getUser().getPermissions().entrySet()
+        return (tm.getUser().getPermissions().entrySet()
                 .stream()
                 .filter(p -> p.getKey().equalsIgnoreCase(resource))
                 .filter(p -> p.getValue().equalsIgnoreCase(operation))
-                .count() <= 0)) {
-            return false;
-        }
-        return true;
+                .count() > 0);
     }
 
+    /**
+     *
+     * @param role
+     * @return
+     */
     @Override
     public boolean hasRole(String role) {
-        if (tm.getUser().getRoles().stream().filter(p -> p.equals(role)).count() <= 0) {
-            return false;
-        }
-        return true;
+        return tm.getUser().getRoles().stream().filter(p -> p.equals(role)).count() > 0;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isLoggedIn() {
         return tm.validate();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public DemoisellePrincipal getUser() {
         return tm.getUser();
     }
 
+    /**
+     *
+     * @param loggedUser
+     */
     @Override
     public void setUser(DemoisellePrincipal loggedUser) {
         tm.setUser(loggedUser);

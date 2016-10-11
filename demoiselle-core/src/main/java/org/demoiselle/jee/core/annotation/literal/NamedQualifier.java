@@ -23,11 +23,19 @@ public class NamedQualifier extends AnnotationLiteral<Named> implements Named {
 
 	private String namedValue;
 
-	public NamedQualifier(String value) {
+    /**
+     *
+     * @param value
+     */
+    public NamedQualifier(String value) {
 		namedValue = value;
 	}
 
-	public String value() {
+    /**
+     *
+     * @return
+     */
+    public String value() {
 		return namedValue;
 	}
 }

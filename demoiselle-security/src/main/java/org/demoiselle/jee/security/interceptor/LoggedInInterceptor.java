@@ -1,9 +1,3 @@
-/*
- * Demoiselle Framework
- *
- * License: GNU Lesser General Public License (LGPL), version 3 or later.
- * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
- */
 package org.demoiselle.jee.security.interceptor;
 
 import javax.annotation.Priority;
@@ -12,13 +6,10 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import java.io.Serializable;
-import java.util.logging.Logger;
-import static javax.interceptor.Interceptor.Priority.APPLICATION;
-import javax.ws.rs.Priorities;
-import javax.ws.rs.core.Response;
+import static javax.ws.rs.Priorities.AUTHENTICATION;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import org.demoiselle.jee.security.annotation.LoggedIn;
-import org.demoiselle.jee.core.interfaces.security.SecurityContext;
+import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
@@ -31,7 +22,7 @@ import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
  */
 @LoggedIn
 @Interceptor
-@Priority(Priorities.AUTHENTICATION)
+@Priority(AUTHENTICATION)
 public class LoggedInInterceptor implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,6 +33,12 @@ public class LoggedInInterceptor implements Serializable {
     @Inject
     private DemoiselleSecurityMessages bundle;
 
+    /**
+     *
+     * @param ic
+     * @return
+     * @throws Exception
+     */
     @AroundInvoke
     public Object manage(final InvocationContext ic) throws Exception {
         if (!securityContext.isLoggedIn()) {
