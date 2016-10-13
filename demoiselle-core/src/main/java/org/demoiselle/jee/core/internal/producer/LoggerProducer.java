@@ -6,9 +6,10 @@
  */
 package org.demoiselle.jee.core.internal.producer;
 
-import java.io.Serializable;
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
+
+import java.util.logging.Logger;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
@@ -21,34 +22,31 @@ import javax.enterprise.inject.spi.InjectionPoint;
 @Dependent
 public class LoggerProducer {
 
-    private static final long serialVersionUID = 1L;
-
-    /*
-	 * Produces a default {@link Logger} instance. If it's possible
-	 * to infer the injection point's parent class then this class'es
-	 * name will be used to categorize the logger, if not then
-	 * the logger won't be categorized.
+	/*
+	 * Produces a default {@link Logger} instance. If it's possible to infer the
+	 * injection point's parent class then this class'es name will be used to
+	 * categorize the logger, if not then the logger won't be categorized.
 	 *
-     */
+	 */
 
-    /**
-     *
-     * @param ip
-     * @return
-     */
+	/**
+	 *
+	 * @param ip
+	 * @return
+	 */
 
-    @Default
-    @Produces
-    public static final Logger create(final InjectionPoint ip) {
-        String name;
+	@Default
+	@Produces
+	public static final Logger create(final InjectionPoint ip) {
+		String name;
 
-        if (ip != null && ip.getMember() != null) {
-            name = ip.getMember().getDeclaringClass().getName();
-        } else {
-            name = "not.categorized";
-        }
+		if (ip != null && ip.getMember() != null) {
+			name = ip.getMember().getDeclaringClass().getName();
+		} else {
+			name = "not.categorized";
+		}
 
-        return getLogger(name);
-    }
+		return getLogger(name);
+	}
 
 }

@@ -6,30 +6,28 @@
  */
 package org.demoiselle.jee.core.api.security;
 
-import java.io.Serializable;
-
 /**
  *
  * @author 70744416353
  */
 public interface TokensManager {
 
-    /**
-     *
-     * @return
-     */
-    public DemoisellePrincipal getUser();
+	/**
+	 *
+	 * @return
+	 */
+	public DemoisellePrincipal getUser();
 
-    /**
-     *
-     * @param user
-     */
-    public void setUser(DemoisellePrincipal user);
+	/**
+	 *
+	 * @param user
+	 */
+	public void setUser(DemoisellePrincipal user);
 
-    /**
-     *
-     * @return
-     */
-    public boolean validate();
+	/**
+	 *
+	 * @return
+	 */
+	public boolean validate();
 
 }

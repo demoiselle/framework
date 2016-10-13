@@ -6,8 +6,6 @@
  */
 package org.demoiselle.jee.core.api.security;
 
-import java.io.Serializable;
-
 /**
  *
  * @author 70744416353
@@ -15,10 +13,10 @@ import java.io.Serializable;
 public interface SecurityContext {
 
     /**
-     *
-     * @return
-     */
-    boolean isLoggedIn();
+	 *
+	 * @return
+	 */
+	boolean isLoggedIn();
 
     /**
      *
