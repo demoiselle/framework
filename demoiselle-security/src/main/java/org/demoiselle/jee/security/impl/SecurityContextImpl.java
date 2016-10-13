@@ -6,6 +6,7 @@
  */
 package org.demoiselle.jee.security.impl;
 
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
@@ -18,9 +19,9 @@ import org.demoiselle.jee.core.api.security.TokensManager;
  */
 @ApplicationScoped
 public class SecurityContextImpl implements SecurityContext {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     @Inject
     private TokensManager tm;
 
@@ -32,11 +33,14 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public boolean hasPermission(String resource, String operation) {
-        return (tm.getUser().getPermissions().entrySet()
-                .stream()
-                .filter(p -> p.getKey().equalsIgnoreCase(resource))
-                .filter(p -> p.getValue().equalsIgnoreCase(operation))
-                .count() > 0);
+        
+        List<String> lista = tm.getUser().getPermissions().get(resource);
+        
+        if (lista != null && !lista.isEmpty()) {
+            return lista.contains(operation);
+        }
+        
+        return false;
     }
 
     /**
@@ -46,7 +50,7 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public boolean hasRole(String role) {
-        return tm.getUser().getRoles().stream().filter(p -> p.equals(role)).count() > 0;
+        return tm.getUser().getRoles().contains(role);
     }
 
     /**
@@ -75,5 +79,5 @@ public class SecurityContextImpl implements SecurityContext {
     public void setUser(DemoisellePrincipal loggedUser) {
         tm.setUser(loggedUser);
     }
-
+    
 }

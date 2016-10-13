@@ -41,6 +41,12 @@ public interface DemoisellePrincipal extends Principal {
 
     /**
      *
+     * @param role
+     */
+    public void addRole(String role);
+
+    /**
+     *
      * @return
      */
     public List<String> getRoles();
@@ -49,13 +55,53 @@ public interface DemoisellePrincipal extends Principal {
      *
      * @return
      */
-    public Map<String, String> getPermissions();
+    public Map<String, List<String>> getPermissions();
+
+    /**
+     *
+     * @param resource
+     * @return
+     */
+    public List<String> getPermissions(String resource);
+
+    /**
+     *
+     * @param resource
+     * @param operetion
+     */
+    public void addPermission(String resource, String operetion);
 
     /**
      *
      * @param permissions
      */
-    public void setPermissions(Map<String, String> permissions);
+    public void setPermissions(Map<String, List<String>> permissions);
+
+    /**
+     *
+     * @return
+     */
+    public Map<String, List<String>> getParams();
+
+    /**
+     *
+     * @param key
+     * @return
+     */
+    public List<String> getParams(String key);
+
+    /**
+     *
+     * @param key
+     * @param value
+     */
+    public void addParam(String key, String value);
+
+    /**
+     *
+     * @param params
+     */
+    public void setParams(Map<String, List<String>> params);
 
     /**
      *

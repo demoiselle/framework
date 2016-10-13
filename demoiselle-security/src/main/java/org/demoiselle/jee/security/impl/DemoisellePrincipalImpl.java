@@ -1,5 +1,7 @@
 package org.demoiselle.jee.security.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -18,24 +20,23 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
     private String identity;
     private String name;
     private List<String> roles;
-    private Map<String, String> permissions;
+    private Map<String, List<String>> permissions;
+    private Map<String, List<String>> params;
 
-    /**
-     *
-     * @return
-     */
+    public DemoisellePrincipalImpl() {
+        this.roles = new ArrayList<>();
+        this.permissions = new HashMap<>();
+        this.params = new HashMap<>();
+    }
+
     @Override
     public String getIdentity() {
         return identity;
     }
 
-    /**
-     *
-     * @param id
-     */
     @Override
-    public void setIdentity(String id) {
-        this.identity = id;
+    public void setIdentity(String identity) {
+        this.identity = identity;
     }
 
     @Override
@@ -43,49 +44,76 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
         return name;
     }
 
-    /**
-     *
-     * @param name
-     */
     @Override
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public List<String> getRoles() {
         return roles;
     }
 
-    /**
-     *
-     * @param roles
-     */
     @Override
     public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
-    public Map<String, String> getPermissions() {
+    public Map<String, List<String>> getPermissions() {
         return permissions;
     }
 
-    /**
-     *
-     * @param permissions
-     */
     @Override
-    public void setPermissions(Map<String, String> permissions) {
+    public void setPermissions(Map<String, List<String>> permissions) {
         this.permissions = permissions;
+    }
+
+    @Override
+    public Map<String, List<String>> getParams() {
+        return params;
+    }
+
+    @Override
+    public void setParams(Map<String, List<String>> params) {
+        this.params = params;
+    }
+
+    @Override
+    public void addRole(String role) {
+        this.roles.add(role);
+    }
+
+    @Override
+    public List<String> getPermissions(String resource) {
+        return permissions.get(resource);
+    }
+
+    @Override
+    public void addPermission(String resource, String operetion) {
+        List<String> operations = permissions.get(resource);
+        if (operations != null && !operations.isEmpty()) {
+            permissions.get(resource).add(operetion);
+        } else {
+            operations.add(operetion);
+            permissions.put(resource, operations);
+        }
+    }
+
+    @Override
+    public List<String> getParams(String key) {
+        return params.get(key);
+    }
+
+    @Override
+    public void addParam(String key, String value) {
+        List<String> operations = permissions.get(key);
+        if (operations != null && !operations.isEmpty()) {
+            permissions.get(key).add(value);
+        } else {
+            operations.add(value);
+            permissions.put(key, operations);
+        }
     }
 
     @Override
@@ -112,7 +140,7 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
 
     @Override
     public String toString() {
-        return "{identity:\"" + identity + "\", name:\"" + name + "\", roles:" + roles + ", permissions:" + permissions + '}';
+        return "{identity:\"" + identity + "\", name:\"" + name + "\"}";
     }
 
     @Override

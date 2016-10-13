@@ -101,17 +101,15 @@ public class TokensManagerImplIT {
     @InSequence(0)
     public void testSetUser() {
         out.println("setUser");
-
         dml.setName("Teste");
         dml.setIdentity("" + currentTimeMillis());
-        ArrayList<String> roles = new ArrayList<>();
-        roles.add("ADMINISTRATOR");
-        roles.add("MANAGER");
-        Map<String, String> permissions = new HashMap<>();
-        permissions.put("Produto", "Alterar");
-        permissions.put("Categoria", "Consultar");
-        dml.setRoles(roles);
-        dml.setPermissions(permissions);
+        dml.addRole("ADMINISTRATOR");
+        dml.addRole("MANAGER");
+        dml.addPermission("Produto", "Alterar");
+        dml.addPermission("Produto", "Incluir");
+        dml.addPermission("Categoria", "Consultar");
+        dml.addParam("Param1", "Value1");
+        dml.addParam("Param1", "Value2");
         tokensManagerImpl.setUser(dml);
     }
 
