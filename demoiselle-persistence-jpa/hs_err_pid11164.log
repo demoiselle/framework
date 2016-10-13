@@ -1,0 +1,1405 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007f62954caa57, pid=11164, tid=0x00007f627fb73700
+#
+# JRE version: Java(TM) SE Runtime Environment (8.0_101-b13) (build 1.8.0_101-b13)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.101-b13 mixed mode linux-amd64 compressed oops)
+# Problematic frame:
+# V  [libjvm.so+0x647a57]  InstanceKlass::oop_follow_contents(ParCompactionManager*, oopDesc*)+0x4a7
+#
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f6290025800):  GCTaskThread [stack: 0x00007f627fa73000,0x00007f627fb74000] [id=11171]
+
+siginfo: si_signo: 11 (SIGSEGV), si_code: 2 (SEGV_ACCERR), si_addr: 0x000000008e286670
+
+Registers:
+RAX=0x00007f6295e10b90, RBX=0x000000008e286668, RCX=0x000000000000000d, RDX=0x0000000000000001
+RSP=0x00007f627fb72740, RBP=0x00007f627fb727a0, RSI=0x0000000000002000, RDI=0x000000010026c830
+R8 =0x0000000086286664, R9 =0x0000000002000000, R10=0x0000000000000004, R11=0x00007f6295e40100
+R12=0x00007f6295e44120, R13=0x0000000086286644, R14=0x00007f62900fce70, R15=0x00007f62900fce70
+RIP=0x00007f62954caa57, EFLAGS=0x0000000000010202, CSGSFS=0x0000000000000033, ERR=0x0000000000000004
+  TRAPNO=0x000000000000000e
+
+Top of Stack: (sp=0x00007f627fb72740)
+0x00007f627fb72740:   00000000862865c4 0000000086286630
+0x00007f627fb72750:   000000010026ca50 000000010026ca58
+0x00007f627fb72760:   00007f6295df8d48 00007f62900fceb0
+0x00007f627fb72770:   000000008581bf18 00007f6295e40100
+0x00007f627fb72780:   00007f62900fce70 0000000000000003
+0x00007f627fb72790:   00007f62900fce70 0000000085e01760
+0x00007f627fb727a0:   00007f627fb72930 00007f62957fcb22
+0x00007f627fb727b0:   0000000100017e18 00000000847eaa48
+0x00007f627fb727c0:   00007f62900fce80 00007f627fb728e0
+0x00007f627fb727d0:   00007f627fb728b0 00007f627fb72890
+0x00007f627fb727e0:   00007f627fb72880 00007f627fb72870
+0x00007f627fb727f0:   00007f627fb72860 00007f627fb72850
+0x00007f627fb72800:   00007f6295e35059 00007f62900fcf30
+0x00007f627fb72810:   00000000847e8a38 00007f627fb728d0
+0x00007f627fb72820:   00007f627fb728c0 00007f627fb728b0
+0x00007f627fb72830:   0000000000000800 0000000000000800
+0x00007f627fb72840:   00007f62900fceb0 00007f627fb728f8
+0x00007f627fb72850:   00007f627fb728c0 00007f627fb728b0
+0x00007f627fb72860:   00007f6295e35059 00007f62900fcf30
+0x00007f627fb72870:   00000000847c4cc0 0000000000002000
+0x00007f627fb72880:   00000000847e8a38 00007f6200000600
+0x00007f627fb72890:   0000000000000000 0000000000000000
+0x00007f627fb728a0:   00007f6295e44120 0000000085a96b88
+0x00007f627fb728b0:   00000000849ebfa8 00007f6295e44120
+0x00007f627fb728c0:   00007f627fb72930 00007f62954ca8ef
+0x00007f627fb728d0:   00000000849ebfa8 00000000849ebf90
+0x00007f627fb728e0:   000002f900000022 000000010021fdc0
+0x00007f627fb728f0:   000002fa00000022 0000000086286630
+0x00007f627fb72900:   00007f627fb72920 0000000000000000
+0x00007f627fb72910:   00007f629009c9f0 0000000000000003
+0x00007f627fb72920:   00007f62900fce70 0000000085e01760
+0x00007f627fb72930:   00007f627fb72a70 00007f62957e2985 
+
+Instructions: (pc=0x00007f62954caa57)
+0x00007f62954caa37:   00 48 8b 07 48 89 de ff 90 e8 00 00 00 e9 09 fd
+0x00007f62954caa47:   ff ff 0f 1f 80 00 00 00 00 48 8b 05 31 70 92 00
+0x00007f62954caa57:   8b 7b 08 8b 48 08 48 d3 e7 48 03 38 8b 77 08 83
+0x00007f62954caa67:   fe 00 0f 8f 3e fe ff ff 74 6f 48 8b 05 30 9d 92 
+
+Register to memory mapping:
+
+RAX=0x00007f6295e10b90: <offset 0xf8db90> in /usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so at 0x00007f6294e83000
+RBX=0x000000008e286668 is an unallocated location in the heap
+RCX=0x000000000000000d is an unknown value
+RDX=0x0000000000000001 is an unknown value
+RSP=0x00007f627fb72740 is an unknown value
+RBP=0x00007f627fb727a0 is an unknown value
+RSI=0x0000000000002000 is an unknown value
+RDI=0x000000010026c830 is pointing into metadata
+R8 =0x0000000086286664 is pointing into object: 0x0000000086286630
+org.jboss.as.controller.descriptions.DefaultOperationDescriptionProvider 
+ - klass: 'org/jboss/as/controller/descriptions/DefaultOperationDescriptionProvider'
+R9 =0x0000000002000000 is an unknown value
+R10=0x0000000000000004 is an unknown value
+R11=0x00007f6295e40100: <offset 0xfbd100> in /usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so at 0x00007f6294e83000
+R12=0x00007f6295e44120: <offset 0xfc1120> in /usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so at 0x00007f6294e83000
+R13=0x0000000086286644 is pointing into object: 0x0000000086286630
+org.jboss.as.controller.descriptions.DefaultOperationDescriptionProvider 
+ - klass: 'org/jboss/as/controller/descriptions/DefaultOperationDescriptionProvider'
+R14=0x00007f62900fce70 is an unknown value
+R15=0x00007f62900fce70 is an unknown value
+
+
+Stack: [0x00007f627fa73000,0x00007f627fb74000],  sp=0x00007f627fb72740,  free space=1021k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0x647a57]  InstanceKlass::oop_follow_contents(ParCompactionManager*, oopDesc*)+0x4a7
+V  [libjvm.so+0x979b22]  ParCompactionManager::follow_marking_stacks()+0x232
+V  [libjvm.so+0x95f985]  StealMarkingTask::do_it(GCTaskManager*, unsigned int)+0x325
+V  [libjvm.so+0x5d6b5f]  GCTaskThread::run()+0x12f
+V  [libjvm.so+0x924698]  java_start(Thread*)+0x108
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007f6224070000 JavaThread "Transaction Reaper Worker 0" daemon [_thread_blocked, id=11268, stack(0x00007f61fb7fc000,0x00007f61fb8fd000)]
+  0x00007f622406e800 JavaThread "Transaction Reaper" daemon [_thread_blocked, id=11267, stack(0x00007f61fb8fd000,0x00007f61fb9fe000)]
+  0x00007f6228099000 JavaThread "Periodic Recovery" [_thread_blocked, id=11266, stack(0x00007f61fb9fe000,0x00007f61fbaff000)]
+  0x00007f6228097800 JavaThread "Transaction Expired Entry Monitor" daemon [_thread_blocked, id=11265, stack(0x00007f61fbaff000,0x00007f61fbc00000)]
+  0x00007f6220080800 JavaThread "Timer-1" [_thread_blocked, id=11264, stack(0x00007f626805f000,0x00007f6268160000)]
+  0x00007f621c1c1800 JavaThread "default Accept" [_thread_in_native, id=11263, stack(0x00007f6268581000,0x00007f6268682000)]
+  0x00007f621c1c0000 JavaThread "default I/O-8" [_thread_in_native, id=11262, stack(0x00007f6268682000,0x00007f6268783000)]
+  0x00007f621c1be000 JavaThread "default I/O-7" [_thread_in_native, id=11261, stack(0x00007f6268783000,0x00007f6268884000)]
+  0x00007f621c1bc000 JavaThread "default I/O-6" [_thread_in_native, id=11260, stack(0x00007f6268884000,0x00007f6268985000)]
+  0x00007f621c1b6800 JavaThread "default I/O-5" [_thread_in_native, id=11259, stack(0x00007f6268985000,0x00007f6268a86000)]
+  0x00007f621c1b5000 JavaThread "default I/O-4" [_thread_in_native, id=11258, stack(0x00007f6268a86000,0x00007f6268b87000)]
+  0x00007f621c1b3000 JavaThread "default I/O-3" [_thread_in_native, id=11257, stack(0x00007f6268b9a000,0x00007f6268c9b000)]
+  0x00007f621c1b1800 JavaThread "default I/O-2" [_thread_in_native, id=11256, stack(0x00007f6268c9b000,0x00007f6268d9c000)]
+  0x00007f621c0e4000 JavaThread "default I/O-1" [_thread_in_native, id=11255, stack(0x00007f6268d9c000,0x00007f6268e9d000)]
+  0x00007f6228053000 JavaThread "Timer-0" [_thread_blocked, id=11254, stack(0x00007f6268e9d000,0x00007f6268f9e000)]
+  0x00007f621829a000 JavaThread "ServerService Thread Pool -- 57" [_thread_blocked, id=11253, stack(0x00007f626919e000,0x00007f626929f000)]
+  0x00007f6218298000 JavaThread "ServerService Thread Pool -- 56" [_thread_blocked, id=11252, stack(0x00007f626929f000,0x00007f62693a0000)]
+  0x00007f6218296000 JavaThread "ServerService Thread Pool -- 55" [_thread_blocked, id=11251, stack(0x00007f62693a0000,0x00007f62694a1000)]
+  0x00007f6218294800 JavaThread "ServerService Thread Pool -- 54" [_thread_blocked, id=11250, stack(0x00007f62694a1000,0x00007f62695a2000)]
+  0x00007f6218292800 JavaThread "ServerService Thread Pool -- 53" [_thread_blocked, id=11249, stack(0x00007f62695a2000,0x00007f62696a3000)]
+  0x00007f62380ca000 JavaThread "IdleRemover" daemon [_thread_blocked, id=11248, stack(0x00007f62696a3000,0x00007f62697a4000)]
+  0x00007f6228043000 JavaThread "ConnectionValidator" daemon [_thread_blocked, id=11247, stack(0x00007f62697a4000,0x00007f62698a5000)]
+  0x00007f6218291000 JavaThread "ServerService Thread Pool -- 52" [_thread_blocked, id=11246, stack(0x00007f62698a5000,0x00007f62699a6000)]
+  0x00007f621828f800 JavaThread "ServerService Thread Pool -- 51" [_thread_blocked, id=11245, stack(0x00007f62699a6000,0x00007f6269aa7000)]
+  0x00007f621828d800 JavaThread "ServerService Thread Pool -- 50" [_thread_blocked, id=11244, stack(0x00007f6269aa7000,0x00007f6269ba8000)]
+  0x00007f621828b800 JavaThread "ServerService Thread Pool -- 49" [_thread_blocked, id=11243, stack(0x00007f6269ba8000,0x00007f6269ca9000)]
+  0x00007f6218289800 JavaThread "ServerService Thread Pool -- 48" [_thread_blocked, id=11242, stack(0x00007f6269ca9000,0x00007f6269daa000)]
+  0x00007f6218288000 JavaThread "ServerService Thread Pool -- 47" [_thread_blocked, id=11241, stack(0x00007f6269daa000,0x00007f6269eab000)]
+  0x00007f6218286800 JavaThread "ServerService Thread Pool -- 46" [_thread_blocked, id=11240, stack(0x00007f6269eab000,0x00007f6269fac000)]
+  0x00007f6218280000 JavaThread "ServerService Thread Pool -- 45" [_thread_blocked, id=11239, stack(0x00007f6269fd3000,0x00007f626a0d4000)]
+  0x00007f6218283800 JavaThread "ServerService Thread Pool -- 44" [_thread_blocked, id=11238, stack(0x00007f626a0d4000,0x00007f626a1d5000)]
+  0x00007f6218282000 JavaThread "ServerService Thread Pool -- 43" [_thread_blocked, id=11237, stack(0x00007f626a1d5000,0x00007f626a2d6000)]
+  0x00007f621827e000 JavaThread "ServerService Thread Pool -- 42" [_thread_blocked, id=11236, stack(0x00007f626a2d6000,0x00007f626a3d7000)]
+  0x00007f621827c000 JavaThread "ServerService Thread Pool -- 41" [_thread_blocked, id=11235, stack(0x00007f626a3d7000,0x00007f626a4d8000)]
+  0x00007f621827a800 JavaThread "ServerService Thread Pool -- 40" [_thread_blocked, id=11234, stack(0x00007f626a6d8000,0x00007f626a7d9000)]
+  0x00007f6218278800 JavaThread "ServerService Thread Pool -- 39" [_thread_blocked, id=11233, stack(0x00007f626a7d9000,0x00007f626a8da000)]
+  0x00007f6218277000 JavaThread "ServerService Thread Pool -- 38" [_thread_blocked, id=11232, stack(0x00007f626a8da000,0x00007f626a9db000)]
+  0x00007f6218275800 JavaThread "ServerService Thread Pool -- 37" [_thread_blocked, id=11231, stack(0x00007f626a9db000,0x00007f626aadc000)]
+  0x00007f6218240000 JavaThread "ServerService Thread Pool -- 36" [_thread_blocked, id=11230, stack(0x00007f626aadc000,0x00007f626abdd000)]
+  0x00007f621823e800 JavaThread "ServerService Thread Pool -- 35" [_thread_blocked, id=11229, stack(0x00007f626abdd000,0x00007f626acde000)]
+  0x00007f621823c800 JavaThread "ServerService Thread Pool -- 34" [_thread_blocked, id=11228, stack(0x00007f626acde000,0x00007f626addf000)]
+  0x00007f621823a800 JavaThread "ServerService Thread Pool -- 33" [_thread_blocked, id=11227, stack(0x00007f626addf000,0x00007f626aee0000)]
+  0x00007f6218239000 JavaThread "ServerService Thread Pool -- 32" [_thread_blocked, id=11226, stack(0x00007f626aef3000,0x00007f626aff4000)]
+  0x00007f6218237800 JavaThread "ServerService Thread Pool -- 31" [_thread_blocked, id=11225, stack(0x00007f626aff4000,0x00007f626b0f5000)]
+  0x00007f62380b2000 JavaThread "management Accept" [_thread_in_native, id=11224, stack(0x00007f626b0f5000,0x00007f626b1f6000)]
+  0x00007f62380b0800 JavaThread "management I/O-2" [_thread_in_native, id=11223, stack(0x00007f626b1f6000,0x00007f626b2f7000)]
+  0x00007f62380ae800 JavaThread "management I/O-1" [_thread_in_native, id=11222, stack(0x00007f626b2f7000,0x00007f626b3f8000)]
+  0x00007f621c061800 JavaThread "ServerService Thread Pool -- 30" [_thread_blocked, id=11221, stack(0x00007f626b5f8000,0x00007f626b6f9000)]
+  0x00007f62181a2000 JavaThread "ServerService Thread Pool -- 29" [_thread_blocked, id=11220, stack(0x00007f626b6f9000,0x00007f626b7fa000)]
+  0x00007f62181a0000 JavaThread "ServerService Thread Pool -- 28" [_thread_blocked, id=11219, stack(0x00007f626b7fa000,0x00007f626b8fb000)]
+  0x00007f621819e800 JavaThread "ServerService Thread Pool -- 27" [_thread_blocked, id=11218, stack(0x00007f626b8fb000,0x00007f626b9fc000)]
+  0x00007f6218172800 JavaThread "ServerService Thread Pool -- 26" [_thread_blocked, id=11217, stack(0x00007f626b9fc000,0x00007f626bafd000)]
+  0x00007f6218170800 JavaThread "ServerService Thread Pool -- 25" [_thread_blocked, id=11216, stack(0x00007f626bafd000,0x00007f626bbfe000)]
+  0x00007f6218113000 JavaThread "ServerService Thread Pool -- 24" [_thread_blocked, id=11215, stack(0x00007f626bbfe000,0x00007f626bcff000)]
+  0x00007f61fc0a4000 JavaThread "DeploymentScanner-threads - 1" [_thread_blocked, id=11214, stack(0x00007f626bcff000,0x00007f626be00000)]
+  0x00007f62180f7800 JavaThread "ServerService Thread Pool -- 23" [_thread_blocked, id=11213, stack(0x00007f6270000000,0x00007f6270101000)]
+  0x00007f621826f800 JavaThread "ServerService Thread Pool -- 22" [_thread_blocked, id=11212, stack(0x00007f627034e000,0x00007f627044f000)]
+  0x00007f6218250800 JavaThread "ServerService Thread Pool -- 21" [_thread_blocked, id=11211, stack(0x00007f627047a000,0x00007f627057b000)]
+  0x00007f62180f5000 JavaThread "ServerService Thread Pool -- 20" [_thread_blocked, id=11210, stack(0x00007f6270d01000,0x00007f6270e02000)]
+  0x00007f62180f3800 JavaThread "ServerService Thread Pool -- 19" [_thread_blocked, id=11209, stack(0x00007f6270e04000,0x00007f6270f05000)]
+  0x00007f62180ee000 JavaThread "ServerService Thread Pool -- 18" [_thread_blocked, id=11208, stack(0x00007f6270f84000,0x00007f6271085000)]
+  0x00007f62180e5800 JavaThread "ServerService Thread Pool -- 17" [_thread_blocked, id=11207, stack(0x00007f62710e3000,0x00007f62711e4000)]
+  0x00007f62180e0000 JavaThread "ServerService Thread Pool -- 16" [_thread_blocked, id=11206, stack(0x00007f6271200000,0x00007f6271301000)]
+  0x00007f62180de000 JavaThread "ServerService Thread Pool -- 15" [_thread_blocked, id=11205, stack(0x00007f6271301000,0x00007f6271402000)]
+  0x00007f62180dc000 JavaThread "ServerService Thread Pool -- 14" [_thread_blocked, id=11204, stack(0x00007f6271402000,0x00007f6271503000)]
+  0x00007f62180da800 JavaThread "ServerService Thread Pool -- 13" [_thread_blocked, id=11203, stack(0x00007f6271503000,0x00007f6271604000)]
+  0x00007f62180d8800 JavaThread "ServerService Thread Pool -- 12" [_thread_blocked, id=11202, stack(0x00007f6271604000,0x00007f6271705000)]
+  0x00007f62180d6800 JavaThread "ServerService Thread Pool -- 11" [_thread_blocked, id=11201, stack(0x00007f627176e000,0x00007f627186f000)]
+  0x00007f62180d4800 JavaThread "ServerService Thread Pool -- 10" [_thread_blocked, id=11200, stack(0x00007f627186f000,0x00007f6271970000)]
+  0x00007f62180d2800 JavaThread "ServerService Thread Pool -- 9" [_thread_blocked, id=11199, stack(0x00007f6271970000,0x00007f6271a71000)]
+  0x00007f62180b2000 JavaThread "ServerService Thread Pool -- 8" [_thread_blocked, id=11198, stack(0x00007f6271a71000,0x00007f6271b72000)]
+  0x00007f62180b0000 JavaThread "ServerService Thread Pool -- 7" [_thread_blocked, id=11197, stack(0x00007f6271b72000,0x00007f6271c73000)]
+  0x00007f62180bb800 JavaThread "ServerService Thread Pool -- 6" [_thread_blocked, id=11196, stack(0x00007f6271c73000,0x00007f6271d74000)]
+  0x00007f62180ba000 JavaThread "ServerService Thread Pool -- 5" [_thread_blocked, id=11195, stack(0x00007f6271d74000,0x00007f6271e75000)]
+  0x00007f62180b7800 JavaThread "ServerService Thread Pool -- 4" [_thread_blocked, id=11194, stack(0x00007f6271e75000,0x00007f6271f76000)]
+  0x00007f62180b6800 JavaThread "ServerService Thread Pool -- 3" [_thread_blocked, id=11193, stack(0x00007f6271f76000,0x00007f6272077000)]
+  0x00007f62180ce000 JavaThread "ServerService Thread Pool -- 2" [_thread_blocked, id=11192, stack(0x00007f6272077000,0x00007f6272178000)]
+  0x00007f622c021800 JavaThread "ServerService Thread Pool -- 1" [_thread_blocked, id=11191, stack(0x00007f6272378000,0x00007f6272479000)]
+  0x00007f62143dd800 JavaThread "Controller Boot Thread" [_thread_blocked, id=11190, stack(0x00007f6272479000,0x00007f627267a000)]
+  0x00007f6228003000 JavaThread "MSC service thread 1-8" [_thread_blocked, id=11189, stack(0x00007f627287a000,0x00007f627297b000)]
+  0x00007f6228001800 JavaThread "MSC service thread 1-7" [_thread_blocked, id=11188, stack(0x00007f627297b000,0x00007f6272a7c000)]
+  0x00007f6230002000 JavaThread "MSC service thread 1-6" [_thread_blocked, id=11187, stack(0x00007f6272a7c000,0x00007f6272b7d000)]
+  0x00007f6224001000 JavaThread "MSC service thread 1-5" [_thread_blocked, id=11186, stack(0x00007f6272b7d000,0x00007f6272c7e000)]
+  0x00007f622c002000 JavaThread "MSC service thread 1-4" [_thread_blocked, id=11185, stack(0x00007f6272c7e000,0x00007f6272d7f000)]
+  0x00007f6291061800 JavaThread "MSC service thread 1-3" [_thread_blocked, id=11184, stack(0x00007f6272d7f000,0x00007f6272e80000)]
+  0x00007f6238013000 JavaThread "MSC service thread 1-2" [_thread_blocked, id=11183, stack(0x00007f6272e80000,0x00007f6272f81000)]
+  0x00007f6290fcb800 JavaThread "MSC service thread 1-1" [_thread_blocked, id=11182, stack(0x00007f6272f81000,0x00007f6273082000)]
+  0x00007f62903cd000 JavaThread "Reference Reaper" daemon [_thread_blocked, id=11181, stack(0x00007f6278472000,0x00007f6278573000)]
+  0x00007f6290734800 JavaThread "Service Thread" daemon [_thread_blocked, id=11179, stack(0x00007f6278c8b000,0x00007f6278d8c000)]
+  0x00007f6290669800 JavaThread "C1 CompilerThread2" daemon [_thread_blocked, id=11178, stack(0x00007f6278d8c000,0x00007f6278e8d000)]
+  0x00007f62906ba000 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=11177, stack(0x00007f6278e8d000,0x00007f6278f8e000)]
+  0x00007f629072f800 JavaThread "C2 CompilerThread0" daemon [_thread_in_native, id=11176, stack(0x00007f6278f8e000,0x00007f627908f000)]
+  0x00007f629017f800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=11175, stack(0x00007f6279961000,0x00007f6279a62000)]
+  0x00007f629014c000 JavaThread "Finalizer" daemon [_thread_blocked, id=11174, stack(0x00007f627a421000,0x00007f627a522000)]
+  0x00007f6290147800 JavaThread "Reference Handler" daemon [_thread_blocked, id=11173, stack(0x00007f627a522000,0x00007f627a623000)]
+  0x00007f629000b000 JavaThread "main" [_thread_blocked, id=11167, stack(0x00007f629696d000,0x00007f6296a6e000)]
+
+Other Threads:
+  0x00007f6290140000 VMThread [stack: 0x00007f627a623000,0x00007f627a724000] [id=11172]
+  0x00007f6290737800 WatcherThread [stack: 0x00007f6278b8a000,0x00007f6278c8b000] [id=11180]
+
+=>0x00007f6290025800 (exited) GCTaskThread [stack: 0x00007f627fa73000,0x00007f627fb74000] [id=11171]
+
+VM state:at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x00007f6290007480] Threads_lock - owner thread: 0x00007f6290140000
+[0x00007f6290007980] Heap_lock - owner thread: 0x00007f6228001800
+
+Heap:
+ PSYoungGen      total 333824K, used 450K [0x00000000d6a00000, 0x00000000f0800000, 0x0000000100000000)
+  eden space 315392K, 0% used [0x00000000d6a00000,0x00000000d6a00000,0x00000000e9e00000)
+  from space 18432K, 2% used [0x00000000eb080000,0x00000000eb0f0b30,0x00000000ec280000)
+  to   space 18944K, 0% used [0x00000000e9e00000,0x00000000e9e00000,0x00000000eb080000)
+ ParOldGen       total 92672K, used 37450K [0x0000000083e00000, 0x0000000089880000, 0x00000000d6a00000)
+  object space 92672K, 40% used [0x0000000083e00000,0x00000000862928a8,0x0000000089880000)
+ Metaspace       used 53755K, capacity 58937K, committed 59028K, reserved 1101824K
+  class space    used 6170K, capacity 7680K, committed 7680K, reserved 1048576K
+
+Card table byte_map: [0x00007f628000c000,0x00007f62803ee000] byte_map_base: 0x00007f627fbed000
+
+Marking Bits: (ParMarkBitMap*) 0x00007f6295e44120
+ Begin Bits: [0x00007f627bc63000, 0x00007f627db6b000)
+ End Bits:   [0x00007f627db6b000, 0x00007f627fa73000)
+
+Polling page: 0x00007f6296a93000
+
+CodeCache: size=245760Kb used=12804Kb max_used=12807Kb free=232955Kb
+ bounds [0x00007f62807ae000, 0x00007f628143e000, 0x00007f628f7ae000]
+ total_blobs=4264 nmethods=3730 adapters=445
+ compilation: enabled
+
+Compilation events (10 events):
+Event: 4,167 Thread 0x00007f62906ba000 nmethod 3747 0x00007f628142f990 code [0x00007f628142fb00, 0x00007f628142ff78]
+Event: 4,167 Thread 0x00007f62906ba000 3780       4       java.util.regex.Matcher::<init> (84 bytes)
+Event: 4,187 Thread 0x00007f6290669800 3788   !   2       org.jboss.msc.service.ServiceControllerImpl::dependentStarted (92 bytes)
+Event: 4,189 Thread 0x00007f6290669800 nmethod 3788 0x00007f6281430e10 code [0x00007f6281430fc0, 0x00007f6281431468]
+Event: 4,189 Thread 0x00007f6290669800 3792       2       org.jboss.modules.Linkage::<init> (36 bytes)
+Event: 4,189 Thread 0x00007f62906ba000 nmethod 3780 0x00007f628142f210 code [0x00007f628142f380, 0x00007f628142f758]
+Event: 4,189 Thread 0x00007f6290669800 nmethod 3792 0x00007f628142ed50 code [0x00007f628142eec0, 0x00007f628142f0e8]
+Event: 4,189 Thread 0x00007f62906ba000 3789       4       org.jboss.modules.ModuleLoader::$jacocoInit (54 bytes)
+Event: 4,189 Thread 0x00007f62906ba000 nmethod 3789 0x00007f628142eb10 code [0x00007f628142ec60, 0x00007f628142ecb8]
+Event: 4,189 Thread 0x00007f62906ba000 3776   !   4       java.util.zip.ZipFile$ZipFileInflaterInputStream::close (67 bytes)
+
+GC Heap History (10 events):
+Event: 3,025 GC heap after
+Heap after GC invocations=10 (full 1):
+ PSYoungGen      total 202240K, used 9654K [0x00000000d6a00000, 0x00000000e8000000, 0x0000000100000000)
+  eden space 190976K, 0% used [0x00000000d6a00000,0x00000000d6a00000,0x00000000e2480000)
+  from space 11264K, 85% used [0x00000000e2480000,0x00000000e2ded928,0x00000000e2f80000)
+  to   space 12288K, 0% used [0x00000000e7400000,0x00000000e7400000,0x00000000e8000000)
+ ParOldGen       total 59904K, used 14724K [0x0000000083e00000, 0x0000000087880000, 0x00000000d6a00000)
+  object space 59904K, 24% used [0x0000000083e00000,0x0000000084c61100,0x0000000087880000)
+ Metaspace       used 32533K, capacity 35272K, committed 35416K, reserved 1081344K
+  class space    used 3685K, capacity 4549K, committed 4608K, reserved 1048576K
+}
+Event: 3,026 GC heap before
+{Heap before GC invocations=11 (full 2):
+ PSYoungGen      total 202240K, used 9654K [0x00000000d6a00000, 0x00000000e8000000, 0x0000000100000000)
+  eden space 190976K, 0% used [0x00000000d6a00000,0x00000000d6a00000,0x00000000e2480000)
+  from space 11264K, 85% used [0x00000000e2480000,0x00000000e2ded928,0x00000000e2f80000)
+  to   space 12288K, 0% used [0x00000000e7400000,0x00000000e7400000,0x00000000e8000000)
+ ParOldGen       total 59904K, used 14724K [0x0000000083e00000, 0x0000000087880000, 0x00000000d6a00000)
+  object space 59904K, 24% used [0x0000000083e00000,0x0000000084c61100,0x0000000087880000)
+ Metaspace       used 32533K, capacity 35272K, committed 35416K, reserved 1081344K
+  class space    used 3685K, capacity 4549K, committed 4608K, reserved 1048576K
+Event: 3,071 GC heap after
+Heap after GC invocations=11 (full 2):
+ PSYoungGen      total 202240K, used 0K [0x00000000d6a00000, 0x00000000e8000000, 0x0000000100000000)
+  eden space 190976K, 0% used [0x00000000d6a00000,0x00000000d6a00000,0x00000000e2480000)
+  from space 11264K, 0% used [0x00000000e2480000,0x00000000e2480000,0x00000000e2f80000)
+  to   space 12288K, 0% used [0x00000000e7400000,0x00000000e7400000,0x00000000e8000000)
+ ParOldGen       total 92672K, used 15921K [0x0000000083e00000, 0x0000000089880000, 0x00000000d6a00000)
+  object space 92672K, 17% used [0x0000000083e00000,0x0000000084d8c640,0x0000000089880000)
+ Metaspace       used 32533K, capacity 35272K, committed 35416K, reserved 1081344K
+  class space    used 3685K, capacity 4549K, committed 4608K, reserved 1048576K
+}
+Event: 3,606 GC heap before
+{Heap before GC invocations=12 (full 2):
+ PSYoungGen      total 202240K, used 190976K [0x00000000d6a00000, 0x00000000e8000000, 0x0000000100000000)
+  eden space 190976K, 100% used [0x00000000d6a00000,0x00000000e2480000,0x00000000e2480000)
+  from space 11264K, 0% used [0x00000000e2480000,0x00000000e2480000,0x00000000e2f80000)
+  to   space 12288K, 0% used [0x00000000e7400000,0x00000000e7400000,0x00000000e8000000)
+ ParOldGen       total 92672K, used 15921K [0x0000000083e00000, 0x0000000089880000, 0x00000000d6a00000)
+  object space 92672K, 17% used [0x0000000083e00000,0x0000000084d8c640,0x0000000089880000)
+ Metaspace       used 41544K, capacity 45346K, committed 45696K, reserved 1089536K
+  class space    used 4824K, capacity 5903K, committed 6016K, reserved 1048576K
+Event: 3,617 GC heap after
+Heap after GC invocations=12 (full 2):
+ PSYoungGen      total 257536K, used 12279K [0x00000000d6a00000, 0x00000000e8000000, 0x0000000100000000)
+  eden space 245248K, 0% used [0x00000000d6a00000,0x00000000d6a00000,0x00000000e5980000)
+  from space 12288K, 99% used [0x00000000e7400000,0x00000000e7ffdc40,0x00000000e8000000)
+  to   space 14336K, 0% used [0x00000000e6400000,0x00000000e6400000,0x00000000e7200000)
+ ParOldGen       total 92672K, used 17074K [0x0000000083e00000, 0x0000000089880000, 0x00000000d6a00000)
+  object space 92672K, 18% used [0x0000000083e00000,0x0000000084eac8f8,0x0000000089880000)
+ Metaspace       used 41544K, capacity 45346K, committed 45696K, reserved 1089536K
+  class space    used 4824K, capacity 5903K, committed 6016K, reserved 1048576K
+}
+Event: 4,170 GC heap before
+{Heap before GC invocations=13 (full 2):
+ PSYoungGen      total 257536K, used 257527K [0x00000000d6a00000, 0x00000000e8000000, 0x0000000100000000)
+  eden space 245248K, 100% used [0x00000000d6a00000,0x00000000e5980000,0x00000000e5980000)
+  from space 12288K, 99% used [0x00000000e7400000,0x00000000e7ffdc40,0x00000000e8000000)
+  to   space 14336K, 0% used [0x00000000e6400000,0x00000000e6400000,0x00000000e7200000)
+ ParOldGen       total 92672K, used 17074K [0x0000000083e00000, 0x0000000089880000, 0x00000000d6a00000)
+  object space 92672K, 18% used [0x0000000083e00000,0x0000000084eac8f8,0x0000000089880000)
+ Metaspace       used 53476K, capacity 58586K, committed 58880K, reserved 1099776K
+  class space    used 6124K, capacity 7625K, committed 7680K, reserved 1048576K
+Event: 4,186 GC heap after
+Heap after GC invocations=13 (full 2):
+ PSYoungGen      total 270336K, used 14332K [0x00000000d6a00000, 0x00000000ec280000, 0x0000000100000000)
+  eden space 256000K, 0% used [0x00000000d6a00000,0x00000000d6a00000,0x00000000e6400000)
+  from space 14336K, 99% used [0x00000000e6400000,0x00000000e71ff318,0x00000000e7200000)
+  to   space 18432K, 0% used [0x00000000eb080000,0x00000000eb080000,0x00000000ec280000)
+ ParOldGen       total 92672K, used 23265K [0x0000000083e00000, 0x0000000089880000, 0x00000000d6a00000)
+  object space 92672K, 25% used [0x0000000083e00000,0x00000000854b86a8,0x0000000089880000)
+ Metaspace       used 53476K, capacity 58586K, committed 58880K, reserved 1099776K
+  class space    used 6124K, capacity 7625K, committed 7680K, reserved 1048576K
+}
+Event: 4,202 GC heap before
+{Heap before GC invocations=14 (full 2):
+ PSYoungGen      total 270336K, used 23196K [0x00000000d6a00000, 0x00000000ec280000, 0x0000000100000000)
+  eden space 256000K, 3% used [0x00000000d6a00000,0x00000000d72a7fd8,0x00000000e6400000)
+  from space 14336K, 99% used [0x00000000e6400000,0x00000000e71ff318,0x00000000e7200000)
+  to   space 18432K, 0% used [0x00000000eb080000,0x00000000eb080000,0x00000000ec280000)
+ ParOldGen       total 92672K, used 23265K [0x0000000083e00000, 0x0000000089880000, 0x00000000d6a00000)
+  object space 92672K, 25% used [0x0000000083e00000,0x00000000854b86a8,0x0000000089880000)
+ Metaspace       used 53755K, capacity 58937K, committed 59028K, reserved 1101824K
+  class space    used 6170K, capacity 7680K, committed 7680K, reserved 1048576K
+Event: 4,219 GC heap after
+Heap after GC invocations=14 (full 2):
+ PSYoungGen      total 333824K, used 450K [0x00000000d6a00000, 0x00000000f0800000, 0x0000000100000000)
+  eden space 315392K, 0% used [0x00000000d6a00000,0x00000000d6a00000,0x00000000e9e00000)
+  from space 18432K, 2% used [0x00000000eb080000,0x00000000eb0f0b30,0x00000000ec280000)
+  to   space 18944K, 0% used [0x00000000e9e00000,0x00000000e9e00000,0x00000000eb080000)
+ ParOldGen       total 92672K, used 37450K [0x0000000083e00000, 0x0000000089880000, 0x00000000d6a00000)
+  object space 92672K, 40% used [0x0000000083e00000,0x00000000862928a8,0x0000000089880000)
+ Metaspace       used 53755K, capacity 58937K, committed 59028K, reserved 1101824K
+  class space    used 6170K, capacity 7680K, committed 7680K, reserved 1048576K
+}
+Event: 4,219 GC heap before
+{Heap before GC invocations=15 (full 3):
+ PSYoungGen      total 333824K, used 450K [0x00000000d6a00000, 0x00000000f0800000, 0x0000000100000000)
+  eden space 315392K, 0% used [0x00000000d6a00000,0x00000000d6a00000,0x00000000e9e00000)
+  from space 18432K, 2% used [0x00000000eb080000,0x00000000eb0f0b30,0x00000000ec280000)
+  to   space 18944K, 0% used [0x00000000e9e00000,0x00000000e9e00000,0x00000000eb080000)
+ ParOldGen       total 92672K, used 37450K [0x0000000083e00000, 0x0000000089880000, 0x00000000d6a00000)
+  object space 92672K, 40% used [0x0000000083e00000,0x00000000862928a8,0x0000000089880000)
+ Metaspace       used 53755K, capacity 58937K, committed 59028K, reserved 1101824K
+  class space    used 6170K, capacity 7680K, committed 7680K, reserved 1048576K
+
+Deoptimization events (10 events):
+Event: 3,556 Thread 0x00007f6218291000 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f6280ee0fc8 method=org.jacoco.agent.rt.internal_6da5971.asm.tree.FrameNode.accept(Lorg/jacoco/agent/rt/internal_6da5971/asm/MethodVisitor;)V @ 81
+Event: 3,646 Thread 0x00007f6218298000 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f6281267340 method=java.util.regex.Pattern$Curly.match0(Ljava/util/regex/Matcher;IILjava/lang/CharSequence;)Z @ 77
+Event: 3,646 Thread 0x00007f6218298000 Uncommon trap: reason=bimorphic action=maybe_recompile pc=0x00007f6281267340 method=java.util.regex.Pattern$Curly.match0(Ljava/util/regex/Matcher;IILjava/lang/CharSequence;)Z @ 77
+Event: 3,923 Thread 0x00007f6228003000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f62811d6434 method=org.jacoco.agent.rt.internal_6da5971.asm.ClassReader.accept(Lorg/jacoco/agent/rt/internal_6da5971/asm/ClassVisitor;[Lorg/jacoco/agent/rt/internal_6da5971/asm/Attribute;I)V @
+Event: 3,924 Thread 0x00007f6228003000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f628104e298 method=org.jacoco.agent.rt.internal_6da5971.asm.MethodWriter.<init>(Lorg/jacoco/agent/rt/internal_6da5971/asm/ClassWriter;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;[Lj
+Event: 3,924 Thread 0x00007f6228003000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f6280d33730 method=org.jacoco.agent.rt.internal_6da5971.core.internal.flow.LabelFlowAnalyzer.markMethodInvocationLine()V @ 4
+Event: 3,924 Thread 0x00007f6228003000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f628111eb80 method=org.jacoco.agent.rt.internal_6da5971.asm.MethodWriter.<init>(Lorg/jacoco/agent/rt/internal_6da5971/asm/ClassWriter;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;[Lj
+Event: 3,924 Thread 0x00007f6228003000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f6281075b84 method=org.jacoco.agent.rt.internal_6da5971.asm.MethodWriter.<init>(Lorg/jacoco/agent/rt/internal_6da5971/asm/ClassWriter;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;[Lj
+Event: 3,925 Thread 0x00007f6228003000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f6281236094 method=org.jacoco.agent.rt.internal_6da5971.asm.ClassWriter.toByteArray()[B @ 160
+Event: 4,071 Thread 0x00007f6238013000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f62813bac88 method=org.jboss.modules.Module.pathOfClass(Ljava/lang/String;)Ljava/lang/String; @ 30
+
+Internal exceptions (10 events):
+Event: 4,189 Thread 0x00007f622c002000 Implicit null exception at 0x00007f6280b33850 to 0x00007f6280b34066
+Event: 4,189 Thread 0x00007f622c002000 Exception <a 'java/lang/NullPointerException'> (0x00000000d6be7ab0) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u101/7261/hotspot/src/share/vm/runtime/sharedRuntime.cpp, line 605]
+Event: 4,196 Thread 0x00007f6228003000 Implicit null exception at 0x00007f6280b33850 to 0x00007f6280b34066
+Event: 4,196 Thread 0x00007f6228003000 Exception <a 'java/lang/NullPointerException'> (0x00000000d6aebb00) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u101/7261/hotspot/src/share/vm/runtime/sharedRuntime.cpp, line 605]
+Event: 4,196 Thread 0x00007f6228003000 Implicit null exception at 0x00007f6280b33850 to 0x00007f6280b34066
+Event: 4,196 Thread 0x00007f6228003000 Exception <a 'java/lang/NullPointerException'> (0x00000000d6af51e8) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u101/7261/hotspot/src/share/vm/runtime/sharedRuntime.cpp, line 605]
+Event: 4,197 Thread 0x00007f6228003000 Implicit null exception at 0x00007f6280b33850 to 0x00007f6280b34066
+Event: 4,197 Thread 0x00007f6228003000 Exception <a 'java/lang/NullPointerException'> (0x00000000d6b23e30) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u101/7261/hotspot/src/share/vm/runtime/sharedRuntime.cpp, line 605]
+Event: 4,201 Thread 0x00007f6228001800 Implicit null exception at 0x00007f6280b33850 to 0x00007f6280b34066
+Event: 4,201 Thread 0x00007f6228001800 Exception <a 'java/lang/NullPointerException'> (0x00000000d722f260) thrown at [/HUDSON3/workspace/8-2-build-linux-amd64/jdk8u101/7261/hotspot/src/share/vm/runtime/sharedRuntime.cpp, line 605]
+
+Events (10 events):
+Event: 4,197 Thread 0x00007f6228001800 DEOPT UNPACKING pc=0x00007f62807f5633 sp=0x00007f6272a79940 mode 0
+Event: 4,198 Thread 0x00007f6228001800 DEOPT PACKING pc=0x00007f6280fd0d48 sp=0x00007f6272a79d30
+Event: 4,198 Thread 0x00007f6228001800 DEOPT UNPACKING pc=0x00007f62807f5633 sp=0x00007f6272a79aa8 mode 0
+Event: 4,198 Thread 0x00007f6228001800 DEOPT PACKING pc=0x00007f6280fcfe89 sp=0x00007f6272a79c60
+Event: 4,198 Thread 0x00007f6228001800 DEOPT UNPACKING pc=0x00007f62807f5633 sp=0x00007f6272a799d0 mode 0
+Event: 4,198 loading class java/util/ArrayList$1
+Event: 4,198 loading class java/util/ArrayList$1 done
+Event: 4,201 loading class java/util/function/IntFunction
+Event: 4,201 loading class java/util/function/IntFunction done
+Event: 4,201 Executing VM operation: CollectForMetadataAllocation
+
+
+Dynamic libraries:
+00400000-00401000 r-xp 00000000 08:21 1596807                            /usr/lib/jvm/java-8-oracle/jre/bin/java
+00600000-00601000 rw-p 00000000 08:21 1596807                            /usr/lib/jvm/java-8-oracle/jre/bin/java
+00daf000-00e5e000 rw-p 00000000 00:00 0                                  [heap]
+83e00000-89880000 rw-p 00000000 00:00 0 
+89880000-d6a00000 ---p 00000000 00:00 0 
+d6a00000-f0800000 rw-p 00000000 00:00 0 
+f0800000-100000000 ---p 00000000 00:00 0 
+100000000-100780000 rw-p 00000000 00:00 0 
+100780000-140000000 ---p 00000000 00:00 0 
+7f61f4000000-7f61f402d000 rw-p 00000000 00:00 0 
+7f61f402d000-7f61f8000000 ---p 00000000 00:00 0 
+7f61fb3fc000-7f61fb421000 rw-p 00000000 00:00 0 
+7f61fb421000-7f61fb5fc000 ---p 00000000 00:00 0 
+7f61fb5fc000-7f61fb7fc000 rw-p 00000000 00:00 0 
+7f61fb7fc000-7f61fb7ff000 ---p 00000000 00:00 0 
+7f61fb7ff000-7f61fb8fd000 rw-p 00000000 00:00 0 
+7f61fb8fd000-7f61fb900000 ---p 00000000 00:00 0 
+7f61fb900000-7f61fb9fe000 rw-p 00000000 00:00 0 
+7f61fb9fe000-7f61fba01000 ---p 00000000 00:00 0 
+7f61fba01000-7f61fbaff000 rw-p 00000000 00:00 0 
+7f61fbaff000-7f61fbb02000 ---p 00000000 00:00 0 
+7f61fbb02000-7f61fbe00000 rw-p 00000000 00:00 0 
+7f61fbe00000-7f61fc000000 rw-p 00000000 00:00 0 
+7f61fc000000-7f61fc1ed000 rw-p 00000000 00:00 0 
+7f61fc1ed000-7f6200000000 ---p 00000000 00:00 0 
+7f6200000000-7f62000e1000 rw-p 00000000 00:00 0 
+7f62000e1000-7f6204000000 ---p 00000000 00:00 0 
+7f6204000000-7f6204221000 rw-p 00000000 00:00 0 
+7f6204221000-7f6208000000 ---p 00000000 00:00 0 
+7f6208000000-7f62080a2000 rw-p 00000000 00:00 0 
+7f62080a2000-7f620c000000 ---p 00000000 00:00 0 
+7f620c000000-7f620c127000 rw-p 00000000 00:00 0 
+7f620c127000-7f6210000000 ---p 00000000 00:00 0 
+7f6210000000-7f62100e7000 rw-p 00000000 00:00 0 
+7f62100e7000-7f6214000000 ---p 00000000 00:00 0 
+7f6214000000-7f62145f4000 rw-p 00000000 00:00 0 
+7f62145f4000-7f6218000000 ---p 00000000 00:00 0 
+7f6218000000-7f62184dc000 rw-p 00000000 00:00 0 
+7f62184dc000-7f621c000000 ---p 00000000 00:00 0 
+7f621c000000-7f621c2a7000 rw-p 00000000 00:00 0 
+7f621c2a7000-7f6220000000 ---p 00000000 00:00 0 
+7f6220000000-7f62200ac000 rw-p 00000000 00:00 0 
+7f62200ac000-7f6224000000 ---p 00000000 00:00 0 
+7f6224000000-7f6224093000 rw-p 00000000 00:00 0 
+7f6224093000-7f6228000000 ---p 00000000 00:00 0 
+7f6228000000-7f62280d5000 rw-p 00000000 00:00 0 
+7f62280d5000-7f622c000000 ---p 00000000 00:00 0 
+7f622c000000-7f622c0d8000 rw-p 00000000 00:00 0 
+7f622c0d8000-7f6230000000 ---p 00000000 00:00 0 
+7f6230000000-7f6230093000 rw-p 00000000 00:00 0 
+7f6230093000-7f6234000000 ---p 00000000 00:00 0 
+7f6234000000-7f6234021000 rw-p 00000000 00:00 0 
+7f6234021000-7f6238000000 ---p 00000000 00:00 0 
+7f6238000000-7f62380f9000 rw-p 00000000 00:00 0 
+7f62380f9000-7f623c000000 ---p 00000000 00:00 0 
+7f623c000000-7f623c021000 rw-p 00000000 00:00 0 
+7f623c021000-7f6240000000 ---p 00000000 00:00 0 
+7f6240000000-7f6240021000 rw-p 00000000 00:00 0 
+7f6240021000-7f6244000000 ---p 00000000 00:00 0 
+7f6244000000-7f6245951000 rw-p 00000000 00:00 0 
+7f6245951000-7f6248000000 ---p 00000000 00:00 0 
+7f6248000000-7f6248de9000 rw-p 00000000 00:00 0 
+7f6248de9000-7f624c000000 ---p 00000000 00:00 0 
+7f624c000000-7f624c041000 rw-p 00000000 00:00 0 
+7f624c041000-7f6250000000 ---p 00000000 00:00 0 
+7f6250000000-7f62516af000 rw-p 00000000 00:00 0 
+7f62516af000-7f6254000000 ---p 00000000 00:00 0 
+7f6254000000-7f62540ec000 rw-p 00000000 00:00 0 
+7f62540ec000-7f6258000000 ---p 00000000 00:00 0 
+7f6258000000-7f6258115000 rw-p 00000000 00:00 0 
+7f6258115000-7f625c000000 ---p 00000000 00:00 0 
+7f625c000000-7f625c021000 rw-p 00000000 00:00 0 
+7f625c021000-7f6260000000 ---p 00000000 00:00 0 
+7f6260000000-7f6260069000 rw-p 00000000 00:00 0 
+7f6260069000-7f6264000000 ---p 00000000 00:00 0 
+7f6264000000-7f6264021000 rw-p 00000000 00:00 0 
+7f6264021000-7f6268000000 ---p 00000000 00:00 0 
+7f626805f000-7f6268062000 ---p 00000000 00:00 0 
+7f6268062000-7f6268360000 rw-p 00000000 00:00 0 
+7f6268360000-7f6268363000 r--s 00006000 08:01 6952458                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/narayana/txframework/main/txframework-5.3.3.Final.jar
+7f6268363000-7f6268365000 r--s 00009000 08:01 6952852                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/xts/main/jbosstxbridge-5.3.3.Final.jar
+7f6268365000-7f626837d000 r--s 000d6000 08:01 6952995                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/xts/main/jbossxts-5.3.3.Final.jar
+7f626837d000-7f626837f000 r--s 00003000 08:01 6952795                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/web/spi/main/wildfly-clustering-web-spi-10.1.0.Final.jar
+7f626837f000-7f626857f000 rw-p 00000000 00:00 0 
+7f626857f000-7f6268581000 r--s 00006000 08:01 6952868                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/jaxbintros/main/jboss-jaxb-intros-1.0.2.GA.jar
+7f6268581000-7f6268584000 ---p 00000000 00:00 0 
+7f6268584000-7f6268682000 rw-p 00000000 00:00 0 
+7f6268682000-7f6268685000 ---p 00000000 00:00 0 
+7f6268685000-7f6268783000 rw-p 00000000 00:00 0 
+7f6268783000-7f6268786000 ---p 00000000 00:00 0 
+7f6268786000-7f6268884000 rw-p 00000000 00:00 0 
+7f6268884000-7f6268887000 ---p 00000000 00:00 0 
+7f6268887000-7f6268985000 rw-p 00000000 00:00 0 
+7f6268985000-7f6268988000 ---p 00000000 00:00 0 
+7f6268988000-7f6268a86000 rw-p 00000000 00:00 0 
+7f6268a86000-7f6268a89000 ---p 00000000 00:00 0 
+7f6268a89000-7f6268b87000 rw-p 00000000 00:00 0 
+7f6268b87000-7f6268b9a000 r--s 00236000 08:01 6688505                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/eclipse/jdt/ecj/main/ecj-4.5.1.jar
+7f6268b9a000-7f6268b9d000 ---p 00000000 00:00 0 
+7f6268b9d000-7f6268c9b000 rw-p 00000000 00:00 0 
+7f6268c9b000-7f6268c9e000 ---p 00000000 00:00 0 
+7f6268c9e000-7f6268d9c000 rw-p 00000000 00:00 0 
+7f6268d9c000-7f6268d9f000 ---p 00000000 00:00 0 
+7f6268d9f000-7f6268e9d000 rw-p 00000000 00:00 0 
+7f6268e9d000-7f6268ea0000 ---p 00000000 00:00 0 
+7f6268ea0000-7f626919e000 rw-p 00000000 00:00 0 
+7f626919e000-7f62691a1000 ---p 00000000 00:00 0 
+7f62691a1000-7f626929f000 rw-p 00000000 00:00 0 
+7f626929f000-7f62692a2000 ---p 00000000 00:00 0 
+7f62692a2000-7f62693a0000 rw-p 00000000 00:00 0 
+7f62693a0000-7f62693a3000 ---p 00000000 00:00 0 
+7f62693a3000-7f62694a1000 rw-p 00000000 00:00 0 
+7f62694a1000-7f62694a4000 ---p 00000000 00:00 0 
+7f62694a4000-7f62695a2000 rw-p 00000000 00:00 0 
+7f62695a2000-7f62695a5000 ---p 00000000 00:00 0 
+7f62695a5000-7f62696a3000 rw-p 00000000 00:00 0 
+7f62696a3000-7f62696a6000 ---p 00000000 00:00 0 
+7f62696a6000-7f62697a4000 rw-p 00000000 00:00 0 
+7f62697a4000-7f62697a7000 ---p 00000000 00:00 0 
+7f62697a7000-7f62698a5000 rw-p 00000000 00:00 0 
+7f62698a5000-7f62698a8000 ---p 00000000 00:00 0 
+7f62698a8000-7f62699a6000 rw-p 00000000 00:00 0 
+7f62699a6000-7f62699a9000 ---p 00000000 00:00 0 
+7f62699a9000-7f6269aa7000 rw-p 00000000 00:00 0 
+7f6269aa7000-7f6269aaa000 ---p 00000000 00:00 0 
+7f6269aaa000-7f6269ba8000 rw-p 00000000 00:00 0 
+7f6269ba8000-7f6269bab000 ---p 00000000 00:00 0 
+7f6269bab000-7f6269ca9000 rw-p 00000000 00:00 0 
+7f6269ca9000-7f6269cac000 ---p 00000000 00:00 0 
+7f6269cac000-7f6269daa000 rw-p 00000000 00:00 0 
+7f6269daa000-7f6269dad000 ---p 00000000 00:00 0 
+7f6269dad000-7f6269eab000 rw-p 00000000 00:00 0 
+7f6269eab000-7f6269eae000 ---p 00000000 00:00 0 
+7f6269eae000-7f6269fac000 rw-p 00000000 00:00 0 
+7f6269fac000-7f6269fad000 r--s 00009000 08:01 6689568                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/httpcomponents/main/httpmime-4.5.jar
+7f6269fad000-7f6269fb1000 r--s 00028000 08:01 6689398                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/httpcomponents/main/httpasyncclient-4.1.jar
+7f6269fb1000-7f6269fb8000 r--s 00050000 08:01 6689397                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/httpcomponents/main/httpcore-nio-4.4.1.jar
+7f6269fb8000-7f6269fbf000 r--s 00048000 08:01 6688550                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/httpcomponents/main/httpcore-4.4.1.jar
+7f6269fbf000-7f6269fcc000 r--s 000a5000 08:01 6689746                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/httpcomponents/main/httpclient-4.5.jar
+7f6269fcc000-7f6269fd3000 r--s 0003f000 08:01 6689601                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/commons/codec/main/commons-codec-1.10.jar
+7f6269fd3000-7f6269fd6000 ---p 00000000 00:00 0 
+7f6269fd6000-7f626a0d4000 rw-p 00000000 00:00 0 
+7f626a0d4000-7f626a0d7000 ---p 00000000 00:00 0 
+7f626a0d7000-7f626a1d5000 rw-p 00000000 00:00 0 
+7f626a1d5000-7f626a1d8000 ---p 00000000 00:00 0 
+7f626a1d8000-7f626a2d6000 rw-p 00000000 00:00 0 
+7f626a2d6000-7f626a2d9000 ---p 00000000 00:00 0 
+7f626a2d9000-7f626a3d7000 rw-p 00000000 00:00 0 
+7f626a3d7000-7f626a3da000 ---p 00000000 00:00 0 
+7f626a3da000-7f626a6d8000 rw-p 00000000 00:00 0 
+7f626a6d8000-7f626a6db000 ---p 00000000 00:00 0 
+7f626a6db000-7f626a7d9000 rw-p 00000000 00:00 0 
+7f626a7d9000-7f626a7dc000 ---p 00000000 00:00 0 
+7f626a7dc000-7f626a8da000 rw-p 00000000 00:00 0 
+7f626a8da000-7f626a8dd000 ---p 00000000 00:00 0 
+7f626a8dd000-7f626a9db000 rw-p 00000000 00:00 0 
+7f626a9db000-7f626a9de000 ---p 00000000 00:00 0 
+7f626a9de000-7f626aadc000 rw-p 00000000 00:00 0 
+7f626aadc000-7f626aadf000 ---p 00000000 00:00 0 
+7f626aadf000-7f626abdd000 rw-p 00000000 00:00 0 
+7f626abdd000-7f626abe0000 ---p 00000000 00:00 0 
+7f626abe0000-7f626acde000 rw-p 00000000 00:00 0 
+7f626acde000-7f626ace1000 ---p 00000000 00:00 0 
+7f626ace1000-7f626addf000 rw-p 00000000 00:00 0 
+7f626addf000-7f626ade2000 ---p 00000000 00:00 0 
+7f626ade2000-7f626aee0000 rw-p 00000000 00:00 0 
+7f626aee0000-7f626aeed000 r--s 00174000 08:01 6820611                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/h2database/h2/main/h2-1.3.173.jar
+7f626aeed000-7f626aef0000 r--s 00002000 08:01 6952912                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/management/j2ee/api/main/jboss-j2eemgmt-api_1.1_spec-1.0.1.Final.jar
+7f626aef0000-7f626aef3000 r--s 00011000 08:01 6820597                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/glassfish/javax/json/main/javax.json-1.0.3.jar
+7f626aef3000-7f626aef6000 ---p 00000000 00:00 0 
+7f626aef6000-7f626aff4000 rw-p 00000000 00:00 0 
+7f626aff4000-7f626aff7000 ---p 00000000 00:00 0 
+7f626aff7000-7f626b0f5000 rw-p 00000000 00:00 0 
+7f626b0f5000-7f626b0f8000 ---p 00000000 00:00 0 
+7f626b0f8000-7f626b1f6000 rw-p 00000000 00:00 0 
+7f626b1f6000-7f626b1f9000 ---p 00000000 00:00 0 
+7f626b1f9000-7f626b2f7000 rw-p 00000000 00:00 0 
+7f626b2f7000-7f626b2fa000 ---p 00000000 00:00 0 
+7f626b2fa000-7f626b5f8000 rw-p 00000000 00:00 0 
+7f626b5f8000-7f626b5fb000 ---p 00000000 00:00 0 
+7f626b5fb000-7f626b6f9000 rw-p 00000000 00:00 0 
+7f626b6f9000-7f626b6fc000 ---p 00000000 00:00 0 
+7f626b6fc000-7f626b7fa000 rw-p 00000000 00:00 0 
+7f626b7fa000-7f626b7fd000 ---p 00000000 00:00 0 
+7f626b7fd000-7f626b8fb000 rw-p 00000000 00:00 0 
+7f626b8fb000-7f626b8fe000 ---p 00000000 00:00 0 
+7f626b8fe000-7f626b9fc000 rw-p 00000000 00:00 0 
+7f626b9fc000-7f626b9ff000 ---p 00000000 00:00 0 
+7f626b9ff000-7f626bafd000 rw-p 00000000 00:00 0 
+7f626bafd000-7f626bb00000 ---p 00000000 00:00 0 
+7f626bb00000-7f626bbfe000 rw-p 00000000 00:00 0 
+7f626bbfe000-7f626bc01000 ---p 00000000 00:00 0 
+7f626bc01000-7f626bcff000 rw-p 00000000 00:00 0 
+7f626bcff000-7f626bd02000 ---p 00000000 00:00 0 
+7f626bd02000-7f626c000000 rw-p 00000000 00:00 0 
+7f626c000000-7f626c021000 rw-p 00000000 00:00 0 
+7f626c021000-7f6270000000 ---p 00000000 00:00 0 
+7f6270000000-7f6270003000 ---p 00000000 00:00 0 
+7f6270003000-7f6270101000 rw-p 00000000 00:00 0 
+7f6270101000-7f6270106000 r--s 0001e000 08:01 6953008                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/web/infinispan/main/wildfly-clustering-web-infinispan-10.1.0.Final.jar
+7f6270106000-7f627010c000 r--s 00022000 08:01 6820205                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/server/main/wildfly-clustering-server-10.1.0.Final.jar
+7f627010c000-7f627010d000 r--s 00002000 08:01 6952833                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/slf4j/impl/main/slf4j-jboss-logmanager-1.0.3.GA.jar
+7f627010d000-7f627010e000 r--s 00000000 08:01 6689129                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/logging/jul-to-slf4j-stub/main/jul-to-slf4j-stub-1.0.1.Final.jar
+7f627010e000-7f627010f000 r--s 00007000 08:01 6820586                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/activemq/artemis/main/artemis-native-1.1.0.wildfly-017.jar
+7f627010f000-7f6270113000 r--s 00021000 08:01 6820615                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/activemq/artemis/main/artemis-jms-server-1.1.0.wildfly-017.jar
+7f6270113000-7f6270117000 r--s 00026000 08:01 6820491                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/activemq/artemis/main/artemis-jms-client-1.1.0.wildfly-017.jar
+7f6270117000-7f627011c000 r--s 00025000 08:01 6820543                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/activemq/artemis/main/artemis-journal-1.1.0.wildfly-017.jar
+7f627011c000-7f627011d000 r--s 00002000 08:01 6820492                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/activemq/artemis/main/artemis-hqclient-protocol-1.1.0.wildfly-017.jar
+7f627011d000-7f627011f000 r--s 00002000 08:01 6820493                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/activemq/artemis/main/artemis-dto-1.1.0.wildfly-017.jar
+7f627011f000-7f6270123000 r--s 0001e000 08:01 6820614                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/activemq/artemis/main/artemis-commons-1.1.0.wildfly-017.jar
+7f6270123000-7f6270127000 r--s 00027000 08:01 6820613                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/activemq/artemis/main/artemis-cli-1.1.0.wildfly-017.jar
+7f6270127000-7f627013c000 r--s 00118000 08:01 6820616                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/activemq/artemis/main/artemis-server-1.1.0.wildfly-017.jar
+7f627013c000-7f627013f000 r--s 00016000 08:01 6820587                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/activemq/artemis/main/artemis-selector-1.1.0.wildfly-017.jar
+7f627013f000-7f627014c000 r--s 00089000 08:01 6820095                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/activemq/artemis/main/artemis-core-client-1.1.0.wildfly-017.jar
+7f627014c000-7f627014e000 r--s 00003000 08:01 6952996                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/slf4j/jcl-over-slf4j/main/jcl-over-slf4j-1.7.7.jbossorg-1.jar
+7f627014e000-7f627034e000 rw-p 00000000 00:00 0 
+7f627034e000-7f6270351000 ---p 00000000 00:00 0 
+7f6270351000-7f627044f000 rw-p 00000000 00:00 0 
+7f627044f000-7f6270452000 r--s 00014000 08:01 6952974                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/hibernate/jipijapa-hibernate5/main/jipijapa-hibernate5-10.1.0.Final.jar
+7f6270452000-7f6270456000 r--s 00023000 08:01 6820340                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/hibernate/infinispan/main/hibernate-infinispan-5.0.10.Final.jar
+7f6270456000-7f6270459000 r--s 00010000 08:01 6820600                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/hibernate/commons-annotations/main/hibernate-commons-annotations-5.0.1.Final.jar
+7f6270459000-7f6270464000 r--s 00071000 08:01 6820607                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/security/xacml/main/jbossxacml-2.0.8.Final.jar
+7f6270464000-7f627046e000 r--s 000a5000 08:01 6952975                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/javassist/main/javassist-3.18.1-GA.jar
+7f627046e000-7f6270473000 r--s 00048000 08:01 6689967                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/dom4j/main/dom4j-1.6.1.jar
+7f6270473000-7f6270478000 r--s 00068000 08:01 6952708                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/antlr/main/antlr-2.7.7.jar
+7f6270478000-7f627047a000 r--s 0000e000 08:01 6820527                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/fasterxml/classmate/main/classmate-1.3.1.jar
+7f627047a000-7f627047d000 ---p 00000000 00:00 0 
+7f627047d000-7f627077b000 rw-p 00000000 00:00 0 
+7f627077b000-7f627077f000 r--s 00011000 08:01 6952997                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/ejb/infinispan/main/wildfly-clustering-ejb-infinispan-10.1.0.Final.jar
+7f627077f000-7f627097f000 rw-p 00000000 00:00 0 
+7f627097f000-7f6270981000 r--s 00009000 08:01 136274                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/slf4j/ext/main/slf4j-ext-1.7.7.jbossorg-1.jar
+7f6270981000-7f6270983000 r--s 00006000 08:01 6952826                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/slf4j/main/slf4j-api-1.7.7.jbossorg-1.jar
+7f6270983000-7f6270985000 r--s 00004000 08:01 6952437                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/weld/api/main/weld-api-2.3.SP2.jar
+7f6270985000-7f6270996000 r--s 00088000 08:01 6689968                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/bouncycastle/main/bcpkix-jdk15on-1.52.jar
+7f6270996000-7f6270998000 r--s 00016000 08:01 6688523                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/bouncycastle/main/bcmail-jdk15on-1.52.jar
+7f6270998000-7f62709d8000 r--s 00285000 08:01 6689742                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/bouncycastle/main/bcprov-jdk15on-1.52.jar
+7f62709d8000-7f62709dc000 r--s 0001b000 08:01 6820082                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/ws/security/main/jasypt-1.9.1.jar
+7f62709dc000-7f62709e3000 r--s 0005e000 08:01 6820537                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/ws/security/main/wss4j-ws-security-stax-2.1.5.jar
+7f62709e3000-7f62709e6000 r--s 0001e000 08:01 6820557                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/ws/security/main/wss4j-ws-security-policy-stax-2.1.5.jar
+7f62709e6000-7f62709ea000 r--s 0004c000 08:01 6820618                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/ws/security/main/wss4j-ws-security-dom-2.1.5.jar
+7f62709ea000-7f62709ef000 r--s 00040000 08:01 6820078                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/ws/security/main/wss4j-ws-security-common-2.1.5.jar
+7f62709ef000-7f62709f3000 r--s 0002c000 08:01 6820079                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/ws/security/main/wss4j-policy-2.1.5.jar
+7f62709f3000-7f62709f5000 r--s 00009000 08:01 6820080                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/ws/security/main/wss4j-bindings-2.1.5.jar
+7f62709f5000-7f62709fa000 r--s 00042000 08:01 136289                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/sun/xml/messaging/saaj/main/saaj-impl-1.3.16-jbossorg-1.jar
+7f62709fa000-7f62709ff000 r--s 00044000 08:01 6820465                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/services-sts/main/cxf-services-sts-core-3.1.6.jar
+7f62709ff000-7f6270a00000 r--s 00009000 08:01 6820593                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/ws-security/main/cxf-rt-ws-security-3.1.6-jandex.jar
+7f6270a00000-7f6270a0a000 r--s 0009b000 08:01 6820594                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/ws-security/main/cxf-rt-ws-security-3.1.6.jar
+7f6270a0a000-7f6270a22000 r--s 00132000 08:01 6820617                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/main/cxf-core-3.1.6.jar
+7f6270a22000-7f6270a23000 r--s 00002000 08:01 6690163                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-xjc-runtime-3.0.5.jar
+7f6270a23000-7f6270a24000 r--s 00002000 08:01 6690048                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-xjc-ts-3.0.5.jar
+7f6270a24000-7f6270a26000 r--s 00003000 08:01 6689570                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-xjc-dv-3.0.5.jar
+7f6270a26000-7f6270a27000 r--s 00002000 08:01 6690162                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-xjc-bug986-3.0.5.jar
+7f6270a27000-7f6270a29000 r--s 00002000 08:01 6690161                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-xjc-boolean-3.0.5.jar
+7f6270a29000-7f6270a2b000 r--s 0000e000 08:01 6689750                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-services-ws-discovery-api-3.1.6.jar
+7f6270a2b000-7f6270a2e000 r--s 00027000 08:01 6689747                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-tools-wsdlto-frontend-jaxws-3.1.6.jar
+7f6270a2e000-7f6270a2f000 r--s 0000a000 08:01 6689748                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-tools-wsdlto-databinding-jaxb-3.1.6.jar
+7f6270a2f000-7f6270a31000 r--s 0000e000 08:01 6690160                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-tools-wsdlto-core-3.1.6.jar
+7f6270a31000-7f6270a34000 r--s 00010000 08:01 6689571                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-tools-validator-3.1.6.jar
+7f6270a34000-7f6270a37000 r--s 0001c000 08:01 6689749                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-tools-java2ws-3.1.6.jar
+7f6270a37000-7f6270a3b000 r--s 00025000 08:01 6690047                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-tools-common-3.1.6.jar
+7f6270a3b000-7f6270a42000 r--s 00059000 08:01 6688554                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-ws-rm-3.1.6.jar
+7f6270a42000-7f6270a47000 r--s 00030000 08:01 6689579                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-ws-policy-3.1.6.jar
+7f6270a47000-7f6270a49000 r--s 00005000 08:01 6689580                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-ws-mex-3.1.6.jar
+7f6270a49000-7f6270a4b000 r--s 00011000 08:01 6688555                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-ws-addr-3.1.6.jar
+7f6270a4b000-7f6270a4e000 r--s 00028000 08:01 6690159                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-wsdl-3.1.6.jar
+7f6270a4e000-7f6270a50000 r--s 00005000 08:01 6689581                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-transports-local-3.1.6.jar
+7f6270a50000-7f6270a53000 r--s 0001b000 08:01 6690046                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-transports-jms-3.1.6.jar
+7f6270a53000-7f6270a55000 r--s 0000e000 08:01 6689583                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-transports-http-hc-3.1.6.jar
+7f6270a55000-7f6270a5b000 r--s 0004d000 08:01 6689399                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-transports-http-3.1.6.jar
+7f6270a5b000-7f6270a5c000 r--s 00009000 08:01 6689584                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-security-saml-3.1.6.jar
+7f6270a5c000-7f6270a5d000 r--s 00000000 08:01 6689586                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-security-3.1.6-jandex.jar
+7f6270a5d000-7f6270a5e000 r--s 00007000 08:01 6689585                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-security-3.1.6.jar
+7f6270a5e000-7f6270a61000 r--s 00010000 08:01 6689587                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-management-3.1.6.jar
+7f6270a61000-7f6270a63000 r--s 00017000 08:01 6689400                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-frontend-simple-3.1.6.jar
+7f6270a63000-7f6270a68000 r--s 0004f000 08:01 6689751                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-frontend-jaxws-3.1.6.jar
+7f6270a68000-7f6270a6a000 r--s 00008000 08:01 6689752                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-features-clustering-3.1.6.jar
+7f6270a6a000-7f6270a6c000 r--s 00018000 08:01 6689401                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-databinding-jaxb-3.1.6.jar
+7f6270a6c000-7f6270a70000 r--s 00039000 08:01 6690045                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-databinding-aegis-3.1.6.jar
+7f6270a70000-7f6270a72000 r--s 00008000 08:01 6690044                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-bindings-xml-3.1.6.jar
+7f6270a72000-7f6270a76000 r--s 00028000 08:01 6689598                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-bindings-soap-3.1.6.jar
+7f6270a76000-7f6270a78000 r--s 00005000 08:01 6689599                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-bindings-object-3.1.6.jar
+7f6270a78000-7f6270a79000 r--s 00008000 08:01 6689600                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/cxf/impl/main/cxf-rt-bindings-coloc-3.1.6.jar
+7f6270a79000-7f6270a7c000 r--s 00019000 08:01 7078282                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ws/cxf/jbossws-cxf-server/main/jbossws-cxf-server-5.1.5.Final.jar
+7f6270a7c000-7f6270a7e000 r--s 00003000 08:01 7078223                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ws/cxf/jbossws-cxf-transports-udp/main/jbossws-cxf-transports-udp-5.1.5.Final.jar
+7f6270a7e000-7f6270a7f000 r--s 00003000 08:01 7078219                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ws/cxf/jbossws-cxf-transports-undertow/main/jbossws-cxf-transports-undertow-5.1.5.Final.jar
+7f6270a7f000-7f6270a80000 r--s 00000000 08:01 7079940                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ws/cxf/jbossws-cxf-factories/main/jbossws-cxf-factories-5.1.5.Final.jar
+7f6270a80000-7f6270a82000 r--s 00008000 08:01 6689010                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ws/jaxws-client/main/jbossws-cxf-jaspi-5.1.5.Final.jar
+7f6270a82000-7f6270a87000 r--s 00025000 08:01 6690037                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ws/jaxws-client/main/jbossws-cxf-client-5.1.5.Final.jar
+7f6270a87000-7f6270a8e000 r--s 0005e000 08:01 6820525                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/sun/xsom/main/xsom-20140925.jar
+7f6270a8e000-7f6270a90000 r--s 0000f000 08:01 6952388                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/sun/xml/txw2/main/txw2-2.2.11.jbossorg-1.jar
+7f6270a90000-7f6270a92000 r--s 00005000 08:01 6952769                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/sun/istack/main/istack-commons-tools-2.21.jar
+7f6270a92000-7f6270a93000 r--s 00005000 08:01 6952770                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/sun/istack/main/istack-commons-runtime-2.21.jar
+7f6270a93000-7f6270a94000 r--s 00003000 08:01 6952403                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/github/relaxng/main/relaxngDatatype-2011.1.jar
+7f6270a94000-7f6270c94000 rw-p 00000000 00:00 0 
+7f6270c94000-7f6270c96000 r--s 0000c000 08:01 6952791                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/web/undertow/main/wildfly-clustering-web-undertow-10.1.0.Final.jar
+7f6270c96000-7f6270c9e000 r--s 00045000 08:01 6688599                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/sun/xml/bind/main/rngom-2.2.11.jbossorg-1.jar
+7f6270c9e000-7f6270c9f000 r--s 00000000 08:01 136282                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/web/api/main/wildfly-clustering-web-api-10.1.0.Final.jar
+7f6270c9f000-7f6270ca3000 r--s 00022000 08:01 6689610                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/sun/xml/bind/main/codemodel-2.2.11.jbossorg-1.jar
+7f6270ca3000-7f6270ca5000 r--s 00001000 08:01 6820178                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/jberet/main/wildfly-jberet-10.1.0.Final.jar
+7f6270ca5000-7f6270ca7000 r--s 00009000 08:01 6952343                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/websocket/api/main/jboss-websocket-api_1.1_spec-1.1.1.Final.jar
+7f6270ca7000-7f6270caa000 r--s 0001b000 08:01 6689608                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/sun/xml/bind/main/jaxb-jxc-2.2.11.jbossorg-1.jar
+7f6270caa000-7f6270caf000 r--s 00042000 08:01 6689389                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jberet/jberet-core/main/jberet-core-1.2.1.Final.jar
+7f6270caf000-7f6270cb1000 r--s 00007000 08:01 6820183                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/extension/security/manager/main/wildfly-security-manager-10.1.0.Final.jar
+7f6270cb1000-7f6270cc3000 r--s 000ed000 08:01 6689403                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/sun/xml/bind/main/jaxb-xjc-2.2.11.jbossorg-1.jar
+7f6270cc3000-7f6270cc5000 r--s 00008000 08:01 6952951                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/batch/api/main/jboss-batch-api_1.0_spec-1.0.0.Final.jar
+7f6270cc5000-7f6270cc7000 r--s 00007000 08:01 6952732                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/security/auth/message/api/main/jboss-jaspi-api_1.1_spec-1.0.0.Final.jar
+7f6270cc7000-7f6270ccb000 r--s 0001e000 08:01 6557174                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/extension/batch/jberet/main/wildfly-batch-jberet-10.1.0.Final.jar
+7f6270ccb000-7f6270cdd000 r--s 000eb000 08:01 6689607                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/sun/xml/bind/main/jaxb-runtime-2.2.11.jbossorg-1.jar
+7f6270cdd000-7f6270ce1000 r--s 00025000 08:01 7078146                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/io/undertow/websocket/main/undertow-websockets-jsr-1.4.0.Final.jar
+7f6270ce1000-7f6270ce6000 r--s 00021000 08:01 6689609                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/sun/xml/bind/main/jaxb-core-2.2.11.jbossorg-1.jar
+7f6270ce6000-7f6270ceb000 r--s 0001e000 08:01 6690060                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ws/spi/main/jbossws-spi-3.1.2.Final.jar
+7f6270ceb000-7f6270cf3000 r--s 00090000 08:01 6688586                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/io/undertow/jsp/main/jastow-2.0.1.Final.jar
+7f6270cf3000-7f6270cf8000 r--s 00039000 08:01 6689014                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ws/common/main/jbossws-common-3.1.3.Final.jar
+7f6270cf8000-7f6270cfa000 r--s 00001000 08:01 6820284                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/iiop-client/main/jboss-iiop-client-1.0.0.Final.jar
+7f6270cfa000-7f6270d01000 r--s 00049000 08:01 6820552                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ejb-client/main/jboss-ejb-client-2.1.4.Final.jar
+7f6270d01000-7f6270d04000 ---p 00000000 00:00 0 
+7f6270d04000-7f6270e02000 rw-p 00000000 00:00 0 
+7f6270e02000-7f6270e04000 r--s 00008000 08:01 6820546                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/xml/rpc/api/main/jboss-jaxrpc-api_1.1_spec-1.0.1.Final.jar
+7f6270e04000-7f6270e07000 ---p 00000000 00:00 0 
+7f6270e07000-7f6270f05000 rw-p 00000000 00:00 0 
+7f6270f05000-7f6270f08000 r--s 0000c000 08:01 7079947                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ws/api/main/jbossws-api-1.0.3.Final.jar
+7f6270f08000-7f6270f0b000 r--s 00019000 08:01 6690164                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/classfilewriter/main/jboss-classfilewriter-1.1.2.Final.jar
+7f6270f0b000-7f6270f0d000 r--s 00002000 08:01 6952998                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/singleton/main/wildfly-clustering-singleton-api-10.1.0.Final.jar
+7f6270f0d000-7f6270f16000 r--s 0007a000 08:01 6690169                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/metadata/ejb/main/jboss-metadata-ejb-10.0.0.Final.jar
+7f6270f16000-7f6270f19000 r--s 0000e000 08:01 6952810                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/marshalling/jboss/main/wildfly-clustering-marshalling-jboss-10.1.0.Final.jar
+7f6270f19000-7f6270f1a000 r--s 00001000 08:01 6820293                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ejb3/main/jboss-ejb3-ext-api-2.2.0.Final.jar
+7f6270f1a000-7f6270f1c000 r--s 00001000 08:01 6820219                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/ejb/spi/main/wildfly-clustering-ejb-spi-10.1.0.Final.jar
+7f6270f1c000-7f6270f1d000 r--s 00002000 08:01 136276                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/api/main/wildfly-clustering-api-10.1.0.Final.jar
+7f6270f1d000-7f6270f1e000 r--s 00002000 08:01 136305                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/resteasy/resteasy-yaml-provider/main/resteasy-yaml-provider-3.0.19.Final.jar
+7f6270f1e000-7f6270f22000 r--s 0002a000 08:01 6820519                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/wsdl4j/api/main/wsdl4j-1.6.3.jar
+7f6270f22000-7f6270f23000 r--s 00001000 08:01 6952745                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/jws/api/main/jsr181-api-1.0-MR1.jar
+7f6270f23000-7f6270f26000 r--s 00011000 08:01 6952447                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/resteasy/resteasy-multipart-provider/main/resteasy-multipart-provider-3.0.19.Final.jar
+7f6270f26000-7f6270f27000 r--s 0000a000 08:01 6688613                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/asm/asm/main/asm-3.3.1.jar
+7f6270f27000-7f6270f29000 r--s 00007000 08:01 6820250                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/resteasy/resteasy-jsapi/main/resteasy-jsapi-3.0.19.Final.jar
+7f6270f29000-7f6270f2b000 r--s 00008000 08:01 6820626                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/resteasy/resteasy-jettison-provider/main/resteasy-jettison-provider-3.0.19.Final.jar
+7f6270f2b000-7f6270f2c000 r--s 00006000 08:01 6820461                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/codehaus/jackson/jackson-xc/main/jackson-xc-1.9.13.jar
+7f6270f2c000-7f6270f2e000 r--s 00007000 08:01 6820331                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/hibernate/validator/cdi/main/hibernate-validator-cdi-5.2.4.Final.jar
+7f6270f2e000-7f6270f3c000 r--s 000b1000 08:01 6688513                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/codehaus/jackson/jackson-mapper-asl/main/jackson-mapper-asl-1.9.13.jar
+7f6270f3c000-7f6270f40000 r--s 00035000 08:01 6689563                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/codehaus/jackson/jackson-core-asl/main/jackson-core-asl-1.9.13.jar
+7f6270f40000-7f6270f41000 r--s 00001000 08:01 6689042                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/resteasy/resteasy-jackson-provider/main/resteasy-jackson-provider-3.0.19.Final.jar
+7f6270f41000-7f6270f44000 r--s 00011000 08:01 6689554                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/resteasy/resteasy-jaxb-provider/main/resteasy-jaxb-provider-3.0.19.Final.jar
+7f6270f44000-7f6270f46000 r--s 00007000 08:01 6689727                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/security/negotiation/main/jboss-negotiation-spnego-3.0.2.Final.jar
+7f6270f46000-7f6270f47000 r--s 00003000 08:01 6690057                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/security/negotiation/main/jboss-negotiation-ntlm-3.0.2.Final.jar
+7f6270f47000-7f6270f49000 r--s 00009000 08:01 6689029                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/security/negotiation/main/jboss-negotiation-extras-3.0.2.Final.jar
+7f6270f49000-7f6270f4b000 r--s 00009000 08:01 6690174                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/security/negotiation/main/jboss-negotiation-common-3.0.2.Final.jar
+7f6270f4b000-7f6270f50000 r--s 00010000 08:01 6689018                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/weld/spi/main/weld-spi-2.3.SP2.jar
+7f6270f50000-7f6270f7b000 r--s 001fc000 08:01 7078199                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/google/guava/main/guava-18.0.jar
+7f6270f7b000-7f6270f7e000 r--s 00015000 08:01 6688402                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/resteasy/resteasy-crypto/main/resteasy-crypto-3.0.19.Final.jar
+7f6270f7e000-7f6270f80000 r--s 00006000 08:01 6689044                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/resteasy/resteasy-cdi/main/resteasy-cdi-3.0.19.Final.jar
+7f6270f80000-7f6270f82000 r--s 0000a000 08:01 6820257                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/resteasy/resteasy-atom-provider/main/resteasy-atom-provider-3.0.19.Final.jar
+7f6270f82000-7f6270f84000 r--s 00008000 08:01 6820610                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/ch/qos/cal10n/main/cal10n-api-0.8.1.jar
+7f6270f84000-7f6270f87000 ---p 00000000 00:00 0 
+7f6270f87000-7f6271085000 rw-p 00000000 00:00 0 
+7f6271085000-7f6271088000 r--s 0000a000 08:01 6952463                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/narayana/compensations/main/compensations-5.3.3.Final.jar
+7f6271088000-7f62710a6000 r--s 00161000 08:01 6820238                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/weld/core/main/weld-core-impl-2.3.5.Final.jar
+7f62710a6000-7f62710ac000 r--s 0003c000 08:01 6689141                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/weld/main/wildfly-weld-10.1.0.Final.jar
+7f62710ac000-7f62710c9000 r--s 0023a000 08:01 6952768                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/com/sun/jsf-impl/main/jsf-impl-2.2.13.SP1.jar
+7f62710c9000-7f62710cb000 r--s 00006000 08:01 6820602                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/hibernate/main/hibernate-java8-5.0.10.Final.jar
+7f62710cb000-7f62710d1000 r--s 00049000 08:01 7078208                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/iiop-openjdk/main/wildfly-iiop-openjdk-10.1.0.Final.jar
+7f62710d1000-7f62710d9000 r--s 00065000 08:01 6689049                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/metadata/web/main/jboss-metadata-web-10.0.0.Final.jar
+7f62710d9000-7f62710e3000 r--s 00073000 08:01 6952384                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/io/undertow/servlet/main/undertow-servlet-1.4.0.Final.jar
+7f62710e3000-7f62710e6000 ---p 00000000 00:00 0 
+7f62710e6000-7f62711e4000 rw-p 00000000 00:00 0 
+7f62711e4000-7f62711ed000 r--s 00065000 08:01 6688567                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/servlet/jstl/api/main/jboss-jstl-api_1.2_spec-1.1.3.Final.jar
+7f62711ed000-7f62711f4000 r--s 0004a000 08:01 6952623                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/webservices/main/wildfly-webservices-server-integration-10.1.0.Final.jar
+7f62711f4000-7f6271200000 r--s 00089000 08:01 6820337                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/hibernate/main/hibernate-entitymanager-5.0.10.Final.jar
+7f6271200000-7f6271203000 ---p 00000000 00:00 0 
+7f6271203000-7f6271301000 rw-p 00000000 00:00 0 
+7f6271301000-7f6271304000 ---p 00000000 00:00 0 
+7f6271304000-7f6271402000 rw-p 00000000 00:00 0 
+7f6271402000-7f6271405000 ---p 00000000 00:00 0 
+7f6271405000-7f6271503000 rw-p 00000000 00:00 0 
+7f6271503000-7f6271506000 ---p 00000000 00:00 0 
+7f6271506000-7f6271604000 rw-p 00000000 00:00 0 
+7f6271604000-7f6271607000 ---p 00000000 00:00 0 
+7f6271607000-7f6271705000 rw-p 00000000 00:00 0 
+7f6271705000-7f627176e000 r--s 004f3000 08:01 6820553                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/hibernate/main/hibernate-core-5.0.10.Final.jar
+7f627176e000-7f6271771000 ---p 00000000 00:00 0 
+7f6271771000-7f627186f000 rw-p 00000000 00:00 0 
+7f627186f000-7f6271872000 ---p 00000000 00:00 0 
+7f6271872000-7f6271970000 rw-p 00000000 00:00 0 
+7f6271970000-7f6271973000 ---p 00000000 00:00 0 
+7f6271973000-7f6271a71000 rw-p 00000000 00:00 0 
+7f6271a71000-7f6271a74000 ---p 00000000 00:00 0 
+7f6271a74000-7f6271b72000 rw-p 00000000 00:00 0 
+7f6271b72000-7f6271b75000 ---p 00000000 00:00 0 
+7f6271b75000-7f6271c73000 rw-p 00000000 00:00 0 
+7f6271c73000-7f6271c76000 ---p 00000000 00:00 0 
+7f6271c76000-7f6271d74000 rw-p 00000000 00:00 0 
+7f6271d74000-7f6271d77000 ---p 00000000 00:00 0 
+7f6271d77000-7f6271e75000 rw-p 00000000 00:00 0 
+7f6271e75000-7f6271e78000 ---p 00000000 00:00 0 
+7f6271e78000-7f6271f76000 rw-p 00000000 00:00 0 
+7f6271f76000-7f6271f79000 ---p 00000000 00:00 0 
+7f6271f79000-7f6272077000 rw-p 00000000 00:00 0 
+7f6272077000-7f627207a000 ---p 00000000 00:00 0 
+7f627207a000-7f6272378000 rw-p 00000000 00:00 0 
+7f6272378000-7f627237b000 ---p 00000000 00:00 0 
+7f627237b000-7f6272479000 rw-p 00000000 00:00 0 
+7f6272479000-7f627247c000 ---p 00000000 00:00 0 
+7f627247c000-7f627287a000 rw-p 00000000 00:00 0 
+7f627287a000-7f627287d000 ---p 00000000 00:00 0 
+7f627287d000-7f627297b000 rw-p 00000000 00:00 0 
+7f627297b000-7f627297e000 ---p 00000000 00:00 0 
+7f627297e000-7f6272a7c000 rw-p 00000000 00:00 0 
+7f6272a7c000-7f6272a7f000 ---p 00000000 00:00 0 
+7f6272a7f000-7f6272b7d000 rw-p 00000000 00:00 0 
+7f6272b7d000-7f6272b80000 ---p 00000000 00:00 0 
+7f6272b80000-7f6272c7e000 rw-p 00000000 00:00 0 
+7f6272c7e000-7f6272c81000 ---p 00000000 00:00 0 
+7f6272c81000-7f6272d7f000 rw-p 00000000 00:00 0 
+7f6272d7f000-7f6272d82000 ---p 00000000 00:00 0 
+7f6272d82000-7f6272e80000 rw-p 00000000 00:00 0 
+7f6272e80000-7f6272e83000 ---p 00000000 00:00 0 
+7f6272e83000-7f6272f81000 rw-p 00000000 00:00 0 
+7f6272f81000-7f6272f84000 ---p 00000000 00:00 0 
+7f6272f84000-7f6273882000 rw-p 00000000 00:00 0 
+7f6273882000-7f6273884000 r--s 00004000 08:01 6688469                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/jpa/spi/main/jipijapa-spi-10.1.0.Final.jar
+7f6273884000-7f6273887000 r--s 0001c000 08:01 7079980                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/pojo/main/wildfly-pojo-10.1.0.Final.jar
+7f6273887000-7f6273891000 r--s 0005a000 08:01 6820601                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/hibernate/main/hibernate-envers-5.0.10.Final.jar
+7f6273891000-7f6273893000 r--s 00006000 08:01 6820198                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/extension/bean-validation/main/wildfly-bean-validation-10.1.0.Final.jar
+7f6273893000-7f6273896000 r--s 0000c000 08:01 6689604                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/servlet/jsp/api/main/jboss-jsp-api_2.3_spec-1.0.1.Final.jar
+7f6273896000-7f6273898000 r--s 0000a000 08:01 6689162                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/web-common/main/wildfly-web-common-10.1.0.Final.jar
+7f6273898000-7f627389c000 r--s 00025000 08:01 6688409                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/remote-naming/main/jboss-remote-naming-2.0.4.Final.jar
+7f627389c000-7f627389f000 r--s 00012000 08:01 7080119                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/sar/main/wildfly-sar-10.1.0.Final.jar
+7f627389f000-7f62738a8000 r--s 0008b000 08:01 6952740                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/mail/api/main/javax.mail-1.5.5.jar
+7f62738a8000-7f62738ac000 r--s 0002b000 08:01 6952720                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/servlet/api/main/jboss-servlet-api_3.1_spec-1.0.0.Final.jar
+7f62738ac000-7f62738b1000 r--s 0003b000 08:01 6688471                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/jpa/main/wildfly-jpa-10.1.0.Final.jar
+7f62738b1000-7f62738be000 r--s 000a4000 08:01 6952364                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/faces/api/main/jboss-jsf-api_2.2_spec-2.2.13.jar
+7f62738be000-7f62738c0000 r--s 0000a000 08:01 6952672                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/jsf/main/wildfly-jsf-10.1.0.Final.jar
+7f62738c0000-7f62738c3000 r--s 0000f000 08:01 6952664                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/mail/main/wildfly-mail-10.1.0.Final.jar
+7f62738c3000-7f62738c5000 r--s 00008000 08:01 136303                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/resteasy/resteasy-validator-provider-11/main/resteasy-validator-provider-11-3.0.19.Final.jar
+7f62738c5000-7f62738c7000 r--s 0000f000 08:01 6689058                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/metadata/ear/main/jboss-metadata-ear-10.0.0.Final.jar
+7f62738c7000-7f62738ce000 r--s 00064000 08:01 6689172                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/logging/main/wildfly-logging-2.2.0.Final.jar
+7f62738ce000-7f62738d2000 r--s 00022000 08:01 6689030                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/resteasy/resteasy-jaxrs/main/resteasy-client-3.0.19.Final.jar
+7f62738d2000-7f62738e3000 r--s 000c9000 08:01 6688399                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/resteasy/resteasy-jaxrs/main/resteasy-jaxrs-3.0.19.Final.jar
+7f62738e3000-7f62738e5000 r--s 00004000 08:01 6689032                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/resteasy/resteasy-jaxrs/main/async-http-servlet-3.0-3.0.19.Final.jar
+7f62738e5000-7f62738f1000 r--s 000a0000 08:01 6952773                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/extension/undertow/main/wildfly-undertow-10.1.0.Final.jar
+7f62738f1000-7f62738f5000 r--s 00019000 08:01 6952718                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/ws/rs/api/main/jboss-jaxrs-api_2.0_spec-1.0.0.Final.jar
+7f62738f5000-7f627393a000 r--s 00377000 08:01 6952886                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/orb/api/main/openjdk-orb-8.0.6.Final.jar
+7f627393a000-7f6273b3a000 rw-p 00000000 00:00 0 
+7f6273b3a000-7f6273b3b000 r--s 00000000 08:01 6952625                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/webservices/main/jbossws-cxf-resources-5.1.5.Final-wildfly1000.jar
+7f6273b3b000-7f6273b3d000 r--s 00008000 08:01 6820191                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/extension/request-controller/main/wildfly-request-controller-2.2.0.Final.jar
+7f6273b3d000-7f6273b3e000 r--s 00000000 08:01 6952761                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/inject/api/main/javax.inject-1.jar
+7f6273b3e000-7f6273b40000 r--s 0000c000 08:01 6820357                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/glassfish/javax/enterprise/concurrent/main/javax.enterprise.concurrent-1.0.jar
+7f6273b40000-7f6273b42000 r--s 00013000 08:01 6952949                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/el/api/main/jboss-el-api_3.0_spec-1.0.7.Final.jar
+7f6273b42000-7f6273b44000 r--s 00007000 08:01 6820511                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/xml/soap/api/main/jboss-saaj-api_1.3_spec-1.0.3.Final.jar
+7f6273b44000-7f6273b48000 r--s 00027000 08:01 6820556                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/glassfish/javax/el/main/javax.el-impl-3.0.1-b08-jbossorg-1.jar
+7f6273b48000-7f6273b4a000 r--s 0000f000 08:01 7078016                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/activation/api/main/activation-1.1.1.jar
+7f6273b4a000-7f6273b4e000 r--s 0000e000 08:01 6952763                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/enterprise/api/main/cdi-api-1.2.jar
+7f6273b4e000-7f6273b51000 r--s 00017000 08:01 6952717                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/xml/bind/api/main/jboss-jaxb-api_2.2_spec-1.0.4.Final.jar
+7f6273b51000-7f6273b53000 r--s 0000c000 08:01 6689352                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/jaxrs/main/wildfly-jaxrs-10.1.0.Final.jar
+7f6273b53000-7f6273b56000 r--s 0000d000 08:01 6820544                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/xml/ws/api/main/jboss-jaxws-api_2.2_spec-2.0.3.Final.jar
+7f6273b56000-7f6273b69000 r--s 000e9000 08:01 6952680                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/cli/main/wildfly-cli-2.2.0.Final.jar
+7f6273b69000-7f6273b6a000 r--s 00004000 08:01 6952370                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/enterprise/concurrent/api/main/jboss-concurrency-api_1.0_spec-1.0.0.Final.jar
+7f6273b6a000-7f6273b6e000 r--s 0002a000 08:01 6820091                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/commons/io/main/commons-io-2.4.jar
+7f6273b6e000-7f6273b70000 r--s 00009000 08:01 6820474                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/commons/cli/main/commons-cli-1.2.jar
+7f6273b70000-7f6273b73000 r--s 00010000 08:01 6689346                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/jdr/main/wildfly-jdr-10.1.0.Final.jar
+7f6273b73000-7f6273b74000 r--s 00008000 08:01 6952726                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/security/jacc/api/main/jboss-jacc-api_1.5_spec-1.0.0.Final.jar
+7f6273b74000-7f6273b79000 r--s 00017000 08:01 6688581                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/persistence/api/main/hibernate-jpa-2.1-api-1.0.0.Final.jar
+7f6273b79000-7f6273b7c000 r--s 0000a000 08:01 6952945                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/jms/api/main/jboss-jms-api_2.0_spec-1.0.0.Final.jar
+7f6273b7c000-7f6273b7f000 r--s 0000a000 08:01 6952377                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/ejb/api/main/jboss-ejb-api_3.2_spec-1.0.0.Final.jar
+7f6273b7f000-7f6273b87000 r--s 00045000 08:01 136264                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/remoting-jmx/main/remoting-jmx-2.0.1.Final.jar
+7f6273b87000-7f6273ba3000 r--s 00163000 08:01 7079978                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/ejb3/main/wildfly-ejb3-10.1.0.Final.jar
+7f6273ba3000-7f6273ba6000 r--s 0001e000 08:01 7079973                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/deployment-scanner/main/wildfly-deployment-scanner-2.2.0.Final.jar
+7f6273ba6000-7f6273ba7000 r--s 00000000 08:01 6820214                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/jgroups/api/main/wildfly-clustering-jgroups-api-10.1.0.Final.jar
+7f6273ba7000-7f6273bb1000 r--s 00069000 08:01 6689555                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/metadata/common/main/jboss-metadata-common-10.0.0.Final.jar
+7f6273bb1000-7f6273bb3000 r--s 0000a000 08:01 6952859                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/jts/integration/main/narayana-jts-integration-5.3.3.Final.jar
+7f6273bb3000-7f6273bd2000 r--s 00177000 08:01 6952855                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/jts/main/narayana-jts-idlj-5.3.3.Final.jar
+7f6273bd2000-7f6273bd7000 r--s 00035000 08:01 6690167                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ironjacamar/jdbcadapters/main/ironjacamar-jdbc-1.3.4.Final.jar
+7f6273bd7000-7f6273bda000 r--s 0000f000 08:01 6689137                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ironjacamar/impl/main/ironjacamar-validator-1.3.4.Final.jar
+7f6273bda000-7f6273be3000 r--s 00070000 08:01 6689735                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ironjacamar/impl/main/ironjacamar-core-impl-1.3.4.Final.jar
+7f6273be3000-7f6273be7000 r--s 0003c000 08:01 6688421                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ironjacamar/impl/main/ironjacamar-common-impl-1.3.4.Final.jar
+7f6273be7000-7f6273bf7000 r--s 0009c000 08:01 6820622                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/hibernate/validator/main/hibernate-validator-5.2.4.Final.jar
+7f6273bf7000-7f6273df7000 rw-p 00000000 00:00 0 
+7f6273df7000-7f6273e00000 r-xp 00000000 08:21 1596647                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libmanagement.so
+7f6273e00000-7f6273fff000 ---p 00009000 08:21 1596647                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libmanagement.so
+7f6273fff000-7f6274000000 rw-p 00008000 08:21 1596647                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libmanagement.so
+7f6274000000-7f62742be000 rw-p 00000000 00:00 0 
+7f62742be000-7f6278000000 ---p 00000000 00:00 0 
+7f6278000000-7f6278001000 r--s 00003000 08:01 6952757                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/interceptor/api/main/jboss-interceptors-api_1.2_spec-1.0.0.Final.jar
+7f6278001000-7f6278003000 r--s 0000e000 08:01 6690165                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ironjacamar/impl/main/ironjacamar-deployers-common-1.3.4.Final.jar
+7f6278003000-7f6278007000 r--s 00009000 08:01 6688425                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ironjacamar/api/main/ironjacamar-core-api-1.3.4.Final.jar
+7f6278007000-7f6278008000 r--s 00001000 08:01 6688426                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ironjacamar/api/main/ironjacamar-common-spi-1.3.4.Final.jar
+7f6278008000-7f627800c000 r--s 00033000 08:01 6689557                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/ironjacamar/api/main/ironjacamar-common-api-1.3.4.Final.jar
+7f627800c000-7f6278010000 r--s 0000c000 08:01 6952347                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/validation/api/main/validation-api-1.1.0.Final.jar
+7f6278010000-7f6278011000 r--s 00004000 08:01 6952959                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/annotation/api/main/jboss-annotations-api_1.2_spec-1.0.0.Final.jar
+7f6278011000-7f6278014000 r--s 0000f000 08:01 6688575                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/resource/api/main/jboss-connector-api_1.7_spec-1.0.0.Final.jar
+7f6278014000-7f6278021000 r--s 000b9000 08:01 6689368                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/connector/main/wildfly-connector-10.1.0.Final.jar
+7f6278021000-7f6278023000 r--s 00002000 08:01 6952802                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/spi/main/wildfly-clustering-spi-10.1.0.Final.jar
+7f6278023000-7f6278025000 r--s 00003000 08:01 136280                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/service/main/wildfly-clustering-service-10.1.0.Final.jar
+7f6278025000-7f6278026000 r--s 00000000 08:01 6952814                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/marshalling/api/main/wildfly-clustering-marshalling-api-10.1.0.Final.jar
+7f6278026000-7f6278028000 r--s 00003000 08:01 6820210                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/jgroups/spi/main/wildfly-clustering-jgroups-spi-10.1.0.Final.jar
+7f6278028000-7f627802a000 r--s 00004000 08:01 6952819                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/infinispan/spi/main/wildfly-clustering-infinispan-spi-10.1.0.Final.jar
+7f627802a000-7f627802c000 r--s 00000000 08:01 136278                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/ee/spi/main/wildfly-clustering-ee-spi-10.1.0.Final.jar
+7f627802c000-7f627802e000 r--s 00003000 08:01 6820223                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/clustering/ee/infinispan/main/wildfly-clustering-ee-infinispan-10.1.0.Final.jar
+7f627802e000-7f6278047000 r--s 0023b000 08:01 6688975                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jgroups/main/jgroups-3.6.10.Final.jar
+7f6278047000-7f6278049000 r--s 00006000 08:01 6952864                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/jboss-transaction-spi/main/jboss-transaction-spi-7.3.0.Final.jar
+7f6278049000-7f627804d000 r--s 0002f000 08:01 6952639                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/transactions/main/wildfly-transactions-10.1.0.Final.jar
+7f627804d000-7f6278053000 r--s 0003a000 08:01 6689737                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/naming/main/wildfly-naming-10.1.0.Final.jar
+7f6278053000-7f627805e000 r--s 00083000 08:01 6689364                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/ee/main/wildfly-ee-10.1.0.Final.jar
+7f627805e000-7f627806e000 r--s 0009b000 08:01 6820315                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/infinispan/commons/main/infinispan-commons-8.2.4.Final.jar
+7f627806e000-7f627826e000 rw-p 00000000 00:00 0 
+7f627826e000-7f627846e000 rw-p 00000000 00:00 0 
+7f627846e000-7f6278472000 r--s 00020000 08:01 6953027                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/vfs/main/jboss-vfs-3.2.12.Final.jar
+7f6278472000-7f6278475000 ---p 00000000 00:00 0 
+7f6278475000-7f6278573000 rw-p 00000000 00:00 0 
+7f6278573000-7f6278579000 r--s 00035000 08:01 6820605                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/clustering/jgroups/main/wildfly-clustering-jgroups-extension-10.1.0.Final.jar
+7f6278579000-7f627857e000 r--s 00019000 08:01 6689384                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/clustering/common/main/wildfly-clustering-common-10.1.0.Final.jar
+7f627857e000-7f6278586000 r--s 00050000 08:01 6820536                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/infinispan/client/hotrod/main/infinispan-client-hotrod-8.2.4.Final.jar
+7f6278586000-7f6278589000 r--s 00019000 08:01 6953025                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/infinispan/cachestore/remote/main/infinispan-cachestore-remote-8.2.4.Final.jar
+7f6278589000-7f627858c000 r--s 00026000 08:01 136252                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/infinispan/cachestore/jdbc/main/infinispan-cachestore-jdbc-8.2.4.Final.jar
+7f627858c000-7f62785c9000 r--s 0031a000 08:01 136301                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/infinispan/main/infinispan-core-8.2.4.Final.jar
+7f62785c9000-7f62785ca000 r--s 00000000 08:01 6820503                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/net/jcip/main/jcip-annotations-1.0.jar
+7f62785ca000-7f62785cb000 r--s 00006000 08:01 6952353                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/javax/transaction/api/main/jboss-transaction-api_1.2_spec-1.0.0.Final.jar
+7f62785cb000-7f62785d6000 r--s 00078000 08:01 6688494                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/clustering/infinispan/main/wildfly-clustering-infinispan-extension-10.1.0.Final.jar
+7f62785d6000-7f62785d9000 r--s 0001a000 08:01 6688986                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/xnio/nio/main/xnio-nio-3.4.0.Final.jar
+7f62785d9000-7f62785db000 r--s 0000a000 08:01 136284                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/extension/io/main/wildfly-io-2.2.0.Final.jar
+7f62785db000-7f62785de000 r--s 0001d000 08:01 6689167                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/threads/main/wildfly-threads-2.2.0.Final.jar
+7f62785de000-7f62785e4000 r--s 00041000 08:01 6820303                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/security/main/wildfly-security-10.1.0.Final.jar
+7f62785e4000-7f62785e6000 r--s 00000000 08:01 136260                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/core-security-api/main/wildfly-core-security-api-2.2.0.Final.jar
+7f62785e6000-7f62785e8000 r--s 00002000 08:01 136258                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/core-security/main/wildfly-core-security-2.2.0.Final.jar
+7f62785e8000-7f62785ea000 r--s 0000b000 08:01 6557178                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/common/main/wildfly-common-1.1.0.Final.jar
+7f62785ea000-7f6278610000 r--s 001cf000 08:01 136291                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/io/undertow/core/main/undertow-core-1.4.0.Final.jar
+7f6278610000-7f6278612000 r--s 00004000 08:01 6952847                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/picketbox/main/picketbox-commons-1.0.0.final.jar
+7f6278612000-7f6278613000 r--s 00005000 08:01 6952846                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/picketbox/main/picketbox-infinispan-4.9.6.Final.jar
+7f6278613000-7f6278626000 r--s 000d5000 08:01 6952964                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/picketbox/main/picketbox-4.9.6.Final.jar
+7f6278626000-7f6278628000 r--s 00001000 08:01 7080127                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/self-contained/main/wildfly-self-contained-2.2.0.Final.jar
+7f6278628000-7f627862c000 r--s 00030000 08:01 6952652                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/remoting/main/wildfly-remoting-2.2.0.Final.jar
+7f627862c000-7f627862f000 r--s 0001d000 08:01 6952656                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/process-controller/main/wildfly-process-controller-2.2.0.Final.jar
+7f627862f000-7f6278632000 r--s 0001c000 08:01 6952660                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/platform-mbean/main/wildfly-platform-mbean-2.2.0.Final.jar
+7f6278632000-7f627863c000 r--s 00065000 08:01 6688443                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/patching/main/wildfly-patching-2.2.0.Final.jar
+7f627863c000-7f627863e000 r--s 00009000 08:01 6688450                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/network/main/wildfly-network-2.2.0.Final.jar
+7f627863e000-7f6278643000 r--s 00034000 08:01 6689179                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/jmx/main/wildfly-jmx-2.2.0.Final.jar
+7f6278643000-7f6278653000 r--s 000bc000 08:01 6688478                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/domain-management/main/wildfly-domain-management-2.2.0.Final.jar
+7f6278653000-7f6278656000 r--s 00016000 08:01 7079975                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/domain-http-interface/main/wildfly-domain-http-interface-2.2.0.Final.jar
+7f6278656000-7f6278658000 r--s 00006000 08:01 136262                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/deployment-repository/main/wildfly-deployment-repository-2.2.0.Final.jar
+7f6278658000-7f627865a000 r--s 00015000 08:01 6820242                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/sasl/main/jboss-sasl-1.0.5.Final.jar
+7f627865a000-7f6278663000 r--s 0007b000 08:01 6690034                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/xnio/main/xnio-api-3.4.0.Final.jar
+7f6278663000-7f6278669000 r--s 0003e000 08:01 6952455                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/remoting/main/jboss-remoting-4.0.21.Final.jar
+7f6278669000-7f6278672000 r--s 00070000 08:01 6688417                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/log4j/logmanager/main/log4j-jboss-logmanager-1.1.2.Final.jar
+7f6278672000-7f6278674000 r--s 00013000 08:01 6689106                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/marshalling/river/main/jboss-marshalling-river-1.4.11.Final.jar
+7f6278674000-7f627867a000 r--s 00032000 08:01 6689734                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/marshalling/main/jboss-marshalling-1.4.11.Final.jar
+7f627867a000-7f627867d000 r--s 00010000 08:01 6820532                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/invocation/main/jboss-invocation-1.4.1.Final.jar
+7f627867d000-7f6278681000 r--s 00024000 08:01 6820363                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/codehaus/woodstox/main/stax2-api-3.1.4.jar
+7f6278681000-7f6278687000 r--s 00071000 08:01 6820362                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/codehaus/woodstox/main/woodstox-core-asl-4.4.1.jar
+7f6278687000-7f62786a0000 r--s 001a1000 08:01 136295                     /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/xerces/main/xercesImpl-2.11.0.SP4.jar
+7f62786a0000-7f62786c5000 r--s 002f6000 08:01 6689395                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/xalan/main/xalan-2.7.1.jbossorg-2.jar
+7f62786c5000-7f62786c9000 r--s 00042000 08:01 6689969                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/apache/xalan/main/serializer-2.7.1.jbossorg-2.jar
+7f62786c9000-7f62786d0000 r--s 00000000 08:21 1839307                    /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
+7f62786d0000-7f62786f1000 r--p 00000000 08:21 2236433                    /usr/share/locale-langpack/pt_BR/LC_MESSAGES/libc.mo
+7f62786f1000-7f62786f5000 r--s 0001b000 08:01 6689022                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/threads/main/jboss-threads-2.2.1.Final.jar
+7f62786f5000-7f62786f6000 r--s 00003000 08:01 6952632                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/version/main/wildfly-version-2.2.0.Final.jar
+7f62786f6000-7f62786fa000 r--s 00016000 08:01 7080117                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/protocol/main/wildfly-protocol-2.2.0.Final.jar
+7f62786fa000-7f62786fc000 r--s 00003000 08:01 6690178                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/stdio/main/jboss-stdio-1.0.2.GA.jar
+7f62786fc000-7f62786fd000 r--s 00008000 08:01 6952444                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/staxmapper/main/staxmapper-1.2.0.Final.jar
+7f62786fd000-7f6278700000 r--s 0002b000 08:01 6689133                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/jandex/main/jandex-2.0.2.Final.jar
+7f6278700000-7f6278713000 r--s 000fc000 08:01 6952676                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/host-controller/main/wildfly-host-controller-2.2.0.Final.jar
+7f6278713000-7f6278715000 r--s 00016000 08:01 6688429                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/dmr/main/jboss-dmr-1.3.0.Final.jar
+7f6278715000-7f627871b000 r--s 0002e000 08:01 6688489                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/controller-client/main/wildfly-controller-client-2.2.0.Final.jar
+7f627871b000-7f627873e000 r--s 001a3000 08:01 6820310                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/controller/main/wildfly-controller-2.2.0.Final.jar
+7f627873e000-7f6278743000 r--s 00034000 08:01 6952993                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/msc/main/jboss-msc-1.2.6.Final.jar
+7f6278743000-7f6278746000 r--s 0000d000 08:01 6689558                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/common-beans/main/jboss-common-beans-2.0.0.Final.jar
+7f6278746000-7f6278756000 r--s 0012a000 08:01 7080129                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/as/server/main/wildfly-server-2.2.0.Final.jar
+7f6278756000-7f627875a000 r--s 0002b000 08:01 6557199                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/security/elytron/main/wildfly-elytron-1.0.2.Final.jar
+7f627875a000-7f627875c000 r--s 0000b000 08:01 6952786                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/wildfly/embedded/main/wildfly-embedded-2.2.0.Final.jar
+7f627875c000-7f6278766000 r--s 00116000 08:21 1596680                    /usr/lib/jvm/java-8-oracle/jre/lib/ext/localedata.jar
+7f6278766000-7f627876e000 r--s 0004c000 08:01 6690056                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/logmanager/main/jboss-logmanager-2.0.4.Final.jar
+7f627876e000-7f6278770000 r--s 0000f000 08:01 6689123                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/wildfly-10.1.0.Final/modules/system/layers/base/org/jboss/logging/main/jboss-logging-3.3.0.Final.jar
+7f6278770000-7f6278970000 rw-p 00000000 00:00 0 
+7f6278970000-7f6278975000 r--s 002f9000 08:21 1596553                    /usr/lib/jvm/java-8-oracle/jre/lib/charsets.jar
+7f6278975000-7f6278988000 r--s 00345000 08:21 1596576                    /usr/lib/jvm/java-8-oracle/jre/lib/resources.jar
+7f6278988000-7f6278b88000 rw-p 00000000 00:00 0 
+7f6278b88000-7f6278b8a000 r--s 00007000 08:01 6292735                    /home/gladson/.m2/repository/org/apache/maven/surefire/surefire-junit4/2.10/surefire-junit4-2.10.jar
+7f6278b8a000-7f6278b8b000 ---p 00000000 00:00 0 
+7f6278b8b000-7f6278c8b000 rw-p 00000000 00:00 0 
+7f6278c8b000-7f6278c8e000 ---p 00000000 00:00 0 
+7f6278c8e000-7f6278d8c000 rw-p 00000000 00:00 0 
+7f6278d8c000-7f6278d8f000 ---p 00000000 00:00 0 
+7f6278d8f000-7f6278e8d000 rw-p 00000000 00:00 0 
+7f6278e8d000-7f6278e90000 ---p 00000000 00:00 0 
+7f6278e90000-7f6278f8e000 rw-p 00000000 00:00 0 
+7f6278f8e000-7f6278f91000 ---p 00000000 00:00 0 
+7f6278f91000-7f627908f000 rw-p 00000000 00:00 0 
+7f627908f000-7f62790a0000 r-xp 00000000 08:21 1596636                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnio.so
+7f62790a0000-7f627929f000 ---p 00011000 08:21 1596636                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnio.so
+7f627929f000-7f62792a0000 rw-p 00010000 08:21 1596636                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnio.so
+7f62792a0000-7f62795a1000 rw-p 00000000 00:00 0 
+7f62795a1000-7f62795b7000 r-xp 00000000 08:21 1596613                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnet.so
+7f62795b7000-7f62797b7000 ---p 00016000 08:21 1596613                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnet.so
+7f62797b7000-7f62797b8000 rw-p 00016000 08:21 1596613                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libnet.so
+7f62797b8000-7f62797bb000 r--s 0001a000 08:21 1596580                    /usr/lib/jvm/java-8-oracle/jre/lib/jce.jar
+7f62797bb000-7f62797bf000 r--s 00097000 08:21 1596552                    /usr/lib/jvm/java-8-oracle/jre/lib/jsse.jar
+7f62797bf000-7f62797c5000 r--s 0003d000 08:01 6557072                    /home/gladson/.m2/repository/org/jacoco/org.jacoco.agent/0.7.7.201606060606/org.jacoco.agent-0.7.7.201606060606-runtime.jar
+7f62797c5000-7f62797c7000 r--s 00001000 08:01 6688877                    /home/gladson/.m2/repository/org/jboss/arquillian/core/arquillian-core-api/1.1.11.Final/arquillian-core-api-1.1.11.Final.jar
+7f62797c7000-7f62797c9000 r--s 00013000 08:01 3281124                    /home/gladson/.m2/repository/org/jboss/marshalling/jboss-marshalling-river/1.4.10.Final/jboss-marshalling-river-1.4.10.Final.jar
+7f62797c9000-7f62797ce000 r--s 00034000 08:01 2503561                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-jmx/2.0.10.Final/wildfly-jmx-2.0.10.Final.jar
+7f62797ce000-7f62797cf000 r--s 00004000 08:01 6688875                    /home/gladson/.m2/repository/org/jboss/arquillian/protocol/arquillian-protocol-jmx/1.1.11.Final/arquillian-protocol-jmx-1.1.11.Final.jar
+7f62797cf000-7f62797d1000 r--s 0000a000 08:01 6688874                    /home/gladson/.m2/repository/org/wildfly/arquillian/wildfly-arquillian-protocol-jmx/2.0.0.Final/wildfly-arquillian-protocol-jmx-2.0.0.Final.jar
+7f62797d1000-7f62797d4000 r--s 00019000 08:01 3027863                    /home/gladson/.m2/repository/org/jboss/xnio/xnio-nio/3.3.4.Final/xnio-nio-3.3.4.Final.jar
+7f62797d4000-7f62797dd000 r--s 00073000 08:01 3027861                    /home/gladson/.m2/repository/org/jboss/xnio/xnio-api/3.3.4.Final/xnio-api-3.3.4.Final.jar
+7f62797dd000-7f62797e1000 r--s 0001b000 08:01 2370143                    /home/gladson/.m2/repository/org/jboss/threads/jboss-threads/2.2.1.Final/jboss-threads-2.2.1.Final.jar
+7f62797e1000-7f62797e3000 r--s 00015000 08:01 2369974                    /home/gladson/.m2/repository/org/jboss/sasl/jboss-sasl/1.0.5.Final/jboss-sasl-1.0.5.Final.jar
+7f62797e3000-7f62797e8000 r--s 0003e000 08:01 2372191                    /home/gladson/.m2/repository/org/jboss/remoting/jboss-remoting/4.0.18.Final/jboss-remoting-4.0.18.Final.jar
+7f62797e8000-7f62797ec000 r--s 00016000 08:01 6301378                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-protocol/2.0.10.Final/wildfly-protocol-2.0.10.Final.jar
+7f62797ec000-7f62797ee000 r--s 0000f000 08:01 6039732                    /home/gladson/.m2/repository/org/jboss/logging/jboss-logging/3.3.0.Final/jboss-logging-3.3.0.Final.jar
+7f62797ee000-7f62797f0000 r--s 00003000 08:01 2369912                    /home/gladson/.m2/repository/org/jboss/stdio/jboss-stdio/1.0.2.GA/jboss-stdio-1.0.2.GA.jar
+7f62797f0000-7f62797f6000 r--s 00054000 08:01 6690247                    /home/gladson/.m2/repository/org/jboss/modules/jboss-modules/1.5.1.Final/jboss-modules-1.5.1.Final.jar
+7f62797f6000-7f62797f9000 r--s 0002b000 08:01 6562697                    /home/gladson/.m2/repository/org/jboss/jandex/2.0.1.Final/jandex-2.0.1.Final.jar
+7f62797f9000-7f62797fd000 r--s 0002b000 08:01 2240467                    /home/gladson/.m2/repository/org/wildfly/security/wildfly-elytron/1.0.2.Final/wildfly-elytron-1.0.2.Final.jar
+7f62797fd000-7f6279805000 r--s 00045000 08:01 2240430                    /home/gladson/.m2/repository/org/jboss/remotingjmx/remoting-jmx/2.0.1.Final/remoting-jmx-2.0.1.Final.jar
+7f6279805000-7f6279807000 r--s 00005000 08:01 3281143                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-management-client-content/2.0.10.Final/wildfly-management-client-content-2.0.10.Final.jar
+7f6279807000-7f6279808000 r--s 00008000 08:01 2240582                    /home/gladson/.m2/repository/org/jboss/staxmapper/1.2.0.Final/staxmapper-1.2.0.Final.jar
+7f6279808000-7f627981a000 r--s 000f5000 08:01 3281146                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-host-controller/2.0.10.Final/wildfly-host-controller-2.0.10.Final.jar
+7f627981a000-7f627981c000 r--s 0000b000 08:01 2240442                    /home/gladson/.m2/repository/org/wildfly/common/wildfly-common/1.1.0.Final/wildfly-common-1.1.0.Final.jar
+7f627981c000-7f6279842000 r--s 001d8000 08:01 2896205                    /home/gladson/.m2/repository/io/undertow/undertow-core/1.3.15.Final/undertow-core-1.3.15.Final.jar
+7f6279842000-7f6279846000 r--s 0001e000 08:01 2503559                    /home/gladson/.m2/repository/org/jboss/jboss-vfs/3.2.11.Final/jboss-vfs-3.2.11.Final.jar
+7f6279846000-7f627984b000 r--s 00034000 08:01 2369902                    /home/gladson/.m2/repository/org/jboss/msc/jboss-msc/1.2.6.Final/jboss-msc-1.2.6.Final.jar
+7f627984b000-7f6279851000 r--s 00030000 08:01 2109818                    /home/gladson/.m2/repository/org/jboss/marshalling/jboss-marshalling/1.4.10.Final/jboss-marshalling-1.4.10.Final.jar
+7f6279851000-7f6279859000 r--s 0004c000 08:01 2503557                    /home/gladson/.m2/repository/org/jboss/logmanager/jboss-logmanager/2.0.3.Final/jboss-logmanager-2.0.3.Final.jar
+7f6279859000-7f627985c000 r--s 00010000 08:01 2240528                    /home/gladson/.m2/repository/org/jboss/invocation/jboss-invocation/1.4.1.Final/jboss-invocation-1.4.1.Final.jar
+7f627985c000-7f627985d000 r--s 00003000 08:01 3163163                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-version/2.0.10.Final/wildfly-version-2.0.10.Final.jar
+7f627985d000-7f627985f000 r--s 00001000 08:01 2896251                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-self-contained/2.0.10.Final/wildfly-self-contained-2.0.10.Final.jar
+7f627985f000-7f6279861000 r--s 00009000 08:01 3163173                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-network/2.0.10.Final/wildfly-network-2.0.10.Final.jar
+7f6279861000-7f6279863000 r--s 0000a000 08:01 2766464                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-io/2.0.10.Final/wildfly-io-2.0.10.Final.jar
+7f6279863000-7f6279867000 r--s 00030000 08:01 2241822                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-remoting/2.0.10.Final/wildfly-remoting-2.0.10.Final.jar
+7f6279867000-7f627986a000 r--s 0001d000 08:01 3163167                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-process-controller/2.0.10.Final/wildfly-process-controller-2.0.10.Final.jar
+7f627986a000-7f627986d000 r--s 0001c000 08:01 2637123                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-platform-mbean/2.0.10.Final/wildfly-platform-mbean-2.0.10.Final.jar
+7f627986d000-7f627986f000 r--s 00006000 08:01 2372197                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-deployment-repository/2.0.10.Final/wildfly-deployment-repository-2.0.10.Final.jar
+7f627986f000-7f6279882000 r--s 000d5000 08:01 6821723                    /home/gladson/.m2/repository/org/picketbox/picketbox/4.9.4.Final/picketbox-4.9.4.Final.jar
+7f6279882000-7f6279892000 r--s 000b4000 08:01 2109822                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-domain-management/2.0.10.Final/wildfly-domain-management-2.0.10.Final.jar
+7f6279892000-7f6279894000 r--s 00016000 08:01 3163203                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-domain-http-interface/2.0.10.Final/wildfly-domain-http-interface-2.0.10.Final.jar
+7f6279894000-7f6279896000 r--s 00000000 08:01 3163201                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-core-security-api/2.0.10.Final/wildfly-core-security-api-2.0.10.Final.jar
+7f6279896000-7f6279898000 r--s 00002000 08:01 3163199                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-core-security/2.0.10.Final/wildfly-core-security-2.0.10.Final.jar
+7f6279898000-7f62798bb000 r--s 001a1000 08:01 3163195                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-controller/2.0.10.Final/wildfly-controller-2.0.10.Final.jar
+7f62798bb000-7f62798cc000 r--s 00113000 08:01 3163193                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-server/2.0.10.Final/wildfly-server-2.0.10.Final.jar
+7f62798cc000-7f62798ce000 r--s 0000b000 08:01 3281144                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-embedded/2.0.10.Final/wildfly-embedded-2.0.10.Final.jar
+7f62798ce000-7f62798d0000 r--s 00011000 08:01 6688872                    /home/gladson/.m2/repository/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-impl-base/2.0.0-alpha-8/shrinkwrap-descriptors-impl-base-2.0.0-alpha-8.jar
+7f62798d0000-7f62798d2000 r--s 00016000 08:01 2370015                    /home/gladson/.m2/repository/org/jboss/jboss-dmr/1.3.0.Final/jboss-dmr-1.3.0.Final.jar
+7f62798d2000-7f62798d8000 r--s 0002e000 08:01 3163197                    /home/gladson/.m2/repository/org/wildfly/core/wildfly-controller-client/2.0.10.Final/wildfly-controller-client-2.0.10.Final.jar
+7f62798d8000-7f62798d9000 r--s 00002000 08:01 6688871                    /home/gladson/.m2/repository/org/wildfly/arquillian/wildfly-arquillian-testenricher-msc/2.0.0.Final/wildfly-arquillian-testenricher-msc-2.0.0.Final.jar
+7f62798d9000-7f62798dc000 r--s 0000c000 08:01 6688870                    /home/gladson/.m2/repository/org/jboss/arquillian/protocol/arquillian-protocol-servlet/1.1.11.Final/arquillian-protocol-servlet-1.1.11.Final.jar
+7f62798dc000-7f62798de000 r--s 00003000 08:01 5118104                    /home/gladson/.m2/repository/org/jboss/arquillian/testenricher/arquillian-testenricher-resource/1.1.11.Final/arquillian-testenricher-resource-1.1.11.Final.jar
+7f62798de000-7f62798df000 r--s 00001000 08:01 4989695                    /home/gladson/.m2/repository/org/jboss/arquillian/testenricher/arquillian-testenricher-initialcontext/1.1.11.Final/arquillian-testenricher-initialcontext-1.1.11.Final.jar
+7f62798df000-7f62798e0000 r--s 00004000 08:01 4989693                    /home/gladson/.m2/repository/org/jboss/arquillian/testenricher/arquillian-testenricher-ejb/1.1.11.Final/arquillian-testenricher-ejb-1.1.11.Final.jar
+7f62798e0000-7f62798e2000 r--s 00005000 08:01 4858370                    /home/gladson/.m2/repository/org/jboss/arquillian/testenricher/arquillian-testenricher-cdi/1.1.11.Final/arquillian-testenricher-cdi-1.1.11.Final.jar
+7f62798e2000-7f62798e5000 r--s 0000d000 08:01 6688865                    /home/gladson/.m2/repository/org/wildfly/arquillian/wildfly-arquillian-common/2.0.0.Final/wildfly-arquillian-common-2.0.0.Final.jar
+7f62798e5000-7f62798e6000 r--s 00002000 08:01 6688864                    /home/gladson/.m2/repository/org/wildfly/arquillian/wildfly-arquillian-container-embedded/2.0.0.Final/wildfly-arquillian-container-embedded-2.0.0.Final.jar
+7f62798e6000-7f62798e9000 r--s 00017000 08:01 1976456                    /home/gladson/.m2/repository/org/jboss/spec/javax/xml/bind/jboss-jaxb-api_2.2_spec/1.0.4.Final/jboss-jaxb-api_2.2_spec-1.0.4.Final.jar
+7f62798e9000-7f62798ed000 r--s 00019000 08:01 5516874                    /home/gladson/.m2/repository/org/jboss/spec/javax/ws/rs/jboss-jaxrs-api_2.0_spec/1.0.0.Final/jboss-jaxrs-api_2.0_spec-1.0.0.Final.jar
+7f62798ed000-7f62798ef000 r--s 00009000 08:01 5645169                    /home/gladson/.m2/repository/org/jboss/spec/javax/websocket/jboss-websocket-api_1.1_spec/1.1.0.Final/jboss-websocket-api_1.1_spec-1.1.0.Final.jar
+7f62798ef000-7f62798f0000 r--s 00006000 08:01 1847077                    /home/gladson/.m2/repository/org/jboss/spec/javax/transaction/jboss-transaction-api_1.2_spec/1.0.0.Final/jboss-transaction-api_1.2_spec-1.0.0.Final.jar
+7f62798f0000-7f62798f9000 r--s 00063000 08:01 3281162                    /home/gladson/.m2/repository/org/jboss/spec/javax/servlet/jstl/jboss-jstl-api_1.2_spec/1.1.2.Final/jboss-jstl-api_1.2_spec-1.1.2.Final.jar
+7f62798f9000-7f62798fc000 r--s 0000c000 08:01 6690102                    /home/gladson/.m2/repository/org/jboss/spec/javax/servlet/jsp/jboss-jsp-api_2.3_spec/1.0.1.Final/jboss-jsp-api_2.3_spec-1.0.1.Final.jar
+7f62798fc000-7f6279900000 r--s 0002b000 08:01 1847038                    /home/gladson/.m2/repository/org/jboss/spec/javax/servlet/jboss-servlet-api_3.1_spec/1.0.0.Final/jboss-servlet-api_3.1_spec-1.0.0.Final.jar
+7f6279900000-7f6279903000 r--s 0000f000 08:01 5904871                    /home/gladson/.m2/repository/org/jboss/spec/javax/resource/jboss-connector-api_1.7_spec/1.0.0.Final/jboss-connector-api_1.7_spec-1.0.0.Final.jar
+7f6279903000-7f6279905000 r--s 00005000 08:01 6688863                    /home/gladson/.m2/repository/org/jboss/spec/javax/json/jboss-json-api_1.0_spec/1.0.0.Final/jboss-json-api_1.0_spec-1.0.0.Final.jar
+7f6279905000-7f6279906000 r--s 00003000 08:01 1847065                    /home/gladson/.m2/repository/org/jboss/spec/javax/interceptor/jboss-interceptors-api_1.2_spec/1.0.0.Final/jboss-interceptors-api_1.2_spec-1.0.0.Final.jar
+7f6279906000-7f6279913000 r--s 000a3000 08:01 6688862                    /home/gladson/.m2/repository/org/jboss/spec/javax/faces/jboss-jsf-api_2.2_spec/2.2.11/jboss-jsf-api_2.2_spec-2.2.11.jar
+7f6279913000-7f6279915000 r--s 00013000 08:01 3279801                    /home/gladson/.m2/repository/org/jboss/spec/javax/el/jboss-el-api_3.0_spec/1.0.4.Final/jboss-el-api_3.0_spec-1.0.4.Final.jar
+7f6279915000-7f6279918000 r--s 0000a000 08:01 6042818                    /home/gladson/.m2/repository/org/jboss/spec/javax/ejb/jboss-ejb-api_3.2_spec/1.0.0.Final/jboss-ejb-api_3.2_spec-1.0.0.Final.jar
+7f6279918000-7f6279919000 r--s 00004000 08:01 1847045                    /home/gladson/.m2/repository/org/jboss/spec/javax/annotation/jboss-annotations-api_1.2_spec/1.0.0.Final/jboss-annotations-api_1.2_spec-1.0.0.Final.jar
+7f6279919000-7f627991e000 r--s 00017000 08:01 6171073                    /home/gladson/.m2/repository/org/hibernate/javax/persistence/hibernate-jpa-2.1-api/1.0.0.Final/hibernate-jpa-2.1-api-1.0.0.Final.jar
+7f627991e000-7f6279922000 r--s 0000c000 08:01 1704968                    /home/gladson/.m2/repository/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final.jar
+7f6279922000-7f6279923000 r--s 00000000 08:01 5375336                    /home/gladson/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar
+7f6279923000-7f6279927000 r--s 0000e000 08:01 5513961                    /home/gladson/.m2/repository/javax/enterprise/cdi-api/1.2/cdi-api-1.2.jar
+7f6279927000-7f6279929000 r--s 00000000 08:01 6688857                    /home/gladson/.m2/repository/org/jboss/shrinkwrap/shrinkwrap-spi/1.2.3/shrinkwrap-spi-1.2.3.jar
+7f6279929000-7f627992e000 r--s 0002a000 08:01 6688856                    /home/gladson/.m2/repository/org/jboss/shrinkwrap/shrinkwrap-impl-base/1.2.3/shrinkwrap-impl-base-1.2.3.jar
+7f627992e000-7f6279932000 r--s 00017000 08:01 6688854                    /home/gladson/.m2/repository/org/jboss/arquillian/container/arquillian-container-test-impl-base/1.1.11.Final/arquillian-container-test-impl-base-1.1.11.Final.jar
+7f6279932000-7f6279934000 r--s 00008000 08:01 6688855                    /home/gladson/.m2/repository/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-spi/2.0.0-alpha-8/shrinkwrap-descriptors-spi-2.0.0-alpha-8.jar
+7f6279934000-7f6279937000 r--s 00008000 08:01 6558413                    /home/gladson/.m2/repository/org/jboss/arquillian/config/arquillian-config-impl-base/1.1.11.Final/arquillian-config-impl-base-1.1.11.Final.jar
+7f6279937000-7f6279938000 r--s 00001000 08:01 6166854                    /home/gladson/.m2/repository/org/jboss/arquillian/config/arquillian-config-api/1.1.11.Final/arquillian-config-api-1.1.11.Final.jar
+7f6279938000-7f627993b000 r--s 00011000 08:01 6688850                    /home/gladson/.m2/repository/org/jboss/arquillian/container/arquillian-container-impl-base/1.1.11.Final/arquillian-container-impl-base-1.1.11.Final.jar
+7f627993b000-7f627993d000 r--s 00005000 08:01 6688849                    /home/gladson/.m2/repository/org/jboss/arquillian/test/arquillian-test-impl-base/1.1.11.Final/arquillian-test-impl-base-1.1.11.Final.jar
+7f627993d000-7f6279940000 r--s 0000d000 08:01 6688848                    /home/gladson/.m2/repository/org/jboss/arquillian/core/arquillian-core-impl-base/1.1.11.Final/arquillian-core-impl-base-1.1.11.Final.jar
+7f6279940000-7f6279942000 r--s 00003000 08:01 6293333                    /home/gladson/.m2/repository/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0-alpha-8/shrinkwrap-descriptors-api-base-2.0.0-alpha-8.jar
+7f6279942000-7f6279945000 r--s 0000a000 08:01 6034915                    /home/gladson/.m2/repository/org/jboss/arquillian/container/arquillian-container-spi/1.1.11.Final/arquillian-container-spi-1.1.11.Final.jar
+7f6279945000-7f6279947000 r--s 00005000 08:01 5905191                    /home/gladson/.m2/repository/org/jboss/arquillian/container/arquillian-container-test-spi/1.1.11.Final/arquillian-container-test-spi-1.1.11.Final.jar
+7f6279947000-7f627994b000 r--s 0000d000 08:01 5645165                    /home/gladson/.m2/repository/org/jboss/shrinkwrap/shrinkwrap-api/1.2.3/shrinkwrap-api-1.2.3.jar
+7f627994b000-7f627994d000 r--s 00001000 08:01 5515504                    /home/gladson/.m2/repository/org/jboss/arquillian/container/arquillian-container-test-api/1.1.11.Final/arquillian-container-test-api-1.1.11.Final.jar
+7f627994d000-7f627994f000 r--s 00005000 08:01 6688842                    /home/gladson/.m2/repository/org/jboss/arquillian/core/arquillian-core-spi/1.1.11.Final/arquillian-core-spi-1.1.11.Final.jar
+7f627994f000-7f6279952000 r--s 00008000 08:01 6688840                    /home/gladson/.m2/repository/org/jboss/arquillian/test/arquillian-test-spi/1.1.11.Final/arquillian-test-spi-1.1.11.Final.jar
+7f6279952000-7f6279954000 r--s 00008000 08:01 6688841                    /home/gladson/.m2/repository/org/jboss/arquillian/junit/arquillian-junit-core/1.1.11.Final/arquillian-junit-core-1.1.11.Final.jar
+7f6279954000-7f6279956000 r--s 00001000 08:01 6688839                    /home/gladson/.m2/repository/org/jboss/arquillian/junit/arquillian-junit-container/1.1.11.Final/arquillian-junit-container-1.1.11.Final.jar
+7f6279956000-7f627995e000 r--s 00045000 08:01 6557114                    /home/gladson/.m2/repository/junit/junit/4.12/junit-4.12.jar
+7f627995e000-7f6279961000 r--s 0000b000 08:01 5514057                    /home/gladson/.m2/repository/javax/persistence/persistence-api/1.0.2/persistence-api-1.0.2.jar
+7f6279961000-7f6279964000 ---p 00000000 00:00 0 
+7f6279964000-7f6279a62000 rw-p 00000000 00:00 0 
+7f6279a62000-7f627a421000 r--p 00000000 08:21 1452721                    /usr/lib/locale/locale-archive
+7f627a421000-7f627a424000 ---p 00000000 00:00 0 
+7f627a424000-7f627a522000 rw-p 00000000 00:00 0 
+7f627a522000-7f627a525000 ---p 00000000 00:00 0 
+7f627a525000-7f627a623000 rw-p 00000000 00:00 0 
+7f627a623000-7f627a624000 ---p 00000000 00:00 0 
+7f627a624000-7f627b633000 rw-p 00000000 00:00 0 
+7f627b633000-7f627b80c000 r--s 03d29000 08:21 1596557                    /usr/lib/jvm/java-8-oracle/jre/lib/rt.jar
+7f627b80c000-7f627fa73000 rw-p 00000000 00:00 0 
+7f627fa73000-7f627fa74000 ---p 00000000 00:00 0 
+7f627fa74000-7f627fb74000 rw-p 00000000 00:00 0 
+7f627fb74000-7f627fb75000 ---p 00000000 00:00 0 
+7f627fb75000-7f627fc75000 rw-p 00000000 00:00 0 
+7f627fc75000-7f627fc76000 ---p 00000000 00:00 0 
+7f627fc76000-7f627fda4000 rw-p 00000000 00:00 0 
+7f627fda4000-7f628000c000 ---p 00000000 00:00 0 
+7f628000c000-7f628003a000 rw-p 00000000 00:00 0 
+7f628003a000-7f62802a2000 ---p 00000000 00:00 0 
+7f62802a2000-7f6280371000 rw-p 00000000 00:00 0 
+7f6280371000-7f62803ed000 ---p 00000000 00:00 0 
+7f62803ed000-7f6280421000 rw-p 00000000 00:00 0 
+7f6280421000-7f62807ae000 ---p 00000000 00:00 0 
+7f62807ae000-7f628143e000 rwxp 00000000 00:00 0 
+7f628143e000-7f628f7ae000 ---p 00000000 00:00 0 
+7f628f7ae000-7f628f7c8000 r-xp 00000000 08:21 1596634                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libzip.so
+7f628f7c8000-7f628f9c8000 ---p 0001a000 08:21 1596634                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libzip.so
+7f628f9c8000-7f628f9c9000 rw-p 0001a000 08:21 1596634                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libzip.so
+7f628f9c9000-7f628f9d4000 r-xp 00000000 08:21 3682080                    /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f628f9d4000-7f628fbd3000 ---p 0000b000 08:21 3682080                    /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f628fbd3000-7f628fbd4000 r--p 0000a000 08:21 3682080                    /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f628fbd4000-7f628fbd5000 rw-p 0000b000 08:21 3682080                    /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f628fbd5000-7f628fbdb000 rw-p 00000000 00:00 0 
+7f628fbdb000-7f628fbe6000 r-xp 00000000 08:21 3682090                    /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f628fbe6000-7f628fde5000 ---p 0000b000 08:21 3682090                    /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f628fde5000-7f628fde6000 r--p 0000a000 08:21 3682090                    /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f628fde6000-7f628fde7000 rw-p 0000b000 08:21 3682090                    /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f628fde7000-7f628fdfd000 r-xp 00000000 08:21 3682074                    /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f628fdfd000-7f628fffc000 ---p 00016000 08:21 3682074                    /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f628fffc000-7f628fffd000 r--p 00015000 08:21 3682074                    /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f628fffd000-7f628fffe000 rw-p 00016000 08:21 3682074                    /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f628fffe000-7f6290000000 rw-p 00000000 00:00 0 
+7f6290000000-7f629107e000 rw-p 00000000 00:00 0 
+7f629107e000-7f6294000000 ---p 00000000 00:00 0 
+7f6294000000-7f6294001000 r--s 00000000 08:01 6688838                    /home/gladson/.m2/repository/org/jboss/arquillian/test/arquillian-test-api/1.1.11.Final/arquillian-test-api-1.1.11.Final.jar
+7f6294001000-7f6294023000 r--s 00120000 08:01 1704981                    /home/gladson/.m2/repository/javax/javaee-web-api/7.0/javaee-web-api-7.0.jar
+7f6294023000-7f6294024000 ---p 00000000 00:00 0 
+7f6294024000-7f6294124000 rw-p 00000000 00:00 0 
+7f6294124000-7f629412c000 r-xp 00000000 08:21 3682076                    /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f629412c000-7f629432b000 ---p 00008000 08:21 3682076                    /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f629432b000-7f629432c000 r--p 00007000 08:21 3682076                    /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f629432c000-7f629432d000 rw-p 00008000 08:21 3682076                    /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f629432d000-7f6294337000 r-xp 00000000 08:21 1596665                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libinstrument.so
+7f6294337000-7f6294536000 ---p 0000a000 08:21 1596665                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libinstrument.so
+7f6294536000-7f6294537000 rw-p 00009000 08:21 1596665                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libinstrument.so
+7f6294537000-7f6294561000 r-xp 00000000 08:21 1596658                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libjava.so
+7f6294561000-7f6294761000 ---p 0002a000 08:21 1596658                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libjava.so
+7f6294761000-7f6294763000 rw-p 0002a000 08:21 1596658                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libjava.so
+7f6294763000-7f6294770000 r-xp 00000000 08:21 1596614                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libverify.so
+7f6294770000-7f6294970000 ---p 0000d000 08:21 1596614                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libverify.so
+7f6294970000-7f6294972000 rw-p 0000d000 08:21 1596614                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/libverify.so
+7f6294972000-7f6294979000 r-xp 00000000 08:21 3682135                    /lib/x86_64-linux-gnu/librt-2.23.so
+7f6294979000-7f6294b78000 ---p 00007000 08:21 3682135                    /lib/x86_64-linux-gnu/librt-2.23.so
+7f6294b78000-7f6294b79000 r--p 00006000 08:21 3682135                    /lib/x86_64-linux-gnu/librt-2.23.so
+7f6294b79000-7f6294b7a000 rw-p 00007000 08:21 3682135                    /lib/x86_64-linux-gnu/librt-2.23.so
+7f6294b7a000-7f6294c82000 r-xp 00000000 08:21 3682051                    /lib/x86_64-linux-gnu/libm-2.23.so
+7f6294c82000-7f6294e81000 ---p 00108000 08:21 3682051                    /lib/x86_64-linux-gnu/libm-2.23.so
+7f6294e81000-7f6294e82000 r--p 00107000 08:21 3682051                    /lib/x86_64-linux-gnu/libm-2.23.so
+7f6294e82000-7f6294e83000 rw-p 00108000 08:21 3682051                    /lib/x86_64-linux-gnu/libm-2.23.so
+7f6294e83000-7f6295b4e000 r-xp 00000000 08:21 1596668                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so
+7f6295b4e000-7f6295d4d000 ---p 00ccb000 08:21 1596668                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so
+7f6295d4d000-7f6295e26000 rw-p 00cca000 08:21 1596668                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/server/libjvm.so
+7f6295e26000-7f6295e71000 rw-p 00000000 00:00 0 
+7f6295e71000-7f6296031000 r-xp 00000000 08:21 3681981                    /lib/x86_64-linux-gnu/libc-2.23.so
+7f6296031000-7f6296230000 ---p 001c0000 08:21 3681981                    /lib/x86_64-linux-gnu/libc-2.23.so
+7f6296230000-7f6296234000 r--p 001bf000 08:21 3681981                    /lib/x86_64-linux-gnu/libc-2.23.so
+7f6296234000-7f6296236000 rw-p 001c3000 08:21 3681981                    /lib/x86_64-linux-gnu/libc-2.23.so
+7f6296236000-7f629623a000 rw-p 00000000 00:00 0 
+7f629623a000-7f629623d000 r-xp 00000000 08:21 3682005                    /lib/x86_64-linux-gnu/libdl-2.23.so
+7f629623d000-7f629643c000 ---p 00003000 08:21 3682005                    /lib/x86_64-linux-gnu/libdl-2.23.so
+7f629643c000-7f629643d000 r--p 00002000 08:21 3682005                    /lib/x86_64-linux-gnu/libdl-2.23.so
+7f629643d000-7f629643e000 rw-p 00003000 08:21 3682005                    /lib/x86_64-linux-gnu/libdl-2.23.so
+7f629643e000-7f6296453000 r-xp 00000000 08:21 1596666                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/jli/libjli.so
+7f6296453000-7f6296653000 ---p 00015000 08:21 1596666                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/jli/libjli.so
+7f6296653000-7f6296654000 rw-p 00015000 08:21 1596666                    /usr/lib/jvm/java-8-oracle/jre/lib/amd64/jli/libjli.so
+7f6296654000-7f629666c000 r-xp 00000000 08:21 3682127                    /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f629666c000-7f629686b000 ---p 00018000 08:21 3682127                    /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f629686b000-7f629686c000 r--p 00017000 08:21 3682127                    /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f629686c000-7f629686d000 rw-p 00018000 08:21 3682127                    /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f629686d000-7f6296871000 rw-p 00000000 00:00 0 
+7f6296871000-7f6296897000 r-xp 00000000 08:21 3681953                    /lib/x86_64-linux-gnu/ld-2.23.so
+7f6296897000-7f6296899000 r--s 00009000 08:01 5117811                    /home/gladson/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar
+7f6296899000-7f629689c000 r--s 0000d000 08:01 5514056                    /home/gladson/.m2/repository/javax/ejb/javax.ejb-api/3.2/javax.ejb-api-3.2.jar
+7f629689c000-7f629696d000 rw-p 00000000 00:00 0 
+7f629696d000-7f6296970000 ---p 00000000 00:00 0 
+7f6296970000-7f6296a72000 rw-p 00000000 00:00 0 
+7f6296a72000-7f6296a74000 r--s 00006000 08:01 5514058                    /home/gladson/.m2/repository/javax/transaction/javax.transaction-api/1.2/javax.transaction-api-1.2.jar
+7f6296a74000-7f6296a78000 r--s 00021000 08:01 5513962                    /home/gladson/.m2/repository/org/apache/deltaspike/core/deltaspike-core-impl/1.7.1/deltaspike-core-impl-1.7.1.jar
+7f6296a78000-7f6296a80000 r--s 00036000 08:01 5513965                    /home/gladson/.m2/repository/org/apache/deltaspike/core/deltaspike-core-api/1.7.1/deltaspike-core-api-1.7.1.jar
+7f6296a80000-7f6296a82000 r--s 00005000 08:01 6557148                    /home/gladson/.m2/repository/org/demoiselle/jee/demoiselle-core/3.0.0-BETA2-SNAPSHOT/demoiselle-core-3.0.0-BETA2-SNAPSHOT.jar
+7f6296a82000-7f6296a87000 r--s 00023000 08:01 6292720                    /home/gladson/.m2/repository/org/apache/maven/surefire/surefire-api/2.10/surefire-api-2.10.jar
+7f6296a87000-7f6296a89000 r--s 00007000 08:01 6292717                    /home/gladson/.m2/repository/org/apache/maven/surefire/surefire-booter/2.10/surefire-booter-2.10.jar
+7f6296a89000-7f6296a8a000 r--s 00003000 08:01 6557229                    /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/surefire/surefirebooter7757482204924616194.jar
+7f6296a8a000-7f6296a92000 rw-s 00000000 08:21 394050                     /tmp/hsperfdata_gladson/11164
+7f6296a92000-7f6296a93000 rw-p 00000000 00:00 0 
+7f6296a93000-7f6296a94000 ---p 00000000 00:00 0 
+7f6296a94000-7f6296a96000 rw-p 00000000 00:00 0 
+7f6296a96000-7f6296a97000 r--p 00025000 08:21 3681953                    /lib/x86_64-linux-gnu/ld-2.23.so
+7f6296a97000-7f6296a98000 rw-p 00026000 08:21 3681953                    /lib/x86_64-linux-gnu/ld-2.23.so
+7f6296a98000-7f6296a99000 rw-p 00000000 00:00 0 
+7ffcd1099000-7ffcd10ba000 rw-p 00000000 00:00 0                          [stack]
+7ffcd1130000-7ffcd1132000 r--p 00000000 00:00 0                          [vvar]
+7ffcd1132000-7ffcd1134000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+VM Arguments:
+jvm_args: -javaagent:/home/gladson/.m2/repository/org/jacoco/org.jacoco.agent/0.7.7.201606060606/org.jacoco.agent-0.7.7.201606060606-runtime.jar=destfile=/home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/coverage-reports/jacoco-unit.exec 
+java_command: /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/surefire/surefirebooter7757482204924616194.jar /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/surefire/surefire9122282080245280220tmp /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/surefire/surefire1267980364488173929tmp
+java_class_path (initial): /home/gladson/NetBeansProjects/github/framework/demoiselle-persistence-jpa/target/surefire/surefirebooter7757482204924616194.jar:/home/gladson/.m2/repository/org/jacoco/org.jacoco.agent/0.7.7.201606060606/org.jacoco.agent-0.7.7.201606060606-runtime.jar
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=/usr/lib/jvm/java-8-oracle
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin
+LD_LIBRARY_PATH=/usr/lib/jvm/java-8-oracle/jre/lib/amd64:/usr/lib/jvm/java-8-oracle/jre/lib/i386:
+SHELL=/bin/bash
+DISPLAY=:0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0xac4790], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGBUS: [libjvm.so+0xac4790], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGFPE: [libjvm.so+0x91f140], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGPIPE: [libjvm.so+0x91f140], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGXFSZ: [libjvm.so+0x91f140], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGILL: [libjvm.so+0x91f140], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGUSR1: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGUSR2: [libjvm.so+0x920770], sa_mask[0]=00100000000000000000000000000000, sa_flags=SA_RESTART|SA_SIGINFO
+SIGHUP: [libjvm.so+0x921b70], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGINT: SIG_IGN, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGTERM: [libjvm.so+0x921b70], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGQUIT: [libjvm.so+0x921b70], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+
+
+---------------  S Y S T E M  ---------------
+
+OS:DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=16.04
+DISTRIB_CODENAME=xenial
+DISTRIB_DESCRIPTION="Ubuntu 16.04.1 LTS"
+
+uname:Linux 4.4.0-42-generic #62-Ubuntu SMP Fri Oct 7 23:11:45 UTC 2016 x86_64
+libc:glibc 2.23 NPTL 2.23 
+rlimit: STACK 8192k, CORE 0k, NPROC 31611, NOFILE 65536, AS infinity
+load average:1,32 1,12 0,71
+
+/proc/meminfo:
+MemTotal:        8132924 kB
+MemFree:          580712 kB
+MemAvailable:    3395992 kB
+Buffers:          257828 kB
+Cached:          2742608 kB
+SwapCached:            4 kB
+Active:          4525620 kB
+Inactive:        2705940 kB
+Active(anon):    3169020 kB
+Inactive(anon):  1081844 kB
+Active(file):    1356600 kB
+Inactive(file):  1624096 kB
+Unevictable:         620 kB
+Mlocked:             620 kB
+SwapTotal:        102396 kB
+SwapFree:         101616 kB
+Dirty:            167208 kB
+Writeback:             0 kB
+AnonPages:       4231888 kB
+Mapped:          1821204 kB
+Shmem:             19748 kB
+Slab:             154972 kB
+SReclaimable:     107940 kB
+SUnreclaim:        47032 kB
+KernelStack:       15696 kB
+PageTables:        80296 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     4168856 kB
+Committed_AS:    9790832 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:   2332672 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:      162536 kB
+DirectMap2M:     8183808 kB
+
+
+CPU:total 4 (4 cores per cpu, 1 threads per core) family 6 model 58 stepping 9, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, aes, clmul, erms, tsc, tscinvbit, tscinv
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 58
+model name	: Intel(R) Core(TM) i5-3570K CPU @ 3.40GHz
+stepping	: 9
+microcode	: 0x1c
+cpu MHz		: 3627.906
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 0
+cpu cores	: 4
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm epb tpr_shadow vnmi flexpriority ept vpid fsgsbase smep erms xsaveopt dtherm ida arat pln pts
+bugs		:
+bogomips	: 6784.70
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 58
+model name	: Intel(R) Core(TM) i5-3570K CPU @ 3.40GHz
+stepping	: 9
+microcode	: 0x1c
+cpu MHz		: 3627.906
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 1
+cpu cores	: 4
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm epb tpr_shadow vnmi flexpriority ept vpid fsgsbase smep erms xsaveopt dtherm ida arat pln pts
+bugs		:
+bogomips	: 6784.70
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 58
+model name	: Intel(R) Core(TM) i5-3570K CPU @ 3.40GHz
+stepping	: 9
+microcode	: 0x1c
+cpu MHz		: 3627.906
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 2
+cpu cores	: 4
+apicid		: 4
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm epb tpr_shadow vnmi flexpriority ept vpid fsgsbase smep erms xsaveopt dtherm ida arat pln pts
+bugs		:
+bogomips	: 6784.70
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 58
+model name	: Intel(R) Core(TM) i5-3570K CPU @ 3.40GHz
+stepping	: 9
+microcode	: 0x1c
+cpu MHz		: 3599.882
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 4
+core id		: 3
+cpu cores	: 4
+apicid		: 6
+initial apicid	: 6
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm epb tpr_shadow vnmi flexpriority ept vpid fsgsbase smep erms xsaveopt dtherm ida arat pln pts
+bugs		:
+bogomips	: 6784.70
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+
+
+Memory: 4k page, physical 8132924k(580712k free), swap 102396k(101616k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (25.101-b13) for linux-amd64 JRE (1.8.0_101-b13), built on Jun 22 2016 02:59:44 by "java_re" with gcc 4.3.0 20080428 (Red Hat 4.3.0-8)
+
+time: Thu Oct 13 17:28:02 2016
+elapsed time: 4 seconds (0d 0h 0m 4s)
+

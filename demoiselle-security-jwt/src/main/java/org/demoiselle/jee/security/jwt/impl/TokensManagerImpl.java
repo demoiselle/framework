@@ -129,6 +129,7 @@ public class TokensManagerImpl implements TokensManager {
                 loggedUser.setName((String) jwtClaims.getClaimValue("name"));
                 loggedUser.setRoles((List) jwtClaims.getClaimValue("roles"));
                 loggedUser.setPermissions((Map) jwtClaims.getClaimValue("permissions"));
+                loggedUser.setParams((Map) jwtClaims.getClaimValue("params"));
 //              loggedUser = new Gson().fromJson((String) jwtClaims.getClaimValue("user"), DemoisellePrincipal.class);
 //                String ip = httpRequest.getRemoteAddr();
 //                if (!ip.equalsIgnoreCase((String) jwtClaims.getClaimValue("ip"))) {
@@ -164,6 +165,7 @@ public class TokensManagerImpl implements TokensManager {
             claims.setClaim("name", (user.getName()));
             claims.setClaim("roles", (user.getRoles()));
             claims.setClaim("permissions", (user.getPermissions()));
+            claims.setClaim("params", (user.getParams()));
 
             JsonWebSignature jws = new JsonWebSignature();
             jws.setPayload(claims.toJson());

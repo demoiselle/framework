@@ -95,8 +95,9 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
         if (operations != null && !operations.isEmpty()) {
             permissions.get(resource).add(operetion);
         } else {
-            operations.add(operetion);
-            permissions.put(resource, operations);
+            List<String> newoperations = new ArrayList<>();
+            newoperations.add(operetion);
+            permissions.put(resource, newoperations);
         }
     }
 
@@ -107,12 +108,13 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
 
     @Override
     public void addParam(String key, String value) {
-        List<String> operations = permissions.get(key);
-        if (operations != null && !operations.isEmpty()) {
-            permissions.get(key).add(value);
+        List<String> paramss = params.get(key);
+        if (paramss != null && !paramss.isEmpty()) {
+            params.get(key).add(value);
         } else {
-            operations.add(value);
-            permissions.put(key, operations);
+            List<String> newparamss = new ArrayList<>();
+            newparamss.add(value);
+            params.put(key, newparamss);
         }
     }
 
