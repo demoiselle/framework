@@ -39,7 +39,7 @@ public class TransactionTest {
 
 	public static final String[] USER_EMAILS = { "homer@domain.com", "marge@domain.com", "bart@domain.com",
 			"lisa@domain.com", "maggie@domain.com" };
-	
+
 	@PersistenceContext
 	EntityManager entityManager;
 
@@ -115,16 +115,16 @@ public class TransactionTest {
 		List<User> list = q.getResultList();
 		Assert.assertEquals(0, list.size());
 	}
-	
+
 	@Test
 	public void F_transaction_PersistRollback() throws Exception {
 		userTransaction.begin();
 		User user = new User(USER_NAMES[2], USER_EMAILS[2]);
 		entityManager.persist(user);
-		
+
 		// Volta o persist
 		userTransaction.rollback();
-		
+
 		Assert.assertTrue(true);
 	}
 
@@ -134,6 +134,29 @@ public class TransactionTest {
 		q.setParameter("name", USER_NAMES[2]);
 		List<User> list = q.getResultList();
 		Assert.assertEquals(0, list.size());
+	}
+
+	@Test
+	public void H_transaction_PersistTryCatch() throws Exception {
+		try {
+			userTransaction.begin();
+			User user = new User(USER_NAMES[3], USER_EMAILS[3]);
+			entityManager.persist(user);
+
+			throw new Exception("Exception de teste para ver se faz o ROLLBACK de tudo");
+		} catch (Exception e) {
+
+		}
+		userTransaction.commit();
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void I_transaction_PersistTryCatch_Verify() throws Exception {
+		TypedQuery<User> q = entityManager.createQuery("SELECT user FROM User user WHERE name = :name", User.class);
+		q.setParameter("name", USER_NAMES[3]);
+		List<User> list = q.getResultList();
+		Assert.assertEquals(1, list.size());
 	}
 
 }

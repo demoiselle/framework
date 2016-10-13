@@ -137,9 +137,11 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<!-- Fork every test because it will launch a separate AS instance -->
-							<forkMode>always</forkMode>
+							<!-- <forkMode>always</forkMode> -->
 							<systemPropertyVariables>
 								<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+								<jboss.http.port>8181</jboss.http.port>
+								<jboss.management.http.port>9090</jboss.management.http.port>
 							</systemPropertyVariables>
 							<redirectTestOutputToFile>false</redirectTestOutputToFile>
 						</configuration>

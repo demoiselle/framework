@@ -25,6 +25,7 @@ public class PersistenceBootstrap implements javax.enterprise.inject.spi.Extensi
 
 	/**
 	 * Adiciona Vetoed nas entidades
+	 * 
 	 * @param pat
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
