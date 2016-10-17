@@ -11,9 +11,10 @@ import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import org.demoiselle.jee.core.interfaces.security.DemoisellePrincipal;
-import org.demoiselle.jee.core.interfaces.security.Token;
-import org.demoiselle.jee.core.interfaces.security.TokensManager;
+
+import org.demoiselle.jee.security.interfaces.security.DemoisellePrincipal;
+import org.demoiselle.jee.security.interfaces.security.Token;
+import org.demoiselle.jee.security.interfaces.security.TokensManager;
 
 /**
  *
