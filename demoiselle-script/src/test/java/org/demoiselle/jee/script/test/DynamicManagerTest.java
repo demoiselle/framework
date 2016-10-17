@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
 package org.demoiselle.jee.script.test;
 
@@ -32,7 +33,7 @@ public class DynamicManagerTest {
     public static Archive<?> createDeployment() {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, "teste.war");
-        war.addPackage("org.demoiselle.jee.script");
+        war.addPackage(DynamicManager.class.getPackage());
         //Adicionar aki as packages para teste de outros engines, nashorn ja esta embutido na jdk.
         war.addPackages(true,"groovy",                			 
                 			 "org.codehaus.groovy");

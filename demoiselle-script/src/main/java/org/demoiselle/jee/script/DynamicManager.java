@@ -1,3 +1,9 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.script;
 
 import java.util.HashMap;
@@ -30,8 +36,8 @@ public class DynamicManager {
 	}
 	/**
 	 * Carrega um engine no engine manager.
-	 * @param engineName
-	 * @return ScriptEngine
+	 * @param engineName ...
+	 * @return ScriptEngine ...
 	 */
     public ScriptEngine loadEngine(String engineName) {
     	ScriptEngine engine =  new ScriptEngineManager().getEngineByName(engineName);
@@ -45,9 +51,9 @@ public class DynamicManager {
 	/**
 	 * Executa o script de acordo com o contexto passado.
 	 * 
-	 * @param scriptName
-	 * @param context
-	 * @return
+	 * @param scriptName ...
+	 * @param context ...
+	 * @return ...
 	 */
 	public Object eval(String scriptName, Bindings context){
 		CompiledScript  script = null;
@@ -70,9 +76,8 @@ public class DynamicManager {
 	/**
 	 * Executa o script sem um contexto especifico.
 	 * 
-	 * @param scriptName
-	 * @param context
-	 * @return
+	 * @param scriptName ...
+	 * @return ...
 	 */
 	public Object eval(String scriptName){
 		CompiledScript  script = null;
@@ -93,9 +98,9 @@ public class DynamicManager {
 	/**
 	 * Le e compila um script guardando em cache.
 	 * 
-	 * @param scriptName
-	 * @param source
-	 * @return Boolean
+	 * @param scriptName ...
+	 * @param source ...
+	 * @return Boolean ...
 	 */
 	public Boolean loadScript(String scriptName,String source ){				
 		CompiledScript compiled = null;
@@ -121,7 +126,7 @@ public class DynamicManager {
 	/**
 	 * Remove um script do cache.
 	 * 
-	 * @param scriptId
+	 * @param scriptId ...
 	 */
 	public void removeScriptCache(String scriptId) {					
 		this.scriptCache.remove(scriptId); 		
