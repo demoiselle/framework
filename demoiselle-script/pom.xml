@@ -118,7 +118,7 @@
 							<!--  <forkMode>always</forkMode> -->				
 							<systemPropertyVariables>
 								<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-								<jboss.http.port>8080</jboss.http.port>
+								<jboss.http.port>8181</jboss.http.port>
 								<jboss.management.http.port>9090</jboss.management.http.port>
 							</systemPropertyVariables>
 							
