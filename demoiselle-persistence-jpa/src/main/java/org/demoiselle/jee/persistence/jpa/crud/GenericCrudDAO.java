@@ -62,9 +62,9 @@ public abstract class GenericCrudDAO<T> {
 
 	public List<T> find(String whereField, String whereValue, String fieldOrder, String order, int init, int qtde) {
 		return getEntityManager()
-				.createQuery("select u from " + this.entityClass.getSimpleName() + " u where u." + whereField + " = "
-						+ whereValue + " ORDER BY " + fieldOrder + " " + order, this.entityClass)
-				.setFirstResult(init).setMaxResults(qtde).getResultList();
+				.createQuery("select u from " + this.entityClass.getSimpleName() + " u where u." + whereField
+						+ " = :value ORDER BY " + fieldOrder + " " + order.toUpperCase(), this.entityClass)
+				.setParameter("value", whereValue).setFirstResult(init).setMaxResults(qtde).getResultList();
 	}
 
 	public Long count() {

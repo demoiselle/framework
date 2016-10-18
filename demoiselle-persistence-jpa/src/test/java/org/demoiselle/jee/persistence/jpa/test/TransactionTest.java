@@ -15,7 +15,9 @@ import javax.persistence.TransactionRequiredException;
 import javax.persistence.TypedQuery;
 import javax.transaction.UserTransaction;
 
+import org.demoiselle.jee.core.exception.DemoiselleException;
 import org.demoiselle.jee.persistence.jpa.entity.User;
+import org.demoiselle.jee.persistence.jpa.exception.DemoisellePersistenceException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -50,6 +52,8 @@ public class TransactionTest {
 	public static Archive<?> createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "persistence-test.war");
 		war.addPackage(User.class.getPackage());
+		war.addPackage(DemoiselleException.class.getPackage());
+		war.addPackage(DemoisellePersistenceException.class.getPackage());
 		war.addAsResource("test-persistence.xml", "META-INF/persistence.xml");
 		war.addAsWebInfResource("jbossas-ds.xml");
 		war.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
@@ -74,7 +78,11 @@ public class TransactionTest {
 			entityManager.persist(user);
 
 			// Se chegar AQUI tem que FALHAR
-			Assert.fail();
+			try {
+				throw new DemoisellePersistenceException("Não existe transação e a operação foi feita!");
+			} catch (DemoisellePersistenceException e) {
+				throw new DemoisellePersistenceException(e);
+			}
 		} catch (TransactionRequiredException e) {
 			Assert.assertTrue(true);
 		} catch (Exception e) {
@@ -133,6 +141,7 @@ public class TransactionTest {
 		TypedQuery<User> q = entityManager.createQuery("SELECT user FROM User user WHERE name = :name", User.class);
 		q.setParameter("name", USER_NAMES[2]);
 		List<User> list = q.getResultList();
+				
 		Assert.assertEquals(0, list.size());
 	}
 
@@ -143,7 +152,7 @@ public class TransactionTest {
 			User user = new User(USER_NAMES[3], USER_EMAILS[3]);
 			entityManager.persist(user);
 
-			throw new Exception("Exception de teste para ver se faz o ROLLBACK de tudo");
+			throw new DemoisellePersistenceException("Exception de teste para ver se faz o ROLLBACK de tudo", new Exception());
 		} catch (Exception e) {
 
 		}
