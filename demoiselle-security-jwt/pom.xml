@@ -34,46 +34,40 @@
             <version>0.5.2</version>
         </dependency>
         
-<!--        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
+        <!-- Delta Spike - Test -->
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-test-control-module-api</artifactId>
+            <version>1.7.1</version>
             <scope>test</scope>
         </dependency>
-
+		
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jaxrs-cdi</artifactId>
-            <version>2016.9</version>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-test-control-module-impl</artifactId>
+            <version>1.7.1</version>
             <scope>test</scope>
         </dependency>
-
+		
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>cdi</artifactId>
-            <version>2016.9</version>
+            <groupId>org.apache.deltaspike.cdictrl</groupId>
+            <artifactId>deltaspike-cdictrl-weld</artifactId>
+            <version>1.7.1</version>
             <scope>test</scope>
         </dependency>
-         Brought in via WildFly Swarm `bom` 
+		
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>arquillian</artifactId>
-            <version>2016.9</version>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <version>2.4.0.Final</version>
             <scope>test</scope>
         </dependency>
+        
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>arquillian-resolver</artifactId>
-            <version>2016.9</version>
-            <scope>test</scope>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>5.3.0.Final</version>
         </dependency>
-         Brought in via Arquillian BOM, see dependencyManagement section above 
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>swarmtool</artifactId>
-            <version>2016.9</version>
-            <classifier>standalone</classifier>
-        </dependency>-->
     </dependencies>
     
 

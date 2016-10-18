@@ -74,6 +74,7 @@
 		<module>demoiselle-rest</module>
 		<module>demoiselle-script</module>
 		<module>demoiselle-security</module>
+                <module>demoiselle-security-basic</module>
 		<module>demoiselle-security-token</module>
 		<module>demoiselle-security-jwt</module>
 	</modules>

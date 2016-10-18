@@ -42,17 +42,19 @@ public class JaxRsFilter implements ContainerRequestFilter, ContainerResponseFil
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext response) {
 
         response.getHeaders().putSingle("Demoiselle", "3.0.0");
+        //response.getHeaders().putSingle("Upgrade", "h2c");
+
         response.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
         response.getHeaders().putSingle("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, DELETE");
         response.getHeaders().putSingle("Access-Control-Allow-Headers", "Content-Type");
 
         if (requestContext.getMethod().equals("GET")) {
-        	if (info.getResourceMethod() != null) {
-	            Cache max = info.getResourceMethod().getAnnotation(Cache.class);
-	            if (max != null) {
-	                response.getHeaders().putSingle("Cache-Control", max.value());
-	            }
-        	}
+            if (info.getResourceMethod() != null) {
+                Cache max = info.getResourceMethod().getAnnotation(Cache.class);
+                if (max != null) {
+                    response.getHeaders().putSingle("Cache-Control", max.value());
+                }
+            }
         }
 
 //        CorsAllowMethods corsAllowMethods = info.getResourceMethod().getAnnotation(CorsAllowMethods.class);
