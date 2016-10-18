@@ -40,7 +40,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.demoiselle.jee</groupId>
-			<artifactId>demoiselle-security-jwt</artifactId>
+			<artifactId>demoiselle-security</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.demoiselle.jee</groupId>

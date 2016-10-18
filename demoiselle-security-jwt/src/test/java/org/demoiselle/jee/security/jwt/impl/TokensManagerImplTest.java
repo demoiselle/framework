@@ -106,6 +106,12 @@ public class TokensManagerImplTest {
     @Test
     public void test21() {
         out.println("getUser");
+        dml.setName("Teste");
+        dml.setIdentity("1");
+        dml.addRole("ADMINISTRATOR");
+        dml.addRole("MANAGER");
+        dml.addPermission("Produto", "Alterar");
+        dml.addPermission("Categoria", "Consultar");
         DemoisellePrincipal expResult = dml;
         DemoisellePrincipal result = instance.getUser();
         assertEquals(expResult, result);

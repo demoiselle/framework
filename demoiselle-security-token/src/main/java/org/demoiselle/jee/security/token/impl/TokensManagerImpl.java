@@ -64,5 +64,9 @@ public class TokensManagerImpl implements TokensManager {
     public boolean validate() {
         return getUser() != null;
     }
+    
+    public void removeToken(){
+        repo.remove(token.getKey());
+    }
 
 }
