@@ -13,10 +13,10 @@ package org.demoiselle.jee.core.api.security;
 public interface SecurityContext {
 
     /**
-	 *
-	 * @return
-	 */
-	boolean isLoggedIn();
+     *
+     * @return
+     */
+    boolean isLoggedIn();
 
     /**
      *

@@ -16,13 +16,15 @@ import java.util.Map;
 public interface DemoisellePrincipal extends Principal {
 
     /**
-     * Identity user @DemoisellePrincipal
-     * @return 
+     * Identity user
+     *
+     * @return
      */
     public String getIdentity();
 
     /**
-     * Identity user @DemoisellePrincipal
+     * Identity user
+     *
      * @param id
      */
     public void setIdentity(String id);

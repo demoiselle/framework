@@ -176,7 +176,7 @@ public class Reflections {
 			result = (T) field.get(object);
 			field.setAccessible(acessible);
 
-		} catch (Exception e) {
+		} catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
 			handleToRuntimeException(e);
 		}
 
@@ -197,7 +197,7 @@ public class Reflections {
 			field.set(object, value);
 			field.setAccessible(acessible);
 
-		} catch (Exception e) {
+		} catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
 			handleToRuntimeException(e);
 		}
 	}
@@ -218,7 +218,7 @@ public class Reflections {
 			}
 		}
 
-		return fields.toArray(new Field[0]);
+		return fields.toArray(new Field[fields.size()]);
 	}
 
 	/**
