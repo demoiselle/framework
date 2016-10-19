@@ -24,6 +24,8 @@ import javax.ws.rs.core.Context;
 /**
  * Filtro que habilita o CORS no sistema inteiro. Para ativar é necessário adicionar o seguinte trecho de XML dentro do web.xml:
  * 
+ * <pre>
+ * {@code
  * 	<filter>
  * 		<filter-name>CorsFilter</filter-name>
  * 		<filter-class>org.demoiselle.jee.rest.filter.JaxRsFilter</filter-class>
@@ -32,7 +34,8 @@ import javax.ws.rs.core.Context;
  * 		<filter-name>CorsFilter</filter-name>
  * 		<url-pattern>/*</url-pattern>
  * 	</filter-mapping>
- * 
+ * }
+ * </pre>
  * @author SERPRO
  *
  */
