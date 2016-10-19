@@ -5,6 +5,10 @@
  */
 package org.demoiselle.jee.core;
 
+/**
+ *
+ * @author 70744416353
+ */
 public class CoreTest {
 
 }

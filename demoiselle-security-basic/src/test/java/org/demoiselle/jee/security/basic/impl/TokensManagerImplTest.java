@@ -5,35 +5,43 @@
  */
 package org.demoiselle.jee.security.basic.impl;
 
+import javax.inject.Inject;
+import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.TokensManager;
+import org.demoiselle.jee.security.impl.DemoisellePrincipalImpl;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author 70744416353
  */
-public class TokensManagerImplIT {
-    
-    public TokensManagerImplIT() {
+//@RunWith(CdiTestRunner.class)
+public class TokensManagerImplTest {
+
+    //@Inject
+    private TokensManager tokensManager;
+
+    public TokensManagerImplTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -41,39 +49,32 @@ public class TokensManagerImplIT {
     /**
      * Test of getUser method, of class TokensManagerImpl.
      */
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testGetUser() {
         System.out.println("getUser");
-//        TokensManagerImpl instance = new TokensManagerImpl();
-//        DemoisellePrincipal expResult = null;
-//        DemoisellePrincipal result = instance.getUser();
-//        assertEquals(expResult, result);
-
+        tokensManager = new TokensManagerImpl();
+        tokensManager.getUser();
     }
 
     /**
      * Test of setUser method, of class TokensManagerImpl.
      */
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testSetUser() {
+        tokensManager = new TokensManagerImpl();
         System.out.println("setUser");
-//        DemoisellePrincipal user = null;
-//        TokensManagerImpl instance = new TokensManagerImpl();
-//        instance.setUser(user);
-
+        DemoisellePrincipal dp = new DemoisellePrincipalImpl();
+        tokensManager.setUser(dp);
     }
 
     /**
      * Test of validate method, of class TokensManagerImpl.
      */
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testValidate() {
+        tokensManager = new TokensManagerImpl();
         System.out.println("validate");
-//        TokensManagerImpl instance = new TokensManagerImpl();
-//        boolean expResult = false;
-//        boolean result = instance.validate();
-//        assertEquals(expResult, result);
-
+        tokensManager.validate();
     }
-    
+
 }

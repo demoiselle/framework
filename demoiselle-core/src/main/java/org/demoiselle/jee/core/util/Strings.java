@@ -66,7 +66,7 @@ public final class Strings {
      * @return
      */
     public static String join(String separator, String... strings) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
 
         if (strings != null) {
             for (int i = 0; i < strings.length; i++) {
@@ -95,7 +95,7 @@ public final class Strings {
      * will be "00yes".
      */
     public static String insertZeros(String string, int howMuchZeros) {
-        StringBuffer result = new StringBuffer((string == null ? "" : string).trim());
+        StringBuilder result = new StringBuilder((string == null ? "" : string).trim());
         int difference = howMuchZeros - result.toString().length();
 
         for (int j = 0; j < difference; j++) {
@@ -124,7 +124,7 @@ public final class Strings {
         String result = null;
 
         if (string != null) {
-            result = new String(string);
+            result = string;
         }
 
         if (params != null && string != null) {
@@ -156,7 +156,7 @@ public final class Strings {
      * @return String the given object converted to string.
      */
     public static String toString(Object object) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         Object fieldValue;
 
         if (object != null) {

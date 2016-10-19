@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Logger.getLogger;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.security.impl.DemoisellePrincipalImpl;
 
 /**
  *
@@ -18,7 +18,7 @@ import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
  */
 @Default
 @ApplicationScoped
-public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
+public class DemoisellePrincipalMock implements DemoisellePrincipal, Cloneable {
 
     private String identity;
     private String name;
@@ -26,7 +26,10 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
     private Map<String, List<String>> permissions;
     private Map<String, List<String>> params;
 
-    public DemoisellePrincipalImpl() {
+    /**
+     *
+     */
+    public DemoisellePrincipalMock() {
         this.roles = new ArrayList<>();
         this.permissions = new HashMap<>();
         this.params = new HashMap<>();
@@ -139,7 +142,7 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final DemoisellePrincipalImpl other = (DemoisellePrincipalImpl) obj;
+        final DemoisellePrincipalMock other = (DemoisellePrincipalMock) obj;
         return Objects.equals(this.identity, other.identity);
     }
 
@@ -153,7 +156,7 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
         try {
             return (DemoisellePrincipal) super.clone();
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DemoisellePrincipalImpl.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(DemoisellePrincipalImpl.class.getName()).log(SEVERE, null, ex);
         }
         return null;
     }

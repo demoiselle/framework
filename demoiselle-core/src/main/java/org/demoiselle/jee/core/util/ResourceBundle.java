@@ -8,6 +8,7 @@ package org.demoiselle.jee.core.util;
 
 import java.io.Serializable;
 import static java.lang.Thread.currentThread;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.Locale;
@@ -104,7 +105,7 @@ public class ResourceBundle extends java.util.ResourceBundle implements Serializ
 			result = method.invoke(delegate, key);
 			method.setAccessible(false);
 
-		} catch (Exception cause) {
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException cause) {
 			throw new RuntimeException(cause);
 		}
 
