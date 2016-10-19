@@ -18,15 +18,18 @@ import org.junit.runner.RunWith;
  *
  * @author 70744416353
  */
-//@RunWith(CdiTestRunner.class)
+@RunWith(CdiTestRunner.class)
 public class TokensManagerImplTest {
 
+    @Inject
     private DemoisellePrincipal dml;
 
-    //@Inject
+    @Inject
     private Token token;
 
-    //@Inject
+    private static String localtoken;
+
+    @Inject
     private TokensManager instance;
 
     /**
@@ -70,16 +73,16 @@ public class TokensManagerImplTest {
     @Test
     public void test20() {
         out.println("setUser");
-//        token.setKey("");
-//        dml = new DemoisellePrincipalMock();
-//        dml.setName("Teste");
-//        dml.setIdentity("1");
-//        dml.addRole("ADMINISTRATOR");
-//        dml.addRole("MANAGER");
-//        dml.addPermission("Produto", "Alterar");
-//        dml.addPermission("Categoria", "Consultar");
-//        instance.setUser(dml);
-//        assertNotEquals("", token.getKey());
+        token.setKey("");
+        dml.setName("Teste");
+        dml.setIdentity("1");
+        dml.addRole("ADMINISTRATOR");
+        dml.addRole("MANAGER");
+        dml.addPermission("Produto", "Alterar");
+        dml.addPermission("Categoria", "Consultar");
+        instance.setUser(dml);
+        localtoken = token.getKey();
+        assertNotEquals("", token.getKey());
     }
 
     /**
@@ -88,51 +91,98 @@ public class TokensManagerImplTest {
     @Test
     public void test21() {
         out.println("getUser");
-//        dml = new DemoisellePrincipalMock();
-//        dml.setName("Teste");
-//        dml.setIdentity("1");
-//        dml.addRole("ADMINISTRATOR");
-//        dml.addRole("MANAGER");
-//        dml.addPermission("Produto", "Alterar");
-//        dml.addPermission("Categoria", "Consultar");
-//        DemoisellePrincipal expResult = dml;
-//        DemoisellePrincipal result = instance.getUser();
-//        assertEquals(expResult, result);
+        token.setKey(localtoken);
+        dml.setName("Teste");
+        dml.setIdentity("1");
+        dml.addRole("ADMINISTRATOR");
+        dml.addRole("MANAGER");
+        dml.addPermission("Produto", "Alterar");
+        dml.addPermission("Categoria", "Consultar");
+        String expResult = dml.getIdentity();
+        String result = instance.getUser().getIdentity();
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void test22() {
+        out.println("setUser já existente");
+        dml.setName("Teste");
+        dml.setIdentity("1");
+        dml.addRole("ADMINISTRATOR");
+        dml.addRole("MANAGER");
+        dml.addPermission("Produto", "Alterar");
+        dml.addPermission("Categoria", "Consultar");
+        instance.setUser(dml);
+        localtoken = token.getKey();
+        instance.setUser(dml);
+        assertEquals(localtoken, token.getKey());
     }
 
     /**
      * Test of validate method, of class TokensManagerImpl.
      */
     @Test
-    public void test22() {
+    public void test23() {
         out.println("validate");
-//        boolean expResult = true;
-//        boolean result = instance.validate();
-//        assertEquals(expResult, result);
+        token.setKey(localtoken);
+        boolean expResult = true;
+        boolean result = instance.validate();
+        assertEquals(expResult, result);
     }
 
     /**
      * Test of getUser method, of class TokensManagerImpl.
      */
     @Test
-    public void test23() {
+    public void test24() {
         out.println("getUserError");
-//        instance.setUser(dml);
-//        token.setKey("");
-//        DemoisellePrincipal expResult = dml;
-//        DemoisellePrincipal result = instance.getUser();
-//        assertNotEquals(expResult, result);
+        dml.setName("Teste2");
+        dml.setIdentity("2");
+        dml.addRole("ADMINISTRATOR");
+        dml.addRole("MANAGER");
+        dml.addPermission("Produto", "Alterar");
+        dml.addPermission("Categoria", "Consultar");
+        instance.setUser(dml);
+        token.setKey(localtoken);
+        DemoisellePrincipal expResult = dml;
+        DemoisellePrincipal result = instance.getUser();
+        assertNotEquals(expResult, result);
     }
 
     /**
      * Test of validate method, of class TokensManagerImpl.
      */
     @Test
-    public void test24() {
+    public void test25() {
         out.println("validateError");
-//        boolean expResult = false;
-//        boolean result = instance.validate();
-//        assertEquals(expResult, result);
+        boolean expResult = false;
+        boolean result = instance.validate();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of validate method, of class TokensManagerImpl.
+     */
+    @Test
+    public void test26() {
+        out.println("remove token");
+        token.setKey(localtoken);
+        ((TokensManagerImpl) instance).removeToken();
+    }
+
+    @Test
+    public void test27() {
+        out.println("remove user");
+        dml.setName("Teste2");
+        dml.setIdentity("2");
+        dml.addRole("ADMINISTRATOR");
+        dml.addRole("MANAGER");
+        dml.addPermission("Produto", "Alterar");
+        dml.addPermission("Categoria", "Consultar");
+        instance.setUser(dml);
+        ((TokensManagerImpl) instance).removeToken(dml);
+        dml = instance.getUser();
+        assertNull(dml);
     }
 
 }
