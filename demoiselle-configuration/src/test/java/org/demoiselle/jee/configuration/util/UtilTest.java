@@ -5,6 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +24,7 @@ import org.demoiselle.jee.configuration.model.ConfigEnum;
 
 public class UtilTest {
 	
+	private static final String DEMOISELLE_CONFIGURATION_TEMP_DIRECTORY = "demoiselle-configuration-test";
 	public static final String CONFIG_INTEGER_FIELD = "configInteger";
 	public static final String CONFIG_SHORT_FIELD = "configShort";
 	public static final String CONFIG_BOOLEAN_FIELD = "configBoolean";
@@ -65,6 +71,9 @@ public class UtilTest {
 	public static final String CONFIG_ARRAY_VALUE_3 = "3";
 	
 	public static final Class<?> CONFIG_CLASS_TYPED_VALUE = ConfigClassModel.class;
+	public static final String CONFIG_STRING_NAME_ANNOTATION_VALUE = "String anotada com @Name";
+	
+	private Path directoryTemp;
 	
 	public Configuration buildConfiguration(Class<? extends FileBasedConfiguration> configurationType, final String file) throws ConfigurationException, MalformedURLException {
 		BasicConfigurationBuilder<? extends Configuration> builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(configurationType);
@@ -77,7 +86,7 @@ public class UtilTest {
 	}
 	
 	public String createPropertiesFile(String prefix) throws IOException {
-		File file = File.createTempFile(prefix, ".properties");
+		File file = createTempFile(prefix, ".properties");
 		
 		String path = file.getAbsolutePath();
 		
@@ -135,7 +144,7 @@ public class UtilTest {
 		sb.append(CONFIG_ARRAY_FIELD).append("=").append(CONFIG_ARRAY_VALUE_2).append("\n");
 		sb.append(CONFIG_ARRAY_FIELD).append("=").append(CONFIG_ARRAY_VALUE_3).append("\n");
 
-		sb.append(CONFIG_STRING_NAME_ANNOTATION_FIELD).append("=").append(CONFIG_STRING_VALUE).append("\n");
+		sb.append(CONFIG_STRING_NAME_ANNOTATION_FIELD).append("=").append(CONFIG_STRING_NAME_ANNOTATION_VALUE).append("\n");
 		
 		sb.append(CONFIG_CLASS_TYPED_FIELD).append("=").append(CONFIG_CLASS_TYPED_VALUE.getCanonicalName()).append("\n");
 		
@@ -144,6 +153,11 @@ public class UtilTest {
 		fos.close();
 		
 		return path;
+	}
+
+	private File createTempFile(String prefix, String suffix) throws IOException {
+		this.directoryTemp = Files.createTempDirectory(DEMOISELLE_CONFIGURATION_TEMP_DIRECTORY);
+		return Files.createTempFile(this.directoryTemp, prefix, suffix).toFile();
 	}
 
 	public String createXMLFile(String prefix) throws FileNotFoundException, IOException {
@@ -163,8 +177,7 @@ public class UtilTest {
 		sb.append("	<").append(CONFIG_DOUBLE_FIELD).append(">").append(CONFIG_DOUBLE_VALUE).append("</").append(CONFIG_DOUBLE_FIELD).append(">");
 		sb.append("	<").append(CONFIG_BOOLEAN_FIELD).append(">").append(CONFIG_BOOLEAN_VALUE).append("</").append(CONFIG_BOOLEAN_FIELD).append(">");
 		sb.append("	<").append(CONFIG_BYTE_FIELD).append(">").append(CONFIG_BYTE_VALUE).append("</").append(CONFIG_BYTE_FIELD).append(">");
-		sb.append("	<").append(CONFIG_CHARACTER_FIELD).append(">").append(CONFIG_CHARACTER_VALUE).append("</").append(CONFIG_CHARACTER_FIELD).append(">");
-		sb.append("	<configClassUntyped>org.demoiselle.jee7.configuration.Tipo</configClassUntyped>");
+		sb.append("	<").append(CONFIG_CHARACTER_FIELD).append(">").append(CONFIG_CHARACTER_VALUE).append("</").append(CONFIG_CHARACTER_FIELD).append(">");		
 		sb.append("	<").append(CONFIG_CLASS_TYPED_FIELD).append(">").append(CONFIG_CLASS_TYPED_VALUE.getCanonicalName()).append("</").append(CONFIG_CLASS_TYPED_FIELD).append(">");
 		sb.append("	<").append(CONFIG_ENUM_FIELD).append(">").append(CONFIG_ENUM_VALUE).append("</").append(CONFIG_ENUM_FIELD).append(">");
 		sb.append("	");
@@ -173,16 +186,15 @@ public class UtilTest {
 		sb.append("	  <").append(keyMapPort).append(">").append(CONFIG_MAP_VALUE_PORT).append("</").append(keyMapPort).append(">");
 		sb.append("	  <").append(keyMapProtocol).append(">").append(CONFIG_MAP_VALUE_PROTOCOL).append("</").append(keyMapProtocol).append(">");
 		sb.append("	</").append(CONFIG_MAP_FIELD).append(">");
-		sb.append("	");
-		
+		sb.append("	");	
 		sb.append("	<").append(CONFIG_ARRAY_FIELD).append(">").append(CONFIG_ARRAY_VALUE_1).append("</").append(CONFIG_ARRAY_FIELD).append(">");
 		sb.append("	<").append(CONFIG_ARRAY_FIELD).append(">").append(CONFIG_ARRAY_VALUE_2).append("</").append(CONFIG_ARRAY_FIELD).append(">");
 		sb.append("	<").append(CONFIG_ARRAY_FIELD).append(">").append(CONFIG_ARRAY_VALUE_3).append("</").append(CONFIG_ARRAY_FIELD).append(">");
-
-		sb.append("	 ");
+		sb.append("	");
+		sb.append(" <").append(CONFIG_STRING_NAME_ANNOTATION_FIELD).append(">").append(CONFIG_STRING_NAME_ANNOTATION_VALUE).append("</").append(CONFIG_STRING_NAME_ANNOTATION_FIELD).append(">");
 		sb.append("</configuration>");
 		
-		File file = File.createTempFile(prefix, ".xml");
+		File file = createTempFile(prefix, ".xml");
 		FileOutputStream fos = new FileOutputStream(file);
 		fos.write(sb.toString().getBytes());
 		fos.close();
@@ -210,6 +222,42 @@ public class UtilTest {
 		
 		System.setProperty(CONFIG_CLASS_TYPED_FIELD, CONFIG_CLASS_TYPED_VALUE.getCanonicalName());
 		
+		System.setProperty(CONFIG_STRING_NAME_ANNOTATION_FIELD, CONFIG_STRING_NAME_ANNOTATION_VALUE);
+		
+	}
+
+	public Path getDirectoryTemp() {
+		return directoryTemp;
+	}
+
+	public void deleteFilesAfterTest() throws IOException {
+		if(getDirectoryTemp() != null){
+			Files.walkFileTree(getDirectoryTemp(), new FileVisitor<Path>(){
+	
+				@Override
+				public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+					return FileVisitResult.CONTINUE;
+				}
+	
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					Files.delete(file);
+					return FileVisitResult.CONTINUE;
+				}
+	
+				@Override
+				public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+					return FileVisitResult.CONTINUE;
+				}
+	
+				@Override
+				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+					Files.delete(dir);
+					return FileVisitResult.CONTINUE;
+				}
+				
+			});
+		}
 	}
 
 }

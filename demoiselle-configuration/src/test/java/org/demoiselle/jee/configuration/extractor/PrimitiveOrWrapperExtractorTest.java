@@ -1,10 +1,9 @@
-package org.demoiselle.jee.configuration;
+package org.demoiselle.jee.configuration.extractor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 
 import org.apache.commons.configuration2.Configuration;
@@ -13,29 +12,15 @@ import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.builder.BasicConfigurationBuilder;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 import org.demoiselle.jee.configuration.extractor.impl.ConfigurationPrimitiveOrWrapperValueExtractor;
 import org.demoiselle.jee.configuration.model.ConfigModel;
 import org.demoiselle.jee.configuration.util.UtilTest;
 import org.junit.Test;
 
-public class PrimitiveOrWrapperExtractorTest {
+public class PrimitiveOrWrapperExtractorTest extends AbstractConfigurationTest{
 	
 	private ConfigModel configModel = new ConfigModel();
 	private ConfigurationValueExtractor conf = new ConfigurationPrimitiveOrWrapperValueExtractor();
-	
-	private final String FILE_PREFIX = "app";
-	private String FILE_PATH_PROPERTIES = "";
-	private String FILE_PATH_XML = "";
-	private final UtilTest utilTest = new UtilTest();
-	
-	private final String PREFIX = "";
-	
-	public PrimitiveOrWrapperExtractorTest() throws IOException {
-		FILE_PATH_PROPERTIES = utilTest.createPropertiesFile(FILE_PREFIX);
-		FILE_PATH_XML = utilTest.createXMLFile(FILE_PREFIX);
-		utilTest.createSystemVariables();
-	}
 	
 	@Test
 	public void extractorShouldBeSupportInteger() throws NoSuchFieldException, SecurityException{
@@ -213,8 +198,8 @@ public class PrimitiveOrWrapperExtractorTest {
 		testValueFromSystem(UtilTest.CONFIG_FLOAT_FIELD, UtilTest.CONFIG_FLOAT_VALUE);
 	}
 	
-	
 	private void testValueFromSystem(String key, Object value) throws ConfigurationException, Exception {
+		utilTest.createSystemVariables();
 		BasicConfigurationBuilder<? extends Configuration> builder = new BasicConfigurationBuilder<>(SystemConfiguration.class);
 
 		Field field = configModel.getClass().getDeclaredField(key);
@@ -226,7 +211,7 @@ public class PrimitiveOrWrapperExtractorTest {
 	}
 
 	private void testValueFromProperties(String key, Object value) throws Exception{
-		Configuration configuration = utilTest.buildConfiguration(PropertiesConfiguration.class, FILE_PATH_PROPERTIES);
+		Configuration configuration = utilTest.buildConfiguration(PropertiesConfiguration.class, utilTest.createPropertiesFile(FILE_PREFIX));
 		
 		Field field = configModel.getClass().getDeclaredField(key);
 		Object result = conf.getValue(PREFIX, key, field, configuration);
@@ -236,7 +221,7 @@ public class PrimitiveOrWrapperExtractorTest {
 	}
 	
 	private void testValueFromXML(String key, Object value) throws Exception{
-		Configuration configuration = utilTest.buildConfiguration(XMLConfiguration.class, FILE_PATH_XML);
+		Configuration configuration = utilTest.buildConfiguration(XMLConfiguration.class, utilTest.createXMLFile(FILE_PREFIX));
 		
 		Field field = configModel.getClass().getDeclaredField(key);
 		Object result = conf.getValue(PREFIX, key, field, configuration);

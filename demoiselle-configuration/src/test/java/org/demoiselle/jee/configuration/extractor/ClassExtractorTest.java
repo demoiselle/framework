@@ -1,9 +1,8 @@
-package org.demoiselle.jee.configuration;
+package org.demoiselle.jee.configuration.extractor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 
 import org.apache.commons.configuration2.Configuration;
@@ -19,28 +18,15 @@ import org.demoiselle.jee.configuration.model.ConfigModel;
 import org.demoiselle.jee.configuration.util.UtilTest;
 import org.junit.Test;
 
-public class ClassExtractorTest {
-	
-	private final String FILE_PREFIX = "app";
-	private final UtilTest utilTest = new UtilTest();
+public class ClassExtractorTest extends AbstractConfigurationTest{
 	
 	private ConfigModel configModel = new ConfigModel();
-	private String PREFIX = "";
-	
-	private String FILE_PATH_PROPERTIES = "";
-	private String FILE_PATH_XML = "";
 	
 	private ConfigurationValueExtractor conf = new ConfigurationClassValueExtractor();
 	
-	public ClassExtractorTest() throws IOException{
-		FILE_PATH_PROPERTIES = utilTest.createPropertiesFile(FILE_PREFIX);
-		FILE_PATH_XML = utilTest.createXMLFile(FILE_PREFIX);
-		utilTest.createSystemVariables();
-	}
-	
 	@Test
 	public void extractClassFromProperties() throws Exception{
-		Configuration configuration = utilTest.buildConfiguration(PropertiesConfiguration.class, FILE_PATH_PROPERTIES);
+		Configuration configuration = utilTest.buildConfiguration(PropertiesConfiguration.class, utilTest.createPropertiesFile(FILE_PREFIX));
 		
 		Object value = conf.getValue(PREFIX, UtilTest.CONFIG_CLASS_TYPED_FIELD, configModel.getClass().getDeclaredField(UtilTest.CONFIG_CLASS_TYPED_FIELD), configuration);
 		
@@ -50,7 +36,7 @@ public class ClassExtractorTest {
 	
 	@Test
 	public void extractClassFromXML() throws Exception{
-		Configuration configuration = utilTest.buildConfiguration(XMLConfiguration.class, FILE_PATH_XML);
+		Configuration configuration = utilTest.buildConfiguration(XMLConfiguration.class, utilTest.createXMLFile(FILE_PREFIX));
 		
 		Object value = conf.getValue(PREFIX, UtilTest.CONFIG_CLASS_TYPED_FIELD, configModel.getClass().getDeclaredField(UtilTest.CONFIG_CLASS_TYPED_FIELD), configuration);
 		
@@ -60,6 +46,7 @@ public class ClassExtractorTest {
 	
 	@Test
 	public void extractClassFromSystemVariable() throws ConfigurationException, Exception {
+		utilTest.createSystemVariables();
 		BasicConfigurationBuilder<? extends Configuration> builder = new BasicConfigurationBuilder<>(SystemConfiguration.class);
 
 		Object value = conf.getValue(PREFIX, UtilTest.CONFIG_CLASS_TYPED_FIELD, configModel.getClass().getDeclaredField(UtilTest.CONFIG_CLASS_TYPED_FIELD), builder.getConfiguration());

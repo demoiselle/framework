@@ -1,10 +1,8 @@
-package org.demoiselle.jee.configuration;
+package org.demoiselle.jee.configuration.extractor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Map;
 
@@ -16,18 +14,10 @@ import org.apache.commons.configuration2.builder.BasicConfigurationBuilder;
 import org.demoiselle.jee.configuration.extractor.impl.ConfigurationMapValueExtractor;
 import org.demoiselle.jee.configuration.model.ConfigModel;
 import org.demoiselle.jee.configuration.util.UtilTest;
+import org.junit.Before;
 import org.junit.Test;
 
-
-public class MapExtractorTest {
-	
-	private final UtilTest utilTest = new UtilTest();
-	
-	private String FILE_PATH_PROPERTIES = "";
-	private String FILE_PATH_XML = "";
-	
-	private final String FILE_PREFIX = "app";
-	private final String PREFIX = "";
+public class MapExtractorTest extends AbstractConfigurationTest{
 	
 	private ConfigurationMapValueExtractor conf = new ConfigurationMapValueExtractor();
 	private ConfigModel configModel = new ConfigModel();
@@ -36,11 +26,8 @@ public class MapExtractorTest {
 	private String keyPort = "";
 	private String keyProtocol = "";
 	
-	public MapExtractorTest() throws FileNotFoundException, IOException {
-		FILE_PATH_PROPERTIES = utilTest.createPropertiesFile(FILE_PREFIX);
-		FILE_PATH_XML = utilTest.createXMLFile(FILE_PREFIX);
-		utilTest.createSystemVariables();
-		
+	@Before
+	public void setUp(){
 		keyIp = UtilTest.CONFIG_MAP_FIELD_IP.replaceAll(UtilTest.CONFIG_MAP_FIELD + ".", "");
 		keyPort = UtilTest.CONFIG_MAP_FIELD_PORT.replaceAll(UtilTest.CONFIG_MAP_FIELD + ".", "");
 		keyProtocol = UtilTest.CONFIG_MAP_FIELD_PROTOCOL.replaceAll(UtilTest.CONFIG_MAP_FIELD + ".", "");
@@ -48,7 +35,7 @@ public class MapExtractorTest {
 	
 	@Test
 	public void extractMapFromProperties() throws Exception{
-		Configuration configuration = utilTest.buildConfiguration(PropertiesConfiguration.class, FILE_PATH_PROPERTIES);
+		Configuration configuration = utilTest.buildConfiguration(PropertiesConfiguration.class, utilTest.createPropertiesFile(FILE_PREFIX));
 		
 		Field field = configModel.getClass().getDeclaredField(UtilTest.CONFIG_MAP_FIELD);
 		
@@ -63,7 +50,7 @@ public class MapExtractorTest {
 	
 	@Test
 	public void extractMapFromXML() throws Exception{
-		Configuration configuration = utilTest.buildConfiguration(XMLConfiguration.class, FILE_PATH_XML);
+		Configuration configuration = utilTest.buildConfiguration(XMLConfiguration.class, utilTest.createXMLFile(FILE_PREFIX));
 		
 		Field field = configModel.getClass().getDeclaredField(UtilTest.CONFIG_MAP_FIELD);
 		
@@ -78,6 +65,7 @@ public class MapExtractorTest {
 	
 	@Test
 	public void extractMapFromSystem() throws Exception{
+		utilTest.createSystemVariables();
 		BasicConfigurationBuilder<? extends Configuration> builder = new BasicConfigurationBuilder<>(SystemConfiguration.class);
 		
 		Field field = configModel.getClass().getDeclaredField(UtilTest.CONFIG_MAP_FIELD);

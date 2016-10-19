@@ -310,7 +310,7 @@ public class ConfigurationLoader implements Serializable {
 		}
 	}
 	
-	public List<Field> getNonStaticFields(Class<?> type) {
+	private List<Field> getNonStaticFields(Class<?> type) {
 		List<Field> fields = new ArrayList<Field>();
 
 		if (type != null) {
@@ -324,7 +324,7 @@ public class ConfigurationLoader implements Serializable {
 		return fields;
 	}
 	
-	public Field[] getNonStaticDeclaredFields(Class<?> type) {
+	private Field[] getNonStaticDeclaredFields(Class<?> type) {
 		List<Field> fields = new ArrayList<Field>();
 
 		if (type != null) {
@@ -338,12 +338,12 @@ public class ConfigurationLoader implements Serializable {
 		return fields.toArray(new Field[0]);
 	}
 	
-	public URL getResourceAsURL(final String resource) {
+	private URL getResourceAsURL(final String resource) {
 		ClassLoader classLoader = getClassLoaderForResource(resource);
 		return classLoader != null ? classLoader.getResource(resource) : null;
 	}
 
-	public ClassLoader getClassLoaderForResource(final String resource) {
+	private ClassLoader getClassLoaderForResource(final String resource) {
 		final String stripped = resource.charAt(0) == '/' ? resource.substring(1) : resource;
 
 		URL url = null;
@@ -366,7 +366,7 @@ public class ConfigurationLoader implements Serializable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> T getFieldValue(Field field, Object object) {
+	private <T> T getFieldValue(Field field, Object object) {
 		T result = null;
 
 		try {
@@ -382,7 +382,7 @@ public class ConfigurationLoader implements Serializable {
 		return result;
 	}
 	
-	public void setFieldValue(Field field, Object object, Object value) {
+	private void setFieldValue(Field field, Object object, Object value) {
 		try {
 			boolean acessible = field.isAccessible();
 			field.setAccessible(true);

@@ -1,10 +1,8 @@
-package org.demoiselle.jee.configuration;
+package org.demoiselle.jee.configuration.extractor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -17,30 +15,19 @@ import org.demoiselle.jee.configuration.model.ConfigModel;
 import org.demoiselle.jee.configuration.util.UtilTest;
 import org.junit.Test;
 
-
-public class ArrayExtractorTest {
-	
-	private final UtilTest utilTest = new UtilTest();
-	
-	private String FILE_PATH_PROPERTIES = "";
-	private String FILE_PATH_XML = "";
-	
-	private final String FILE_PREFIX = "app";
-	private final String PREFIX = "";
+public class ArrayExtractorTest extends AbstractConfigurationTest{
 	
 	private ConfigurationArrayValueExtractor conf = new ConfigurationArrayValueExtractor();
 	private ConfigModel configModel = new ConfigModel();
-	
-	
-	public ArrayExtractorTest() throws FileNotFoundException, IOException {
-		FILE_PATH_PROPERTIES = utilTest.createPropertiesFile(FILE_PREFIX);
-		FILE_PATH_XML = utilTest.createXMLFile(FILE_PREFIX);
-		utilTest.createSystemVariables();
-	}
-	
+		
+	/** 
+	 * Test whether {@link ConfigurationArrayValueExtractor} can extract values from a PROPERTIES file 
+	 * 
+	 * @throws Exception
+	 */
 	@Test
-	public void extractMapFromProperties() throws Exception{
-		Configuration configuration = utilTest.buildConfiguration(PropertiesConfiguration.class, FILE_PATH_PROPERTIES);
+	public void extractArrayFromProperties() throws Exception{
+		Configuration configuration = utilTest.buildConfiguration(PropertiesConfiguration.class, utilTest.createPropertiesFile(FILE_PREFIX));
 		
 		Field field = configModel.getClass().getDeclaredField(UtilTest.CONFIG_ARRAY_FIELD);
 		
@@ -55,9 +42,14 @@ public class ArrayExtractorTest {
 		assertTrue(list.contains(UtilTest.CONFIG_ARRAY_VALUE_3));
 	}
 	
+	/** 
+	 * Test whether {@link ConfigurationArrayValueExtractor} can extract values from a XML file 
+	 * 
+	 * @throws Exception
+	 */	
 	@Test
-	public void extractMapFromXML() throws Exception{
-		Configuration configuration = utilTest.buildConfiguration(XMLConfiguration.class, FILE_PATH_XML);
+	public void extractArrayFromXML() throws Exception{
+		Configuration configuration = utilTest.buildConfiguration(XMLConfiguration.class, utilTest.createXMLFile(FILE_PREFIX));
 		
 		Field field = configModel.getClass().getDeclaredField(UtilTest.CONFIG_ARRAY_FIELD);
 		
@@ -73,9 +65,11 @@ public class ArrayExtractorTest {
 	}
 	
 	/*
-	System roperties doesn't accept duplicate key, so I need test Array Extractor. 
+	System properties doesn't accept duplicate key, so I need test Array Extractor. 
 	@Test	
-	public void extractMapFromSystem() throws Exception{
+	public void extractArrayFromSystem() throws Exception{
+		utilTest.createSystemVariables();
+		
 		BasicConfigurationBuilder<? extends Configuration> builder = new BasicConfigurationBuilder<>(SystemConfiguration.class);
 		
 		Field field = configModel.getClass().getDeclaredField(UtilTest.CONFIG_ARRAY_FIELD);
@@ -91,9 +85,15 @@ public class ArrayExtractorTest {
 		assertTrue(list.contains(UtilTest.CONFIG_ARRAY_VALUE_3));
 	}*/
 	
+	/** 
+	 * Test whether {@link ConfigurationArrayValueExtractor} can support array type 
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void extractorShouldBeSupportArray() throws NoSuchFieldException, SecurityException{
 		assertTrue(conf.isSupported(configModel.getClass().getDeclaredField(UtilTest.CONFIG_ARRAY_FIELD)));
 	}
+		
 
 }

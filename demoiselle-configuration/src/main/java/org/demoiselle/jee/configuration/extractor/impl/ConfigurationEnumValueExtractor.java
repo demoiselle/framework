@@ -28,11 +28,11 @@ public class ConfigurationEnumValueExtractor implements ConfigurationValueExtrac
 					return enums[i];
 				}
 			}
-		} else {
-			return null;
-		}
-
+		} 
+		
 		throw new ConversionException(bundle.configurationNotConversion(value, field.getDeclaringClass().getCanonicalName()));
+		
+		
 	}
 
 	public boolean isSupported(Field field) {

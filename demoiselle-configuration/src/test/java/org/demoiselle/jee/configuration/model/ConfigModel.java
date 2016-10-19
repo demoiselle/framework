@@ -2,10 +2,11 @@ package org.demoiselle.jee.configuration.model;
 
 import java.util.Map;
 
+import org.demoiselle.jee.configuration.ConfigType;
 import org.demoiselle.jee.configuration.annotation.Configuration;
 import org.demoiselle.jee.core.annotation.Name;
 
-@Configuration()
+@Configuration(resource = "app", type = ConfigType.PROPERTIES, prefix = "")
 public class ConfigModel {
 	
 	private Integer configInteger;
