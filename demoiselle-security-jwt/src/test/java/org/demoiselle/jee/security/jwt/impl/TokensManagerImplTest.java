@@ -1,6 +1,7 @@
 package org.demoiselle.jee.security.jwt.impl;
 
 import static java.lang.System.out;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
@@ -27,6 +28,8 @@ public class TokensManagerImplTest {
 
     @Inject
     private Token token;
+
+    private static String localtoken;
 
     @Inject
     private TokensManager instance;
@@ -96,8 +99,8 @@ public class TokensManagerImplTest {
         dml.addPermission("Produto", "Alterar");
         dml.addPermission("Categoria", "Consultar");
         instance.setUser(dml);
+        localtoken = token.getKey();
         assertNotEquals("", token.getKey());
-        out.println(token.getKey());
     }
 
     /**
@@ -106,6 +109,7 @@ public class TokensManagerImplTest {
     @Test
     public void test21() {
         out.println("getUser");
+        token.setKey(localtoken);
         dml.setName("Teste");
         dml.setIdentity("1");
         dml.addRole("ADMINISTRATOR");
@@ -123,6 +127,7 @@ public class TokensManagerImplTest {
     @Test
     public void test22() {
         out.println("validate");
+        token.setKey(localtoken);
         boolean expResult = true;
         boolean result = instance.validate();
         assertEquals(expResult, result);
@@ -134,10 +139,15 @@ public class TokensManagerImplTest {
     @Test
     public void test23() {
         out.println("getUserError");
-        instance.setUser(dml);
-        token.setKey("");
-        DemoisellePrincipal expResult = dml;
-        DemoisellePrincipal result = instance.getUser();
+        token.setKey(localtoken);
+        dml.setName("Teste2");
+        dml.setIdentity("2");
+        dml.addRole("ADMINISTRATOR");
+        dml.addRole("MANAGER");
+        dml.addPermission("Produto", "Alterar");
+        dml.addPermission("Categoria", "Consultar");
+        String expResult = dml.getIdentity();
+        String result = instance.getUser().getIdentity();
         assertNotEquals(expResult, result);
     }
 

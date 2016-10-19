@@ -21,10 +21,10 @@ import org.junit.runner.RunWith;
  *
  * @author 70744416353
  */
-//@RunWith(CdiTestRunner.class)
+@RunWith(CdiTestRunner.class)
 public class TokensManagerImplTest {
 
-    //@Inject
+    @Inject
     private TokensManager tokensManager;
 
     public TokensManagerImplTest() {
@@ -52,7 +52,6 @@ public class TokensManagerImplTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testGetUser() {
         System.out.println("getUser");
-        tokensManager = new TokensManagerImpl();
         tokensManager.getUser();
     }
 
@@ -61,7 +60,6 @@ public class TokensManagerImplTest {
      */
     @Test(expected = UnsupportedOperationException.class)
     public void testSetUser() {
-        tokensManager = new TokensManagerImpl();
         System.out.println("setUser");
         DemoisellePrincipal dp = new DemoisellePrincipalImpl();
         tokensManager.setUser(dp);
@@ -72,7 +70,6 @@ public class TokensManagerImplTest {
      */
     @Test(expected = UnsupportedOperationException.class)
     public void testValidate() {
-        tokensManager = new TokensManagerImpl();
         System.out.println("validate");
         tokensManager.validate();
     }

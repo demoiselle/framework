@@ -120,8 +120,9 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 37 * hash + Objects.hashCode(this.identity);
+        int hash = 3;
+        hash = 19 * hash + Objects.hashCode(this.identity);
+        hash = 19 * hash + Objects.hashCode(this.name);
         return hash;
     }
 
@@ -137,7 +138,11 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
             return false;
         }
         final DemoisellePrincipalImpl other = (DemoisellePrincipalImpl) obj;
-        return Objects.equals(this.identity, other.identity);
+        if (!Objects.equals(this.identity, other.identity)) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

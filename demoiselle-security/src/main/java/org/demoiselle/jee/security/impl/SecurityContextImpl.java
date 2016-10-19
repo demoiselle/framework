@@ -8,6 +8,7 @@ package org.demoiselle.jee.security.impl;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.api.security.SecurityContext;
@@ -17,7 +18,7 @@ import org.demoiselle.jee.core.api.security.TokensManager;
  *
  * @author 70744416353
  */
-@ApplicationScoped
+@RequestScoped
 public class SecurityContextImpl implements SecurityContext {
     
     private static final long serialVersionUID = 1L;

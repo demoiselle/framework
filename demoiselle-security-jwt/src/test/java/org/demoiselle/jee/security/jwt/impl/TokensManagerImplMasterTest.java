@@ -28,6 +28,8 @@ public class TokensManagerImplMasterTest {
     @Inject
     private Token token;
 
+    private static String localtoken;
+
     @Inject
     private TokensManager instance;
 
@@ -98,8 +100,8 @@ public class TokensManagerImplMasterTest {
         dml.addPermission("Produto", "Alterar");
         dml.addPermission("Categoria", "Consultar");
         instance.setUser(dml);
+        localtoken = token.getKey();
         assertNotEquals("", token.getKey());
-        out.println(token.getKey());
     }
 
     /**
@@ -108,6 +110,13 @@ public class TokensManagerImplMasterTest {
     @Test
     public void test21() {
         out.println("getUser");
+        token.setKey(localtoken);
+        dml.setName("Teste");
+        dml.setIdentity("1");
+        dml.addRole("ADMINISTRATOR");
+        dml.addRole("MANAGER");
+        dml.addPermission("Produto", "Alterar");
+        dml.addPermission("Categoria", "Consultar");
         DemoisellePrincipal expResult = dml;
         DemoisellePrincipal result = instance.getUser();
         assertEquals(expResult, result);
@@ -119,6 +128,7 @@ public class TokensManagerImplMasterTest {
     @Test
     public void test22() {
         out.println("validate");
+        token.setKey(localtoken);
         boolean expResult = true;
         boolean result = instance.validate();
         assertEquals(expResult, result);

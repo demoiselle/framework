@@ -103,6 +103,18 @@
                 <artifactId>demoiselle-security</artifactId>
                 <version>${demoiselle.version}</version>
             </dependency>
+            
+            <dependency>
+ 				<groupId>org.demoiselle.jee</groupId>
+ 				<artifactId>demoiselle-security-jwt</artifactId>
+ 				<version>${demoiselle.version}</version>
+ 			</dependency>
+ 			
+ 			<dependency>
+ 				<groupId>org.demoiselle.jee</groupId>
+ 				<artifactId>demoiselle-security-token</artifactId>
+ 				<version>${demoiselle.version}</version>
+ 			</dependency>
 
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>

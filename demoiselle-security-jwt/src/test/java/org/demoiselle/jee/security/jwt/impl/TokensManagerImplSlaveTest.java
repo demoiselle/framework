@@ -136,6 +136,7 @@ public class TokensManagerImplSlaveTest {
     @Test
     public void test22() {
         out.println("validate");
+        token.setKey("eyJraWQiOiJkZW1vaXNlbGxlLXNlY3VyaXR5LWp3dCIsImFsZyI6IlJTMjU2In0.eyJpc3MiOiJTVE9SRSIsImF1ZCI6IndlYiIsImV4cCI6NjAwMDAxNDk1ODQ4ODE2LCJqdGkiOiJXRHdLYVNkSXdDVl81WVBnWnZtdFBBIiwiaWF0IjoxNDc2ODEwNjA4LCJuYmYiOjE0NzY4MTA1NDgsImlkZW50aXR5IjoiMSIsIm5hbWUiOiJUZXN0ZSIsInJvbGVzIjpbIkFETUlOSVNUUkFUT1IiLCJNQU5BR0VSIl0sInBlcm1pc3Npb25zIjp7IkNhdGVnb3JpYSI6WyJDb25zdWx0YXIiXSwiUHJvZHV0byI6WyJBbHRlcmFyIl19LCJwYXJhbXMiOnt9fQ.VLVu422XNRXGdahQr93YnTt5iKMaKjybP7jifZMQ0tdIPT3-mivXDbTEfMmMEC9DwdaTQqZdwhuPQRDR7rvUQ3MFwHyPzMzKNPWqFyq-SMMEC_pOvnLjJaPgG0pCyZT9-Dl8QqAMWnzsvceL3XjLKsaS6Ov1S5wXxPQk2m0Y1rdjYGRPLgLNNoR5rH91VToM6UxOOvjUwHoqEFFMHxp6saxQVSYtF_Cjhq1Jqk-cQ3YhhZvcPvrjz6fSLhGtDDEy9-w7Yd_HFzBCr9EVhLcSXr23Vrl-ryvpxdOESK9lSizuTiZgpI-TGqo5hydXZ-uy877CPvMaFIgIueE7GpQz3w");
         boolean expResult = true;
         boolean result = instance.validate();
         assertEquals(expResult, result);
