@@ -20,7 +20,7 @@ public class ConfigurationInterceptor {
 		final ConfigurationLoader configurationLoader = CDI.current().select(ConfigurationLoader.class).get();
 
 		final Class<?> baseClass = ic.getMethod().getDeclaringClass();
-		configurationLoader.load(ic.getTarget(), baseClass);
+		configurationLoader.load(ic.getTarget(), baseClass, Boolean.TRUE);
 		return ic.proceed();
 	}
 }

@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
@@ -38,12 +39,14 @@ public class UtilTest {
 	public static final String CONFIG_ENUM_FIELD = "configEnum";
 	public static final String CONFIG_CLASS_TYPED_FIELD = "configClassTyped";
 	
-	public static final String CONFIG_STRING_FIELD_WITH_NAME = "configStringWithName";
+	public static final String CONFIG_STRING_FIELD_WITH_NAME_ANNOTATION = "configStringWithName";
 	
 	public static final String CONFIG_MAP_FIELD = "configMap";	
 	public static final String CONFIG_MAP_FIELD_IP = CONFIG_MAP_FIELD + ".ip";
 	public static final String CONFIG_MAP_FIELD_PROTOCOL = CONFIG_MAP_FIELD + ".protocol";
 	public static final String CONFIG_MAP_FIELD_PORT = CONFIG_MAP_FIELD + ".port";
+	
+	public static final String CONFIG_STRING_FIELD_WITH_IGNORE_ANNOTATION = "configFieldWithIgnore";
 	
 	public static final String CONFIG_ARRAY_FIELD = "configArray";
 
@@ -63,6 +66,7 @@ public class UtilTest {
 	public static final Map<String, String> CONFIG_MAP_VALUE = new HashMap<>();
 	public static final ConfigEnum CONFIG_ENUM_VALUE = ConfigEnum.ENUM2;
 	
+	
 	public static final String CONFIG_STRING_NAME_ANNOTATION_FIELD = "config-name-with-name";
 	
 	public static final String[] CONFIG_ARRAY_VALUE = new String[]{};
@@ -71,7 +75,9 @@ public class UtilTest {
 	public static final String CONFIG_ARRAY_VALUE_3 = "3";
 	
 	public static final Class<?> CONFIG_CLASS_TYPED_VALUE = ConfigClassModel.class;
-	public static final String CONFIG_STRING_NAME_ANNOTATION_VALUE = "String anotada com @Name";
+	public static final String CONFIG_STRING_NAME_ANNOTATION_VALUE = "String annotated with @Name Annotation";
+	
+	public static final String CONFIG_STRING_IGNORE_ANNOTATION_VALUE = "String annotated with @Ignore Annotation";
 	
 	private Path directoryTemp;
 	
@@ -147,6 +153,8 @@ public class UtilTest {
 		sb.append(CONFIG_STRING_NAME_ANNOTATION_FIELD).append("=").append(CONFIG_STRING_NAME_ANNOTATION_VALUE).append("\n");
 		
 		sb.append(CONFIG_CLASS_TYPED_FIELD).append("=").append(CONFIG_CLASS_TYPED_VALUE.getCanonicalName()).append("\n");
+		
+		sb.append(CONFIG_STRING_FIELD_WITH_IGNORE_ANNOTATION).append("=").append(CONFIG_STRING_IGNORE_ANNOTATION_VALUE).append("\n");
 		
 		FileOutputStream fos = new FileOutputStream(file);
 		fos.write(sb.toString().getBytes());
@@ -258,6 +266,17 @@ public class UtilTest {
 				
 			});
 		}
+	}
+
+	public String createPropertiesFile(String prefix, Properties properties) throws IOException {
+		
+		File file = createTempFile(prefix, ".properties");
+		
+		String path = file.getAbsolutePath();
+		
+		properties.store(new FileOutputStream(file), "Demoiselle Configuration Test");
+		
+		return path;
 	}
 
 }
