@@ -35,7 +35,7 @@ public class TokensManagerImplTest {
     private TokensManager instance;
 
     @Inject
-    private Config config;
+    private DemoiselleSecurityJWTConfig config;
 
     /**
      *

@@ -33,6 +33,7 @@ import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.keys.RsaKeyUtil;
 import org.jose4j.lang.JoseException;
+import static java.security.KeyPairGenerator.getInstance;
 
 /**
  * O componente de seguraça JWT utiliza uma estratégia onde é necessário um par
@@ -65,7 +66,7 @@ public class TokensManagerImpl implements TokensManager {
     private Token token;
 
     @Inject
-    private Config config;
+    private DemoiselleSecurityJWTConfig config;
 
     @Inject
     private DemoisellePrincipal loggedUser;
@@ -105,11 +106,9 @@ public class TokensManagerImpl implements TokensManager {
                     publicKey = getPublic();
                 }
 
-            }
-            catch (DemoiselleSecurityException ex) {
+            } catch (DemoiselleSecurityException ex) {
                 logger.severe(ex.getMessage());
-            }
-            catch (JoseException | InvalidKeySpecException | NoSuchAlgorithmException ex) {
+            } catch (JoseException | InvalidKeySpecException | NoSuchAlgorithmException ex) {
                 logger.severe(ex.getMessage());
             }
 
@@ -144,8 +143,7 @@ public class TokensManagerImpl implements TokensManager {
                 loggedUser.setParams((Map) jwtClaims.getClaimValue("params"));
 
                 return loggedUser;
-            }
-            catch (InvalidJwtException ex) {
+            } catch (InvalidJwtException ex) {
                 loggedUser = null;
                 token.setKey(null);
                 logger.severe(ex.getMessage());
@@ -181,8 +179,7 @@ public class TokensManagerImpl implements TokensManager {
             jws.setAlgorithmHeaderValue(RSA_USING_SHA256);
             token.setKey(jws.getCompactSerialization());
             token.setType("JWT");
-        }
-        catch (JoseException ex) {
+        } catch (JoseException ex) {
             logger.severe(ex.getMessage());
         }
 

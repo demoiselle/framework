@@ -35,11 +35,6 @@
         </dependency>
         
         <dependency>
-            <groupId>org.demoiselle.jee</groupId>
-            <artifactId>demoiselle-configuration</artifactId>
-        </dependency>
-        
-        <dependency>
             <groupId>org.bitbucket.b_c</groupId>
             <artifactId>jose4j</artifactId>
             <version>0.5.2</version>

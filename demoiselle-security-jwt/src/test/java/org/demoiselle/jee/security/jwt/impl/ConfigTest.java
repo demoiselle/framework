@@ -19,6 +19,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import static java.lang.Float.valueOf;
+import static java.lang.Float.valueOf;
+import static java.lang.Float.valueOf;
 
 /**
  *
@@ -28,7 +30,7 @@ import static java.lang.Float.valueOf;
 public class ConfigTest {
 
     @Inject
-    private Config instance;
+    private DemoiselleSecurityJWTConfig instance;
 
     /**
      *
@@ -65,7 +67,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of getType method, of class Config.
+     * Test of getType method, of class JWTConfig.
      */
     @Test
     public void testGetType() {
@@ -74,7 +76,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of setType method, of class Config.
+     * Test of setType method, of class JWTConfig.
      */
     @Test
     public void testSetType() {
@@ -85,7 +87,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of getPrivateKey method, of class Config.
+     * Test of getPrivateKey method, of class JWTConfig.
      */
     @Test
     public void testGetPrivateKey() {
@@ -96,7 +98,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of setPrivateKey method, of class Config.
+     * Test of setPrivateKey method, of class JWTConfig.
      */
     @Test
     public void testSetPrivateKey() {
@@ -106,7 +108,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of getPublicKey method, of class Config.
+     * Test of getPublicKey method, of class JWTConfig.
      */
     @Test
     public void testGetPublicKey() {
@@ -117,7 +119,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of setPublicKey method, of class Config.
+     * Test of setPublicKey method, of class JWTConfig.
      */
     @Test
     public void testSetPublicKey() {
@@ -127,7 +129,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of getTempo method, of class Config.
+     * Test of getTempo method, of class JWTConfig.
      */
     @Test
     public void testGetTempo() {
@@ -138,7 +140,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of setTempo method, of class Config.
+     * Test of setTempo method, of class JWTConfig.
      */
     @Test
     public void testSetTempo() {
@@ -148,7 +150,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of getRemetente method, of class Config.
+     * Test of getRemetente method, of class JWTConfig.
      */
     @Test
     public void testGetRemetente() {
@@ -159,7 +161,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of setRemetente method, of class Config.
+     * Test of setRemetente method, of class JWTConfig.
      */
     @Test
     public void testSetRemetente() {
@@ -169,7 +171,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of getDestinatario method, of class Config.
+     * Test of getDestinatario method, of class JWTConfig.
      */
     @Test
     public void testGetDestinatario() {
@@ -180,7 +182,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of setDestinatario method, of class Config.
+     * Test of setDestinatario method, of class JWTConfig.
      */
     @Test
     public void testSetDestinatario() {

@@ -22,7 +22,7 @@ import javax.interceptor.InterceptorBinding;
 @InterceptorBinding
 @Target({ METHOD, TYPE })
 @Retention(RUNTIME)
-public @interface Cache {
+public @interface CacheControl {
 
     @Nonbinding
     String value() default "max-age=0";

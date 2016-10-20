@@ -32,7 +32,7 @@ public class TokensManagerImplSlaveTest {
     private TokensManager instance;
 
     @Inject
-    private Config config;
+    private DemoiselleSecurityJWTConfig config;
 
     /**
      *

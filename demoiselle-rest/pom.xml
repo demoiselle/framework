@@ -22,6 +22,11 @@
             <groupId>org.demoiselle.jee</groupId>
             <artifactId>demoiselle-core</artifactId>
         </dependency>
+                        
+        <dependency>
+            <groupId>org.demoiselle.jee</groupId>
+            <artifactId>demoiselle-configuration</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>javax.ws.rs</groupId>
