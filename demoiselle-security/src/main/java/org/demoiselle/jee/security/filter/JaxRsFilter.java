@@ -28,7 +28,7 @@ import org.demoiselle.jee.core.api.security.Token;
  */
 @Provider
 @PreMatching
-public class JaxRsFilter implements ClientRequestFilter, ClientResponseFilter, ContainerRequestFilter, ContainerResponseFilter {
+public class JaxRsFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     @Inject
     private Logger LOG;
@@ -51,9 +51,6 @@ public class JaxRsFilter implements ClientRequestFilter, ClientResponseFilter, C
      */
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
-        responseContext.getHeaders().putSingle("Access-Control-Allow-Headers", "Authorization");
-        responseContext.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
-
         responseContext.getHeaders().putSingle("Authorization", "enabled");
         responseContext.getHeaders().putSingle("x-content-type-options", "nosniff");
         responseContext.getHeaders().putSingle("x-frame-options", "SAMEORIGIN");
@@ -78,27 +75,6 @@ public class JaxRsFilter implements ClientRequestFilter, ClientResponseFilter, C
         } catch (Exception e) {
             LOG.fine(e.getMessage());
         }
-
-    }
-
-    /**
-     *
-     * @param requestContext
-     * @throws IOException
-     */
-    @Override
-    public void filter(ClientRequestContext requestContext) throws IOException {
-
-    }
-
-    /**
-     *
-     * @param requestContext
-     * @param responseContext
-     * @throws IOException
-     */
-    @Override
-    public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
 
     }
 
