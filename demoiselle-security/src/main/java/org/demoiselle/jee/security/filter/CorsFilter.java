@@ -26,8 +26,7 @@ import org.demoiselle.jee.security.annotation.Cors;
  * @author 70744416353
  */
 @Provider
-@PreMatching
-public class CorsFilter implements ContainerRequestFilter, ContainerResponseFilter {
+public class CorsFilter implements ContainerResponseFilter {
 
     @Inject
     private DemoiselleSecurityConfig config;
@@ -36,34 +35,24 @@ public class CorsFilter implements ContainerRequestFilter, ContainerResponseFilt
     private ResourceInfo info;
 
     @Override
-    public void filter(ContainerRequestContext req) throws IOException {
-        if (req.getMethod().equals("OPTIONS")) {
-            ResponseBuilder responseBuilder = Response.ok();
-            if (config.isCorsEnabled()) {
-                responseBuilder.header("Access-Control-Allow-Headers", "origin, content-type, accept, Authorization");
-                responseBuilder.header("Access-Control-Allow-Credentials", "true");
-                responseBuilder.header("Access-Control-Allow-Origin", "*");
-                responseBuilder.header("Access-Control-Allow-Methods", "HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE");
-                responseBuilder.header("Access-Control-Max-Age", "360000");
-            }
-            req.abortWith(responseBuilder.build());
-        }
-    }
+    public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
+        res.getHeaders().putSingle("Authorization", "enabled");
+        res.getHeaders().putSingle("x-content-type-options", "nosniff");
+        res.getHeaders().putSingle("x-frame-options", "SAMEORIGIN");
+        res.getHeaders().putSingle("x-xss-protection", "1; mode=block");
 
-    @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
         if (config.isCorsEnabled()) {
             Method method = info.getResourceMethod();
             if (method != null) {
                 Cors cors = method.getAnnotation(Cors.class);
                 if (cors != null) {
-                    responseContext.getHeaders().putSingle("Access-Control-Allow-Origin", requestContext.getHeaders().getFirst("Origin"));
-                    responseContext.getHeaders().putSingle("Access-Control-Allow-Headers", "Origin, Content-type, Accept, Authorization");
-                    responseContext.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
-                    responseContext.getHeaders().putSingle("Access-Control-Max-Age", "360000");
-                    responseContext.getHeaders().putSingle("Access-Control-Allow-Methods", requestContext.getMethod());
+                    res.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
+                    res.getHeaders().putSingle("Access-Control-Allow-Headers", "Origin, Content-type, Accept, Authorization");
+                    res.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
+                    res.getHeaders().putSingle("Access-Control-Allow-Methods", req.getMethod());
                 }
             }
         }
     }
+
 }

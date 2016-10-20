@@ -14,8 +14,10 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import org.demoiselle.jee.core.api.security.Token;
+import org.demoiselle.jee.security.DemoiselleSecurityConfig;
 
 /**
  *
@@ -23,26 +25,34 @@ import org.demoiselle.jee.core.api.security.Token;
  */
 @Provider
 @PreMatching
-public class SecurityFilter implements ContainerResponseFilter, ContainerRequestFilter {
+public class SecurityFilter implements ContainerRequestFilter {
 
     @Inject
     private Logger logger;
 
     @Inject
+    private DemoiselleSecurityConfig config;
+
+    @Inject
     private Token token;
 
-    public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
-        res.getHeaders().putSingle("Authorization", "enabled");
-        res.getHeaders().putSingle("x-content-type-options", "nosniff");
-        res.getHeaders().putSingle("x-frame-options", "SAMEORIGIN");
-        res.getHeaders().putSingle("x-xss-protection", "1; mode=block");
-    }
-
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext req) throws IOException {
+        if (req.getMethod().equals("OPTIONS")) {
+            Response.ResponseBuilder responseBuilder = Response.ok();
+            if (config.isCorsEnabled()) {
+                responseBuilder.header("Access-Control-Allow-Headers", "origin, content-type, accept, Authorization");
+                responseBuilder.header("Access-Control-Allow-Credentials", "true");
+                responseBuilder.header("Access-Control-Allow-Origin", "*");
+                responseBuilder.header("Access-Control-Allow-Methods", "HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE");
+                responseBuilder.header("Access-Control-Max-Age", "360000");
+            }
+            req.abortWith(responseBuilder.build());
+        }
+
         try {
-            if (requestContext.getHeaders().containsKey("Authorization")) {
-                String chave = requestContext.getHeaders().get("Authorization").toString().replace("[", "").replace("]", "");
+            if (req.getHeaders().containsKey("Authorization")) {
+                String chave = req.getHeaders().get("Authorization").toString().replace("[", "").replace("]", "");
                 if (!chave.isEmpty()) {
                     token.setType(chave.split(" ")[0]);
                     token.setKey(chave.split(" ")[1]);

@@ -25,8 +25,8 @@ public class CacheControlFilter implements ContainerResponseFilter {
     @Context
     private ResourceInfo info;
 
+    @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
-
         if (req.getMethod().equals("GET")) {
             if (info.getResourceMethod() != null) {
                 Method method = info.getResourceMethod();

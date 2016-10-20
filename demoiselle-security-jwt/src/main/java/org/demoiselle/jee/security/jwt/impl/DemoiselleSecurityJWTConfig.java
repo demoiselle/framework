@@ -9,7 +9,7 @@ import java.io.Serializable;
 import org.demoiselle.jee.configuration.annotation.Configuration;
 import org.demoiselle.jee.core.annotation.Name;
 
-@Configuration(resource = "demoiselle-security-jwt", prefix = "")
+@Configuration(resource = "demoiselle-security", prefix = "")
 public class DemoiselleSecurityJWTConfig implements Serializable {
 
     private static final long serialVersionUID = 638_435_989_235_076_782L;

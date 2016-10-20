@@ -24,10 +24,16 @@ public class GZIPEncoder implements WriterInterceptor {
     @Inject
     private DemoiselleRestConfig config;
 
+    /**
+     *
+     * @param ctx
+     * @throws IOException
+     * @throws WebApplicationException
+     */
+    @Override
     public void aroundWriteTo(WriterInterceptorContext ctx) throws IOException, WebApplicationException {
         if (config.isGzipEnabled()) {
             GZIPOutputStream os = new GZIPOutputStream(ctx.getOutputStream());
-            ctx.getHeaders().putSingle("Content-Encoding", "gzip");
             ctx.setOutputStream(os);
         }
         ctx.proceed();

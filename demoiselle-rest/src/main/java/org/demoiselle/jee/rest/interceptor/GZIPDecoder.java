@@ -23,6 +23,13 @@ public class GZIPDecoder implements ReaderInterceptor {
     @Inject
     private DemoiselleRestConfig config;
 
+    /**
+     *
+     * @param ctx
+     * @return
+     * @throws IOException
+     */
+    @Override
     public Object aroundReadFrom(ReaderInterceptorContext ctx) throws IOException {
 
         if (config.isGzipEnabled()) {
