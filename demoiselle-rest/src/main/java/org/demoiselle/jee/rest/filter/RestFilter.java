@@ -6,7 +6,6 @@
  */
 package org.demoiselle.jee.rest.filter;
 
-import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -14,12 +13,7 @@ import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.PreMatching;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
-import org.demoiselle.jee.rest.DemoiselleRestConfig;
-import org.demoiselle.jee.rest.annotation.Cors;
 
 @Provider
 public class RestFilter implements ContainerResponseFilter {

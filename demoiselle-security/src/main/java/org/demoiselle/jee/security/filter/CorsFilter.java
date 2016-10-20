@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.demoiselle.jee.rest.filter;
+package org.demoiselle.jee.security.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -18,8 +18,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.ext.Provider;
-import org.demoiselle.jee.rest.DemoiselleRestConfig;
-import org.demoiselle.jee.rest.annotation.Cors;
+import org.demoiselle.jee.security.DemoiselleSecurityConfig;
+import org.demoiselle.jee.security.annotation.Cors;
 
 /**
  *
@@ -30,7 +30,7 @@ import org.demoiselle.jee.rest.annotation.Cors;
 public class CorsFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     @Inject
-    private DemoiselleRestConfig config;
+    private DemoiselleSecurityConfig config;
 
     @Context
     private ResourceInfo info;
@@ -52,8 +52,6 @@ public class CorsFilter implements ContainerRequestFilter, ContainerResponseFilt
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
-        responseContext.getHeaders().putSingle("Demoiselle", "3.0.0");
-
         if (config.isCorsEnabled()) {
             Method method = info.getResourceMethod();
             if (method != null) {

@@ -6,7 +6,6 @@
 package org.demoiselle.jee.rest;
 
 import org.demoiselle.jee.configuration.annotation.Configuration;
-import org.demoiselle.jee.core.annotation.Name;
 
 /**
  *
@@ -15,16 +14,7 @@ import org.demoiselle.jee.core.annotation.Name;
 @Configuration(resource = "demoiselle-rest", prefix = "")
 public class DemoiselleRestConfig {
 
-    private boolean corsEnabled;
     private boolean gzipEnabled;
-
-    public boolean isCorsEnabled() {
-        return corsEnabled;
-    }
-
-    public void setCorsEnabled(boolean corsEnabled) {
-        this.corsEnabled = corsEnabled;
-    }
 
     public boolean isGzipEnabled() {
         return gzipEnabled;

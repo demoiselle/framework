@@ -14,13 +14,8 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.PreMatching;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import org.demoiselle.jee.core.api.security.Token;
-import org.demoiselle.jee.rest.annotation.CacheControl;
-import org.demoiselle.jee.rest.annotation.Cors;
 
 /**
  *
