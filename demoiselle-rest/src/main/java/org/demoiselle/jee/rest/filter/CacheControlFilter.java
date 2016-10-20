@@ -6,6 +6,7 @@
 package org.demoiselle.jee.rest.filter;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
@@ -28,9 +29,12 @@ public class CacheControlFilter implements ContainerResponseFilter {
 
         if (req.getMethod().equals("GET")) {
             if (info.getResourceMethod() != null) {
-                CacheControl max = info.getResourceMethod().getAnnotation(CacheControl.class);
-                if (max != null) {
-                    res.getHeaders().putSingle("Cache-Control", max.value());
+                Method method = info.getResourceMethod();
+                if (method != null) {
+                    CacheControl max = info.getResourceMethod().getAnnotation(CacheControl.class);
+                    if (max != null) {
+                        res.getHeaders().putSingle("Cache-Control", max.value());
+                    }
                 }
             }
         }
