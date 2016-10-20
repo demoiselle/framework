@@ -32,16 +32,19 @@ public class ConfigurationClassValueExtractor implements ConfigurationValueExtra
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> Class<T> forName(final String className) throws ClassNotFoundException {
+	//TODO Export to a common class to treat the Reflection
+	private <T> Class<T> forName(final String className) throws ClassNotFoundException {
 		ClassLoader classLoader = getClassLoaderForClass(className);
 		return (Class<T>) Class.forName(className, true, classLoader);
 	}
 	
-	public ClassLoader getClassLoaderForClass(final String canonicalName) {
+	//TODO Export to a common class to treat the Reflection
+	private ClassLoader getClassLoaderForClass(final String canonicalName) {
 		return getClassLoaderForResource(canonicalName.replaceAll("\\.", "/") + ".class");
 	}
 	
-	public ClassLoader getClassLoaderForResource(final String resource) {
+	//TODO Export to a common class to treat the Reflection
+	private ClassLoader getClassLoaderForResource(final String resource) {
 		final String stripped = resource.charAt(0) == '/' ? resource.substring(1) : resource;
 
 		URL url = null;

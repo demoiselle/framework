@@ -3,8 +3,10 @@ package org.demoiselle.jee.configuration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -12,87 +14,41 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.inject.Inject;
 
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.configuration.annotation.Configuration;
+import org.demoiselle.jee.configuration.extractor.AbstractConfigurationTest;
+import org.demoiselle.jee.configuration.extractor.ConfigurationStringValueExtractorAmbiguosTest;
+import org.demoiselle.jee.configuration.message.ConfigurationMessage;
+import org.demoiselle.jee.configuration.model.ConfigIncompatibleTypeModel;
 import org.demoiselle.jee.configuration.model.ConfigModel;
+import org.demoiselle.jee.configuration.model.ConfigWithNameAnnotationEmptyModel;
+import org.demoiselle.jee.configuration.model.ConfigWithValidationModel;
 import org.demoiselle.jee.configuration.model.ConfigWithoutExtractorModel;
 import org.demoiselle.jee.configuration.util.UtilTest;
-import org.junit.After;
+import org.demoiselle.jee.core.annotation.Priority;
+import org.hamcrest.CoreMatchers;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(CdiTestRunner.class)
-public class ConfigurationLoaderTest {
+public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 	
 	@Inject
 	private ConfigurationLoader configLoader;
 	
-	private ConfigModel configModel;
+	@Inject 
+	private ConfigurationMessage message;
 	
-	private static UtilTest utilTest = new UtilTest();
-	private String pathFileTest = "";
+	private ConfigModel configModel = new ConfigModel();
 	
-	public ConfigurationLoaderTest() throws Exception {
-		pathFileTest = utilTest.createPropertiesFile("test");
-		
-		configModel = new ConfigModel();
-		
-		makeConfigurationRuntime();
-	}
-	
-	private void makeConfigurationRuntime() throws Exception{
-		final Configuration oldConfiguration = ConfigModel.class.getDeclaredAnnotation(Configuration.class);
-		
-		Configuration configuration = new Configuration() {
-			
-			@Override
-			public Class<? extends Annotation> annotationType() {
-				return oldConfiguration.annotationType();
-			}
-			
-			@Override
-			public ConfigType type() { 
-				return ConfigType.PROPERTIES;
-			}
-			
-			@Override
-			public String resource() {
-				return new File(pathFileTest).getName().replaceAll(".properties", "");
-			}
-			
-			@Override
-			public String prefix() {
- 				return "";
-			}
-		};
-		
-		Field annotationDataField = Class.class.getDeclaredField("annotationData");
-		annotationDataField.setAccessible(true);
-		
-		Object object = annotationDataField.get(ConfigModel.class);
-		
-		Field field = object.getClass().getDeclaredField("annotations");
-		field.setAccessible(true);
-		
-		@SuppressWarnings("unchecked")
-		Map<Class<? extends Annotation>, Annotation> annotations = (Map<Class<? extends Annotation>, Annotation>) field.get(object);
-		
-		annotations.put(Configuration.class, configuration);
-		
-		URLClassLoader ucl = (URLClassLoader) Thread.currentThread().getContextClassLoader();
-		Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-		method.setAccessible(true);
-		
-		method.invoke(ucl, utilTest.getDirectoryTemp().toUri().toURL());
-		
-	}
-
-	@After
-	public void destroy() throws IOException{
-		utilTest.deleteFilesAfterTest();
+	@Before
+	public void setUp() throws IOException, Exception{
+		makeConfigurationRuntime(ConfigModel.class, ConfigType.PROPERTIES, utilTest.createPropertiesFile("test"));
 	}
 	
 	@Test
@@ -145,6 +101,221 @@ public class ConfigurationLoaderTest {
 		Class<?> baseClass = model.getClass();
 		
 		configLoader.load(model, baseClass, false);
+	}
+	
+	@Test(expected = ConfigurationException.class)
+	public void objectWithIncompatibleTypeShoutThrowConfigurationException() throws IOException, Exception{
+		
+		Properties properties = new Properties();
+		properties.put("configBooleanIncompatible", "7");
+		
+		makeConfigurationRuntime(ConfigIncompatibleTypeModel.class, ConfigType.PROPERTIES, utilTest.createPropertiesFile("test", properties));
+		
+		ConfigIncompatibleTypeModel model = new ConfigIncompatibleTypeModel();
+		
+		Class<?> baseClass = model.getClass();
+		
+		configLoader.load(model, baseClass, false);
+		
+		assertNull(model.getConfigBooleanIncompatible());
+	}
+	
+	@Test
+	public void fieldWithIgnoreAnnotationShouldntLoad(){
+		Class<?> baseClass = configModel.getClass();
+		assertNull(configModel.getConfigFieldWithIgnore());
+		configLoader.load(configModel, baseClass, true);
+		assertNull(configModel.getConfigFieldWithIgnore());		
+	}
+	
+	@Test(expected = ConfigurationException.class)
+	public void modelInvalidValuesWithBeanValidationShouldThrowConfigurationException(){
+		ConfigWithValidationModel model = new ConfigWithValidationModel();
+		Class<?> baseClass = model.getClass();
+		configLoader.load(model, baseClass, true);		
+	}
+	
+	@Test
+	public void modelInvalidValueWithBeanValidationShouldShowError() throws NoSuchFieldException, IllegalAccessException{
+		
+		preparePriorityForValueExtractor(Priority.L1_PRIORITY);
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("private java.lang.String org.demoiselle.jee.configuration.model.ConfigWithValidationModel.configString não pode ser nulo\n");		
+		
+		try{
+			ConfigWithValidationModel model = new ConfigWithValidationModel();
+			Class<?> baseClass = model.getClass();
+			configLoader.load(model, baseClass, true);
+		}
+		catch(ConfigurationException e){
+			assertNotNull(e.getMessage());
+			assertEquals(sb.toString(), e.getMessage());
+		}
+		
+	}
+	
+	@Test
+	public void twoExtractorValueThatSupportTheSameTypeShouldThrowConfigurationException() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
+		
+		//Same Priority of ConfigurationStringValueExtractor
+		preparePriorityForValueExtractor(Priority.L2_PRIORITY);
+		
+		try{
+			Class<?> baseClass = configModel.getClass();
+			assertNull(configModel.getConfigString());
+			configLoader.load(configModel, baseClass, true);
+		}
+		catch(ConfigurationException e){
+			assertNotNull(e.getMessage());
+			assertThat(e.getMessage(), CoreMatchers.containsString("Foi detectada ambiguidade da interface org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor com as seguintes implementações:"));
+			assertThat(e.getMessage(), CoreMatchers.containsString("Para resolver o conflito, defina explicitamente a implementação no demoiselle.properties."));
+		}
+	}
+
+	@Test
+	public void configurationWithInvalidResourceShouldThrowConfigurationException() throws IOException, Exception{
+		
+		makeConfigurationRuntime(ConfigModel.class, ConfigType.PROPERTIES, "file-not-found");
+		
+		Class<?> baseClass = configModel.getClass();
+		
+		try{
+			configLoader.load(configModel, baseClass, false);
+		}
+		catch(ConfigurationException e){
+			assertNotNull(e.getMessage());
+			assertEquals(e.getMessage(), "O arquivo file-not-found.properties não foi encontrado");
+		}
+		
+	}
+	
+	@Test
+	public void modelWithEmptyNameAnnotationShouldThrowException(){
+		ConfigWithNameAnnotationEmptyModel model = new ConfigWithNameAnnotationEmptyModel();
+		Class<?> baseClass = model.getClass();
+		
+		try{
+			configLoader.load(model, baseClass, true);
+		}
+		catch(ConfigurationException e){
+			assertNotNull(e.getMessage());
+			assertEquals(e.getMessage(), message.configurationNameAttributeCantBeEmpty());
+		}
+	}
+	
+	@Test
+	public void configurationLoaderShouldLoadConfigurationXML() throws FileNotFoundException, IOException, Exception{
+		makeConfigurationRuntime(ConfigModel.class, ConfigType.XML, utilTest.createXMLFile("test"));
+		
+		Class<?> baseClass = configModel.getClass();
+		assertNull(configModel.getConfigString());
+		configLoader.load(configModel, baseClass, false);
+		
+		assertNotNull(configModel.getConfigString());
+		assertEquals(UtilTest.CONFIG_STRING_VALUE, configModel.getConfigString());
+	}
+	
+	@Test
+	public void configurationLoaderShouldLoadConfigurationSystem() throws FileNotFoundException, IOException, Exception{
+		utilTest.createSystemVariables();
+		makeConfigurationRuntime(ConfigModel.class, ConfigType.SYSTEM, null);
+		
+		Class<?> baseClass = configModel.getClass();
+		assertNull(configModel.getConfigString());
+		configLoader.load(configModel, baseClass, false);
+		
+		assertNotNull(configModel.getConfigString());
+		assertEquals(UtilTest.CONFIG_STRING_VALUE, configModel.getConfigString());
+	}
+	
+	private void preparePriorityForValueExtractor(int level) throws NoSuchFieldException, IllegalAccessException {
+
+		final Priority oldPriority = ConfigurationStringValueExtractorAmbiguosTest.class.getDeclaredAnnotation(Priority.class);
+		
+		Priority priority = new Priority() {
+			
+			@Override
+			public Class<? extends Annotation> annotationType() {
+				return oldPriority.annotationType();
+			}
+			
+			@Override
+			public int value() {				
+				return level;
+			}
+		};
+		
+		Field annotationDataField = Class.class.getDeclaredField("annotationData");
+		annotationDataField.setAccessible(true);
+		
+		Object object = annotationDataField.get(ConfigurationStringValueExtractorAmbiguosTest.class);
+		
+		Field field = object.getClass().getDeclaredField("annotations");
+		field.setAccessible(true);
+		
+		@SuppressWarnings("unchecked")
+		Map<Class<? extends Annotation>, Annotation> annotations = (Map<Class<? extends Annotation>, Annotation>) field.get(object);
+		
+		annotations.put(Priority.class, priority);
+	}
+	
+	private void makeConfigurationRuntime(Class<?> clazz, ConfigType configType, String pathFileTest) throws Exception{
+		final Configuration oldConfiguration = clazz.getDeclaredAnnotation(Configuration.class);
+		
+		Configuration configuration = new Configuration() {
+			
+			@Override
+			public Class<? extends Annotation> annotationType() {
+				return oldConfiguration.annotationType();
+			}
+			
+			@Override
+			public ConfigType type() { 
+				return configType;
+			}
+			
+			@Override
+			public String resource() {
+				
+				if(configType.equals(ConfigType.SYSTEM)){
+					return null;
+				}
+				
+				String replacePattern = ".properties";
+				
+				if(configType.equals(ConfigType.XML)){
+					replacePattern = ".xml";
+				}
+				
+				return new File(pathFileTest).getName().replaceAll(replacePattern, "");
+			}
+			
+			@Override
+			public String prefix() {
+ 				return "";
+			}
+		};
+		
+		Field annotationDataField = Class.class.getDeclaredField("annotationData");
+		annotationDataField.setAccessible(true);
+		
+		Object object = annotationDataField.get(clazz);
+		
+		Field field = object.getClass().getDeclaredField("annotations");
+		field.setAccessible(true);
+		
+		@SuppressWarnings("unchecked")
+		Map<Class<? extends Annotation>, Annotation> annotations = (Map<Class<? extends Annotation>, Annotation>) field.get(object);
+		
+		annotations.put(Configuration.class, configuration);
+		
+		URLClassLoader ucl = (URLClassLoader) Thread.currentThread().getContextClassLoader();
+		Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+		method.setAccessible(true);
+		
+		method.invoke(ucl, utilTest.getDirectoryTemp().toUri().toURL());
+		
 	}
 
 }

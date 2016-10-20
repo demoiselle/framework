@@ -70,21 +70,6 @@ public class ConfigurationLoader implements Serializable {
 
 	private final Map<Object, Boolean> loadedCache = new ConcurrentHashMap<>();
 
-	public void load(final Object object, Class<?> baseClass) throws ConfigurationException {
-		Boolean isLoaded = loadedCache.get(object);
-
-		if (isLoaded == null || !isLoaded) {
-			try {
-				loadConfiguration(object, baseClass, true);
-				loadedCache.put(object, true);
-			} catch (ConfigurationException c) {
-				c.printStackTrace();
-				loadedCache.put(object, false);
-				throw c;
-			}
-		}
-	}
-
 	public void load(final Object object, Class<?> baseClass, boolean logLoadingProcess) throws ConfigurationException {
 		Boolean isLoaded = loadedCache.get(object);
 
@@ -160,14 +145,20 @@ public class ConfigurationLoader implements Serializable {
 		if (builder instanceof FileBasedConfigurationBuilder) {
 			Parameters params = new Parameters();
 
+			URL urlResource = getResourceAsURL(this.resource);
+
+			if(urlResource == null) {
+				throw new ConfigurationException(bundle.fileNotFound(this.resource));				
+			}
+			
 			((FileBasedConfigurationBuilder<?>) builder).configure(params.fileBased().setURL(getResourceAsURL(this.resource)));
+			
 		}
 
 		try {
 			config = builder.getConfiguration();
 		} 
 		catch (org.apache.commons.configuration2.ex.ConfigurationException e) {
-			logger.warning(bundle.fileNotFound(this.resource));
 			config = null;
 		}
 
@@ -234,7 +225,6 @@ public class ConfigurationLoader implements Serializable {
 			value = extractor.getValue(this.prefix, key, field, this.configuration);
 		} 
 		catch (ConfigurationException cause) {
-			cause.printStackTrace();
 			throw cause;
 		} 
 		catch (ConversionException cause) {
