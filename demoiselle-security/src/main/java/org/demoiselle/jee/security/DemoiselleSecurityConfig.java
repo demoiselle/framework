@@ -11,7 +11,7 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
  *
  * @author 70744416353
  */
-@Configuration(resource = "demoiselle-security", prefix = "")
+@Configuration(prefix = "demoiselle.security")
 public class DemoiselleSecurityConfig {
 
     private boolean corsEnabled;

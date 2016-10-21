@@ -11,7 +11,7 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
  *
  * @author 70744416353
  */
-@Configuration(resource = "demoiselle-rest", prefix = "")
+@Configuration(prefix = "demoiselle.rest")
 public class DemoiselleRestConfig {
 
     private boolean gzipEnabled;
