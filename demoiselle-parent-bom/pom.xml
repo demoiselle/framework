@@ -127,6 +127,12 @@
                 <artifactId>demoiselle-persistence-jpa</artifactId>
                 <version>${demoiselle.version}</version>
             </dependency>
+            
+			<dependency>
+                <groupId>org.demoiselle.jee</groupId>
+                <artifactId>demoiselle-script</artifactId>
+                <version>${demoiselle.version}</version>
+            </dependency>
 
             <!-- jsr-299 api -->
             <dependency>
