@@ -6,13 +6,12 @@
 package org.demoiselle.jee.security.filter;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
@@ -45,8 +44,8 @@ public class SecurityFilter implements ContainerRequestFilter {
                 responseBuilder.header("Access-Control-Allow-Credentials", "true");
                 responseBuilder.header("Access-Control-Allow-Origin", "*");
                 responseBuilder.header("Access-Control-Allow-Methods", "HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE");
-                responseBuilder.header("Access-Control-Max-Age", "360000");
             }
+            responseBuilder.header("Access-Control-Max-Age", "360000");
             req.abortWith(responseBuilder.build());
         }
 
@@ -65,6 +64,7 @@ public class SecurityFilter implements ContainerRequestFilter {
 
     @PostConstruct
     public void init() {
-        logger.info("Demoiselle Module - Security");
+        logger.info("Demoiselle Module: Security");
+        logger.log(Level.INFO, "CORS Enabled :{0}", config.isCorsEnabled());
     }
 }
