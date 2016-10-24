@@ -8,7 +8,7 @@ package org.demoiselle.jee.security.basic.impl;
 import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
-import org.demoiselle.jee.core.api.security.TokensManager;
+import org.demoiselle.jee.core.api.security.TokenManager;
 import org.demoiselle.jee.security.impl.DemoisellePrincipalImpl;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -22,12 +22,12 @@ import org.junit.runner.RunWith;
  * @author 70744416353
  */
 @RunWith(CdiTestRunner.class)
-public class TokensManagerImplTest {
+public class TokenManagerImplTest {
 
     @Inject
-    private TokensManager tokensManager;
+    private TokenManager tokensManager;
 
-    public TokensManagerImplTest() {
+    public TokenManagerImplTest() {
     }
 
     @BeforeClass

@@ -18,7 +18,7 @@ package org.demoiselle.jee.core.api.security;
  * ones.
  *
  */
-public interface TokensManager {
+public interface TokenManager {
 
     /**
      * Busca o usuário logado que está sendo mantido local através do uso do

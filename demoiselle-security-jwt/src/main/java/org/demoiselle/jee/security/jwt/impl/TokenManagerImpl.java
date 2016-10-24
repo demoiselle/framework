@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import static javax.ws.rs.Priorities.AUTHENTICATION;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.api.security.Token;
-import org.demoiselle.jee.core.api.security.TokensManager;
+import org.demoiselle.jee.core.api.security.TokenManager;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import static org.jose4j.jws.AlgorithmIdentifiers.RSA_USING_SHA256;
 import org.jose4j.jws.JsonWebSignature;
@@ -51,7 +51,7 @@ import static java.security.KeyPairGenerator.getInstance;
  */
 @ApplicationScoped
 @Priority(AUTHENTICATION)
-public class TokensManagerImpl implements TokensManager {
+public class TokenManagerImpl implements TokenManager {
 
     @Inject
     private HttpServletRequest httpRequest;
