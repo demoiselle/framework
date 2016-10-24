@@ -54,46 +54,20 @@ public class DynamicManager {
 	 * @param scriptName ...
 	 * @param context ...
 	 * @return ...
+	 * @throws ScriptException 
 	 */
-	public Object eval(String scriptName, Bindings context){
+	public Object eval(String scriptName, Bindings context) throws ScriptException{
 		CompiledScript  script = null;
 		Object result = null;
-		
-		try {						    
-				script = (CompiledScript) scriptCache.get(scriptName);
-			    if(context!= null)
-			    	result = script.eval(context);
-			    else
-			    	result = script.eval();
-			   		
-		} catch (ScriptException e) {
-			e.printStackTrace();
-		}
-				
+							    
+		script = (CompiledScript) scriptCache.get(scriptName);
+		if(context!= null)
+		   	result = script.eval(context);
+		else
+		  	result = script.eval();
+			   						
 		return result;	
 	}
-	
-	/**
-	 * Executa o script sem um contexto especifico.
-	 * 
-	 * @param scriptName ...
-	 * @return ...
-	 */
-	public Object eval(String scriptName){
-		CompiledScript  script = null;
-		Object result = null;
-		
-		try {						    
-				script = (CompiledScript) scriptCache.get(scriptName);			    
-			    result = script.eval();
-			   		
-		} catch (ScriptException e) {
-			e.printStackTrace();
-		}
-				
-		return result;	
-	}
-	
 	
 	/**
 	 * Le e compila um script guardando em cache.
@@ -101,26 +75,21 @@ public class DynamicManager {
 	 * @param scriptName ...
 	 * @param source ...
 	 * @return Boolean ...
+	 * @throws ScriptException 
 	 */
-	public Boolean loadScript(String scriptName,String source ){				
+	public Boolean loadScript(String scriptName,String source ) throws ScriptException{				
 		CompiledScript compiled = null;
-			
-		try {			
-			Compilable engine = (Compilable) this.scriptEngine;
+	
+		Compilable engine = (Compilable) this.scriptEngine;
 		
-			if(engine == null ){
-				return false;
-			}							
-			 compiled = engine.compile( source );			
-			 scriptCache.put(scriptName, compiled);
-			
-			return true;
+		if(engine == null ){
+			return false;
+		}							
+		compiled = engine.compile( source );			
+		scriptCache.put(scriptName, compiled);
 		
-		} catch (ScriptException e) {
-			e.printStackTrace();
-		}
-		
-		return false;		
+		return true;
+								
 	}
 	
 	/**
@@ -128,8 +97,18 @@ public class DynamicManager {
 	 * 
 	 * @param scriptId ...
 	 */
-	public void removeScriptCache(String scriptId) {					
+	public void removeScript(String scriptId) {					
 		this.scriptCache.remove(scriptId); 		
+	}
+
+	/**
+	 * Retorna um script do cache.
+	 * 
+	 * @param scriptId ...
+	 * @return Script requerido
+	 */
+	public Object getScript(String scriptId) { 
+		return this.scriptCache.get(scriptId);
 	}  
 			
 }
