@@ -81,7 +81,13 @@ public class TokensManagerImpl implements TokensManager {
     @PostConstruct
     public void init() {
         if (publicKey == null) {
-            logger.info("Demoiselle Module - Security - JWT");
+            logger.info("Demoiselle Module: JWT");
+            logger.log(Level.INFO, "Type server: {0}", config.getType() != null ? config.getType() : "Error");
+            logger.log(Level.INFO, "Primary key: {0}", config.getPrivateKey() != null ? !config.getPrivateKey().isEmpty() : "Error");
+            logger.log(Level.INFO, "Public key: {0}", config.getPublicKey() != null ? !config.getPublicKey().isEmpty() : "Error");
+            logger.log(Level.INFO, "Age token in minutes: {0}", config.getTempo() != null ? config.getTempo() : "Error");
+            logger.log(Level.INFO, "Issuer: {0}", config.getRemetente() != null ? config.getRemetente() : "Error");
+            logger.log(Level.INFO, "Audience: {0}", config.getDestinatario() != null ? config.getDestinatario() : "Error");
             try {
 
                 if (config.getType() == null) {
