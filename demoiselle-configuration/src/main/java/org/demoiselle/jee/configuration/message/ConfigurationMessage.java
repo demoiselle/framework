@@ -3,6 +3,11 @@ package org.demoiselle.jee.configuration.message;
 import org.apache.deltaspike.core.api.message.MessageBundle;
 import org.apache.deltaspike.core.api.message.MessageTemplate;
 
+/**
+ * 
+ * Mensagens utilizadas para informar usuário
+ *
+ */
 @MessageBundle
 public interface ConfigurationMessage {
 

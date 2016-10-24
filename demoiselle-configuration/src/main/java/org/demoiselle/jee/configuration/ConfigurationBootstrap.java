@@ -10,6 +10,13 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 
+/**
+ * 
+ * Classe responsável por carregar todas as classes extratoras que implementam a 
+ * interface {@link ConfigurationValueExtractor}.
+ * 
+ *
+ */
 public class ConfigurationBootstrap implements Extension {
 	
 	private Collection<Class<? extends ConfigurationValueExtractor>> cache;
