@@ -77,16 +77,12 @@ public class ConfigurationPrimitiveOrWrapperValueExtractor implements Configurat
 		wrappers.add(Void.TYPE);
 	}
 
-	/**
-	 * Extract value from source.
-	 */
+	@Override
 	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
 		return new DataConfiguration(configuration).get(ClassUtils.primitiveToWrapper(field.getType()), prefix + key);
 	}
 
-	/**
-	 * Verify supported type
-	 */
+	@Override
 	public boolean isSupported(Field field) {
 		return field.getType().isPrimitive() || wrappers.contains(field.getType());
 	}

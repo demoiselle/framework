@@ -49,9 +49,7 @@ import org.demoiselle.jee.core.annotation.Priority;
 @Priority(L2_PRIORITY)
 public class ConfigurationEnumValueExtractor implements ConfigurationValueExtractor {
 
-	/**
-	 * Extract value from source.
-	 */
+	@Override
 	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
 		String value = configuration.getString(prefix + key);
 
@@ -69,9 +67,7 @@ public class ConfigurationEnumValueExtractor implements ConfigurationValueExtrac
 		
 	}
 
-	/**
-	 * Verify supported type
-	 */
+	@Override
 	public boolean isSupported(Field field) {
 		return field.getType().isEnum();
 	}
