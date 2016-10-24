@@ -16,98 +16,89 @@ import java.util.Map;
 public interface DemoisellePrincipal extends Principal {
 
     /**
-     * Identity user
-     *
-     * @return
+     * @return Identity user
      */
     public String getIdentity();
 
     /**
-     * Identity user
-     *
-     * @param id
+     * @param id Identity user
      */
     public void setIdentity(String id);
 
     /**
-     *
-     * @param name
+     * @param name Principal name
      */
     public void setName(String name);
 
     /**
-     *
-     * @param roles
+     * @param roles Principal roles
      */
     public void setRoles(List<String> roles);
 
     /**
-     *
-     * @param role
+     * @param role Role name
      */
     public void addRole(String role);
 
     /**
-     *
-     * @return
+     * @return List of roles
      */
     public List<String> getRoles();
 
     /**
      *
-     * @return
+     * @return List of permissions
      */
     public Map<String, List<String>> getPermissions();
 
     /**
-     *
-     * @param resource
-     * @return
+     * @param resource Resource name
+     * @return List of permissions
      */
     public List<String> getPermissions(String resource);
 
     /**
      *
-     * @param resource
-     * @param operetion
+     * @param resource Resource name
+     * @param operation Operation name
      */
-    public void addPermission(String resource, String operetion);
+    public void addPermission(String resource, String operation);
 
     /**
      *
-     * @param permissions
+     * @param permissions Permissions
      */
     public void setPermissions(Map<String, List<String>> permissions);
 
     /**
      *
-     * @return
+     * @return Params
      */
     public Map<String, List<String>> getParams();
 
     /**
      *
-     * @param key
-     * @return
+     * @param key Key parameter
+     * @return List of parameter
      */
     public List<String> getParams(String key);
 
     /**
      *
-     * @param key
-     * @param value
+     * @param key Key parameter
+     * @param value Value parameter
      */
     public void addParam(String key, String value);
 
     /**
      *
-     * @param params
+     * @param params Params
      */
     public void setParams(Map<String, List<String>> params);
 
     /**
      *
-     * @return
+     * @return Principal clone
      */
     public DemoisellePrincipal clone();
 }

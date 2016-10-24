@@ -86,9 +86,9 @@ public class ResourceBundle extends java.util.ResourceBundle implements Serializ
 
     /**
      *
-     * @param key
-     * @param params
-     * @return
+     * @param key Key name
+     * @param params Params
+     * @return String
      */
     public String getString(String key, Object... params) {
 		return Strings.getString(getString(key), params);

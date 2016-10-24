@@ -14,34 +14,34 @@ public interface SecurityContext {
 
     /**
      *
-     * @return
+     * @return If the Principal is logged
      */
     boolean isLoggedIn();
 
     /**
      *
-     * @param resource
-     * @param operation
-     * @return
+     * @param resource Resource name
+     * @param operation Operation name
+     * @return If the Principal has permission
      */
     boolean hasPermission(String resource, String operation);
 
     /**
      *
-     * @param role
-     * @return
+     * @param role Role name
+     * @return If the Principal has permission
      */
     boolean hasRole(String role);
 
     /**
      *
-     * @return
+     * @return Principal
      */
     DemoisellePrincipal getUser();
 
     /**
      *
-     * @param loggedUser
+     * @param loggedUser Principal
      */
     void setUser(DemoisellePrincipal loggedUser);
 

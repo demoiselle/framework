@@ -25,7 +25,7 @@ public interface TokensManager {
      * token que está em sessão de request Search the logged user being kept
      * place through token use that is in session request
      *
-     * @return @see org.demoiselle.jee.core.api.security.DemoisellePrincipal
+     * @return  See {@link DemoisellePrincipal}
      */
     public DemoisellePrincipal getUser();
 
@@ -38,7 +38,7 @@ public interface TokensManager {
      * generates a token, depending on the approach, and placed in the token
      * object in the request scoped
      *
-     * @param user @see org.demoiselle.jee.core.api.security.DemoisellePrincipal
+     * @param user See {@link DemoisellePrincipal}
      */
     public void setUser(DemoisellePrincipal user);
 
@@ -47,7 +47,7 @@ public interface TokensManager {
      * estratégia escolhida. Validates that the user is stored correctly,
      * depending on the chosen strategy.
      *
-     * @return
+     * @return Boolean
      */
     public boolean validate();
 

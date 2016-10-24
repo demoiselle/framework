@@ -12,26 +12,24 @@ package org.demoiselle.jee.core.api.security;
 public interface Token {
 
     /**
-     *
-     * @return
+     * @return Key name
      */
     public String getKey();
 
     /**
      *
-     * @param key
+     * @param key Key name
      */
     public void setKey(String key);
 
     /**
-     *
-     * @return
+     * @return Type name
      */
     public String getType();
 
     /**
      *
-     * @param type
+     * @param type Type name
      */
     public void setType(String type);
 }

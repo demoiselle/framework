@@ -18,109 +18,110 @@ public interface DemoiselleMessage {
 
     /**
      *
-     * @return
+     * @return framework version 
      */
     @MessageTemplate("{version}")
 	String version();
 
     /**
-     *
-     * @return
+     * 
+     * @return engine status
      */
     @MessageTemplate("{engine-on}")
 	String engineOn();
 
     /**
      *
-     * @return
+     * @return message for resource not found
      */
     @MessageTemplate("{resource-not-found}")
 	String resourceNotFound();
 
     /**
      *
-     * @param key
-     * @return
+     * @param key search key
+     * @return message for key not found
      */
     @MessageTemplate("{key-not-found}")
 	String keyNotFound(String key);
 
     /**
      *
-     * @param interfaceString
-     * @param implementations
-     * @return
+     * @param interfaceString interface name
+     * @param implementation implementations name
+     * @return message for ambiguous
      */
     @MessageTemplate("{ambiguous-strategy-resolution}")
-	String ambiguousStrategyResolution(String interfaceString, String implementations);
+	String ambiguousStrategyResolution(String interfaceString, String implementation);
 
     /**
      *
-     * @param implementation
-     * @return
+     * @param implementation implementations name
+     * @return message for ambiguous
      */
     @MessageTemplate("{ambiguous-bean-resolution}")
 	String ambiguousBeanResolution(String implementation);
 
     /**
      *
-     * @param bean
-     * @return
+     * @param bean bean name
+     * @return message for bean not found
      */
     @MessageTemplate("{bean-not-found}")
 	String beanNotFound(String bean);
 
+    //TODO verificar "store?"
     /**
      *
-     * @param object
-     * @param scope
-     * @return
-     */
+     * @param object object name
+     * @param scope scope
+     * @return message for story not found
+     */    
     @MessageTemplate("{store-not-found}")
 	String storeNotFound(String object, String scope);
 
     /**
      *
-     * @param clazz
-     * @param ex
-     * @return
+     * @param clazz class name
+     * @param ex exception handler name
+     * @return message for more than one exception handler defined for same class
      */
     @MessageTemplate("{more-than-one-exceptionhandler-defined-for-same-class}")
 	String moreThanOneExceptionhandlerDefinedForSameClass(String clazz, String ex);
 
     /**
      *
-     * @param ex
-     * @return
+     * @param ex Exception name
+     * @return message for handling Exception
      */
     @MessageTemplate("{handling-exception}")
 	String handlingException(String ex);
 
     /**
      *
-     * @return
+     * @return message for taking Off
      */
     @MessageTemplate("{taking-off}")
 	String takingOff();
 
     /**
      *
-     * @return
+     * @return message for engine Off
      */
     @MessageTemplate("{engine-off}")
 	String engineOff();
 
     /**
      *
-     * @param util
-     * @return
+     * @param setting Setting
+     * @return message for setting up bean manager exception
      */
     @MessageTemplate("{setting-up-bean-manager}")
-	String settingUpBeanManagerException(String util);
+	String settingUpBeanManagerException(String setting);
 
     /**
      *
-     * @return
+     * @return message for processing fail
      */
     @MessageTemplate("{processing-fail}")
 	String processingFail();

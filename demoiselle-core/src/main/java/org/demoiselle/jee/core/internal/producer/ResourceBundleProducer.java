@@ -26,7 +26,7 @@ public class ResourceBundleProducer {
 
     /**
      *
-     * @return
+     * @return ResourceBundle
      */
     @Default
     @Produces
@@ -60,8 +60,8 @@ public class ResourceBundleProducer {
 
     /**
      *
-     * @param baseName
-     * @return
+     * @param baseName Base name
+     * @return {@link ResourceBundle}
      */
     @SuppressWarnings("serial")
     public static ResourceBundle create(String baseName) {

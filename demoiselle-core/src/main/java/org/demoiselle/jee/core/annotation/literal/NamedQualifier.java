@@ -19,7 +19,7 @@ public class NamedQualifier extends AnnotationLiteral<Named> implements Named {
 
     /**
      *
-     * @param value
+     * @param value Value
      */
     public NamedQualifier(String value) {
 		namedValue = value;
@@ -27,7 +27,7 @@ public class NamedQualifier extends AnnotationLiteral<Named> implements Named {
 
     /**
      *
-     * @return
+     * @return Value
      */
     @Override
     public String value() {
