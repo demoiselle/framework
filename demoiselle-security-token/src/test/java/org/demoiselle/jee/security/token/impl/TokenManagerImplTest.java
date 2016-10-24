@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.api.security.Token;
-import org.demoiselle.jee.core.api.security.TokensManager;
+import org.demoiselle.jee.core.api.security.TokenManager;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -19,7 +19,7 @@ import org.junit.runner.RunWith;
  * @author 70744416353
  */
 @RunWith(CdiTestRunner.class)
-public class TokensManagerImplTest {
+public class TokenManagerImplTest {
 
     @Inject
     private DemoisellePrincipal dml;
@@ -30,12 +30,12 @@ public class TokensManagerImplTest {
     private static String localtoken;
 
     @Inject
-    private TokensManager instance;
+    private TokenManager instance;
 
     /**
      *
      */
-    public TokensManagerImplTest() {
+    public TokenManagerImplTest() {
     }
 
     /**
@@ -68,7 +68,7 @@ public class TokensManagerImplTest {
     }
 
     /**
-     * Test of setUser method, of class TokensManagerImpl.
+     * Test of setUser method, of class TokenManagerImpl.
      */
     @Test
     public void test20() {
@@ -86,7 +86,7 @@ public class TokensManagerImplTest {
     }
 
     /**
-     * Test of getUser method, of class TokensManagerImpl.
+     * Test of getUser method, of class TokenManagerImpl.
      */
     @Test
     public void test21() {
@@ -119,7 +119,7 @@ public class TokensManagerImplTest {
     }
 
     /**
-     * Test of validate method, of class TokensManagerImpl.
+     * Test of validate method, of class TokenManagerImpl.
      */
     @Test
     public void test23() {
@@ -131,7 +131,7 @@ public class TokensManagerImplTest {
     }
 
     /**
-     * Test of getUser method, of class TokensManagerImpl.
+     * Test of getUser method, of class TokenManagerImpl.
      */
     @Test
     public void test24() {
@@ -150,7 +150,7 @@ public class TokensManagerImplTest {
     }
 
     /**
-     * Test of validate method, of class TokensManagerImpl.
+     * Test of validate method, of class TokenManagerImpl.
      */
     @Test
     public void test25() {
@@ -161,13 +161,13 @@ public class TokensManagerImplTest {
     }
 
     /**
-     * Test of validate method, of class TokensManagerImpl.
+     * Test of validate method, of class TokenManagerImpl.
      */
     @Test
     public void test26() {
         out.println("remove token");
         token.setKey(localtoken);
-        ((TokensManagerImpl) instance).removeToken();
+        ((TokenManagerImpl) instance).removeToken();
     }
 
     @Test
@@ -180,7 +180,7 @@ public class TokensManagerImplTest {
         dml.addPermission("Produto", "Alterar");
         dml.addPermission("Categoria", "Consultar");
         instance.setUser(dml);
-        ((TokensManagerImpl) instance).removeToken(dml);
+        ((TokenManagerImpl) instance).removeToken(dml);
         dml = instance.getUser();
         assertNull(dml);
     }

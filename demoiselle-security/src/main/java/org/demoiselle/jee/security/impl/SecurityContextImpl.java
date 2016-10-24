@@ -12,7 +12,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.api.security.SecurityContext;
-import org.demoiselle.jee.core.api.security.TokensManager;
+import org.demoiselle.jee.core.api.security.TokenManager;
 
 /**
  *
@@ -20,11 +20,11 @@ import org.demoiselle.jee.core.api.security.TokensManager;
  */
 @RequestScoped
 public class SecurityContextImpl implements SecurityContext {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     @Inject
-    private TokensManager tm;
+    private TokenManager tm;
 
     /**
      *
@@ -34,13 +34,13 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public boolean hasPermission(String resource, String operation) {
-        
+
         List<String> lista = tm.getUser().getPermissions().get(resource);
-        
+
         if (lista != null && !lista.isEmpty()) {
             return lista.contains(operation);
         }
-        
+
         return false;
     }
 
@@ -80,5 +80,5 @@ public class SecurityContextImpl implements SecurityContext {
     public void setUser(DemoisellePrincipal loggedUser) {
         tm.setUser(loggedUser);
     }
-    
+
 }

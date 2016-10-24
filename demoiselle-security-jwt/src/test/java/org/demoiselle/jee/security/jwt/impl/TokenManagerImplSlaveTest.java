@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.api.security.Token;
-import org.demoiselle.jee.core.api.security.TokensManager;
+import org.demoiselle.jee.core.api.security.TokenManager;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
  * @author 70744416353
  */
 @RunWith(CdiTestRunner.class)
-public class TokensManagerImplSlaveTest {
+public class TokenManagerImplSlaveTest {
 
     @Inject
     private DemoisellePrincipal dml;
@@ -29,7 +29,7 @@ public class TokensManagerImplSlaveTest {
     private Token token;
 
     @Inject
-    private TokensManager instance;
+    private TokenManager instance;
 
     @Inject
     private DemoiselleSecurityJWTConfig config;
@@ -37,7 +37,7 @@ public class TokensManagerImplSlaveTest {
     /**
      *
      */
-    public TokensManagerImplSlaveTest() {
+    public TokenManagerImplSlaveTest() {
     }
 
     /**
@@ -74,46 +74,46 @@ public class TokensManagerImplSlaveTest {
         config.setType(null);
         config.setPrivateKey(null);
         config.setPublicKey(null);
-        ((TokensManagerImpl) instance).init();
+        ((TokenManagerImpl) instance).init();
     }
 
     @Test
     public void test11() {
         out.println("init - Type slave");
         config.setType("teste");
-        ((TokensManagerImpl) instance).init();
+        ((TokenManagerImpl) instance).init();
     }
 
     @Test
     public void test12() {
         out.println("init - Type slave");
         config.setType("slave");
-        ((TokensManagerImpl) instance).init();
+        ((TokenManagerImpl) instance).init();
     }
 
     @Test
     public void test13() {
         out.println("init - Type slave + key error");
         config.setPublicKey("-----BEGIN PUBLIC KEY-----AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-----END PUBLIC KEY-----");
-        ((TokensManagerImpl) instance).init();
+        ((TokenManagerImpl) instance).init();
     }
 
     @Test
     public void test14() {
         out.println("init - Type slave + key error");
         config.setPublicKey("");
-        ((TokensManagerImpl) instance).init();
+        ((TokenManagerImpl) instance).init();
     }
 
     @Test
     public void test15() {
         out.println("init - Type slave + key");
         config.setPublicKey("-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA09A11Zaqmp5ZBTOCxgJ8qqtHhb6b+eO9C8gAX3DXFIlfcl0FU7FVwfQtHWuN3KU83c1sSj9wPMuviGvZeSV7oUp2DXML76EsEKf9r+6JNZRdnTCkXZklQSEmeuftSxnMtAwo7k+eIgPpOIrYpMJv5GzVju0zbyucnwbQnDvoGv08pMrbWaGOxcnHXCazsrRTI7UKQ+jvMDB3bsUcII0XS+92ZLQkiMkKH85HSSlm4AFKuUljRh59RlpJrCDc+TUZWQuOC6Li/H9/78tAW8kJIHfASJhkKgkcdGixBJNggp+K+0hMWvxLt5fi1BXvWiy/Ma3QNHtxOCorRa+4NBB+KwIDAQAB-----END PUBLIC KEY-----");
-        ((TokensManagerImpl) instance).init();
+        ((TokenManagerImpl) instance).init();
     }
 
     /**
-     * Test of getUser method, of class TokensManagerImpl.
+     * Test of getUser method, of class TokenManagerImpl.
      */
     @Test
     public void test21() {
@@ -131,7 +131,7 @@ public class TokensManagerImplSlaveTest {
     }
 
     /**
-     * Test of validate method, of class TokensManagerImpl.
+     * Test of validate method, of class TokenManagerImpl.
      */
     @Test
     public void test22() {
@@ -143,7 +143,7 @@ public class TokensManagerImplSlaveTest {
     }
 
     /**
-     * Test of getUser method, of class TokensManagerImpl.
+     * Test of getUser method, of class TokenManagerImpl.
      */
     @Test
     public void test23() {
@@ -156,7 +156,7 @@ public class TokensManagerImplSlaveTest {
     }
 
     /**
-     * Test of validate method, of class TokensManagerImpl.
+     * Test of validate method, of class TokenManagerImpl.
      */
     @Test
     public void test24() {

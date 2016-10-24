@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import static javax.ws.rs.Priorities.AUTHENTICATION;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.api.security.Token;
-import org.demoiselle.jee.core.api.security.TokensManager;
+import org.demoiselle.jee.core.api.security.TokenManager;
 
 /**
  *
@@ -18,7 +18,7 @@ import org.demoiselle.jee.core.api.security.TokensManager;
  */
 @ApplicationScoped
 @Priority(AUTHENTICATION)
-public class TokensManagerImpl implements TokensManager {
+public class TokenManagerImpl implements TokenManager {
 
     private ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
 

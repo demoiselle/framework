@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.api.security.Token;
-import org.demoiselle.jee.core.api.security.TokensManager;
+import org.demoiselle.jee.core.api.security.TokenManager;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
  * @author 70744416353
  */
 @RunWith(CdiTestRunner.class)
-public class TokensManagerImplMasterTest {
+public class TokenManagerImplMasterTest {
 
     @Inject
     private DemoisellePrincipal dml;
@@ -31,7 +31,7 @@ public class TokensManagerImplMasterTest {
     private static String localtoken;
 
     @Inject
-    private TokensManager instance;
+    private TokenManager instance;
 
     @Inject
     private DemoiselleSecurityJWTConfig config;
@@ -39,7 +39,7 @@ public class TokensManagerImplMasterTest {
     /**
      *
      */
-    public TokensManagerImplMasterTest() {
+    public TokenManagerImplMasterTest() {
     }
 
     /**
@@ -76,14 +76,14 @@ public class TokensManagerImplMasterTest {
         config.setType(null);
         config.setPrivateKey(null);
         config.setPublicKey(null);
-        ((TokensManagerImpl) instance).init();
+        ((TokenManagerImpl) instance).init();
     }
 
     @Test
     public void test11() {
         out.println("init - Type master");
         config.setType("master");
-        ((TokensManagerImpl) instance).init();
+        ((TokenManagerImpl) instance).init();
     }
 
     /**

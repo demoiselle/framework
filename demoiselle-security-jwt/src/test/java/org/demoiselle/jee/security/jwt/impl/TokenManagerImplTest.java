@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.api.security.Token;
-import org.demoiselle.jee.core.api.security.TokensManager;
+import org.demoiselle.jee.core.api.security.TokenManager;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
  * @author 70744416353
  */
 @RunWith(CdiTestRunner.class)
-public class TokensManagerImplTest {
+public class TokenManagerImplTest {
 
     @Inject
     private DemoisellePrincipal dml;
@@ -32,7 +32,7 @@ public class TokensManagerImplTest {
     private static String localtoken;
 
     @Inject
-    private TokensManager instance;
+    private TokenManager instance;
 
     @Inject
     private DemoiselleSecurityJWTConfig config;
@@ -40,7 +40,7 @@ public class TokensManagerImplTest {
     /**
      *
      */
-    public TokensManagerImplTest() {
+    public TokenManagerImplTest() {
     }
 
     /**
@@ -75,18 +75,18 @@ public class TokensManagerImplTest {
     public void test10() {
         out.println("init - error");
         config.setPrivateKey("-----BEGIN PRIVATE KEY-----AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=-----END PRIVATE KEY-----");
-        ((TokensManagerImpl) instance).init();
+        ((TokenManagerImpl) instance).init();
     }
 
     @Test
     public void test11() {
         out.println("init");
         config.setPrivateKey("-----BEGIN PRIVATE KEY-----MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDT0DXVlqqanlkFM4LGAnyqq0eFvpv5470LyABfcNcUiV9yXQVTsVXB9C0da43cpTzdzWxKP3A8y6+Ia9l5JXuhSnYNcwvvoSwQp/2v7ok1lF2dMKRdmSVBISZ65+1LGcy0DCjuT54iA+k4itikwm/kbNWO7TNvK5yfBtCcO+ga/TykyttZoY7FycdcJrOytFMjtQpD6O8wMHduxRwgjRdL73ZktCSIyQofzkdJKWbgAUq5SWNGHn1GWkmsINz5NRlZC44LouL8f3/vy0BbyQkgd8BImGQqCRx0aLEEk2CCn4r7SExa/Eu3l+LUFe9aLL8xrdA0e3E4KitFr7g0EH4rAgMBAAECggEABhUilqGfAJWvhMC37qu/nL8SbLrOi9yIX0A9EoCRDJvtS8F0F7Ut+0Xhzch66G0uVEhD5dXwiS5oOgiu1BXJeRZEUZqOKzF7rHbGiDjXY9yA27S745w0P6yOCFWEsPVqtXjr6/wJVHy8Q81o70JOKEcf0tzo7zZXZxGxB+uIfM3ffGNixX/tOHOERSViBvJsBp7sPZOPdgFQy1yQzYHDHob3V7BoG3bL/6ZXBIKMovBcKPoZuHDSyU1w3UbkFpPf8NbElPeMVoPxSwT1e3gfkKwBdp3bXucUnWBJE/aEkpUuIPTHiI4oGJDapmybLx+UACqp3eid48IDC25qXIq/8QKBgQD2yuECo9mKvP6CAZTl9LUUqYqwf4HLqgzOcCzDdigJaF08jLkI+9c7kMhq5C3R+VpRXCMJVHQSOEyUaOEj/m4QrF2JmfGcLxhqnDm8kZ84nX5anBxASCVcyiM2A37fpXmohczzu+Re8VFbFIMC1qJa5r/7/whmc5UL2jBVbQ7kPwKBgQDbtz6RlZWWnlJh1Dk6PuNczhmjbNRctrsVc2RcvIuZrw3BPGbeFanJVDa9Q9n2owxMs6BoSgIfrf0XGnl71yTSKtCliMyTgxg27g8iVlLA5YPaTIsazScCzLMOJmfzP2RcDBMVg+42Zu2tHhOoRAyNIpM7PQBDk1rLbpBH/HL7FQKBgGwvSW3317BK4yKogNZBbHPvUn3Gl2ZpWA3S/Lx+elSNbHnTknWOuK5C7Kh2+GMYdPA/fJhlbjBif6d7Rl6Z9TPX63Ubh9+YgZKSg3jXOT3/RFmCH5xKRB6l+cN+yspNZsRqSwr5bcX08V4E4t2Gq0s/5h8YkF0hA9BbSF7aXPHPAoGBAJ8m7TunjuO7axFSGOIIC8l9wTSP8IP4GSxAmcJTEQwRsXT3u8vDBWnAhqYyMABnutEUjGz+rusjrOC/XKBIB3P1b414ujdgDno7ltrYjLkNh6TpLRoM4OU2Qb1ONJ4OnTPPy0MafcMKa7+qubJ5GF5jXSLb3QUWB/6z5+88/kzBAoGAWzcBjuAYmRa+Q9GpGRyml1SgS0foaKwycN9Az0IGaNmN+hvKBgoJtUvY5V/sDdNAbLz+1Hpc0s3TJpghmHTVxUrC0VKqhEyXpHIUN2IOjiqoiQbB1stW0GS3N9U4akQfYQrR7u+IcUizfs6OQTmTR3Xp6LryES/rLn0vwZKZIvo=-----END PRIVATE KEY-----");
-        ((TokensManagerImpl) instance).init();
+        ((TokenManagerImpl) instance).init();
     }
 
     /**
-     * Test of setUser method, of class TokensManagerImpl.
+     * Test of setUser method, of class TokenManagerImpl.
      */
     @Test
     public void test20() {
@@ -104,7 +104,7 @@ public class TokensManagerImplTest {
     }
 
     /**
-     * Test of getUser method, of class TokensManagerImpl.
+     * Test of getUser method, of class TokenManagerImpl.
      */
     @Test
     public void test21() {
@@ -122,7 +122,7 @@ public class TokensManagerImplTest {
     }
 
     /**
-     * Test of validate method, of class TokensManagerImpl.
+     * Test of validate method, of class TokenManagerImpl.
      */
     @Test
     public void test22() {
@@ -134,7 +134,7 @@ public class TokensManagerImplTest {
     }
 
     /**
-     * Test of getUser method, of class TokensManagerImpl.
+     * Test of getUser method, of class TokenManagerImpl.
      */
     @Test
     public void test23() {
@@ -152,7 +152,7 @@ public class TokensManagerImplTest {
     }
 
     /**
-     * Test of validate method, of class TokensManagerImpl.
+     * Test of validate method, of class TokenManagerImpl.
      */
     @Test
     public void test24() {

@@ -9,7 +9,7 @@ import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.Priorities;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
-import org.demoiselle.jee.core.api.security.TokensManager;
+import org.demoiselle.jee.core.api.security.TokenManager;
 
 /**
  *
@@ -17,7 +17,7 @@ import org.demoiselle.jee.core.api.security.TokensManager;
  */
 @ApplicationScoped
 @Priority(Priorities.AUTHENTICATION)
-public class TokensManagerImpl implements TokensManager {
+public class TokenManagerImpl implements TokenManager {
 
     @Override
     public DemoisellePrincipal getUser() {
