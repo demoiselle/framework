@@ -43,6 +43,12 @@ import org.demoiselle.jee.core.annotation.Ignore;
 import org.demoiselle.jee.core.annotation.Name;
 import org.demoiselle.jee.core.annotation.Priority;
 
+/**
+ * 
+ * Classe responsável por gerenciar a extração de dados de uma fonte, identifcar os campos a serem preenchidos, 
+ * encontrar o extrator para cada tipo de campo, preencher e validar o dado do campo.
+ *
+ */
 @ApplicationScoped
 public class ConfigurationLoader implements Serializable {
 
@@ -70,6 +76,20 @@ public class ConfigurationLoader implements Serializable {
 
 	private final Map<Object, Boolean> loadedCache = new ConcurrentHashMap<>();
 
+	/**
+	 * <p>
+	 * Processa a classe anotada com {@link Configuration}.
+	 * </p>
+	 * 
+	 * <p>
+	 * Após o primeiro processamento a classe de configuração é adicionado ao cache para evitar o processamento repetido.
+	 * </p>
+	 * 
+	 * @param object Objeto anotado com {@link Configuration} a ser populado
+	 * @param baseClass Tipo da classe a ser populado
+	 * @param logLoadingProcess Ativa o log ou não do processo
+	 * @throws ConfigurationException Quando houver algum problema no processo 
+	 */
 	public void load(final Object object, Class<?> baseClass, boolean logLoadingProcess) throws ConfigurationException {
 		Boolean isLoaded = loadedCache.get(object);
 

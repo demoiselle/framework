@@ -9,6 +9,12 @@ import javax.interceptor.InvocationContext;
 
 import org.demoiselle.jee.configuration.annotation.Configuration;
 
+/**
+ * 
+ * Intercepta a classe anotata com {@link Configuration} e delega o processamento para a classe 
+ * {@link ConfigurationLoader}
+ *
+ */
 @Dependent
 @Configuration
 @Interceptor
