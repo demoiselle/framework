@@ -5,3 +5,9 @@ branches:
     - master
     - 3.0.0-SNAPSHOT
 script: mvn clean install
+notifications:
+  email:
+    recipients:
+      - demoiselle-users@lists.sourceforge.net
+    on_success: [change] # default: change
+    on_failure: [always] # default: always
