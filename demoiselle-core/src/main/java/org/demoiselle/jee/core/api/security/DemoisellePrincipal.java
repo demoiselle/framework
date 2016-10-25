@@ -41,6 +41,11 @@ public interface DemoisellePrincipal extends Principal {
     public void addRole(String role);
 
     /**
+     * @param role Role name
+     */
+    public void removeRole(String role);
+
+    /**
      * @return List of roles
      */
     public List<String> getRoles();
@@ -63,6 +68,13 @@ public interface DemoisellePrincipal extends Principal {
      * @param operation Operation name
      */
     public void addPermission(String resource, String operation);
+
+    /**
+     *
+     * @param resource Resource name
+     * @param operation Operation name
+     */
+    public void removePermission(String resource, String operation);
 
     /**
      *
@@ -89,6 +101,13 @@ public interface DemoisellePrincipal extends Principal {
      * @param value Value parameter
      */
     public void addParam(String key, String value);
+
+    /**
+     *
+     * @param key Key parameter
+     * @param value Value parameter
+     */
+    public void removeParam(String key, String value);
 
     /**
      *

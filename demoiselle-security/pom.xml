@@ -8,20 +8,31 @@
     <description>
         Demoiselle Security
     </description>
-	
+
     <parent>
         <groupId>org.demoiselle.jee</groupId>
-        <artifactId>demoiselle-parent</artifactId>
+        <artifactId>demoiselle-parent</artifactId>		
         <version>3.0.0-BETA2-SNAPSHOT</version>
         <relativePath>../demoiselle-parent</relativePath>
-    </parent>	
-		
+    </parent>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <dependencies>
         
         <dependency>
             <groupId>org.demoiselle.jee</groupId>
             <artifactId>demoiselle-rest</artifactId>
         </dependency>
-        
+
     </dependencies>
 </project>

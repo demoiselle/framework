@@ -1,4 +1,4 @@
-package org.demoiselle.jee.security.token.impl;
+package org.demoiselle.jee.security;
 
 import java.util.Map;
 import static java.util.UUID.randomUUID;
@@ -18,9 +18,9 @@ import org.demoiselle.jee.core.api.security.TokenManager;
  */
 @ApplicationScoped
 @Priority(AUTHENTICATION)
-public class TokenManagerImpl implements TokenManager {
+public class TokenManagerMock implements TokenManager {
 
-    private final ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
 
     @Inject
     private Token token;
@@ -45,7 +45,7 @@ public class TokenManagerImpl implements TokenManager {
     public void setUser(DemoisellePrincipal user) {
         token.setKey(null);
 
-        repo.entrySet().stream().parallel().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
+        repo.entrySet().stream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
             token.setKey(entry.getKey());
         });
 
@@ -72,7 +72,7 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     public void removeToken(DemoisellePrincipal user) {
-        repo.entrySet().stream().parallel().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
+        repo.entrySet().stream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
             token.setKey(entry.getKey());
         });
         removeToken();

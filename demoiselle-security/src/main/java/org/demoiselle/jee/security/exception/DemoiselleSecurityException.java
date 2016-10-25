@@ -17,9 +17,9 @@ public class DemoiselleSecurityException extends DemoiselleRESTException {
 
     private static final long serialVersionUID = 519_965_615_171_844_237L;
 
-    private HashMap<String, String> messages = new HashMap<>();
+    private final HashMap<String, String> messages = new HashMap<>();
 
-    private int statusCode;
+    private final int statusCode;
 
     /**
      *
