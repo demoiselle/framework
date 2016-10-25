@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
@@ -25,8 +26,8 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
 
     public DemoisellePrincipalImpl() {
         this.roles = new ArrayList<>();
-        this.permissions = new HashMap<>();
-        this.params = new HashMap<>();
+        this.permissions = new ConcurrentHashMap<>();
+        this.params = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -81,7 +82,14 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
 
     @Override
     public void addRole(String role) {
-        this.roles.add(role);
+        if (!this.roles.contains(role)) {
+            this.roles.add(role);
+        }
+    }
+
+    @Override
+    public void removeRole(String role) {
+        this.roles.remove(role);
     }
 
     @Override
@@ -93,11 +101,26 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
     public void addPermission(String resource, String operetion) {
         List<String> operations = permissions.get(resource);
         if (operations != null && !operations.isEmpty()) {
-            permissions.get(resource).add(operetion);
+            if (!permissions.get(resource).contains(operetion)) {
+                permissions.get(resource).add(operetion);
+            }
         } else {
             List<String> newoperations = new ArrayList<>();
             newoperations.add(operetion);
             permissions.put(resource, newoperations);
+        }
+    }
+
+    @Override
+    public void removePermission(String resource, String operetion) {
+        List<String> operations = permissions.get(resource);
+        if (operations != null && !operations.isEmpty()) {
+            if (permissions.get(resource).contains(operetion)) {
+                permissions.get(resource).remove(operetion);
+            }
+            if (operations.isEmpty()) {
+                permissions.remove(resource);
+            }
         }
     }
 
@@ -110,11 +133,26 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
     public void addParam(String key, String value) {
         List<String> paramss = params.get(key);
         if (paramss != null && !paramss.isEmpty()) {
-            params.get(key).add(value);
+            if (!params.get(key).contains(value)) {
+                params.get(key).add(value);
+            }
         } else {
             List<String> newparamss = new ArrayList<>();
             newparamss.add(value);
             params.put(key, newparamss);
+        }
+    }
+
+    @Override
+    public void removeParam(String key, String value) {
+        List<String> paramss = params.get(key);
+        if (paramss != null && !paramss.isEmpty()) {
+            if (params.get(key).contains(value)) {
+                params.get(key).remove(value);
+            }
+            if (paramss.isEmpty()) {
+                params.remove(key);
+            }
         }
     }
 
@@ -138,11 +176,7 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
             return false;
         }
         final DemoisellePrincipalImpl other = (DemoisellePrincipalImpl) obj;
-        if (!Objects.equals(this.identity, other.identity)) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(this.identity, other.identity);
     }
 
     @Override
