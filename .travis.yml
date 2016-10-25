@@ -1,5 +1,6 @@
-# whitelist
+language: java
 branches:
   only:
     - master
     - 3.0.0-SNAPSHOT
+script: mvn clean install
