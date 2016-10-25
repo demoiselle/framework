@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -48,6 +49,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 	
 	@Before
 	public void setUp() throws IOException, Exception{
+		Locale.setDefault(new Locale("pt", "BR"));
 		makeConfigurationRuntime(ConfigModel.class, ConfigType.PROPERTIES, utilTest.createPropertiesFile("test"));
 	}
 	
@@ -136,7 +138,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 	}
 	
 	@Test
-	public void modelInvalidValueWithBeanValidationShouldShowError() throws NoSuchFieldException, IllegalAccessException{
+	public void modelInvalidValueWithBeanValidationShouldShowError() throws NoSuchFieldException, IllegalAccessException{		
 		
 		preparePriorityForValueExtractor(Priority.L1_PRIORITY);
 		
