@@ -1,4 +1,4 @@
-Demoiselle 3
+Demoiselle 3 [![Build Status](https://travis-ci.org/demoiselle/framework.svg?branch=3.0.0-SNAPSHOT)](https://travis-ci.org/demoiselle/framework)
 =============
 
 O framework Demoiselle implementa o conceito de framework integrador.
