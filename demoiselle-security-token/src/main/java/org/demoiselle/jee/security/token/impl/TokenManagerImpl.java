@@ -20,7 +20,7 @@ import org.demoiselle.jee.core.api.security.TokenManager;
 @Priority(AUTHENTICATION)
 public class TokenManagerImpl implements TokenManager {
 
-    private ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
 
     @Inject
     private Token token;
@@ -45,11 +45,9 @@ public class TokenManagerImpl implements TokenManager {
     public void setUser(DemoisellePrincipal user) {
         token.setKey(null);
 
-        for (Map.Entry<String, DemoisellePrincipal> entry : repo.entrySet()) {
-            if (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity())) {
-                token.setKey(entry.getKey());
-            }
-        }
+        repo.entrySet().stream().parallel().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
+            token.setKey(entry.getKey());
+        });
 
         if (token.getKey() == null) {
             String value = randomUUID().toString();
@@ -74,11 +72,9 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     public void removeToken(DemoisellePrincipal user) {
-        for (Map.Entry<String, DemoisellePrincipal> entry : repo.entrySet()) {
-            if (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity())) {
-                token.setKey(entry.getKey());
-            }
-        }
+        repo.entrySet().stream().parallel().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
+            token.setKey(entry.getKey());
+        });
         removeToken();
     }
 
