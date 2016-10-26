@@ -39,12 +39,7 @@ public class DynamicManagerTest {
         war.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
         return war;     
-    }
-    
-    @Test
-    public void testNew()  {                 	
-    	System.out.println("Teste constructor");
-        Assert.assertNotNull(new DynamicManager("groovy"));
+        
     }
     
     @Test

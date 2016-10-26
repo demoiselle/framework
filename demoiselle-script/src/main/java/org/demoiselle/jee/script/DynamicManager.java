@@ -6,9 +6,12 @@
  */
 package org.demoiselle.jee.script;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -16,24 +19,17 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+
 /**
  * Dynamic Manager - Responsavel por Gerenciar os Scripts, sua compilação e execução 
  *
  */
+@ApplicationScoped
 public class DynamicManager {
+	private static ConcurrentHashMap<String, Object> scriptCache = new ConcurrentHashMap <String, Object>();
+	private static ScriptEngine scriptEngine = null;
 	
-	private Map<String, Object> scriptCache; 
-	private ScriptEngine scriptEngine;
-
-	public DynamicManager(){
-		scriptCache   = new HashMap<String, Object>();
-		scriptEngine  = null;
-	}
-	
-	public DynamicManager(String engineName){
-		scriptCache   = new HashMap<String, Object>();		
-		loadEngine(engineName);
-	}
 	/**
 	 * Carrega um engine no engine manager.
 	 * @param engineName ...
@@ -109,6 +105,10 @@ public class DynamicManager {
 	 */
 	public Object getScript(String scriptId) { 
 		return this.scriptCache.get(scriptId);
+		
 	}  
-			
+		
+	public int getCacheSize() { 
+		return this.scriptCache.size();
+	}  
 }
