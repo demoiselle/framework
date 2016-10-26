@@ -18,9 +18,10 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-/**
- * Dynamic Manager - Responsavel por Gerenciar os Scripts, sua compilação e execução 
+/** 
+ * Dynamic Manager - Responsible for Managing Scripts, its compilation and execution
  *
+ * @author SERPRO
  */
 @ApplicationScoped
 public class DynamicManager {
@@ -31,9 +32,10 @@ public class DynamicManager {
 	@Inject
 	private Logger logger;
 	/**
-	 * Carrega um engine no engine manager.
-	 * @param engineName ...
-	 * @return ScriptEngine ...
+	 * Load a JSR-223 Script engine.
+	 * 
+	 * @param engineName engine name
+	 * @return ScriptEngine instance of engine
 	 */
     public ScriptEngine loadEngine(String engineName) {
     	ScriptEngine engine =  new ScriptEngineManager().getEngineByName(engineName);
@@ -45,11 +47,14 @@ public class DynamicManager {
     	return engine;
     }
 	/**
-	 * Executa o script de acordo com o contexto passado.
+	 * Run the script with context.
 	 * 
-	 * @param scriptName ...
-	 * @param context ...
-	 * @return ...
+	 * To add a variable in context to eval script use context.put("variableName", value) 
+	 * Respective resulting values can be acessed from context use context.get("variableName"); 
+	 * 
+	 * @param scriptName script name
+	 * @param context the variables to script logic.
+	 * @return Object the result of script eval.
 	 * @throws ScriptException 
 	 */
 	public Object eval(String scriptName, Bindings context) throws ScriptException{
@@ -66,17 +71,17 @@ public class DynamicManager {
 	}
 	
 	/**
-	 * Le e compila um script guardando em cache.
+	 * Load ,compile and put script in cache.
 	 * 
-	 * @param scriptName ...
-	 * @param source ...
-	 * @return Boolean ...
+	 * @param scriptName script name
+	 * @param source 	 source of script
+	 * @return Boolean   compilation ok or not
 	 * @throws ScriptException 
 	 */
 	public synchronized Boolean loadScript(String scriptName,String source ) throws ScriptException{				
 		CompiledScript compiled = null;
 	
-		Compilable engine = (Compilable) this.scriptEngine;
+		Compilable engine = (Compilable) DynamicManager.scriptEngine;
 		
 		if(engine == null ){
 			return false;
@@ -85,7 +90,7 @@ public class DynamicManager {
 		if( this.getScript(scriptName)== null){
 			compiled = engine.compile( source );			
 			scriptCache.put(scriptName, compiled);
-			logger.info("Script:" + scriptName + " compilado e carregado.");
+			logger.info("Script: '" + scriptName + "' loaded. *Cached scripts: " + scriptCache.size());
 		}	
 		
 		return true;
@@ -93,29 +98,32 @@ public class DynamicManager {
 	}
 	
 	/**
-	 * Remove um script do cache.
+	 * Delete the script from cache.
 	 * 
-	 * @param scriptId ...
+	 * @param scriptId script name
 	 */
 	public void removeScript(String scriptId) {					
-		this.scriptCache.remove(scriptId); 		
+		DynamicManager.scriptCache.remove(scriptId); 		
 	}
 
 	/**
-	 * Retorna um script do cache.
+	 * Return the script from cache.
 	 * 
-	 * @param scriptId ...
-	 * @return 
-	 * @return Script requerido
+	 * @param scriptId script
+	 * @return Script 
 	 */
 	public synchronized Object getScript(String scriptId){	
-			synchronized (this.scriptCache) {
-				return this.scriptCache.get(scriptId);	
+			synchronized (DynamicManager.scriptCache) {
+				return DynamicManager.scriptCache.get(scriptId);	
 			}		
-				
 	}  
-		
+	
+	/**
+	 * Returns size of scriptCache
+	 * 
+	 * @return number of scripts cached.
+	 */
 	public int getCacheSize() { 
-		return this.scriptCache.size();
+		return DynamicManager.scriptCache.size();
 	}  
 }
