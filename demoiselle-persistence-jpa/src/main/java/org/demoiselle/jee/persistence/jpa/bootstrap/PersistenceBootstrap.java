@@ -13,18 +13,16 @@ import javax.persistence.Entity;
 
 /**
  * 
- * Este processo evita que o CDI faça a gestão da entidade no lugar do EntityManager. Garantindo que o EntityManager faça a gestão.
+ * Adding the @Vetoed annotation to all persistent entities is considered a best practice in most cases. The purpose of this annotation is to prevent the BeanManager from managing an entity as a CDI Bean.
  * 
  * http://www.cdi-spec.org/faq/
  * Why is @Vetoed a best practice for persistent (JPA) entities?
- * 
- * @author SERPRO
  *
  */
 public class PersistenceBootstrap implements javax.enterprise.inject.spi.Extension {
 
 	/**
-	 * Adiciona Vetoed nas entidades
+	 * Add Vetoed for all entities of application
 	 * 
 	 * @param pat
 	 */
