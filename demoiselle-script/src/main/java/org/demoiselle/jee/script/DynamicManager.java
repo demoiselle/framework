@@ -6,9 +6,11 @@
  */
 package org.demoiselle.jee.script;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -20,20 +22,14 @@ import javax.script.ScriptException;
  * Dynamic Manager - Responsavel por Gerenciar os Scripts, sua compilação e execução 
  *
  */
+@ApplicationScoped
 public class DynamicManager {
 	
-	private Map<String, Object> scriptCache; 
-	private ScriptEngine scriptEngine;
-
-	public DynamicManager(){
-		scriptCache   = new HashMap<String, Object>();
-		scriptEngine  = null;
-	}
+	private static ConcurrentHashMap<String, Object> scriptCache = new ConcurrentHashMap <String, Object>();
+	private static ScriptEngine scriptEngine = null;
 	
-	public DynamicManager(String engineName){
-		scriptCache   = new HashMap<String, Object>();		
-		loadEngine(engineName);
-	}
+	@Inject
+	private Logger logger;
 	/**
 	 * Carrega um engine no engine manager.
 	 * @param engineName ...
@@ -44,7 +40,7 @@ public class DynamicManager {
     	if(engine == null)
     		return null ;    		
     	
-    	this.scriptEngine = engine;
+    	DynamicManager.scriptEngine = engine;
     	
     	return engine;
     }
@@ -77,16 +73,20 @@ public class DynamicManager {
 	 * @return Boolean ...
 	 * @throws ScriptException 
 	 */
-	public Boolean loadScript(String scriptName,String source ) throws ScriptException{				
+	public synchronized Boolean loadScript(String scriptName,String source ) throws ScriptException{				
 		CompiledScript compiled = null;
 	
 		Compilable engine = (Compilable) this.scriptEngine;
 		
 		if(engine == null ){
 			return false;
-		}							
-		compiled = engine.compile( source );			
-		scriptCache.put(scriptName, compiled);
+		}		
+				
+		if( this.getScript(scriptName)== null){
+			compiled = engine.compile( source );			
+			scriptCache.put(scriptName, compiled);
+			logger.info("Script:" + scriptName + " compilado e carregado.");
+		}	
 		
 		return true;
 								
@@ -105,10 +105,17 @@ public class DynamicManager {
 	 * Retorna um script do cache.
 	 * 
 	 * @param scriptId ...
+	 * @return 
 	 * @return Script requerido
 	 */
-	public Object getScript(String scriptId) { 
-		return this.scriptCache.get(scriptId);
+	public synchronized Object getScript(String scriptId){	
+			synchronized (this.scriptCache) {
+				return this.scriptCache.get(scriptId);	
+			}		
+				
 	}  
-			
+		
+	public int getCacheSize() { 
+		return this.scriptCache.size();
+	}  
 }

@@ -10,8 +10,8 @@ import org.apache.deltaspike.core.api.message.MessageBundle;
 import org.apache.deltaspike.core.api.message.MessageTemplate;
 
 /**
+ * Message class intended to be used by all framework.
  *
- * @author 70744416353
  */
 @MessageBundle
 public interface DemoiselleMessage {
@@ -69,16 +69,6 @@ public interface DemoiselleMessage {
      */
     @MessageTemplate("{bean-not-found}")
 	String beanNotFound(String bean);
-
-    //TODO verificar "store?"
-    /**
-     *
-     * @param object object name
-     * @param scope scope
-     * @return message for story not found
-     */    
-    @MessageTemplate("{store-not-found}")
-	String storeNotFound(String object, String scope);
 
     /**
      *

@@ -7,7 +7,11 @@
 package org.demoiselle.jee.persistence.jpa.exception;
 
 import org.demoiselle.jee.core.exception.DemoiselleException;
-
+/**
+ * 
+ * Exception for all persistence errors in Framework.
+ *
+ */
 public class DemoisellePersistenceException extends DemoiselleException {
 
 	private static final long serialVersionUID = 1L;
