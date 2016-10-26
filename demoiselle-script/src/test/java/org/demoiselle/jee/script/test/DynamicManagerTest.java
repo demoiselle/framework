@@ -77,9 +77,9 @@ public class DynamicManagerTest {
     	System.out.println("RemoveScript test");
     	String javaScriptSource = "var a= X;  X=1 ; ";
         dm.loadEngine("nashorn");     
-        dm.loadScript("teste2", javaScriptSource);
+        dm.loadScript("test2", javaScriptSource);
         dm.removeScript("test2");
-        Assert.assertNull( dm.getScript("teste2"));
+        Assert.assertNull( dm.getScript("test2"));
     }
        
     @Test

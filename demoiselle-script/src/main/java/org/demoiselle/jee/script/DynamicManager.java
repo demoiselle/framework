@@ -28,9 +28,7 @@ public class DynamicManager {
 	
 	private static ConcurrentHashMap<String, Object> scriptCache = new ConcurrentHashMap <String, Object>();
 	private static ScriptEngine scriptEngine = null;
-	
-	@Inject
-	private Logger logger;
+
 	/**
 	 * Load a JSR-223 Script engine.
 	 * 
@@ -89,8 +87,7 @@ public class DynamicManager {
 				
 		if( this.getScript(scriptName)== null){
 			compiled = engine.compile( source );			
-			scriptCache.put(scriptName, compiled);
-			logger.info("Script: '" + scriptName + "' loaded. *Cached scripts: " + scriptCache.size());
+			scriptCache.put(scriptName, compiled);		
 		}	
 		
 		return true;
