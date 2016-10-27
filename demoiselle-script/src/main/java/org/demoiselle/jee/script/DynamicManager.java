@@ -7,10 +7,8 @@
 package org.demoiselle.jee.script;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
-
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -87,7 +85,7 @@ public class DynamicManager {
 				
 		if( this.getScript(scriptName)== null){
 			compiled = engine.compile( source );			
-			scriptCache.put(scriptName, compiled);		
+			DynamicManager.scriptCache.put(scriptName, compiled);
 		}	
 		
 		return true;
