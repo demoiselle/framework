@@ -5,7 +5,7 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
 
 /**
  * 
- * Mensagens utilizadas para informar usuário
+ * Messages used to inform user
  *
  */
 @MessageBundle

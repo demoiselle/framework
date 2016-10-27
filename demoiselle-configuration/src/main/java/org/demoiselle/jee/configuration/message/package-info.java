@@ -1,5 +1,5 @@
 /**
- * Provê as classes necessárias para a exibição das mensagens.
+ * It provides the classes necessary for displaying messages.
  * 
  */
 package org.demoiselle.jee.configuration.message;

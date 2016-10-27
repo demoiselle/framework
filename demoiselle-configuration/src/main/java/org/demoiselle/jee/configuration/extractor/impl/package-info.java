@@ -1,4 +1,4 @@
 /**
- * Provês os estratores que implementam a interface {@link org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor}.
+ * Extractors that implement the {@link org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor} interface.
  */
 package org.demoiselle.jee.configuration.extractor.impl;
