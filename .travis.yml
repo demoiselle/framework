@@ -6,8 +6,13 @@ branches:
     - 3.0.0-SNAPSHOT
 script: mvn clean install
 notifications:
+  slack:
+    on_success: always
+    on_failure: always 
   email:
     recipients:
       - demoiselle-users@lists.sourceforge.net
-    on_success: [change] # default: change
-    on_failure: [always] # default: always
+      - paulo.pinheiro@serpro.gov.br
+      - vanderson.silva@serpro.gov.br
+    on_success: always
+    on_failure: always
