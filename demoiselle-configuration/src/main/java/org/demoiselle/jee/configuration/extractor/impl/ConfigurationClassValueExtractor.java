@@ -14,15 +14,14 @@ import org.demoiselle.jee.core.annotation.Priority;
 import static org.demoiselle.jee.core.annotation.Priority.*;
 
 /**
- * Adiciona a capacibilidade de extração de dados de uma fonte ({@link ConfigType}) para o tipo 
- * de {@link Class}.
+ * Adds the data extraction capability of a source ({@link ConfigType}) for the type of {@link Class}.
  * 
  * <p>
- * Exemplo:
+ * Sample:
  * </p>
+ * 
  * <p>
- * Para a extração de um Class de um arquivo properties a declaração feita no properties 
- * terá o seguinte formato:
+ * For the extraction of a Class type of a properties file the statement made in the properties will have the following format:
  * </p>
  * 
  * <pre>
@@ -30,7 +29,7 @@ import static org.demoiselle.jee.core.annotation.Priority.*;
  * untypedClass=package.MyOtherClass
  * </pre>
  * 
- * E a classe de configuração será declara da seguinte forma:
+ * And the configuration class will be declared as follows:
  * 
  * <pre>
  *  

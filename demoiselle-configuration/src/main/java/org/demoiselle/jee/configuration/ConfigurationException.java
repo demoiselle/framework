@@ -4,7 +4,7 @@ import org.demoiselle.jee.core.exception.DemoiselleException;
 
 /**
  * 
- * Principal exceção do Demoiselle Configuration
+ * Main exception Demoiselle Configuration feature
  *
  */
 public class ConfigurationException extends DemoiselleException{

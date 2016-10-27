@@ -5,28 +5,28 @@ import java.lang.reflect.Field;
 import org.apache.commons.configuration2.Configuration;
 
 /**
- * Definição de interface para os Extratores. 
+ * Definition interface to extractors.
  *
  */
 public interface ConfigurationValueExtractor {
 	
 	/**
-	 * Extrai o valor de uma fonte baseado nos parâmetros.
+	 * Extracts the value of a source based on the parameters.
 	 * 
-	 * @param prefix Prefixo utilizado no arquivo fonte.
-	 * @param key Chave utilizado no arquivo fonte.
-	 * @param field Field a ser preenchido.
-	 * @param configuration Objeto de Configuração responsável por extrair o valor.
-	 * @return Objeto com o valor definido na fonte.
-	 * @throws Exception Exeção emitida caso ocorra algum erro.
+	 * @param prefix Prefix used in the source file.
+	 * @param key Key used in the source file.
+	 * @param field Field to be filled.
+	 * @param configuration {@link org.apache.commons.configuration2.Configuration} object responsible for extracting the value.
+	 * @return Object with the value set at source
+	 * @throws Exception Exception issued if an error occurs.
 	 */
 	Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception;
 	
 	/**
-	 * Validação do tipo de campo informado é suportado pelo extrator 
+	 * Verify the type supported by the extractor
 	 * 
-	 * @param field Campo a ser validado.
-	 * @return Verdadeiro se for suportado e Falso se não for suportado
+	 * @param field Field to be validated.
+	 * @return True if supported and False if it is not supported
 	 */
 	boolean isSupported(Field field);
 }

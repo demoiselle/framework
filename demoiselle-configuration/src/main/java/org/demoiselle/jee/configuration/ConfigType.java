@@ -1,22 +1,22 @@
 package org.demoiselle.jee.configuration;
 
 /**
- * Define os tipos de fontes que podem ser consumidos.
+ * Defines the types of sources that can be consumed.
  * 
  */
 public enum ConfigType {
 	/**
-	 * Configurações carregadas do método {@link System#getProperties()} ou {@link System#getenv()}.
+	 * Loaded settings {@link System#getProperties()} or {@link System#getenv()}.
 	 */
 	SYSTEM,
 	
 	/**
-	 * Configurações carregadas de um arquivo XML.
+	 * Settings loaded from an XML file.
 	 */
 	XML,
 	
 	/**
-	 * Configurações carregadas de um arquivo properties.
+	 * Settings loaded from a properties file.
 	 */
 	PROPERTIES
 }

@@ -12,8 +12,7 @@ import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 
 /**
  * 
- * Classe responsável por carregar todas as classes extratoras que implementam a 
- * interface {@link ConfigurationValueExtractor}.
+ * Class responsible for loading all extractors classes that implement the {@link ConfigurationValueExtractor} interface.
  * 
  *
  */
