@@ -44,31 +44,6 @@
 		    <artifactId>hibernate-validator</artifactId>
 		    <version>5.3.0.Final</version>
 		</dependency>
-		
-		<!-- Delta Spike - Test -->
-		<dependency>
-		    <groupId>org.apache.deltaspike.modules</groupId>
-		    <artifactId>deltaspike-test-control-module-api</artifactId>
-		    <scope>test</scope>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.apache.deltaspike.modules</groupId>
-		    <artifactId>deltaspike-test-control-module-impl</artifactId>
-		    <scope>test</scope>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.apache.deltaspike.cdictrl</groupId>
-		    <artifactId>deltaspike-cdictrl-weld</artifactId>
-		    <scope>test</scope>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.jboss.weld.se</groupId>
-		    <artifactId>weld-se-core</artifactId>
-		    <scope>test</scope>
-		</dependency>
  
 	</dependencies>
 
