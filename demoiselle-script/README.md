@@ -1,17 +1,28 @@
-DynamicManager 
----------------------------------------------------------------------------------------------------
-Responsavel por Gerenciar os Scripts, sua compilação e execução.
+ 
+DynamicManager
+-------------------------------------------------- -------------------------------------------------
+Responsible for Managing Scripts, its compilation and execution.
 
-A implementação desse componente visa a utilização das facilidades providas pela Java Script API para compilação e execução dinâmica de scripts em linguagens que implementem um engine compativel com a JSR-223.
+The implementation of this component is for the use of the facilities provided by the Java Scripting API to build dynamic and scripting languages ​​in which implement compatible engine with JSR-223.
 
-Utilizando as interfaces Compiled e Invocable da JSR-223 (implementadas nos engines) o gerenciador pode acessar os metodos de maneira genérica para compilar o codigo e guardar os bytecodes em cache.
+Using Compiled and Invocable interfaces JSR-223 (implemented in engines) the manager can access the generically methods to compile the code and save the bytecode cache.
 
-A execucao do script permite que seja passado um contexto com objetos que serão acessiveis ao codigo do script podendo ser manipuladas/alteradas pelo mesmo e disponibilizadas via esse mesmo contexto para o código chamador.
+The script allows execution is passed a context with objects that will be accessible to the script code can be manipulated / altered by the same and made available via the same context for the calling code.
 
----------------------------------------------------------------------------------------------------
-Exemplo de Utilização:
+-------------------------------------------------- -------------------------------------------------
+Example of use:
 
- String groovScriptSource = "int a=0; //codigo a ser compilado..."; 
- DynamicManager dm = new DynamicManager("groovy");
- dm.loadScript("testeGroovy", groovyScriptSource);
- dm.eval("testeGroovy");
+ @Inject DynamicManager dm;
+ 
+ ...
+
+ String scriptSource = "int a = 0;"                   //code to be compiled 
+ String scriptName = "teste.groovy";				  //id to scriptCache
+ 
+ if( dm.getScript(scriptName) == null )	{			  //verify if is a cached script
+ 	dm.loadEngine("groovy");						  //the name of JSR-223 engine to load.                
+ 	dm.loadScript ( "testeGroovy", scriptSource);     //load the script into dynamicManager cache.    	
+ }						
+ 
+ dm.eval ( "testeGroovy");						  	  //run the script.
+ 

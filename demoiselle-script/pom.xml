@@ -10,7 +10,6 @@
 	<description>
 		Demoiselle JEE Script
 	</description>
-	
 
 	<parent>
 		<groupId>org.demoiselle.jee</groupId>
@@ -32,7 +31,6 @@
 	</dependencyManagement>
 
 	<dependencies>
-	
 		<dependency>
 			<groupId>org.demoiselle.jee</groupId>
 			<artifactId>demoiselle-core</artifactId>

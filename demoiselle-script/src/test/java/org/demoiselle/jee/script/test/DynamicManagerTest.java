@@ -28,57 +28,63 @@ public class DynamicManagerTest {
     @Inject
     private DynamicManager dm;
 
-    
     @Deployment
     public static Archive<?> createDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "teste.war");
-        war.addPackage(DynamicManager.class.getPackage());
-        //Adicionar aki as packages para teste de outros engines, nashorn ja esta embutido na jdk.
-        war.addPackages(true,"groovy", "org.codehaus.groovy");
-        
+        war.addPackage(DynamicManager.class.getPackage());        
+        // Add here the packages for testing other engines, nashorn is already embedded in the jdk.
+        war.addPackages(true,"groovy", "org.codehaus.groovy");        
         war.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
-        return war;     
-        
+        return war;           
     }
-    
+     
     @Test
     public void testloadEngine()  {        
-    	System.out.println("Teste loadEngine");         	                		                                         
+    	System.out.println("LoadEngine test" );         	                		                                         
         Assert.assertNotNull(dm.loadEngine("groovy"));
     }
         
     @Test
     public void testloadScript() throws ScriptException  {        
-    	System.out.println("Teste loadScript");     
+    	System.out.println("LoadScript test");     
     	String groovyScriptSource = "int a = X;  X= a + a;";
     	dm.loadEngine("groovy");                 		                                         
-        Assert.assertEquals( true , dm.loadScript("testeGroovy", groovyScriptSource));
+        Assert.assertEquals( true , dm.loadScript("testGroovy", groovyScriptSource));
     }
     
     @Test
+    public void testCacheSize()  {        
+    	System.out.println("CacheSize test" );  
+    	dm.loadEngine("groovy");   
+    	
+        Assert.assertEquals(1,dm.getCacheSize());
+    }
+    
+    
+    @Test
     public void testGetScript() throws ScriptException {
-    	System.out.println("Teste getScript ...");
+    	System.out.println("GetScript test");
     	String javaScriptSource = "var a= X;  X=1 ; ";
         dm.loadEngine("nashorn");     
-        dm.loadScript("teste1", javaScriptSource);
-        dm.getScript("teste1");   
-        Assert.assertNotNull(dm.getScript("teste1") );
+        dm.loadScript("test1", javaScriptSource);
+        dm.getScript("test1");   
+        Assert.assertNotNull(dm.getScript("test1") );
     }
     
     @Test
     public void testRemoveScript() throws ScriptException {
-    	System.out.println("Teste remocao script ...");
+    	System.out.println("RemoveScript test");
     	String javaScriptSource = "var a= X;  X=1 ; ";
         dm.loadEngine("nashorn");     
-        dm.loadScript("teste2", javaScriptSource);
-        dm.removeScript("teste2");
-        Assert.assertNull( dm.getScript("teste2"));
+        dm.loadScript("test2", javaScriptSource);
+        dm.removeScript("test2");
+        Assert.assertNull( dm.getScript("test2"));
     }
        
     @Test
-    public void testEvalContexto() throws ScriptException {           	
-    	System.out.println("Teste compilacao e execucao ..."); 
+    public void testEvalContext() throws ScriptException {           	
+    	System.out.println("Compilation and execution test..."); 
     	
     	String javaScriptSource = "var a= X;  X=1 ; ";
         dm.loadEngine("nashorn");     
