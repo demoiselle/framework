@@ -11,6 +11,6 @@ notifications:
     on_failure: always 
   email:
     recipients:
-      - demoiselle-users@lists.sourceforge.net
-    on_success: always
+      - demoiselle-devel@lists.sourceforge.net
+    on_success: never
     on_failure: always
