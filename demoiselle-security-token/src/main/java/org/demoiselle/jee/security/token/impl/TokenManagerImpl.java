@@ -1,11 +1,15 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.security.token.impl;
 
-import java.util.Map;
 import static java.util.UUID.randomUUID;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import static javax.ws.rs.Priorities.AUTHENTICATION;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
@@ -26,8 +30,9 @@ public class TokenManagerImpl implements TokenManager {
     private Token token;
 
     /**
-     *
-     * @return
+     * Returns the user that is stored in a list in memory, from the token 
+     * sent in http header
+     * @return org.demoiselle.jee.core.api.security.DemoisellePrincipal
      */
     @Override
     public DemoisellePrincipal getUser() {
@@ -38,8 +43,9 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     /**
-     *
-     * @param user
+     * It will be included in the user memory and generate a unique 
+     * identification token to be placed in the header of HTTP requests
+     * @param user org.demoiselle.jee.core.api.security.DemoisellePrincipal
      */
     @Override
     public void setUser(DemoisellePrincipal user) {
@@ -59,18 +65,25 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     /**
-     *
-     * @return
+     * validate the token and the user is in memory
+     * @return boolean
      */
     @Override
     public boolean validate() {
         return getUser() != null;
     }
 
+    /**
+     * remove the token and the user is in memory
+     */
     public void removeToken() {
         repo.remove(token.getKey());
     }
 
+    /**
+     * remove the token and the user is in memory
+     * @param user
+     */
     public void removeToken(DemoisellePrincipal user) {
         repo.entrySet().stream().parallel().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
             token.setKey(entry.getKey());
