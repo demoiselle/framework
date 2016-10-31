@@ -28,12 +28,12 @@
     <parent>
         <groupId>org.demoiselle.jee</groupId>
         <artifactId>demoiselle-build</artifactId>
-        <version>3.0.0-BETA2</version>
+        <version>3.0.0-BETA3-SNAPSHOT</version>
     </parent>
 
     <properties>
         <!-- General -->
-        <demoiselle.version>3.0.0-BETA2</demoiselle.version>
+        <demoiselle.version>3.0.0-BETA3-SNAPSHOT</demoiselle.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependencies versions -->
