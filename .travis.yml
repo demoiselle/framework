@@ -4,7 +4,7 @@ branches:
   only:
     - master
     - 3.0.0-SNAPSHOT
-script: mvn clean install site:site
+script: mvn clean install
 notifications:
   slack:
     on_success: always
