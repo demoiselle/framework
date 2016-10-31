@@ -12,7 +12,5 @@ notifications:
   email:
     recipients:
       - demoiselle-users@lists.sourceforge.net
-      - paulo.pinheiro@serpro.gov.br
-      - vanderson.silva@serpro.gov.br
     on_success: always
     on_failure: always
