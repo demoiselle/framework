@@ -11,8 +11,7 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
 
 /**
  * 
- * Intercepta a classe anotata com {@link Configuration} e delega o processamento para a classe 
- * {@link ConfigurationLoader}
+ * Intercepts annotated class with {@link Configuration} and delegates processing to the class {@link ConfigurationLoader}
  *
  */
 @Dependent

@@ -45,8 +45,8 @@ import org.demoiselle.jee.core.annotation.Priority;
 
 /**
  * 
- * Classe responsável por gerenciar a extração de dados de uma fonte, identifcar os campos a serem preenchidos, 
- * encontrar o extrator para cada tipo de campo, preencher e validar o dado do campo.
+ * Class responsible for managing the source of a data extraction, identified which fields to be filled, 
+ * find the extractor for each field type, fill and validate the data field.
  *
  */
 @ApplicationScoped
@@ -78,17 +78,17 @@ public class ConfigurationLoader implements Serializable {
 
 	/**
 	 * <p>
-	 * Processa a classe anotada com {@link Configuration}.
+	 * Processes the annotated class with {@link Configuration}.
 	 * </p>
 	 * 
 	 * <p>
-	 * Após o primeiro processamento a classe de configuração é adicionado ao cache para evitar o processamento repetido.
+	 * After the first class configuration procedure is added to the cache to avoid repeated processing.
 	 * </p>
 	 * 
-	 * @param object Objeto anotado com {@link Configuration} a ser populado
-	 * @param baseClass Tipo da classe a ser populado
-	 * @param logLoadingProcess Ativa o log ou não do processo
-	 * @throws ConfigurationException Quando houver algum problema no processo 
+	 * @param object Object annotated with {@link Configuration} to be populated
+	 * @param baseClass Class type to be populated
+	 * @param logLoadingProcess Enable logging or not the process
+	 * @throws ConfigurationException When there is a problem in the process 
 	 */
 	public void load(final Object object, Class<?> baseClass, boolean logLoadingProcess) throws ConfigurationException {
 		Boolean isLoaded = loadedCache.get(object);

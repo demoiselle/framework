@@ -6,8 +6,11 @@ branches:
     - 3.0.0-SNAPSHOT
 script: mvn clean install
 notifications:
+  slack:
+    on_success: always
+    on_failure: always 
   email:
     recipients:
-      - demoiselle-users@lists.sourceforge.net
-    on_success: [change] # default: change
-    on_failure: [always] # default: always
+      - demoiselle-devel@lists.sourceforge.net
+    on_success: never
+    on_failure: always

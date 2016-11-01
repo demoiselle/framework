@@ -15,29 +15,6 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * <p>
- * Anotação utilizada para identificar um <b>classe de Configuração</b>.
- * </p>
- * <p>
- * Uma classe de configuração é uma estrutura para armazanamento de valores que são extraídos 
- * de um dado recurso como um arquivo properties, xml ou variáveis de ambiente.
- * </p>
- * 
- * <p>
- * A classe anotada com essa anotação será tratada como uma classe do tipo <b>Singleton</b>, ou seja, existirá apenas uma 
- * instância dela em execução.
- * </p>
- * 
- * <p>
- * Uma classe de configuração é:
- * </p>
- * <ul>
- * 	<li>Definida quando anotada com {@code @Configuration}</li>
- *  <li>Injetada através da {@code @Inject}</li>
- * </ul>
- * 
- * 
- * 
  * 
  * Identifies a <b>configuration class</b>, that is, a structure reserved to store configuration values retrieved from a
  * given resource file or system variables.

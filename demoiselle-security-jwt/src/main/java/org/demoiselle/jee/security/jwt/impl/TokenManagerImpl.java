@@ -1,3 +1,9 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.security.jwt.impl;
 
 import java.security.KeyFactory;
@@ -109,9 +115,6 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     /**
-     * Pega o token que está no escopo de request e extrai o usuário de dentro
-     * do token validando o usuário nesse momento
-     * <p>
      * Pick up the token that is in the request scope and draws the user into
      * the token validating the user at this time
      *

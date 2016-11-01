@@ -12,15 +12,14 @@ import org.demoiselle.jee.core.annotation.Priority;
 import static org.demoiselle.jee.core.annotation.Priority.*;
 
 /**
- * Adiciona a capacibilidade de extração de dados de uma fonte ({@link ConfigType}) para o tipo 
- * de array de objetos {@code Object[]}.
+ * Adds the data extraction capability of a source ({@link ConfigType}) for the type of {@link Object[]}.
  * 
  * <p>
- * Exemplo:
+ * Sample:
  * </p>
+ * 
  * <p>
- * Para a extração de um array de inteiros de um arquivo properties a declaração feita no properties 
- * terá o seguinte formato:
+ * For the extraction of an array type of a properties file the statement made in the properties will have the following format:
  * </p>
  * 
  * <pre>
@@ -29,7 +28,7 @@ import static org.demoiselle.jee.core.annotation.Priority.*;
  * demoiselle.intergerArray=1
  * </pre>
  * 
- * E a classe de configuração será declara da seguinte forma:
+ * And the configuration class will be declared as follows:
  * 
  * <pre>
  *  

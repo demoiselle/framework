@@ -12,22 +12,21 @@ import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 import org.demoiselle.jee.core.annotation.Priority;
 
 /**
- * Adiciona a capacibilidade de extração de dados de uma fonte ({@link ConfigType}) para o tipo 
- * de {@link Enum}.
+ * Adds the data extraction capability of a source ({@link ConfigType}) for the type of {@link Enum}.
  * 
  * <p>
- * Exemplo:
+ * Sample:
  * </p>
+ * 
  * <p>
- * Para a extração de um Enum de um arquivo properties a declaração feita no properties 
- * terá o seguinte formato:
+ * For the extraction of an Enum type of a properties file the statement made in the properties will have the following format:
  * </p>
  * 
  * <pre>
  * demoiselle.loadedConfigurationType=SYSTEM
  * </pre>
  * 
- * E a classe de configuração será declara da seguinte forma:
+ * And the configuration class will be declared as follows:
  * 
  * <pre>
  *  

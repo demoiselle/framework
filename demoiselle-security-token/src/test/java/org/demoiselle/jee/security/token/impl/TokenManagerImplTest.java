@@ -1,3 +1,9 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.security.token.impl;
 
 import static java.lang.System.out;
@@ -103,6 +109,9 @@ public class TokenManagerImplTest {
         assertEquals(expResult, result);
     }
 
+    /**
+     *
+     */
     @Test
     public void test22() {
         out.println("setUser já existente");
@@ -170,6 +179,9 @@ public class TokenManagerImplTest {
         ((TokenManagerImpl) instance).removeToken();
     }
 
+    /**
+     *
+     */
     @Test
     public void test27() {
         out.println("remove user");
