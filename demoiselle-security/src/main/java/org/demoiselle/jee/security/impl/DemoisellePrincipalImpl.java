@@ -181,7 +181,7 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
 
     @Override
     public String toString() {
-        return "{identity:\"" + identity + "\", name:\"" + name + "\"}";
+        return "{\"identity\":\"" + identity + "\", \"name\":\"" + name + "\"}";
     }
 
     @Override
