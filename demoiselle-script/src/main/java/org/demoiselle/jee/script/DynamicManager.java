@@ -35,8 +35,10 @@ public class DynamicManager {
 	 */
     public ScriptEngine loadEngine(String engineName) {
     	ScriptEngine engine =  new ScriptEngineManager().getEngineByName(engineName);
-    	if(engine == null)
-    		return null ;    		
+    	if(engine == null){
+    	    DynamicManager.scriptEngine = null;
+    		return null ;  
+    	}
     	
     	DynamicManager.scriptEngine = engine;
     	
@@ -83,7 +85,7 @@ public class DynamicManager {
 			return false;
 		}		
 				
-		if( this.getScript(scriptName)== null){
+		if( getScript(scriptName)== null){
 			compiled = engine.compile( source );			
 			DynamicManager.scriptCache.put(scriptName, compiled);
 		}	
@@ -107,10 +109,8 @@ public class DynamicManager {
 	 * @param scriptId script
 	 * @return Script 
 	 */
-	public synchronized Object getScript(String scriptId){	
-			synchronized (DynamicManager.scriptCache) {
-				return DynamicManager.scriptCache.get(scriptId);	
-			}		
+	public synchronized Object getScript(String scriptId){			
+		return DynamicManager.scriptCache.get(scriptId);						
 	}  
 	
 	/**
