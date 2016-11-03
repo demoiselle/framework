@@ -8,6 +8,7 @@
 	<description>
 	  	Demoiselle Configuration habilita os projetos a usarem configurações em arquivos .properties, .xml ou variáveis de ambiente.
 	</description>
+	<url>http://demoiselle.io</url>
 
 	<parent>
 		<groupId>org.demoiselle.jee</groupId>

@@ -9,6 +9,7 @@
     <description>
         Contém funcionalidades comuns a todos os módulos framework.
     </description>
+    <url>http://demoiselle.io</url>
 	
     <parent>
         <groupId>org.demoiselle.jee</groupId>
