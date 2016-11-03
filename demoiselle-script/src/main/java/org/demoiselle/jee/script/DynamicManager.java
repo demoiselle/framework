@@ -7,10 +7,8 @@
 package org.demoiselle.jee.script;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
-
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -37,8 +35,10 @@ public class DynamicManager {
 	 */
     public ScriptEngine loadEngine(String engineName) {
     	ScriptEngine engine =  new ScriptEngineManager().getEngineByName(engineName);
-    	if(engine == null)
-    		return null ;    		
+    	if(engine == null){
+    	    DynamicManager.scriptEngine = null;
+    		return null ;  
+    	}
     	
     	DynamicManager.scriptEngine = engine;
     	
@@ -85,9 +85,9 @@ public class DynamicManager {
 			return false;
 		}		
 				
-		if( this.getScript(scriptName)== null){
+		if( getScript(scriptName)== null){
 			compiled = engine.compile( source );			
-			scriptCache.put(scriptName, compiled);		
+			DynamicManager.scriptCache.put(scriptName, compiled);
 		}	
 		
 		return true;
@@ -109,10 +109,8 @@ public class DynamicManager {
 	 * @param scriptId script
 	 * @return Script 
 	 */
-	public synchronized Object getScript(String scriptId){	
-			synchronized (DynamicManager.scriptCache) {
-				return DynamicManager.scriptCache.get(scriptId);	
-			}		
+	public synchronized Object getScript(String scriptId){			
+		return DynamicManager.scriptCache.get(scriptId);						
 	}  
 	
 	/**

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
 <configuration>
 	<configString>String do XML</configString>
 	<configInteger>154897</configInteger>

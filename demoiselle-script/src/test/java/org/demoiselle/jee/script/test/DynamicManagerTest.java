@@ -38,13 +38,33 @@ public class DynamicManagerTest {
 
         return war;           
     }
-     
+      
     @Test
     public void testloadEngine()  {        
     	System.out.println("LoadEngine test" );         	                		                                         
         Assert.assertNotNull(dm.loadEngine("groovy"));
     }
-        
+    
+    @Test
+    public void testloadEngineNotvalid()  {            	         	                		                                         
+        Assert.assertNull(dm.loadEngine("Engine Fail"));
+    }
+    
+    @Test
+    public void testloadScriptNotValidEngine() throws ScriptException  {            	     
+    	String groovyScriptSource = "int a = 1;";
+    	dm.loadEngine("Not valid Engine");                 		                                         
+        Assert.assertEquals( false, dm.loadScript("testGroovy", groovyScriptSource));
+    }
+    
+    @Test
+    public void testloadScriptAlreadyInCache() throws ScriptException  {            	     
+    	String groovyScriptSource = "int a = X;  X= a + a;";
+    	dm.loadEngine("groovy");         
+    	dm.loadScript("test", groovyScriptSource);    	
+        Assert.assertEquals( true , dm.loadScript("test", groovyScriptSource) );
+    }
+    
     @Test
     public void testloadScript() throws ScriptException  {        
     	System.out.println("LoadScript test");     
@@ -52,7 +72,7 @@ public class DynamicManagerTest {
     	dm.loadEngine("groovy");                 		                                         
         Assert.assertEquals( true , dm.loadScript("testGroovy", groovyScriptSource));
     }
-    
+     
     @Test
     public void testCacheSize()  {        
     	System.out.println("CacheSize test" );  
@@ -95,6 +115,16 @@ public class DynamicManagerTest {
         dm.eval("teste3", contexto);
        
         Assert.assertEquals( 1 , contexto.get("X"));
+    }
+    
+    @Test
+    public void testEvalNoContext() throws ScriptException {           	
+    	    	
+    	String javaScriptSource = "var a= 5; a; ";
+        dm.loadEngine("nashorn");     
+        dm.loadScript("teste4", javaScriptSource);        
+       
+        Assert.assertEquals(5, dm.eval("teste4", null));
     }
         
 }

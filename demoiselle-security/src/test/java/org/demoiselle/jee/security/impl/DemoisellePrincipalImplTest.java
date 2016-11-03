@@ -230,7 +230,7 @@ public class DemoisellePrincipalImplTest {
     @Test
     public void test29() {
         System.out.println("toString");
-        String expResult = "{identity:\"123456789\", name:\"Teste\"}";
+        String expResult = "{\"identity\":\"123456789\", \"name\":\"Teste\"}";
         String result = instance.toString();
         assertEquals(expResult, result);
     }
