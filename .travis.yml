@@ -4,7 +4,11 @@ branches:
   only:
     - master
     - 3.0.0-SNAPSHOT
-script: mvn clean install
+script: 
+    - mvn clean install
+    - mvn test jacoco:report
+after_success:
+  - mvn coveralls:report
 notifications:
   slack:
     on_success: always
