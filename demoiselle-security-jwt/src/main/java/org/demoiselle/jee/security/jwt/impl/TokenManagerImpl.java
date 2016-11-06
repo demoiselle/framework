@@ -24,7 +24,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import static javax.ws.rs.Priorities.AUTHENTICATION;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.api.security.Token;
@@ -39,6 +38,9 @@ import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.keys.RsaKeyUtil;
 import org.jose4j.lang.JoseException;
 import static java.security.KeyPairGenerator.getInstance;
+import java.util.Date;
+import org.jose4j.jwt.NumericDate;
+import org.jose4j.jwt.consumer.NumericDateValidator;
 
 /**
  * The security risk component JWT use a strategy where a pair of asymmetric
@@ -51,19 +53,19 @@ import static java.security.KeyPairGenerator.getInstance;
 @ApplicationScoped
 @Priority(AUTHENTICATION)
 public class TokenManagerImpl implements TokenManager {
-
+    
     private PublicKey publicKey;
     private PrivateKey privateKey;
-
+    
     @Inject
     private Logger logger;
-
+    
     @Inject
     private Token token;
-
+    
     @Inject
     private DemoiselleSecurityJWTConfig config;
-
+    
     @Inject
     private DemoisellePrincipal loggedUser;
 
@@ -82,15 +84,15 @@ public class TokenManagerImpl implements TokenManager {
             logger.log(Level.INFO, "Issuer: {0}", config.getRemetente() != null ? config.getRemetente() : "Error");
             logger.log(Level.INFO, "Audience: {0}", config.getDestinatario() != null ? config.getDestinatario() : "Error");
             try {
-
+                
                 if (config.getType() == null) {
                     throw new DemoiselleSecurityException("Escolha o tipo de autenticação, ver documentação", 500);
                 }
-
+                
                 if (!config.getType().equalsIgnoreCase("slave") && !config.getType().equalsIgnoreCase("master")) {
                     throw new DemoiselleSecurityException("Os tipos de servidor são master ou slave, ver documentação", 500);
                 }
-
+                
                 if (config.getType().equalsIgnoreCase("slave")) {
                     if (config.getPublicKey() == null || config.getPublicKey().isEmpty()) {
                         logger.warning("Coloque a chave pública no arquivo demoiselle-security-jwt.properties, ver documentação");
@@ -99,18 +101,18 @@ public class TokenManagerImpl implements TokenManager {
                         publicKey = getPublic();
                     }
                 }
-
+                
                 if (config.getType().equalsIgnoreCase("master")) {
                     privateKey = getPrivate();
                     publicKey = getPublic();
                 }
-
+                
             } catch (DemoiselleSecurityException ex) {
                 logger.severe(ex.getMessage());
             } catch (JoseException | InvalidKeySpecException | NoSuchAlgorithmException ex) {
                 logger.severe(ex.getMessage());
             }
-
+            
         }
     }
 
@@ -125,19 +127,20 @@ public class TokenManagerImpl implements TokenManager {
         if (token.getKey() != null && !token.getKey().isEmpty()) {
             try {
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                        .setRequireExpirationTime() // the JWT must have an expiration time
-                        .setAllowedClockSkewInSeconds(60) // allow some leeway in validating time based claims to account for clock skew
-                        .setExpectedIssuer(config.getRemetente()) // whom the JWT needs to have been issued by
-                        .setExpectedAudience(config.getDestinatario()) // to whom the JWT is intended for
+                        .setRequireExpirationTime()
+                        .setAllowedClockSkewInSeconds(60)
+                        .setExpectedIssuer(config.getRemetente())
+                        .setExpectedAudience(config.getDestinatario())
+                        .setEvaluationTime(NumericDate.now())
                         .setVerificationKey(publicKey)
-                        .build(); // create the JwtConsumer instance
+                        .build();
                 JwtClaims jwtClaims = jwtConsumer.processToClaims(token.getKey());
                 loggedUser.setIdentity((String) jwtClaims.getClaimValue("identity"));
                 loggedUser.setName((String) jwtClaims.getClaimValue("name"));
                 loggedUser.setRoles((List) jwtClaims.getClaimValue("roles"));
                 loggedUser.setPermissions((Map) jwtClaims.getClaimValue("permissions"));
                 loggedUser.setParams((Map) jwtClaims.getClaimValue("params"));
-
+                
                 return loggedUser;
             } catch (InvalidJwtException ex) {
                 loggedUser = null;
@@ -153,21 +156,22 @@ public class TokenManagerImpl implements TokenManager {
      */
     @Override
     public void setUser(DemoisellePrincipal user) {
+        long tempo = (long) ((new Date().getTime()) + (config.getTempo() * 60 * 1000));
         try {
             JwtClaims claims = new JwtClaims();
             claims.setIssuer(config.getRemetente());
+            claims.setExpirationTime(NumericDate.fromMilliseconds(tempo));
             claims.setAudience(config.getDestinatario());
-            claims.setExpirationTimeMinutesInTheFuture(config.getTempo());
             claims.setGeneratedJwtId();
             claims.setIssuedAtToNow();
             claims.setNotBeforeMinutesInThePast(1);
-
+            
             claims.setClaim("identity", (user.getIdentity()));
             claims.setClaim("name", (user.getName()));
             claims.setClaim("roles", (user.getRoles()));
             claims.setClaim("permissions", (user.getPermissions()));
             claims.setClaim("params", (user.getParams()));
-
+            
             JsonWebSignature jws = new JsonWebSignature();
             jws.setPayload(claims.toJson());
             jws.setKey(privateKey);
@@ -178,7 +182,7 @@ public class TokenManagerImpl implements TokenManager {
         } catch (JoseException ex) {
             logger.severe(ex.getMessage());
         }
-
+        
     }
 
     /**
@@ -189,9 +193,9 @@ public class TokenManagerImpl implements TokenManager {
     public boolean validate() {
         return getUser() != null;
     }
-
+    
     private PrivateKey getPrivate() throws NoSuchAlgorithmException, InvalidKeySpecException {
-
+        
         if (config.getPrivateKey() == null) {
             KeyPairGenerator keyGenerator = getInstance("RSA");
             keyGenerator.initialize(2_048);
@@ -208,10 +212,10 @@ public class TokenManagerImpl implements TokenManager {
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePrivate(spec);
     }
-
+    
     private PublicKey getPublic() throws JoseException, InvalidKeySpecException {
         RsaKeyUtil rsaKeyUtil = new RsaKeyUtil();
         return rsaKeyUtil.fromPemEncoded(config.getPublicKey());
     }
-
+    
 }
