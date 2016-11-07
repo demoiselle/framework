@@ -10,6 +10,7 @@
     <description>
         Especialização do POM mínimo, contendo configurações úteis para todas as aplicações REST que utilizam o framework.
     </description>
+    <url>http://demoiselle.io</url>
 
     <parent>
         <groupId>org.demoiselle.jee</groupId>
@@ -17,8 +18,6 @@
         <version>3.0.0-BETA3-SNAPSHOT</version>
         <relativePath>../demoiselle-parent</relativePath>
     </parent>
-
-    <url>http://demoiselle.io</url>
 
     <licenses>
         <license>

@@ -9,6 +9,7 @@
 	<description>
 		Demoiselle Persistence
 	</description>
+	<url>http://demoiselle.io</url>
 
 	<parent>
 		<groupId>org.demoiselle.jee</groupId>

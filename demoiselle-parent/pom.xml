@@ -6,6 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>Demoiselle JEE Parent</name>
+    <url>http://demoiselle.io</url>
 
     <parent>
         <groupId>org.demoiselle.jee</groupId>

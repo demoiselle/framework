@@ -4,7 +4,8 @@ branches:
   only:
     - master
     - 3.0.0-SNAPSHOT
-script: mvn clean install
+script: 
+    - mvn clean install -Pjacoco -Pcoveralls coveralls:report
 notifications:
   slack:
     on_success: always
@@ -12,5 +13,5 @@ notifications:
   email:
     recipients:
       - demoiselle-devel@lists.sourceforge.net
-    on_success: never
+    on_success: change
     on_failure: always
