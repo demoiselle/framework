@@ -13,7 +13,6 @@ import org.demoiselle.jee.core.annotation.Name;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.security.annotation.RequiredPermission;
 import org.demoiselle.jee.core.api.security.SecurityContext;
-import static org.demoiselle.jee.core.util.Strings.isEmpty;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
@@ -97,7 +96,7 @@ public class RequiredPermissionInterceptor implements Serializable {
             requiredPermission = ic.getTarget().getClass().getAnnotation(RequiredPermission.class);
         }
 
-        if (isEmpty(requiredPermission.resource())) {
+        if ((requiredPermission.resource()) == null || (requiredPermission.resource()).trim().isEmpty()) {
             if (ic.getTarget().getClass().getAnnotation(Name.class) == null) {
                 return ic.getTarget().getClass().getSimpleName();
             } else {
@@ -129,7 +128,7 @@ public class RequiredPermissionInterceptor implements Serializable {
             requiredPermission = ic.getTarget().getClass().getAnnotation(RequiredPermission.class);
         }
 
-        if (isEmpty(requiredPermission.operation())) {
+        if (requiredPermission.operation() == null || requiredPermission.operation().trim().isEmpty()) {
             if (ic.getMethod().getAnnotation(Name.class) == null) {
                 return ic.getMethod().getName();
             } else {
