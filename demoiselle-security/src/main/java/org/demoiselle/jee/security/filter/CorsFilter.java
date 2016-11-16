@@ -34,16 +34,16 @@ public class CorsFilter implements ContainerResponseFilter {
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
         Method method = info.getResourceMethod();
+        Class classe = info.getResourceClass();
 
         res.getHeaders().putSingle("Authorization", "enabled");
         res.getHeaders().putSingle("x-content-type-options", "nosniff");
         res.getHeaders().putSingle("x-frame-options", "SAMEORIGIN");
         res.getHeaders().putSingle("x-xss-protection", "1; mode=block");
 
-        if (method != null) {
+        if (method != null || classe != null) {
             if (config.isCorsEnabled()) {
-                NoCors nocors = method.getAnnotation(NoCors.class);
-                if (nocors != null) {
+                if (method.getAnnotation(NoCors.class) != null || classe.getAnnotation(NoCors.class)!= null) {
                     res.getHeaders().remove("Access-Control-Allow-Origin");
                     res.getHeaders().remove("Access-Control-Allow-Methods");
                 } else {
@@ -53,8 +53,7 @@ public class CorsFilter implements ContainerResponseFilter {
                     res.getHeaders().putSingle("Access-Control-Allow-Methods", req.getMethod());
                 }
             } else {
-                Cors cors = method.getAnnotation(Cors.class);
-                if (cors != null) {
+                 if (method.getAnnotation(Cors.class) != null || classe.getAnnotation(Cors.class)!= null) {
                     res.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
                     res.getHeaders().putSingle("Access-Control-Allow-Headers", "Origin, Content-type, Accept, Authorization");
                     res.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");

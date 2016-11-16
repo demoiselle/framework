@@ -36,6 +36,15 @@ public class CacheControlFilter implements ContainerResponseFilter {
                         res.getHeaders().putSingle("Cache-Control", max.value());
                     }
                 }
+            } 
+            if (info.getResourceClass() != null) {
+                Class classe = info.getResourceClass();
+                if (classe != null) {
+                    CacheControl max = info.getResourceClass().getAnnotation(CacheControl.class);
+                    if (max != null) {
+                        res.getHeaders().putSingle("Cache-Control", max.value());
+                    }
+                }
             }
         }
     }

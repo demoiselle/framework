@@ -45,7 +45,7 @@ public class SecurityFilter implements ContainerRequestFilter {
                 responseBuilder.header("Access-Control-Allow-Origin", "*");
                 responseBuilder.header("Access-Control-Allow-Methods", "HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE");
             }
-            responseBuilder.header("Access-Control-Max-Age", "360000");
+            responseBuilder.header("Access-Control-Max-Age", "3600000");
             req.abortWith(responseBuilder.build());
         }
 

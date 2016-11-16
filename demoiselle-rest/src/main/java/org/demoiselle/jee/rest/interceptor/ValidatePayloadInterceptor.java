@@ -45,20 +45,13 @@ public class ValidatePayloadInterceptor implements Serializable {
                     for (ConstraintViolation<?> violation : violations) {
                         String field = (violation.getRootBeanClass().getSimpleName() + "_"
                                 + violation.getPropertyPath()).toLowerCase();
-                        // GPMessage msg =
-                        // GPMessage.INVALID_FIELD_P1.setSufix(violation.getConstraintDescriptor()
-                        // .getAnnotation().annotationType().getSimpleName().toLowerCase());
-
                         ex.addMessage(field, violation.getMessage());
                     }
                 } catch (UnexpectedTypeException cause) {
-                    // GPMessage msg = GPMessage.GENERAL_ERROR_P1;
-                    // msg.setParam(cause.getMessage());
                     throw new DemoiselleRESTException("ERRO GENERICO -> ALTERAR");
                 }
             }
         }
-
         if (!violations.isEmpty() && !ex.getMessages().isEmpty()) {
             throw ex;
         }

@@ -16,15 +16,15 @@ import javax.interceptor.InterceptorBinding;
 
 /**
  * <p>
- * Indicates that a specific permission is required in order to invocate the annotated method or class.
+ * Indicates that a specific permission is required in order to invocate the
+ * annotated method or class.
  * </p>
  *
  * @author SERPRO
  */
-
 @Inherited
 @InterceptorBinding
-@Target({ METHOD, TYPE })
+@Target({METHOD, TYPE})
 @Retention(RUNTIME)
 public @interface LoggedIn {
 }
