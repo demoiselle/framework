@@ -1,4 +1,7 @@
-Demoiselle 3 [![Build Status](https://travis-ci.org/demoiselle/framework.svg?branch=3.0.0-SNAPSHOT)](https://travis-ci.org/demoiselle/framework) [![Coverage Status](https://coveralls.io/repos/github/demoiselle/framework/badge.svg?branch=branch=3.0.0-SNAPSHOT)](https://coveralls.io/github/demoiselle/framework?branch=branch=3.0.0-SNAPSHOT) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.demoiselle.jee/demoiselle-core/badge.svg?style=flat-square)](https://maven-badges.herokuapp.com/maven-central/org.demoiselle.jee/demoiselle-core/badge.svg?style=flat-square)
+Demoiselle 3
+-----------
+[![Build Status](https://travis-ci.org/demoiselle/framework.svg?branch=3.0.0-SNAPSHOT)](https://travis-ci.org/demoiselle/framework) [![Coverage Status](https://coveralls.io/repos/github/demoiselle/framework/badge.svg?branch=3.0.0-SNAPSHOT)](https://coveralls.io/github/demoiselle/framework) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.demoiselle.jee/demoiselle-core/badge.svg?style=flat-square)](https://maven-badges.herokuapp.com/maven-central/org.demoiselle.jee/demoiselle-core/badge.svg?style=flat-square) [![Join the chat at https://gitter.im/demoiselle](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/demoiselle?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 =============
 
 O framework Demoiselle implementa o conceito de framework integrador.
