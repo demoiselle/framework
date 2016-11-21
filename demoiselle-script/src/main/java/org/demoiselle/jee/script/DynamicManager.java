@@ -32,18 +32,40 @@ public class DynamicManager {
 	 * 
 	 * @param engineName engine name
 	 * @return ScriptEngine instance of engine
+	 * @throws ScriptException 
 	 */
-    public ScriptEngine loadEngine(String engineName) {
+    public ScriptEngine loadEngine(String engineName) throws ScriptException {
+        DynamicManager.scriptEngine = null;
     	ScriptEngine engine =  new ScriptEngineManager().getEngineByName(engineName);
+    	
     	if(engine == null){
-    	    DynamicManager.scriptEngine = null;
-    		return null ;  
+    		throw new ScriptException("Cannot load the engine.");	    		
     	}
-    	
-    	DynamicManager.scriptEngine = engine;
-    	
-    	return engine;
+    	   	    	
+		if (engine instanceof Compilable) {
+			DynamicManager.scriptEngine = engine;
+			return engine;
+		}else {
+			throw new ScriptException("Engine can't compile code. Interface Compilable not implemented by engine.)");
+		}
+    			
     }
+    
+    /**
+	 * Force the unLoad a JSR-223 Script engine and clear the script cache.
+	 */
+    public void unloadEngine(){
+    	DynamicManager.scriptCache.clear();
+    	DynamicManager.scriptEngine = null;         
+    }
+    
+    /**
+	 * Clear the script cache.
+	 */
+    public void clearCache(){
+    	DynamicManager.scriptCache.clear();    	
+    }
+        
 	/**
 	 * Run the script with context.
 	 * 
@@ -60,12 +82,16 @@ public class DynamicManager {
 		Object result = null;
 							    
 		script = (CompiledScript) scriptCache.get(scriptName);
-		if(context!= null)
-		   	result = script.eval(context);
-		else
-		  	result = script.eval();
-			   						
-		return result;	
+		if(script != null){
+			if(context!= null)
+			   	result = script.eval(context);
+			else
+			  	result = script.eval();
+				   						
+			return result;	
+		}else {
+			throw new ScriptException("Script not loaded.");
+		}
 	}
 	
 	/**
@@ -79,18 +105,19 @@ public class DynamicManager {
 	public synchronized Boolean loadScript(String scriptName,String source ) throws ScriptException{				
 		CompiledScript compiled = null;
 	
-		Compilable engine = (Compilable) DynamicManager.scriptEngine;
+		if(DynamicManager.scriptEngine == null ){
+			throw new ScriptException("Engine not loaded.");			
+		}
 		
-		if(engine == null ){
-			return false;
-		}		
-				
+		Compilable engine = (Compilable) DynamicManager.scriptEngine;
+										
 		if( getScript(scriptName)== null){
 			compiled = engine.compile( source );			
 			DynamicManager.scriptCache.put(scriptName, compiled);
+			return true;
 		}	
 		
-		return true;
+		return false;
 								
 	}
 	
