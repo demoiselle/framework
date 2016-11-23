@@ -11,6 +11,8 @@ public class MultiTenancyConfiguration {
 
 	private String multiTenancyDropDatabaseSQL;
 
+	private String multiTenancyTenantDatabasePrefix;
+
 	private String multiTenancyTenantsDatabaseDatasource;
 
 	private String multiTenancyMasterDatabaseDatasource;
@@ -20,7 +22,7 @@ public class MultiTenancyConfiguration {
 	private String multiTenancyDropDatabaseDDL;
 
 	private String multiTenancyMasterDatabase;
-	
+
 	public String getMultiTenancySetDatabaseSQL() {
 		return multiTenancySetDatabaseSQL;
 	}
@@ -31,6 +33,10 @@ public class MultiTenancyConfiguration {
 
 	public String getMultiTenancyDropDatabaseSQL() {
 		return multiTenancyDropDatabaseSQL;
+	}
+
+	public String getMultiTenancyTenantDatabasePrefix() {
+		return multiTenancyTenantDatabasePrefix;
 	}
 
 	public String getMultiTenancyTenantsDatabaseDatasource() {

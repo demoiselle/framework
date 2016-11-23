@@ -138,6 +138,12 @@
 				<artifactId>demoiselle-persistence-crud</artifactId>
 				<version>${demoiselle.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>org.demoiselle.jee</groupId>
+				<artifactId>demoiselle-multitenancy-hibernate</artifactId>
+				<version>${demoiselle.version}</version>
+			</dependency>
 
 			<!-- jsr-299 api -->
 			<dependency>

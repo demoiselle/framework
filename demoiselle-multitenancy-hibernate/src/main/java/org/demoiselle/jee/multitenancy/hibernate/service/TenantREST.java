@@ -38,7 +38,7 @@ import org.demoiselle.jee.security.annotation.Cors;
 @Path("tenant")
 @Consumes({ MediaType.APPLICATION_JSON })
 @Produces({ MediaType.APPLICATION_JSON })
-public class MultiTenantREST {
+public class TenantREST {
 
 	@Inject
 	private TenantBC business;
@@ -57,7 +57,7 @@ public class MultiTenantREST {
 	}
 
 	@DELETE
-	@Path("delete/{id}")
+	@Path("{id}")
 	@Cors
 	public Response deleteTenant(@PathParam("id") Integer id) throws Exception {
 		try {
@@ -96,7 +96,6 @@ public class MultiTenantREST {
 	}
 
 	@POST
-	@Path("create")
 	@Cors
 	@ValidatePayload
 	public Response createTenant(Tenant tenant) throws Exception {
@@ -110,11 +109,15 @@ public class MultiTenantREST {
 
 			Connection conn = dataSource.getConnection();
 
+			String prefix = configuration.getMultiTenancyTenantDatabasePrefix();
+
 			// Cria o BANCO/SCHEMA
-			conn.createStatement().execute(configuration.getMultiTenancyCreateDatabaseSQL() + " " + tenant.getName());
+			conn.createStatement()
+					.execute(configuration.getMultiTenancyCreateDatabaseSQL() + " " + prefix + "" + tenant.getName());
 
 			// Usa o BANCO/SCHEMA (MySQL)
-			conn.createStatement().execute(configuration.getMultiTenancySetDatabaseSQL() + " " + tenant.getName());
+			conn.createStatement()
+					.execute(configuration.getMultiTenancySetDatabaseSQL() + " " + prefix + "" + tenant.getName());
 
 			// Roda o DDL - DROP
 			dropDatabase(conn);
@@ -155,7 +158,8 @@ public class MultiTenantREST {
 	private List<String> getDDLString(String filename) {
 		List<String> records = new ArrayList<String>();
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(filename));
+			FileReader f = new FileReader(filename);
+			BufferedReader reader = new BufferedReader(f);
 			String line;
 			while ((line = reader.readLine()) != null) {
 				records.add(line);

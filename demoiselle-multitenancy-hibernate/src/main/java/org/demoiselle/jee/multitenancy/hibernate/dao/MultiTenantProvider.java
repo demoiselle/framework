@@ -61,8 +61,9 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 	public Connection getConnection(String tenantIdentifier) throws SQLException {
 		final Connection connection = getAnyConnection();
 		try {
-			connection.createStatement()
-					.execute(config.getString("demoiselle.multiTenancySetDatabaseSQL") + " " + tenantIdentifier);
+			String prefix = config.getString("demoiselle.multiTenancyTenantDatabasePrefix");
+			String setDatabase = config.getString("demoiselle.multiTenancySetDatabaseSQL");
+			connection.createStatement().execute(setDatabase + " " + prefix + "" + tenantIdentifier);
 		} catch (final SQLException e) {
 			throw new HibernateException("Error trying to alter schema [" + tenantIdentifier + "]", e);
 		}
@@ -70,7 +71,7 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 	}
 
 	@Override
-	public void releaseAnyConnection(Connection connection) throws SQLException {	
+	public void releaseAnyConnection(Connection connection) throws SQLException {
 		connection.close();
 	}
 

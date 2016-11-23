@@ -70,7 +70,7 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 		List<Tenant> list = query.getResultList();
 
 		if (list.size() == 1) {
-
+			
 			tenant = list.get(0); // (Tenant) query.getSingleResult();
 
 			// Altera a URL para ir para o local correto
