@@ -1,5 +1,5 @@
 /*
- * Demoiselle Framework
+ * DgetEntityManager()oiselle Framework
  *
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
@@ -7,77 +7,129 @@
 package org.demoiselle.jee.persistence.crud;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import org.demoiselle.jee.core.api.persistence.Crud;
+import org.demoiselle.jee.core.exception.DemoiselleException;
 
-public abstract class AbstractDAO<T> {
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
+public abstract class AbstractDAO<T, I>  implements Crud<T, I>{
+
+    @Inject
+    protected Logger logger;
 
     private final Class<T> entityClass;
+
+    protected abstract EntityManager getEntityManager();
 
     public AbstractDAO() {
         this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
-    @Inject
-    private EntityManager entityManager;
-
-    public EntityManager getEntityManager() {
-        return entityManager;
+    public T persist(T entity) {
+        try {
+            getEntityManager().persist(entity);
+            return entity;
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            throw new DemoiselleException("Não foi possível salvar", e.getCause());
+        }
     }
 
-    public T create(T entity) {
-        getEntityManager().persist(entity);
-        return entity;
+    public T merge(T entity) {
+        try {
+            getEntityManager().merge(entity);
+            return entity;
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            throw new DemoiselleException("Não foi possível salvar", e.getCause());
+        }
     }
 
-    public T edit(T entity) {
-        return getEntityManager().merge(entity);
+    public void remove(I id) {
+        try {
+            getEntityManager().remove(getEntityManager().find(entityClass, id));
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            throw new DemoiselleException("Não foi possível excluir", e.getCause());
+        }
+
     }
 
-    public void remove(T entity) {
-        getEntityManager().remove(getEntityManager().merge(entity));
+    public T find(I id) {
+        try {
+            CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+            CriteriaQuery<T> q = cb.createQuery(entityClass);
+            Root<T> c = q.from(entityClass);
+            return getEntityManager().createQuery(q).getSingleResult();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            throw new DemoiselleException("Não foi possível consultar", e.getCause());
+        }
+
     }
 
-    public T find(Object id) {
-        return getEntityManager().find(entityClass, id);
+    public ResultSet find() {
+        try {
+            ResultSet rs = new ResultSet();
+
+            CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+            CriteriaQuery<T> q = cb.createQuery(entityClass);
+            Root<T> c = q.from(entityClass);
+
+            rs.setContent(getEntityManager().createQuery(q).getResultList());
+            rs.setInit(0);
+            rs.setQtde(rs.getContent().size());
+            rs.setTotal(rs.getContent().size());
+            return rs;
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            throw new DemoiselleException("Não foi possível consultar", e.getCause());
+        }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public List<T> findAll() {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        cq.select(cq.from(entityClass));
-        return getEntityManager().createQuery(cq).getResultList();
-    }
+    public ResultSet find(String field, String order, int init, int qtde) {
+        try {
+            ResultSet rs = new ResultSet();
+            List result = new ArrayList<>();
+            List source = new ArrayList<>();
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public List<T> findRange(int[] range) {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        cq.select(cq.from(entityClass));
-        javax.persistence.Query q = getEntityManager().createQuery(cq);
-        q.setMaxResults(range[1] - range[0] + 1);
-        q.setFirstResult(range[0]);
-        return q.getResultList();
-    }
+            CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+            CriteriaQuery<T> q = cb.createQuery(entityClass);
+            Root<T> c = q.from(entityClass);
+            q.select(c);
 
-    public PageDTO list() {
-        List<T> list = getEntityManager()
-                .createQuery("select u from " + this.entityClass.getSimpleName() + " u ", this.entityClass)
-                .getResultList();
-        return new PageDTO(list, 0, list.size(), list.size());
-    }
+            if (order.equalsIgnoreCase("asc")) {
+                q.orderBy(cb.asc(c.get(field)));
+            } else {
+                q.orderBy(cb.desc(c.get(field)));
+            }
 
-    public List<T> find(String whereField, String whereValue, String fieldOrder, String order, int init, int qtde) {
-        return getEntityManager()
-                .createQuery("select u from " + this.entityClass.getSimpleName() + " u where u." + whereField
-                        + " = :value ORDER BY " + fieldOrder + " " + order.toUpperCase(), this.entityClass)
-                .setParameter("value", whereValue).setFirstResult(init).setMaxResults(qtde).getResultList();
-    }
+            source.add(getEntityManager().createQuery(q).getResultList());
 
-    public Long count() {
-        return (Long) getEntityManager().createQuery("select COUNT(u) from " + this.entityClass.getSimpleName() + " u")
-                .getSingleResult();
+            for (int i = init; i < qtde; i++) {
+                result.add(source.get(i));
+            }
+
+            rs.setContent(result);
+            rs.setInit(init);
+            rs.setQtde(qtde);
+            rs.setTotal(source.size());
+            return rs;
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            throw new DemoiselleException("Não foi possível consultar", e.getCause());
+        }
+
     }
 
 }

@@ -35,6 +35,11 @@
             <groupId>org.demoiselle.jee</groupId>
             <artifactId>demoiselle-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-jaxrs</artifactId>
+            <version>1.5.10</version>
+        </dependency>
     </dependencies>
 
 </project>
