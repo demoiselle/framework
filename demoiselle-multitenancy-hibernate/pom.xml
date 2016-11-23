@@ -68,6 +68,14 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- JSON -->
+		<dependency>
+			<groupId>org.bitbucket.b_c</groupId>
+			<artifactId>jose4j</artifactId>
+			<version>0.5.2</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>org.jboss.spec</groupId>
 			<artifactId>jboss-javaee-web-7.0</artifactId>
