@@ -89,6 +89,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
             CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
             CriteriaQuery<T> q = cb.createQuery(entityClass);
+            Root<T> c = q.from(entityClass);
 
             rs.setContent(getEntityManager().createQuery(q).getResultList());
             rs.setInit(0);
