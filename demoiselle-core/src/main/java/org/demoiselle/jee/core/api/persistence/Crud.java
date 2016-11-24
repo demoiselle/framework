@@ -5,6 +5,11 @@
  */
 package org.demoiselle.jee.core.api.persistence;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.ws.rs.core.MultivaluedMap;
+
 /**
  *
  * @author 70744416353
@@ -22,5 +27,4 @@ public interface Crud<T, I> {
     public T find(I id);
 
     public Result find(String field, String order, int init, int qtde);
-
 }
