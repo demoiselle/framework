@@ -89,12 +89,11 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
             @PathParam("init") int init,
             @PathParam("qtde") int qtde) {
         if ((order.equalsIgnoreCase("asc") || order.equalsIgnoreCase("desc"))) {
-            return bc.find(field, order, init, qtde);
-//            if (uriInfo.getQueryParameters().isEmpty()) {
-//                return bc.find(field, order, init, qtde);
-//            } else {
-//                return bc.find(uriInfo.getQueryParameters(), field, order, init, qtde);
-//            }
+            if (uriInfo.getQueryParameters().isEmpty()) {
+                return bc.find(field, order, init, qtde);
+            } else {
+                return bc.find(uriInfo.getQueryParameters(), field, order, init, qtde);
+            }
         }
         throw new DemoiselleException("A ordem deve ser (asc) ou (desc)");
     }
