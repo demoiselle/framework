@@ -142,62 +142,73 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     }
 
     public ResultSet find(MultivaluedMap<String, String> queryParams) {
-        ResultSet rs = new ResultSet();
-        List source = new ArrayList<>();
+        try {
+            ResultSet rs = new ResultSet();
+            List source = new ArrayList<>();
 
-        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+            CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
 
-        Root<T> root = criteriaQuery.from(entityClass);
+            Root<T> root = criteriaQuery.from(entityClass);
 
-        Predicate[] predicates = extractPredicates(queryParams, criteriaBuilder, root);
+            Predicate[] predicates = extractPredicates(queryParams, criteriaBuilder, root);
 
-        if (predicates.length > 0) {
-            criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
-            TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
-            source.add(query.getResultList());
+            if (predicates.length > 0) {
+                criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
+                TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
+                source.add(query.getResultList());
+            }
+
+            rs.setContent(source);
+            rs.setInit(0);
+            rs.setQtde(source.size());
+            rs.setTotal(source.size());
+            return rs;
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e.getCause());
         }
-
-        rs.setContent(source);
-        rs.setInit(0);
-        rs.setQtde(source.size());
-        rs.setTotal(source.size());
-        return rs;
 
     }
 
     public ResultSet find(MultivaluedMap<String, String> queryParams, String field, String order, int init, int qtde) {
-        ResultSet rs = new ResultSet();
-        List result = new ArrayList<>();
-        List source = new ArrayList<>();
+        try {
+            ResultSet rs = new ResultSet();
+            List result = new ArrayList<>();
+            List source = new ArrayList<>();
 
-        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+            CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
 
-        Root<T> root = criteriaQuery.from(entityClass);
-        Predicate[] predicates = extractPredicates(queryParams,
-                criteriaBuilder, root);
+            Root<T> root = criteriaQuery.from(entityClass);
+            Predicate[] predicates = extractPredicates(queryParams,
+                    criteriaBuilder, root);
 
-        if (predicates.length > 0) {
-            criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
-            TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
-            source.add(query.getResultList());
+            if (predicates.length > 0) {
+
+                criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
+                TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
+                source.add(query.getResultList());
+
+                if ((init + qtde) > source.size()) {
+                    qtde = source.size() - init;
+                }
+
+                for (int i = init; i < (init + qtde); i++) {
+                    result.add(source.get(i));
+                }
+
+            }
+
+            rs.setContent(result);
+            rs.setInit(init);
+            rs.setQtde(qtde);
+            rs.setTotal(source.size());
+            return rs;
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e.getCause());
         }
-
-        if ((init + qtde) > source.size()) {
-            qtde = source.size() - init;
-        }
-
-        for (int i = init; i < (init + qtde); i++) {
-            result.add(source.get(i));
-        }
-
-        rs.setContent(result);
-        rs.setInit(init);
-        rs.setQtde(qtde);
-        rs.setTotal(source.size());
-        return rs;
-
     }
 
     protected Predicate[] extractPredicates(
