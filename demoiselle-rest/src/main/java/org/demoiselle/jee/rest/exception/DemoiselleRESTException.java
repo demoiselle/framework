@@ -16,24 +16,21 @@ public class DemoiselleRESTException extends DemoiselleException {
 
     private HashMap<String, String> messages = new HashMap<>();
 
-    private int statusCode;
+    private int statusCode = 500;
 
     public DemoiselleRESTException() {
     }
 
     public DemoiselleRESTException(String string) {
         super(string);
-        messages.put("general", string);
     }
 
     public DemoiselleRESTException(Throwable cause) {
         super(cause);
-        messages.put("cause", cause.getMessage());
     }
 
     public DemoiselleRESTException(String message, Throwable cause) {
         super(message, cause);
-        messages.put("cause", cause.getMessage());
     }
 
     public int getStatusCode() {

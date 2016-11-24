@@ -75,7 +75,8 @@ public class GenericExceptionMapper implements ExceptionMapper<Exception> {
 		}
 
 		entity.put("error", "Erro interno desconhecido no servidor.");
-		return status(500).entity(entity).type(APPLICATION_JSON).build();
+		return status(INTERNAL_SERVER_ERROR.getStatusCode())
+                        .entity(entity).type(APPLICATION_JSON).build();
 	}
 
 }

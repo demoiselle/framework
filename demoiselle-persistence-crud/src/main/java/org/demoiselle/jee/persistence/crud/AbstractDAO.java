@@ -46,7 +46,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             return entity;
         } catch (Exception e) {
             logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível salvar", e.getCause());
+            throw new DemoisellePersistenceCrudException("Não foi possível salvar", e);
         }
     }
 
@@ -56,7 +56,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             return entity;
         } catch (Exception e) {
             logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível salvar", e.getCause());
+            throw new DemoisellePersistenceCrudException("Não foi possível salvar", e);
         }
     }
 
@@ -65,7 +65,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             getEntityManager().remove(getEntityManager().find(entityClass, id));
         } catch (Exception e) {
             logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível excluir", e.getCause());
+            throw new DemoisellePersistenceCrudException("Não foi possível excluir", e);
         }
 
     }
@@ -78,7 +78,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             return getEntityManager().createQuery(q).getSingleResult();
         } catch (Exception e) {
             logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e.getCause());
+            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
         }
 
     }
@@ -98,7 +98,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             return rs;
         } catch (Exception e) {
             logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e.getCause());
+            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
         }
     }
 
@@ -119,7 +119,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                 q.orderBy(cb.desc(c.get(field)));
             }
 
-            source.add(getEntityManager().createQuery(q).getResultList());
+            source.addAll(getEntityManager().createQuery(q).getResultList());
 
             if ((init + qtde) > source.size()) {
                 qtde = source.size() - init;
@@ -136,7 +136,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             return rs;
         } catch (Exception e) {
             logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e.getCause());
+            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
         }
 
     }
@@ -156,7 +156,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             if (predicates.length > 0) {
                 criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
                 TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
-                source.add(query.getResultList());
+                source.addAll(query.getResultList());
             }
 
             rs.setContent(source);
@@ -166,7 +166,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             return rs;
         } catch (Exception e) {
             logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e.getCause());
+            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
         }
 
     }
@@ -188,7 +188,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
                 criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
                 TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
-                source.add(query.getResultList());
+                source.addAll(query.getResultList());
 
                 if ((init + qtde) > source.size()) {
                     qtde = source.size() - init;
@@ -207,7 +207,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             return rs;
         } catch (Exception e) {
             logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e.getCause());
+            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
         }
     }
 

@@ -63,7 +63,6 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @Transactional
     @ApiOperation(value = "Lista todos os registros registro e filtra com QueryString")
     public Result find() {
-//        return bc.find();
         if (uriInfo.getQueryParameters().isEmpty()) {
             return bc.find();
         } else {
