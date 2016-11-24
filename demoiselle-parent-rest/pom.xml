@@ -42,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>org.demoiselle.jee</groupId>
-            <artifactId>demoiselle-persistence-jpa</artifactId>
+            <artifactId>demoiselle-crud</artifactId>
         </dependency>
     </dependencies>
 

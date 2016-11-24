@@ -117,13 +117,7 @@
 
 			<dependency>
 				<groupId>org.demoiselle.jee</groupId>
-				<artifactId>demoiselle-security-basic</artifactId>
-				<version>${demoiselle.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.demoiselle.jee</groupId>
-				<artifactId>demoiselle-persistence-jpa</artifactId>
+				<artifactId>demoiselle-crud</artifactId>
 				<version>${demoiselle.version}</version>
 			</dependency>
 
@@ -132,13 +126,7 @@
 				<artifactId>demoiselle-script</artifactId>
 				<version>${demoiselle.version}</version>
 			</dependency>
-
-			<dependency>
-				<groupId>org.demoiselle.jee</groupId>
-				<artifactId>demoiselle-persistence-crud</artifactId>
-				<version>${demoiselle.version}</version>
-			</dependency>
-			
+		
 			<dependency>
 				<groupId>org.demoiselle.jee</groupId>
 				<artifactId>demoiselle-multitenancy-hibernate</artifactId>
