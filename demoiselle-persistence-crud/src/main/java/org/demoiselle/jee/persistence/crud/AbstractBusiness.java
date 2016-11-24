@@ -7,6 +7,7 @@
 package org.demoiselle.jee.persistence.crud;
 
 import javax.inject.Inject;
+import javax.ws.rs.core.MultivaluedMap;
 import org.demoiselle.jee.core.api.persistence.Crud;
 import org.demoiselle.jee.core.api.persistence.Result;
 
@@ -39,4 +40,11 @@ public abstract class AbstractBusiness<T, I> implements Crud<T, I> {
         return dao.find(field, order, init, qtde);
     }
 
+    public Result find(MultivaluedMap<String, String> queryParams) {
+        return dao.find(queryParams);
+    }
+
+    public Result find(MultivaluedMap<String, String> queryParams, String field, String order, int init, int qtde) {
+        return dao.find(queryParams, field, order, init, qtde);
+    }
 }
