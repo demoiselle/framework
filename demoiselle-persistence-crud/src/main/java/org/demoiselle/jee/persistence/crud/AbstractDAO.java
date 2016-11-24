@@ -121,7 +121,11 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
             source.add(getEntityManager().createQuery(q).getResultList());
 
-            for (int i = init; i < qtde; i++) {
+            if ((init + qtde) > source.size()) {
+                qtde = source.size() - init;
+            }
+
+            for (int i = init; i < (init + qtde); i++) {
                 result.add(source.get(i));
             }
 
@@ -174,13 +178,17 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         Predicate[] predicates = extractPredicates(queryParams,
                 criteriaBuilder, root);
 
-        criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
+        if (predicates.length > 0) {
+            criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
+            TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
+            source.add(query.getResultList());
+        }
 
-        TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
+        if ((init + qtde) > source.size()) {
+            qtde = source.size() - init;
+        }
 
-        source.add(query.getResultList());
-
-        for (int i = init; i < qtde; i++) {
+        for (int i = init; i < (init + qtde); i++) {
             result.add(source.get(i));
         }
 
