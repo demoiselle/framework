@@ -53,13 +53,13 @@ public class TenantREST {
 	@GET
 	@Cors
 	public Response listAllTenants() throws Exception {
-		return Response.ok().entity(business.listAllTenants()).build();
+		return Response.ok().entity(business.find()).build();
 	}
 
 	@DELETE
 	@Path("{id}")
 	@Cors
-	public Response deleteTenant(@PathParam("id") Integer id) throws Exception {
+	public Response deleteTenant(@PathParam("id") Long id) throws Exception {
 		try {
 
 			// Add Tenancy in table/master schema
@@ -101,7 +101,7 @@ public class TenantREST {
 	public Response createTenant(Tenant tenant) throws Exception {
 		try {
 			// Add Tenancy in table/master schema
-			business.create(tenant);
+			business.persist(tenant);
 
 			// Create Schema
 			final Context init = new InitialContext();

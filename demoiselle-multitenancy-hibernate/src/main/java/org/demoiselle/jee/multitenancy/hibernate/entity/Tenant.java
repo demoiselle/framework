@@ -29,7 +29,7 @@ public class Tenant implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
 	@Column(nullable = false)
-	private Integer id;
+	private Long id;
 
 	@Size(max = 100, min = 2)
 	@Column(length = 100, unique = true, updatable = false, nullable = false)
@@ -50,11 +50,11 @@ public class Tenant implements Serializable {
 		this.name = name;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

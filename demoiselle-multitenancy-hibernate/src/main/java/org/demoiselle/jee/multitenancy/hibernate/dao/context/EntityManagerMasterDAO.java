@@ -9,13 +9,9 @@ package org.demoiselle.jee.multitenancy.hibernate.dao.context;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.demoiselle.jee.persistence.jpa.crud.GenericCrudDAO;
+import org.demoiselle.jee.persistence.crud.AbstractDAO;
 
-public abstract class PersistenceContextMasterDAO<T> extends GenericCrudDAO<T> {
-
-	public PersistenceContextMasterDAO(Class<T> entityClass) {
-		super(entityClass);
-	}
+public abstract class EntityManagerMasterDAO<T> extends AbstractDAO<T, Long> {
 
 	@PersistenceContext(unitName = "MasterPU")
 	protected EntityManager emEntity;
