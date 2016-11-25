@@ -10,6 +10,7 @@ import static javax.ws.rs.Priorities.AUTHENTICATION;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import org.demoiselle.jee.security.annotation.LoggedIn;
 import org.demoiselle.jee.core.api.security.SecurityContext;
+import org.demoiselle.jee.security.annotation.NotLogged;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
@@ -41,8 +42,10 @@ public class LoggedInInterceptor implements Serializable {
      */
     @AroundInvoke
     public Object manage(final InvocationContext ic) throws Exception {
-        if (!securityContext.isLoggedIn()) {
-            throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), UNAUTHORIZED.getStatusCode());
+        if (ic.getMethod().getAnnotation(NotLogged.class) == null) {
+            if (!securityContext.isLoggedIn()) {
+                throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), UNAUTHORIZED.getStatusCode());
+            }
         }
         return ic.proceed();
     }

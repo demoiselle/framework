@@ -16,6 +16,7 @@ import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.security.annotation.RequiredRole;
 import org.demoiselle.jee.core.api.security.SecurityContext;
+import org.demoiselle.jee.security.annotation.NotLogged;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
@@ -63,20 +64,22 @@ public class RequiredRoleInterceptor implements Serializable {
      */
     @AroundInvoke
     public Object manage(final InvocationContext ic) throws Exception {
-        List<String> roles = getRoles(ic);
+        if (ic.getMethod().getAnnotation(NotLogged.class) == null) {
+            List<String> roles = getRoles(ic);
 
-        List<String> userRoles = new ArrayList<>();
+            List<String> userRoles = new ArrayList<>();
 
-        if (!securityContext.isLoggedIn()) {
-            throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), UNAUTHORIZED.getStatusCode());
-        }
+            if (!securityContext.isLoggedIn()) {
+                throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), UNAUTHORIZED.getStatusCode());
+            }
 
-        roles.stream().filter((role) -> (securityContext.hasRole(role))).forEach((role) -> {
-            userRoles.add(role);
-        });
+            roles.stream().filter((role) -> (securityContext.hasRole(role))).forEach((role) -> {
+                userRoles.add(role);
+            });
 
-        if (userRoles.isEmpty()) {
-            throw new DemoiselleSecurityException(bundle.doesNotHaveRole(roles.toString()), UNAUTHORIZED.getStatusCode());
+            if (userRoles.isEmpty()) {
+                throw new DemoiselleSecurityException(bundle.doesNotHaveRole(roles.toString()), UNAUTHORIZED.getStatusCode());
+            }
         }
 
         return ic.proceed();
