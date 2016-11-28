@@ -72,10 +72,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     public T find(I id) {
         try {
-            CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-            CriteriaQuery<T> q = cb.createQuery(entityClass);
-            Root<T> c = q.from(entityClass);
-            return getEntityManager().createQuery(q).getSingleResult();
+            return getEntityManager().find(entityClass, id);
         } catch (Exception e) {
             logger.severe(e.getMessage());
             throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
