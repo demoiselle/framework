@@ -7,7 +7,6 @@
 package org.demoiselle.jee.multitenancy.hibernate.business;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -99,7 +98,6 @@ public class TenantManager {
 	 *             When lookup is wrong
 	 * @throws SQLException
 	 *             When SQL to create or set databse has error
-	 * @throws FileNotFoundException
 	 */
 	public void createTenant(Tenant tenant) throws NamingException, SQLException {
 
