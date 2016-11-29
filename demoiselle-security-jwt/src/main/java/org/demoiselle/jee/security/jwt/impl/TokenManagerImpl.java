@@ -156,7 +156,7 @@ public class TokenManagerImpl implements TokenManager {
      */
     @Override
     public void setUser(DemoisellePrincipal user) {
-        long tempo = (long) ((new Date().getTime()) + (config.getTempo() * 60 * 1000));
+        long tempo = (long) (NumericDate.now().getValueInMillis() + (config.getTempo() * 60 * 1000));
         try {
             JwtClaims claims = new JwtClaims();
             claims.setIssuer(config.getRemetente());
