@@ -15,8 +15,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -25,6 +23,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.multitenancy.hibernate.configuration.MultiTenancyConfiguration;
 import org.demoiselle.jee.multitenancy.hibernate.context.MultiTenantContext;
+import org.demoiselle.jee.multitenancy.hibernate.dao.context.EntityManagerMaster;
 import org.demoiselle.jee.multitenancy.hibernate.entity.Tenant;
 
 @Provider
@@ -37,8 +36,8 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 	@Inject
 	private MultiTenancyConfiguration configuration;
 
-	@PersistenceContext(unitName = "MasterPU")
-	protected EntityManager entityManagerMaster;
+	@Inject
+	private EntityManagerMaster entityManagerMaster;
 
 	@Inject
 	private MultiTenantContext multitenancyContext;
@@ -56,41 +55,43 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 		Tenant tenant = null;
 
 		// Pega sempre o tenant do banco pois existem informações que podem ser
-		// alteradas e precisam ser propagadas rapidamente (Scripts, confs,
-		// status...)
+		// alteradas e precisam ser propagadas rapidamente
 
 		// Pega os tenants do banco de dados
-		// TODO: TenantProvider (DESENVOLVER)
-		Query query = entityManagerMaster.createQuery("select u from Tenant u where u.name = :value", Tenant.class);
+		Query query = entityManagerMaster.getEntityManager().createQuery("select u from Tenant u where u.name = :value",
+				Tenant.class);
 		query.setParameter("value", tenantNameUrl);
-		query.setHint("org.hibernate.cacheable", "true");
-		// Cache de 60s (60000ms)
-		query.setHint("javax.persistence.query.timeout", 60000);
+
+		// Cache da consulta
+		// query.setHint("org.hibernate.cacheable", "true");
+		// // Cache de 60s (60000ms)
+		// query.setHint("javax.persistence.query.timeout", 60000);
 
 		List<Tenant> list = query.getResultList();
 
 		if (list.size() == 1) {
-			
-			tenant = list.get(0); // (Tenant) query.getSingleResult();
 
-			// Altera a URL para ir para o local correto
+			tenant = list.get(0);
+
+			// Change URI removing tenant name
 			String newURi = "";
 			for (int i = 1; i < requestContext.getUriInfo().getPathSegments().size(); i++) {
 				newURi += requestContext.getUriInfo().getPathSegments().get(i).toString() + "/";
 			}
 
 			try {
+				// Set new URI path
 				requestContext.setRequestUri(new URI(newURi));
 			} catch (URISyntaxException e) {
 				log.log(Level.SEVERE, e.getMessage(), e);
 			}
 
-			// System.out.println("Local alterado [" + tenantName + "]: " +
-			// requestContext.getUriInfo().getPath());
+			log.log(Level.FINEST, "Path changed [" + tenantNameUrl + "]: " + requestContext.getUriInfo().getPath());
 
 		} else {
-			// log.info("Vai para o local normal: " +
-			// requestContext.getUriInfo().getPath());
+
+			log.log(Level.FINEST, "Go to normal path: " + requestContext.getUriInfo().getPath());
+
 			tenant = new Tenant(configuration.getMultiTenancyMasterDatabase());
 		}
 
