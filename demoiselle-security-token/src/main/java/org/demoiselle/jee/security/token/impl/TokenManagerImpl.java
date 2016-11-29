@@ -23,15 +23,16 @@ import org.demoiselle.jee.core.api.security.TokenManager;
 @ApplicationScoped
 @Priority(AUTHENTICATION)
 public class TokenManagerImpl implements TokenManager {
-
+    
     private final ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
-
+    
     @Inject
     private Token token;
 
     /**
-     * Returns the user that is stored in a list in memory, from the token 
-     * sent in http header
+     * Returns the user that is stored in a list in memory, from the token sent
+     * in http header
+     *
      * @return org.demoiselle.jee.core.api.security.DemoisellePrincipal
      */
     @Override
@@ -43,29 +44,31 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     /**
-     * It will be included in the user memory and generate a unique 
+     * It will be included in the user memory and generate a unique
      * identification token to be placed in the header of HTTP requests
+     *
      * @param user org.demoiselle.jee.core.api.security.DemoisellePrincipal
      */
     @Override
     public void setUser(DemoisellePrincipal user) {
         token.setKey(null);
-
+        
         repo.entrySet().stream().parallel().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
             token.setKey(entry.getKey());
         });
-
+        
         if (token.getKey() == null) {
             String value = randomUUID().toString();
             repo.putIfAbsent(value, user.clone());
             token.setKey(value);
         }
-
+        
         token.setType("Token");
     }
 
     /**
      * validate the token and the user is in memory
+     *
      * @return boolean
      */
     @Override
@@ -78,17 +81,20 @@ public class TokenManagerImpl implements TokenManager {
      */
     public void removeToken() {
         repo.remove(token.getKey());
+        token.setKey(null);
     }
 
     /**
      * remove the token and the user is in memory
+     *
      * @param user
      */
-    public void removeToken(DemoisellePrincipal user) {
+    @Override
+    public void removeUser(DemoisellePrincipal user) {
         repo.entrySet().stream().parallel().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
             token.setKey(entry.getKey());
         });
         removeToken();
     }
-
+    
 }

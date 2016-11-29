@@ -45,4 +45,10 @@ public interface SecurityContext {
      */
     void setUser(DemoisellePrincipal loggedUser);
 
+    /**
+     *
+     * @param loggedUser Principal
+     */
+    void removeUser(DemoisellePrincipal loggedUser);
+
 }

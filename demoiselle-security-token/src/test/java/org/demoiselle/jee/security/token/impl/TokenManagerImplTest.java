@@ -192,7 +192,7 @@ public class TokenManagerImplTest {
         dml.addPermission("Produto", "Alterar");
         dml.addPermission("Categoria", "Consultar");
         instance.setUser(dml);
-        ((TokenManagerImpl) instance).removeToken(dml);
+        ((TokenManagerImpl) instance).removeUser(dml);
         dml = instance.getUser();
         assertNull(dml);
     }
