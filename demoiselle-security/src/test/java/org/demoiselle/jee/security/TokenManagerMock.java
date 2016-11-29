@@ -71,7 +71,8 @@ public class TokenManagerMock implements TokenManager {
         repo.remove(token.getKey());
     }
 
-    public void removeToken(DemoisellePrincipal user) {
+    @Override
+    public void removeUser(DemoisellePrincipal user) {
         repo.entrySet().stream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
             token.setKey(entry.getKey());
         });

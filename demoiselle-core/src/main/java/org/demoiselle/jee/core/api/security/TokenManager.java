@@ -17,10 +17,10 @@ package org.demoiselle.jee.core.api.security;
 public interface TokenManager {
 
     /**
-     * Search the logged user being kept
-     * place through token use that is in session request
+     * Search the logged user being kept place through token use that is in
+     * session request
      *
-     * @return  See {@link DemoisellePrincipal}
+     * @return See {@link DemoisellePrincipal}
      */
     public DemoisellePrincipal getUser();
 
@@ -35,8 +35,16 @@ public interface TokenManager {
     public void setUser(DemoisellePrincipal user);
 
     /**
-     * Validates that the user is stored correctly,
-     * depending on the chosen strategy.
+     *
+     * Remove the user logged
+     *
+     * @param user See {@link DemoisellePrincipal}
+     */
+    public void removeUser(DemoisellePrincipal user);
+
+    /**
+     * Validates that the user is stored correctly, depending on the chosen
+     * strategy.
      *
      * @return Boolean
      */

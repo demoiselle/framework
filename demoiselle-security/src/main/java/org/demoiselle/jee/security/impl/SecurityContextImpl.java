@@ -81,4 +81,13 @@ public class SecurityContextImpl implements SecurityContext {
         tm.setUser(loggedUser);
     }
 
+    /**
+     *
+     * @param loggedUser
+     */
+    @Override
+    public void removeUser(DemoisellePrincipal loggedUser) {
+        tm.removeUser(loggedUser);
+    }
+
 }

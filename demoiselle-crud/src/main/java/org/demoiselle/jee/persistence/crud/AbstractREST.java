@@ -33,7 +33,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     protected AbstractBusiness<T, I> bc;
 
     @Context
-    private UriInfo uriInfo;
+    protected UriInfo uriInfo;
 
     @POST
     @Transactional
