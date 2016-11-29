@@ -20,6 +20,12 @@ import javax.validation.constraints.Size;
 
 import org.jose4j.json.JsonUtil;
 
+/**
+ * Basic Entity to store Tenants in database. 
+ * 
+ * @author SERPRO
+ *
+ */
 @Entity
 public class Tenant implements Serializable {
 

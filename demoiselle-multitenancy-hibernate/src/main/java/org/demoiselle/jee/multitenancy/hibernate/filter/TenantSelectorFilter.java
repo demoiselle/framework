@@ -26,6 +26,14 @@ import org.demoiselle.jee.multitenancy.hibernate.context.MultiTenantContext;
 import org.demoiselle.jee.multitenancy.hibernate.dao.context.EntityManagerMaster;
 import org.demoiselle.jee.multitenancy.hibernate.entity.Tenant;
 
+/**
+ * Filter containing the behavior to manipulate the @ContainerRequestContext
+ * removing or not the tenant in URI and setting the @Tenant
+ * in @MultiTenantContext.
+ * 
+ * @author SERPRO
+ *
+ */
 @Provider
 @PreMatching
 public class TenantSelectorFilter implements ContainerRequestFilter {
@@ -54,15 +62,15 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 		String tenantNameUrl = requestContext.getUriInfo().getPathSegments().get(0).toString();
 		Tenant tenant = null;
 
-		// Pega sempre o tenant do banco pois existem informações que podem ser
-		// alteradas e precisam ser propagadas rapidamente
+		// It's recommended to get all times the Tenant entity because the
+		// configurations can changed during application execution.
 
-		// Pega os tenants do banco de dados
+		// Get Tenant by name
 		Query query = entityManagerMaster.getEntityManager().createQuery("select u from Tenant u where u.name = :value",
 				Tenant.class);
 		query.setParameter("value", tenantNameUrl);
 
-		// Cache da consulta
+		// Query Cache (Disable)
 		// query.setHint("org.hibernate.cacheable", "true");
 		// // Cache de 60s (60000ms)
 		// query.setHint("javax.persistence.query.timeout", 60000);
@@ -89,9 +97,7 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 			log.log(Level.FINEST, "Path changed [" + tenantNameUrl + "]: " + requestContext.getUriInfo().getPath());
 
 		} else {
-
 			log.log(Level.FINEST, "Go to normal path: " + requestContext.getUriInfo().getPath());
-
 			tenant = new Tenant(configuration.getMultiTenancyMasterDatabase());
 		}
 
