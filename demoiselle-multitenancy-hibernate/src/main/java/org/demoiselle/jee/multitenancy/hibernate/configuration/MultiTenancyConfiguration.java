@@ -1,7 +1,20 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.multitenancy.hibernate.configuration;
 
 import org.demoiselle.jee.configuration.annotation.Configuration;
 
+/**
+ * Class with ALL required configurations for Multitenancy module in Framework
+ * Demoiselle.
+ * 
+ * @author SERPRO
+ *
+ */
 @Configuration
 public class MultiTenancyConfiguration {
 
