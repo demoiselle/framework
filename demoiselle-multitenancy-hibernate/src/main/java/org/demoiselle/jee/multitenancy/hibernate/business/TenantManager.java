@@ -150,8 +150,13 @@ public class TenantManager {
 	 * 
 	 * @param id
 	 *            ID of Tenant
+	 * @throws SQLException
+	 *             When SQL to create or set databse has error
 	 */
-	public void removeTenant(Long id) {
+	public void removeTenant(Long id) throws SQLException {
+
+		Connection conn = null;
+
 		try {
 			// Add Tenancy in table/master schema
 			Tenant t = dao.find(id);
@@ -162,18 +167,20 @@ public class TenantManager {
 
 			String prefix = configuration.getMultiTenancyTenantDatabasePrefix();
 			String dropCommand = configuration.getMultiTenancyDropDatabaseSQL();
-			Connection conn = dataSource.getConnection();
+			conn = dataSource.getConnection();
 
-			// EXCLUIR o BANCO/SCHEMA
+			// Delete database
 			conn.createStatement().execute(dropCommand + " " + prefix + "" + t.getName());
 
-			// Como a conexão esta fora de contexto é importante fechar ela aqui
-			if (!conn.isClosed()) {
-				conn.close();
-			}
 		} catch (Exception e) {
 			throw new DemoiselleMultiTenancyException(e);
+		} finally {
+			// Closes the connection
+			if (conn != null && !conn.isClosed()) {
+				conn.close();
+			}
 		}
+		
 	}
 
 	/**
