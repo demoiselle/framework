@@ -15,8 +15,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -25,6 +23,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.multitenancy.hibernate.configuration.MultiTenancyConfiguration;
 import org.demoiselle.jee.multitenancy.hibernate.context.MultiTenantContext;
+import org.demoiselle.jee.multitenancy.hibernate.dao.context.EntityManagerMaster;
 import org.demoiselle.jee.multitenancy.hibernate.entity.Tenant;
 
 @Provider
@@ -37,8 +36,8 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 	@Inject
 	private MultiTenancyConfiguration configuration;
 
-	@PersistenceContext(unitName = "MasterPU")
-	protected EntityManager entityManagerMaster;
+	@Inject
+	private EntityManagerMaster entityManagerMaster;
 
 	@Inject
 	private MultiTenantContext multitenancyContext;
@@ -61,7 +60,8 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 
 		// Pega os tenants do banco de dados
 		// TODO: TenantProvider (DESENVOLVER)
-		Query query = entityManagerMaster.createQuery("select u from Tenant u where u.name = :value", Tenant.class);
+		Query query = entityManagerMaster.getEntityManager().createQuery("select u from Tenant u where u.name = :value",
+				Tenant.class);
 		query.setParameter("value", tenantNameUrl);
 		query.setHint("org.hibernate.cacheable", "true");
 		// Cache de 60s (60000ms)
@@ -70,7 +70,7 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 		List<Tenant> list = query.getResultList();
 
 		if (list.size() == 1) {
-			
+
 			tenant = list.get(0); // (Tenant) query.getSingleResult();
 
 			// Altera a URL para ir para o local correto
