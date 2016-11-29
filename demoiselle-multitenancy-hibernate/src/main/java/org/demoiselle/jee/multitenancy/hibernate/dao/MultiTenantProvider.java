@@ -1,3 +1,9 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.multitenancy.hibernate.dao;
 
 import java.sql.Connection;
@@ -21,8 +27,7 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 	private static final long serialVersionUID = 1L;
 	private DataSource dataSource;
 
-	// Carregamento do Resource Bundle manualmente por causa da falta de
-	// possibilidade de injeção
+	// Load resource bundle manually because the @Inject dont enable yet
 	private ResourceBundle config = ResourceBundle.getBundle("demoiselle");
 
 	@Override
@@ -30,6 +35,9 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 		return false;
 	}
 
+	/**
+	 * Instance Datasource for manipulate Tenants on Server Startup
+	 */
 	@Override
 	public void injectServices(ServiceRegistryImplementor serviceRegistry) {
 		try {
@@ -57,6 +65,9 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 		return connection;
 	}
 
+	/**
+	 * Get connection for Tenant using configurations.
+	 */
 	@Override
 	public Connection getConnection(String tenantIdentifier) throws SQLException {
 		final Connection connection = getAnyConnection();
