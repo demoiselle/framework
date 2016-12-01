@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.demoiselle.jee</groupId>
         <artifactId>demoiselle-build</artifactId>
-        <version>3.0.0-BETA3-SNAPSHOT</version>
+        <version>3.0.0-BETA3</version>
     </parent>
 
     <dependencyManagement>
@@ -19,7 +19,7 @@
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>
                 <artifactId>demoiselle-parent-bom</artifactId>
-                <version>3.0.0-BETA3-SNAPSHOT</version>
+                <version>3.0.0-BETA3</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>

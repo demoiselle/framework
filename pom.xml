@@ -5,7 +5,7 @@
     <groupId>org.demoiselle.jee</groupId>
     <artifactId>demoiselle-build</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.0-BETA3-SNAPSHOT</version>
+    <version>3.0.0-BETA3</version>
 
     <name>Demoiselle JEE Build</name>
     <description>Framework de integração para Java EE 7 baseado na especificação CDI 1.2 (JSR 346).</description>
@@ -286,7 +286,7 @@
         <connection>scm:git:git@github.com:demoiselle/${project.alias}.git</connection>
         <developerConnection>scm:git:git@github.com:demoiselle/${project.alias}.git</developerConnection>
         <url>http://github.com/demoiselle/${project.alias}</url>
-        <tag>HEAD</tag>
+        <tag>demoiselle-build-3.0.0-BETA3</tag>
     </scm>
 
     <distributionManagement>
