@@ -30,6 +30,9 @@ import org.demoiselle.jee.persistence.crud.exception.DemoisellePersistenceCrudEx
 public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     @Inject
+    private DemoiselleCrudConfig config;
+
+    @Inject
     protected Logger logger;
 
     private final Class<T> entityClass;
@@ -88,10 +91,10 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             CriteriaQuery<T> q = cb.createQuery(entityClass);
             Root<T> c = q.from(entityClass);
 
-            rs.setContent(getEntityManager().createQuery(q).getResultList());
+            rs.setContent(getEntityManager().createQuery(q).setMaxResults(config.getAcceptRange()).getResultList());
             rs.setInit(0);
             rs.setQtde(rs.getContent().size());
-            rs.setTotal(rs.getContent().size());
+            rs.setTotal(count());
             return rs;
         } catch (Exception e) {
             logger.severe(e.getMessage());
@@ -101,6 +104,11 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     public ResultSet find(String field, String order, int init, int qtde) {
         try {
+
+            if (config.getAcceptRange() < qtde) {
+                throw new DemoisellePersistenceCrudException("A quantidade máxima aceitável é " + config.getAcceptRange());
+            }
+
             ResultSet rs = new ResultSet();
             List result = new ArrayList<>();
             List source = new ArrayList<>();
@@ -153,13 +161,13 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             if (predicates.length > 0) {
                 criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
                 TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
-                source.addAll(query.getResultList());
+                source.addAll(query.setMaxResults(config.getAcceptRange()).getResultList());
             }
 
             rs.setContent(source);
             rs.setInit(0);
             rs.setQtde(source.size());
-            rs.setTotal(source.size());
+            rs.setTotal(count());
             return rs;
         } catch (Exception e) {
             logger.severe(e.getMessage());
@@ -170,6 +178,11 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     public ResultSet find(MultivaluedMap<String, String> queryParams, String field, String order, int init, int qtde) {
         try {
+
+            if (config.getAcceptRange() < qtde) {
+                throw new DemoisellePersistenceCrudException("A quantidade máxima aceitável é " + config.getAcceptRange());
+            }
+
             ResultSet rs = new ResultSet();
             List result = new ArrayList<>();
             List source = new ArrayList<>();
@@ -206,6 +219,14 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             logger.severe(e.getMessage());
             throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
         }
+    }
+
+    public Long count() {
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> countCriteria = criteriaBuilder.createQuery(Long.class);
+        Root<?> entityRoot = countCriteria.from(entityClass);
+        countCriteria.select(criteriaBuilder.count(entityRoot));
+        return getEntityManager().createQuery(countCriteria).getSingleResult();
     }
 
     protected Predicate[] extractPredicates(

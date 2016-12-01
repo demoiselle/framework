@@ -21,9 +21,9 @@ public interface Result {
 
     public void setQtde(int qtde);
 
-    public int getTotal();
+    public long getTotal();
 
-    public void setTotal(int total);
+    public void setTotal(long total);
 
     public List getContent();
 

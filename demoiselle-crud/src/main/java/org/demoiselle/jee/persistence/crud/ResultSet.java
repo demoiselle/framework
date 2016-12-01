@@ -15,7 +15,7 @@ public class ResultSet implements Result{
 
     private int qtde;
 
-    private int total;
+    private long total;
 
     private List content;
 
@@ -35,11 +35,11 @@ public class ResultSet implements Result{
         this.qtde = qtde;
     }
 
-    public int getTotal() {
+    public long getTotal() {
         return total;
     }
 
-    public void setTotal(int total) {
+    public void setTotal(long total) {
         this.total = total;
     }
 
