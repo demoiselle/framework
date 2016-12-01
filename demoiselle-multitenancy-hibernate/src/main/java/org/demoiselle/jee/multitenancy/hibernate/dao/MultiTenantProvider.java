@@ -16,7 +16,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.hibernate.HibernateException;
+import org.demoiselle.jee.multitenancy.hibernate.exception.DemoiselleMultiTenancyException;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.hibernate.service.spi.ServiceRegistryAwareService;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
@@ -76,15 +76,16 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 			String setDatabase = config.getString("demoiselle.multiTenancySetDatabaseSQL");
 			String masterDatabase = config.getString("demoiselle.multiTenancyMasterDatabase");
 			String finalDatabaseName = prefix + "" + tenantIdentifier;
-			
-			// If the master database name equals a tenantIdentifier dont concat prefix
+
+			// If the master database name equals a tenantIdentifier dont concat
+			// prefix
 			if (masterDatabase.equals(tenantIdentifier)) {
 				finalDatabaseName = tenantIdentifier;
 			}
-			
+
 			connection.createStatement().execute(setDatabase + " " + finalDatabaseName);
 		} catch (final SQLException e) {
-			throw new HibernateException("Error trying to alter schema [" + tenantIdentifier + "]", e);
+			throw new DemoiselleMultiTenancyException("Error trying to alter schema [" + tenantIdentifier + "]", e);
 		}
 		return connection;
 	}

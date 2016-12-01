@@ -8,6 +8,7 @@ package org.demoiselle.jee.multitenancy.hibernate.business;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,11 +21,11 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.demoiselle.jee.core.exception.DemoiselleException;
 import org.demoiselle.jee.core.message.DemoiselleMessage;
 import org.demoiselle.jee.multitenancy.hibernate.configuration.MultiTenancyConfiguration;
 import org.demoiselle.jee.multitenancy.hibernate.dao.TenantDAO;
 import org.demoiselle.jee.multitenancy.hibernate.entity.Tenant;
+import org.demoiselle.jee.multitenancy.hibernate.exception.DemoiselleMultiTenancyException;
 import org.demoiselle.jee.persistence.crud.ResultSet;
 
 /**
@@ -100,39 +101,46 @@ public class TenantManager {
 	 */
 	public void createTenant(Tenant tenant) throws NamingException, SQLException {
 
-		// Infos of Config
-		String prefix = configuration.getMultiTenancyTenantDatabasePrefix();
-		String createCommand = configuration.getMultiTenancyCreateDatabaseSQL();
-		String setCommand = configuration.getMultiTenancySetDatabaseSQL();
-		String masterDatabase = configuration.getMultiTenancyMasterDatabase();
+		Connection conn = null;
 
-		// Add Tenancy in table/master schema
-		persist(tenant);
+		try {
+			// Infos of Config
+			String prefix = configuration.getMultiTenancyTenantDatabasePrefix();
+			String createCommand = configuration.getMultiTenancyCreateDatabaseSQL();
+			String setCommand = configuration.getMultiTenancySetDatabaseSQL();
+			String masterDatabase = configuration.getMultiTenancyMasterDatabase();
 
-		// Create Schema
-		final Context init = new InitialContext();
-		dataSource = (DataSource) init.lookup(configuration.getMultiTenancyMasterDatabaseDatasource());
+			// Add Tenancy in table/master schema
+			persist(tenant);
 
-		Connection conn = dataSource.getConnection();
+			// Create Schema
+			final Context init = new InitialContext();
+			dataSource = (DataSource) init.lookup(configuration.getMultiTenancyMasterDatabaseDatasource());
 
-		// Cria o BANCO/SCHEMA
-		conn.createStatement().execute(createCommand + " " + prefix + "" + tenant.getName());
+			conn = dataSource.getConnection();
 
-		// Usa o BANCO/SCHEMA (MySQL)
-		conn.createStatement().execute(setCommand + " " + prefix + "" + tenant.getName());
+			// Create the database for tenant
+			conn.createStatement().execute(createCommand + " " + prefix + "" + tenant.getName());
 
-		// Roda o DDL - DROP
-		dropDatabase(conn);
+			// Set USE database
+			conn.createStatement().execute(setCommand + " " + prefix + "" + tenant.getName());
 
-		// Roda o DDL - CREATE
-		createDatabase(conn);
+			// Run o DDL - DROP
+			dropDatabase(conn);
 
-		// Set master database
-		conn.createStatement().execute(setCommand + " " + masterDatabase);
+			// Run o DDL - CREATE
+			createDatabase(conn);
 
-		// Como a conexão esta fora de contexto é importante fechar ela aqui
-		if (!conn.isClosed()) {
-			conn.close();
+			// Set master database
+			conn.createStatement().execute(setCommand + " " + masterDatabase);
+
+		} catch (IOException e) {
+			throw new DemoiselleMultiTenancyException(e);
+		} finally {
+			// Closes the connection
+			if (conn != null && !conn.isClosed()) {
+				conn.close();
+			}
 		}
 
 	}
@@ -142,8 +150,13 @@ public class TenantManager {
 	 * 
 	 * @param id
 	 *            ID of Tenant
+	 * @throws SQLException
+	 *             When SQL to create or set databse has error
 	 */
-	public void removeTenant(Long id) {
+	public void removeTenant(Long id) throws SQLException {
+
+		Connection conn = null;
+
 		try {
 			// Add Tenancy in table/master schema
 			Tenant t = dao.find(id);
@@ -154,18 +167,20 @@ public class TenantManager {
 
 			String prefix = configuration.getMultiTenancyTenantDatabasePrefix();
 			String dropCommand = configuration.getMultiTenancyDropDatabaseSQL();
-			Connection conn = dataSource.getConnection();
+			conn = dataSource.getConnection();
 
-			// EXCLUIR o BANCO/SCHEMA
+			// Delete database
 			conn.createStatement().execute(dropCommand + " " + prefix + "" + t.getName());
 
-			// Como a conexão esta fora de contexto é importante fechar ela aqui
-			if (!conn.isClosed()) {
+		} catch (Exception e) {
+			throw new DemoiselleMultiTenancyException(e);
+		} finally {
+			// Closes the connection
+			if (conn != null && !conn.isClosed()) {
 				conn.close();
 			}
-		} catch (Exception e) {
-			throw new DemoiselleException(e);
 		}
+		
 	}
 
 	/**
@@ -175,8 +190,10 @@ public class TenantManager {
 	 *            Database Connection
 	 * @throws SQLException
 	 *             When SQL has error
+	 * @throws IOException
+	 *             Error with DDL file
 	 */
-	private void dropDatabase(Connection conn) throws SQLException {
+	private void dropDatabase(Connection conn) throws SQLException, IOException {
 		String filename = configuration.getMultiTenancyDropDatabaseDDL();
 		List<String> ddl = getDDLString(filename);
 		for (String ddlLine : ddl) {
@@ -189,8 +206,12 @@ public class TenantManager {
 	 * 
 	 * @param conn
 	 * @throws SQLException
+	 *             Error on execute SQL
+	 * @throws IOException
+	 *             Error with DDL file
+	 * 
 	 */
-	private void createDatabase(Connection conn) throws SQLException {
+	private void createDatabase(Connection conn) throws SQLException, IOException {
 		String filename = configuration.getMultiTenancyCreateDatabaseDDL();
 		List<String> ddl = getDDLString(filename);
 		for (String ddlLine : ddl) {
@@ -204,22 +225,21 @@ public class TenantManager {
 	 * @param filename
 	 *            Name of DDL file
 	 * @return All lines of SQL
+	 * @throws IOException
+	 *             Error with DDL file
 	 */
-	private List<String> getDDLString(String filename) {
+	private List<String> getDDLString(String filename) throws IOException {
 		List<String> records = new ArrayList<String>();
-		try {
-			FileReader f = new FileReader(filename);
-			BufferedReader reader = new BufferedReader(f);
-			String line;
-			while ((line = reader.readLine()) != null) {
-				records.add(line);
-			}
-			reader.close();
-			return records;
-		} catch (Exception e) {
-			System.err.format("Exception occurred trying to read '%s'.", filename);
-			return null;
+
+		FileReader f = new FileReader(filename);
+		BufferedReader reader = new BufferedReader(f);
+		String line;
+		while ((line = reader.readLine()) != null) {
+			records.add(line);
 		}
+		reader.close();
+		return records;
+
 	}
 
 }
