@@ -103,12 +103,13 @@ public class TenantManager {
 
 		Connection conn = null;
 
+		// Infos of Config
+		String prefix = configuration.getMultiTenancyTenantDatabasePrefix();
+		String createCommand = configuration.getMultiTenancyCreateDatabaseSQL();
+		String setCommand = configuration.getMultiTenancySetDatabaseSQL();
+		String masterDatabase = configuration.getMultiTenancyMasterDatabase();
+
 		try {
-			// Infos of Config
-			String prefix = configuration.getMultiTenancyTenantDatabasePrefix();
-			String createCommand = configuration.getMultiTenancyCreateDatabaseSQL();
-			String setCommand = configuration.getMultiTenancySetDatabaseSQL();
-			String masterDatabase = configuration.getMultiTenancyMasterDatabase();
 
 			// Add Tenancy in table/master schema
 			persist(tenant);
@@ -126,17 +127,21 @@ public class TenantManager {
 			conn.createStatement().execute(setCommand + " " + prefix + "" + tenant.getName());
 
 			// Run o DDL - DROP
-			dropDatabase(conn);
+			try {
+				dropDatabase(conn);
+			} catch (Exception e) {
+				// Ignore erros, because maybe the table already not exists!
+			}
 
 			// Run o DDL - CREATE
 			createDatabase(conn);
 
-			// Set master database
-			conn.createStatement().execute(setCommand + " " + masterDatabase);
-
 		} catch (IOException e) {
 			throw new DemoiselleMultiTenancyException(e);
 		} finally {
+			// Set master database
+			conn.createStatement().execute(setCommand + " " + masterDatabase);
+
 			// Closes the connection
 			if (conn != null && !conn.isClosed()) {
 				conn.close();
@@ -157,6 +162,10 @@ public class TenantManager {
 
 		Connection conn = null;
 
+		// Infos of Config
+		String setCommand = configuration.getMultiTenancySetDatabaseSQL();
+		String masterDatabase = configuration.getMultiTenancyMasterDatabase();
+
 		try {
 			// Add Tenancy in table/master schema
 			Tenant t = dao.find(id);
@@ -175,12 +184,15 @@ public class TenantManager {
 		} catch (Exception e) {
 			throw new DemoiselleMultiTenancyException(e);
 		} finally {
+			// Set master database
+			conn.createStatement().execute(setCommand + " " + masterDatabase);
+
 			// Closes the connection
 			if (conn != null && !conn.isClosed()) {
 				conn.close();
 			}
 		}
-		
+
 	}
 
 	/**
@@ -235,7 +247,7 @@ public class TenantManager {
 		BufferedReader reader = new BufferedReader(f);
 		String line;
 		while ((line = reader.readLine()) != null) {
-			records.add(line);
+			records.add(line + ";");
 		}
 		reader.close();
 		return records;

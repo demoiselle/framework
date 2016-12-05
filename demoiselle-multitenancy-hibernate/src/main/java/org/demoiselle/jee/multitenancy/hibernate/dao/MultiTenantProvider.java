@@ -92,6 +92,7 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 
 	@Override
 	public void releaseAnyConnection(Connection connection) throws SQLException {
+		// Close JDBC connection 
 		connection.close();
 	}
 
