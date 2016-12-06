@@ -23,22 +23,27 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
+                    <showDeprecation>true</showDeprecation>
                     <source>1.8</source>
                     <target>1.8</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>
     </build>
 
     <dependencies>
+        
         <dependency>
             <groupId>org.demoiselle.jee</groupId>
             <artifactId>demoiselle-core</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>org.demoiselle.jee</groupId>
             <artifactId>demoiselle-rest</artifactId>
         </dependency>
+        
     </dependencies>
 
 </project>

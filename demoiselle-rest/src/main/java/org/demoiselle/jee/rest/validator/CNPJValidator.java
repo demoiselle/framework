@@ -3,33 +3,31 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.demoiselle.jee.rest.validator.impl;
+package org.demoiselle.jee.rest.validator;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import org.demoiselle.jee.rest.validator.CPF;
-import org.reflections.util.Utils;
+import org.demoiselle.jee.rest.annotation.CNPJ;
 
 /**
  *
  * @author 70744416353
  */
-public class CPFValidator implements ConstraintValidator<CPF, String> {
+public class CNPJValidator implements ConstraintValidator<CNPJ, String> {
 
     @Inject
     private Logger logger;
 
-    private CPF constraint;
+    private CNPJ constraint;
 
-    String FORMATED = "(\\d{3})\\.(\\d{3})\\.(\\d{3})-(\\d{2})";
+    String FORMATED = "(\\d{2})\\.(\\d{3})\\.(\\d{3})/(\\d{4})-(\\d{2})";
 
-    String UNFORMATED = "(\\d{3})(\\d{3})(\\d{3})(\\d{2})";
+    String UNFORMATED = "(\\d{2})(\\d{3})(\\d{3})(\\d{4})(\\d{2})";
 
     @Override
-    public void initialize(CPF constraint) {
+    public void initialize(CNPJ constraint) {
         this.constraint = constraint;
     }
 
@@ -50,12 +48,12 @@ public class CPFValidator implements ConstraintValidator<CPF, String> {
             return false;
         }
 
-        final boolean result = value.length() == 11 && isValidCpf(value);
+        final boolean result = value.length() == 11 && isValidCnpj(value);
 
         return result;
     }
 
-    private boolean isValidCpf(String value) {
+    private boolean isValidCnpj(String value) {
 
         if (allDigitsAreEquals(value)) {
             return false;
@@ -98,3 +96,4 @@ public class CPFValidator implements ConstraintValidator<CPF, String> {
         return out.toString();
     }
 }
+

@@ -81,17 +81,6 @@
                 <maven.compiler.target>1.8</maven.compiler.target>
                 <failOnMissingWebXml>false</failOnMissingWebXml>
             </properties>
-            <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.wildfly.swarm</groupId>
-                        <artifactId>bom-all</artifactId>
-                        <version>${version.wildfly.swarm}</version>
-                        <scope>import</scope>
-                        <type>pom</type>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
             <dependencies>
                 <!-- WildFly Default Swarm Fractions -->
                 <dependency>
@@ -101,22 +90,23 @@
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
                     <artifactId>ejb</artifactId>
-                    <version>${version.wildfly.swarm}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
                     <artifactId>datasources</artifactId>
-                    <version>${version.wildfly.swarm}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
                     <artifactId>jpa</artifactId>
-                    <version>${version.wildfly.swarm}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
                     <artifactId>transactions</artifactId>
-                    <version>${version.wildfly.swarm}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>arquillian</artifactId>
+                    <scope>test</scope>
                 </dependency>
             </dependencies>
             <build>
