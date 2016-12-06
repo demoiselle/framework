@@ -29,7 +29,7 @@ import org.demoiselle.jee.multitenancy.hibernate.exception.DemoiselleMultiTenanc
 import org.demoiselle.jee.persistence.crud.ResultSet;
 
 /**
- * Classe with behaviors to manipulate basic Tenants operations.
+ * Class with behaviors to manipulate basic Tenants operations.
  * 
  * @author SERPRO
  *
@@ -110,7 +110,6 @@ public class TenantManager {
 		String masterDatabase = configuration.getMultiTenancyMasterDatabase();
 
 		try {
-
 			// Add Tenancy in table/master schema
 			persist(tenant);
 
@@ -130,7 +129,7 @@ public class TenantManager {
 			try {
 				dropDatabase(conn);
 			} catch (Exception e) {
-				// Ignore erros, because maybe the table already not exists!
+				// Ignore errors, because maybe the table may not exist yet!
 			}
 
 			// Run o DDL - CREATE
@@ -147,7 +146,6 @@ public class TenantManager {
 				conn.close();
 			}
 		}
-
 	}
 
 	/**
@@ -192,7 +190,6 @@ public class TenantManager {
 				conn.close();
 			}
 		}
-
 	}
 
 	/**
@@ -251,7 +248,6 @@ public class TenantManager {
 		}
 		reader.close();
 		return records;
-
 	}
-
+	
 }

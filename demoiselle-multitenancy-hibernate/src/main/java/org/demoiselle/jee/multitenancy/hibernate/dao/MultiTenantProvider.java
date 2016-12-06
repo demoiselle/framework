@@ -100,4 +100,5 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 	public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
 		releaseAnyConnection(connection);
 	}
+	
 }

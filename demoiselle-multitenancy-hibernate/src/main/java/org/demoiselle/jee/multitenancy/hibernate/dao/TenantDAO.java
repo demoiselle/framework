@@ -27,7 +27,7 @@ public class TenantDAO extends AbstractDAO<Tenant, Long> {
 	}
 
 	/**
-	 * O Contrutor desta classe precisa ser sem parâmetros por causa do CDI.
+	 * Constructor for CDI @Inject 
 	 */
 	public TenantDAO() {
 

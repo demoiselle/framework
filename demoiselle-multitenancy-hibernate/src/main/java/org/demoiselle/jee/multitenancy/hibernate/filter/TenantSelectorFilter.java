@@ -70,11 +70,6 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 				Tenant.class);
 		query.setParameter("value", tenantNameUrl);
 
-		// Query Cache (Disable)
-		// query.setHint("org.hibernate.cacheable", "true");
-		// // Cache de 60s (60000ms)
-		// query.setHint("javax.persistence.query.timeout", 60000);
-
 		List<Tenant> list = query.getResultList();
 
 		if (list.size() == 1) {
