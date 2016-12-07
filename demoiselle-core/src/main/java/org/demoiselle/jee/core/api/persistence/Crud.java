@@ -5,14 +5,9 @@
  */
 package org.demoiselle.jee.core.api.persistence;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.ws.rs.core.MultivaluedMap;
-
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 public interface Crud<T, I> {
 

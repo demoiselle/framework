@@ -6,8 +6,10 @@
  */
 package org.demoiselle.jee.core.internal.producer;
 
-import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
+
+import java.util.logging.Logger;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;

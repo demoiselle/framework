@@ -9,8 +9,9 @@ import java.util.List;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
+@SuppressWarnings("rawtypes")
 public interface Result {
 
     public int getInit();
@@ -24,8 +25,8 @@ public interface Result {
     public long getTotal();
 
     public void setTotal(long total);
-
-    public List getContent();
+   
+	public List getContent();
 
     public void setContent(List content);
 
