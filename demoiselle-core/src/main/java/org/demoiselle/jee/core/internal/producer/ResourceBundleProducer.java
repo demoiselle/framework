@@ -22,7 +22,7 @@ import org.demoiselle.jee.core.util.ResourceBundle;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @Dependent
 public class ResourceBundleProducer {

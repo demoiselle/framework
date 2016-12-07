@@ -5,6 +5,8 @@ import org.demoiselle.jee.core.exception.DemoiselleException;
 /**
  * 
  * Represents a throw Exceptions from Lifecycle feature
+ * 
+ * @author SERPRO
  *
  */
 public class LifecycleException extends DemoiselleException {

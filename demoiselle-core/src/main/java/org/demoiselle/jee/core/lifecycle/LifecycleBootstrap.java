@@ -23,6 +23,8 @@ import org.demoiselle.jee.core.lifecycle.annotation.Startup;
 
 /**
  * This class is responsible for managing the execution of methods annotated with @Startup and @Shutdown
+ * 
+ * @author SERPRO
  */
 public class LifecycleBootstrap implements Extension {
 	

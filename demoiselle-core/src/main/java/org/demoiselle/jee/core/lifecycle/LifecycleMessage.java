@@ -6,6 +6,8 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
 /**
  * 
  * Represents the Messages used by Lifecycle feature
+ * 
+ * @author SERPRO
  *
  */
 @MessageBundle

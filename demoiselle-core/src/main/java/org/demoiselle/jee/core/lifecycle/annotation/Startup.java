@@ -27,6 +27,7 @@ import org.demoiselle.jee.core.annotation.Priority;
  * 
  * See {@link Priority}
  * 
+ * @author SERPRO
  */
 @Target(METHOD)
 @Retention(RUNTIME)

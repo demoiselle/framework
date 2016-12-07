@@ -17,7 +17,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @Dependent
 public class LoggerProducer {

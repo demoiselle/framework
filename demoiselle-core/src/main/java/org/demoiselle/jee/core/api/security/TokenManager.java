@@ -12,7 +12,8 @@ package org.demoiselle.jee.core.api.security;
  * the app. We have three suggestions for implementation, basic, JWT and memory,
  * but you can implement more is useful for your project or extend existing
  * ones.
- *
+ * 
+ * @author SERPRO
  */
 public interface TokenManager {
 
