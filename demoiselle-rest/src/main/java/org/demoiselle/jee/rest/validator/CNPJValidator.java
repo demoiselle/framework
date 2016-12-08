@@ -5,10 +5,9 @@
  */
 package org.demoiselle.jee.rest.validator;
 
-import java.util.logging.Logger;
-import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
 import org.demoiselle.jee.rest.annotation.CNPJ;
 
 /**
@@ -16,9 +15,6 @@ import org.demoiselle.jee.rest.annotation.CNPJ;
  * @author 70744416353
  */
 public class CNPJValidator implements ConstraintValidator<CNPJ, String> {
-
-    @Inject
-    private Logger logger;
 
     private CNPJ constraint;
 

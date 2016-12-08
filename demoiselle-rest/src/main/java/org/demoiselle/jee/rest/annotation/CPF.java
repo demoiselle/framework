@@ -21,7 +21,7 @@ import org.demoiselle.jee.rest.validator.CPFValidator;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @Documented
 @Constraint(validatedBy = {CPFValidator.class})
@@ -30,14 +30,8 @@ import org.demoiselle.jee.rest.validator.CPFValidator;
 @ReportAsSingleViolation
 public @interface CPF {
 
-    /**
-     * Mensagem retornada quando a validação falhar.
-     */
     String message() default "{cpf.error}";
 
-    /**
-     * Indica se o valor do campo é formatado ou não.
-     */
     boolean formatted() default false;
 
     Class<?>[] groups() default {};

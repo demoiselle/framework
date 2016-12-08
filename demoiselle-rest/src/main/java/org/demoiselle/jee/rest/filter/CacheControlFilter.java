@@ -38,7 +38,8 @@ public class CacheControlFilter implements ContainerResponseFilter {
                 }
             } 
             if (info.getResourceClass() != null) {
-                Class classe = info.getResourceClass();
+                @SuppressWarnings("rawtypes")
+				Class classe = info.getResourceClass();
                 if (classe != null) {
                     CacheControl max = info.getResourceClass().getAnnotation(CacheControl.class);
                     if (max != null) {

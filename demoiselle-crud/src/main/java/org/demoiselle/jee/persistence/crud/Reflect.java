@@ -9,16 +9,10 @@ import java.lang.reflect.Field;
 
 /**
  *
- * @author gladson
+ * @author SERPRO
  */
 public class Reflect {
 
-    /**
-     *
-     * @param field
-     * @param classe
-     * @return
-     */
     public static boolean fieldInClass(String field, Class<?> classe) {
         Field[] methods = classe.getDeclaredFields();
         for (Field field1 : methods) {
