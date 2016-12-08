@@ -1,6 +1,7 @@
 package org.demoiselle.jee.persistence.crud.pagination;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -12,11 +13,13 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.core.pagination.ResultSet;
+import org.demoiselle.jee.persistence.crud.AbstractREST;
 
 @Provider
 public class PaginationFilter implements ContainerResponseFilter, ContainerRequestFilter {
@@ -48,19 +51,74 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
     	
         if (response.getEntity() instanceof ResultSet) {
         	
-            response.getHeaders().putSingle(HTTP_HEADER_CONTENT_RANGE, buildContentRange());
-            response.getHeaders().putSingle(HTTP_HEADER_ACCEPT_RANGE, buildAcceptRange());
+        	buildHeaders(response);
+            
             response.setEntity(resultSet.getContent());
             
-            if (resultSet.getLimit() >= resultSet.getCount()) {
+            if(!isPartialContentResponse()) {
                 response.setStatus(Status.OK.getStatusCode());
             } 
             else {
                 response.setStatus(Status.PARTIAL_CONTENT.getStatusCode());
             }
         }
+        else{
+        	if (Status.BAD_REQUEST.getStatusCode() == response.getStatus()
+        			&& resultSet.getEntityClass() == null){
+        		response.getHeaders().putSingle(HTTP_HEADER_ACCEPT_RANGE, buildAcceptRange());
+          	}
+        }
     
     }
+    
+    private Boolean isPartialContentResponse(){
+    	return ! ((resultSet.getLimit() + 1) >= resultSet.getCount());
+    }
+
+	private void buildHeaders(ContainerResponseContext response) {
+		response.getHeaders().putSingle(HTTP_HEADER_CONTENT_RANGE, buildContentRange());
+        response.getHeaders().putSingle(HTTP_HEADER_ACCEPT_RANGE, buildAcceptRange());
+        
+    	buildLinkHeader(response);
+		
+	}
+
+	private void buildLinkHeader(ContainerResponseContext response) {
+		StringBuffer sb = new StringBuffer();
+		String url = uriInfo.getRequestUri().toString();
+		url = url.replaceFirst("\\?.*$", "");
+		url += "?" + DEFAULT_RANGE_KEY + "=";
+		
+		if(resultSet.getOffset().equals(0) && resultSet.getLimit().equals(0)){
+			resultSet.setLimit(paginationConfig.getDefaultPagination());
+		}
+		
+		Integer offset = resultSet.getOffset() + 1;
+		Integer limit = resultSet.getLimit() + 1;
+		Integer quantityPerPage = (limit - offset) + 1;
+		
+		if(!isFirstPage()){
+			String firstPage = url + 0 + "-" + (quantityPerPage - 1);
+			String prevPage = url + (offset - quantityPerPage) + "-" + (offset - 1);
+			
+			sb.append("<").append(firstPage).append(">; rel=\"first\",");
+			sb.append("<").append(prevPage).append(">; rel=\"prev\",");
+		}
+		
+		if(isPartialContentResponse()){
+			String nextPage = url + (resultSet.getOffset() + quantityPerPage) + "-" + (2*quantityPerPage + resultSet.getOffset() - 1);
+			String lastPage = url + (resultSet.getCount() - quantityPerPage) + "-" + (resultSet.getCount() - 1);
+			
+			sb.append("<").append(nextPage).append(">; rel=\"next\",");
+			sb.append("<").append(lastPage).append(">; rel=\"last\"");
+		}
+		
+		response.getHeaders().putSingle(HttpHeaders.LINK, sb.toString());
+	}
+	
+	private Boolean isFirstPage() {
+		return resultSet.getOffset().equals(0);
+	}
 
 	private String buildContentRange() {
 		return resultSet.getOffset() + "-" + resultSet.getLimit() + "/" + resultSet.getCount();
@@ -71,6 +129,15 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 		
 		if(resultSet.getEntityClass() != null){
 			resource = resultSet.getEntityClass().getSimpleName().toLowerCase();
+		}
+		else {
+			if(info.getResourceClass() != null){
+				Class<?> targetClass = info.getResourceClass();
+				if(targetClass.getSuperclass().equals(AbstractREST.class)){
+					Class<?> type = (Class<?>) ((ParameterizedType) targetClass.getGenericSuperclass()).getActualTypeArguments()[0];
+					resource  = type.getSimpleName().toLowerCase();
+				}
+			}
 		}
 		
 		return resource + " " + paginationConfig.getDefaultPagination();
