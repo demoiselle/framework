@@ -11,7 +11,8 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
 
 /**
  * Message class intended to be used by all framework.
- *
+ * 
+ * @author SERPRO
  */
 @MessageBundle
 public interface DemoiselleMessage {

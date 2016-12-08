@@ -6,7 +6,8 @@ import org.demoiselle.jee.core.annotation.Priority;
 
 /**
  * Represents an annotated method to be processed 
- *
+ * 
+ * @author SERPRO
  */
 public class AnnotatedMethodProcessor {
 

@@ -6,15 +6,16 @@
  */
 package org.demoiselle.jee.core.util;
 
-import java.io.Serializable;
 import static java.lang.Thread.currentThread;
+import static java.util.regex.Matcher.quoteReplacement;
+
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Set;
-import static java.util.regex.Matcher.quoteReplacement;
 
 /**
  * <p>

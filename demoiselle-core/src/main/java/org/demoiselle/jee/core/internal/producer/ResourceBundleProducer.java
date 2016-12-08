@@ -6,20 +6,23 @@
  */
 package org.demoiselle.jee.core.internal.producer;
 
-import java.util.Locale;
 import static java.util.Locale.getDefault;
+import static javax.enterprise.inject.spi.CDI.current;
+import static org.demoiselle.jee.core.util.CDIUtils.getQualifier;
+
+import java.util.Locale;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
-import static javax.enterprise.inject.spi.CDI.current;
 import javax.enterprise.inject.spi.InjectionPoint;
+
 import org.demoiselle.jee.core.annotation.Name;
-import static org.demoiselle.jee.core.util.CDIUtils.getQualifier;
 import org.demoiselle.jee.core.util.ResourceBundle;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @Dependent
 public class ResourceBundleProducer {

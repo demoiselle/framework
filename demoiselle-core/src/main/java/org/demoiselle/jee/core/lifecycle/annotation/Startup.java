@@ -1,13 +1,12 @@
 package org.demoiselle.jee.core.lifecycle.annotation;
 
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import org.demoiselle.jee.core.annotation.Priority;
-
-import java.lang.annotation.Retention;
-
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Identifies a method eligible to be executed automatically during <b>application initialization</b>.
@@ -28,6 +27,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * 
  * See {@link Priority}
  * 
+ * @author SERPRO
  */
 @Target(METHOD)
 @Retention(RUNTIME)

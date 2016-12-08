@@ -6,16 +6,14 @@
  */
 package org.demoiselle.jee.persistence.crud;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
+
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -23,17 +21,26 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.core.MultivaluedMap;
+
 import org.demoiselle.jee.core.api.persistence.Crud;
+import org.demoiselle.jee.core.pagination.ResultSet;
 import org.demoiselle.jee.persistence.crud.exception.DemoisellePersistenceCrudException;
+import org.demoiselle.jee.persistence.crud.pagination.DemoisellePaginationConfig;
 
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
-    @Inject
-    private DemoiselleCrudConfig config;
+    /*@Inject
+    private DemoiselleCrudConfig config;*/
+	
+	@Inject
+	private DemoisellePaginationConfig paginationConfig;
 
     @Inject
     protected Logger logger;
+    
+    @Inject
+    private ResultSet resultSet;
 
     private final Class<T> entityClass;
 
@@ -83,31 +90,51 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     }
 
+    @Override
     public ResultSet find() {
+    	
+    	System.out.println(this.resultSet);
+    	
         try {
-            ResultSet rs = new ResultSet();
-
+        	
+        	Integer firstResult = this.resultSet.getOffset();
+        	Integer maxResults = getMaxResult();
+        	
             CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
             CriteriaQuery<T> q = cb.createQuery(entityClass);
             Root<T> c = q.from(entityClass);
+            
+            TypedQuery<T> query = getEntityManager().createQuery(q);
+            query.setFirstResult(firstResult);
+            query.setMaxResults(maxResults);
 
-            rs.setContent(getEntityManager().createQuery(q).setMaxResults(config.getAcceptRange()).getResultList());
-            rs.setInit(0);
-            rs.setQtde(rs.getContent().size());
-            rs.setTotal(count());
-            return rs;
+            this.resultSet.setContent(query.getResultList());
+//            this.resultSet.setOffset(new Integer(0));
+            this.resultSet.setLimit(this.resultSet.getContent().size());
+            this.resultSet.setCount(count());
+            
+            return this.resultSet;
+            
         } catch (Exception e) {
             logger.severe(e.getMessage());
             throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
         }
     }
 
-    public ResultSet find(String field, String order, int init, int qtde) {
-        try {
+    private Integer getMaxResult() {
+		if(this.resultSet.getLimit().equals(0) && this.resultSet.getOffset().equals(0)){
+			return this.paginationConfig.getDefaultPagination();
+		}
+		
+		return (this.resultSet.getLimit() - this.resultSet.getOffset()) + 1;
+	}
 
-            if (config.getAcceptRange() < qtde) {
-                throw new DemoisellePersistenceCrudException("A quantidade máxima aceitável é " + config.getAcceptRange());
-            }
+	public ResultSet find(String field, String order, int init, int qtde) {
+        /*try {
+
+//            if (config.getAcceptRange() < qtde) {
+//                throw new DemoisellePersistenceCrudException("A quantidade máxima aceitável é " + config.getAcceptRange());
+//            }
 
             ResultSet rs = new ResultSet();
             List result = new ArrayList<>();
@@ -135,14 +162,16 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             }
 
             rs.setContent(result);
-            rs.setInit(init);
-            rs.setQtde(qtde);
-            rs.setTotal(source.size());
+            rs.setOffset(init);
+            rs.setLimit(qtde);
+            rs.setCount(source.size());
             return rs;
         } catch (Exception e) {
             logger.severe(e.getMessage());
             throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
-        }
+        }*/
+    	
+    	return null;
 
     }
 
@@ -161,27 +190,28 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             if (predicates.length > 0) {
                 criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
                 TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
-                source.addAll(query.setMaxResults(config.getAcceptRange()).getResultList());
+                source.addAll(query.setMaxResults(10).getResultList());
             }
 
             rs.setContent(source);
-            rs.setInit(0);
-            rs.setQtde(source.size());
-            rs.setTotal(count());
+            rs.setOffset(new Integer(0));
+            rs.setLimit(source.size());
+            rs.setCount(count());
             return rs;
         } catch (Exception e) {
             logger.severe(e.getMessage());
             throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
         }
+    	
 
     }
 
     public ResultSet find(MultivaluedMap<String, String> queryParams, String field, String order, int init, int qtde) {
-        try {
+       /* try {
 
-            if (config.getAcceptRange() < qtde) {
-                throw new DemoisellePersistenceCrudException("A quantidade máxima aceitável é " + config.getAcceptRange());
-            }
+//            if (config.getAcceptRange() < qtde) {
+//                throw new DemoisellePersistenceCrudException("A quantidade máxima aceitável é " + config.getAcceptRange());
+//            }
 
             ResultSet rs = new ResultSet();
             List result = new ArrayList<>();
@@ -211,14 +241,16 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             }
 
             rs.setContent(result);
-            rs.setInit(init);
-            rs.setQtde(qtde);
-            rs.setTotal(source.size());
+            rs.setOffset(init);
+            rs.setLimit(qtde);
+            rs.setCount(source.size());
             return rs;
         } catch (Exception e) {
             logger.severe(e.getMessage());
             throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
-        }
+        }*/
+    	
+    	return null;
     }
 
     public Long count() {
