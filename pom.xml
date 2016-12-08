@@ -170,7 +170,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<phase>compile</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>check</goal>
 						</goals>
