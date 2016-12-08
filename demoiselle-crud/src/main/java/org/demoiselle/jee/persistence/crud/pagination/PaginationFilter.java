@@ -69,8 +69,8 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 	private String buildAcceptRange(){
 		String resource = "";
 		
-		if(!resultSet.getContent().isEmpty()){
-			resource = resultSet.getContent().get(0).getClass().getSimpleName().toLowerCase();
+		if(resultSet.getEntityClass() != null){
+			resource = resultSet.getEntityClass().getSimpleName().toLowerCase();
 		}
 		
 		return resource + " " + paginationConfig.getDefaultPagination();
@@ -80,7 +80,6 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		
 		if(isRequestPagination()){
-			System.out.println("PAGINATION >>>>>>>>>>>>>>>>>>>>");
 			
 			if(hasRangeKey()){
 				try{

@@ -97,23 +97,27 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     	
         try {
         	
-        	Integer firstResult = this.resultSet.getOffset();
+        	Integer firstResult = resultSet.getOffset();
         	Integer maxResults = getMaxResult();
         	
-            CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-            CriteriaQuery<T> q = cb.createQuery(entityClass);
-            Root<T> c = q.from(entityClass);
-            
-            TypedQuery<T> query = getEntityManager().createQuery(q);
-            query.setFirstResult(firstResult);
-            query.setMaxResults(maxResults);
-
-            this.resultSet.setContent(query.getResultList());
-//            this.resultSet.setOffset(new Integer(0));
-            this.resultSet.setLimit(this.resultSet.getContent().size());
-            this.resultSet.setCount(count());
-            
-            return this.resultSet;
+        	Long count = count();
+        	
+        	if(maxResults < count){
+	            CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+	            CriteriaQuery<T> q = cb.createQuery(entityClass);
+	            Root<T> c = q.from(entityClass);
+	            
+	            TypedQuery<T> query = getEntityManager().createQuery(q);
+	            query.setFirstResult(firstResult);
+	            query.setMaxResults(maxResults);
+	
+	            resultSet.setContent(query.getResultList());
+	            resultSet.setLimit(this.resultSet.getContent().size());
+	            resultSet.setEntityClass(entityClass);
+	            resultSet.setCount(count);
+            }
+        	
+            return resultSet;
             
         } catch (Exception e) {
             logger.severe(e.getMessage());

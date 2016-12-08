@@ -26,5 +26,8 @@ public interface Result {
 	
 	public List<?> getContent();
 	public void setContent(List<?> content);
+	
+	Class<?> getEntityClass();
+	void setEntityClass(Class<?> entityClass);
 
 }

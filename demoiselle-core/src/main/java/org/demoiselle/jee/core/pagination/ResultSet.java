@@ -14,6 +14,7 @@ public class ResultSet implements Result{
 	private Integer limit = new Integer(0);
 	private Long count = new Long(0);
 	private List<?> content = new ArrayList<>();
+	private Class<?> entityClass = null;
 
 	@Override
 	public Integer getOffset() {
@@ -56,9 +57,18 @@ public class ResultSet implements Result{
 	}
 
 	@Override
+	public void setEntityClass(Class<?> entityClass) {
+		this.entityClass = entityClass;
+	}
+
+	@Override
+	public Class<?> getEntityClass() {
+		return this.entityClass;
+	}
+	
+	@Override
 	public String toString() {
 		return "ResultSet [offset=" + offset + ", limit=" + limit + ", count=" + count + "]";
 	}
-	
 
 }

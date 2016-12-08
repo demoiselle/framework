@@ -22,11 +22,11 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.demoiselle.jee.core.message.DemoiselleMessage;
+import org.demoiselle.jee.core.pagination.ResultSet;
 import org.demoiselle.jee.multitenancy.hibernate.configuration.MultiTenancyConfiguration;
 import org.demoiselle.jee.multitenancy.hibernate.dao.TenantDAO;
 import org.demoiselle.jee.multitenancy.hibernate.entity.Tenant;
 import org.demoiselle.jee.multitenancy.hibernate.exception.DemoiselleMultiTenancyException;
-import org.demoiselle.jee.persistence.crud.ResultSet;
 
 /**
  * Class with behaviors to manipulate basic Tenants operations.
