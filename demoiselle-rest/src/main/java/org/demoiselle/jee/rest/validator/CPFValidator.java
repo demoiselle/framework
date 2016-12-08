@@ -5,22 +5,16 @@
  */
 package org.demoiselle.jee.rest.validator;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
 import org.demoiselle.jee.rest.annotation.CPF;
-import org.reflections.util.Utils;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 public class CPFValidator implements ConstraintValidator<CPF, String> {
-
-    @Inject
-    private Logger logger;
 
     private CPF constraint;
 

@@ -1,12 +1,14 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
 package org.demoiselle.jee.security.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -14,6 +16,7 @@ import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
+
 import org.demoiselle.jee.security.DemoiselleSecurityConfig;
 import org.demoiselle.jee.security.annotation.Cors;
 import org.demoiselle.jee.security.annotation.NoCors;
@@ -34,7 +37,8 @@ public class CorsFilter implements ContainerResponseFilter {
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
         Method method = info.getResourceMethod();
-        Class classe = info.getResourceClass();
+        @SuppressWarnings("rawtypes")
+		Class classe = info.getResourceClass();
 
         res.getHeaders().putSingle("Authorization", "enabled");
         res.getHeaders().putSingle("x-content-type-options", "nosniff");

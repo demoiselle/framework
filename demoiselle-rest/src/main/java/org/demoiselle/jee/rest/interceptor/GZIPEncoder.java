@@ -16,7 +16,7 @@ import org.demoiselle.jee.rest.DemoiselleRestConfig;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @Provider
 public class GZIPEncoder implements WriterInterceptor {
@@ -24,12 +24,6 @@ public class GZIPEncoder implements WriterInterceptor {
     @Inject
     private DemoiselleRestConfig config;
 
-    /**
-     *
-     * @param ctx
-     * @throws IOException
-     * @throws WebApplicationException
-     */
     @Override
     public void aroundWriteTo(WriterInterceptorContext ctx) throws IOException, WebApplicationException {
         if (config.isGzipEnabled()) {

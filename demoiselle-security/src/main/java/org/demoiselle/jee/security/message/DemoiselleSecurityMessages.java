@@ -11,58 +11,26 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @MessageBundle
 public interface DemoiselleSecurityMessages {
 
-    /**
-     *
-     * @param operacao
-     * @param recurso
-     * @return
-     */
     @MessageTemplate("{access-checking-permission}")
     String accessCheckingPermission(String operacao, String recurso);
 
-    /**
-     *
-     * @param usuario
-     * @param operacao
-     * @param recurso
-     * @return
-     */
     @MessageTemplate("{access-denied}")
     String accessDenied(String usuario, String operacao, String recurso);
 
-    /**
-     *
-     * @return
-     */
     @MessageTemplate("{user-not-authenticated}")
     String userNotAuthenticated();
 
-    /**
-     *
-     * @return
-     */
     @MessageTemplate("{invalid-credentials}")
     String invalidCredentials();
 
-    /**
-     *
-     * @param role
-     * @return
-     */
     @MessageTemplate("{does-not-have-role}")
     String doesNotHaveRole(String role);
 
-    /**
-     *
-     * @param operacao
-     * @param recurso
-     * @return
-     */
     @MessageTemplate("{does-not-have-permission}")
     String doesNotHavePermission(String operacao, String recurso);
 

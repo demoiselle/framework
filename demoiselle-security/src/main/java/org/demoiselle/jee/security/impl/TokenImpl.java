@@ -1,12 +1,15 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
 package org.demoiselle.jee.security.impl;
 
 import java.util.Objects;
+
 import javax.enterprise.context.RequestScoped;
+
 import org.demoiselle.jee.core.api.security.Token;
 
 /**
@@ -19,37 +22,21 @@ public class TokenImpl implements Token {
     private String key;
     private String type;
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String getKey() {
         return key;
     }
 
-    /**
-     *
-     * @param key
-     */
     @Override
     public void setKey(String key) {
         this.key = key;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String getType() {
         return type;
     }
 
-    /**
-     *
-     * @param type
-     */
     @Override
     public void setType(String type) {
         this.type = type;

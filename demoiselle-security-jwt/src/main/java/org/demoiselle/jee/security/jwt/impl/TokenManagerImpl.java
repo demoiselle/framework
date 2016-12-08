@@ -6,6 +6,12 @@
  */
 package org.demoiselle.jee.security.jwt.impl;
 
+import static java.security.KeyPairGenerator.getInstance;
+import static java.util.Base64.getDecoder;
+import static java.util.Base64.getEncoder;
+import static javax.ws.rs.Priorities.AUTHENTICATION;
+import static org.jose4j.jws.AlgorithmIdentifiers.RSA_USING_SHA256;
+
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -14,33 +20,28 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import static java.util.Base64.getDecoder;
-import static java.util.Base64.getEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import static javax.ws.rs.Priorities.AUTHENTICATION;
+
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
-import static org.jose4j.jws.AlgorithmIdentifiers.RSA_USING_SHA256;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.NumericDate;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.keys.RsaKeyUtil;
 import org.jose4j.lang.JoseException;
-import static java.security.KeyPairGenerator.getInstance;
-import java.util.Date;
-import org.jose4j.jwt.NumericDate;
-import org.jose4j.jwt.consumer.NumericDateValidator;
 
 /**
  * The security risk component JWT use a strategy where a pair of asymmetric
@@ -120,7 +121,7 @@ public class TokenManagerImpl implements TokenManager {
      * Pick up the token that is in the request scope and draws the user into
      * the token validating the user at this time
      *
-     * @return
+     * @return DemoisellePrincipal principal
      */
     @Override
     public DemoisellePrincipal getUser() {
@@ -151,9 +152,6 @@ public class TokenManagerImpl implements TokenManager {
         return null;
     }
 
-    /**
-     * @param user
-     */
     @Override
     public void setUser(DemoisellePrincipal user) {
         long tempo = (long) (NumericDate.now().getValueInMillis() + (config.getTempo() * 60 * 1000));
@@ -185,10 +183,6 @@ public class TokenManagerImpl implements TokenManager {
 
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public boolean validate() {
         return getUser() != null;

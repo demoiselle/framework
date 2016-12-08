@@ -23,11 +23,6 @@ import javax.persistence.Entity;
  */
 public class PersistenceBootstrap implements javax.enterprise.inject.spi.Extension {
 
-    /**
-     * Add Vetoed for all entities of application
-     *
-     * @param pat
-     */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void processAnnotatedType(@Observes final ProcessAnnotatedType pat) {
         final AnnotatedType annotatedType = pat.getAnnotatedType();

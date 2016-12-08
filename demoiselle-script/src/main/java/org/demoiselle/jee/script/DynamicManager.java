@@ -32,7 +32,7 @@ public class DynamicManager {
 	 * 
 	 * @param engineName engine name
 	 * @return ScriptEngine instance of engine
-	 * @throws ScriptException 
+	 * @throws ScriptException when interface compilable not implemented by engine
 	 */
     public ScriptEngine loadEngine(String engineName) throws ScriptException {
         DynamicManager.scriptEngine = null;
@@ -75,7 +75,7 @@ public class DynamicManager {
 	 * @param scriptName script name
 	 * @param context the variables to script logic.
 	 * @return Object the result of script eval.
-	 * @throws ScriptException 
+	 * @throws ScriptException when wcript not loaded
 	 */
 	public Object eval(String scriptName, Bindings context) throws ScriptException{
 		CompiledScript  script = null;
@@ -100,7 +100,7 @@ public class DynamicManager {
 	 * @param scriptName script name
 	 * @param source 	 source of script
 	 * @return Boolean   compilation ok or not
-	 * @throws ScriptException 
+	 * @throws ScriptException when engine not loaded 
 	 */
 	public synchronized Boolean loadScript(String scriptName,String source ) throws ScriptException{				
 		CompiledScript compiled = null;

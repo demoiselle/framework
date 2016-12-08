@@ -22,7 +22,7 @@ import org.demoiselle.jee.rest.validator.CNPJValidator;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @Documented
 @Constraint(validatedBy = {CNPJValidator.class})
@@ -31,14 +31,8 @@ import org.demoiselle.jee.rest.validator.CNPJValidator;
 @ReportAsSingleViolation
 public @interface CNPJ {
 
-    /**
-     * Mensagem retornada quando a validação falhar.
-     */
     String message() default "{cnpj.error}";
 
-    /**
-     * Indica se o valor do campo é formatado ou não.
-     */
     boolean formatted() default false;
 
     Class<?>[] groups() default {};

@@ -1,21 +1,23 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
 package org.demoiselle.jee.security.interceptor;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.interceptor.InvocationContext;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 public class LoggedInInterceptorTest {
     
@@ -41,9 +43,7 @@ public class LoggedInInterceptorTest {
     /**
      * Test of manage method, of class LoggedInInterceptor.
      */
- //   @Test
     public void testManage() throws Exception {
-        System.out.println("manage");
         InvocationContext ic = null;
         LoggedInInterceptor instance = new LoggedInInterceptor();
         Object expResult = null;

@@ -1,22 +1,30 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.security.interceptor;
 
+import static java.util.Arrays.asList;
+import static javax.ws.rs.Priorities.AUTHORIZATION;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import javax.annotation.Priority;
+import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import java.io.Serializable;
-import java.util.ArrayList;
-import static java.util.Arrays.asList;
-import java.util.List;
 
-import java.util.logging.Logger;
-import javax.inject.Inject;
-import static javax.ws.rs.Priorities.AUTHORIZATION;
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
-import org.demoiselle.jee.security.annotation.RequiredRole;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.annotation.NotLogged;
+import org.demoiselle.jee.security.annotation.RequiredRole;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 

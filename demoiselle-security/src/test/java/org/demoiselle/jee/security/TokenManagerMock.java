@@ -1,13 +1,20 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.security;
 
-import java.util.Map;
 import static java.util.UUID.randomUUID;
+import static javax.ws.rs.Priorities.AUTHENTICATION;
+
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
 import javax.inject.Inject;
-import static javax.ws.rs.Priorities.AUTHENTICATION;
+
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
