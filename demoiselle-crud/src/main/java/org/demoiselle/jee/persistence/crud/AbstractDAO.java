@@ -1,5 +1,5 @@
 /*
- * DgetEntityManager()oiselle Framework
+ * Demoiselle Framework
  *
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
@@ -102,7 +102,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         	
         	Long count = count();
         	
-        	if(maxResults < count){
+        	if(firstResult < count){
 	            CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
 	            CriteriaQuery<T> q = cb.createQuery(entityClass);
 	            Root<T> c = q.from(entityClass);
@@ -112,10 +112,10 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 	            query.setMaxResults(maxResults);
 	
 	            resultSet.setContent(query.getResultList());
-	            resultSet.setLimit(this.resultSet.getContent().size());
-	            resultSet.setEntityClass(entityClass);
-	            resultSet.setCount(count);
             }
+        	
+        	resultSet.setEntityClass(entityClass);
+            resultSet.setCount(count);
         	
             return resultSet;
             
