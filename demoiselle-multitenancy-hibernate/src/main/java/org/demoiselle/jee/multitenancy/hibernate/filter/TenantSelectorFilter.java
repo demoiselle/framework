@@ -57,7 +57,6 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 	public TenantSelectorFilter(Logger log, MultiTenancyConfiguration configuration,
 			EntityManagerMaster entityManagerMaster, MultiTenantContext multitenancyContext,
 			SecurityContext securityContext) {
-		super();
 		this.log = log;
 		this.configuration = configuration;
 		this.entityManagerMaster = entityManagerMaster;
