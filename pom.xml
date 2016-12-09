@@ -80,6 +80,7 @@
 	</modules>
 
 	<properties>
+		<license.header>./licence-lgpl</license.header>
 		<project.alias>framework</project.alias>
 		<java.version>1.8</java.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -160,9 +161,9 @@
 				<artifactId>license-maven-plugin</artifactId>
 				<version>3.0</version>
 				<configuration>
-					<header>./header.txt</header>
+					<header>${license.header}/header.txt</header>
 					<headerDefinitions>
-						<headerDefinition>./header-definitions.xml</headerDefinition>
+						<headerDefinition>${license.header}/header-definitions.xml</headerDefinition>
 					</headerDefinitions>
 					<includes>
 						<include>**/*.java</include>
