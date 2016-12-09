@@ -71,7 +71,7 @@ public class TenantManager {
 	/**
 	 * Simple find @Tenant by name
 	 * 
-	 * @param String
+	 * @param name
 	 *            Name of tenant
 	 * @return Tenant entity
 	 */

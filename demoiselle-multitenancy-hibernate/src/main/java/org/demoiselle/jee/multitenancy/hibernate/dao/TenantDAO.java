@@ -40,7 +40,7 @@ public class TenantDAO extends AbstractDAO<Tenant, Long> {
 	/**
 	 * Find Tenant by name
 	 * 
-	 * @param String
+	 * @param name
 	 *            Tenant name
 	 * @return Tenant
 	 */
