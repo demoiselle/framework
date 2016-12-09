@@ -28,6 +28,7 @@ import org.demoiselle.jee.multitenancy.hibernate.configuration.MultiTenancyConfi
 import org.demoiselle.jee.multitenancy.hibernate.context.MultiTenantContext;
 import org.demoiselle.jee.multitenancy.hibernate.dao.context.EntityManagerMaster;
 import org.demoiselle.jee.multitenancy.hibernate.entity.Tenant;
+import org.demoiselle.jee.multitenancy.hibernate.message.DemoiselleMultitenancyMessage;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 
 /**
@@ -56,7 +57,10 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 	private MultiTenantContext multitenancyContext;
 
 	@Inject
-	private SecurityContext securityContext;	
+	private SecurityContext securityContext;
+
+	@Inject
+	private DemoiselleMultitenancyMessage messages;
 
 	@PostConstruct
 	public void init() {
@@ -88,8 +92,7 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 			if (securityContext != null && securityContext.getUser() != null) {
 				String userTenant = securityContext.getUser().getParams("Tenant").get(0);
 				if (!userTenant.equals(tenant.getName())) {
-					// TODO: Message in properties
-					throw new DemoiselleSecurityException("Você não tem permissão de acesso a este tenant");
+					throw new DemoiselleSecurityException(messages.errorUserNotBelongTenant(tenant.getName()));
 				}
 			}
 
@@ -106,10 +109,12 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 				log.log(Level.SEVERE, e.getMessage(), e);
 			}
 
-			log.log(Level.FINEST, "Path changed [" + tenantNameUrl + "]: " + requestContext.getUriInfo().getPath());
+			String uri = requestContext.getUriInfo().getPath();
+			log.log(Level.FINER, messages.logUriPathChanged(tenantNameUrl, uri));
 
 		} else {
-			log.log(Level.FINEST, "Go to normal path: " + requestContext.getUriInfo().getPath());
+			String uri = requestContext.getUriInfo().getPath();
+			log.log(Level.FINER, messages.logUriPathUnchanged(uri));
 			tenant = new Tenant(configuration.getMultiTenancyMasterDatabase());
 		}
 
