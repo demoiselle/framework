@@ -21,10 +21,12 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.ext.Provider;
 
+import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.multitenancy.hibernate.configuration.MultiTenancyConfiguration;
 import org.demoiselle.jee.multitenancy.hibernate.context.MultiTenantContext;
 import org.demoiselle.jee.multitenancy.hibernate.dao.context.EntityManagerMaster;
 import org.demoiselle.jee.multitenancy.hibernate.entity.Tenant;
+import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 
 /**
  * Filter containing the behavior to manipulate the @ContainerRequestContext
@@ -49,6 +51,9 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 
 	@Inject
 	private MultiTenantContext multitenancyContext;
+
+	@Inject
+	private SecurityContext securityContext;
 
 	@PostConstruct
 	public void init() {
@@ -75,6 +80,12 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 		if (list.size() == 1) {
 
 			tenant = list.get(0);
+
+			// Verify if the user belongs to tenant
+			String userTenant = securityContext.getUser().getParams("Tenant").get(0);
+			if (!userTenant.equals(tenant.getName())) {
+				throw new DemoiselleSecurityException("Você não tem permissão de acesso a este tenant");
+			}
 
 			// Change URI removing tenant name
 			String newURi = "";

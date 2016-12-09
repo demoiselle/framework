@@ -162,7 +162,7 @@ public class TenantManager {
 	/**
 	 * Business deletion of Tenants
 	 * 
-	 * @param Tenant
+	 * @param tenant
 	 *            Tenant to Delete
 	 * @throws SQLException
 	 *             When SQL to create or set database has error
