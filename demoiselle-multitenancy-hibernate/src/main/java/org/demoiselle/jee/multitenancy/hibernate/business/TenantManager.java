@@ -160,10 +160,6 @@ public class TenantManager {
 
 		Connection conn = null;
 
-		// Infos of Config
-		String setCommand = configuration.getMultiTenancySetDatabaseSQL();
-		String masterDatabase = configuration.getMultiTenancyMasterDatabase();
-
 		try {
 			// Add Tenancy in table/master schema
 			Tenant t = dao.find(id);
@@ -182,9 +178,6 @@ public class TenantManager {
 		} catch (Exception e) {
 			throw new DemoiselleMultiTenancyException(e);
 		} finally {
-			// Set master database
-			conn.createStatement().execute(setCommand + " " + masterDatabase);
-
 			// Closes the connection
 			if (conn != null && !conn.isClosed()) {
 				conn.close();
@@ -249,5 +242,5 @@ public class TenantManager {
 		reader.close();
 		return records;
 	}
-	
+
 }
