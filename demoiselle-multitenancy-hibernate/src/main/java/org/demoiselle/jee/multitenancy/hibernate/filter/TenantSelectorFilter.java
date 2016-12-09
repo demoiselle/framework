@@ -82,8 +82,10 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 			tenant = list.get(0);
 
 			// Verify if the user belongs to tenant
+			// TODO: Verify if the JWT token is validated BEFORE or AFTER this execution! 
 			String userTenant = securityContext.getUser().getParams("Tenant").get(0);
 			if (!userTenant.equals(tenant.getName())) {
+				// TODO: Message in properties
 				throw new DemoiselleSecurityException("Você não tem permissão de acesso a este tenant");
 			}
 
