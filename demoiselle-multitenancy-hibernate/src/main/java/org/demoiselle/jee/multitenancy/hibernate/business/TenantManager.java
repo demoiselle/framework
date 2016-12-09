@@ -37,16 +37,22 @@ import org.demoiselle.jee.multitenancy.hibernate.exception.DemoiselleMultiTenanc
 @Stateless
 public class TenantManager {
 
-	@Inject
 	private TenantDAO dao;
 
-	@Inject
 	private DemoiselleMessage messages;
 
 	private DataSource dataSource;
 
-	@Inject
 	private MultiTenancyConfiguration configuration;
+
+	@Inject
+	public TenantManager(TenantDAO dao, DemoiselleMessage messages, DataSource dataSource,
+			MultiTenancyConfiguration configuration) {
+		this.dao = dao;
+		this.messages = messages;
+		this.dataSource = dataSource;
+		this.configuration = configuration;
+	}
 
 	/**
 	 * Get tenant name in @MultiTenantContext
