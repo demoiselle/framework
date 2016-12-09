@@ -43,20 +43,27 @@ import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 @Priority(Priorities.USER)
 public class TenantSelectorFilter implements ContainerRequestFilter {
 
-	@Inject
 	private Logger log;
 
-	@Inject
 	private MultiTenancyConfiguration configuration;
 
-	@Inject
 	private EntityManagerMaster entityManagerMaster;
 
-	@Inject
 	private MultiTenantContext multitenancyContext;
 
-	@Inject
 	private SecurityContext securityContext;
+
+	@Inject
+	public TenantSelectorFilter(Logger log, MultiTenancyConfiguration configuration,
+			EntityManagerMaster entityManagerMaster, MultiTenantContext multitenancyContext,
+			SecurityContext securityContext) {
+		super();
+		this.log = log;
+		this.configuration = configuration;
+		this.entityManagerMaster = entityManagerMaster;
+		this.multitenancyContext = multitenancyContext;
+		this.securityContext = securityContext;
+	}
 
 	@PostConstruct
 	public void init() {
