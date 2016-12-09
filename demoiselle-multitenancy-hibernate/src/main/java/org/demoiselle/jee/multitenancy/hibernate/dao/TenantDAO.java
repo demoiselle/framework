@@ -27,7 +27,7 @@ public class TenantDAO extends AbstractDAO<Tenant, Long> {
 	}
 
 	/**
-	 * Constructor for CDI @Inject 
+	 * Constructor for CDI @Inject
 	 */
 	public TenantDAO() {
 
@@ -35,6 +35,24 @@ public class TenantDAO extends AbstractDAO<Tenant, Long> {
 
 	public MultiTenantContext getMultiTenantContext() {
 		return multiTenantContext;
+	}
+
+	/**
+	 * Find Tenant by name
+	 * 
+	 * @param String
+	 *            Tenant name
+	 * @return Tenant
+	 */
+	public Tenant find(String name) {
+		Tenant tenant = null;
+		try {
+			tenant = getEntityManager()
+					.createQuery("SELECT tenant FROM Tenant tenant where tenant.name = :name", Tenant.class)
+					.setParameter("name", name).getSingleResult();
+		} catch (Exception e) {
+		}
+		return tenant;
 	}
 
 }

@@ -21,6 +21,12 @@ import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.hibernate.service.spi.ServiceRegistryAwareService;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 
+/**
+ * Implementation of @MultiTenantConnectionProvider in Hibernate.
+ * 
+ * @author SERPRO
+ *
+ */
 @RequestScoped
 public class MultiTenantProvider implements MultiTenantConnectionProvider, ServiceRegistryAwareService {
 
@@ -92,7 +98,7 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 
 	@Override
 	public void releaseAnyConnection(Connection connection) throws SQLException {
-		// Close JDBC connection 
+		// Close JDBC connection
 		connection.close();
 	}
 
@@ -100,5 +106,5 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 	public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
 		releaseAnyConnection(connection);
 	}
-	
+
 }

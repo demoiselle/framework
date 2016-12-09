@@ -69,6 +69,17 @@ public class TenantManager {
 	}
 
 	/**
+	 * Simple find @Tenant by name
+	 * 
+	 * @param String
+	 *            Name of tenant
+	 * @return Tenant entity
+	 */
+	public Tenant find(String name) {
+		return dao.find(name);
+	}
+
+	/**
 	 * Simple find ALL Tenants.
 	 * 
 	 * @return List of @Tenant in @ResultSet
@@ -138,11 +149,11 @@ public class TenantManager {
 		} catch (IOException e) {
 			throw new DemoiselleMultiTenancyException(e);
 		} finally {
-			// Set master database
-			conn.createStatement().execute(setCommand + " " + masterDatabase);
-
 			// Closes the connection
 			if (conn != null && !conn.isClosed()) {
+				// Set master database
+				conn.createStatement().execute(setCommand + " " + masterDatabase);
+				// Close connection
 				conn.close();
 			}
 		}
@@ -151,19 +162,22 @@ public class TenantManager {
 	/**
 	 * Business deletion of Tenants
 	 * 
-	 * @param id
-	 *            ID of Tenant
+	 * @param Tenant
+	 *            Tenant to Delete
 	 * @throws SQLException
-	 *             When SQL to create or set databse has error
+	 *             When SQL to create or set database has error
 	 */
-	public void removeTenant(Long id) throws SQLException {
+	public void removeTenant(Tenant tenant) throws SQLException {
 
 		Connection conn = null;
 
+		// Infos of Config
+		String setCommand = configuration.getMultiTenancySetDatabaseSQL();
+		String masterDatabase = configuration.getMultiTenancyMasterDatabase();
+
 		try {
-			// Add Tenancy in table/master schema
-			Tenant t = dao.find(id);
-			dao.remove(t.getId());
+			// Remove Tenancy in table/master schema
+			dao.remove(tenant.getId());
 
 			final Context init = new InitialContext();
 			dataSource = (DataSource) init.lookup(configuration.getMultiTenancyMasterDatabaseDatasource());
@@ -173,13 +187,16 @@ public class TenantManager {
 			conn = dataSource.getConnection();
 
 			// Delete database
-			conn.createStatement().execute(dropCommand + " " + prefix + "" + t.getName());
+			conn.createStatement().execute(dropCommand + " " + prefix + "" + tenant.getName());
 
 		} catch (Exception e) {
 			throw new DemoiselleMultiTenancyException(e);
 		} finally {
 			// Closes the connection
 			if (conn != null && !conn.isClosed()) {
+				// Set master database
+				conn.createStatement().execute(setCommand + " " + masterDatabase);
+				// Close connection
 				conn.close();
 			}
 		}
