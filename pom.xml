@@ -156,28 +156,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>com.mycila</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<version>3.0</version>
-				<configuration>
-					<header>${license.header}/header.txt</header>
-					<headerDefinitions>
-						<headerDefinition>${license.header}/header-definitions.xml</headerDefinition>
-					</headerDefinitions>
-					<includes>
-						<include>**/*.java</include>
-					</includes>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 
 	</build>
@@ -247,6 +225,28 @@
 			<id>release</id>
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>com.mycila</groupId>
+						<artifactId>license-maven-plugin</artifactId>
+						<version>3.0</version>
+						<configuration>
+							<header>${license.header}/header.txt</header>
+							<headerDefinitions>
+								<headerDefinition>${license.header}/header-definitions.xml</headerDefinition>
+							</headerDefinitions>
+							<includes>
+								<include>**/*.java</include>
+							</includes>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-deploy-plugin</artifactId>
