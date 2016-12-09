@@ -14,8 +14,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.persistence.Query;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
@@ -38,6 +40,7 @@ import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
  */
 @Provider
 @PreMatching
+@Priority(Priorities.USER)
 public class TenantSelectorFilter implements ContainerRequestFilter {
 
 	@Inject
@@ -82,12 +85,13 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 			tenant = list.get(0);
 
 			// Verify if the user belongs to tenant
-			// TODO: Verify if the JWT token is validated BEFORE or AFTER this execution! 
-//			String userTenant = securityContext.getUser().getParams("Tenant").get(0);
-//			if (!userTenant.equals(tenant.getName())) {
-//				// TODO: Message in properties
-//				throw new DemoiselleSecurityException("Você não tem permissão de acesso a este tenant");
-//			}
+			if (securityContext != null && securityContext.getUser() != null) {
+				String userTenant = securityContext.getUser().getParams("Tenant").get(0);
+				if (!userTenant.equals(tenant.getName())) {
+					// TODO: Message in properties
+					throw new DemoiselleSecurityException("Você não tem permissão de acesso a este tenant");
+				}
+			}
 
 			// Change URI removing tenant name
 			String newURi = "";
