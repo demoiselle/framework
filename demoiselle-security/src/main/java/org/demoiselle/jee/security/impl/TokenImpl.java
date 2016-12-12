@@ -1,0 +1,70 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
+package org.demoiselle.jee.security.impl;
+
+import java.util.Objects;
+import javax.enterprise.context.RequestScoped;
+import org.demoiselle.jee.core.api.security.Token;
+
+/**
+ *
+ * @author SERPRO
+ */
+@RequestScoped
+public class TokenImpl implements Token {
+
+    private String key;
+    private String type;
+
+    @Override
+    public String getKey() {
+        return key;
+    }
+
+    @Override
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    @Override
+    public String getType() {
+        return type;
+    }
+
+    @Override
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 23 * hash + Objects.hashCode(this.key);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TokenImpl other = (TokenImpl) obj;
+        return Objects.equals(this.key, other.key);
+    }
+
+    @Override
+    public String toString() {
+        return "Token{" + "\"key\"=" + key + ", \"type\"=" + type + '}';
+    }
+
+}

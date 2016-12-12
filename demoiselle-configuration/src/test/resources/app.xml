@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration>
+	<configString>String do XML</configString>
+	<configInteger>154897</configInteger>
+	<configShort>123</configShort>
+	<configLong>10000000000</configLong>
+	<configFloat>1e8</configFloat>
+	<configDouble>10e43</configDouble>
+	<configClassUntyped>org.demoiselle.jee7.configuration.Tipo</configClassUntyped>
+	<configClassTyped>org.demoiselle.jee7.configuration.Tipo</configClassTyped>
+	<configByte>1</configByte>
+	<configEnum>XML</configEnum>
+	
+	<configMap>
+	  <ip>10.200.23.98</ip>
+	  <url>teste.com</url>
+	  <protocol>https</protocol>
+	  <port>439</port>
+	</configMap>
+	
+	<configArrayString>a</configArrayString>
+	<configArrayString>b</configArrayString>
+	<configArrayString>c</configArrayString>
+	<configArrayString>d</configArrayString>
+	 
+	<configArrayInteger>1</configArrayInteger>
+	<configArrayInteger>2</configArrayInteger>
+	<configArrayInteger>3</configArrayInteger>
+	<configArrayInteger>4</configArrayInteger>
+</configuration>

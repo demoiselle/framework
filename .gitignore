@@ -1,10 +1,17 @@
-/bin
-/target
+/nbactions.xml
+/persistence/target/
+/core/target/
+/ws/target/
+/security/target/
 /.project
-/.classpath
-/.settings
-/.externalToolBuilders
-/.DS_Store
-/.idea
-/archetype/angularModular/src/main/resources/archetype-resources/view/nbproject/private/
-*.iml
+/.settings/
+/basic/target/
+/basic (cópia)/target/
+/jwt/target/
+/target/
+/demoiselle-security-jwt/nbproject/
+/demoiselle-security-token/nbproject/
+/demoiselle-security/nbproject/
+/demoiselle-security-basic/nbproject/
+/demoiselle-rest/nbproject/
+/demoiselle-crud/nbproject/

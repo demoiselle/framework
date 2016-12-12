@@ -1,111 +1,347 @@
-<!--
- Demoiselle Framework
- Copyright (C) 2010 SERPRO
- ============================================================================
- This file is part of Demoiselle Framework.
-
- Demoiselle Framework is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public License version 3
- as published by the Free Software Foundation.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License version 3
- along with this program; if not,  see <http://www.gnu.org/licenses />
- or write to the Free Software Foundation, Inc., 51 Franklin Street,
- Fifth Floor, Boston, MA  02110-1301, USA.
- ============================================================================
- Este arquivo é parte do Framework Demoiselle.
-
- O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
- modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
- do Software Livre (FSF).
-
- Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA
- GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou
- APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português
- para maiores detalhes.
-
- Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
- "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses />
- ou escreva para a Fundação do Software Livre (FSF) Inc.,
- 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>demoiselle-framework-build</artifactId>
-    <version>2.5.2-SNAPSHOT</version>
+    <groupId>org.demoiselle.jee</groupId>
+    <artifactId>demoiselle-build</artifactId>
     <packaging>pom</packaging>
+    <version>3.0.0-RC1-SNAPSHOT</version>
 
-    <parent>
-        <groupId>br.gov.frameworkdemoiselle</groupId>
-        <artifactId>demoiselle-build-parent</artifactId>
-        <version>9</version>
-        <relativePath>../internal/parent/build/demoiselle</relativePath>
-    </parent>
+    <name>Demoiselle JEE Build</name>
+    <description>Framework de integração para Java EE 7 baseado na especificação CDI 1.2 (JSR 346).</description>
+    <url>http://demoiselle.io</url>
 
-    <name>Demoiselle Framework</name>
-    <description>
-        A liberação de versões do framework deve ser feita a partir deste build, que fará automaticamente o build
-        de todos os artefatos com versionamento sincronizado. Jamais gere uma versão do framework sem utilizar este build.
-    </description>
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License, Version 3</name>
+            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>SERPRO - Serviço Federal de Processamento de Dados</name>
+        <url>http://www.serpro.gov.br</url>
+    </organization>
+
+    <developers>
+
+        <developer>
+            <name>Cassio Maes da Fonseca</name>
+            <email>cassiomaes@gmail.com</email>
+            <organization>SERPRO</organization>
+            <organizationUrl>http://www.serpro.gov.br</organizationUrl>
+        </developer>
+
+        <developer>
+            <name>Clovis Lemes Ferreira Junior</name>
+            <email>clovisjunior2009@gmail.com</email>
+            <organization>SERPRO</organization>
+            <organizationUrl>http://www.serpro.gov.br</organizationUrl>
+        </developer>
+
+        <developer>
+            <name>Julian Cesar dos Santos</name>
+            <email>juliancesar@gmail.com</email>
+            <organization>SERPRO</organization>
+            <organizationUrl>http://www.serpro.gov.br</organizationUrl>
+        </developer>
+
+        <developer>
+            <name>Paulo Gladson Ximenes Pinheiro</name>
+            <email>paulopinheiro777@gmail.com</email>
+            <organization>SERPRO</organization>
+            <organizationUrl>http://www.serpro.gov.br</organizationUrl>
+        </developer>
+
+        <developer>
+            <name>Vanderson Botelho da Silva</name>
+            <email>botelhojp@gmail.com</email>
+            <organization>SERPRO</organization>
+            <organizationUrl>http://www.serpro.gov.br</organizationUrl>
+        </developer>
+
+    </developers>
+
 
     <modules>
-        <module>parent/framework</module>
-        <module>parent/bom</module>
-        <module>parent/minimal</module>
-        <module>parent/extension</module>
-        <module>parent/jsf</module>
-        <module>parent/servlet</module>
-        <module>parent/rest</module>
-        <module>parent/se</module>
-        <module>parent/archetype</module>
-        <module>impl/core</module>
-        <module>impl/extension/jdbc</module>
-        <module>impl/extension/jpa</module>
-        <module>impl/extension/jsf</module>
-        <module>impl/extension/jta</module>
-        <module>impl/extension/se</module>
-        <module>impl/extension/servlet</module>
-        <module>impl/extension/rest</module>
-        <module>impl/extension/jmx</module>
-        <!--
-        <module>impl/extension/jaas</module>
-        -->
-        <!--<module>archetype/angularModular</module>-->
-        <!--<module>archetype/angularIntegrado</module>-->
-        <module>archetype/minimal</module>
-        <module>archetype/jsf-jpa</module>
-        <module>archetype/html-rest</module>
+        <module>demoiselle-parent-bom</module>
+        <module>demoiselle-parent</module>
+        <module>demoiselle-parent-rest</module>
+        <module>demoiselle-core</module>
+        <module>demoiselle-configuration</module>
+        <module>demoiselle-crud</module>
+        <module>demoiselle-rest</module>
+        <module>demoiselle-script</module>
+        <module>demoiselle-security</module>
+        <module>demoiselle-security-token</module>
+        <module>demoiselle-security-jwt</module>
+        <module>demoiselle-multitenancy-hibernate</module>
     </modules>
+
+    <properties>
+        <license.header>./licence-lgpl</license.header>
+        <project.alias>framework</project.alias>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <showDeprecation>true</showDeprecation>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.7.201606060606</version>
                 <configuration>
-                    <skip>true</skip>
+                    <destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
+                    <dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.1.1</version>
             </plugin>
         </plugins>
+        
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+                <reportSets>
+                    <reportSet>
+                        <reports><!-- select reports -->
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <reportSets>
+                    <reportSet><!-- by default, id = "default" -->
+                        <reports><!-- select non-aggregate reports -->
+                            <report>javadoc</report>
+                            <report>test-javadoc</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet><!-- aggregate reportSet, to define in poms having modules -->
+                        <id>aggregate</id>
+                        <inherited>false</inherited><!-- don't run aggregate in child modules -->
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+        </plugins>
+    </reporting>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.mycila</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <version>3.0</version>
+                        <configuration>
+                            <header>${license.header}/header.txt</header>
+                            <headerDefinitions>
+                                <headerDefinition>${license.header}/header-definitions.xml</headerDefinition>
+                            </headerDefinitions>
+                            <includes>
+                                <include>**/*.java</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.8.2</version>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.3</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>sonatype-nexus-staging</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.5</version>
+                        <configuration>
+                            <autoVersionSubmodules>true</autoVersionSubmodules>
+                            <useReleaseProfile>false</useReleaseProfile>
+                            <releaseProfiles>release</releaseProfiles>
+                            <goals>deploy</goals>
+                        </configuration>
+                    </plugin>
+                </plugins>
+
+            </build>
+        </profile>
+        <profile>
+            <id>coveralls</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.eluder.coveralls</groupId>
+                        <artifactId>coveralls-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <configuration>
+                            <repoToken>1KLSPMQ8fgROKnkrUq8DbUZ2kux9jdg7C</repoToken>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <scm>
         <connection>scm:git:git@github.com:demoiselle/${project.alias}.git</connection>
         <developerConnection>scm:git:git@github.com:demoiselle/${project.alias}.git</developerConnection>
         <url>http://github.com/demoiselle/${project.alias}</url>
-        <tag>HEAD</tag>
+        <tag>3.0.0-BETA2-SNAPSHOT</tag>
     </scm>
+
+    <distributionManagement>
+        <site>
+            <id>demoiselle.sourceforge.net</id>
+            <url>${site.url}</url>
+        </site>
+
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <repositories>
         <repository>
@@ -119,6 +355,7 @@
                 <enabled>false</enabled>
             </releases>
         </repository>
+
         <repository>
             <id>sonatype-nexus-releases</id>
             <name>Sonatype Nexus Releases</name>
@@ -131,15 +368,4 @@
             </releases>
         </repository>
     </repositories>
-
-    <distributionManagement>
-        <site>
-            <id>demoiselle.sourceforge.net</id>
-            <url>${site.url}</url>
-        </site>
-    </distributionManagement>
-
-    <properties>
-        <project.alias>framework</project.alias>
-    </properties>
 </project>
