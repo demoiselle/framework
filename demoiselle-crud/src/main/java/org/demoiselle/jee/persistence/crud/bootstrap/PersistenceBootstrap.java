@@ -19,6 +19,8 @@ import javax.persistence.Entity;
  *
  * http://www.cdi-spec.org/faq/ Why is @Vetoed a best practice for persistent
  * (JPA) entities?
+ * 
+ * @author SERPRO
  *
  */
 public class PersistenceBootstrap implements javax.enterprise.inject.spi.Extension {

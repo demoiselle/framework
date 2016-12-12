@@ -16,8 +16,13 @@ import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static javax.ws.rs.core.Response.status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-import org.demoiselle.jee.rest.exception.DemoiselleRESTException;
-
+import org.demoiselle.jee.rest.exception.DemoiselleRestException;
+/**
+ * 
+ * @author SERPRO
+ *
+ */
+//TODO revisar
 @Provider
 public class GenericExceptionMapper implements ExceptionMapper<Exception> {
 
@@ -29,13 +34,13 @@ public class GenericExceptionMapper implements ExceptionMapper<Exception> {
 		HashMap<String, String> entity = new HashMap<>();
 
 		// Verifica se a exception é de validação de PAYLOAD do REST
-		if (ex instanceof DemoiselleRESTException || (ex.getCause() != null && ex.getCause() instanceof DemoiselleRESTException)) {
-			DemoiselleRESTException exDemoiselleREST = null;
+		if (ex instanceof DemoiselleRestException || (ex.getCause() != null && ex.getCause() instanceof DemoiselleRestException)) {
+			DemoiselleRestException exDemoiselleREST = null;
 		
-			if (ex instanceof DemoiselleRESTException) {
-				exDemoiselleREST = (DemoiselleRESTException) ex;
+			if (ex instanceof DemoiselleRestException) {
+				exDemoiselleREST = (DemoiselleRestException) ex;
 			} else {
-				exDemoiselleREST = (DemoiselleRESTException) ex.getCause();
+				exDemoiselleREST = (DemoiselleRestException) ex.getCause();
 			}
 			
 			if (!exDemoiselleREST.getMessages().isEmpty()) {

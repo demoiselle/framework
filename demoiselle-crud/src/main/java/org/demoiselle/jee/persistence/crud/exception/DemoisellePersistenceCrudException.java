@@ -12,6 +12,7 @@ import org.demoiselle.jee.core.exception.DemoiselleException;
  *
  * Exception for all persistence errors in Framework.
  *
+ * @author SERPRO
  */
 public class DemoisellePersistenceCrudException extends DemoiselleException {
 

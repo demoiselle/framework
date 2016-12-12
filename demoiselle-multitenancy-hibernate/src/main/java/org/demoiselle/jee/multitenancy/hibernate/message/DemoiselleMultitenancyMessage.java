@@ -9,6 +9,11 @@ package org.demoiselle.jee.multitenancy.hibernate.message;
 import org.apache.deltaspike.core.api.message.MessageBundle;
 import org.apache.deltaspike.core.api.message.MessageTemplate;
 
+/**
+ * TODO javadoc
+ * @author SERPRO
+ *
+ */
 @MessageBundle
 public interface DemoiselleMultitenancyMessage {
 

@@ -10,6 +10,7 @@ import org.apache.deltaspike.core.api.message.MessageBundle;
 import org.apache.deltaspike.core.api.message.MessageTemplate;
 
 @MessageBundle
+// TODO merge
 public interface DemoisellePaginationMessage {
 	
 	@MessageTemplate("{invalid-range-parameters}")
@@ -19,3 +20,4 @@ public interface DemoisellePaginationMessage {
 	String defaultPaginationNumberExceed(Integer defaultPaginationNumber);
 
 }
+		

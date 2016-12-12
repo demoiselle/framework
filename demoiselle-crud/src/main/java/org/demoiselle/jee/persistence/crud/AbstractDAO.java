@@ -23,10 +23,11 @@ import javax.persistence.criteria.Root;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.demoiselle.jee.core.api.crud.Crud;
-import org.demoiselle.jee.core.pagination.ResultSet;
 import org.demoiselle.jee.persistence.crud.exception.DemoisellePersistenceCrudException;
 import org.demoiselle.jee.persistence.crud.pagination.DemoisellePaginationConfig;
+import org.demoiselle.jee.persistence.crud.pagination.ResultSet;
 
+//TODO revisar
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
@@ -105,7 +106,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         	if(firstResult < count){
 	            CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
 	            CriteriaQuery<T> q = cb.createQuery(entityClass);
-	            Root<T> c = q.from(entityClass);
+	            q.from(entityClass);
 	            
 	            TypedQuery<T> query = getEntityManager().createQuery(q);
 	            query.setFirstResult(firstResult);

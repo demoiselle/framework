@@ -9,14 +9,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.DemoiselleUser;;
 
 /**
  *
  * @author SERPRO
  */
 @RequestScoped
-public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
+public class DemoisellePrincipalImpl implements DemoiselleUser, Cloneable {
 
     @Inject
     private Logger logger;

@@ -7,28 +7,32 @@
 package org.demoiselle.jee.rest.exception;
 
 import java.util.HashMap;
+
+import javax.ws.rs.core.Response.Status;
+
 import org.demoiselle.jee.core.exception.DemoiselleException;
 
-public class DemoiselleRESTException extends DemoiselleException {
+public class DemoiselleRestException extends DemoiselleException {
 
     private static final long serialVersionUID = 519_965_615_171_844_237L;
 
-    private HashMap<String, String> messages = new HashMap<>();
+    private HashMap<String, String> messages = new HashMap<String, String>();
 
-    private int statusCode = 500;
+    private int statusCode = Status.INTERNAL_SERVER_ERROR.getStatusCode();
 
-    public DemoiselleRESTException() {
+    //TODO incluir construtor com codigo de erro
+    public DemoiselleRestException() {
     }
 
-    public DemoiselleRESTException(String string) {
+    public DemoiselleRestException(String string) {
         super(string);
     }
 
-    public DemoiselleRESTException(Throwable cause) {
+    public DemoiselleRestException(Throwable cause) {
         super(cause);
     }
 
-    public DemoiselleRESTException(String message, Throwable cause) {
+    public DemoiselleRestException(String message, Throwable cause) {
         super(message, cause);
     }
 

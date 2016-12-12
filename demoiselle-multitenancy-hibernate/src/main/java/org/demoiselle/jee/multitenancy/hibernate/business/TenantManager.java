@@ -22,11 +22,11 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.demoiselle.jee.core.message.DemoiselleMessage;
-import org.demoiselle.jee.core.pagination.ResultSet;
 import org.demoiselle.jee.multitenancy.hibernate.configuration.MultiTenancyConfiguration;
 import org.demoiselle.jee.multitenancy.hibernate.dao.TenantDAO;
 import org.demoiselle.jee.multitenancy.hibernate.entity.Tenant;
 import org.demoiselle.jee.multitenancy.hibernate.exception.DemoiselleMultiTenancyException;
+import org.demoiselle.jee.persistence.crud.pagination.ResultSet;
 
 /**
  * Class with behaviors to manipulate basic Tenants operations.
@@ -131,15 +131,16 @@ public class TenantManager {
 			conn = dataSource.getConnection();
 
 			// Create the database for tenant
-			conn.createStatement().execute(createCommand + " " + prefix + "" + tenant.getName());
+			conn.createStatement().execute(createCommand + " " + prefix + tenant.getName());
 
 			// Set USE database
-			conn.createStatement().execute(setCommand + " " + prefix + "" + tenant.getName());
+			conn.createStatement().execute(setCommand + " " + prefix + tenant.getName());
 
 			// Run o DDL - DROP
 			try {
 				dropDatabase(conn);
 			} catch (Exception e) {
+				//TODO logar como warn
 				// Ignore errors, because maybe the table may not exist yet!
 			}
 

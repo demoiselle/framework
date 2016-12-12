@@ -20,8 +20,13 @@ import static javax.validation.Validation.buildDefaultValidatorFactory;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import org.demoiselle.jee.rest.annotation.ValidatePayload;
-import org.demoiselle.jee.rest.exception.DemoiselleRESTException;
-
+import org.demoiselle.jee.rest.exception.DemoiselleRestException;
+/**
+ * 
+ * @author SERPRO
+ *
+ */
+//TODO revisar
 @Interceptor
 @ValidatePayload
 @Priority(APPLICATION)
@@ -31,7 +36,7 @@ public class ValidatePayloadInterceptor implements Serializable {
 
     @AroundInvoke
     public Object manage(final InvocationContext ic) throws Exception {
-        DemoiselleRESTException ex = new DemoiselleRESTException();
+        DemoiselleRestException ex = new DemoiselleRestException();
         Set<ConstraintViolation<?>> violations = new HashSet<>();
         for (Object params : ic.getParameters()) {
             if (params != null) {
@@ -45,7 +50,8 @@ public class ValidatePayloadInterceptor implements Serializable {
                         ex.addMessage(field, violation.getMessage());
                     });
                 } catch (UnexpectedTypeException cause) {
-                    throw new DemoiselleRESTException("ERRO GENERICO -> ALTERAR");
+                	//TODO mensagem 
+                    throw new DemoiselleRestException("ERRO GENERICO -> ALTERAR");
                 }
             }
         }

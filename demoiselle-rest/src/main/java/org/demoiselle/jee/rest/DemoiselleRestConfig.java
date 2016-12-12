@@ -14,8 +14,8 @@ package org.demoiselle.jee.rest;
 import org.demoiselle.jee.configuration.annotation.Configuration;
 
 /**
- *
- * @author 70744416353
+ * TODO javadoc
+ * @author SERPRO
  */
 @Configuration(prefix = "demoiselle.rest")
 public class DemoiselleRestConfig {

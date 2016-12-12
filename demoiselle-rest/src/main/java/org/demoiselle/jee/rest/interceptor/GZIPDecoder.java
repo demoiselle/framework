@@ -16,7 +16,7 @@ import org.demoiselle.jee.rest.DemoiselleRestConfig;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @Provider
 public class GZIPDecoder implements ReaderInterceptor {

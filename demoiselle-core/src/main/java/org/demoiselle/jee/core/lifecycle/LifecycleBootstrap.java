@@ -24,18 +24,21 @@ import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
+import org.demoiselle.jee.core.exception.DemoiselleLifecycleException;
 import org.demoiselle.jee.core.lifecycle.annotation.Shutdown;
 import org.demoiselle.jee.core.lifecycle.annotation.Startup;
+import org.demoiselle.jee.core.message.DemoiselleMessage;
 
 /**
  * This class is responsible for managing the execution of methods annotated with @Startup and @Shutdown
  * 
  * @author SERPRO
  */
+//TODO incluir mensagem de inicializacao e fim do demoiselle
 public class LifecycleBootstrap implements Extension {
 	
 	private Logger logger;
-	private LifecycleMessage message;
+	private DemoiselleMessage message;
 	
 	private List<AnnotatedMethodProcessor> methodsWithStartup = Collections.synchronizedList(new ArrayList<>());
 	private List<AnnotatedMethodProcessor> methodsWithShutdown = Collections.synchronizedList(new ArrayList<>());
@@ -89,7 +92,7 @@ public class LifecycleBootstrap implements Extension {
 				} 
 				catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 					getLogger().severe(e.getMessage());
-					throw new LifecycleException(e);
+					throw new DemoiselleLifecycleException(e);
 				}
 			}
 		});
@@ -125,9 +128,9 @@ public class LifecycleBootstrap implements Extension {
 		return this.logger;
 	}
 	
-	private LifecycleMessage getMessage(){
+	private DemoiselleMessage getMessage(){
 		if(this.message == null){
-			this.message = CDI.current().select(LifecycleMessage.class).get();
+			this.message = CDI.current().select(DemoiselleMessage.class).get();
 		}
 		
 		return this.message;

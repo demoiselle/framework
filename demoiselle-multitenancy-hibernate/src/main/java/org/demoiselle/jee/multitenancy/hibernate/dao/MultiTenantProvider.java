@@ -37,6 +37,7 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 	private ResourceBundle config = ResourceBundle.getBundle("demoiselle");
 
 	// Load messages manually because the @Inject dont enable yet
+	//TODO usar CDI.select
 	private ResourceBundle messages = ResourceBundle
 			.getBundle("org/demoiselle/jee/multitenancy/hibernate/message/DemoiselleMultitenancyMessage");
 
@@ -95,6 +96,7 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 
 			connection.createStatement().execute(setDatabase + " " + finalDatabaseName);
 		} catch (final SQLException e) {
+			//TODO usar CDI
 			throw new DemoiselleMultiTenancyException(
 					messages.getString("error-set-schema").replace("%s", tenantIdentifier), e);
 		}

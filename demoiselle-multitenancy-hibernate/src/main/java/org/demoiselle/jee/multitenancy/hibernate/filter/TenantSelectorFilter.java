@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.persistence.Query;
@@ -62,11 +61,6 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 	@Inject
 	private DemoiselleMultitenancyMessage messages;
 
-	@PostConstruct
-	public void init() {
-		log.info("Demoiselle Module - Multi Tenancy");
-	}
-
 	@Override
 	@SuppressWarnings("unchecked")
 	public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -78,10 +72,12 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 		// configurations can changed during application execution.
 
 		// Get Tenant by name
+		//TODO usar create named query
 		Query query = entityManagerMaster.getEntityManager().createQuery("select u from Tenant u where u.name = :value",
 				Tenant.class);
 		query.setParameter("value", tenantNameUrl);
 
+		//TODO usar retorno unico
 		List<Tenant> list = query.getResultList();
 
 		if (list.size() == 1) {

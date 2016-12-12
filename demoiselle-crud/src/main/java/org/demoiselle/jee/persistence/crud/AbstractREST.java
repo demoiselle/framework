@@ -22,11 +22,18 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
 import org.demoiselle.jee.core.api.crud.Crud;
-import org.demoiselle.jee.core.exception.DemoiselleException;
+import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.rest.annotation.ValidatePayload;
 
 import io.swagger.annotations.ApiOperation;
 
+/**
+ * TODO JAVADOC
+ * @author SERPRO
+ *
+ * @param <T>
+ * @param <I>
+ */
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 public abstract class AbstractREST<T, I> implements Crud<T, I> {
@@ -40,7 +47,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @POST
     @Transactional
     @ValidatePayload
-    @ApiOperation(value = "Insere entidade no banco")
+    @ApiOperation(value = "persist entity")
     public T persist(T entity) {
         return bc.persist(entity);
     }
@@ -48,7 +55,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @PUT
     @Transactional
     @ValidatePayload
-    @ApiOperation(value = "Atualiza a entidade", notes = "Atualiza")
+    @ApiOperation(value = "full update entity")
     public T merge(T entity) {
         return bc.merge(entity);
     }
@@ -56,60 +63,23 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @DELETE
     @Path("{id}")
     @Transactional
-    @ApiOperation(value = "Remove entidade")
+    @ApiOperation(value = "remove entity")
     public void remove(@PathParam("id") final I id) {	
         bc.remove(id);
     }
 
     @GET
     @Transactional
-    @ApiOperation(value = "Lista todos os registros registro e filtra com QueryString")
+    @ApiOperation(value = "list all entities with pagination filter and query")
     public Result find() {
-//        if (uriInfo.getQueryParameters().isEmpty()) {
-//            return bc.find();
-//        } else {
-//            return bc.find(uriInfo.getQueryParameters());
-//        }
-    	
     	return bc.find();
     }
 
     @GET
     @Path("{id}")
     @Transactional
-    @ApiOperation(value = "Busca por ID")
+    @ApiOperation(value = "find by ID")
     public T find(@PathParam("id") final I id) {
         return bc.find(id);
     }
-
-    @GET
-    @Transactional
-    @Path("{field}/{order}/{init}/{qtde}")
-    @ApiOperation(value = "Lista com paginação no servidor e filtra com queryString")
-    public Result find(
-            @PathParam("field") String field,
-            @PathParam("order") String order,
-            @PathParam("init") int init,
-            @PathParam("qtde") int qtde) {
-        if ((order.equalsIgnoreCase("asc") || order.equalsIgnoreCase("desc"))) {
-            if (uriInfo.getQueryParameters().isEmpty()) {
-                return bc.find(field, order, init, qtde);
-            } else {
-                return bc.find(uriInfo.getQueryParameters(), field, order, init, qtde);
-            }
-        }
-        throw new DemoiselleException("A ordem deve ser (asc) ou (desc)");
-    }
-    
-    
-    
-    
-    ////////////////////////////////////////////////////////////////////////////////
-    
-   /* @GET
-    public List<?> findAll(){
-    	bc.find()
-    }*/
-    
-
 }

@@ -15,8 +15,9 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
+//TODO revisar
 @Configuration(prefix = "demoiselle.crud")
 public class DemoiselleCrudConfig {
 

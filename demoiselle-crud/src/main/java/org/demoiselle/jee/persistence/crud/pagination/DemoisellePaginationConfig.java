@@ -8,10 +8,15 @@ package org.demoiselle.jee.persistence.crud.pagination;
 
 import org.demoiselle.jee.configuration.annotation.Configuration;
 
+/**
+ * 
+ * @author SERPRO
+ * TODO revisar configs
+ */ 
 @Configuration(prefix = "demoiselle.crud.pagination")
 public class DemoisellePaginationConfig {
 	
-	private Integer defaultPagination = new Integer(50);
+	private Integer defaultPagination = new Integer(20);
 
 	public Integer getDefaultPagination() {
 		return defaultPagination;

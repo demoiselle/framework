@@ -14,6 +14,12 @@ import org.demoiselle.jee.multitenancy.hibernate.dao.context.EntityManagerMaster
 import org.demoiselle.jee.multitenancy.hibernate.entity.Tenant;
 import org.demoiselle.jee.persistence.crud.AbstractDAO;
 
+/**
+ * TODO javadoc
+ * 
+ * @author SERPRO
+ *
+ */
 public class TenantDAO extends AbstractDAO<Tenant, Long> {
 
 	@Inject
@@ -51,6 +57,7 @@ public class TenantDAO extends AbstractDAO<Tenant, Long> {
 					.createQuery("SELECT tenant FROM Tenant tenant where tenant.name = :name", Tenant.class)
 					.setParameter("name", name).getSingleResult();
 		} catch (Exception e) {
+			//TODO remover metodo
 		}
 		return tenant;
 	}

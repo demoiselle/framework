@@ -96,6 +96,7 @@ public class Tenant implements Serializable {
 			if (configuration != null)
 				map = JsonUtil.parseJson(configuration);
 		} catch (Exception e) {
+			//TODO logar warn
 			// Ignore parsing error
 		}
 

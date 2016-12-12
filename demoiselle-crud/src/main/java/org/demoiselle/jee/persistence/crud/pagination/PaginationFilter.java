@@ -24,9 +24,14 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
-import org.demoiselle.jee.core.pagination.ResultSet;
 import org.demoiselle.jee.persistence.crud.AbstractREST;
 
+/**
+ * TODO javadoc
+ * 
+ * @author SERPRO
+ *
+ */
 @Provider
 public class PaginationFilter implements ContainerResponseFilter, ContainerRequestFilter {
 
@@ -51,6 +56,23 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
     
     @Inject
     private Logger logger;
+    
+	@Override
+	public void filter(ContainerRequestContext requestContext) throws IOException {
+		
+		//TODO rever if duplo
+		if(isRequestPagination()){
+			if(hasRangeKey()){
+				try{
+					checkAndFillRangeValues();
+				}
+				catch(IllegalArgumentException e){
+					throw new BadRequestException(e.getMessage());
+				}
+			}
+		}
+		
+	}
 
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext response) throws IOException {
@@ -149,23 +171,7 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 		return resource + " " + paginationConfig.getDefaultPagination();
 	}
 
-	@Override
-	public void filter(ContainerRequestContext requestContext) throws IOException {
-		
-		if(isRequestPagination()){
-			
-			if(hasRangeKey()){
-				try{
-					checkAndFillRangeValues();
-				}
-				catch(IllegalArgumentException e){
-					throw new BadRequestException(e.getMessage());
-				}
-			}
-			
-		}
-		
-	}
+
 
 	private void checkAndFillRangeValues() throws IllegalArgumentException{
 		List<String> rangeList = uriInfo.getQueryParameters().get(DEFAULT_RANGE_KEY);

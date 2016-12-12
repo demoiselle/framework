@@ -6,5 +6,7 @@
  */
 /**
  * Provide Lifecycle feature
+ * 
+ * @author SERPRO
  */
 package org.demoiselle.jee.core.lifecycle;

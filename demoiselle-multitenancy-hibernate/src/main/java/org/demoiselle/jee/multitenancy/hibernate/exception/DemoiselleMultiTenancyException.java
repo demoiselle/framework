@@ -6,14 +6,15 @@
  */
 package org.demoiselle.jee.multitenancy.hibernate.exception;
 
-import org.demoiselle.jee.core.exception.DemoiselleException;
+import org.demoiselle.jee.rest.exception.DemoiselleRestException;;
 
 /**
  *
  * Exception for all Multi Tenancy operations errors in Framework.
- *
+ * 
+ * @author SERPRO
  */
-public class DemoiselleMultiTenancyException extends DemoiselleException {
+public class DemoiselleMultiTenancyException extends DemoiselleRestException {
 
 	private static final long serialVersionUID = 1L;
 

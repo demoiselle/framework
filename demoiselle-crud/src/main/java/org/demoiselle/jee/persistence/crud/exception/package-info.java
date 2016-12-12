@@ -7,5 +7,8 @@
 /**
  * Esta pacote tem o objetivo de conter as classes relacionadas as Exceptions da
  * persistencia do framework Demoiselle.
+ * TODO EN
+ * 
+ * @author SERPRO
  */
 package org.demoiselle.jee.persistence.crud.exception;

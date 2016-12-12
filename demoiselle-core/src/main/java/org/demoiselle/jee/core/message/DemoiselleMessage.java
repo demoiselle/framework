@@ -116,5 +116,9 @@ public interface DemoiselleMessage {
      */
     @MessageTemplate("{processing-fail}")
 	String processingFail();
+    
+    //TODO JAVADOC
+	@MessageTemplate("{executing-method}")
+	String executingMethod(String method);
 
 }

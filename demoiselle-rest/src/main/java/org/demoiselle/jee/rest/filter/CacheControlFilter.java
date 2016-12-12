@@ -18,8 +18,9 @@ import org.demoiselle.jee.rest.annotation.CacheControl;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
+//TODO usar priority
 @Provider
 public class CacheControlFilter implements ContainerResponseFilter {
 
@@ -31,6 +32,7 @@ public class CacheControlFilter implements ContainerResponseFilter {
         if (req.getMethod().equals("GET")) {
             if (info.getResourceMethod() != null) {
                 Method method = info.getResourceMethod();
+                //TODO rever publicacao de codigo
                 if (method != null) {
                     CacheControl max = info.getResourceMethod().getAnnotation(CacheControl.class);
                     if (max != null) {

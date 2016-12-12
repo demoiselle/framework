@@ -7,13 +7,13 @@
 package org.demoiselle.jee.security.exception;
 
 import java.util.HashMap;
-import org.demoiselle.jee.rest.exception.DemoiselleRESTException;
+import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 
 /**
  *
  * @author SERPRO
  */
-public class DemoiselleSecurityException extends DemoiselleRESTException {
+public class DemoiselleSecurityException extends DemoiselleRestException {
 
     private static final long serialVersionUID = 519_965_615_171_844_237L;
 

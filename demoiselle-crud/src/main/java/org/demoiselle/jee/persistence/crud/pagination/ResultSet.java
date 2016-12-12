@@ -4,7 +4,7 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.core.pagination;
+package org.demoiselle.jee.persistence.crud.pagination;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,11 @@ import javax.enterprise.context.RequestScoped;
 
 import org.demoiselle.jee.core.api.crud.Result;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 @RequestScoped
 public class ResultSet implements Result{
 	

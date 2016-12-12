@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
  *
  * @author SERPRO
  */
+//TODO revisar
 public class Reflect {
 
     public static boolean fieldInClass(String field, Class<?> classe) {

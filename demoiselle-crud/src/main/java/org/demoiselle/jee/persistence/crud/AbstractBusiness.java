@@ -10,7 +10,8 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.demoiselle.jee.core.api.crud.Crud;
-
+import org.demoiselle.jee.core.api.crud.Result;
+//TODO revisar
 public abstract class AbstractBusiness<T, I> implements Crud<T, I> {
 
     @Inject

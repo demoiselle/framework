@@ -16,7 +16,7 @@ import javax.ws.rs.ext.WriterInterceptorContext;
 import org.demoiselle.jee.rest.DemoiselleRestConfig;
 
 /**
- *
+ * TODO javadoc
  * @author SERPRO
  */
 @Provider

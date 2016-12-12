@@ -60,6 +60,10 @@ import org.demoiselle.jee.core.annotation.Priority;
 @ApplicationScoped
 public class ConfigurationLoader implements Serializable {
 	//TODO comentar os metodos explicando em que situacao sao usados
+	
+	//TODO logar todas as propriedades carregadas
+	
+	//TODO logar todos os nomes dos modulos carregados
 
 	private static final long serialVersionUID = 1L;
 
