@@ -6,6 +6,7 @@
  */
 package org.demoiselle.jee.core.api.security;
 
+//TODO JAVADOC
 /**
  *
  * @author SERPRO

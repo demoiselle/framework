@@ -10,11 +10,12 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+//TODO JAVADOC
 /**
  *
  * @author SERPRO
  */
-public interface DemoisellePrincipal extends Principal {
+public interface DemoiselleUser extends Principal, Cloneable {
 
     /**
      * @return Identity user
@@ -120,5 +121,5 @@ public interface DemoisellePrincipal extends Principal {
      *
      * @return Principal clone
      */
-    public DemoisellePrincipal clone();
+    public DemoiselleUser clone();
 }

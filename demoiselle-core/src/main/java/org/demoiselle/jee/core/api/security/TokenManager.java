@@ -21,9 +21,9 @@ public interface TokenManager {
      * Search the logged user being kept place through token use that is in
      * session request
      *
-     * @return See {@link DemoisellePrincipal}
+     * @return See {@link DemoiselleUser}
      */
-    public DemoisellePrincipal getUser();
+    public DemoiselleUser getUser();
 
     /**
      *
@@ -31,17 +31,17 @@ public interface TokenManager {
      * generates a token, depending on the approach, and placed in the token
      * object in the request scoped
      *
-     * @param user See {@link DemoisellePrincipal}
+     * @param user See {@link DemoiselleUser}
      */
-    public void setUser(DemoisellePrincipal user);
+    public void setUser(DemoiselleUser user);
 
     /**
      *
      * Remove the user logged
      *
-     * @param user See {@link DemoisellePrincipal}
+     * @param user See {@link DemoiselleUser}
      */
-    public void removeUser(DemoisellePrincipal user);
+    public void removeUser(DemoiselleUser user);
 
     /**
      * Validates that the user is stored correctly, depending on the chosen

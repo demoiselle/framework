@@ -6,6 +6,7 @@
  */
 package org.demoiselle.jee.core.api.security;
 
+//TODO JAVADOC
 /**
  *
  * @author SERPRO
@@ -37,18 +38,18 @@ public interface SecurityContext {
      *
      * @return Principal
      */
-    DemoisellePrincipal getUser();
+    DemoiselleUser getUser();
 
     /**
      *
      * @param loggedUser Principal
      */
-    void setUser(DemoisellePrincipal loggedUser);
+    void setUser(DemoiselleUser loggedUser);
 
     /**
      *
      * @param loggedUser Principal
      */
-    void removeUser(DemoisellePrincipal loggedUser);
+    void removeUser(DemoiselleUser loggedUser);
 
 }

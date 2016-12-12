@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 
-import org.demoiselle.jee.core.api.persistence.Result;
+import org.demoiselle.jee.core.api.crud.Result;
 
 @RequestScoped
 public class ResultSet implements Result{

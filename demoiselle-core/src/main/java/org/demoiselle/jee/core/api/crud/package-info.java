@@ -7,5 +7,8 @@
 /**
  * Esta pacote tem o objetivo de conter as classes relacionadas aos
  * facilitadores de CRUD do framework Demoiselle.
+ * 
+ * @author SERPRO
  */
+//TODO EN Paulo
 package org.demoiselle.jee.core.api.crud;

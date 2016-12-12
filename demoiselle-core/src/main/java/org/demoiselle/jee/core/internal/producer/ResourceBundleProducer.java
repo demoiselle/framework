@@ -21,7 +21,7 @@ import org.demoiselle.jee.core.annotation.Name;
 import org.demoiselle.jee.core.util.ResourceBundle;
 
 /**
- *
+ * TODO javadoc
  * @author SERPRO
  */
 @Dependent
@@ -37,10 +37,11 @@ public class ResourceBundleProducer {
         return create((String) null);
     }
 
-    /*
+    /**
     * Produces a {@link java.util.ResourceBundle} instance loading the
     * properties file whose name is defined by the {@link Name} literal. If no
     * value is specified then the default "messages.properties" file is loaded.
+    * 
     * @param ip
     * @return
      */

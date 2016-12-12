@@ -21,8 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
-import org.demoiselle.jee.core.api.persistence.Crud;
-import org.demoiselle.jee.core.api.persistence.Result;
+import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.exception.DemoiselleException;
 import org.demoiselle.jee.rest.annotation.ValidatePayload;
 

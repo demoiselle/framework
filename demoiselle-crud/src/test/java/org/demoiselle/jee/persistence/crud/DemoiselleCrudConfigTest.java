@@ -11,14 +11,16 @@
  */
 package org.demoiselle.jee.persistence.crud;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.inject.Inject;
+
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 
 /**

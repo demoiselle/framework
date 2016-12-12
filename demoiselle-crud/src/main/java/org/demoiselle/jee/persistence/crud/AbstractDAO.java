@@ -22,7 +22,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.demoiselle.jee.core.api.persistence.Crud;
+import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.pagination.ResultSet;
 import org.demoiselle.jee.persistence.crud.exception.DemoisellePersistenceCrudException;
 import org.demoiselle.jee.persistence.crud.pagination.DemoisellePaginationConfig;
@@ -92,7 +92,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     @Override
     public ResultSet find() {
-    	
+    	//TODO SYSOUT
     	System.out.println(this.resultSet);
     	
         try {
