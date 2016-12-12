@@ -6,14 +6,17 @@
 package org.demoiselle.jee.security.filter;
 
 import java.io.IOException;
-import java.util.logging.Level;
+import static java.util.logging.Level.INFO;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.annotation.Priority;
 import javax.inject.Inject;
+import static javax.ws.rs.Priorities.AUTHENTICATION;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Response;
+import static javax.ws.rs.core.Response.ok;
 import javax.ws.rs.ext.Provider;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.security.DemoiselleSecurityConfig;
@@ -24,6 +27,7 @@ import org.demoiselle.jee.security.DemoiselleSecurityConfig;
  */
 @Provider
 @PreMatching
+@Priority(AUTHENTICATION)
 public class SecurityFilter implements ContainerRequestFilter {
 
     @Inject
@@ -38,7 +42,7 @@ public class SecurityFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext req) throws IOException {
         if (req.getMethod().equals("OPTIONS")) {
-            Response.ResponseBuilder responseBuilder = Response.ok();
+            Response.ResponseBuilder responseBuilder = ok();
             if (config.isCorsEnabled()) {
                 responseBuilder.header("Access-Control-Allow-Headers", "origin, content-type, accept, Authorization");
                 responseBuilder.header("Access-Control-Allow-Credentials", "true");
@@ -65,6 +69,6 @@ public class SecurityFilter implements ContainerRequestFilter {
     @PostConstruct
     public void init() {
         logger.info("Demoiselle Module: Security");
-        logger.log(Level.INFO, "CORS Enabled :{0}", config.isCorsEnabled());
+        logger.log(INFO, "CORS Enabled :{0}", config.isCorsEnabled());
     }
 }

@@ -12,7 +12,6 @@ import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
-import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

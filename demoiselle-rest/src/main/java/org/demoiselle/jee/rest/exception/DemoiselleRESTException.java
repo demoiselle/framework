@@ -7,12 +7,11 @@
 package org.demoiselle.jee.rest.exception;
 
 import java.util.HashMap;
-
 import org.demoiselle.jee.core.exception.DemoiselleException;
 
 public class DemoiselleRESTException extends DemoiselleException {
 
-    private static final long serialVersionUID = 519965615171844237L;
+    private static final long serialVersionUID = 519_965_615_171_844_237L;
 
     private HashMap<String, String> messages = new HashMap<>();
 

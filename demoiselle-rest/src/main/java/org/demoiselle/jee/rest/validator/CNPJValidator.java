@@ -5,6 +5,10 @@
  */
 package org.demoiselle.jee.rest.validator;
 
+import static java.lang.Character.isDigit;
+import static java.lang.Integer.parseInt;
+import static java.lang.Integer.parseInt;
+import static java.lang.Integer.parseInt;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
@@ -60,12 +64,12 @@ public class CNPJValidator implements ConstraintValidator<CNPJ, String> {
         }
 
         int[] found = {0, 0};
-        int d1 = Integer.parseInt(value.substring(value.length() - 2, value.length() - 1));
-        int d2 = Integer.parseInt(value.substring(value.length() - 1, value.length()));
+        int d1 = parseInt(value.substring(value.length() - 2, value.length() - 1));
+        int d2 = parseInt(value.substring(value.length() - 1, value.length()));
         for (int a = 0; a < 2; a++) {
             int d, sum = 0, c = 2;
             for (int b = value.length() - 3 + a; b >= 0; b--) {
-                d = Integer.parseInt(value.substring(b, b + 1));
+                d = parseInt(value.substring(b, b + 1));
                 sum += d * c++;
                 if (value.length() == 14 && c > 9) { // cnpj
                     c = 2;
@@ -89,7 +93,7 @@ public class CNPJValidator implements ConstraintValidator<CNPJ, String> {
     private String onlyDigits(String value) {
         final StringBuilder out = new StringBuilder(value.length());
         for (char c : value.toCharArray()) {
-            if (Character.isDigit(c)) {
+            if (isDigit(c)) {
                 out.append(c);
             }
         }

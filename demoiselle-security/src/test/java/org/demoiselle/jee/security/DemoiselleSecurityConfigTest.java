@@ -1,18 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package org.demoiselle.jee.security;
 
 import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 
 /**
@@ -22,11 +18,6 @@ import org.junit.runner.RunWith;
 @RunWith(CdiTestRunner.class)
 public class DemoiselleSecurityConfigTest {
 
-    @Inject
-    private DemoiselleSecurityConfig instance;
-
-    public DemoiselleSecurityConfigTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() {
@@ -34,6 +25,10 @@ public class DemoiselleSecurityConfigTest {
 
     @AfterClass
     public static void tearDownClass() {
+    }
+    @Inject
+    private DemoiselleSecurityConfig instance;
+    public DemoiselleSecurityConfigTest() {
     }
 
     @Before
@@ -49,7 +44,6 @@ public class DemoiselleSecurityConfigTest {
      */
     @Test
     public void testIsCorsEnabled() {
-        System.out.println("isCorsEnabled");
         boolean expResult = true;
         boolean result = instance.isCorsEnabled();
         assertEquals(expResult, result);
@@ -60,7 +54,6 @@ public class DemoiselleSecurityConfigTest {
      */
     @Test
     public void testSetCorsEnabled() {
-        System.out.println("setCorsEnabled");
         boolean corsEnabled = false;
         instance.setCorsEnabled(corsEnabled);
         assertEquals(instance.isCorsEnabled(), corsEnabled);

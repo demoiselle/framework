@@ -1,18 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package org.demoiselle.jee.rest;
 
 import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 
 /**
@@ -22,11 +18,6 @@ import org.junit.runner.RunWith;
 @RunWith(CdiTestRunner.class)
 public class DemoiselleRestConfigTest {
 
-    @Inject
-    private DemoiselleRestConfig instance;
-
-    public DemoiselleRestConfigTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() {
@@ -34,6 +25,10 @@ public class DemoiselleRestConfigTest {
 
     @AfterClass
     public static void tearDownClass() {
+    }
+    @Inject
+    private DemoiselleRestConfig instance;
+    public DemoiselleRestConfigTest() {
     }
 
     @Before
@@ -49,7 +44,6 @@ public class DemoiselleRestConfigTest {
      */
     @Test
     public void test11() {
-        System.out.println("isGzipEnabled");
         boolean expResult = true;
         boolean result = instance.isGzipEnabled();
         assertEquals(expResult, result);
@@ -60,7 +54,6 @@ public class DemoiselleRestConfigTest {
      */
     @Test
     public void test12() {
-        System.out.println("setGzipEnabled");
         boolean gzipEnabled = false;
         instance.setGzipEnabled(gzipEnabled);
     }
@@ -70,7 +63,6 @@ public class DemoiselleRestConfigTest {
      */
     @Test
     public void test13() {
-        System.out.println("isGzipEnabled");
         boolean expResult = false;
         boolean result = instance.isGzipEnabled();
         assertEquals(expResult, result);

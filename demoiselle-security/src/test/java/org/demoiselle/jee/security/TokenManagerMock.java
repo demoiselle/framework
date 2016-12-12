@@ -1,11 +1,9 @@
 package org.demoiselle.jee.security;
 
-import java.util.Map;
 import static java.util.UUID.randomUUID;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import static javax.ws.rs.Priorities.AUTHENTICATION;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
@@ -20,7 +18,7 @@ import org.demoiselle.jee.core.api.security.TokenManager;
 @Priority(AUTHENTICATION)
 public class TokenManagerMock implements TokenManager {
 
-    private ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
 
     @Inject
     private Token token;

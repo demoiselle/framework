@@ -7,7 +7,6 @@
 package org.demoiselle.jee.security.impl;
 
 import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;

@@ -1,7 +1,7 @@
 package org.demoiselle.jee.security.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 
 /**
@@ -17,6 +18,9 @@ import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
  */
 @RequestScoped
 public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
+
+    @Inject
+    private Logger logger;
 
     private String identity;
     private String name;
@@ -52,7 +56,7 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
 
     @Override
     public List<String> getRoles() {
-        return roles;
+        return Collections.unmodifiableList(roles);
     }
 
     @Override
@@ -62,7 +66,7 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
 
     @Override
     public Map<String, List<String>> getPermissions() {
-        return permissions;
+        return Collections.unmodifiableMap(permissions);
     }
 
     @Override
@@ -72,7 +76,7 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
 
     @Override
     public Map<String, List<String>> getParams() {
-        return params;
+        return Collections.unmodifiableMap(params);
     }
 
     @Override
@@ -189,7 +193,7 @@ public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {
         try {
             return (DemoisellePrincipal) super.clone();
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DemoisellePrincipalImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.severe(ex.getLocalizedMessage());
         }
         return null;
     }

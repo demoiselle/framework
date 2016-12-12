@@ -6,24 +6,22 @@
  */
 package org.demoiselle.jee.rest.exception.mapper;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.status;
-import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
-
 import javax.ws.rs.WebApplicationException;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import javax.ws.rs.core.Response;
+import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+import static javax.ws.rs.core.Response.status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
 import org.demoiselle.jee.rest.exception.DemoiselleRESTException;
 
 @Provider
 public class GenericExceptionMapper implements ExceptionMapper<Exception> {
 
+    @Override
 	public Response toResponse(Exception ex) {
 
 		StringWriter errorStackTrace = new StringWriter();

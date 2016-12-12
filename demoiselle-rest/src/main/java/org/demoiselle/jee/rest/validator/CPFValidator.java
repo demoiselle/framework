@@ -1,17 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.demoiselle.jee.rest.validator;
 
-import java.util.logging.Level;
+import static java.lang.Character.isDigit;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.demoiselle.jee.rest.annotation.CPF;
-import org.reflections.util.Utils;
 
 /**
  *
@@ -91,7 +85,7 @@ public class CPFValidator implements ConstraintValidator<CPF, String> {
     private String onlyDigits(String value) {
         final StringBuilder out = new StringBuilder(value.length());
         for (char c : value.toCharArray()) {
-            if (Character.isDigit(c)) {
+            if (isDigit(c)) {
                 out.append(c);
             }
         }

@@ -1,26 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.demoiselle.jee.security.interceptor;
 
 import javax.interceptor.InvocationContext;
+import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author 70744416353
  */
+//@RunWith(CdiTestRunner.class)
 public class RequiredRoleInterceptorTest {
-
-    public RequiredRoleInterceptorTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() {
@@ -28,6 +23,9 @@ public class RequiredRoleInterceptorTest {
 
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    public RequiredRoleInterceptorTest() {
     }
 
     @Before
@@ -41,9 +39,8 @@ public class RequiredRoleInterceptorTest {
     /**
      * Test of manage method, of class RequiredRoleInterceptor.
      */
-//    @Test
+    //@Test
     public void testManage() throws Exception {
-        System.out.println("manage");
         InvocationContext ic = null;
         RequiredRoleInterceptor instance = new RequiredRoleInterceptor();
         Object expResult = null;

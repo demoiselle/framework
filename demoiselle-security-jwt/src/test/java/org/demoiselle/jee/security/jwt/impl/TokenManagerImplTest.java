@@ -1,19 +1,11 @@
-/*
- * Demoiselle Framework
- *
- * License: GNU Lesser General Public License (LGPL), version 3 or later.
- * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
- */
 package org.demoiselle.jee.security.jwt.impl;
 
 import static java.lang.System.out;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
-import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -24,7 +16,7 @@ import org.junit.runner.RunWith;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @RunWith(CdiTestRunner.class)
 public class TokenManagerImplTest {
@@ -43,36 +35,21 @@ public class TokenManagerImplTest {
     @Inject
     private DemoiselleSecurityJWTConfig config;
 
-    /**
-     *
-     */
     public TokenManagerImplTest() {
     }
 
-    /**
-     *
-     */
     @BeforeClass
     public static void setUpClass() {
     }
 
-    /**
-     *
-     */
     @AfterClass
     public static void tearDownClass() {
     }
 
-    /**
-     *
-     */
     @Before
     public void setUp() {
     }
 
-    /**
-     *
-     */
     @After
     public void tearDown() {
     }
@@ -91,9 +68,6 @@ public class TokenManagerImplTest {
         ((TokenManagerImpl) instance).init();
     }
 
-    /**
-     * Test of setUser method, of class TokenManagerImpl.
-     */
     @Test
     public void test20() {
         out.println("setUser");
@@ -109,9 +83,6 @@ public class TokenManagerImplTest {
         assertNotEquals("", token.getKey());
     }
 
-    /**
-     * Test of getUser method, of class TokenManagerImpl.
-     */
     @Test
     public void test21() {
         out.println("getUser");
@@ -127,9 +98,6 @@ public class TokenManagerImplTest {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of validate method, of class TokenManagerImpl.
-     */
     @Test
     public void test22() {
         out.println("validate");
@@ -139,9 +107,6 @@ public class TokenManagerImplTest {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of getUser method, of class TokenManagerImpl.
-     */
     @Test
     public void test23() {
         out.println("getUserError");
@@ -157,9 +122,6 @@ public class TokenManagerImplTest {
         assertNotEquals(expResult, result);
     }
 
-    /**
-     * Test of validate method, of class TokenManagerImpl.
-     */
     @Test
     public void test24() {
         out.println("validateError");

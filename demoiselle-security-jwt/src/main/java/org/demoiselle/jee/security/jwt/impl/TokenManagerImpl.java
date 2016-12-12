@@ -1,9 +1,3 @@
-/*
- * Demoiselle Framework
- *
- * License: GNU Lesser General Public License (LGPL), version 3 or later.
- * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
- */
 package org.demoiselle.jee.security.jwt.impl;
 
 import java.security.KeyFactory;
@@ -18,7 +12,6 @@ import static java.util.Base64.getDecoder;
 import static java.util.Base64.getEncoder;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.Priority;
@@ -38,9 +31,10 @@ import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.keys.RsaKeyUtil;
 import org.jose4j.lang.JoseException;
 import static java.security.KeyPairGenerator.getInstance;
-import java.util.Date;
-import org.jose4j.jwt.NumericDate;
-import org.jose4j.jwt.consumer.NumericDateValidator;
+import java.util.logging.Level;
+import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
+import static org.jose4j.jwt.NumericDate.fromMilliseconds;
+import static org.jose4j.jwt.NumericDate.now;
 
 /**
  * The security risk component JWT use a strategy where a pair of asymmetric
@@ -69,6 +63,9 @@ public class TokenManagerImpl implements TokenManager {
     @Inject
     private DemoisellePrincipal loggedUser;
 
+    @Inject
+    private DemoiselleSecurityJWTMessages bundle;
+
     /**
      * Starts keys that are on file demoiselle-security-jwt.properties that
      * should be in the resource of your project
@@ -76,40 +73,38 @@ public class TokenManagerImpl implements TokenManager {
     @PostConstruct
     public void init() {
         if (publicKey == null) {
-            logger.info("Demoiselle Module: JWT");
-            logger.log(Level.INFO, "Type server: {0}", config.getType() != null ? config.getType() : "Error");
-            logger.log(Level.INFO, "Primary key: {0}", config.getPrivateKey() != null ? !config.getPrivateKey().isEmpty() : "Error");
-            logger.log(Level.INFO, "Public key: {0}", config.getPublicKey() != null ? !config.getPublicKey().isEmpty() : "Error");
-            logger.log(Level.INFO, "Age token in minutes: {0}", config.getTempo() != null ? config.getTempo() : "Error");
-            logger.log(Level.INFO, "Issuer: {0}", config.getRemetente() != null ? config.getRemetente() : "Error");
-            logger.log(Level.INFO, "Audience: {0}", config.getDestinatario() != null ? config.getDestinatario() : "Error");
+            logger.info(bundle.title());
+            logger.info(bundle.typeServer(config.getType() != null ? config.getType() : bundle.error()));
+            logger.info(bundle.primaryKey((config.getPrivateKey() != null && !config.getPrivateKey().isEmpty()) ? config.getPrivateKey().substring(25, 10) : bundle.error()));
+            logger.info(bundle.publicKey((config.getPublicKey() != null && !config.getPublicKey().isEmpty()) ? config.getPrivateKey().substring(25, 10) : bundle.error()));
+            logger.info(bundle.ageToken(config.getTempo().toString() != null ? config.getTempo().toString() : bundle.error()));
+            logger.info(bundle.issuer(config.getRemetente() != null ? config.getRemetente() : bundle.error()));
+            logger.info(bundle.audience(config.getDestinatario() != null ? config.getDestinatario() : bundle.error()));
             try {
 
                 if (config.getType() == null) {
-                    throw new DemoiselleSecurityException("Escolha o tipo de autenticação, ver documentação", 500);
+                    throw new DemoiselleSecurityException(bundle.chooseType(), 500);
                 }
 
-                if (!config.getType().equalsIgnoreCase("slave") && !config.getType().equalsIgnoreCase("master")) {
-                    throw new DemoiselleSecurityException("Os tipos de servidor são master ou slave, ver documentação", 500);
+                if (!config.getType().equalsIgnoreCase(bundle.slave()) && !config.getType().equalsIgnoreCase(bundle.master())) {
+                    throw new DemoiselleSecurityException(bundle.notType(), 500);
                 }
 
-                if (config.getType().equalsIgnoreCase("slave")) {
+                if (config.getType().equalsIgnoreCase(bundle.slave())) {
                     if (config.getPublicKey() == null || config.getPublicKey().isEmpty()) {
-                        logger.warning("Coloque a chave pública no arquivo demoiselle-security-jwt.properties, ver documentação");
-                        throw new DemoiselleSecurityException("Informe a chave pública no arquivo de configuração do projeto, ver documentação", 500);
+                        logger.warning(bundle.putKey());
+                        throw new DemoiselleSecurityException(bundle.putKey(), 500);
                     } else {
                         publicKey = getPublic();
                     }
                 }
 
-                if (config.getType().equalsIgnoreCase("master")) {
+                if (config.getType().equalsIgnoreCase(bundle.master())) {
                     privateKey = getPrivate();
                     publicKey = getPublic();
                 }
 
-            } catch (DemoiselleSecurityException ex) {
-                logger.severe(ex.getMessage());
-            } catch (JoseException | InvalidKeySpecException | NoSuchAlgorithmException ex) {
+            } catch (DemoiselleSecurityException | JoseException | InvalidKeySpecException | NoSuchAlgorithmException ex) {
                 logger.severe(ex.getMessage());
             }
 
@@ -131,7 +126,7 @@ public class TokenManagerImpl implements TokenManager {
                         .setAllowedClockSkewInSeconds(60)
                         .setExpectedIssuer(config.getRemetente())
                         .setExpectedAudience(config.getDestinatario())
-                        .setEvaluationTime(NumericDate.now())
+                        .setEvaluationTime(now())
                         .setVerificationKey(publicKey)
                         .build();
                 JwtClaims jwtClaims = jwtConsumer.processToClaims(token.getKey());
@@ -156,11 +151,11 @@ public class TokenManagerImpl implements TokenManager {
      */
     @Override
     public void setUser(DemoisellePrincipal user) {
-        long tempo = (long) (NumericDate.now().getValueInMillis() + (config.getTempo() * 60 * 1000));
+        long tempo = (long) (now().getValueInMillis() + (config.getTempo() * 60 * 1_000));
         try {
             JwtClaims claims = new JwtClaims();
             claims.setIssuer(config.getRemetente());
-            claims.setExpirationTime(NumericDate.fromMilliseconds(tempo));
+            claims.setExpirationTime(fromMilliseconds(tempo));
             claims.setAudience(config.getDestinatario());
             claims.setGeneratedJwtId();
             claims.setIssuedAtToNow();
@@ -220,7 +215,7 @@ public class TokenManagerImpl implements TokenManager {
 
     @Override
     public void removeUser(DemoisellePrincipal user) {
-        throw new UnsupportedOperationException("Operação não utilizada para JWT");
+        throw new UnsupportedOperationException(bundle.notJwt());
     }
 
 }

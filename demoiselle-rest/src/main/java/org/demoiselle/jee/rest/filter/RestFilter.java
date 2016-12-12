@@ -1,14 +1,7 @@
-/*
- * Demoiselle Framework
- *
- * License: GNU Lesser General Public License (LGPL), version 3 or later.
- * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
- */
 package org.demoiselle.jee.rest.filter;
 
-import java.util.logging.Level;
+import static java.util.logging.Level.INFO;
 import java.util.logging.Logger;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -34,7 +27,7 @@ public class RestFilter implements ContainerResponseFilter {
     @PostConstruct
     public void init() {
         logger.info("Demoiselle Module: Rest");
-        logger.log(Level.INFO, "GZip Enabled :{0}", config.isGzipEnabled());
+        logger.log(INFO, "GZip Enabled :{0}", config.isGzipEnabled());
     }
 
 }
