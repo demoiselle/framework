@@ -15,7 +15,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.TestControl;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
-import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(CdiTestRunner.class)
 @TestControl(startScopes = RequestScoped.class)
-public class DemoisellePrincipalImplTest {
+public class DemoiselleUserImplTest {
 
     @BeforeClass
     public static void setUpClass() {
@@ -42,7 +42,7 @@ public class DemoisellePrincipalImplTest {
     }
 
     @Inject
-    private DemoisellePrincipal instance;
+    private DemoiselleUser instance;
 
     @Before
     public void setUp() {
@@ -170,7 +170,7 @@ public class DemoisellePrincipalImplTest {
 
     @Test
     public void test31() {
-        DemoisellePrincipal result = instance.clone();
+        DemoiselleUser result = instance.clone();
         assertEquals(instance.getIdentity(), result.getIdentity());
     }
 

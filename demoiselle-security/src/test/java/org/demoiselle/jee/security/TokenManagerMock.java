@@ -12,7 +12,7 @@ import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import static javax.ws.rs.Priorities.AUTHENTICATION;
-import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
 
@@ -24,7 +24,7 @@ import org.demoiselle.jee.core.api.security.TokenManager;
 @Priority(AUTHENTICATION)
 public class TokenManagerMock implements TokenManager {
 
-    private final ConcurrentHashMap<String, DemoisellePrincipal> repo = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, DemoiselleUser> repo = new ConcurrentHashMap<>();
 
     @Inject
     private Token token;
@@ -34,7 +34,7 @@ public class TokenManagerMock implements TokenManager {
      * @return
      */
     @Override
-    public DemoisellePrincipal getUser() {
+    public DemoiselleUser getUser() {
         if (token.getKey() != null && !token.getKey().isEmpty()) {
             return repo.get(token.getKey());
         }
@@ -46,7 +46,7 @@ public class TokenManagerMock implements TokenManager {
      * @param user
      */
     @Override
-    public void setUser(DemoisellePrincipal user) {
+    public void setUser(DemoiselleUser user) {
         token.setKey(null);
 
         repo.entrySet().stream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
@@ -76,7 +76,7 @@ public class TokenManagerMock implements TokenManager {
     }
 
     @Override
-    public void removeUser(DemoisellePrincipal user) {
+    public void removeUser(DemoiselleUser user) {
         repo.entrySet().stream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
             token.setKey(entry.getKey());
         });

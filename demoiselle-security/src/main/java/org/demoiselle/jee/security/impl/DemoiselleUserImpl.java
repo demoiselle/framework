@@ -1,3 +1,9 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.security.impl;
 
 import java.util.ArrayList;
@@ -16,7 +22,7 @@ import org.demoiselle.jee.core.api.security.DemoiselleUser;;
  * @author SERPRO
  */
 @RequestScoped
-public class DemoisellePrincipalImpl implements DemoiselleUser, Cloneable {
+public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
 
     @Inject
     private Logger logger;
@@ -27,7 +33,7 @@ public class DemoisellePrincipalImpl implements DemoiselleUser, Cloneable {
     private Map<String, List<String>> permissions;
     private Map<String, List<String>> params;
 
-    public DemoisellePrincipalImpl() {
+    public DemoiselleUserImpl() {
         this.roles = new ArrayList<>();
         this.permissions = new ConcurrentHashMap<>();
         this.params = new ConcurrentHashMap<>();
@@ -178,7 +184,7 @@ public class DemoisellePrincipalImpl implements DemoiselleUser, Cloneable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final DemoisellePrincipalImpl other = (DemoisellePrincipalImpl) obj;
+        final DemoiselleUserImpl other = (DemoiselleUserImpl) obj;
         return Objects.equals(this.identity, other.identity);
     }
 
@@ -188,9 +194,9 @@ public class DemoisellePrincipalImpl implements DemoiselleUser, Cloneable {
     }
 
     @Override
-    public DemoisellePrincipal clone() {
+    public DemoiselleUser clone() {
         try {
-            return (DemoisellePrincipal) super.clone();
+            return (DemoiselleUser) super.clone();
         } catch (CloneNotSupportedException ex) {
             logger.severe(ex.getLocalizedMessage());
         }

@@ -229,7 +229,7 @@
 
     <profiles>
         <profile>
-            <id>release</id>
+            <id>demoiselle</id>
             <build>
                 <plugins>
                     <plugin>

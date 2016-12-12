@@ -10,7 +10,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.TestControl;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
-import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -40,7 +40,7 @@ public class SecurityContextImplTest {
     private SecurityContext instance;
 
     @Inject
-    private DemoisellePrincipal dml;
+    private DemoiselleUser dml;
 
     public SecurityContextImplTest() {
     }
@@ -72,7 +72,7 @@ public class SecurityContextImplTest {
 
     @Test
     public void test11() {
-        DemoisellePrincipal loggedUser = dml;
+        DemoiselleUser loggedUser = dml;
         instance.setUser(loggedUser);
     }
 
@@ -102,8 +102,8 @@ public class SecurityContextImplTest {
 
     @Test
     public void test15() {
-        DemoisellePrincipal expResult = dml;
-        DemoisellePrincipal result = instance.getUser();
+        DemoiselleUser expResult = dml;
+        DemoiselleUser result = instance.getUser();
         assertEquals(expResult.getIdentity(), result.getIdentity());
     }
 

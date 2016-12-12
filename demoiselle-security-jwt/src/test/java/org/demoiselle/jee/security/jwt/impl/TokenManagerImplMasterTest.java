@@ -13,7 +13,7 @@ import static org.junit.Assert.assertNotEquals;
 import javax.inject.Inject;
 
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
-import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
 import org.junit.After;
@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 public class TokenManagerImplMasterTest {
 
     @Inject
-    private DemoisellePrincipal dml;
+    private DemoiselleUser dml;
 
     @Inject
     private Token token;
@@ -109,6 +109,7 @@ public class TokenManagerImplMasterTest {
         dml.addPermission("Categoria", "Consultar");
         instance.setUser(dml);
         localtoken = token.getKey();
+        System.out.println(token.getKey());
         assertNotEquals("", token.getKey());
     }
 
@@ -125,8 +126,8 @@ public class TokenManagerImplMasterTest {
         dml.addRole("MANAGER");
         dml.addPermission("Produto", "Alterar");
         dml.addPermission("Categoria", "Consultar");
-        DemoisellePrincipal expResult = dml;
-        DemoisellePrincipal result = instance.getUser();
+        DemoiselleUser expResult = dml;
+        DemoiselleUser result = instance.getUser();
         assertEquals(expResult, result);
     }
 
@@ -150,8 +151,8 @@ public class TokenManagerImplMasterTest {
         out.println("getUserError");
         instance.setUser(dml);
         token.setKey("");
-        DemoisellePrincipal expResult = dml;
-        DemoisellePrincipal result = instance.getUser();
+        DemoiselleUser expResult = dml;
+        DemoiselleUser result = instance.getUser();
         assertNotEquals(expResult, result);
     }
 

@@ -1,3 +1,9 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.security.jwt.impl;
 
 import org.demoiselle.jee.security.message.DemoiselleSecurityJWTMessages;
@@ -20,7 +26,7 @@ import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import static javax.ws.rs.Priorities.AUTHENTICATION;
-import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
@@ -60,7 +66,7 @@ public class TokenManagerImpl implements TokenManager {
     private DemoiselleSecurityJWTConfig config;
 
     @Inject
-    private DemoisellePrincipal loggedUser;
+    private DemoiselleUser loggedUser;
 
     @Inject
     private DemoiselleSecurityJWTMessages bundle;
@@ -114,10 +120,10 @@ public class TokenManagerImpl implements TokenManager {
      * Pick up the token that is in the request scope and draws the user into
      * the token validating the user at this time
      *
-     * @return DemoisellePrincipal principal
+     * @return DemoiselleUser principal
      */
     @Override
-    public DemoisellePrincipal getUser() {
+    public DemoiselleUser getUser() {
         if (token.getKey() != null && !token.getKey().isEmpty()) {
             try {
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
@@ -146,7 +152,7 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     @Override
-    public void setUser(DemoisellePrincipal user) {
+    public void setUser(DemoiselleUser user) {
         long tempo = (long) (now().getValueInMillis() + (config.getTempo() * 60 * 1_000));
         try {
             JwtClaims claims = new JwtClaims();
@@ -206,7 +212,7 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     @Override
-    public void removeUser(DemoisellePrincipal user) {
+    public void removeUser(DemoiselleUser user) {
         throw new UnsupportedOperationException(bundle.notJwt());
     }
 

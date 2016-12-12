@@ -6,17 +6,20 @@
  */
 package org.demoiselle.jee.security.interceptor;
 
+import static javax.ws.rs.Priorities.AUTHORIZATION;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+
 import java.io.Serializable;
 import java.util.logging.Logger;
+
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import static javax.ws.rs.Priorities.AUTHORIZATION;
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+
 import org.demoiselle.jee.core.annotation.Name;
-import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.annotation.NotLogged;
 import org.demoiselle.jee.security.annotation.RequiredPermission;
@@ -41,7 +44,7 @@ public class RequiredPermissionInterceptor implements Serializable {
     private SecurityContext securityContext;
 
     @Inject
-    private DemoisellePrincipal loggedUser;
+    private DemoiselleUser loggedUser;
 
     @Inject
     private DemoiselleSecurityMessages bundle;

@@ -1,3 +1,9 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.security.jwt.impl;
 
 import static java.lang.System.out;
@@ -7,7 +13,7 @@ import static org.junit.Assert.assertNotEquals;
 import javax.inject.Inject;
 
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
-import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
 import org.junit.After;
@@ -25,7 +31,7 @@ import org.junit.runner.RunWith;
 public class TokenManagerImplSlaveTest {
 
     @Inject
-    private DemoisellePrincipal dml;
+    private DemoiselleUser dml;
 
     @Inject
     private Token token;
@@ -110,8 +116,8 @@ public class TokenManagerImplSlaveTest {
         dml.addRole("MANAGER");
         dml.addPermission("Produto", "Alterar");
         dml.addPermission("Categoria", "Consultar");
-        DemoisellePrincipal expResult = dml;
-        DemoisellePrincipal result = instance.getUser();
+        DemoiselleUser expResult = dml;
+        DemoiselleUser result = instance.getUser();
         assertEquals(expResult, result);
     }
 
@@ -129,8 +135,8 @@ public class TokenManagerImplSlaveTest {
         out.println("getUserError");
         instance.setUser(dml);
         token.setKey("eyJraWQiOiJkZW1vaXNlbGxlLXNlY3VyaXR5LWp3dCIsImFsZyI6IlJTMjU2In0.eyJpc3MiOiJTVE9SRSIsImF1ZCI6IndlYiIsImV4cCI6NjAwMDAxNDk1ODQ4MzQ5LCJqdGkiOiJ2MHVfdmJRbDYzS1VFVDF0UV9FMU1nIiwiaWF0IjoxNDc2ODEwMTQxLCJuYmYiOjE0NzY4MTAwODEsImlkZW50aXR5IjoiMSIsIm5hbWUiOiJUZXN0ZSIsInJvbGVzIjpbIkFETUlOSVNUUkFUT1IiLCJNQU5BR0VSIl0sInBlcm1pc3Npb25zIjp7IkNhdGVnb3JpYSI6WyJDb25zdWx0YXIiXSwiUHJvZHV0byI6WyJBbHRlcmFyIl19LCJwYXJhbXMiOnt9fQ.a6t3ALd0AsIfXw3hbXpE91MggNNA12bn9nwwznLpFUgRMR9Jp4Jcp4fMNoONry3i5q83AFQhi6fPrwMISrbxQ9-fVJHmrAMGQbubJb__6A9aiKthfagFhI0PrZIgxYj3AyTb0ia7Fo_aM8Ji9ADktp3kd7t0v0-nWVGLcdt_FXmBumigP6803-23hBTs3lC5ewFxjXeYx4LNZujFKSMJgafUVtOePRp8lRr6x5Cu_HyjvU2W-IQKb5H3L7hlgS5MOTPn8DWryF0FA8Vwdm2AJGhulGb78igmOG5PnslrPaX56jLnMI8g820KZ_K_cVqulyqUA7arbf-JLR62VWhslQ");
-        DemoisellePrincipal expResult = dml;
-        DemoisellePrincipal result = instance.getUser();
+        DemoiselleUser expResult = dml;
+        DemoiselleUser result = instance.getUser();
         assertNotEquals(expResult, result);
     }
 

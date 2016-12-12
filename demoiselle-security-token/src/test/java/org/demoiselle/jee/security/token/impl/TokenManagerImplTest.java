@@ -9,7 +9,7 @@ package org.demoiselle.jee.security.token.impl;
 import static java.lang.System.out;
 import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
-import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
+import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
 import org.junit.After;
@@ -22,13 +22,13 @@ import org.junit.runner.RunWith;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @RunWith(CdiTestRunner.class)
 public class TokenManagerImplTest {
 
     @Inject
-    private DemoisellePrincipal dml;
+    private DemoiselleUser dml;
 
     @Inject
     private Token token;
@@ -153,8 +153,8 @@ public class TokenManagerImplTest {
         dml.addPermission("Categoria", "Consultar");
         instance.setUser(dml);
         token.setKey(localtoken);
-        DemoisellePrincipal expResult = dml;
-        DemoisellePrincipal result = instance.getUser();
+        DemoiselleUser expResult = dml;
+        DemoiselleUser result = instance.getUser();
         assertNotEquals(expResult, result);
     }
 
