@@ -12,7 +12,7 @@ import javax.enterprise.util.Nonbinding;
 import javax.inject.Named;
 import javax.interceptor.InterceptorBinding;
 
-import org.demoiselle.jee.configuration.ConfigType;
+import org.demoiselle.jee.configuration.ConfigurationType;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -60,9 +60,9 @@ public @interface Configuration {
 	 * If not specified, a properties resource file is to be considered.
 	 * </p>
 	 * 
-	 * @return {@link ConfigType}
+	 * @return {@link ConfigurationType}
 	 */
-	@Nonbinding ConfigType type() default ConfigType.PROPERTIES;
+	@Nonbinding ConfigurationType type() default ConfigurationType.PROPERTIES;
 
 	/**
 	 * Defines an optional prefix to be used on every parameter key.

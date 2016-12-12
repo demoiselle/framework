@@ -6,5 +6,8 @@
  */
 /**
  * Extractors that implement the {@link org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor} interface.
+ * 
+ * @author SERPRO
+ * 
  */
 package org.demoiselle.jee.configuration.extractor.impl;

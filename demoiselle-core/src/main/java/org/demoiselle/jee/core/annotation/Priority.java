@@ -23,11 +23,13 @@ import java.lang.annotation.Target;
  */
 @Target({ TYPE, METHOD })
 @Retention(RUNTIME)
+//TODO usar a do java
 public @interface Priority {
 
 	/**
 	 * Most important priority value.
 	 */
+	//TODO remover
 	static int MAX_PRIORITY = Integer.MIN_VALUE;
 
 	/**

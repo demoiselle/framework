@@ -8,12 +8,12 @@ package org.demoiselle.jee.configuration.model;
 
 import java.util.Map;
 
-import org.demoiselle.jee.configuration.ConfigType;
+import org.demoiselle.jee.configuration.ConfigurationType;
 import org.demoiselle.jee.configuration.annotation.Configuration;
 import org.demoiselle.jee.core.annotation.Ignore;
 import org.demoiselle.jee.core.annotation.Name;
 
-@Configuration(resource = "app", type = ConfigType.PROPERTIES, prefix = "")
+@Configuration(resource = "app", type = ConfigurationType.PROPERTIES, prefix = "")
 public class ConfigModel {
 	
 	private Integer configInteger;

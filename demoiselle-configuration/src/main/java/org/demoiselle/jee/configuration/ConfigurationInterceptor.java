@@ -18,7 +18,8 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
 /**
  * 
  * Intercepts annotated class with {@link Configuration} and delegates processing to the class {@link ConfigurationLoader}
- *
+ * 
+ * @author SERPRO
  */
 @Dependent
 @Configuration
@@ -31,6 +32,7 @@ public class ConfigurationInterceptor {
 		final ConfigurationLoader configurationLoader = CDI.current().select(ConfigurationLoader.class).get();
 
 		final Class<?> baseClass = ic.getMethod().getDeclaringClass();
+		//TODO true?
 		configurationLoader.load(ic.getTarget(), baseClass, Boolean.TRUE);
 		return ic.proceed();
 	}

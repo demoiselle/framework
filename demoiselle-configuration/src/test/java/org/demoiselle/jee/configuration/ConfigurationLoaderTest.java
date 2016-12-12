@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.configuration.annotation.Configuration;
+import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationException;
 import org.demoiselle.jee.configuration.extractor.AbstractConfigurationTest;
 import org.demoiselle.jee.configuration.extractor.ConfigurationStringValueExtractorAmbiguosTest;
 import org.demoiselle.jee.configuration.message.ConfigurationMessage;
@@ -56,7 +57,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 	@Before
 	public void setUp() throws IOException, Exception{
 		Locale.setDefault(new Locale("pt", "BR"));
-		makeConfigurationRuntime(ConfigModel.class, ConfigType.PROPERTIES, utilTest.createPropertiesFile("test"));
+		makeConfigurationRuntime(ConfigModel.class, ConfigurationType.PROPERTIES, utilTest.createPropertiesFile("test"));
 	}
 	
 	@Test
@@ -101,7 +102,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		assertEquals(UtilTest.CONFIG_STRING_NAME_ANNOTATION_VALUE, configModel.getConfigStringWithName());
 	}
 	
-	@Test(expected = ConfigurationException.class)
+	@Test(expected = DemoiselleConfigurationException.class)
 	public void objectWithNoMatchExtractorShouldThrowException(){
 		
 		ConfigWithoutExtractorModel model = new ConfigWithoutExtractorModel();
@@ -111,13 +112,13 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		configLoader.load(model, baseClass, false);
 	}
 	
-	@Test(expected = ConfigurationException.class)
+	@Test(expected = DemoiselleConfigurationException.class)
 	public void objectWithIncompatibleTypeShoutThrowConfigurationException() throws IOException, Exception{
 		
 		Properties properties = new Properties();
 		properties.put("configBooleanIncompatible", "7");
 		
-		makeConfigurationRuntime(ConfigIncompatibleTypeModel.class, ConfigType.PROPERTIES, utilTest.createPropertiesFile("test", properties));
+		makeConfigurationRuntime(ConfigIncompatibleTypeModel.class, ConfigurationType.PROPERTIES, utilTest.createPropertiesFile("test", properties));
 		
 		ConfigIncompatibleTypeModel model = new ConfigIncompatibleTypeModel();
 		
@@ -136,7 +137,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		assertNull(configModel.getConfigFieldWithIgnore());		
 	}
 	
-	@Test(expected = ConfigurationException.class)
+	@Test(expected = DemoiselleConfigurationException.class)
 	public void modelInvalidValuesWithBeanValidationShouldThrowConfigurationException(){
 		ConfigWithValidationModel model = new ConfigWithValidationModel();
 		Class<?> baseClass = model.getClass();
@@ -156,7 +157,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 			Class<?> baseClass = model.getClass();
 			configLoader.load(model, baseClass, true);
 		}
-		catch(ConfigurationException e){
+		catch(DemoiselleConfigurationException e){
 			assertNotNull(e.getMessage());
 			assertEquals(sb.toString(), e.getMessage());
 		}
@@ -174,7 +175,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 			assertNull(configModel.getConfigString());
 			configLoader.load(configModel, baseClass, true);
 		}
-		catch(ConfigurationException e){
+		catch(DemoiselleConfigurationException e){
 			assertNotNull(e.getMessage());
 			assertThat(e.getMessage(), CoreMatchers.containsString("Foi detectada ambiguidade da interface org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor com as seguintes implementações:"));
 			assertThat(e.getMessage(), CoreMatchers.containsString("Para resolver o conflito, defina explicitamente a implementação no demoiselle.properties."));
@@ -184,14 +185,14 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 	@Test
 	public void configurationWithInvalidResourceShouldThrowConfigurationException() throws IOException, Exception{
 		
-		makeConfigurationRuntime(ConfigModel.class, ConfigType.PROPERTIES, "file-not-found");
+		makeConfigurationRuntime(ConfigModel.class, ConfigurationType.PROPERTIES, "file-not-found");
 		
 		Class<?> baseClass = configModel.getClass();
 		
 		try{
 			configLoader.load(configModel, baseClass, false);
 		}
-		catch(ConfigurationException e){
+		catch(DemoiselleConfigurationException e){
 			assertNotNull(e.getMessage());
 			assertEquals(e.getMessage(), "O arquivo file-not-found.properties não foi encontrado");
 		}
@@ -206,7 +207,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		try{
 			configLoader.load(model, baseClass, true);
 		}
-		catch(ConfigurationException e){
+		catch(DemoiselleConfigurationException e){
 			assertNotNull(e.getMessage());
 			assertEquals(e.getMessage(), message.configurationNameAttributeCantBeEmpty());
 		}
@@ -214,7 +215,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 	
 	@Test
 	public void configurationLoaderShouldLoadConfigurationXML() throws FileNotFoundException, IOException, Exception{
-		makeConfigurationRuntime(ConfigModel.class, ConfigType.XML, utilTest.createXMLFile("test"));
+		makeConfigurationRuntime(ConfigModel.class, ConfigurationType.XML, utilTest.createXMLFile("test"));
 		
 		Class<?> baseClass = configModel.getClass();
 		assertNull(configModel.getConfigString());
@@ -227,7 +228,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 	@Test
 	public void configurationLoaderShouldLoadConfigurationSystem() throws FileNotFoundException, IOException, Exception{
 		utilTest.createSystemVariables();
-		makeConfigurationRuntime(ConfigModel.class, ConfigType.SYSTEM, null);
+		makeConfigurationRuntime(ConfigModel.class, ConfigurationType.SYSTEM, null);
 		
 		Class<?> baseClass = configModel.getClass();
 		assertNull(configModel.getConfigString());
@@ -268,7 +269,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		annotations.put(Priority.class, priority);
 	}
 	
-	private void makeConfigurationRuntime(Class<?> clazz, ConfigType configType, String pathFileTest) throws Exception{
+	private void makeConfigurationRuntime(Class<?> clazz, ConfigurationType configType, String pathFileTest) throws Exception{
 		final Configuration oldConfiguration = clazz.getDeclaredAnnotation(Configuration.class);
 		
 		Configuration configuration = new Configuration() {
@@ -279,20 +280,20 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 			}
 			
 			@Override
-			public ConfigType type() { 
+			public ConfigurationType type() { 
 				return configType;
 			}
 			
 			@Override
 			public String resource() {
 				
-				if(configType.equals(ConfigType.SYSTEM)){
+				if(configType.equals(ConfigurationType.SYSTEM)){
 					return null;
 				}
 				
 				String replacePattern = ".properties";
 				
-				if(configType.equals(ConfigType.XML)){
+				if(configType.equals(ConfigurationType.XML)){
 					replacePattern = ".xml";
 				}
 				

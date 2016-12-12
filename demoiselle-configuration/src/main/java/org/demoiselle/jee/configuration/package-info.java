@@ -6,5 +6,7 @@
  */
 /**
  * Provides Configuration feature
+ * 
+ * @author SERPRO
  */
 package org.demoiselle.jee.configuration;

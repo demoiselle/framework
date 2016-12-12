@@ -6,7 +6,7 @@
  */
 package org.demoiselle.jee.configuration;
 
-import static org.demoiselle.jee.configuration.ConfigType.SYSTEM;
+import static org.demoiselle.jee.configuration.ConfigurationType.SYSTEM;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -42,7 +42,9 @@ import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.builder.BasicConfigurationBuilder;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.ex.ConversionException;
+import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationException;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 import org.demoiselle.jee.configuration.message.ConfigurationMessage;
 import org.demoiselle.jee.core.annotation.Ignore;
@@ -57,6 +59,7 @@ import org.demoiselle.jee.core.annotation.Priority;
  */
 @ApplicationScoped
 public class ConfigurationLoader implements Serializable {
+	//TODO comentar os metodos explicando em que situacao sao usados
 
 	private static final long serialVersionUID = 1L;
 
@@ -66,11 +69,12 @@ public class ConfigurationLoader implements Serializable {
 	@Inject
 	private Logger logger;
 
+	//TODO explicar
 	private Object object;
 
 	private Class<?> baseClass;
 
-	private ConfigType type;
+	private ConfigurationType type;
 
 	private String resource;
 
@@ -94,25 +98,27 @@ public class ConfigurationLoader implements Serializable {
 	 * @param object Object annotated with {@link Configuration} to be populated
 	 * @param baseClass Class type to be populated
 	 * @param logLoadingProcess Enable logging or not the process
-	 * @throws ConfigurationException When there is a problem in the process 
+	 * @throws DemoiselleConfigurationException When there is a problem in the process 
 	 */
-	public void load(final Object object, Class<?> baseClass, boolean logLoadingProcess) throws ConfigurationException {
+	public void load(final Object object, Class<?> baseClass, boolean logLoadingProcess) throws DemoiselleConfigurationException {
 		Boolean isLoaded = loadedCache.get(object);
 
 		if (isLoaded == null || !isLoaded) {
 			try {
 				loadConfiguration(object, baseClass, logLoadingProcess);
 				loadedCache.put(object, true);
-			} catch (ConfigurationException c) {
+			} catch (DemoiselleConfigurationException c) {
 				loadedCache.put(object, false);
 				throw c;
 			}
 		}
 	}
 
+	//TODO comentar
 	private void loadConfiguration(final Object object, Class<?> baseClass, boolean logLoadingProcess)
-			throws ConfigurationException {
+			throws DemoiselleConfigurationException {
 		
+		//TODO avaliar finest
 		if (logLoadingProcess) {
 			logger.fine(bundle.loadConfigurationClass(baseClass.getName()));
 		}
@@ -147,7 +153,7 @@ public class ConfigurationLoader implements Serializable {
 		Name annotation = field.getAnnotation(Name.class);
 
 		if (annotation != null && annotation.value().isEmpty()) {
-			throw new ConfigurationException(bundle.configurationNameAttributeCantBeEmpty(), new IllegalArgumentException());
+			throw new DemoiselleConfigurationException(bundle.configurationNameAttributeCantBeEmpty(), new IllegalArgumentException());
 		}
 	}
 
@@ -174,7 +180,7 @@ public class ConfigurationLoader implements Serializable {
 			URL urlResource = getResourceAsURL(this.resource);
 
 			if(urlResource == null) {
-				throw new ConfigurationException(bundle.fileNotFound(this.resource));				
+				throw new DemoiselleConfigurationException(bundle.fileNotFound(this.resource));				
 			}
 			
 			((FileBasedConfigurationBuilder<?>) builder).configure(params.fileBased().setURL(getResourceAsURL(this.resource)));
@@ -184,7 +190,8 @@ public class ConfigurationLoader implements Serializable {
 		try {
 			config = builder.getConfiguration();
 		} 
-		catch (org.apache.commons.configuration2.ex.ConfigurationException e) {
+		catch (ConfigurationException e) {
+			//TODO THROW Ou Log warn
 			config = null;
 		}
 
@@ -250,14 +257,14 @@ public class ConfigurationLoader implements Serializable {
 			ConfigurationValueExtractor extractor = getValueExtractor(field);
 			value = extractor.getValue(this.prefix, key, field, this.configuration);
 		} 
-		catch (ConfigurationException cause) {
+		catch (DemoiselleConfigurationException cause) {
 			throw cause;
 		} 
 		catch (ConversionException cause) {
-			throw new ConfigurationException(bundle.configurationNotConversion(this.prefix + getKey(field), field.getType().toString()), cause);
+			throw new DemoiselleConfigurationException(bundle.configurationNotConversion(this.prefix + getKey(field), field.getType().toString()), cause);
 		} 
 		catch (Exception cause) {
-			throw new ConfigurationException(bundle.configurationGenericExtractionError(field.getType().toString(), getValueExtractor(field).getClass().getCanonicalName()), cause);
+			throw new DemoiselleConfigurationException(bundle.configurationGenericExtractionError(field.getType().toString(), getValueExtractor(field).getClass().getCanonicalName()), cause);
 		}
 
 		return value;
@@ -266,7 +273,7 @@ public class ConfigurationLoader implements Serializable {
 	private ConfigurationValueExtractor getValueExtractor(Field field) {
 		Collection<ConfigurationValueExtractor> candidates = new HashSet<ConfigurationValueExtractor>();
 		ConfigurationBootstrap bootstrap = CDI.current().select(ConfigurationBootstrap.class).get();
-
+		//TODO rever lambda paralelismo
 		for (Class<? extends ConfigurationValueExtractor> extractorClass : bootstrap.getCache()) {
 			ConfigurationValueExtractor extractor = CDI.current().select(extractorClass).get();
 
@@ -278,7 +285,7 @@ public class ConfigurationLoader implements Serializable {
 		ConfigurationValueExtractor elected = selectReference(ConfigurationValueExtractor.class, candidates);
 		
 		if (elected == null) {
-			throw new ConfigurationException(bundle.configurationExtractorNotFound(field.toGenericString(), 					
+			throw new DemoiselleConfigurationException(bundle.configurationExtractorNotFound(field.toGenericString(), 					
 							ConfigurationValueExtractor.class.getName()), new ClassNotFoundException());
 		}
 		
@@ -322,7 +329,7 @@ public class ConfigurationLoader implements Serializable {
 				message.append(field.toGenericString() + " " + violation.getMessage() + "\n");
 			}
 
-			throw new ConfigurationException(message.toString(), new ConstraintViolationException(violations));
+			throw new DemoiselleConfigurationException(message.toString(), new ConstraintViolationException(violations));
 		}
 	}
 	
@@ -392,7 +399,7 @@ public class ConfigurationLoader implements Serializable {
 			field.setAccessible(acessible);
 
 		} catch (Exception e) {
-			throw new ConfigurationException(bundle.configurationErrorGetValue(field.getName(), object.getClass().getCanonicalName()), e);
+			throw new DemoiselleConfigurationException(bundle.configurationErrorGetValue(field.getName(), object.getClass().getCanonicalName()), e);
 		}
 
 		return result;
@@ -406,7 +413,7 @@ public class ConfigurationLoader implements Serializable {
 			field.setAccessible(acessible);
 
 		} catch (Exception e) {
-			throw new ConfigurationException(bundle.configurationErrorSetValue(value, field.getName(), object.getClass().getCanonicalName()), e);
+			throw new DemoiselleConfigurationException(bundle.configurationErrorSetValue(value, field.getName(), object.getClass().getCanonicalName()), e);
 		}
 	}
 	
@@ -457,7 +464,7 @@ public class ConfigurationLoader implements Serializable {
 			ambiguous.add(selected);
 
 			String message = getExceptionMessage(type, ambiguous);
-			throw new ConfigurationException(message, new AmbiguousResolutionException());
+			throw new DemoiselleConfigurationException(message, new AmbiguousResolutionException());
 		}
 	}
 	

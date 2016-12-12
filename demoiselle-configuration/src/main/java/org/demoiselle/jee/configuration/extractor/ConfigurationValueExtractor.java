@@ -13,6 +13,8 @@ import org.apache.commons.configuration2.Configuration;
 /**
  * Definition interface to extractors.
  *
+ * @author SERPRO
+ * 
  */
 public interface ConfigurationValueExtractor {
 	

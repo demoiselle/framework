@@ -13,12 +13,12 @@ import java.lang.reflect.Field;
 import javax.enterprise.context.Dependent;
 
 import org.apache.commons.configuration2.Configuration;
-import org.demoiselle.jee.configuration.ConfigType;
+import org.demoiselle.jee.configuration.ConfigurationType;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 import org.demoiselle.jee.core.annotation.Priority;
 
 /**
- * Adds the data extraction capability of a source ({@link ConfigType}) for the type of {@link Enum}.
+ * Adds the data extraction capability of a source ({@link ConfigurationType}) for the type of {@link Enum}.
  * 
  * <p>
  * Sample:
@@ -39,7 +39,7 @@ import org.demoiselle.jee.core.annotation.Priority;
  * &#64;Configuration
  * public class BookmarkConfig {
  *
- *  private {@link ConfigType} loadedConfigurationType;
+ *  private {@link ConfigurationType} loadedConfigurationType;
  *
  *  public ConfigType getLoadedConfigurationType(){
  *    return loadedConfigurationType;
@@ -48,6 +48,8 @@ import org.demoiselle.jee.core.annotation.Priority;
  * }
  * 
  * </pre>
+ * 
+ * @author SERPRO
  * 
  */
 @Dependent

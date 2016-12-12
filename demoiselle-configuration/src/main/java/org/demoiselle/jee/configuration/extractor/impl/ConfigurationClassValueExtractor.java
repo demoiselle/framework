@@ -13,14 +13,14 @@ import java.net.URL;
 import javax.enterprise.context.Dependent;
 
 import org.apache.commons.configuration2.Configuration;
-import org.demoiselle.jee.configuration.ConfigType;
+import org.demoiselle.jee.configuration.ConfigurationType;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 import org.demoiselle.jee.core.annotation.Priority;
 
 import static org.demoiselle.jee.core.annotation.Priority.*;
 
 /**
- * Adds the data extraction capability of a source ({@link ConfigType}) for the type of {@link Class}.
+ * Adds the data extraction capability of a source ({@link ConfigurationType}) for the type of {@link Class}.
  * 
  * <p>
  * Sample:
@@ -56,6 +56,8 @@ import static org.demoiselle.jee.core.annotation.Priority.*;
  *}
  * 
  * </pre>
+ * 
+ * @author SERPRO
  * 
  */
 @Dependent

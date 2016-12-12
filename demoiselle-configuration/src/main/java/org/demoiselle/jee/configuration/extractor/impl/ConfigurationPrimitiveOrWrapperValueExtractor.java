@@ -17,13 +17,13 @@ import javax.enterprise.context.Dependent;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.DataConfiguration;
 import org.apache.commons.lang3.ClassUtils;
-import org.demoiselle.jee.configuration.ConfigType;
+import org.demoiselle.jee.configuration.ConfigurationType;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 import org.demoiselle.jee.core.annotation.Priority;
 
 /**
  * 
- * Adds the data extraction capability of a source ({@link ConfigType}) for the types:
+ * Adds the data extraction capability of a source ({@link ConfigurationType}) for the types:
  *  
  * <ul>
  * 	<li>{@link Boolean}</li>
@@ -65,6 +65,8 @@ import org.demoiselle.jee.core.annotation.Priority;
  * }
  * 
  * </pre>
+ * 
+ * @author SERPRO
  * 
  */
 @Dependent

@@ -7,5 +7,7 @@
 /**
  * It provides the classes necessary for displaying messages.
  * 
+ * @author SERPRO
+ * 
  */
 package org.demoiselle.jee.configuration.message;

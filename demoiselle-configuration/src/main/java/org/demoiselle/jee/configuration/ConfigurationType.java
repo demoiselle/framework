@@ -9,8 +9,10 @@ package org.demoiselle.jee.configuration;
 /**
  * Defines the types of sources that can be consumed.
  * 
+ * @author SERPRO
+ *
  */
-public enum ConfigType {
+public enum ConfigurationType {
 	/**
 	 * Loaded settings {@link System#getProperties()} or {@link System#getenv()}.
 	 */

@@ -13,8 +13,10 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
  * 
  * Messages used to inform user
  *
+ * @author SERPRO
  */
 @MessageBundle
+//TODO rever nome dos parametros
 public interface ConfigurationMessage {
 
 	@MessageTemplate("{load-configuration-class}")
@@ -36,7 +38,7 @@ public interface ConfigurationMessage {
 	String configurationFieldLoaded(String string, Object object);
 
 	@MessageTemplate("{configuration-not-conversion}")
-	String configurationNotConversion(String string, String string2);
+	String configurationNotConversion(String field, String type);
 
 	@MessageTemplate("{configuration-generic-extraction-error}")
 	String configurationGenericExtractionError(String string, String canonicalName);

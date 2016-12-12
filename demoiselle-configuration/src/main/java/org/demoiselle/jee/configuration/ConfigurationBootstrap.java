@@ -20,6 +20,7 @@ import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
  * 
  * Class responsible for loading all extractors classes that implement the {@link ConfigurationValueExtractor} interface.
  * 
+ * @author SERPRO
  *
  */
 public class ConfigurationBootstrap implements Extension {
@@ -28,6 +29,7 @@ public class ConfigurationBootstrap implements Extension {
 
 	public Collection<Class<? extends ConfigurationValueExtractor>> getCache() {
 		if (this.cache == null) {
+			//TODO refatorar
 			this.cache = Collections.synchronizedSet(new HashSet<Class<? extends ConfigurationValueExtractor>>());
 		}
 
