@@ -16,27 +16,20 @@ import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
 /**
- * Indicates that a specific permission is required in order to invocate the annotated method or class.
- * 
+ * Indicates that a specific permission is required in order to invocate the
+ * annotated method or class.
+ *
  * @author SERPRO
  */
 @Inherited
 @InterceptorBinding
-@Target({ METHOD, TYPE })
+@Target({METHOD, TYPE})
 @Retention(RUNTIME)
 public @interface RequiredPermission {
 
-    /**
-     *
-     * @return
-     */
     @Nonbinding
-	String resource() default "";
+    String resource() default "";
 
-    /**
-     *
-     * @return
-     */
     @Nonbinding
-	String operation() default "";
+    String operation() default "";
 }

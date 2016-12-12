@@ -13,6 +13,10 @@
         <artifactId>demoiselle-build</artifactId>
         <version>3.0.0-RC1-SNAPSHOT</version>
     </parent>
+    
+    <properties>
+        <license.header>../licence-lgpl</license.header>
+    </properties>
 
     <dependencyManagement>
         <dependencies>

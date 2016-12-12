@@ -1,3 +1,9 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.core.lifecycle;
 
 import java.lang.reflect.InvocationTargetException;
@@ -23,6 +29,8 @@ import org.demoiselle.jee.core.lifecycle.annotation.Startup;
 
 /**
  * This class is responsible for managing the execution of methods annotated with @Startup and @Shutdown
+ * 
+ * @author SERPRO
  */
 public class LifecycleBootstrap implements Extension {
 	

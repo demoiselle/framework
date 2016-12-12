@@ -1,20 +1,24 @@
 package org.demoiselle.jee.security.impl;
 
 import java.util.ArrayList;
+
 import java.util.Collections;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.enterprise.context.RequestScoped;
+
 import javax.inject.Inject;
+
 import org.demoiselle.jee.core.api.security.DemoisellePrincipal;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @RequestScoped
 public class DemoisellePrincipalImpl implements DemoisellePrincipal, Cloneable {

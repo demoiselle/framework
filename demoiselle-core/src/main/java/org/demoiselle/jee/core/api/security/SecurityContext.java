@@ -8,7 +8,7 @@ package org.demoiselle.jee.core.api.security;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 public interface SecurityContext {
 

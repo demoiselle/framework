@@ -1,3 +1,9 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.rest.validator;
 
 import static java.lang.Character.isDigit;
@@ -5,16 +11,14 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
 import org.demoiselle.jee.rest.annotation.CPF;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 public class CPFValidator implements ConstraintValidator<CPF, String> {
-
-    @Inject
-    private Logger logger;
 
     private CPF constraint;
 

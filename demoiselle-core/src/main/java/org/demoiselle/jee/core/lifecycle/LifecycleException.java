@@ -1,3 +1,9 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.core.lifecycle;
 
 import org.demoiselle.jee.core.exception.DemoiselleException;
@@ -5,6 +11,8 @@ import org.demoiselle.jee.core.exception.DemoiselleException;
 /**
  * 
  * Represents a throw Exceptions from Lifecycle feature
+ * 
+ * @author SERPRO
  *
  */
 public class LifecycleException extends DemoiselleException {

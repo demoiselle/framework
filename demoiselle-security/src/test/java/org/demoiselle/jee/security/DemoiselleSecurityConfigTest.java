@@ -1,11 +1,16 @@
-
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.security;
 
 import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -13,7 +18,7 @@ import org.junit.runner.RunWith;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @RunWith(CdiTestRunner.class)
 public class DemoiselleSecurityConfigTest {

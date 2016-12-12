@@ -1,9 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
 package org.demoiselle.jee.rest.validator;
+
 
 import static java.lang.Character.isDigit;
 import static java.lang.Integer.parseInt;
@@ -13,6 +15,7 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
 import org.demoiselle.jee.rest.annotation.CNPJ;
 
 /**
@@ -20,9 +23,6 @@ import org.demoiselle.jee.rest.annotation.CNPJ;
  * @author 70744416353
  */
 public class CNPJValidator implements ConstraintValidator<CNPJ, String> {
-
-    @Inject
-    private Logger logger;
 
     private CNPJ constraint;
 

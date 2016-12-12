@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
 package org.demoiselle.jee.rest.interceptor;
 
@@ -16,7 +17,7 @@ import org.demoiselle.jee.rest.DemoiselleRestConfig;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @Provider
 public class GZIPEncoder implements WriterInterceptor {
@@ -24,12 +25,6 @@ public class GZIPEncoder implements WriterInterceptor {
     @Inject
     private DemoiselleRestConfig config;
 
-    /**
-     *
-     * @param ctx
-     * @throws IOException
-     * @throws WebApplicationException
-     */
     @Override
     public void aroundWriteTo(WriterInterceptorContext ctx) throws IOException, WebApplicationException {
         if (config.isGzipEnabled()) {

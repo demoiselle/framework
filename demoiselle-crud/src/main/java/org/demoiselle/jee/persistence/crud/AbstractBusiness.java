@@ -8,6 +8,7 @@ package org.demoiselle.jee.persistence.crud;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
+
 import org.demoiselle.jee.core.api.persistence.Crud;
 import org.demoiselle.jee.core.api.persistence.Result;
 

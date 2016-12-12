@@ -22,11 +22,11 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.demoiselle.jee.core.message.DemoiselleMessage;
+import org.demoiselle.jee.core.pagination.ResultSet;
 import org.demoiselle.jee.multitenancy.hibernate.configuration.MultiTenancyConfiguration;
 import org.demoiselle.jee.multitenancy.hibernate.dao.TenantDAO;
 import org.demoiselle.jee.multitenancy.hibernate.entity.Tenant;
 import org.demoiselle.jee.multitenancy.hibernate.exception.DemoiselleMultiTenancyException;
-import org.demoiselle.jee.persistence.crud.ResultSet;
 
 /**
  * Class with behaviors to manipulate basic Tenants operations.
@@ -66,6 +66,17 @@ public class TenantManager {
 	 */
 	public Tenant find(Long id) {
 		return dao.find(id);
+	}
+
+	/**
+	 * Simple find @Tenant by name
+	 * 
+	 * @param name
+	 *            Name of tenant
+	 * @return Tenant entity
+	 */
+	public Tenant find(String name) {
+		return dao.find(name);
 	}
 
 	/**
@@ -138,11 +149,11 @@ public class TenantManager {
 		} catch (IOException e) {
 			throw new DemoiselleMultiTenancyException(e);
 		} finally {
-			// Set master database
-			conn.createStatement().execute(setCommand + " " + masterDatabase);
-
 			// Closes the connection
 			if (conn != null && !conn.isClosed()) {
+				// Set master database
+				conn.createStatement().execute(setCommand + " " + masterDatabase);
+				// Close connection
 				conn.close();
 			}
 		}
@@ -151,12 +162,12 @@ public class TenantManager {
 	/**
 	 * Business deletion of Tenants
 	 * 
-	 * @param id
-	 *            ID of Tenant
+	 * @param tenant
+	 *            Tenant to Delete
 	 * @throws SQLException
-	 *             When SQL to create or set databse has error
+	 *             When SQL to create or set database has error
 	 */
-	public void removeTenant(Long id) throws SQLException {
+	public void removeTenant(Tenant tenant) throws SQLException {
 
 		Connection conn = null;
 
@@ -165,9 +176,8 @@ public class TenantManager {
 		String masterDatabase = configuration.getMultiTenancyMasterDatabase();
 
 		try {
-			// Add Tenancy in table/master schema
-			Tenant t = dao.find(id);
-			dao.remove(t.getId());
+			// Remove Tenancy in table/master schema
+			dao.remove(tenant.getId());
 
 			final Context init = new InitialContext();
 			dataSource = (DataSource) init.lookup(configuration.getMultiTenancyMasterDatabaseDatasource());
@@ -177,16 +187,16 @@ public class TenantManager {
 			conn = dataSource.getConnection();
 
 			// Delete database
-			conn.createStatement().execute(dropCommand + " " + prefix + "" + t.getName());
+			conn.createStatement().execute(dropCommand + " " + prefix + "" + tenant.getName());
 
 		} catch (Exception e) {
 			throw new DemoiselleMultiTenancyException(e);
 		} finally {
-			// Set master database
-			conn.createStatement().execute(setCommand + " " + masterDatabase);
-
 			// Closes the connection
 			if (conn != null && !conn.isClosed()) {
+				// Set master database
+				conn.createStatement().execute(setCommand + " " + masterDatabase);
+				// Close connection
 				conn.close();
 			}
 		}
@@ -249,5 +259,5 @@ public class TenantManager {
 		reader.close();
 		return records;
 	}
-	
+
 }

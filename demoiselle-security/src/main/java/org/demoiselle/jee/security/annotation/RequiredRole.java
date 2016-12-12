@@ -17,22 +17,18 @@ import javax.interceptor.InterceptorBinding;
 
 /**
  * <p>
- * Indicates that the annotated method or class requires the user to have one or more roles associated in order to be
- * invocated.
+ * Indicates that the annotated method or class requires the user to have one or
+ * more roles associated in order to be invocated.
  * </p>
  *
  * @author SERPRO
  */
 @Inherited
 @InterceptorBinding
-@Target({ METHOD, TYPE })
+@Target({METHOD, TYPE})
 @Retention(RUNTIME)
 public @interface RequiredRole {
 
-    /**
-     *
-     * @return
-     */
     @Nonbinding
-	String[] value();
+    String[] value();
 }

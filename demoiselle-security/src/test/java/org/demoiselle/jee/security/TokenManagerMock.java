@@ -1,3 +1,9 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.security;
 
 import static java.util.UUID.randomUUID;
@@ -12,7 +18,7 @@ import org.demoiselle.jee.core.api.security.TokenManager;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @ApplicationScoped
 @Priority(AUTHENTICATION)

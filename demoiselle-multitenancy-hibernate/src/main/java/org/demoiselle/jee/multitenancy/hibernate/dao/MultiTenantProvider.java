@@ -21,6 +21,12 @@ import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.hibernate.service.spi.ServiceRegistryAwareService;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 
+/**
+ * Implementation of @MultiTenantConnectionProvider in Hibernate.
+ * 
+ * @author SERPRO
+ *
+ */
 @RequestScoped
 public class MultiTenantProvider implements MultiTenantConnectionProvider, ServiceRegistryAwareService {
 
@@ -29,6 +35,10 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 
 	// Load resource bundle manually because the @Inject dont enable yet
 	private ResourceBundle config = ResourceBundle.getBundle("demoiselle");
+
+	// Load messages manually because the @Inject dont enable yet
+	private ResourceBundle messages = ResourceBundle
+			.getBundle("org/demoiselle/jee/multitenancy/hibernate/message/DemoiselleMultitenancyMessage");
 
 	@Override
 	public boolean supportsAggressiveRelease() {
@@ -44,7 +54,7 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 			final Context init = new InitialContext();
 			dataSource = (DataSource) init.lookup(config.getString("demoiselle.multiTenancyTenantsDatabaseDatasource"));
 		} catch (final NamingException e) {
-			throw new RuntimeException(e);
+			throw new DemoiselleMultiTenancyException(e);
 		}
 	}
 
@@ -85,14 +95,15 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 
 			connection.createStatement().execute(setDatabase + " " + finalDatabaseName);
 		} catch (final SQLException e) {
-			throw new DemoiselleMultiTenancyException("Error trying to alter schema [" + tenantIdentifier + "]", e);
+			throw new DemoiselleMultiTenancyException(
+					messages.getString("error-set-schema").replace("%s", tenantIdentifier), e);
 		}
 		return connection;
 	}
 
 	@Override
 	public void releaseAnyConnection(Connection connection) throws SQLException {
-		// Close JDBC connection 
+		// Close JDBC connection
 		connection.close();
 	}
 
@@ -100,5 +111,5 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 	public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
 		releaseAnyConnection(connection);
 	}
-	
+
 }

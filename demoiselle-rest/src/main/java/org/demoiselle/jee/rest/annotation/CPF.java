@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
 package org.demoiselle.jee.rest.annotation;
 
@@ -21,7 +22,7 @@ import org.demoiselle.jee.rest.validator.CPFValidator;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @Documented
 @Constraint(validatedBy = {CPFValidator.class})
@@ -30,14 +31,8 @@ import org.demoiselle.jee.rest.validator.CPFValidator;
 @ReportAsSingleViolation
 public @interface CPF {
 
-    /**
-     * Mensagem retornada quando a validação falhar.
-     */
     String message() default "{cpf.error}";
 
-    /**
-     * Indica se o valor do campo é formatado ou não.
-     */
     boolean formatted() default false;
 
     Class<?>[] groups() default {};

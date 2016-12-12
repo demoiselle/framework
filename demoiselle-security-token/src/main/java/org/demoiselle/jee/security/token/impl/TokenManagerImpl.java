@@ -18,7 +18,7 @@ import org.demoiselle.jee.core.api.security.TokenManager;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @ApplicationScoped
 @Priority(AUTHENTICATION)
@@ -87,7 +87,7 @@ public class TokenManagerImpl implements TokenManager {
     /**
      * remove the token and the user is in memory
      *
-     * @param user
+     * @param user principal
      */
     @Override
     public void removeUser(DemoisellePrincipal user) {

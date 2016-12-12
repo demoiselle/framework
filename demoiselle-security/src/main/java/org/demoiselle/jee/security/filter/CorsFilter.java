@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
 package org.demoiselle.jee.security.filter;
 
@@ -20,7 +21,7 @@ import org.demoiselle.jee.security.annotation.NoCors;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @Provider
 public class CorsFilter implements ContainerResponseFilter {
@@ -34,6 +35,7 @@ public class CorsFilter implements ContainerResponseFilter {
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
         Method method = info.getResourceMethod();
+        @SuppressWarnings("rawtypes")
         Class classe = info.getResourceClass();
 
         res.getHeaders().putSingle("Authorization", "enabled");
@@ -43,7 +45,7 @@ public class CorsFilter implements ContainerResponseFilter {
 
         if (method != null || classe != null) {
             if (config.isCorsEnabled()) {
-                if (method.getAnnotation(NoCors.class) != null || classe.getAnnotation(NoCors.class)!= null) {
+                if (method.getAnnotation(NoCors.class) != null || classe.getAnnotation(NoCors.class) != null) {
                     res.getHeaders().remove("Access-Control-Allow-Origin");
                     res.getHeaders().remove("Access-Control-Allow-Methods");
                 } else {
@@ -53,7 +55,7 @@ public class CorsFilter implements ContainerResponseFilter {
                     res.getHeaders().putSingle("Access-Control-Allow-Methods", req.getMethod());
                 }
             } else {
-                 if (method.getAnnotation(Cors.class) != null || classe.getAnnotation(Cors.class)!= null) {
+                if (method.getAnnotation(Cors.class) != null || classe.getAnnotation(Cors.class) != null) {
                     res.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
                     res.getHeaders().putSingle("Access-Control-Allow-Headers", "Origin, Content-type, Accept, Authorization");
                     res.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");

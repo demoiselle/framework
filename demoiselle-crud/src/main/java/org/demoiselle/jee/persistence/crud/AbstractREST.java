@@ -6,9 +6,9 @@
  */
 package org.demoiselle.jee.persistence.crud;
 
-import io.swagger.annotations.ApiOperation;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+
 import javax.inject.Inject;
-import javax.ws.rs.Produces;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -17,13 +17,16 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import javax.ws.rs.core.UriInfo;
+
 import org.demoiselle.jee.core.api.persistence.Crud;
 import org.demoiselle.jee.core.api.persistence.Result;
 import org.demoiselle.jee.core.exception.DemoiselleException;
 import org.demoiselle.jee.rest.annotation.ValidatePayload;
+
+import io.swagger.annotations.ApiOperation;
 
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
@@ -55,7 +58,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @Path("{id}")
     @Transactional
     @ApiOperation(value = "Remove entidade")
-    public void remove(@PathParam("id") final I id) {
+    public void remove(@PathParam("id") final I id) {	
         bc.remove(id);
     }
 
@@ -63,11 +66,13 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @Transactional
     @ApiOperation(value = "Lista todos os registros registro e filtra com QueryString")
     public Result find() {
-        if (uriInfo.getQueryParameters().isEmpty()) {
-            return bc.find();
-        } else {
-            return bc.find(uriInfo.getQueryParameters());
-        }
+//        if (uriInfo.getQueryParameters().isEmpty()) {
+//            return bc.find();
+//        } else {
+//            return bc.find(uriInfo.getQueryParameters());
+//        }
+    	
+    	return bc.find();
     }
 
     @GET
@@ -96,5 +101,16 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
         }
         throw new DemoiselleException("A ordem deve ser (asc) ou (desc)");
     }
+    
+    
+    
+    
+    ////////////////////////////////////////////////////////////////////////////////
+    
+   /* @GET
+    public List<?> findAll(){
+    	bc.find()
+    }*/
+    
 
 }

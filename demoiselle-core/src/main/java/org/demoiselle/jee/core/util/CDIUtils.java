@@ -8,6 +8,7 @@ package org.demoiselle.jee.core.util;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+
 import javax.enterprise.inject.spi.InjectionPoint;
 
 /**

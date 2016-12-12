@@ -55,6 +55,7 @@
         <ejb.version>3.2</ejb.version>
         <cache.version>1.0.0</cache.version>
         <swagger.version>1.5.10</swagger.version>
+        <json-api.version>1.0</json-api.version>
         <!--Microcontainers -->
         <wildfly-swarm.version>2016.11.0</wildfly-swarm.version>
 
@@ -241,7 +242,7 @@
             <dependency>
                 <groupId>javax.json</groupId>
                 <artifactId>javax.json-api</artifactId>
-                <version>1.0</version>
+                <version>${json-api.version}</version>
             </dependency>
 
             <!-- configuration e messages -->

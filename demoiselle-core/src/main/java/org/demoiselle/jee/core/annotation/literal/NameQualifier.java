@@ -7,6 +7,7 @@
 package org.demoiselle.jee.core.annotation.literal;
 
 import javax.enterprise.util.AnnotationLiteral;
+
 import org.demoiselle.jee.core.annotation.Name;
 
 /**

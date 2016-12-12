@@ -8,20 +8,17 @@ package org.demoiselle.jee.security.jwt.impl;
 
 import static java.lang.Float.valueOf;
 import static java.lang.System.out;
+import static org.junit.Assert.assertEquals;
+
 import javax.inject.Inject;
+
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
-import static java.lang.Float.valueOf;
-import static java.lang.Float.valueOf;
-import static java.lang.Float.valueOf;
 
 /**
  *

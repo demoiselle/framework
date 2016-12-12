@@ -13,6 +13,7 @@ import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 
 /**
  * This class get the Tenant in MultiTenantContext for hibernate uses,
+ * implementation of @CurrentTenantIdentifierResolver in Hibernate.
  * 
  * @author SERPRO
  *

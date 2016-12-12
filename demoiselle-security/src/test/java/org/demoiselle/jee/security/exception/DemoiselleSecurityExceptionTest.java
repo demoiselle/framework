@@ -1,20 +1,25 @@
-
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ */
 package org.demoiselle.jee.security.exception;
 
 import java.util.HashMap;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 public class DemoiselleSecurityExceptionTest {
-
 
     @BeforeClass
     public static void setUpClass() {
@@ -24,6 +29,7 @@ public class DemoiselleSecurityExceptionTest {
     public static void tearDownClass() {
     }
     private DemoiselleSecurityException instance;
+
     public DemoiselleSecurityExceptionTest() {
     }
 
