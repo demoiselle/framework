@@ -72,12 +72,10 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 		// configurations can changed during application execution.
 
 		// Get Tenant by name
-		//TODO usar create named query
-		Query query = entityManagerMaster.getEntityManager().createQuery("select u from Tenant u where u.name = :value",
-				Tenant.class);
-		query.setParameter("value", tenantNameUrl);
+		Query query = entityManagerMaster.getEntityManager().createNamedQuery("Tenant.findByName");
+		query.setParameter("name", tenantNameUrl);
 
-		//TODO usar retorno do CRUD -> AGUARDANDO CRUD
+		// TODO usar retorno do CRUD -> AGUARDANDO CRUD
 		List<Tenant> list = query.getResultList();
 
 		if (list.size() == 1) {
