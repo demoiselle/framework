@@ -93,8 +93,6 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     @Override
     public ResultSet find() {
-    	//TODO SYSOUT
-    	System.out.println(this.resultSet);
     	
         try {
         	

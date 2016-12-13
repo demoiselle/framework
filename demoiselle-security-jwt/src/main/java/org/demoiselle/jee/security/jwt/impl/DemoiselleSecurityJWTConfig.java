@@ -12,7 +12,7 @@ import org.demoiselle.jee.core.annotation.Name;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @Configuration(prefix = "demoiselle.security.jwt")
 public class DemoiselleSecurityJWTConfig implements Serializable {
@@ -28,9 +28,11 @@ public class DemoiselleSecurityJWTConfig implements Serializable {
     @Name("publicKey")
     private String publicKey;
 
+    //TODO informar a unidade
     @Name("timetolive")
     private Float tempo;
-
+    
+    //TODO mudar para pt
     @Name("issuer")
     private String remetente;
 

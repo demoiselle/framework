@@ -57,7 +57,6 @@ public class DemoiselleCrudConfigTest {
      */
     @Test
     public void testGetAcceptRange() {
-        System.out.println("getAcceptRange");
         int expResult = 20;
         int result = instance.getAcceptRange();
         assertEquals(expResult, result);
@@ -68,7 +67,6 @@ public class DemoiselleCrudConfigTest {
      */
     @Test
     public void testSetAcceptRange() {
-        System.out.println("setAcceptRange");
         int acceptRange = 100;
         instance.setAcceptRange(100);
         int result = instance.getAcceptRange();
@@ -80,7 +78,6 @@ public class DemoiselleCrudConfigTest {
      */
     @Test
     public void testIsPatternsEnabled() {
-        System.out.println("isPatternsEnabled");
         boolean expResult = true;
         boolean result = instance.isPatternsEnabled();
         assertEquals(expResult, result);
@@ -91,7 +88,6 @@ public class DemoiselleCrudConfigTest {
      */
     @Test
     public void testSetPatternsEnabled() {
-        System.out.println("setPatternsEnabled");
         boolean patternsEnabled = false;
         instance.setPatternsEnabled(false);
         boolean result = instance.isPatternsEnabled();

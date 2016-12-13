@@ -38,7 +38,6 @@ public class DynamicManagerTest {
     
     @Test
     public void testloadEngine() throws ScriptException  {        
-    	System.out.println("LoadEngine test" );           	
         Assert.assertNotNull(dm.loadEngine("nashorn"));
     }
     
@@ -58,7 +57,6 @@ public class DynamicManagerTest {
     
     @Test
     public void testloadScript() throws ScriptException  {        
-    	System.out.println("LoadScript test");         	
     	String javaScriptSource = "var a= X;  X=1 ; ";
     	dm.loadEngine("nashorn");                 		                                         
         Assert.assertEquals( true , dm.loadScript("testJS", javaScriptSource));
@@ -66,7 +64,6 @@ public class DynamicManagerTest {
      
     @Test
     public void testCacheSize() throws ScriptException  {        
-    	System.out.println("CacheSize test" );  
     	dm.loadEngine("nashorn");   
     	
         Assert.assertEquals(1,dm.getCacheSize());
@@ -74,7 +71,6 @@ public class DynamicManagerTest {
       
     @Test
     public void testGetScript() throws ScriptException {
-    	System.out.println("GetScript test");
     	String javaScriptSource = "var a= X;  X=1 ; ";
         dm.loadEngine("nashorn");     
         dm.loadScript("test1", javaScriptSource);
@@ -84,7 +80,6 @@ public class DynamicManagerTest {
     
     @Test
     public void testRemoveScript() throws ScriptException {
-    	System.out.println("RemoveScript test");
     	String javaScriptSource = "var a= X;  X=1 ; ";
         dm.loadEngine("nashorn");     
         dm.loadScript("test2", javaScriptSource);
@@ -94,8 +89,6 @@ public class DynamicManagerTest {
         
     @Test
     public void testEvalContext() throws ScriptException {           	
-    	System.out.println("Compilation and execution test..."); 
-    	
     	String javaScriptSource = "var a= X;  X=1 ; ";
         dm.loadEngine("nashorn");     
         dm.loadScript("teste3", javaScriptSource);

@@ -109,7 +109,6 @@ public class TokenManagerImplMasterTest {
         dml.addPermission("Categoria", "Consultar");
         instance.setUser(dml);
         localtoken = token.getKey();
-        System.out.println(token.getKey());
         assertNotEquals("", token.getKey());
     }
 

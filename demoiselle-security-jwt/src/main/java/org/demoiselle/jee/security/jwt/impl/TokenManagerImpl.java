@@ -84,6 +84,7 @@ public class TokenManagerImpl implements TokenManager {
             try {
 
                 if (config.getType() == null) {
+                	//TODO usar status
                     throw new DemoiselleSecurityException(bundle.chooseType(), 500);
                 }
 
@@ -105,7 +106,7 @@ public class TokenManagerImpl implements TokenManager {
                     publicKey = getPublic();
                 }
 
-            } catch (DemoiselleSecurityException | JoseException | InvalidKeySpecException | NoSuchAlgorithmException ex) {
+            } catch (JoseException | InvalidKeySpecException | NoSuchAlgorithmException ex) {
                 logger.severe(ex.getMessage());
             }
 
@@ -150,11 +151,11 @@ public class TokenManagerImpl implements TokenManager {
 
     @Override
     public void setUser(DemoiselleUser user) {
-        long tempo = (long) (now().getValueInMillis() + (config.getTempo() * 60 * 1_000));
+        long time = (long) (now().getValueInMillis() + (config.getTempo() * 60 * 1_000));
         try {
             JwtClaims claims = new JwtClaims();
             claims.setIssuer(config.getRemetente());
-            claims.setExpirationTime(fromMilliseconds(tempo));
+            claims.setExpirationTime(fromMilliseconds(time));
             claims.setAudience(config.getDestinatario());
             claims.setGeneratedJwtId();
             claims.setIssuedAtToNow();
@@ -170,6 +171,7 @@ public class TokenManagerImpl implements TokenManager {
             jws.setPayload(claims.toJson());
             jws.setKey(privateKey);
             jws.setKeyIdHeaderValue("demoiselle-security-jwt");
+            //TODO parametrizar
             jws.setAlgorithmHeaderValue(RSA_USING_SHA256);
             token.setKey(jws.getCompactSerialization());
             token.setType("JWT");
@@ -184,6 +186,7 @@ public class TokenManagerImpl implements TokenManager {
         return getUser() != null;
     }
 
+    //TODO comentar
     private PrivateKey getPrivate() throws NoSuchAlgorithmException, InvalidKeySpecException {
 
         if (config.getPrivateKey() == null) {

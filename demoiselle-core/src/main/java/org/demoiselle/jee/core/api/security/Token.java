@@ -33,5 +33,6 @@ public interface Token {
      *
      * @param type Type name
      */
+    //TODO usar enum
     public void setType(String type);
 }

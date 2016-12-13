@@ -62,7 +62,7 @@ public class TokenManagerImpl implements TokenManager {
             repo.putIfAbsent(value, user.clone());
             token.setKey(value);
         }
-        
+        //TODO usar enum
         token.setType("Token");
     }
 
