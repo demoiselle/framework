@@ -72,13 +72,7 @@ public class TokenManagerImpl implements TokenManager {
     @PostConstruct
     public void init() {
         if (publicKey == null) {
-            logger.info(bundle.title());
-            logger.info(bundle.typeServer(config.getType() != null ? config.getType() : bundle.error()));
-            logger.info(bundle.primaryKey((config.getPrivateKey() != null && !config.getPrivateKey().isEmpty()) ? config.getPrivateKey().substring(25, 10) : bundle.error()));
-            logger.info(bundle.publicKey((config.getPublicKey() != null && !config.getPublicKey().isEmpty()) ? config.getPrivateKey().substring(25, 10) : bundle.error()));
-            logger.info(bundle.ageToken(config.getTempo().toString() != null ? config.getTempo().toString() : bundle.error()));
-            logger.info(bundle.issuer(config.getRemetente() != null ? config.getRemetente() : bundle.error()));
-            logger.info(bundle.audience(config.getDestinatario() != null ? config.getDestinatario() : bundle.error()));
+
             try {
 
                 if (config.getType() == null) {
