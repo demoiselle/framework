@@ -19,6 +19,9 @@ import org.demoiselle.jee.multitenancy.hibernate.entity.Tenant;
 @RequestScoped
 public class MultiTenantContext {
 
+	/**
+	 * Variable to hond tenant um Context.
+	 */
 	private Tenant tenant;
 
 	public MultiTenantContext() {
