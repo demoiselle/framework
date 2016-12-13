@@ -11,6 +11,7 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
 
 /**
  * TODO javadoc
+ * 
  * @author SERPRO
  *
  */
@@ -54,4 +55,19 @@ public interface DemoiselleMultitenancyMessage {
 	 */
 	@MessageTemplate("{log-uri-path-unchaged}")
 	String logUriPathUnchanged(String uri);
+
+	/**
+	 * 
+	 * @param database
+	 * @return
+	 */
+	@MessageTemplate("{log-warn-error-when-drop-database}")
+	String logWarnErrorWhenDropDatabase(String database);
+
+	/**
+	 * 
+	 * @return
+	 */
+	@MessageTemplate("{log-warn-error-when-parse-configuration-tenant}")
+	String logWarnErrorWhenParseConfigurationTenant();
 }

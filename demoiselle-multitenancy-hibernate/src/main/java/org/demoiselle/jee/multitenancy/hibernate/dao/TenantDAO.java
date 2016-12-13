@@ -57,7 +57,7 @@ public class TenantDAO extends AbstractDAO<Tenant, Long> {
 					.createQuery("SELECT tenant FROM Tenant tenant where tenant.name = :name", Tenant.class)
 					.setParameter("name", name).getSingleResult();
 		} catch (Exception e) {
-			//TODO remover metodo
+			// TODO remover metodo -> AGUARDANDO FECHAMENTO DO CRUD
 		}
 		return tenant;
 	}

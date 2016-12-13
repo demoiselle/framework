@@ -77,7 +77,7 @@ public class TenantSelectorFilter implements ContainerRequestFilter {
 				Tenant.class);
 		query.setParameter("value", tenantNameUrl);
 
-		//TODO usar retorno unico
+		//TODO usar retorno do CRUD -> AGUARDANDO CRUD
 		List<Tenant> list = query.getResultList();
 
 		if (list.size() == 1) {

@@ -11,12 +11,14 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.spi.CDI;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.demoiselle.jee.multitenancy.hibernate.exception.DemoiselleMultiTenancyException;
+import org.demoiselle.jee.multitenancy.hibernate.message.DemoiselleMultitenancyMessage;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.hibernate.service.spi.ServiceRegistryAwareService;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
@@ -37,9 +39,7 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 	private ResourceBundle config = ResourceBundle.getBundle("demoiselle");
 
 	// Load messages manually because the @Inject dont enable yet
-	//TODO usar CDI.select
-	private ResourceBundle messages = ResourceBundle
-			.getBundle("org/demoiselle/jee/multitenancy/hibernate/message/DemoiselleMultitenancyMessage");
+	private DemoiselleMultitenancyMessage messages;
 
 	@Override
 	public boolean supportsAggressiveRelease() {
@@ -96,9 +96,7 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 
 			connection.createStatement().execute(setDatabase + " " + finalDatabaseName);
 		} catch (final SQLException e) {
-			//TODO usar CDI
-			throw new DemoiselleMultiTenancyException(
-					messages.getString("error-set-schema").replace("%s", tenantIdentifier), e);
+			throw new DemoiselleMultiTenancyException(getMessage().errorSetSchema(tenantIdentifier), e);
 		}
 		return connection;
 	}
@@ -112,6 +110,13 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 	@Override
 	public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
 		releaseAnyConnection(connection);
+	}
+
+	private DemoiselleMultitenancyMessage getMessage() {
+		if (this.messages == null) {
+			this.messages = CDI.current().select(DemoiselleMultitenancyMessage.class).get();
+		}
+		return this.messages;
 	}
 
 }

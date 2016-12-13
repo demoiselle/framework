@@ -8,16 +8,20 @@ package org.demoiselle.jee.multitenancy.hibernate.entity;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.logging.Logger;
 
+import javax.enterprise.inject.spi.CDI;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.demoiselle.jee.multitenancy.hibernate.message.DemoiselleMultitenancyMessage;
 import org.jose4j.json.JsonUtil;
 
 /**
@@ -48,6 +52,12 @@ public class Tenant implements Serializable {
 
 	@Column(columnDefinition = "TEXT", updatable = true, nullable = true)
 	private String configuration;
+
+	@Transient
+	private Logger logger;
+
+	@Transient
+	private DemoiselleMultitenancyMessage multitenancyMessages;
 
 	public Tenant() {
 	}
@@ -96,8 +106,8 @@ public class Tenant implements Serializable {
 			if (configuration != null)
 				map = JsonUtil.parseJson(configuration);
 		} catch (Exception e) {
-			//TODO logar warn
 			// Ignore parsing error
+			getLogger().warning(getMessage().logWarnErrorWhenParseConfigurationTenant());
 		}
 
 		return map;
@@ -110,6 +120,20 @@ public class Tenant implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	private DemoiselleMultitenancyMessage getMessage() {
+		if (this.multitenancyMessages == null) {
+			this.multitenancyMessages = CDI.current().select(DemoiselleMultitenancyMessage.class).get();
+		}
+		return this.multitenancyMessages;
+	}
+
+	private Logger getLogger() {
+		if (this.logger == null) {
+			this.logger = CDI.current().select(Logger.class).get();
+		}
+		return this.logger;
 	}
 
 }

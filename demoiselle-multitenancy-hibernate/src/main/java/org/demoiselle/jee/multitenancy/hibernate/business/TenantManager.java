@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,6 +27,7 @@ import org.demoiselle.jee.multitenancy.hibernate.configuration.MultiTenancyConfi
 import org.demoiselle.jee.multitenancy.hibernate.dao.TenantDAO;
 import org.demoiselle.jee.multitenancy.hibernate.entity.Tenant;
 import org.demoiselle.jee.multitenancy.hibernate.exception.DemoiselleMultiTenancyException;
+import org.demoiselle.jee.multitenancy.hibernate.message.DemoiselleMultitenancyMessage;
 import org.demoiselle.jee.persistence.crud.pagination.ResultSet;
 
 /**
@@ -41,12 +43,18 @@ public class TenantManager {
 	private TenantDAO dao;
 
 	@Inject
-	private DemoiselleMessage messages;
+	private DemoiselleMessage coreMessages;
+
+	@Inject
+	private DemoiselleMultitenancyMessage multitenancyMessages;
 
 	private DataSource dataSource;
 
 	@Inject
 	private MultiTenancyConfiguration configuration;
+
+	@Inject
+	private Logger logger;
 
 	/**
 	 * Get tenant name in @MultiTenantContext
@@ -96,7 +104,7 @@ public class TenantManager {
 	 * @return Created Tenant
 	 */
 	public Tenant persist(Tenant tenant) {
-		tenant.setDatabaseAppVersion(messages.version());
+		tenant.setDatabaseAppVersion(coreMessages.version());
 		return dao.persist(tenant);
 	}
 
@@ -140,8 +148,8 @@ public class TenantManager {
 			try {
 				dropDatabase(conn);
 			} catch (Exception e) {
-				//TODO logar como warn
 				// Ignore errors, because maybe the table may not exist yet!
+				logger.warning(multitenancyMessages.logWarnErrorWhenDropDatabase(tenant.getName()));
 			}
 
 			// Run o DDL - CREATE
