@@ -8,13 +8,16 @@ package org.demoiselle.jee.script;
 
 import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.ApplicationScoped;
-
+import javax.inject.Inject;
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+
+import org.demoiselle.jee.script.message.DemoiselleScriptMessages;
+
 
 /** 
  * Dynamic Manager - Responsible for Managing Scripts, its compilation and execution
@@ -23,6 +26,8 @@ import javax.script.ScriptException;
  */
 @ApplicationScoped
 public class DynamicManager {
+	
+	@Inject private DemoiselleScriptMessages bundle;
 	
 	private static ConcurrentHashMap<String, Object> scriptCache = new ConcurrentHashMap <String, Object>();
 	private static ScriptEngine scriptEngine = null;
@@ -39,14 +44,14 @@ public class DynamicManager {
     	ScriptEngine engine =  new ScriptEngineManager().getEngineByName(engineName);
     	
     	if(engine == null){
-    		throw new ScriptException("Cannot load the engine.");	    		
+    		throw new ScriptException(bundle.cannotLoadEngine());	    		
     	}
     	   	    	
 		if (engine instanceof Compilable) {
 			DynamicManager.scriptEngine = engine;
 			return engine;
 		}else {
-			throw new ScriptException("Engine can't compile code. Interface Compilable not implemented by engine.)");
+			throw new ScriptException(bundle.engineNotCompilable());
 		}
     			
     }
@@ -70,19 +75,20 @@ public class DynamicManager {
 	 * Run the script with context.
 	 * 
 	 * To add a variable in context to eval script use context.put("variableName", value) 
-	 * Respective resulting values can be acessed from context use context.get("variableName"); 
+	 * Respective resulting values can be accessed from context use context.get("variableName"); 
 	 * 
 	 * @param scriptName script name
 	 * @param context the variables to script logic.
 	 * @return Object the result of script eval.
-	 * @throws ScriptException when wcript not loaded
+	 * @throws ScriptException when script not loaded
 	 */
 	public Object eval(String scriptName, Bindings context) throws ScriptException{
 		CompiledScript  script = null;
 		Object result = null;
 							    
-		script = (CompiledScript) scriptCache.get(scriptName);
-		if(script != null){
+		if(scriptCache.get(scriptName) !=null) {
+			script = (CompiledScript) scriptCache.get(scriptName);
+		
 			if(context!= null)
 			   	result = script.eval(context);
 			else
@@ -90,7 +96,7 @@ public class DynamicManager {
 				   						
 			return result;	
 		}else {
-			throw new ScriptException("Script not loaded.");
+			throw new ScriptException(bundle.scriptNotLoaded());
 		}
 	}
 	
@@ -106,7 +112,7 @@ public class DynamicManager {
 		CompiledScript compiled = null;
 	
 		if(DynamicManager.scriptEngine == null ){
-			throw new ScriptException("Engine not loaded.");			
+			throw new ScriptException(bundle.engineNotLoaded());			
 		}
 		
 		Compilable engine = (Compilable) DynamicManager.scriptEngine;
