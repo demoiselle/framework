@@ -10,7 +10,6 @@ import static javax.ws.rs.Priorities.AUTHORIZATION;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 import java.io.Serializable;
-import java.util.logging.Logger;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
@@ -19,7 +18,6 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 import org.demoiselle.jee.core.annotation.Name;
-import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.annotation.NotLogged;
 import org.demoiselle.jee.security.annotation.RequiredPermission;
@@ -44,20 +42,15 @@ public class RequiredPermissionInterceptor implements Serializable {
     private SecurityContext securityContext;
 
     @Inject
-    private DemoiselleUser loggedUser;
-
-    @Inject
     private DemoiselleSecurityMessages bundle;
 
-    @Inject
-    private Logger logger;
 
     /**
      * <p>
      * Gets the values for both resource and operation properties of
      * {@code @RequiredPermission}. Delegates to {@code SecurityContext} check
      * permissions. If the user has the required permission it executes the
-     * mehtod, otherwise throws an exception. Returns what is returned from the
+     * method, otherwise throws an exception. Returns what is returned from the
      * intercepted method. If the method's return type is {@code void} returns
      * {@code null}.
      * </p>

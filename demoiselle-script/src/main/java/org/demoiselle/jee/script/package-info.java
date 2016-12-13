@@ -7,5 +7,7 @@
 /**
  * This package is intended to contain as classes related to
  * DynamicScriptManager of the Demoiselle framework.
+ * 
+ * @author SERPRO
  */
 package org.demoiselle.jee.script;

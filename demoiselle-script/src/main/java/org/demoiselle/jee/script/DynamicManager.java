@@ -25,11 +25,14 @@ import org.demoiselle.jee.script.message.DemoiselleScriptMessages;
  * @author SERPRO
  */
 @ApplicationScoped
+//TODO Criar interface no core
+//TODO Avaliar requestscoped
 public class DynamicManager {
 	
 	@Inject private DemoiselleScriptMessages bundle;
 	
 	private static ConcurrentHashMap<String, Object> scriptCache = new ConcurrentHashMap <String, Object>();
+	//TODO transformar para lista
 	private static ScriptEngine scriptEngine = null;
 
 	/**
@@ -39,11 +42,14 @@ public class DynamicManager {
 	 * @return ScriptEngine instance of engine
 	 * @throws ScriptException when interface compilable not implemented by engine
 	 */
+	//TODO avaliar uso de enum
     public ScriptEngine loadEngine(String engineName) throws ScriptException {
         DynamicManager.scriptEngine = null;
     	ScriptEngine engine =  new ScriptEngineManager().getEngineByName(engineName);
     	
     	if(engine == null){
+    		//TODO usar excecao do  demoiselle
+    		//TODO informar na mensagesm o engine escolhido
     		throw new ScriptException(bundle.cannotLoadEngine());	    		
     	}
     	   	    	
@@ -56,11 +62,13 @@ public class DynamicManager {
     			
     }
     
+    //TODO criar metodo com lista dos engine suportados
+    
     /**
 	 * Force the unLoad a JSR-223 Script engine and clear the script cache.
 	 */
     public void unloadEngine(){
-    	DynamicManager.scriptCache.clear();
+    	this.clearCache();
     	DynamicManager.scriptEngine = null;         
     }
     
@@ -96,6 +104,7 @@ public class DynamicManager {
 				   						
 			return result;	
 		}else {
+			//TODO informar na mensagem de erro o scriptname
 			throw new ScriptException(bundle.scriptNotLoaded());
 		}
 	}
@@ -108,16 +117,18 @@ public class DynamicManager {
 	 * @return Boolean   compilation ok or not
 	 * @throws ScriptException when engine not loaded 
 	 */
+	//TODO uso do syncron  em outro metodo interno e privado
 	public synchronized Boolean loadScript(String scriptName,String source ) throws ScriptException{				
 		CompiledScript compiled = null;
 	
 		if(DynamicManager.scriptEngine == null ){
+			//TODO usar excecao demoiselle
 			throw new ScriptException(bundle.engineNotLoaded());			
 		}
 		
 		Compilable engine = (Compilable) DynamicManager.scriptEngine;
 										
-		if( getScript(scriptName)== null){
+		if( getScript(scriptName)== null){			
 			compiled = engine.compile( source );			
 			DynamicManager.scriptCache.put(scriptName, compiled);
 			return true;

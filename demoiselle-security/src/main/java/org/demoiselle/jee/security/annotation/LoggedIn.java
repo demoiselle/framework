@@ -16,6 +16,7 @@ import javax.interceptor.InterceptorBinding;
 
 /**
  * <p>
+ * TODO corrigir javadoc
  * Indicates that a specific permission is required in order to invocate the
  * annotated method or class.
  * </p>
@@ -26,5 +27,6 @@ import javax.interceptor.InterceptorBinding;
 @InterceptorBinding
 @Target({METHOD, TYPE})
 @Retention(RUNTIME)
+//TODO renomear Logged , usar proprieade enabled padrao true
 public @interface LoggedIn {
 }

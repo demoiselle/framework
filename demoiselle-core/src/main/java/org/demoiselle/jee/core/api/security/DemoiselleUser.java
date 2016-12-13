@@ -33,11 +33,6 @@ public interface DemoiselleUser extends Principal, Cloneable {
     public void setName(String name);
 
     /**
-     * @param roles Principal roles
-     */
-    public void setRoles(List<String> roles);
-
-    /**
      * @param role Role name
      */
     public void addRole(String role);
@@ -80,12 +75,6 @@ public interface DemoiselleUser extends Principal, Cloneable {
 
     /**
      *
-     * @param permissions Permissions
-     */
-    public void setPermissions(Map<String, List<String>> permissions);
-
-    /**
-     *
      * @return Params
      */
     public Map<String, List<String>> getParams();
@@ -111,11 +100,6 @@ public interface DemoiselleUser extends Principal, Cloneable {
      */
     public void removeParam(String key, String value);
 
-    /**
-     *
-     * @param params Params
-     */
-    public void setParams(Map<String, List<String>> params);
 
     /**
      *

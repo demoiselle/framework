@@ -20,7 +20,7 @@ import org.demoiselle.jee.security.annotation.Cors;
 import org.demoiselle.jee.security.annotation.NoCors;
 
 /**
- *
+ * TODO javadoc
  * @author SERPRO
  */
 @Provider
@@ -35,8 +35,7 @@ public class CorsFilter implements ContainerResponseFilter {
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
         Method method = info.getResourceMethod();
-        @SuppressWarnings("rawtypes")
-        Class classe = info.getResourceClass();
+        Class<?> classe = info.getResourceClass();
 
         res.getHeaders().putSingle("Authorization", "enabled");
         res.getHeaders().putSingle("x-content-type-options", "nosniff");
@@ -49,6 +48,7 @@ public class CorsFilter implements ContainerResponseFilter {
                     res.getHeaders().remove("Access-Control-Allow-Origin");
                     res.getHeaders().remove("Access-Control-Allow-Methods");
                 } else {
+                	//TODO avaliar duplicidade de codigo
                     res.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
                     res.getHeaders().putSingle("Access-Control-Allow-Headers", "Origin, Content-type, Accept, Authorization");
                     res.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");

@@ -7,6 +7,9 @@
 package org.demoiselle.jee.security.exception;
 
 import java.util.HashMap;
+
+import javax.ws.rs.core.Response.Status;
+
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 
 /**
@@ -21,9 +24,10 @@ public class DemoiselleSecurityException extends DemoiselleRestException {
 
     private final int statusCode;
 
+    //TODO refator o construtor para o demoisellerestexception
     public DemoiselleSecurityException(String string) {
         super(string);
-        this.statusCode = 401;
+        this.statusCode = Status.INTERNAL_SERVER_ERROR.getStatusCode();
     }
 
     public DemoiselleSecurityException(String string, int statusCode) {
