@@ -5,10 +5,8 @@
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
 /**
- * Esta pacote tem o objetivo de conter as classes relacionadas aos
- * facilitadores de CRUD do framework Demoiselle.
- * 
+ * This package has the facilitators for the CRUD
+ *
  * @author SERPRO
  */
-//TODO EN Paulo
 package org.demoiselle.jee.core.api.crud;
