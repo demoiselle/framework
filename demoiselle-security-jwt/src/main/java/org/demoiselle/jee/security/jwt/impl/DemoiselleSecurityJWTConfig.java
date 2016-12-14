@@ -28,7 +28,7 @@ public class DemoiselleSecurityJWTConfig implements Serializable {
     @Name("publicKey")
     private String publicKey;
 
-    @Name("timeoLiveMilliseconds")
+    @Name("timetoLiveMilliseconds")
     private Long timetoLiveMilliseconds;
 
     @Name("issuer")
