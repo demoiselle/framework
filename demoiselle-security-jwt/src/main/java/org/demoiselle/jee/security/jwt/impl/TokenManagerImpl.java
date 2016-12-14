@@ -7,7 +7,6 @@
 package org.demoiselle.jee.security.jwt.impl;
 
 import static java.util.Base64.getDecoder;
-import static java.util.Base64.getEncoder;
 import static java.util.logging.Level.WARNING;
 import static javax.ws.rs.Priorities.AUTHENTICATION;
 import static org.jose4j.jws.AlgorithmIdentifiers.RSA_USING_SHA256;
@@ -22,6 +21,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -84,7 +85,7 @@ public class TokenManagerImpl implements TokenManager {
             try {
 
                 if (config.getType() == null) {
-                	//TODO usar status
+                    //TODO usar status
                     throw new DemoiselleSecurityException(bundle.chooseType(), 500);
                 }
 
@@ -126,19 +127,26 @@ public class TokenManagerImpl implements TokenManager {
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                         .setRequireExpirationTime()
                         .setAllowedClockSkewInSeconds(60)
-                        .setExpectedIssuer(config.getRemetente())
-                        .setExpectedAudience(config.getDestinatario())
+                        .setExpectedIssuer(config.getIssuer())
+                        .setExpectedAudience(config.getAudience())
                         .setEvaluationTime(now())
                         .setVerificationKey(publicKey)
                         .build();
                 JwtClaims jwtClaims = jwtConsumer.processToClaims(token.getKey());
                 loggedUser.setIdentity((String) jwtClaims.getClaimValue("identity"));
                 loggedUser.setName((String) jwtClaims.getClaimValue("name"));
-                //TODO incluir valores usando add
-//                loggedUser.setRoles((List) jwtClaims.getClaimValue("roles"));
-//                loggedUser.setPermissions((Map) jwtClaims.getClaimValue("permissions"));
-//                loggedUser.setParams((Map) jwtClaims.getClaimValue("params"));
-
+                List<String> list = (List<String>) jwtClaims.getClaimValue("roles");
+                list.forEach((string) -> {
+                    loggedUser.addRole(string);
+                });
+                Map<String, List<String>> map = (Map) jwtClaims.getClaimValue("params");
+                map.entrySet().forEach((entry) -> {
+                    String key = entry.getKey();
+                    List<String> value = entry.getValue();
+                    value.forEach((string) -> {
+                        loggedUser.addPermission(key, string);
+                    });
+                });
                 return loggedUser;
             } catch (InvalidJwtException ex) {
                 loggedUser = null;
@@ -151,12 +159,12 @@ public class TokenManagerImpl implements TokenManager {
 
     @Override
     public void setUser(DemoiselleUser user) {
-        long time = (long) (now().getValueInMillis() + (config.getTempo() * 60 * 1_000));
+        long time = (now().getValueInMillis() + (config.getTimetoLiveMilliseconds()));
         try {
             JwtClaims claims = new JwtClaims();
-            claims.setIssuer(config.getRemetente());
+            claims.setIssuer(config.getIssuer());
             claims.setExpirationTime(fromMilliseconds(time));
-            claims.setAudience(config.getDestinatario());
+            claims.setAudience(config.getAudience());
             claims.setGeneratedJwtId();
             claims.setIssuedAtToNow();
             claims.setNotBeforeMinutesInThePast(1);
@@ -171,8 +179,7 @@ public class TokenManagerImpl implements TokenManager {
             jws.setPayload(claims.toJson());
             jws.setKey(privateKey);
             jws.setKeyIdHeaderValue("demoiselle-security-jwt");
-            //TODO parametrizar
-            jws.setAlgorithmHeaderValue(RSA_USING_SHA256);
+            jws.setAlgorithmHeaderValue(config.getAlgorithmIdentifiers());
             token.setKey(jws.getCompactSerialization());
             token.setType("JWT");
         } catch (JoseException ex) {
@@ -186,7 +193,16 @@ public class TokenManagerImpl implements TokenManager {
         return getUser() != null;
     }
 
-    //TODO comentar
+    /**
+     *
+     * This method creates public and private keys, RSA 2048bits. When it is not
+     * found in demoiselle.properties the pair is created and written in the
+     * server log to be copied and placed in demoiselle.properties
+     *
+     * @return Private key
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     */
     private PrivateKey getPrivate() throws NoSuchAlgorithmException, InvalidKeySpecException {
 
         if (config.getPrivateKey() == null) {
@@ -195,8 +211,6 @@ public class TokenManagerImpl implements TokenManager {
             KeyPair kp = keyGenerator.genKeyPair();
             publicKey = kp.getPublic();
             privateKey = kp.getPrivate();
-            config.setPrivateKey("-----BEGIN PRIVATE KEY-----" + getEncoder().encodeToString(privateKey.getEncoded()) + "-----END PRIVATE KEY-----");
-            config.setPublicKey("-----BEGIN PUBLIC KEY-----" + getEncoder().encodeToString(publicKey.getEncoded()) + "-----END PUBLIC KEY-----");
             logger.log(WARNING, "privateKey={0}", config.getPrivateKey());
             logger.log(WARNING, "publicKey={0}", config.getPublicKey());
         }

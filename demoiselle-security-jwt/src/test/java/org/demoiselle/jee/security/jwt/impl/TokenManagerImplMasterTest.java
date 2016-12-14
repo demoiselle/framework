@@ -78,22 +78,6 @@ public class TokenManagerImplMasterTest {
     public void tearDown() {
     }
 
-    @Test
-    public void test10() {
-        out.println("init - Type null");
-        config.setType(null);
-        config.setPrivateKey(null);
-        config.setPublicKey(null);
-        ((TokenManagerImpl) instance).init();
-    }
-
-    @Test
-    public void test11() {
-        out.println("init - Type master");
-        config.setType("master");
-        ((TokenManagerImpl) instance).init();
-    }
-
     /**
      * Test of setUser method, of class TokensManagerImpl.
      */
