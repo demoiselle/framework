@@ -17,6 +17,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.demoiselle.jee.multitenancy.hibernate.configuration.MultiTenancyConfiguration;
 import org.demoiselle.jee.multitenancy.hibernate.exception.DemoiselleMultiTenancyException;
 import org.demoiselle.jee.multitenancy.hibernate.message.DemoiselleMultitenancyMessage;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
@@ -35,10 +36,8 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 	private static final long serialVersionUID = 1L;
 	private DataSource dataSource;
 
-	// Load resource bundle manually because the @Inject dont enable yet
-	private ResourceBundle config = ResourceBundle.getBundle("demoiselle");
+	private MultiTenancyConfiguration configuration;
 
-	// Load messages manually because the @Inject dont enable yet
 	private DemoiselleMultitenancyMessage messages;
 
 	@Override
@@ -52,8 +51,13 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 	@Override
 	public void injectServices(ServiceRegistryImplementor serviceRegistry) {
 		try {
+			// Load messages manually because the @Inject dont enable yet
+			ResourceBundle configBundle = ResourceBundle.getBundle("demoiselle");
+
+			// Create context to create DataSource manually
 			final Context init = new InitialContext();
-			dataSource = (DataSource) init.lookup(config.getString("demoiselle.multiTenancyTenantsDatabaseDatasource"));
+			dataSource = (DataSource) init
+					.lookup(configBundle.getString("demoiselle.multiTenancyTenantsDatabaseDatasource"));// configuration.getMultiTenancyTenantsDatabaseDatasource());
 		} catch (final NamingException e) {
 			throw new DemoiselleMultiTenancyException(e);
 		}
@@ -83,9 +87,9 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 	public Connection getConnection(String tenantIdentifier) throws SQLException {
 		final Connection connection = getAnyConnection();
 		try {
-			String prefix = config.getString("demoiselle.multiTenancyTenantDatabasePrefix");
-			String setDatabase = config.getString("demoiselle.multiTenancySetDatabaseSQL");
-			String masterDatabase = config.getString("demoiselle.multiTenancyMasterDatabase");
+			String prefix = getConfiguration().getMultiTenancyTenantDatabasePrefix();
+			String setDatabase = getConfiguration().getMultiTenancySetDatabaseSQL();
+			String masterDatabase = getConfiguration().getMultiTenancyMasterDatabase();
 			String finalDatabaseName = prefix + "" + tenantIdentifier;
 
 			// If the master database name equals a tenantIdentifier dont concat
@@ -103,7 +107,7 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 
 	@Override
 	public void releaseAnyConnection(Connection connection) throws SQLException {
-		// Close JDBC connection
+		// Close JDBC connectionMessage
 		connection.close();
 	}
 
@@ -112,11 +116,28 @@ public class MultiTenantProvider implements MultiTenantConnectionProvider, Servi
 		releaseAnyConnection(connection);
 	}
 
+	/**
+	 * Method to help to get messages class in CDI context.
+	 * 
+	 * @return Multitenancy messages
+	 */
 	private DemoiselleMultitenancyMessage getMessage() {
 		if (this.messages == null) {
 			this.messages = CDI.current().select(DemoiselleMultitenancyMessage.class).get();
 		}
 		return this.messages;
+	}
+
+	/**
+	 * Method to help to get configuration class in CDI context.
+	 * 
+	 * @return Multitenancy configuration
+	 */
+	private MultiTenancyConfiguration getConfiguration() {
+		if (this.configuration == null) {
+			this.configuration = CDI.current().select(MultiTenancyConfiguration.class).get();
+		}
+		return this.configuration;
 	}
 
 }

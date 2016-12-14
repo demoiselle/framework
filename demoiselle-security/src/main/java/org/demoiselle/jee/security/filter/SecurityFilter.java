@@ -6,19 +6,20 @@
  */
 package org.demoiselle.jee.security.filter;
 
+import static javax.ws.rs.Priorities.AUTHENTICATION;
+import static javax.ws.rs.core.Response.ok;
+
 import java.io.IOException;
-import static java.util.logging.Level.INFO;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
+
 import javax.annotation.Priority;
 import javax.inject.Inject;
-import static javax.ws.rs.Priorities.AUTHENTICATION;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Response;
-import static javax.ws.rs.core.Response.ok;
 import javax.ws.rs.ext.Provider;
+
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.security.DemoiselleSecurityConfig;
 
@@ -45,11 +46,13 @@ public class SecurityFilter implements ContainerRequestFilter {
         if (req.getMethod().equals("OPTIONS")) {
             Response.ResponseBuilder responseBuilder = ok();
             if (config.isCorsEnabled()) {
+            	//TODO deixar parametrizado no demoiselle.properties
                 responseBuilder.header("Access-Control-Allow-Headers", "origin, content-type, accept, Authorization");
                 responseBuilder.header("Access-Control-Allow-Credentials", "true");
                 responseBuilder.header("Access-Control-Allow-Origin", "*");
                 responseBuilder.header("Access-Control-Allow-Methods", "HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE");
             }
+            //TODO deixar parametrizado no demoiselle.properties
             responseBuilder.header("Access-Control-Max-Age", "3600000");
             req.abortWith(responseBuilder.build());
         }
@@ -63,13 +66,8 @@ public class SecurityFilter implements ContainerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            logger.fine(e.getMessage());
+        	//TODO usar mensagem do demoiselle
+            logger.severe(e.getMessage());
         }
-    }
-
-    @PostConstruct
-    public void init() {
-        logger.info("Demoiselle Module: Security");
-        logger.log(INFO, "CORS Enabled :{0}", config.isCorsEnabled());
     }
 }

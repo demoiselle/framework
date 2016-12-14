@@ -7,19 +7,19 @@
  */
 package org.demoiselle.jee.security.impl;
 
-import java.util.ArrayList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+
 import org.apache.deltaspike.testcontrol.api.TestControl;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -194,27 +194,6 @@ public class DemoiselleUserImplTest {
     public void test34() {
         instance.removeRole("Role1");
         assertEquals(instance.getRoles().size(), 2);
-    }
-
-    @Test
-    public void test41() {
-        Map<String, List<String>> perm = new ConcurrentHashMap<>();
-        instance.setPermissions(perm);
-        assertEquals(instance.getPermissions().size(), 0);
-    }
-
-    @Test
-    public void test42() {
-        Map<String, List<String>> param = new ConcurrentHashMap<>();
-        instance.setParams(param);
-        assertEquals(instance.getParams().size(), 0);
-    }
-
-    @Test
-    public void test43() {
-        List<String> roles = new ArrayList<>();
-        instance.setRoles(roles);
-        assertEquals(instance.getRoles().size(), 0);
     }
 
 }

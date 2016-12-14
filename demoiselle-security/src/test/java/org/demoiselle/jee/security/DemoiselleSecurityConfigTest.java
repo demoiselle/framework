@@ -54,14 +54,4 @@ public class DemoiselleSecurityConfigTest {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of setCorsEnabled method, of class DemoiselleSecurityConfig.
-     */
-    @Test
-    public void testSetCorsEnabled() {
-        boolean corsEnabled = false;
-        instance.setCorsEnabled(corsEnabled);
-        assertEquals(instance.isCorsEnabled(), corsEnabled);
-    }
-
 }

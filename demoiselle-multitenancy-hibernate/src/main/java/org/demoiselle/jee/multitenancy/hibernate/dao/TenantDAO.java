@@ -15,7 +15,8 @@ import org.demoiselle.jee.multitenancy.hibernate.entity.Tenant;
 import org.demoiselle.jee.persistence.crud.AbstractDAO;
 
 /**
- * TODO javadoc
+ * This class contains the methods required to interact with Tenant entity in
+ * database.
  * 
  * @author SERPRO
  *
@@ -50,15 +51,10 @@ public class TenantDAO extends AbstractDAO<Tenant, Long> {
 	 *            Tenant name
 	 * @return Tenant
 	 */
-	public Tenant find(String name) {
-		Tenant tenant = null;
-		try {
-			tenant = getEntityManager()
-					.createQuery("SELECT tenant FROM Tenant tenant where tenant.name = :name", Tenant.class)
-					.setParameter("name", name).getSingleResult();
-		} catch (Exception e) {
-			// TODO remover metodo -> AGUARDANDO FECHAMENTO DO CRUD
-		}
+	public Tenant findByName(String name) {
+		Tenant tenant = getEntityManager().createNamedQuery("Tenant.findByName", Tenant.class)
+				.setParameter("name", name).getSingleResult();
+
 		return tenant;
 	}
 

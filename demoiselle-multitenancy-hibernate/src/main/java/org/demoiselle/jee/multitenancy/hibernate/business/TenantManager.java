@@ -28,6 +28,7 @@ import org.demoiselle.jee.multitenancy.hibernate.dao.TenantDAO;
 import org.demoiselle.jee.multitenancy.hibernate.entity.Tenant;
 import org.demoiselle.jee.multitenancy.hibernate.exception.DemoiselleMultiTenancyException;
 import org.demoiselle.jee.multitenancy.hibernate.message.DemoiselleMultitenancyMessage;
+import org.demoiselle.jee.persistence.crud.AbstractBusiness;
 import org.demoiselle.jee.persistence.crud.pagination.ResultSet;
 
 /**
@@ -37,7 +38,7 @@ import org.demoiselle.jee.persistence.crud.pagination.ResultSet;
  *
  */
 @Stateless
-public class TenantManager {
+public class TenantManager extends AbstractBusiness<Tenant, Long> {
 
 	@Inject
 	private TenantDAO dao;
@@ -77,23 +78,23 @@ public class TenantManager {
 	}
 
 	/**
-	 * Simple find @Tenant by name
-	 * 
-	 * @param name
-	 *            Name of tenant
-	 * @return Tenant entity
-	 */
-	public Tenant find(String name) {
-		return dao.find(name);
-	}
-
-	/**
 	 * Simple find ALL Tenants.
 	 * 
 	 * @return List of @Tenant in @ResultSet
 	 */
 	public ResultSet find() {
 		return dao.find();
+	}
+
+	/**
+	 * Simple find @Tenant by name
+	 * 
+	 * @param name
+	 *            Name of tenant
+	 * @return Tenant entity
+	 */
+	public Tenant findByName(String name) {
+		return dao.findByName(name);
 	}
 
 	/**

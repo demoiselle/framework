@@ -10,7 +10,7 @@ import org.apache.deltaspike.core.api.message.MessageBundle;
 import org.apache.deltaspike.core.api.message.MessageTemplate;
 
 /**
- * TODO javadoc
+ * Class that contains the messages for multitenancy module.
  * 
  * @author SERPRO
  *
@@ -19,6 +19,7 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
 public interface DemoiselleMultitenancyMessage {
 
 	/**
+	 * Message that occurs error when set schema
 	 * 
 	 * @param tenant
 	 *            Tenant name
@@ -28,6 +29,7 @@ public interface DemoiselleMultitenancyMessage {
 	String errorSetSchema(String tenant);
 
 	/**
+	 * Message to return when user does not belongs to tenant in Filter.
 	 * 
 	 * @param tenant
 	 *            Tenant name
@@ -37,6 +39,7 @@ public interface DemoiselleMultitenancyMessage {
 	String errorUserNotBelongTenant(String tenant);
 
 	/**
+	 * Message to return when the original url was changed in Filter.
 	 * 
 	 * @param tenant
 	 *            Tenant name
@@ -48,6 +51,7 @@ public interface DemoiselleMultitenancyMessage {
 	String logUriPathChanged(String tenant, String uri);
 
 	/**
+	 * Message to return when the original url was not changed in Filter.
 	 * 
 	 * @param uri
 	 *            Final URI
@@ -57,6 +61,7 @@ public interface DemoiselleMultitenancyMessage {
 	String logUriPathUnchanged(String uri);
 
 	/**
+	 * Error when in creation of Tenant occurs a drop tables error.
 	 * 
 	 * @param database
 	 * @return
@@ -65,9 +70,11 @@ public interface DemoiselleMultitenancyMessage {
 	String logWarnErrorWhenDropDatabase(String database);
 
 	/**
+	 * Log warn when occurs error on load JSON configuration of Tenant.
 	 * 
 	 * @return
 	 */
 	@MessageTemplate("{log-warn-error-when-parse-configuration-tenant}")
 	String logWarnErrorWhenParseConfigurationTenant();
+
 }

@@ -6,7 +6,14 @@
  */
 package org.demoiselle.jee.security.jwt.impl;
 
-import org.demoiselle.jee.security.message.DemoiselleSecurityJWTMessages;
+import static java.util.Base64.getDecoder;
+import static java.util.Base64.getEncoder;
+import static java.util.logging.Level.WARNING;
+import static javax.ws.rs.Priorities.AUTHENTICATION;
+import static org.jose4j.jws.AlgorithmIdentifiers.RSA_USING_SHA256;
+import static org.jose4j.jwt.NumericDate.fromMilliseconds;
+import static org.jose4j.jwt.NumericDate.now;
+
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -15,26 +22,20 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import static java.util.Base64.getDecoder;
-import static java.util.Base64.getEncoder;
-import java.util.List;
-import java.util.Map;
-import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import static javax.ws.rs.Priorities.AUTHENTICATION;
+
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
-import static org.jose4j.jws.AlgorithmIdentifiers.RSA_USING_SHA256;
+import org.demoiselle.jee.security.message.DemoiselleSecurityJWTMessages;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
-import static org.jose4j.jwt.NumericDate.fromMilliseconds;
-import static org.jose4j.jwt.NumericDate.now;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
@@ -48,6 +49,7 @@ import org.jose4j.lang.JoseException;
  * blank and see the log suggested keys The JWT standard is one of the safest
  * and performers today, to learn more check https://jwt.io/
  *
+ * @author SERPRO
  */
 @ApplicationScoped
 @Priority(AUTHENTICATION)
@@ -82,6 +84,7 @@ public class TokenManagerImpl implements TokenManager {
             try {
 
                 if (config.getType() == null) {
+                	//TODO usar status
                     throw new DemoiselleSecurityException(bundle.chooseType(), 500);
                 }
 
@@ -103,7 +106,7 @@ public class TokenManagerImpl implements TokenManager {
                     publicKey = getPublic();
                 }
 
-            } catch (DemoiselleSecurityException | JoseException | InvalidKeySpecException | NoSuchAlgorithmException ex) {
+            } catch (JoseException | InvalidKeySpecException | NoSuchAlgorithmException ex) {
                 logger.severe(ex.getMessage());
             }
 
@@ -131,9 +134,10 @@ public class TokenManagerImpl implements TokenManager {
                 JwtClaims jwtClaims = jwtConsumer.processToClaims(token.getKey());
                 loggedUser.setIdentity((String) jwtClaims.getClaimValue("identity"));
                 loggedUser.setName((String) jwtClaims.getClaimValue("name"));
-                loggedUser.setRoles((List) jwtClaims.getClaimValue("roles"));
-                loggedUser.setPermissions((Map) jwtClaims.getClaimValue("permissions"));
-                loggedUser.setParams((Map) jwtClaims.getClaimValue("params"));
+                //TODO incluir valores usando add
+//                loggedUser.setRoles((List) jwtClaims.getClaimValue("roles"));
+//                loggedUser.setPermissions((Map) jwtClaims.getClaimValue("permissions"));
+//                loggedUser.setParams((Map) jwtClaims.getClaimValue("params"));
 
                 return loggedUser;
             } catch (InvalidJwtException ex) {
@@ -147,11 +151,11 @@ public class TokenManagerImpl implements TokenManager {
 
     @Override
     public void setUser(DemoiselleUser user) {
-        long tempo = (long) (now().getValueInMillis() + (config.getTempo() * 60 * 1_000));
+        long time = (long) (now().getValueInMillis() + (config.getTempo() * 60 * 1_000));
         try {
             JwtClaims claims = new JwtClaims();
             claims.setIssuer(config.getRemetente());
-            claims.setExpirationTime(fromMilliseconds(tempo));
+            claims.setExpirationTime(fromMilliseconds(time));
             claims.setAudience(config.getDestinatario());
             claims.setGeneratedJwtId();
             claims.setIssuedAtToNow();
@@ -167,6 +171,7 @@ public class TokenManagerImpl implements TokenManager {
             jws.setPayload(claims.toJson());
             jws.setKey(privateKey);
             jws.setKeyIdHeaderValue("demoiselle-security-jwt");
+            //TODO parametrizar
             jws.setAlgorithmHeaderValue(RSA_USING_SHA256);
             token.setKey(jws.getCompactSerialization());
             token.setType("JWT");
@@ -181,6 +186,7 @@ public class TokenManagerImpl implements TokenManager {
         return getUser() != null;
     }
 
+    //TODO comentar
     private PrivateKey getPrivate() throws NoSuchAlgorithmException, InvalidKeySpecException {
 
         if (config.getPrivateKey() == null) {

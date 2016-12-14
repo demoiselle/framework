@@ -6,54 +6,24 @@
  */
 package org.demoiselle.jee.script.test;
 
-import javax.inject.Inject;
 import javax.script.Bindings;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
-
 import org.demoiselle.jee.script.DynamicManager;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 
-@RunWith(Arquillian.class)
+
 public class DynamicManagerTest {
 
 	@Rule
 	public ExpectedException expectedEx = ExpectedException.none();
-	
-    @Inject
-    private DynamicManager dm;
-
-    @Deployment
-    public static Archive<?> createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "teste.war");
-        war.addPackage(DynamicManager.class.getPackage());        
-        // Add here the packages for testing other engines, nashorn is already embedded in the jdk.
-        war.addPackages(true,"groovy", "org.codehaus.groovy");        
-        war.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-
-        return war;           
-    }
-      
-    @Test
-    public void testLoadScriptEngineNotLoaded() throws ScriptException {           	
-    	String javaScriptSource = "var a= 5; a; ";
-    	dm.unloadEngine();
-        expectedEx.expect(ScriptException.class);
-    	expectedEx.expectMessage("Engine not loaded.");
-    	dm.loadScript("teste9", javaScriptSource);
-        
-    }
-    
+	    
+    private DynamicManager dm = new DynamicManager();
+       
     @Test
     public void testClearCache() {        
     	dm.clearCache();   
@@ -68,44 +38,39 @@ public class DynamicManagerTest {
     
     @Test
     public void testloadEngine() throws ScriptException  {        
-    	System.out.println("LoadEngine test" );           	
-        Assert.assertNotNull(dm.loadEngine("groovy"));
+        Assert.assertNotNull(dm.loadEngine("nashorn"));
     }
     
     @Test
     public void testloadEngineNotvalid() throws ScriptException  {    	
-    	expectedEx.expect(ScriptException.class);
-    	expectedEx.expectMessage("Cannot load the engine.");
-        dm.loadEngine("not valid engine");
+    	expectedEx.expect(NullPointerException.class);    	
+        dm.loadEngine("randomEngine");
     }
        
     @Test
-    public void testloadScriptAlreadyInCache() throws ScriptException  {            	     
-    	String groovyScriptSource = "int a = X;  X= a + a;";
-    	dm.loadEngine("groovy");         
-    	dm.loadScript("test", groovyScriptSource);    	
-        Assert.assertEquals( false , dm.loadScript("test", groovyScriptSource) );
+    public void testloadScriptAlreadyInCache() throws ScriptException  {            	         	
+    	String javaScriptSource = "var a= X;  X=1 ; ";
+    	dm.loadEngine("nashorn");         
+    	dm.loadScript("test", javaScriptSource);    	
+        Assert.assertEquals( false , dm.loadScript("test", javaScriptSource) );
     }
     
     @Test
     public void testloadScript() throws ScriptException  {        
-    	System.out.println("LoadScript test");     
-    	String groovyScriptSource = "int a = X;  X= a + a;";
-    	dm.loadEngine("groovy");                 		                                         
-        Assert.assertEquals( true , dm.loadScript("testGroovy", groovyScriptSource));
+    	String javaScriptSource = "var a= X;  X=1 ; ";
+    	dm.loadEngine("nashorn");                 		                                         
+        Assert.assertEquals( true , dm.loadScript("testJS", javaScriptSource));
     }
      
     @Test
     public void testCacheSize() throws ScriptException  {        
-    	System.out.println("CacheSize test" );  
-    	dm.loadEngine("groovy");   
+    	dm.loadEngine("nashorn");   
     	
         Assert.assertEquals(1,dm.getCacheSize());
     }
       
     @Test
     public void testGetScript() throws ScriptException {
-    	System.out.println("GetScript test");
     	String javaScriptSource = "var a= X;  X=1 ; ";
         dm.loadEngine("nashorn");     
         dm.loadScript("test1", javaScriptSource);
@@ -115,7 +80,6 @@ public class DynamicManagerTest {
     
     @Test
     public void testRemoveScript() throws ScriptException {
-    	System.out.println("RemoveScript test");
     	String javaScriptSource = "var a= X;  X=1 ; ";
         dm.loadEngine("nashorn");     
         dm.loadScript("test2", javaScriptSource);
@@ -125,8 +89,6 @@ public class DynamicManagerTest {
         
     @Test
     public void testEvalContext() throws ScriptException {           	
-    	System.out.println("Compilation and execution test..."); 
-    	
     	String javaScriptSource = "var a= X;  X=1 ; ";
         dm.loadEngine("nashorn");     
         dm.loadScript("teste3", javaScriptSource);
@@ -152,10 +114,9 @@ public class DynamicManagerTest {
     public void testEvalScriptNotValid() throws ScriptException {           	
     	    	
         dm.loadEngine("nashorn");        
-        expectedEx.expect(ScriptException.class);
-    	expectedEx.expectMessage("Script not loaded.");
+        expectedEx.expect(NullPointerException.class);
                       
-        dm.eval("teste5", null);
+        dm.eval("teste555", null);
     }
            
 }
