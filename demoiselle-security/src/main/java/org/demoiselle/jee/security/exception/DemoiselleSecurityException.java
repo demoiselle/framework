@@ -6,8 +6,9 @@
  */
 package org.demoiselle.jee.security.exception;
 
-import org.demoiselle.jee.rest.exception.DemoiselleRestException;
+import javax.ws.rs.core.Response.Status;
 
+import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 /**
  *
  * @author SERPRO
@@ -18,25 +19,17 @@ public class DemoiselleSecurityException extends DemoiselleRestException {
 
     public DemoiselleSecurityException(String string) {
         super(string);
+        this.statusCode = Status.INTERNAL_SERVER_ERROR.getStatusCode();
     }
 
     public DemoiselleSecurityException(String string, int statusCode) {
-        super(string, statusCode);
+        super(string);
+        this.statusCode = statusCode;
     }
 
-    public DemoiselleSecurityException() {
+    @Override
+    public int getStatusCode() {
+        return statusCode;
     }
-
-    public DemoiselleSecurityException(Throwable cause) {
-        super(cause);
-    }
-
-    public DemoiselleSecurityException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public DemoiselleSecurityException(String message, int statusCode, Throwable cause) {
-        super(message, statusCode, cause);
-    }
-
+   
 }

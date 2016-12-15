@@ -23,5 +23,5 @@ import javax.interceptor.InterceptorBinding;
 @Target({ METHOD, TYPE })
 @Retention(RUNTIME)
 public @interface ValidatePayload {
-
+  
 }

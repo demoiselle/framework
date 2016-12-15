@@ -9,21 +9,26 @@ package org.demoiselle.jee.rest.exception.mapper;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
+
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.container.PreMatching;
+
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static javax.ws.rs.core.Response.status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
+import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
 /**
  * 
  * @author SERPRO
  *
  */
-//TODO revisar
-@Provider
+@Provider 
 public class GenericExceptionMapper implements ExceptionMapper<Exception> {
 
     @Override
@@ -32,8 +37,8 @@ public class GenericExceptionMapper implements ExceptionMapper<Exception> {
 		StringWriter errorStackTrace = new StringWriter();
 		ex.printStackTrace(new PrintWriter(errorStackTrace));
 		HashMap<String, String> entity = new HashMap<>();
-
-		// Verifica se a exception é de validação de PAYLOAD do REST
+	
+		//is a validation PAYLOAD REST exception?
 		if (ex instanceof DemoiselleRestException || (ex.getCause() != null && ex.getCause() instanceof DemoiselleRestException)) {
 			DemoiselleRestException exDemoiselleREST = null;
 		
@@ -43,43 +48,32 @@ public class GenericExceptionMapper implements ExceptionMapper<Exception> {
 				exDemoiselleREST = (DemoiselleRestException) ex.getCause();
 			}
 			
-			if (!exDemoiselleREST.getMessages().isEmpty()) {
+			if (!exDemoiselleREST.getMessages().isEmpty()) {								 									
 				return status(exDemoiselleREST.getStatusCode()).entity(exDemoiselleREST.getMessages()).type(APPLICATION_JSON).build();
-			} else if (exDemoiselleREST.getStatusCode() > 0) {
-				entity.put("error", exDemoiselleREST.getMessage());
-				return status(exDemoiselleREST.getStatusCode()).entity(entity).type(APPLICATION_JSON).build();
+				
+			} else if (exDemoiselleREST.getStatusCode() > 0) {						
+				int code = exDemoiselleREST.getStatusCode();										
+				String msg = Status.fromStatusCode(code).getReasonPhrase();
+
+				return status(exDemoiselleREST.getStatusCode()).entity(
+						new DemoiselleRestExceptionMessage("server_error", msg, null )).type(APPLICATION_JSON).build();
 			}
 
 		}
 
-		// No caso de existir message ele mostra a MESSAGE da Exception
-		if (ex.getMessage() != null) {
-			entity.put("error", ex.getMessage());
-
-			// Pega toda as mensagens da stacktrace
-			int level = 1;
-			while (ex.getCause() != null) {
-				ex = (Exception) ex.getCause();
-				if (ex != null && ex.getMessage() != null && !ex.getMessage().isEmpty()) {
-					entity.put("inner_cause_" + level, ex.getMessage());
-				}
-				level += 1;
-			}
-
-			// Por padrão retorna SERVER ERROR, mas tenta encontrar o status do
-			// RESPONSE se for WebApplicationException
+		// show the exception MESSAGE 
+		if (ex.getMessage() != null) {					
+			// Default SERVER ERROR , but try to find the RESPONSE status if is a WebApplicationException
 			// http://docs.oracle.com/javaee/7/api/javax/ws/rs/WebApplicationException.html
 			int responseCode = INTERNAL_SERVER_ERROR.getStatusCode();
 			if (ex instanceof WebApplicationException) {
 				responseCode = ((WebApplicationException) ex).getResponse().getStatus();
 			}
 
-			return status(responseCode).entity(entity).type(APPLICATION_JSON).build();
+			return status(responseCode).entity(new DemoiselleRestExceptionMessage("server_error", ex.getMessage(), null )).type(APPLICATION_JSON).build();
 		}
-
-		entity.put("error", "Erro interno desconhecido no servidor.");
-		return status(INTERNAL_SERVER_ERROR.getStatusCode())
-                        .entity(entity).type(APPLICATION_JSON).build();
+		
+		return status(INTERNAL_SERVER_ERROR.getStatusCode()).entity(new DemoiselleRestExceptionMessage("server_error","unknow server error", null )).type(APPLICATION_JSON).build();
 	}
 
 }

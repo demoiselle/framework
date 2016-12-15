@@ -7,13 +7,15 @@
 package org.demoiselle.jee.security.exception;
 
 import java.util.HashMap;
+import java.util.HashSet;
+
+import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 
 /**
  *
@@ -68,8 +70,8 @@ public class DemoiselleSecurityExceptionTest {
      */
     @Test
     public void testGetMessages() {
-        HashMap<String, String> expResult = new HashMap<>();
-        HashMap<String, String> result = instance.getMessages();
+        HashSet<DemoiselleRestExceptionMessage> expResult = new HashSet<DemoiselleRestExceptionMessage>();
+        HashSet<DemoiselleRestExceptionMessage> result = instance.getMessages();
         assertEquals(expResult, result);
     }
 
