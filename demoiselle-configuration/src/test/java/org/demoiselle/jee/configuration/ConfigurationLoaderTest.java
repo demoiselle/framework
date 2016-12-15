@@ -146,7 +146,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 	public void modelInvalidValuesWithBeanValidationShouldThrowConfigurationException(){
 		ConfigWithValidationModel model = new ConfigWithValidationModel();
 		Class<?> baseClass = model.getClass();
-		configLoader.load(model, baseClass);		
+		configLoader.load(model, baseClass);
 	}
 	
 	@Test

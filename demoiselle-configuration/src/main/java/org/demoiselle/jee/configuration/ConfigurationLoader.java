@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -106,7 +107,7 @@ public class ConfigurationLoader implements Serializable {
 	 * @param baseClass Class type to be populated
 	 * @throws DemoiselleConfigurationException When there is a problem in the process 
 	 */
-	public void load(final Object object, Class<?> baseClass) throws DemoiselleConfigurationException {
+	public void load(final Object object, Class<?> baseClass) {
 		Boolean isLoaded = loadedCache.get(object);
 
 		if (isLoaded == null || !isLoaded) {
@@ -131,8 +132,7 @@ public class ConfigurationLoader implements Serializable {
 	 * @param baseClass The class type of object to fill
 	 * @throws DemoiselleConfigurationException
 	 */
-	private void processConfiguration(final Object object, Class<?> baseClass)
-			throws DemoiselleConfigurationException {
+	private void processConfiguration(final Object object, Class<?> baseClass) {
 		
 		this.logger.info("*******************************************************");
 		this.logger.info(this.message.loadConfigurationClass(baseClass.getName()));
@@ -284,7 +284,7 @@ public class ConfigurationLoader implements Serializable {
 
 		switch (this.configurationType) {
 			case XML:
-				builder = new FileBasedConfigurationBuilder<XMLConfiguration>(XMLConfiguration.class);
+				builder = new FileBasedConfigurationBuilder<>(XMLConfiguration.class);
 				break;
 
 			case SYSTEM:
@@ -292,23 +292,23 @@ public class ConfigurationLoader implements Serializable {
 				break;
 
 			default:
-				builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class);
+				builder = new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class);
 		}
 
 		return builder;
 	}
 
 	private void identifyPrefix() {
-		String prefix = baseClass.getAnnotation(org.demoiselle.jee.configuration.annotation.Configuration.class).prefix();
+		String prefixValue = baseClass.getAnnotation(org.demoiselle.jee.configuration.annotation.Configuration.class).prefix();
 
-		if (prefix.endsWith(".")) {
+		if (prefixValue.endsWith(".")) {
 			this.logger.warning(message.configurationDotAfterPrefix(this.resource));
 		} 
-		else if (!prefix.isEmpty()) {
-			prefix += ".";
+		else if (!prefixValue.isEmpty()) {
+			prefixValue += ".";
 		}
 
-		this.prefix = prefix;
+		this.prefix = prefixValue;
 	}
 
 	private void fillTargetObjectWithValues() {
@@ -331,8 +331,8 @@ public class ConfigurationLoader implements Serializable {
 		}
 
 		Object defaultValue = getFieldValueFromObject(field, this.targetObject);
-		Object loadedValue = getValueFromSource(field, field.getType(), getKey(field), defaultValue);
-		Object finalValue = (loadedValue == null ? defaultValue : loadedValue);
+		Object loadedValue = getValueFromSource(field, getKey(field), defaultValue);
+		Object finalValue = loadedValue == null ? defaultValue : loadedValue;
 
 		if (loadedValue == null) {
 			this.logger.info(message.configurationKeyNotFoud(this.prefix + getKey(field)));
@@ -342,13 +342,15 @@ public class ConfigurationLoader implements Serializable {
 		
 	}
 
-	private Object getValueFromSource(Field field, Class<?> type, String key, Object defaultValue) {
+	private Object getValueFromSource(Field field, String key, Object defaultValue) {
 		Object value = null;
 		
 		try {
 			ConfigurationValueExtractor extractor = getValueExtractor(field);
 			for(Configuration config : this.configurations){
-				if(value != null) break;
+				if(value != null) {
+					break;
+				}
 				value = extractor.getValue(this.prefix, key, field, config);
 			}
 		} 
@@ -366,7 +368,7 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private ConfigurationValueExtractor getValueExtractor(Field field) {
-		Collection<ConfigurationValueExtractor> candidates = new HashSet<ConfigurationValueExtractor>();
+		Collection<ConfigurationValueExtractor> candidates = new HashSet<>();
 		
 		getExtractors().forEach(extractorClass ->{
 			ConfigurationValueExtractor extractor = CDI.current().select(extractorClass).get();
@@ -417,26 +419,26 @@ public class ConfigurationLoader implements Serializable {
 
 	private void validateValues() {
 		for (Field field : this.fields) {
-			validateValue(field, getFieldValueFromObject(field, this.targetObject));
+			validateValue(field);
 		}
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void validateValue(Field field, Object value) {
+	private void validateValue(Field field){
 		ValidatorFactory dfv = Validation.buildDefaultValidatorFactory();
 		Validator validator = dfv.getValidator();
 
 		Set violations = validator.validateProperty(this.targetObject, field.getName());
 
-		StringBuilder message = new StringBuilder();
+		StringBuilder messageConstraint = new StringBuilder();
 
 		if (!violations.isEmpty()) {
 			for (Iterator iter = violations.iterator(); iter.hasNext(); ) {
 				ConstraintViolation violation = (ConstraintViolation) iter.next();
-				message.append(field.toGenericString() + " " + violation.getMessage() + "\n");
+				messageConstraint.append(field.toGenericString() + " " + violation.getMessage() + "\n");
 			}
 
-			throw new DemoiselleConfigurationException(message.toString(), new ConstraintViolationException(violations));
+			throw new DemoiselleConfigurationException(messageConstraint.toString(), new ConstraintViolationException(violations));
 		}
 	}
 	
@@ -455,17 +457,17 @@ public class ConfigurationLoader implements Serializable {
 	}
 	
 	private Field[] getNonStaticDeclaredFields(Class<?> type) {
-		List<Field> fields = new ArrayList<Field>();
+		List<Field> nonStaticfields = new ArrayList<>();
 
 		if (type != null) {
 			for (Field field : type.getDeclaredFields()) {
 				if (!Modifier.isStatic(field.getModifiers()) && !field.getType().equals(type.getDeclaringClass())) {
-					fields.add(field);
+					nonStaticfields.add(field);
 				}
 			}
 		}
 
-		return fields.toArray(new Field[0]);
+		return nonStaticfields.toArray(new Field[0]);
 	}
 	
 	private Enumeration<URL> getResourceAsURL(final String resource) throws IOException {
@@ -530,10 +532,8 @@ public class ConfigurationLoader implements Serializable {
 		Map<Class<? extends T>, T> map = new HashMap<>();
 
 		options.stream()
-				.filter(instance -> instance != null)
-				.forEach(instance -> {
-					map.put((Class<T>) instance.getClass(), instance);
-				});
+				.filter(Objects::nonNull)
+				.forEach(instance -> map.put((Class<T>) instance.getClass(), instance));
 
 		Class<? extends T> elected = selectClass(type, map.keySet());
 		return map.get(elected);
@@ -570,8 +570,8 @@ public class ConfigurationLoader implements Serializable {
 		if (!ambiguous.isEmpty()) {
 			ambiguous.add(selected);
 
-			String message = getExceptionMessage(type, ambiguous);
-			throw new DemoiselleConfigurationException(message, new AmbiguousResolutionException());
+			String exceptionMessage = getExceptionMessage(type, ambiguous);
+			throw new DemoiselleConfigurationException(exceptionMessage, new AmbiguousResolutionException());
 		}
 	}
 	
