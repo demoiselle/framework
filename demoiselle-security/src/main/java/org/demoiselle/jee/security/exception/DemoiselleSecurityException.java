@@ -6,10 +6,6 @@
  */
 package org.demoiselle.jee.security.exception;
 
-import java.util.HashMap;
-
-import javax.ws.rs.core.Response.Status;
-
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 
 /**
@@ -20,34 +16,27 @@ public class DemoiselleSecurityException extends DemoiselleRestException {
 
     private static final long serialVersionUID = 519_965_615_171_844_237L;
 
-    private final HashMap<String, String> messages = new HashMap<>();
-
-    private final int statusCode;
-
-    //TODO refator o construtor para o demoisellerestexception
     public DemoiselleSecurityException(String string) {
         super(string);
-        this.statusCode = Status.INTERNAL_SERVER_ERROR.getStatusCode();
     }
 
     public DemoiselleSecurityException(String string, int statusCode) {
-        super(string);
-        this.statusCode = statusCode;
+        super(string, statusCode);
     }
 
-    @Override
-    public int getStatusCode() {
-        return statusCode;
+    public DemoiselleSecurityException() {
     }
 
-    @Override
-    public void addMessage(String field, String msg) {
-
-        messages.put(field, msg);
+    public DemoiselleSecurityException(Throwable cause) {
+        super(cause);
     }
 
-    @Override
-    public HashMap<String, String> getMessages() {
-        return messages;
+    public DemoiselleSecurityException(String message, Throwable cause) {
+        super(message, cause);
     }
+
+    public DemoiselleSecurityException(String message, int statusCode, Throwable cause) {
+        super(message, statusCode, cause);
+    }
+
 }
