@@ -49,7 +49,7 @@ public class DemoiselleRestConfigTest {
      */
     @Test
     public void test11() {
-        boolean expResult = true;
+        boolean expResult = false;
         boolean result = instance.isGzipEnabled();
         assertEquals(expResult, result);
     }
