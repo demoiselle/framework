@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.demoiselle.jee.configuration.ConfigurationType;
 import org.demoiselle.jee.configuration.annotation.Configuration;
+import org.demoiselle.jee.configuration.annotation.SuppressConfigurationLogger;
 import org.demoiselle.jee.core.annotation.Ignore;
 import org.demoiselle.jee.core.annotation.Name;
 
@@ -42,6 +43,9 @@ public class ConfigModel {
 	
 	@Name("config-name-with-name")
 	private String configStringWithName;
+	
+	@SuppressConfigurationLogger
+	private String configFieldWithSuppressLogger;
 
 	public Integer getConfigInteger() {
 		return configInteger;
@@ -107,4 +111,9 @@ public class ConfigModel {
 		return configFieldWithIgnore;
 	}
 
+	public String getConfigFieldWithSuppressLogger() {
+		return configFieldWithSuppressLogger;
+	}
+
+	
 }

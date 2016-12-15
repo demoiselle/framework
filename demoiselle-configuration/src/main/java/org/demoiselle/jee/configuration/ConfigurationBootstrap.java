@@ -6,9 +6,8 @@
  */
 package org.demoiselle.jee.configuration;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Extension;
@@ -25,17 +24,22 @@ import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
  */
 public class ConfigurationBootstrap implements Extension {
 	
-	private Collection<Class<? extends ConfigurationValueExtractor>> cache;
+	private Set<Class<? extends ConfigurationValueExtractor>> cache;
 
-	public Collection<Class<? extends ConfigurationValueExtractor>> getCache() {
+	protected Set<Class<? extends ConfigurationValueExtractor>> getCache() {
 		if (this.cache == null) {
-			//TODO refatorar
-			this.cache = Collections.synchronizedSet(new HashSet<Class<? extends ConfigurationValueExtractor>>());
+			this.cache = ConcurrentHashMap.newKeySet(); 
 		}
 
 		return this.cache;
 	}
 	
+	
+	/**
+	 * Process all classes that extends {@link ConfigurationValueExtractor} and add the own class type on cache. 
+	 * 
+	 * @param pat ProcessAnnotatedType used by CDI
+	 */
 	public void processAnnotatedType(@Observes final ProcessAnnotatedType<? extends ConfigurationValueExtractor> pat) {
 		
 		Class<? extends ConfigurationValueExtractor> pcsClass = pat.getAnnotatedType().getJavaClass();

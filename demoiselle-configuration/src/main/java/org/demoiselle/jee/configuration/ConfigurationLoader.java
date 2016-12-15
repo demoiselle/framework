@@ -6,8 +6,7 @@
  */
 package org.demoiselle.jee.configuration;
 
-import static org.demoiselle.jee.configuration.ConfigurationType.SYSTEM;
-
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -15,9 +14,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,6 +45,7 @@ import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.ex.ConversionException;
+import org.demoiselle.jee.configuration.annotation.SuppressConfigurationLogger;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationException;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 import org.demoiselle.jee.configuration.message.ConfigurationMessage;
@@ -55,41 +57,42 @@ import org.demoiselle.jee.core.annotation.Priority;
  * 
  * Class responsible for managing the source of a data extraction, identified which fields to be filled, 
  * find the extractor for each field type, fill and validate the data field.
+ * 
+ * @author SERPRO
  *
  */
 @ApplicationScoped
 public class ConfigurationLoader implements Serializable {
-	//TODO comentar os metodos explicando em que situacao sao usados
 	
-	//TODO logar todas as propriedades carregadas
-	
-	//TODO logar todos os nomes dos modulos carregados
-
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	private ConfigurationMessage bundle;
+	private ConfigurationMessage message;
 
 	@Inject
 	private Logger logger;
 
-	//TODO explicar
-	private Object object;
+	// Object annotated with @Configuration
+	private Object targetObject;
 
+	// Class type of object annotated with @Configuration
 	private Class<?> baseClass;
 
-	private ConfigurationType type;
+	// Type of source
+	private ConfigurationType configurationType;
 
 	private String resource;
 
 	private String prefix;
 
-	private Configuration configuration;
+	// Apache configuration 
+	private List<Configuration> configurations = new LinkedList<>();
 
+	// Fields of object annotated with @Configuration
 	private Collection<Field> fields;
 
 	private final Map<Object, Boolean> loadedCache = new ConcurrentHashMap<>();
-
+	
 	/**
 	 * <p>
 	 * Processes the annotated class with {@link Configuration}.
@@ -101,111 +104,185 @@ public class ConfigurationLoader implements Serializable {
 	 * 
 	 * @param object Object annotated with {@link Configuration} to be populated
 	 * @param baseClass Class type to be populated
-	 * @param logLoadingProcess Enable logging or not the process
 	 * @throws DemoiselleConfigurationException When there is a problem in the process 
 	 */
-	public void load(final Object object, Class<?> baseClass, boolean logLoadingProcess) throws DemoiselleConfigurationException {
+	public void load(final Object object, Class<?> baseClass) throws DemoiselleConfigurationException {
 		Boolean isLoaded = loadedCache.get(object);
 
 		if (isLoaded == null || !isLoaded) {
 			try {
-				loadConfiguration(object, baseClass, logLoadingProcess);
+				processConfiguration(object, baseClass);
 				loadedCache.put(object, true);
-			} catch (DemoiselleConfigurationException c) {
+			} 
+			catch (DemoiselleConfigurationException c) {
 				loadedCache.put(object, false);
 				throw c;
 			}
 		}
 	}
 
-	//TODO comentar
-	private void loadConfiguration(final Object object, Class<?> baseClass, boolean logLoadingProcess)
+	/**
+	 * 
+	 * Load values from the selected source and fill object annotated with @Configuration.
+	 * 
+	 * This method has the engine to process the configuration feature.
+	 * 
+	 * @param object The object to fill
+	 * @param baseClass The class type of object to fill
+	 * @throws DemoiselleConfigurationException
+	 */
+	private void processConfiguration(final Object object, Class<?> baseClass)
 			throws DemoiselleConfigurationException {
 		
-		//TODO avaliar finest
-		if (logLoadingProcess) {
-			logger.fine(bundle.loadConfigurationClass(baseClass.getName()));
-		}
+		this.logger.info("*******************************************************");
+		this.logger.info(this.message.loadConfigurationClass(baseClass.getName()));
 
-		this.object = object;
+		this.targetObject = object;
 		this.baseClass = baseClass;
 
-		loadFields();
-		validateFields();
+		loadFieldsFromTargetObject();
+		validateFieldsFromTargetObject();
 
-		loadType();
-		loadResource();
-		loadConfiguration();
-
-		if (this.configuration != null) {
-			loadPrefix();
-			loadValues();
+		identifyConfigurationType();
+		identifyResourceName();
+		loadConfigurationType();
+		
+		if(this.configurations != null && !this.configurations.isEmpty()){
+			identifyPrefix();
+			fillTargetObjectWithValues();
 		}
 
+		// Validate values using JavaBeans Validation
 		validateValues();
+		
+		printConfiguration();
 	}
 
-	private void loadFields() {
+	
+	/**
+	 * Log all configurations
+	 */
+	private void printConfiguration() {
+		
+		Boolean suppressAllFields = hasSuppressLogger();
+		
+		this.fields.forEach(field -> {
+			
+			Object obj = getFieldValueFromObject(field, this.targetObject); 
+			
+			String strMessage = message.configurationFieldLoaded(this.prefix + getKey(field), obj);
+			
+			//Check if the field has @SuppressLogger 
+			if(suppressAllFields || hasSuppressLogger(field)){
+				strMessage = message.configurationFieldSuppress(this.prefix + getKey(field));
+			}
+			
+			this.logger.info(strMessage);
+		});
+			
+	}
+	
+	private Boolean hasSuppressLogger(){
+		return this.targetObject.getClass().getAnnotation(SuppressConfigurationLogger.class) == null ? Boolean.FALSE : Boolean.TRUE;
+	}
+	
+	private Boolean hasSuppressLogger(Field field){
+		return field.getAnnotation(SuppressConfigurationLogger.class) == null ? Boolean.FALSE : Boolean.TRUE;
+	}
+	
+	private void loadFieldsFromTargetObject() {
 		this.fields = getNonStaticFields(baseClass);
 	}
 
-	private void validateFields() {
+	private void validateFieldsFromTargetObject() {
 		this.fields.forEach(this::validateField);
 	}
 
+	/**
+	 * Check if the field param has {@value Name} annotation, if it has, validate if the value is filled
+	 * 
+	 * @param field Current field
+	 */
 	private void validateField(Field field) {
 		Name annotation = field.getAnnotation(Name.class);
 
 		if (annotation != null && annotation.value().isEmpty()) {
-			throw new DemoiselleConfigurationException(bundle.configurationNameAttributeCantBeEmpty(), new IllegalArgumentException());
+			throw new DemoiselleConfigurationException(message.configurationNameAttributeCantBeEmpty(), new IllegalArgumentException());
 		}
 	}
 
-	private void loadType() {
-		this.type = baseClass.getAnnotation(org.demoiselle.jee.configuration.annotation.Configuration.class).type();
+	private void identifyConfigurationType() {
+		this.configurationType = baseClass.getAnnotation(org.demoiselle.jee.configuration.annotation.Configuration.class).type();
 	}
 
-	private void loadResource() {
-		if (this.type != SYSTEM) {
+	/**
+	 * Load the name of resource that contains the values to fill object.
+	 * Unless with the type of configuration is SYSTEM type.
+	 */
+	private void identifyResourceName() {
+		if (this.configurationType != ConfigurationType.SYSTEM) {
 			String name = baseClass.getAnnotation(org.demoiselle.jee.configuration.annotation.Configuration.class).resource();
-			String extension = this.type.toString().toLowerCase();
+			String extension = this.configurationType.toString().toLowerCase();
 
 			this.resource = name + "." + extension;
 		}
 	}
 
-	private void loadConfiguration() {
-		Configuration config;
+	/**
+	 * Identify and create Apache Configuration based on type informed on {@link ConfigurationType}  
+	 * 
+	 */
+	private void loadConfigurationType() {
 		BasicConfigurationBuilder<? extends Configuration> builder = createConfiguration();
 
-		if (builder instanceof FileBasedConfigurationBuilder) {
-			Parameters params = new Parameters();
-
-			URL urlResource = getResourceAsURL(this.resource);
-
-			if(urlResource == null) {
-				throw new DemoiselleConfigurationException(bundle.fileNotFound(this.resource));				
+		this.configurations.clear();
+		
+		try{
+			if (builder instanceof FileBasedConfigurationBuilder) {
+				
+				Enumeration<URL> urlResources = getResourceAsURL(this.resource);
+				
+				if(urlResources == null) {
+					throw new DemoiselleConfigurationException(message.fileNotFound(this.resource));				
+				}
+				
+				configureFileBuilder(urlResources);
+				
 			}
-			
-			((FileBasedConfigurationBuilder<?>) builder).configure(params.fileBased().setURL(getResourceAsURL(this.resource)));
-			
+			else{
+				this.configurations.add(builder.getConfiguration());
+			}
 		}
-
-		try {
-			config = builder.getConfiguration();
-		} 
-		catch (ConfigurationException e) {
-			//TODO THROW Ou Log warn
-			config = null;
+		catch (IOException | ConfigurationException e) {
+			this.logger.warning(message.failOnCreateApacheConfiguration(e.getMessage()));
 		}
+	}
 
-		this.configuration = config;
+	private void configureFileBuilder(Enumeration<URL> urlResources) {
+		
+		Parameters params = new Parameters();
+		
+		while(urlResources.hasMoreElements()){
+			BasicConfigurationBuilder<? extends Configuration> builder = createConfiguration();
+			
+			URL url = urlResources.nextElement();
+			
+			((FileBasedConfigurationBuilder<?>) builder).configure(params.fileBased().setURL(url));
+			
+			try {
+				this.configurations.add(builder.getConfiguration());
+			} 
+			catch (ConfigurationException e) {
+				this.logger.warning(message.failOnCreateApacheConfiguration(e.getMessage()));
+			}
+		}
+		
 	}
 
 	private BasicConfigurationBuilder<? extends Configuration> createConfiguration() {
 		BasicConfigurationBuilder<? extends Configuration> builder;
 
-		switch (this.type) {
+		switch (this.configurationType) {
 			case XML:
 				builder = new FileBasedConfigurationBuilder<XMLConfiguration>(XMLConfiguration.class);
 				break;
@@ -221,54 +298,68 @@ public class ConfigurationLoader implements Serializable {
 		return builder;
 	}
 
-	private void loadPrefix() {
+	private void identifyPrefix() {
 		String prefix = baseClass.getAnnotation(org.demoiselle.jee.configuration.annotation.Configuration.class).prefix();
 
 		if (prefix.endsWith(".")) {
-			logger.warning(bundle.configurationDotAfterPrefix(this.resource));
-		} else if (!prefix.isEmpty()) {
+			this.logger.warning(message.configurationDotAfterPrefix(this.resource));
+		} 
+		else if (!prefix.isEmpty()) {
 			prefix += ".";
 		}
 
 		this.prefix = prefix;
 	}
 
-	private void loadValues() {
-		this.fields.forEach(this::loadValue);
+	private void fillTargetObjectWithValues() {
+		this.fields.forEach(this::fillFieldWithValue);
 	}
 
-	private void loadValue(Field field) {
-		if (hasIgnore(field)) {
+	/**
+	 * 
+	 * Fill the field informed.
+	 * 
+	 * Get the default value informed on class and retrieve value from source.
+	 * 
+	 * If the value is present on field and on source, the value from source is selected and the default value is ignored
+	 * 
+	 * @param field Current field from targetObject
+	 */
+	private void fillFieldWithValue(Field field) {
+		if (hasIgnoreAnnotation(field)) {
 			return;
 		}
 
-		Object defaultValue = getFieldValue(field, this.object);
-		Object loadedValue = getValue(field, field.getType(), getKey(field), defaultValue);
+		Object defaultValue = getFieldValueFromObject(field, this.targetObject);
+		Object loadedValue = getValueFromSource(field, field.getType(), getKey(field), defaultValue);
 		Object finalValue = (loadedValue == null ? defaultValue : loadedValue);
 
 		if (loadedValue == null) {
-			logger.fine(bundle.configurationKeyNotFoud(this.prefix + getKey(field)));
+			this.logger.info(message.configurationKeyNotFoud(this.prefix + getKey(field)));
 		}
 
-		setFieldValue(field, this.object, finalValue);
-		logger.finer(bundle.configurationFieldLoaded(this.prefix + getKey(field), finalValue == null ? "null" : finalValue));
+		setFieldValue(field, this.targetObject, finalValue);
+		
 	}
 
-	private Object getValue(Field field, Class<?> type, String key, Object defaultValue) {
+	private Object getValueFromSource(Field field, Class<?> type, String key, Object defaultValue) {
 		Object value = null;
 		
 		try {
 			ConfigurationValueExtractor extractor = getValueExtractor(field);
-			value = extractor.getValue(this.prefix, key, field, this.configuration);
+			for(Configuration config : this.configurations){
+				if(value != null) break;
+				value = extractor.getValue(this.prefix, key, field, config);
+			}
 		} 
 		catch (DemoiselleConfigurationException cause) {
 			throw cause;
 		} 
 		catch (ConversionException cause) {
-			throw new DemoiselleConfigurationException(bundle.configurationNotConversion(this.prefix + getKey(field), field.getType().toString()), cause);
+			throw new DemoiselleConfigurationException(message.configurationNotConversion(this.prefix + getKey(field), field.getType().toString()), cause);
 		} 
 		catch (Exception cause) {
-			throw new DemoiselleConfigurationException(bundle.configurationGenericExtractionError(field.getType().toString(), getValueExtractor(field).getClass().getCanonicalName()), cause);
+			throw new DemoiselleConfigurationException(message.configurationGenericExtractionError(field.getType().toString(), getValueExtractor(field).getClass().getCanonicalName()), cause);
 		}
 
 		return value;
@@ -276,24 +367,36 @@ public class ConfigurationLoader implements Serializable {
 
 	private ConfigurationValueExtractor getValueExtractor(Field field) {
 		Collection<ConfigurationValueExtractor> candidates = new HashSet<ConfigurationValueExtractor>();
-		ConfigurationBootstrap bootstrap = CDI.current().select(ConfigurationBootstrap.class).get();
-		//TODO rever lambda paralelismo
-		for (Class<? extends ConfigurationValueExtractor> extractorClass : bootstrap.getCache()) {
+		
+		getExtractors().forEach(extractorClass ->{
 			ConfigurationValueExtractor extractor = CDI.current().select(extractorClass).get();
-
 			if (extractor.isSupported(field)) {
 				candidates.add(extractor);
 			}
-		}
-
-		ConfigurationValueExtractor elected = selectReference(ConfigurationValueExtractor.class, candidates);
+		});
+				
+		ConfigurationValueExtractor elected = selectElectedReference(ConfigurationValueExtractor.class, candidates);
 		
 		if (elected == null) {
-			throw new DemoiselleConfigurationException(bundle.configurationExtractorNotFound(field.toGenericString(), 					
+			throw new DemoiselleConfigurationException(message.configurationExtractorNotFound(field.toGenericString(), 					
 							ConfigurationValueExtractor.class.getName()), new ClassNotFoundException());
 		}
 		
 		return elected;
+	}
+	
+	private Set<Class<? extends ConfigurationValueExtractor>> getExtractors(){
+		Set<Class<? extends ConfigurationValueExtractor>> cache = new HashSet<>();
+		
+		try{
+			ConfigurationBootstrap bootstrap = CDI.current().select(ConfigurationBootstrap.class).get();
+			cache = bootstrap.getCache();
+		}
+		catch(IllegalStateException e){
+			//CDI is not already
+		}
+		
+		return cache;
 	}
 
 	private String getKey(Field field) {
@@ -308,13 +411,13 @@ public class ConfigurationLoader implements Serializable {
 		return key;
 	}
 
-	private boolean hasIgnore(Field field) {
+	private boolean hasIgnoreAnnotation(Field field) {
 		return field.isAnnotationPresent(Ignore.class);
 	}
 
 	private void validateValues() {
 		for (Field field : this.fields) {
-			validateValue(field, getFieldValue(field, this.object));
+			validateValue(field, getFieldValueFromObject(field, this.targetObject));
 		}
 	}
 
@@ -323,7 +426,7 @@ public class ConfigurationLoader implements Serializable {
 		ValidatorFactory dfv = Validation.buildDefaultValidatorFactory();
 		Validator validator = dfv.getValidator();
 
-		Set violations = validator.validateProperty(this.object, field.getName());
+		Set violations = validator.validateProperty(this.targetObject, field.getName());
 
 		StringBuilder message = new StringBuilder();
 
@@ -340,9 +443,9 @@ public class ConfigurationLoader implements Serializable {
 	private List<Field> getNonStaticFields(Class<?> type) {
 		List<Field> fields = new ArrayList<Field>();
 
-		if (type != null) {
+		if(type != null) {
 			Class<?> currentType = type;
-			while (currentType != null && !"java.lang.Object".equals(currentType.getCanonicalName())) {
+			while(currentType != null && !Object.class.getCanonicalName().equals(currentType.getCanonicalName())) {
 				fields.addAll(Arrays.asList(getNonStaticDeclaredFields(currentType)));
 				currentType = currentType.getSuperclass();
 			}
@@ -365,9 +468,9 @@ public class ConfigurationLoader implements Serializable {
 		return fields.toArray(new Field[0]);
 	}
 	
-	private URL getResourceAsURL(final String resource) {
+	private Enumeration<URL> getResourceAsURL(final String resource) throws IOException {
 		ClassLoader classLoader = getClassLoaderForResource(resource);
-		return classLoader != null ? classLoader.getResource(resource) : null;
+		return classLoader != null ? classLoader.getResources(resource) : null;
 	}
 
 	private ClassLoader getClassLoaderForResource(final String resource) {
@@ -393,7 +496,7 @@ public class ConfigurationLoader implements Serializable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <T> T getFieldValue(Field field, Object object) {
+	private <T> T getFieldValueFromObject(Field field, Object object) {
 		T result = null;
 
 		try {
@@ -403,7 +506,7 @@ public class ConfigurationLoader implements Serializable {
 			field.setAccessible(acessible);
 
 		} catch (Exception e) {
-			throw new DemoiselleConfigurationException(bundle.configurationErrorGetValue(field.getName(), object.getClass().getCanonicalName()), e);
+			throw new DemoiselleConfigurationException(message.configurationErrorGetValue(field.getName(), object.getClass().getCanonicalName()), e);
 		}
 
 		return result;
@@ -417,12 +520,12 @@ public class ConfigurationLoader implements Serializable {
 			field.setAccessible(acessible);
 
 		} catch (Exception e) {
-			throw new DemoiselleConfigurationException(bundle.configurationErrorSetValue(value, field.getName(), object.getClass().getCanonicalName()), e);
+			throw new DemoiselleConfigurationException(message.configurationErrorSetValue(value, field.getName(), object.getClass().getCanonicalName()), e);
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <T> T selectReference(Class<T> type, Collection<? extends T> options) {
+	private <T> T selectElectedReference(Class<T> type, Collection<? extends T> options) {
 
 		Map<Class<? extends T>, T> map = new HashMap<>();
 
@@ -495,7 +598,7 @@ public class ConfigurationLoader implements Serializable {
 			classes.append(clazz.getCanonicalName());
 		}
 
-		return bundle.ambigousStrategyResolution(type.getCanonicalName(), classes.toString());
+		return message.ambigousStrategyResolution(type.getCanonicalName(), classes.toString());
 	}
 }
 

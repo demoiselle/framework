@@ -52,6 +52,9 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 	@Inject 
 	private ConfigurationMessage message;
 	
+//	@Inject
+//	private DynamicMockManager mockManager;
+	
 	private ConfigModel configModel = new ConfigModel();
 	
 	@Before
@@ -65,7 +68,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		
 		Class<?> baseClass = configModel.getClass();
 		assertNull(configModel.getConfigString());
-		configLoader.load(configModel, baseClass, false);
+		configLoader.load(configModel, baseClass);
 		
 		assertNotNull(configModel.getConfigString());
 		
@@ -90,13 +93,15 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		assertEquals(UtilTest.CONFIG_MAP_VALUE_PROTOCOL, configModel.getConfigMap().get(keyProtocol));
 		assertEquals(UtilTest.CONFIG_MAP_VALUE_PORT, configModel.getConfigMap().get(keyPort));
 		
+		assertEquals(UtilTest.CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_VALUE, configModel.getConfigFieldWithSuppressLogger());
+		
 	}
 	
 	@Test
 	public void shouldPopulateObjectWithNameAnnotation(){
 		Class<?> baseClass = configModel.getClass();
 		assertNull(configModel.getConfigString());
-		configLoader.load(configModel, baseClass, false);
+		configLoader.load(configModel, baseClass);
 		
 		assertNotNull(configModel.getConfigStringWithName());
 		assertEquals(UtilTest.CONFIG_STRING_NAME_ANNOTATION_VALUE, configModel.getConfigStringWithName());
@@ -109,7 +114,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		
 		Class<?> baseClass = model.getClass();
 		
-		configLoader.load(model, baseClass, false);
+		configLoader.load(model, baseClass);
 	}
 	
 	@Test(expected = DemoiselleConfigurationException.class)
@@ -124,7 +129,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		
 		Class<?> baseClass = model.getClass();
 		
-		configLoader.load(model, baseClass, false);
+		configLoader.load(model, baseClass);
 		
 		assertNull(model.getConfigBooleanIncompatible());
 	}
@@ -133,7 +138,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 	public void fieldWithIgnoreAnnotationShouldntLoad(){
 		Class<?> baseClass = configModel.getClass();
 		assertNull(configModel.getConfigFieldWithIgnore());
-		configLoader.load(configModel, baseClass, true);
+		configLoader.load(configModel, baseClass);
 		assertNull(configModel.getConfigFieldWithIgnore());		
 	}
 	
@@ -141,7 +146,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 	public void modelInvalidValuesWithBeanValidationShouldThrowConfigurationException(){
 		ConfigWithValidationModel model = new ConfigWithValidationModel();
 		Class<?> baseClass = model.getClass();
-		configLoader.load(model, baseClass, true);		
+		configLoader.load(model, baseClass);		
 	}
 	
 	@Test
@@ -155,7 +160,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		try{
 			ConfigWithValidationModel model = new ConfigWithValidationModel();
 			Class<?> baseClass = model.getClass();
-			configLoader.load(model, baseClass, true);
+			configLoader.load(model, baseClass);
 		}
 		catch(DemoiselleConfigurationException e){
 			assertNotNull(e.getMessage());
@@ -173,7 +178,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		try{
 			Class<?> baseClass = configModel.getClass();
 			assertNull(configModel.getConfigString());
-			configLoader.load(configModel, baseClass, true);
+			configLoader.load(configModel, baseClass);
 		}
 		catch(DemoiselleConfigurationException e){
 			assertNotNull(e.getMessage());
@@ -190,7 +195,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		Class<?> baseClass = configModel.getClass();
 		
 		try{
-			configLoader.load(configModel, baseClass, false);
+			configLoader.load(configModel, baseClass);
 		}
 		catch(DemoiselleConfigurationException e){
 			assertNotNull(e.getMessage());
@@ -205,7 +210,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		Class<?> baseClass = model.getClass();
 		
 		try{
-			configLoader.load(model, baseClass, true);
+			configLoader.load(model, baseClass);
 		}
 		catch(DemoiselleConfigurationException e){
 			assertNotNull(e.getMessage());
@@ -219,7 +224,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		
 		Class<?> baseClass = configModel.getClass();
 		assertNull(configModel.getConfigString());
-		configLoader.load(configModel, baseClass, false);
+		configLoader.load(configModel, baseClass);
 		
 		assertNotNull(configModel.getConfigString());
 		assertEquals(UtilTest.CONFIG_STRING_VALUE, configModel.getConfigString());
@@ -232,11 +237,27 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest{
 		
 		Class<?> baseClass = configModel.getClass();
 		assertNull(configModel.getConfigString());
-		configLoader.load(configModel, baseClass, false);
+		configLoader.load(configModel, baseClass);
 		
 		assertNotNull(configModel.getConfigString());
 		assertEquals(UtilTest.CONFIG_STRING_VALUE, configModel.getConfigString());
 	}
+	
+//	@Test
+//	public void fieldWithSuppressLoggerDoesntLogger(){
+//		
+//		LoggerProducerTest lpt = new LoggerProducerTest();
+//		
+//		mockManager.addMock(lpt.create());
+//		
+//		//BeanProvider.injectFields(lpt.create());
+//		
+//		assertNull(configModel.getConfigFieldWithSuppressLogger());
+//		Class<?> baseClass = configModel.getClass();
+//		configLoader.load(configModel, baseClass);
+//		
+//		assertNotNull(configModel.getConfigFieldWithSuppressLogger());
+//	}
 	
 	private void preparePriorityForValueExtractor(int level) throws NoSuchFieldException, IllegalAccessException {
 

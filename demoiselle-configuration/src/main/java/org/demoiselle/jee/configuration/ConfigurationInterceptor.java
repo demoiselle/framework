@@ -32,8 +32,7 @@ public class ConfigurationInterceptor {
 		final ConfigurationLoader configurationLoader = CDI.current().select(ConfigurationLoader.class).get();
 
 		final Class<?> baseClass = ic.getMethod().getDeclaringClass();
-		//TODO true?
-		configurationLoader.load(ic.getTarget(), baseClass, Boolean.TRUE);
+		configurationLoader.load(ic.getTarget(), baseClass);
 		return ic.proceed();
 	}
 }

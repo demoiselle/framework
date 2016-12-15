@@ -54,6 +54,8 @@ public class UtilTest {
 	
 	public static final String CONFIG_STRING_FIELD_WITH_IGNORE_ANNOTATION = "configFieldWithIgnore";
 	
+	public static final String CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_FIELD = "configFieldWithSuppressLogger";
+	
 	public static final String CONFIG_ARRAY_FIELD = "configArray";
 
 	public static final Integer CONFIG_INTEGER_VALUE = Integer.MAX_VALUE;
@@ -71,9 +73,8 @@ public class UtilTest {
 	public static final String CONFIG_MAP_VALUE_PORT = "578";
 	public static final Map<String, String> CONFIG_MAP_VALUE = new HashMap<>();
 	public static final ConfigEnum CONFIG_ENUM_VALUE = ConfigEnum.ENUM2;
-	
-	
 	public static final String CONFIG_STRING_NAME_ANNOTATION_FIELD = "config-name-with-name";
+	public static final String CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_VALUE = "should not printed";
 	
 	public static final String[] CONFIG_ARRAY_VALUE = new String[]{};
 	public static final String CONFIG_ARRAY_VALUE_1 = "1";
@@ -162,6 +163,8 @@ public class UtilTest {
 		
 		sb.append(CONFIG_STRING_FIELD_WITH_IGNORE_ANNOTATION).append("=").append(CONFIG_STRING_IGNORE_ANNOTATION_VALUE).append("\n");
 		
+		sb.append(CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_FIELD).append("=").append(CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_VALUE).append("\n");
+		
 		FileOutputStream fos = new FileOutputStream(file);
 		fos.write(sb.toString().getBytes());
 		fos.close();
@@ -206,6 +209,7 @@ public class UtilTest {
 		sb.append("	<").append(CONFIG_ARRAY_FIELD).append(">").append(CONFIG_ARRAY_VALUE_3).append("</").append(CONFIG_ARRAY_FIELD).append(">");
 		sb.append("	");
 		sb.append(" <").append(CONFIG_STRING_NAME_ANNOTATION_FIELD).append(">").append(CONFIG_STRING_NAME_ANNOTATION_VALUE).append("</").append(CONFIG_STRING_NAME_ANNOTATION_FIELD).append(">");
+		sb.append("	<").append(CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_FIELD).append(">").append(CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_VALUE).append("</").append(CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_FIELD).append(">");
 		sb.append("</configuration>");
 		
 		File file = createTempFile(prefix, ".xml");
@@ -237,6 +241,7 @@ public class UtilTest {
 		System.setProperty(CONFIG_CLASS_TYPED_FIELD, CONFIG_CLASS_TYPED_VALUE.getCanonicalName());
 		
 		System.setProperty(CONFIG_STRING_NAME_ANNOTATION_FIELD, CONFIG_STRING_NAME_ANNOTATION_VALUE);
+		System.setProperty(CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_FIELD, CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_VALUE);
 		
 	}
 

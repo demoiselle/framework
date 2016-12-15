@@ -16,7 +16,6 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
  * @author SERPRO
  */
 @MessageBundle
-//TODO rever nome dos parametros
 public interface ConfigurationMessage {
 
 	@MessageTemplate("{load-configuration-class}")
@@ -32,28 +31,34 @@ public interface ConfigurationMessage {
 	String configurationDotAfterPrefix(String resource);
 
 	@MessageTemplate("{configuration-key-not-found}")
-	String configurationKeyNotFoud(String string);
+	String configurationKeyNotFoud(String keyNotFound);
 
 	@MessageTemplate("{configuration-field-loaded}")
-	String configurationFieldLoaded(String string, Object object);
+	String configurationFieldLoaded(String key, Object value);
 
 	@MessageTemplate("{configuration-not-conversion}")
 	String configurationNotConversion(String field, String type);
 
 	@MessageTemplate("{configuration-generic-extraction-error}")
-	String configurationGenericExtractionError(String string, String canonicalName);
+	String configurationGenericExtractionError(String typeField, String canonicalName);
 
 	@MessageTemplate("{configuration-extractor-not-found}")
-	String configurationExtractorNotFound(String genericString, String name);
+	String configurationExtractorNotFound(String genericString, String valueExtractorClassName);
 
 	@MessageTemplate("{ambiguous-strategy-resolution}")
 	String ambigousStrategyResolution(String canonicalName, String string);
 
 	@MessageTemplate("{configuration-error-get-value}")
-	String configurationErrorGetValue(String string, Object object);
+	String configurationErrorGetValue(String fieldName, Object object);
 
 	@MessageTemplate("{configuration-error-set-value}")
 	String configurationErrorSetValue(Object value, Object field, Object object);
+
+	@MessageTemplate("{fail-create-apache-configuration}")
+	String failOnCreateApacheConfiguration(String message);
+
+	@MessageTemplate("{configuration-field-suppress}")
+	String configurationFieldSuppress(String key);
 	
 
 }

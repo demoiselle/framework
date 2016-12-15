@@ -6,19 +6,18 @@
  */
 package org.demoiselle.jee.configuration.annotation;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Stereotype;
-import javax.enterprise.util.Nonbinding;
-import javax.inject.Named;
-import javax.interceptor.InterceptorBinding;
-
-import org.demoiselle.jee.configuration.ConfigurationType;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Stereotype;
+import javax.enterprise.util.Nonbinding;
+import javax.interceptor.InterceptorBinding;
+
+import org.demoiselle.jee.configuration.ConfigurationType;
 
 /**
  * 
@@ -36,16 +35,15 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * <li>automatically injected whenever {@code @Inject} is used</li>
  * </ul>
  * 
+ * @author SERPRO
  */
 
 @ApplicationScoped
-@Named
 @InterceptorBinding
 @Stereotype
 @Target(TYPE)
 @Retention(RUNTIME)
 public @interface Configuration {
-
 	
 	String DEFAULT_PREFIX = "demoiselle";
 
