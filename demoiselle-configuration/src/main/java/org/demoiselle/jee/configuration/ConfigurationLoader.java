@@ -443,17 +443,17 @@ public class ConfigurationLoader implements Serializable {
 	}
 	
 	private List<Field> getNonStaticFields(Class<?> type) {
-		List<Field> fields = new ArrayList<Field>();
+		List<Field> nonStaticfields = new ArrayList<>();
 
 		if(type != null) {
 			Class<?> currentType = type;
 			while(currentType != null && !Object.class.getCanonicalName().equals(currentType.getCanonicalName())) {
-				fields.addAll(Arrays.asList(getNonStaticDeclaredFields(currentType)));
+				nonStaticfields.addAll(Arrays.asList(getNonStaticDeclaredFields(currentType)));
 				currentType = currentType.getSuperclass();
 			}
 		}
 
-		return fields;
+		return nonStaticfields;
 	}
 	
 	private Field[] getNonStaticDeclaredFields(Class<?> type) {
