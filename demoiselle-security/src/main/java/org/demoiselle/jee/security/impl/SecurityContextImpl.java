@@ -14,7 +14,7 @@ import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.core.api.security.TokenManager;
 
 /**
- *
+ * TODO javadoc
  * @author SERPRO
  */
 @RequestScoped
@@ -26,10 +26,10 @@ public class SecurityContextImpl implements SecurityContext {
     @Override
     public boolean hasPermission(String resource, String operation) {
 
-        List<String> lista = tm.getUser().getPermissions().get(resource);
+        List<String> list = getUser().getPermissions().get(resource);
 
-        if (lista != null && !lista.isEmpty()) {
-            return lista.contains(operation);
+        if (list != null && !list.isEmpty()) {
+            return list.contains(operation);
         }
 
         return false;
@@ -37,7 +37,7 @@ public class SecurityContextImpl implements SecurityContext {
 
     @Override
     public boolean hasRole(String role) {
-        return tm.getUser().getRoles().contains(role);
+        return getUser().getRoles().contains(role);
     }
 
     @Override
@@ -47,6 +47,7 @@ public class SecurityContextImpl implements SecurityContext {
 
     @Override
     public DemoiselleUser getUser() {
+    	//TODO tratar nullpointer
         return tm.getUser();
     }
 

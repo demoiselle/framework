@@ -47,7 +47,7 @@ public class DemoiselleSecurityExceptionTest {
      */
     @Test
     public void testGetStatusCode() {
-        int expResult = 401;
+        int expResult = 500;
         int result = instance.getStatusCode();
         assertEquals(expResult, result);
     }

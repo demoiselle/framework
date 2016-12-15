@@ -16,16 +16,33 @@ public class DemoiselleRestException extends DemoiselleException {
 
     private static final long serialVersionUID = 519_965_615_171_844_237L;
 
-    private HashMap<String, String> messages = new HashMap<String, String>();
+    private final HashMap<String, String> messages = new HashMap<>();
 
     private int statusCode = Status.INTERNAL_SERVER_ERROR.getStatusCode();
 
-    //TODO incluir construtor com codigo de erro
-    public DemoiselleRestException() {
-    }
-
     public DemoiselleRestException(String string) {
         super(string);
+        this.statusCode = Status.INTERNAL_SERVER_ERROR.getStatusCode();
+    }
+
+    public DemoiselleRestException(String string, int statusCode) {
+        super(string);
+        this.statusCode = statusCode;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void addMessage(String field, String msg) {
+        messages.put(field, msg);
+    }
+
+    public HashMap<String, String> getMessages() {
+        return messages;
+    }
+
+    public DemoiselleRestException() {
     }
 
     public DemoiselleRestException(Throwable cause) {
@@ -36,16 +53,8 @@ public class DemoiselleRestException extends DemoiselleException {
         super(message, cause);
     }
 
-    public int getStatusCode() {
-        return statusCode;
+    public DemoiselleRestException(String message, int statusCode, Throwable cause) {
+        super(message, cause);
     }
 
-    public void addMessage(String field, String msg) {
-        this.statusCode = 422;
-        messages.put(field, msg);
-    }
-
-    public HashMap<String, String> getMessages() {
-        return messages;
-    }
 }

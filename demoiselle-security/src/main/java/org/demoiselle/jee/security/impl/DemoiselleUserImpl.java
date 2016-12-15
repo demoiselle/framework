@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;;
 
 /**
- *
+ * TODO javadoc
  * @author SERPRO
  */
 @RequestScoped
@@ -33,6 +33,8 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
     private Map<String, List<String>> permissions;
     private Map<String, List<String>> params;
 
+    //TODO usar postconstrutor
+    
     public DemoiselleUserImpl() {
         this.roles = new ArrayList<>();
         this.permissions = new ConcurrentHashMap<>();
@@ -65,29 +67,16 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
     }
 
     @Override
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
-    }
-
-    @Override
     public Map<String, List<String>> getPermissions() {
         return Collections.unmodifiableMap(permissions);
     }
 
-    @Override
-    public void setPermissions(Map<String, List<String>> permissions) {
-        this.permissions = permissions;
-    }
 
     @Override
     public Map<String, List<String>> getParams() {
         return Collections.unmodifiableMap(params);
     }
 
-    @Override
-    public void setParams(Map<String, List<String>> params) {
-        this.params = params;
-    }
 
     @Override
     public void addRole(String role) {
@@ -107,25 +96,25 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
     }
 
     @Override
-    public void addPermission(String resource, String operetion) {
+    public void addPermission(String resource, String operation) {
         List<String> operations = permissions.get(resource);
         if (operations != null && !operations.isEmpty()) {
-            if (!permissions.get(resource).contains(operetion)) {
-                permissions.get(resource).add(operetion);
+            if (!permissions.get(resource).contains(operation)) {
+                permissions.get(resource).add(operation);
             }
         } else {
             List<String> newoperations = new ArrayList<>();
-            newoperations.add(operetion);
+            newoperations.add(operation);
             permissions.put(resource, newoperations);
         }
     }
 
     @Override
-    public void removePermission(String resource, String operetion) {
+    public void removePermission(String resource, String operation) {
         List<String> operations = permissions.get(resource);
         if (operations != null && !operations.isEmpty()) {
-            if (permissions.get(resource).contains(operetion)) {
-                permissions.get(resource).remove(operetion);
+            if (permissions.get(resource).contains(operation)) {
+                permissions.get(resource).remove(operation);
             }
             if (operations.isEmpty()) {
                 permissions.remove(resource);
@@ -140,27 +129,27 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
 
     @Override
     public void addParam(String key, String value) {
-        List<String> paramss = params.get(key);
-        if (paramss != null && !paramss.isEmpty()) {
-            if (!params.get(key).contains(value)) {
-                params.get(key).add(value);
+        List<String> params = this.params.get(key);
+        if (params != null && !params.isEmpty()) {
+            if (!this.params.get(key).contains(value)) {
+                this.params.get(key).add(value);
             }
         } else {
-            List<String> newparamss = new ArrayList<>();
-            newparamss.add(value);
-            params.put(key, newparamss);
+            List<String> newparams = new ArrayList<>();
+            newparams.add(value);
+            this.params.put(key, newparams);
         }
     }
 
     @Override
     public void removeParam(String key, String value) {
-        List<String> paramss = params.get(key);
-        if (paramss != null && !paramss.isEmpty()) {
-            if (params.get(key).contains(value)) {
-                params.get(key).remove(value);
+        List<String> params = this.params.get(key);
+        if (params != null && !params.isEmpty()) {
+            if (this.params.get(key).contains(value)) {
+            	this.params.get(key).remove(value);
             }
-            if (paramss.isEmpty()) {
-                params.remove(key);
+            if (params.isEmpty()) {
+            	this.params.remove(key);
             }
         }
     }

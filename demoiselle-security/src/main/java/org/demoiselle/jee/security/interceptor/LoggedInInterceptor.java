@@ -6,14 +6,16 @@
  */
 package org.demoiselle.jee.security.interceptor;
 
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+
 import java.io.Serializable;
+
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import static javax.ws.rs.Priorities.AUTHENTICATION;
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.annotation.LoggedIn;
 import org.demoiselle.jee.security.annotation.NotLogged;
@@ -29,7 +31,7 @@ import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
  */
 @LoggedIn
 @Interceptor
-@Priority(AUTHENTICATION)
+@Priority(Interceptor.Priority.APPLICATION)
 public class LoggedInInterceptor implements Serializable {
 
     private static final long serialVersionUID = 1L;

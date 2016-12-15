@@ -39,12 +39,8 @@ public class TokenManagerImplSlaveTest {
     @Inject
     private TokenManager instance;
 
-    @Inject
-    private DemoiselleSecurityJWTConfig config;
-
     public TokenManagerImplSlaveTest() {
     }
-
 
     @BeforeClass
     public static void setUpClass() {
@@ -60,50 +56,6 @@ public class TokenManagerImplSlaveTest {
 
     @After
     public void tearDown() {
-    }
-
-    @Test
-    public void test10() {
-        out.println("init - Type null");
-        config.setType(null);
-        config.setPrivateKey(null);
-        config.setPublicKey(null);
-        ((TokenManagerImpl) instance).init();
-    }
-
-    @Test
-    public void test11() {
-        out.println("init - Type slave");
-        config.setType("teste");
-        ((TokenManagerImpl) instance).init();
-    }
-
-    @Test
-    public void test12() {
-        out.println("init - Type slave");
-        config.setType("slave");
-        ((TokenManagerImpl) instance).init();
-    }
-
-    @Test
-    public void test13() {
-        out.println("init - Type slave + key error");
-        config.setPublicKey("-----BEGIN PUBLIC KEY-----AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-----END PUBLIC KEY-----");
-        ((TokenManagerImpl) instance).init();
-    }
-
-    @Test
-    public void test14() {
-        out.println("init - Type slave + key error");
-        config.setPublicKey("");
-        ((TokenManagerImpl) instance).init();
-    }
-
-    @Test
-    public void test15() {
-        out.println("init - Type slave + key");
-        config.setPublicKey("-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA09A11Zaqmp5ZBTOCxgJ8qqtHhb6b+eO9C8gAX3DXFIlfcl0FU7FVwfQtHWuN3KU83c1sSj9wPMuviGvZeSV7oUp2DXML76EsEKf9r+6JNZRdnTCkXZklQSEmeuftSxnMtAwo7k+eIgPpOIrYpMJv5GzVju0zbyucnwbQnDvoGv08pMrbWaGOxcnHXCazsrRTI7UKQ+jvMDB3bsUcII0XS+92ZLQkiMkKH85HSSlm4AFKuUljRh59RlpJrCDc+TUZWQuOC6Li/H9/78tAW8kJIHfASJhkKgkcdGixBJNggp+K+0hMWvxLt5fi1BXvWiy/Ma3QNHtxOCorRa+4NBB+KwIDAQAB-----END PUBLIC KEY-----");
-        ((TokenManagerImpl) instance).init();
     }
 
     @Test

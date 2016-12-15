@@ -25,9 +25,6 @@ public interface DemoiselleSecurityJWTMessages {
     @MessageTemplate("{error}")
     String error();
 
-    @MessageTemplate("{title}")
-    String title();
-
     @MessageTemplate("{choose-type}")
     String chooseType();
 

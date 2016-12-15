@@ -5,8 +5,9 @@
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
 /**
- * This package has the facilitators for the CRUD
- *
+ * This package is intended to contain as classes related to
+ * DynamicScriptManager of the Demoiselle framework.
+ * 
  * @author SERPRO
  */
-package org.demoiselle.jee.core.api.crud;
+package org.demoiselle.jee.script;

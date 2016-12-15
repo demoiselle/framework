@@ -13,7 +13,6 @@ import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
@@ -21,7 +20,6 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.annotation.NotLogged;
 import org.demoiselle.jee.security.annotation.RequiredRole;
@@ -46,13 +44,8 @@ public class RequiredRoleInterceptor implements Serializable {
     private SecurityContext securityContext;
 
     @Inject
-    private DemoiselleUser loggedUser;
-
-    @Inject
     private DemoiselleSecurityMessages bundle;
 
-    @Inject
-    private Logger logger;
 
     /**
      * <p>

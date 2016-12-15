@@ -14,7 +14,7 @@ import org.demoiselle.jee.core.annotation.Name;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @Configuration(prefix = "demoiselle.security.jwt")
 public class DemoiselleSecurityJWTConfig implements Serializable {
@@ -31,61 +31,44 @@ public class DemoiselleSecurityJWTConfig implements Serializable {
     @Name("publicKey")
     private String publicKey;
 
-    @Name("timetolive")
-    private Float tempo;
+    @Name("timetoLiveMilliseconds")
+    private Long timetoLiveMilliseconds;
 
     @Name("issuer")
-    private String remetente;
+    private String issuer;
 
     @Name("audience")
-    private String destinatario;
+    private String audience;
+    
+    @Name("algorithmIdentifiers")
+    private String algorithmIdentifiers;
 
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getPrivateKey() {
         return privateKey;
     }
 
-    public void setPrivateKey(String privateKey) {
-        this.privateKey = privateKey;
-    }
-
     public String getPublicKey() {
         return publicKey;
     }
 
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
+    public Long getTimetoLiveMilliseconds() {
+        return timetoLiveMilliseconds;
     }
 
-    public Float getTempo() {
-        return tempo;
+    public String getIssuer() {
+        return issuer;
     }
 
-    public void setTempo(Float tempo) {
-        this.tempo = tempo;
+    public String getAudience() {
+        return audience;
     }
 
-    public String getRemetente() {
-        return remetente;
-    }
-
-    public void setRemetente(String remetente) {
-        this.remetente = remetente;
-    }
-
-    public String getDestinatario() {
-        return destinatario;
-    }
-
-    public void setDestinatario(String destinatario) {
-        this.destinatario = destinatario;
+    public String getAlgorithmIdentifiers() {
+        return algorithmIdentifiers;
     }
 
 }

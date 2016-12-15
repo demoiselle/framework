@@ -26,5 +26,6 @@ import javax.interceptor.InterceptorBinding;
 @InterceptorBinding
 @Target({METHOD, TYPE})
 @Retention(RUNTIME)
+//TODO remover
 public @interface NotLogged {
 }

@@ -20,9 +20,4 @@ public class DemoiselleSecurityConfig {
     public boolean isCorsEnabled() {
         return corsEnabled;
     }
-
-    public void setCorsEnabled(boolean corsEnabled) {
-        this.corsEnabled = corsEnabled;
-    }
-
 }
