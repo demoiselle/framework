@@ -15,6 +15,7 @@ import javax.enterprise.context.Dependent;
 
 import org.apache.commons.configuration2.Configuration;
 import org.demoiselle.jee.configuration.ConfigurationType;
+import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 import org.demoiselle.jee.core.annotation.Priority;
 
@@ -60,20 +61,25 @@ import org.demoiselle.jee.core.annotation.Priority;
 public class ConfigurationEnumValueExtractor implements ConfigurationValueExtractor {
 
     @Override
-    public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
-        String value = configuration.getString(prefix + key);
-
-        if (value != null && !"".equals(value.trim())) {
-            Object enums[] = field.getType().getEnumConstants();
-
-            for (int i = 0; i < enums.length; i++) {
-                if (((Enum<?>) enums[i]).name().equals(value)) {
-                    return enums[i];
+    public Object getValue(String prefix, String key, Field field, Configuration configuration) throws DemoiselleConfigurationValueExtractorException {
+        try{
+            String value = configuration.getString(prefix + key);
+    
+            if (value != null && !"".equals(value.trim())) {
+                Object enums[] = field.getType().getEnumConstants();
+    
+                for (int i = 0; i < enums.length; i++) {
+                    if (((Enum<?>) enums[i]).name().equals(value)) {
+                        return enums[i];
+                    }
                 }
             }
+    
+            return null;
         }
-
-        return null;
+        catch(Exception e){
+            throw new DemoiselleConfigurationValueExtractorException(e.getMessage(), e);
+        }
 
     }
 

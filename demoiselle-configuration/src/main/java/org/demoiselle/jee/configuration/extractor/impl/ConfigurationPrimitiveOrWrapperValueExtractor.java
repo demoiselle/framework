@@ -19,6 +19,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.DataConfiguration;
 import org.apache.commons.lang3.ClassUtils;
 import org.demoiselle.jee.configuration.ConfigurationType;
+import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 import org.demoiselle.jee.core.annotation.Priority;
 
@@ -91,8 +92,13 @@ public class ConfigurationPrimitiveOrWrapperValueExtractor implements Configurat
     }
 
     @Override
-    public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
-        return new DataConfiguration(configuration).get(ClassUtils.primitiveToWrapper(field.getType()), prefix + key);
+    public Object getValue(String prefix, String key, Field field, Configuration configuration) throws DemoiselleConfigurationValueExtractorException {
+        try{
+            return new DataConfiguration(configuration).get(ClassUtils.primitiveToWrapper(field.getType()), prefix + key);
+        }
+        catch(Exception e){
+            throw new DemoiselleConfigurationValueExtractorException(e.getMessage(), e);
+        }
     }
 
     @Override

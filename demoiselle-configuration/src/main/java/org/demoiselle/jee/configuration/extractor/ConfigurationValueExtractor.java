@@ -10,6 +10,7 @@ package org.demoiselle.jee.configuration.extractor;
 import java.lang.reflect.Field;
 
 import org.apache.commons.configuration2.Configuration;
+import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;
 
 /**
  * Definition interface to extractors.
@@ -32,10 +33,10 @@ public interface ConfigurationValueExtractor {
      *            {@link org.apache.commons.configuration2.Configuration} object
      *            responsible for extracting the value.
      * @return Object with the value set at source
-     * @throws Exception
+     * @throws DemoiselleConfigurationValueExtractorException
      *             Exception issued if an error occurs.
      */
-    Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception;
+    Object getValue(String prefix, String key, Field field, Configuration configuration) throws DemoiselleConfigurationValueExtractorException;
 
     /**
      * Verify the type supported by the extractor

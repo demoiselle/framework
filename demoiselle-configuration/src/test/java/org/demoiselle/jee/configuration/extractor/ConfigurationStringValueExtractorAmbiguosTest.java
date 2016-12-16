@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import javax.enterprise.context.Dependent;
 
 import org.apache.commons.configuration2.Configuration;
+import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;
 import org.demoiselle.jee.core.annotation.Priority;
 
 @Dependent
@@ -18,7 +19,7 @@ import org.demoiselle.jee.core.annotation.Priority;
 public class ConfigurationStringValueExtractorAmbiguosTest implements ConfigurationValueExtractor{
 
 	@Override
-	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
+	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws DemoiselleConfigurationValueExtractorException {
 		return null;
 	}
 

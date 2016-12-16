@@ -88,12 +88,12 @@ public class ConfigurationLoader implements Serializable {
     private String prefix;
 
     // Apache configuration
-    private List<Configuration> configurations = null;
+    private transient List<Configuration> configurations = null;
 
     // Fields of object annotated with @Configuration
-    private List<Field> fields;
+    private transient List<Field> fields;
 
-    private Map<Object, Boolean> loadedCache = null;
+    private transient Map<Object, Boolean> loadedCache = null;
 
     @PostConstruct
     private void init() {

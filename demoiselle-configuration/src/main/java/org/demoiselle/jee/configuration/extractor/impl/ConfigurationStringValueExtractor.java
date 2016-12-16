@@ -15,6 +15,7 @@ import javax.enterprise.context.Dependent;
 
 import org.apache.commons.configuration2.Configuration;
 import org.demoiselle.jee.configuration.ConfigurationType;
+import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 import org.demoiselle.jee.core.annotation.Priority;
 
@@ -59,8 +60,13 @@ import org.demoiselle.jee.core.annotation.Priority;
 public class ConfigurationStringValueExtractor implements ConfigurationValueExtractor {
 
     @Override
-    public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
-        return configuration.getString(prefix + key);
+    public Object getValue(String prefix, String key, Field field, Configuration configuration) throws DemoiselleConfigurationValueExtractorException {
+        try{
+            return configuration.getString(prefix + key);
+        }
+        catch(Exception e){
+            throw new DemoiselleConfigurationValueExtractorException(e.getMessage(), e);
+        }
     }
 
     @Override
