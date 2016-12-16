@@ -15,7 +15,7 @@ import java.util.Map;
  *
  * @author SERPRO
  */
-public interface DemoiselleUser extends Principal, Cloneable {
+public interface DemoiselleUser extends Principal {
 
     /**
      * @return Identity user
@@ -99,7 +99,6 @@ public interface DemoiselleUser extends Principal, Cloneable {
      * @param value Value parameter
      */
     public void removeParam(String key, String value);
-
 
     /**
      *
