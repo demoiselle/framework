@@ -16,6 +16,12 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
 @MessageBundle
 public interface DemoiselleSecurityJWTMessages {
 
+    @MessageTemplate("{general}")
+    String general();
+
+    @MessageTemplate("{expired}")
+    String expired();
+
     @MessageTemplate("{master}")
     String master();
 
