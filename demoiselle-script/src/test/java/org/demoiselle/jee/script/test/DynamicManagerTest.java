@@ -111,12 +111,16 @@ public class DynamicManagerTest {
     }
      
     @Test
-    public void testEvalScriptNotValid() throws ScriptException {           	
-    	    	
+    public void testEvalScriptNotValid() throws ScriptException {           	   	    	
         dm.loadEngine("nashorn");        
         expectedEx.expect(NullPointerException.class);
                       
         dm.eval("teste555", null);
+    }
+            
+    @Test
+    public void testListEngines() throws ScriptException {         
+    	Assert.assertTrue(  dm.listEngines().size() > 0);                                      
     }
            
 }

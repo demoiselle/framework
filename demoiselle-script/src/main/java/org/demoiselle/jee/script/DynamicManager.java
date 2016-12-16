@@ -6,6 +6,8 @@
  */
 package org.demoiselle.jee.script;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -13,11 +15,13 @@ import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.demoiselle.jee.script.exception.DemoiselleScriptException;
 import org.demoiselle.jee.script.message.DemoiselleScriptMessages;
-
+import org.demoiselle.jee.core.api.script.DynamicManagerInterface;
 
 /** 
  * Dynamic Manager - Responsible for Managing Scripts, its compilation and execution
@@ -25,9 +29,8 @@ import org.demoiselle.jee.script.message.DemoiselleScriptMessages;
  * @author SERPRO
  */
 @ApplicationScoped
-//TODO Criar interface no core
 //TODO Avaliar requestscoped
-public class DynamicManager {
+public class DynamicManager implements DynamicManagerInterface {
 	
 	@Inject private DemoiselleScriptMessages bundle;
 	
@@ -42,27 +45,36 @@ public class DynamicManager {
 	 * @return ScriptEngine instance of engine
 	 * @throws ScriptException when interface compilable not implemented by engine
 	 */
-	//TODO avaliar uso de enum
-    public ScriptEngine loadEngine(String engineName) throws ScriptException {
+    public ScriptEngine loadEngine(String engineName) throws DemoiselleScriptException {
         DynamicManager.scriptEngine = null;
     	ScriptEngine engine =  new ScriptEngineManager().getEngineByName(engineName);
     	
     	if(engine == null){
-    		//TODO usar excecao do  demoiselle
-    		//TODO informar na mensagesm o engine escolhido
-    		throw new ScriptException(bundle.cannotLoadEngine());	    		
+    		throw new DemoiselleScriptException(bundle.cannotLoadEngine(engineName));	    		
     	}
     	   	    	
 		if (engine instanceof Compilable) {
 			DynamicManager.scriptEngine = engine;
 			return engine;
 		}else {
-			throw new ScriptException(bundle.engineNotCompilable());
-		}
-    			
+			throw new DemoiselleScriptException(bundle.engineNotCompilable());
+		}    			
     }
     
-    //TODO criar metodo com lista dos engine suportados
+    /**
+	 * List all valid engines names registered and found by discover mechanism. 
+     * To add a new engine import in the application pom.xml the engine jar.
+	 */    
+    public List<String> listEngines() {
+    	List<String> listaEngines = new ArrayList<String>(); 
+	    ScriptEngineManager manager = new ScriptEngineManager();
+	    List<ScriptEngineFactory> factories = manager.getEngineFactories();
+	    
+	    for (ScriptEngineFactory factory : factories) {    	      	   
+	        listaEngines.addAll(factory.getNames());
+	    }
+	    return listaEngines;
+	  }
     
     /**
 	 * Force the unLoad a JSR-223 Script engine and clear the script cache.
@@ -90,7 +102,7 @@ public class DynamicManager {
 	 * @return Object the result of script eval.
 	 * @throws ScriptException when script not loaded
 	 */
-	public Object eval(String scriptName, Bindings context) throws ScriptException{
+	public Object eval(String scriptName, Bindings context) throws ScriptException {
 		CompiledScript  script = null;
 		Object result = null;
 							    
@@ -104,8 +116,7 @@ public class DynamicManager {
 				   						
 			return result;	
 		}else {
-			//TODO informar na mensagem de erro o scriptname
-			throw new ScriptException(bundle.scriptNotLoaded());
+			throw new DemoiselleScriptException(bundle.scriptNotLoaded(scriptName));
 		}
 	}
 	
@@ -115,27 +126,36 @@ public class DynamicManager {
 	 * @param scriptName script name
 	 * @param source 	 source of script
 	 * @return Boolean   compilation ok or not
+	 * @throws ScriptException  compile error
+	 */
+	private synchronized boolean load(String scriptName, String source) throws ScriptException{		
+		CompiledScript compiled = null;
+		Compilable engine = (Compilable) DynamicManager.scriptEngine;
+		compiled = engine.compile( source );			
+		DynamicManager.scriptCache.put(scriptName, compiled);
+		
+		return true;
+	}
+		
+	/**
+	 * Load ,compile and put script in cache.
+	 * 
+	 * @param scriptName script name
+	 * @param source 	 source of script
+	 * @return Boolean   compilation ok or not
 	 * @throws ScriptException when engine not loaded 
 	 */
-	//TODO uso do syncron  em outro metodo interno e privado
-	public synchronized Boolean loadScript(String scriptName,String source ) throws ScriptException{				
-		CompiledScript compiled = null;
-	
-		if(DynamicManager.scriptEngine == null ){
-			//TODO usar excecao demoiselle
-			throw new ScriptException(bundle.engineNotLoaded());			
-		}
+	public Boolean loadScript(String scriptName,String source ) throws ScriptException{				
 		
-		Compilable engine = (Compilable) DynamicManager.scriptEngine;
-										
-		if( getScript(scriptName)== null){			
-			compiled = engine.compile( source );			
-			DynamicManager.scriptCache.put(scriptName, compiled);
-			return true;
+		if(DynamicManager.scriptEngine == null ){
+			throw new DemoiselleScriptException(bundle.engineNotLoaded());			
+		}
+														
+		if( getScript(scriptName)== null){
+			return load(scriptName,source);					
 		}	
 		
-		return false;
-								
+		return false;							
 	}
 	
 	/**

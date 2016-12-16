@@ -17,7 +17,7 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
 public interface DemoiselleScriptMessages {
 					   
 	@MessageTemplate("{error-engine-cannot-load}")
-    String cannotLoadEngine();
+    String cannotLoadEngine(String engineName);
 
     @MessageTemplate("{error-engine-not-loaded}")
     String engineNotLoaded();
@@ -26,6 +26,6 @@ public interface DemoiselleScriptMessages {
     String engineNotCompilable();
     
     @MessageTemplate("{error-script-not-loaded}")
-    String scriptNotLoaded();
+    String scriptNotLoaded(String scriptName);
 
 }
