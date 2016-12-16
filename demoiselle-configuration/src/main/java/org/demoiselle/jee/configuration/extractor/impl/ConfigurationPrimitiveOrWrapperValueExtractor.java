@@ -2,7 +2,8 @@
  * Demoiselle Framework
  *
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
- * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ * See the lgpl.txt file in the root directory or
+ * <https://www.gnu.org/licenses/lgpl.html>.
  */
 package org.demoiselle.jee.configuration.extractor.impl;
 
@@ -23,18 +24,19 @@ import org.demoiselle.jee.core.annotation.Priority;
 
 /**
  * 
- * Adds the data extraction capability of a source ({@link ConfigurationType}) for the types:
- *  
+ * Adds the data extraction capability of a source ({@link ConfigurationType})
+ * for the types:
+ * 
  * <ul>
- * 	<li>{@link Boolean}</li>
- *  <li>{@link Byte}</li>
- *  <li>{@link Character}</li>
- *  <li>{@link Short}</li>
- *  <li>{@link Integer}</li>
- *  <li>{@link Long}</li>
- *  <li>{@link Double}</li>
- *  <li>{@link Float}</li>
- *  <li>{@link Void}</li>
+ * <li>{@link Boolean}</li>
+ * <li>{@link Byte}</li>
+ * <li>{@link Character}</li>
+ * <li>{@link Short}</li>
+ * <li>{@link Integer}</li>
+ * <li>{@link Long}</li>
+ * <li>{@link Double}</li>
+ * <li>{@link Float}</li>
+ * <li>{@link Void}</li>
  * </ul>
  * 
  * <p>
@@ -42,7 +44,8 @@ import org.demoiselle.jee.core.annotation.Priority;
  * </p>
  * 
  * <p>
- * For the extraction of a int type of a properties file the statement made in the properties will have the following format:
+ * For the extraction of a int type of a properties file the statement made in
+ * the properties will have the following format:
  * </p>
  * 
  * <pre>
@@ -52,15 +55,15 @@ import org.demoiselle.jee.core.annotation.Priority;
  * And the configuration class will be declared as follows:
  * 
  * <pre>
- *  
+ * 
  * &#64;Configuration
  * public class BookmarkConfig {
  *
- *  private int pageSize;
+ *     private int pageSize;
  *
- *  public String getPageSize() {
- *    return pageSize;
- *  }
+ *     public String getPageSize() {
+ *         return pageSize;
+ *     }
  *
  * }
  * 
@@ -73,27 +76,27 @@ import org.demoiselle.jee.core.annotation.Priority;
 @Priority(L2_PRIORITY)
 public class ConfigurationPrimitiveOrWrapperValueExtractor implements ConfigurationValueExtractor {
 
-	private static final Set<Object> wrappers = new HashSet<Object>();
+    private static final Set<Object> wrappers = new HashSet<>();
 
-	static {
-		wrappers.add(Boolean.class);
-		wrappers.add(Byte.class);
-		wrappers.add(Character.class);
-		wrappers.add(Short.class);
-		wrappers.add(Integer.class);
-		wrappers.add(Long.class);
-		wrappers.add(Double.class);
-		wrappers.add(Float.class);
-		wrappers.add(Void.TYPE);
-	}
+    static {
+        wrappers.add(Boolean.class);
+        wrappers.add(Byte.class);
+        wrappers.add(Character.class);
+        wrappers.add(Short.class);
+        wrappers.add(Integer.class);
+        wrappers.add(Long.class);
+        wrappers.add(Double.class);
+        wrappers.add(Float.class);
+        wrappers.add(Void.TYPE);
+    }
 
-	@Override
-	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
-		return new DataConfiguration(configuration).get(ClassUtils.primitiveToWrapper(field.getType()), prefix + key);
-	}
+    @Override
+    public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
+        return new DataConfiguration(configuration).get(ClassUtils.primitiveToWrapper(field.getType()), prefix + key);
+    }
 
-	@Override
-	public boolean isSupported(Field field) {
-		return field.getType().isPrimitive() || wrappers.contains(field.getType());
-	}
+    @Override
+    public boolean isSupported(Field field) {
+        return field.getType().isPrimitive() || wrappers.contains(field.getType());
+    }
 }

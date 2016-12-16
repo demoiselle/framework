@@ -2,7 +2,8 @@
  * Demoiselle Framework
  *
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
- * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ * See the lgpl.txt file in the root directory or
+ * <https://www.gnu.org/licenses/lgpl.html>.
  */
 package org.demoiselle.jee.configuration.extractor.impl;
 
@@ -24,14 +25,16 @@ import org.demoiselle.jee.core.annotation.Priority;
 import static org.demoiselle.jee.core.annotation.Priority.*;
 
 /**
- * Adds the data extraction capability of a source ({@link ConfigurationType}) for the type of {@link Map}.
+ * Adds the data extraction capability of a source ({@link ConfigurationType})
+ * for the type of {@link Map}.
  * 
  * <p>
  * Sample:
  * </p>
  * 
  * <p>
- * For the extraction of a {@link Map} type of a properties file the statement made in the properties will have the following format:
+ * For the extraction of a {@link Map} type of a properties file the statement
+ * made in the properties will have the following format:
  * </p>
  * 
  * <pre>
@@ -44,15 +47,15 @@ import static org.demoiselle.jee.core.annotation.Priority.*;
  * And the configuration class will be declared as follows:
  * 
  * <pre>
- *  
+ * 
  * &#64;Configuration
  * public class BookmarkConfig {
  *
- *  private Map&#60;String, String&#62; connectionConfiguration;
+ *     private Map&#60;String, String&#62; connectionConfiguration;
  *
- *  public Map&#60;String, String&#62; getConnectionConfiguration() {
- *    return connectionConfiguration;
- *  }
+ *     public Map&#60;String, String&#62; getConnectionConfiguration() {
+ *         return connectionConfiguration;
+ *     }
  *
  * }
  * 
@@ -65,34 +68,35 @@ import static org.demoiselle.jee.core.annotation.Priority.*;
 @Priority(L2_PRIORITY)
 public class ConfigurationMapValueExtractor implements ConfigurationValueExtractor {
 
-	@Override
-	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
-		Map<String, Object> value = null;
+    @Override
+    public Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception {
+        Map<String, Object> value = null;
 
-		String regexp = "^(" + prefix + ")(" + key + ")(\\.(\\w+))?$";
-		Pattern pattern = Pattern.compile(regexp);
+        String regexp = "^(" + prefix + ")(" + key + ")(\\.(\\w+))?$";
+        Pattern pattern = Pattern.compile(regexp);
 
-		for (Iterator<String> iter = configuration.getKeys(); iter.hasNext();) {
-			String iterKey = iter.next();
-			Matcher matcher = pattern.matcher(iterKey);
+        for (Iterator<String> iter = configuration.getKeys(); iter.hasNext();) {
+            String iterKey = iter.next();
+            Matcher matcher = pattern.matcher(iterKey);
 
-			if (matcher.matches()) {
-				String confKey = matcher.group(1) + matcher.group(2) + ( matcher.group(3)!=null ? matcher.group(3) : "" );
-						
-				if (value == null) {
-					value = new HashMap<>();
-				}
+            if (matcher.matches()) {
+                String confKey = matcher.group(1) + matcher.group(2)
+                        + (matcher.group(3) != null ? matcher.group(3) : "");
 
-				String mapKey = matcher.group(4) == null ? "default" : matcher.group(4);
-				value.put(mapKey, configuration.getString(confKey));
-			}
-		}
+                if (value == null) {
+                    value = new HashMap<>();
+                }
 
-		return value;
-	}
+                String mapKey = matcher.group(4) == null ? "default" : matcher.group(4);
+                value.put(mapKey, configuration.getString(confKey));
+            }
+        }
 
-	@Override
-	public boolean isSupported(Field field) {
-		return field.getType() == Map.class;
-	}
+        return value;
+    }
+
+    @Override
+    public boolean isSupported(Field field) {
+        return field.getType() == Map.class;
+    }
 }

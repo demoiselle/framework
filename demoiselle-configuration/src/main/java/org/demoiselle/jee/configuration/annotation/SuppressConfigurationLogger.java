@@ -1,3 +1,11 @@
+/*
+ * Demoiselle Framework
+ *
+ * License: GNU Lesser General Public License (LGPL), version 3 or later.
+ * See the lgpl.txt file in the root directory or
+ * <https://www.gnu.org/licenses/lgpl.html>.
+ */
+
 package org.demoiselle.jee.configuration.annotation;
 
 import static java.lang.annotation.ElementType.TYPE;
@@ -14,7 +22,7 @@ import java.lang.annotation.Target;
  * @author SERPRO
  *
  */
-@Target({TYPE, FIELD})
+@Target({ TYPE, FIELD })
 @Retention(RUNTIME)
 public @interface SuppressConfigurationLogger {
 
