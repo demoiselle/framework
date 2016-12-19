@@ -43,7 +43,7 @@ public class DynamicManager implements DynamicManagerInterface {
 	 * 
 	 * @param engineName engine name
 	 * @return ScriptEngine instance of engine
-	 * @throws ScriptException when interface compilable not implemented by engine
+	 * @throws DemoiselleScriptException when interface compilable not implemented by engine
 	 */
     public ScriptEngine loadEngine(String engineName) throws DemoiselleScriptException {
         DynamicManager.scriptEngine = null;
