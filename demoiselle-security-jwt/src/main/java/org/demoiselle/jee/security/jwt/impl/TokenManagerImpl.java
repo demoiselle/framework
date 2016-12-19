@@ -6,12 +6,12 @@
  */
 package org.demoiselle.jee.security.jwt.impl;
 
-import static java.util.Base64.getDecoder;
+//import static java.util.Base64.getDecoder;
 import static java.util.logging.Level.WARNING;
 import static javax.ws.rs.Priorities.AUTHENTICATION;
-import static org.jose4j.jws.AlgorithmIdentifiers.RSA_USING_SHA256;
-import static org.jose4j.jwt.NumericDate.fromMilliseconds;
-import static org.jose4j.jwt.NumericDate.now;
+//import static org.jose4j.jws.AlgorithmIdentifiers.RSA_USING_SHA256;
+//import static org.jose4j.jwt.NumericDate.fromMilliseconds;
+//import static org.jose4j.jwt.NumericDate.now;
 
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -129,7 +129,7 @@ public class TokenManagerImpl implements TokenManager {
                         .setAllowedClockSkewInSeconds(60)
                         .setExpectedIssuer(config.getIssuer())
                         .setExpectedAudience(config.getAudience())
-                        .setEvaluationTime(now())
+                        .setEvaluationTime(org.jose4j.jwt.NumericDate.now())
                         .setVerificationKey(publicKey)
                         .build();
                 JwtClaims jwtClaims = jwtConsumer.processToClaims(token.getKey());
@@ -159,11 +159,11 @@ public class TokenManagerImpl implements TokenManager {
 
     @Override
     public void setUser(DemoiselleUser user) {
-        long time = (now().getValueInMillis() + (config.getTimetoLiveMilliseconds()));
+        long time = (org.jose4j.jwt.NumericDate.now().getValueInMillis() + (config.getTimetoLiveMilliseconds()));
         try {
             JwtClaims claims = new JwtClaims();
             claims.setIssuer(config.getIssuer());
-            claims.setExpirationTime(fromMilliseconds(time));
+            claims.setExpirationTime(org.jose4j.jwt.NumericDate.fromMilliseconds(time));
             claims.setAudience(config.getAudience());
             claims.setGeneratedJwtId();
             claims.setIssuedAtToNow();
@@ -214,7 +214,7 @@ public class TokenManagerImpl implements TokenManager {
             logger.log(WARNING, "privateKey={0}", config.getPrivateKey());
             logger.log(WARNING, "publicKey={0}", config.getPublicKey());
         }
-        byte[] keyBytes = getDecoder().decode(config.getPrivateKey().replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", ""));
+        byte[] keyBytes = java.util.Base64.getDecoder().decode(config.getPrivateKey().replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", ""));
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePrivate(spec);
