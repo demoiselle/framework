@@ -12,8 +12,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.demoiselle.jee.core.annotation.Priority;
-
 /**
  * Identifies a method eligible to be executed automatically during <b>application finalization</b>.
  * <p>
@@ -31,7 +29,7 @@ import org.demoiselle.jee.core.annotation.Priority;
  * }
  * </pre>
  * 
- * See {@link Priority}
+ * See {@link DemoiselleLifecyclePriority}
  * 
  * @author SERPRO 
  */
