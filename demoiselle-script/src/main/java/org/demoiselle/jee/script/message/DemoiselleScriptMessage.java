@@ -14,7 +14,7 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
  * @author SERPRO
  */
 @MessageBundle
-public interface DemoiselleScriptMessages {
+public interface DemoiselleScriptMessage {
 					   
 	@MessageTemplate("{error-engine-cannot-load}")
     String cannotLoadEngine(String engineName);

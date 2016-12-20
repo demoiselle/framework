@@ -22,18 +22,18 @@ public interface DynamicManagerInterface {
 	 
 	 public List<String> listEngines(); 
 	 
-	 public void unloadEngine();
+	 public void unloadEngine(String engineName);
 	 
-	 public void clearCache();
+	 public void clearCache(String engineName);
 	 
-	 public Object eval(String scriptName, Bindings context) throws ScriptException;
+	 public Object eval(String engineName, String scriptName, Bindings context) throws ScriptException;
 	 
-	 public Boolean loadScript(String scriptName,String source ) throws ScriptException;
+	 public Boolean loadScript(String engineName, String scriptName,String source ) throws ScriptException;
 	 
-	 public void removeScript(String scriptId);
+	 public void removeScript(String engineName, String scriptId);
 	 
-	 public Object getScript(String scriptId);
+	 public Object getScript(String engineName, String scriptId);
 	 
-	 public int getCacheSize();
+	 public int getCacheSize(String engineName);
 	 
 }
