@@ -30,7 +30,6 @@ import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.configuration.annotation.Configuration;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationException;
 import org.demoiselle.jee.configuration.extractor.AbstractConfigurationTest;
-import org.demoiselle.jee.configuration.extractor.ConfigurationStringValueExtractorAmbiguosTest;
 import org.demoiselle.jee.configuration.message.ConfigurationMessage;
 import org.demoiselle.jee.configuration.model.ConfigIncompatibleTypeModel;
 import org.demoiselle.jee.configuration.model.ConfigModel;
@@ -38,7 +37,6 @@ import org.demoiselle.jee.configuration.model.ConfigWithNameAnnotationEmptyModel
 import org.demoiselle.jee.configuration.model.ConfigWithValidationModel;
 import org.demoiselle.jee.configuration.model.ConfigWithoutExtractorModel;
 import org.demoiselle.jee.configuration.util.UtilTest;
-import org.demoiselle.jee.core.annotation.Priority;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -156,8 +154,6 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
     public void modelInvalidValueWithBeanValidationShouldShowError()
             throws NoSuchFieldException, IllegalAccessException {
 
-        preparePriorityForValueExtractor(Priority.L1_PRIORITY);
-
         StringBuilder sb = new StringBuilder();
         sb.append(
                 "private java.lang.String org.demoiselle.jee.configuration.model.ConfigWithValidationModel.configString não pode ser nulo\n");
@@ -177,9 +173,6 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
     @Test
     public void twoExtractorValueThatSupportTheSameTypeShouldThrowConfigurationException()
             throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-
-        // Same Priority of ConfigurationStringValueExtractor
-        preparePriorityForValueExtractor(Priority.L2_PRIORITY);
 
         try {
             Class<?> baseClass = configModel.getClass();
@@ -268,12 +261,12 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
     // assertNotNull(configModel.getConfigFieldWithSuppressLogger());
     // }
 
-    private void preparePriorityForValueExtractor(int level) throws NoSuchFieldException, IllegalAccessException {
+    /*private void preparePriorityForValueExtractor2(int level) throws NoSuchFieldException, IllegalAccessException {
 
-        final Priority oldPriority = ConfigurationStringValueExtractorAmbiguosTest.class
-                .getDeclaredAnnotation(Priority.class);
+        final DemoiselleLifecyclePriority oldPriority = ConfigurationStringValueExtractorAmbiguosTest.class
+                .getDeclaredAnnotation(DemoiselleLifecyclePriority.class);
 
-        Priority priority = new Priority() {
+        DemoiselleLifecyclePriority priority = new DemoiselleLifecyclePriority() {
 
             @Override
             public Class<? extends Annotation> annotationType() {
@@ -298,8 +291,8 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
         Map<Class<? extends Annotation>, Annotation> annotations = (Map<Class<? extends Annotation>, Annotation>) field
                 .get(object);
 
-        annotations.put(Priority.class, priority);
-    }
+        annotations.put(DemoiselleLifecyclePriority.class, priority);
+    }*/
 
     private void makeConfigurationRuntime(Class<?> clazz, ConfigurationType configType, String pathFileTest)
             throws Exception {

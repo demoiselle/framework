@@ -8,7 +8,6 @@
 package org.demoiselle.jee.configuration.extractor.impl;
 
 import java.lang.reflect.Field;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -21,9 +20,6 @@ import org.apache.commons.configuration2.Configuration;
 import org.demoiselle.jee.configuration.ConfigurationType;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
-import org.demoiselle.jee.core.annotation.Priority;
-
-import static org.demoiselle.jee.core.annotation.Priority.*;
 
 /**
  * Adds the data extraction capability of a source ({@link ConfigurationType})
@@ -66,7 +62,6 @@ import static org.demoiselle.jee.core.annotation.Priority.*;
  * 
  */
 @Dependent
-@Priority(L2_PRIORITY)
 public class ConfigurationMapValueExtractor implements ConfigurationValueExtractor {
 
     @Override
