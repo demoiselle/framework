@@ -9,6 +9,11 @@ package org.demoiselle.jee.configuration.model;
 
 import org.demoiselle.jee.core.annotation.Name;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 public class ConfigWithNameAnnotationEmptyModel {
 
     @Name

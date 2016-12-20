@@ -11,6 +11,11 @@ import java.util.Set;
 
 import org.demoiselle.jee.configuration.annotation.Configuration;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 @Configuration(resource = "app-test", prefix = "")
 public class ConfigWithoutExtractorModel {
 

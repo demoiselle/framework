@@ -7,6 +7,11 @@
  */
 package org.demoiselle.jee.configuration.model;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 public class ConfigClassModel {
 
 }

@@ -14,6 +14,11 @@ import org.apache.commons.configuration2.Configuration;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;
 import org.demoiselle.jee.configuration.extractor.impl.ConfigurationStringValueExtractor;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 @Dependent
 public class ConfigurationStringValueExtractorAmbiguousTest implements ConfigurationValueExtractor{
 

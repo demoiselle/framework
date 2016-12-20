@@ -8,6 +8,11 @@ package org.demoiselle.jee.configuration.model;
 
 import org.demoiselle.jee.configuration.annotation.Configuration;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 @Configuration()
 public class ConfigIncompatibleTypeModel {
 

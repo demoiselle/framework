@@ -30,6 +30,11 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.demoiselle.jee.configuration.model.ConfigClassModel;
 import org.demoiselle.jee.configuration.model.ConfigEnum;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 public class UtilTest {
 
     private static final String DEMOISELLE_CONFIGURATION_TEMP_DIRECTORY = "demoiselle-configuration-test";

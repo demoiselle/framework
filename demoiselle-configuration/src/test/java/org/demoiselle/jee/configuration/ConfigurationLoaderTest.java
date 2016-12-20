@@ -42,6 +42,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 @RunWith(CdiTestRunner.class)
 public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 
