@@ -98,7 +98,6 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
 	 * Clear the script cache.
 	 * 
 	 * @param engineName engineName
-	 * @throws ScriptException when script not loaded
 	 */
     public void clearCache(String engineName){    	
     	ScriptEngine engine = (ScriptEngine) DynamicManager.engineList.get(engineName);
