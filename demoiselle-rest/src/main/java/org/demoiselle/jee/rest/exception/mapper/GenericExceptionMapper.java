@@ -9,7 +9,9 @@ package org.demoiselle.jee.rest.exception.mapper;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
+import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.PreMatching;
 
@@ -31,12 +33,14 @@ import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
 @Provider 
 public class GenericExceptionMapper implements ExceptionMapper<Exception> {
 
+	@Inject
+	private Logger logger;
+	
     @Override
 	public Response toResponse(Exception ex) {
 
 		StringWriter errorStackTrace = new StringWriter();
 		ex.printStackTrace(new PrintWriter(errorStackTrace));
-		HashMap<String, String> entity = new HashMap<>();
 	
 		//is a validation PAYLOAD REST exception?
 		if (ex instanceof DemoiselleRestException || (ex.getCause() != null && ex.getCause() instanceof DemoiselleRestException)) {
@@ -52,11 +56,14 @@ public class GenericExceptionMapper implements ExceptionMapper<Exception> {
 				return status(exDemoiselleREST.getStatusCode()).entity(exDemoiselleREST.getMessages()).type(APPLICATION_JSON).build();
 				
 			} else if (exDemoiselleREST.getStatusCode() > 0) {						
-				int code = exDemoiselleREST.getStatusCode();										
-				String msg = Status.fromStatusCode(code).getReasonPhrase();
-
-				return status(exDemoiselleREST.getStatusCode()).entity(
-						new DemoiselleRestExceptionMessage("server_error", msg, null )).type(APPLICATION_JSON).build();
+				int code = exDemoiselleREST.getStatusCode();
+				String msg = ex.getMessage();
+				
+				if( msg.isEmpty()){
+					 msg = Status.fromStatusCode(code).getReasonPhrase();
+				}
+							
+				return status(code).entity( new DemoiselleRestExceptionMessage("server_error", msg, null )).type(APPLICATION_JSON).build();
 			}
 
 		}
@@ -73,6 +80,7 @@ public class GenericExceptionMapper implements ExceptionMapper<Exception> {
 			return status(responseCode).entity(new DemoiselleRestExceptionMessage("server_error", ex.getMessage(), null )).type(APPLICATION_JSON).build();
 		}
 		
+		//logger.severe(ex.getCause().getMessage());
 		return status(INTERNAL_SERVER_ERROR.getStatusCode()).entity(new DemoiselleRestExceptionMessage("server_error","unknow server error", null )).type(APPLICATION_JSON).build();
 	}
 
