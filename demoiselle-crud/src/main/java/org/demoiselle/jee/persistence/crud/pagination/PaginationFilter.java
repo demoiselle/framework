@@ -57,18 +57,27 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
     @Inject
     private Logger logger;
     
+    public PaginationFilter() {}
+    
+    public PaginationFilter(UriInfo uriInfo, ResourceInfo info, ResultSet resultSet, 
+            DemoisellePaginationConfig dpc, Logger logger, DemoisellePaginationMessage message) {
+        this.uriInfo = uriInfo;
+        this.info = info;
+        this.resultSet = resultSet;
+        this.paginationConfig = dpc;
+        this.logger = logger;
+        this.message = message;
+    }
+    
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
-		
-		//TODO rever if duplo
+	    
 		if(isRequestPagination()){
-			if(hasRangeKey()){
-				try{
-					checkAndFillRangeValues();
-				}
-				catch(IllegalArgumentException e){
-					throw new BadRequestException(e.getMessage());
-				}
+			try{
+				checkAndFillRangeValues();
+			}
+			catch(IllegalArgumentException e){
+				throw new BadRequestException(e.getMessage());
 			}
 		}
 		
@@ -185,7 +194,6 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 					resultSet.setOffset(new Integer(offset));
 					resultSet.setLimit(new Integer(limit));
 					
-
 					if(resultSet.getOffset() > resultSet.getLimit()){
 						logInvalidRangeParameters(rangeList.get(0));
 						throw new IllegalArgumentException(this.message.invalidRangeParameters());
@@ -195,6 +203,7 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 						logger.warning(message.defaultPaginationNumberExceed(paginationConfig.getDefaultPagination()) + ", [" + resultSet.toString() + "]");
 						throw new IllegalArgumentException(message.defaultPaginationNumberExceed(paginationConfig.getDefaultPagination()));
 					}
+					
 				}
 				catch(NumberFormatException nfe){
 					logInvalidRangeParameters(rangeList.get(0));
@@ -214,20 +223,11 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 	}
 	
 	private Boolean isRequestPagination() {
-
-		if(hasRangeKey()) {			
-			return true;
-		}
-		
-		return false;
+	    // Verify if contains 'range' in url
+	    if(uriInfo.getQueryParameters().containsKey(DEFAULT_RANGE_KEY)) {            
+            return true;
+        }
+        return false;
 	}
-	
-	private Boolean hasRangeKey(){
-		if(this.uriInfo.getQueryParameters().containsKey(DEFAULT_RANGE_KEY)) {			
-			return true;
-		}
-		return false;
-	}
-    
     
 }
