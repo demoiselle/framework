@@ -12,6 +12,11 @@ import javax.validation.constraints.Null;
 
 import org.demoiselle.jee.configuration.annotation.Configuration;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 @Configuration()
 public class ConfigWithValidationModel {
 

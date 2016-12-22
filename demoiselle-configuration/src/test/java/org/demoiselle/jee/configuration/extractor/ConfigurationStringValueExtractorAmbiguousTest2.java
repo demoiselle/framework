@@ -12,15 +12,20 @@ import javax.enterprise.context.Dependent;
 
 import org.apache.commons.configuration2.Configuration;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;
-import org.demoiselle.jee.core.annotation.Priority;
+import org.demoiselle.jee.configuration.extractor.impl.ConfigurationStringValueExtractor;
 
+/**
+ * Duplicate class to test ambiguous extractors for String type
+ * 
+ * @author SERPRO
+ *
+ */
 @Dependent
-@Priority(Priority.L1_PRIORITY)
-public class ConfigurationStringValueExtractorAmbiguosTest implements ConfigurationValueExtractor{
+public class ConfigurationStringValueExtractorAmbiguousTest2 implements ConfigurationValueExtractor{
 
 	@Override
 	public Object getValue(String prefix, String key, Field field, Configuration configuration) throws DemoiselleConfigurationValueExtractorException {
-		return null;
+		return new ConfigurationStringValueExtractor().getValue(prefix, key, field, configuration);
 	}
 
 	@Override

@@ -30,7 +30,6 @@ import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.configuration.annotation.Configuration;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationException;
 import org.demoiselle.jee.configuration.extractor.AbstractConfigurationTest;
-import org.demoiselle.jee.configuration.extractor.ConfigurationStringValueExtractorAmbiguosTest;
 import org.demoiselle.jee.configuration.message.ConfigurationMessage;
 import org.demoiselle.jee.configuration.model.ConfigIncompatibleTypeModel;
 import org.demoiselle.jee.configuration.model.ConfigModel;
@@ -38,12 +37,16 @@ import org.demoiselle.jee.configuration.model.ConfigWithNameAnnotationEmptyModel
 import org.demoiselle.jee.configuration.model.ConfigWithValidationModel;
 import org.demoiselle.jee.configuration.model.ConfigWithoutExtractorModel;
 import org.demoiselle.jee.configuration.util.UtilTest;
-import org.demoiselle.jee.core.annotation.Priority;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 @RunWith(CdiTestRunner.class)
 public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 
@@ -52,9 +55,6 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 
     @Inject
     private ConfigurationMessage message;
-
-    // @Inject
-    // private DynamicMockManager mockManager;
 
     private ConfigModel configModel = new ConfigModel();
 
@@ -156,8 +156,6 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
     public void modelInvalidValueWithBeanValidationShouldShowError()
             throws NoSuchFieldException, IllegalAccessException {
 
-        preparePriorityForValueExtractor(Priority.L1_PRIORITY);
-
         StringBuilder sb = new StringBuilder();
         sb.append(
                 "private java.lang.String org.demoiselle.jee.configuration.model.ConfigWithValidationModel.configString não pode ser nulo\n");
@@ -177,9 +175,6 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
     @Test
     public void twoExtractorValueThatSupportTheSameTypeShouldThrowConfigurationException()
             throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-
-        // Same Priority of ConfigurationStringValueExtractor
-        preparePriorityForValueExtractor(Priority.L2_PRIORITY);
 
         try {
             Class<?> baseClass = configModel.getClass();
@@ -250,55 +245,6 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 
         assertNotNull(configModel.getConfigString());
         assertEquals(UtilTest.CONFIG_STRING_VALUE, configModel.getConfigString());
-    }
-
-    // @Test
-    // public void fieldWithSuppressLoggerDoesntLogger(){
-    //
-    // LoggerProducerTest lpt = new LoggerProducerTest();
-    //
-    // mockManager.addMock(lpt.create());
-    //
-    // //BeanProvider.injectFields(lpt.create());
-    //
-    // assertNull(configModel.getConfigFieldWithSuppressLogger());
-    // Class<?> baseClass = configModel.getClass();
-    // configLoader.load(configModel, baseClass);
-    //
-    // assertNotNull(configModel.getConfigFieldWithSuppressLogger());
-    // }
-
-    private void preparePriorityForValueExtractor(int level) throws NoSuchFieldException, IllegalAccessException {
-
-        final Priority oldPriority = ConfigurationStringValueExtractorAmbiguosTest.class
-                .getDeclaredAnnotation(Priority.class);
-
-        Priority priority = new Priority() {
-
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return oldPriority.annotationType();
-            }
-
-            @Override
-            public int value() {
-                return level;
-            }
-        };
-
-        Field annotationDataField = Class.class.getDeclaredField("annotationData");
-        annotationDataField.setAccessible(true);
-
-        Object object = annotationDataField.get(ConfigurationStringValueExtractorAmbiguosTest.class);
-
-        Field field = object.getClass().getDeclaredField("annotations");
-        field.setAccessible(true);
-
-        @SuppressWarnings("unchecked")
-        Map<Class<? extends Annotation>, Annotation> annotations = (Map<Class<? extends Annotation>, Annotation>) field
-                .get(object);
-
-        annotations.put(Priority.class, priority);
     }
 
     private void makeConfigurationRuntime(Class<?> clazz, ConfigurationType configType, String pathFileTest)

@@ -23,6 +23,11 @@ import org.demoiselle.jee.configuration.util.UtilTest;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 public class MapExtractorTest extends AbstractConfigurationTest{
 	
 	private ConfigurationMapValueExtractor conf = new ConfigurationMapValueExtractor();

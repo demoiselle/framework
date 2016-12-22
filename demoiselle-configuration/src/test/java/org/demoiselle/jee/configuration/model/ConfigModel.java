@@ -15,6 +15,11 @@ import org.demoiselle.jee.configuration.annotation.SuppressConfigurationLogger;
 import org.demoiselle.jee.core.annotation.Ignore;
 import org.demoiselle.jee.core.annotation.Name;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 @Configuration(resource = "app", type = ConfigurationType.PROPERTIES, prefix = "")
 public class ConfigModel {
 

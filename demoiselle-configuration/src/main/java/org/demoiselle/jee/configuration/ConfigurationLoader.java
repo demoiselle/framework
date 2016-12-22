@@ -14,7 +14,6 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,14 +44,14 @@ import org.apache.commons.configuration2.builder.BasicConfigurationBuilder;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.commons.configuration2.ex.ConversionException;
 import org.demoiselle.jee.configuration.annotation.SuppressConfigurationLogger;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationException;
+import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
+import org.demoiselle.jee.configuration.extractor.impl.ConfigurationInternalDemoiselleValueExtractor;
 import org.demoiselle.jee.configuration.message.ConfigurationMessage;
 import org.demoiselle.jee.core.annotation.Ignore;
 import org.demoiselle.jee.core.annotation.Name;
-import org.demoiselle.jee.core.annotation.Priority;
 
 /**
  * 
@@ -380,7 +379,7 @@ public class ConfigurationLoader implements Serializable {
         catch (DemoiselleConfigurationException cause) {
             throw cause;
         }
-        catch (ConversionException cause) {
+        catch (DemoiselleConfigurationValueExtractorException cause) {
             throw new DemoiselleConfigurationException(
                     message.configurationNotConversion(prefix + getKey(field), field.getType().toString()), cause);
         }
@@ -393,7 +392,7 @@ public class ConfigurationLoader implements Serializable {
     }
 
     private ConfigurationValueExtractor getValueExtractor(Field field) {
-        Collection<ConfigurationValueExtractor> candidates = new HashSet<>();
+        Set<ConfigurationValueExtractor> candidates = new HashSet<>();
 
         getExtractors().forEach(extractorClass -> {
             ConfigurationValueExtractor extractor = CDI.current().select(extractorClass).get();
@@ -402,7 +401,7 @@ public class ConfigurationLoader implements Serializable {
             }
         });
 
-        ConfigurationValueExtractor elected = selectElectedReference(ConfigurationValueExtractor.class, candidates);
+        ConfigurationValueExtractor elected = selectValueExtractorElected(candidates);
 
         if (elected == null) {
             throw new DemoiselleConfigurationException(message.configurationExtractorNotFound(field.toGenericString(),
@@ -559,70 +558,75 @@ public class ConfigurationLoader implements Serializable {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> T selectElectedReference(Class<T> type, Collection<? extends T> options) {
+    private ConfigurationValueExtractor selectValueExtractorElected(Set<ConfigurationValueExtractor> candidates) {
 
-        Map<Class<? extends T>, T> map = new HashMap<>();
+        Map<Class<? extends ConfigurationValueExtractor>, ConfigurationValueExtractor> map = new HashMap<>();
 
-        options.stream().filter(Objects::nonNull)
-                .forEach(instance -> map.put((Class<T>) instance.getClass(), instance));
+        candidates.stream()
+                .filter(Objects::nonNull)
+                .forEach(candidate -> map.put(candidate.getClass(), candidate));
 
-        Class<? extends T> elected = selectClass(type, map.keySet());
+        Class<? extends ConfigurationValueExtractor> elected = selectClass(map.keySet());
         return map.get(elected);
     }
 
-    private <T> Class<? extends T> selectClass(Class<T> type, Collection<Class<? extends T>> options) {
-        Class<? extends T> selected = null;
-
-        for (Class<? extends T> option : options) {
-            if (selected == null || getPriority(option) < getPriority(selected)) {
-                selected = option;
+    private Class<? extends ConfigurationValueExtractor> selectClass(Set<Class<? extends ConfigurationValueExtractor>> candidates) {
+        
+        Class<? extends ConfigurationValueExtractor> selected = null;
+        
+        for (Class<? extends ConfigurationValueExtractor> candidate : candidates) {
+            Boolean isCadidateInternalValueExtractor = isIntenalVauleExtractor(candidate);
+            Boolean isSelectedInternalValueExtractor = isIntenalVauleExtractor(selected);
+            
+            if (selected == null || (isSelectedInternalValueExtractor == Boolean.TRUE && isCadidateInternalValueExtractor == Boolean.FALSE)) {
+                selected = candidate;
             }
         }
 
         if (selected != null) {
-            performAmbiguityCheck(type, selected, options);
+            performAmbiguityCheck(selected, candidates);
         }
-
+        
         return selected;
     }
 
-    private <T> void performAmbiguityCheck(Class<T> type, Class<? extends T> selected,
-            Collection<Class<? extends T>> options) {
-        int selectedPriority = getPriority(selected);
+    private Boolean isIntenalVauleExtractor(Class<? extends ConfigurationValueExtractor> candidate) {
+        if(candidate == null){
+            return Boolean.FALSE;
+        }
+        
+        ConfigurationInternalDemoiselleValueExtractor frameworkPackageExtractor = candidate.getPackage().getAnnotation(ConfigurationInternalDemoiselleValueExtractor.class);
+        return frameworkPackageExtractor != null ? Boolean.TRUE : Boolean.FALSE;
+    }
 
-        List<Class<? extends T>> ambiguous = new ArrayList<>();
+    private void performAmbiguityCheck(Class<? extends ConfigurationValueExtractor> selected,
+            Set<Class<? extends ConfigurationValueExtractor>> candidates) {
 
-        for (Class<? extends T> option : options) {
-            if (selected != option && selectedPriority == getPriority(option)) {
-                ambiguous.add(option);
+        Set<Class<? extends ConfigurationValueExtractor>> ambiguous = new HashSet<>();             
+
+        for (Class<? extends ConfigurationValueExtractor> candidate : candidates) {
+            Boolean isCadidateInternalValueExtractor = isIntenalVauleExtractor(candidate);
+            Boolean isSelectedInternalValueExtractor = isIntenalVauleExtractor(selected);
+
+            if (selected != candidate && (isSelectedInternalValueExtractor == Boolean.TRUE && isCadidateInternalValueExtractor == Boolean.FALSE)) {
+                ambiguous.add(candidate);
             }
         }
 
         if (!ambiguous.isEmpty()) {
             ambiguous.add(selected);
 
-            String exceptionMessage = getExceptionMessage(type, ambiguous);
+            String exceptionMessage = getExceptionMessage(ambiguous);
             throw new DemoiselleConfigurationException(exceptionMessage, new AmbiguousResolutionException());
         }
     }
 
-    private <T> int getPriority(Class<T> type) {
-        int result = Priority.MAX_PRIORITY;
-        Priority priority = type.getAnnotation(Priority.class);
-
-        if (priority != null) {
-            result = priority.value();
-        }
-
-        return result;
-    }
-
-    private <T> String getExceptionMessage(Class<T> type, List<Class<? extends T>> ambiguous) {
+    private String getExceptionMessage(Set<Class<? extends ConfigurationValueExtractor>> ambiguousCandidates) {
         StringBuilder classes = new StringBuilder();
-
+        
+        Class<? extends ConfigurationValueExtractor> type = ambiguousCandidates.iterator().next();
         int i = 0;
-        for (Class<? extends T> clazz : ambiguous) {
+        for (Class<? extends ConfigurationValueExtractor> clazz : ambiguousCandidates) {
             if (i++ != 0) {
                 classes.append(", ");
             }

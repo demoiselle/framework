@@ -8,7 +8,7 @@ package org.demoiselle.jee.core.lifecycle;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
-import org.demoiselle.jee.core.annotation.Priority;
+import org.demoiselle.jee.core.lifecycle.annotation.DemoiselleLifecyclePriority;
 
 /**
  * Represents an annotated method to be processed 
@@ -30,12 +30,12 @@ public class AnnotatedMethodProcessor {
 	/**
 	 * 
 	 * @param annotatedMethod Represents the method
-	 * @return Get the current Priority annotated with {@link Priority}
+	 * @return Get the current Priority annotated with {@link DemoiselleLifecyclePriority}
 	 */
 	protected Integer getPriority(AnnotatedMethod<?> annotatedMethod) {
-		Integer priority = Priority.MIN_PRIORITY;
+		Integer priority = DemoiselleLifecyclePriority.LEVEL_4;
 
-		Priority annotation = annotatedMethod.getAnnotation(Priority.class);
+		DemoiselleLifecyclePriority annotation = annotatedMethod.getAnnotation(DemoiselleLifecyclePriority.class);
 		if (annotation != null) {
 			priority = annotation.value();
 		}

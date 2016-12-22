@@ -7,8 +7,6 @@
  */
 package org.demoiselle.jee.configuration.extractor.impl;
 
-import static org.demoiselle.jee.core.annotation.Priority.L2_PRIORITY;
-
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +19,6 @@ import org.apache.commons.lang3.ClassUtils;
 import org.demoiselle.jee.configuration.ConfigurationType;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
-import org.demoiselle.jee.core.annotation.Priority;
 
 /**
  * 
@@ -74,7 +71,6 @@ import org.demoiselle.jee.core.annotation.Priority;
  * 
  */
 @Dependent
-@Priority(L2_PRIORITY)
 public class ConfigurationPrimitiveOrWrapperValueExtractor implements ConfigurationValueExtractor {
 
     private static final Set<Object> wrappers = new HashSet<>();

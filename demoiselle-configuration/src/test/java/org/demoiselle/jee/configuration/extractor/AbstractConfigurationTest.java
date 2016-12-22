@@ -12,6 +12,11 @@ import java.io.IOException;
 import org.demoiselle.jee.configuration.util.UtilTest;
 import org.junit.After;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 public abstract class AbstractConfigurationTest {
 
     protected String FILE_PREFIX = "app";

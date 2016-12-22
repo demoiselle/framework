@@ -25,6 +25,11 @@ import org.demoiselle.jee.configuration.model.ConfigModel;
 import org.demoiselle.jee.configuration.util.UtilTest;
 import org.junit.Test;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 public class ClassExtractorTest extends AbstractConfigurationTest {
 
     private ConfigModel configModel = new ConfigModel();

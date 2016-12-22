@@ -7,6 +7,11 @@
  */
 package org.demoiselle.jee.configuration.model;
 
+/**
+ * 
+ * @author SERPRO
+ *
+ */
 public enum ConfigEnum {
 
     ENUM1, ENUM2, ENUM3;
