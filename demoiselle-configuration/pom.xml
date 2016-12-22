@@ -1,50 +1,51 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>demoiselle-configuration</artifactId>
-	<packaging>jar</packaging>
+   <modelVersion>4.0.0</modelVersion>
+   <artifactId>demoiselle-configuration</artifactId>
+   <packaging>jar</packaging>
 
-	<name>Demoiselle JEE Configuration</name>
-	<description>
+   <name>Demoiselle JEE Configuration</name>
+   <description>
 	  	Demoiselle Configuration habilita os projetos a usarem configurações em arquivos .properties, .xml ou variáveis de ambiente.
 	</description>
-	<url>http://demoiselle.io</url>
+   <url>http://demoiselle.io</url>
 
-	<parent>
-		<groupId>org.demoiselle.jee</groupId>
-		<artifactId>demoiselle-parent</artifactId>
-		<version>3.0.0-RC1-SNAPSHOT</version>
-		<relativePath>../demoiselle-parent</relativePath>
-	</parent>
+   <parent>
+      <groupId>org.demoiselle.jee</groupId>
+      <artifactId>demoiselle-parent</artifactId>
+      <version>3.0.0-RC1-SNAPSHOT</version>
+      <relativePath>../demoiselle-parent</relativePath>
+   </parent>
 
-	<dependencies>
+   <dependencies>
 
-		<dependency>
-			<groupId>org.demoiselle.jee</groupId>
-			<artifactId>demoiselle-core</artifactId>
-		</dependency>
+      <dependency>
+         <groupId>org.demoiselle.jee</groupId>
+         <artifactId>demoiselle-core</artifactId>
+      </dependency>
 
-		<!-- commons-configuration2 -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-configuration2</artifactId>
-			<version>2.0</version>
-		</dependency>
+      <!-- commons-configuration2 -->
+      <dependency>
+         <groupId>org.apache.commons</groupId>
+         <artifactId>commons-configuration2</artifactId>
+         <version>2.0</version>
+      </dependency>
 
 
-		<!-- commons-beanutils -->
-		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<version>1.9.2</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.hibernate</groupId>
-		    <artifactId>hibernate-validator</artifactId>
-		    <version>5.3.0.Final</version>
-		</dependency>
- 
-	</dependencies>
+      <!-- commons-beanutils -->
+      <dependency>
+         <groupId>commons-beanutils</groupId>
+         <artifactId>commons-beanutils</artifactId>
+         <version>1.9.2</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.hibernate</groupId>
+         <artifactId>hibernate-validator</artifactId>
+         <version>5.3.0.Final</version>
+      </dependency>
+
+   </dependencies>
 
 </project>

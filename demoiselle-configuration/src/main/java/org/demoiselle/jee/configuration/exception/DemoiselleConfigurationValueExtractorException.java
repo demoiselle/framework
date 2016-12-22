@@ -11,19 +11,19 @@ import org.demoiselle.jee.core.exception.DemoiselleException;
 
 /**
  * 
- * Main exception Demoiselle Configuration feature
+ * Exception that handles errors on extracting process
  * 
  * @author SERPRO
  */
-public class DemoiselleConfigurationException extends DemoiselleException {
+public class DemoiselleConfigurationValueExtractorException extends DemoiselleException {
 
     private static final long serialVersionUID = 1L;
 
-    public DemoiselleConfigurationException(String message) {
+    public DemoiselleConfigurationValueExtractorException(String message) {
         super(message);
     }
 
-    public DemoiselleConfigurationException(String message, Throwable cause) {
+    public DemoiselleConfigurationValueExtractorException(String message, Throwable cause) {
         super(message, cause);
     }
 }

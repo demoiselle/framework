@@ -20,7 +20,7 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
 @Configuration(prefix = "demoiselle.rest")
 public class DemoiselleRestConfig {
 
-    private boolean gzipEnabled;
+    private boolean gzipEnabled = false;
 
     public boolean isGzipEnabled() {
         return gzipEnabled;

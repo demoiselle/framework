@@ -10,6 +10,7 @@ import static java.util.UUID.randomUUID;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import static javax.ws.rs.Priorities.AUTHENTICATION;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
@@ -20,12 +21,12 @@ import org.demoiselle.jee.core.api.security.TokenManager;
  *
  * @author SERPRO
  */
-@ApplicationScoped
+@RequestScoped
 @Priority(AUTHENTICATION)
 public class TokenManagerImpl implements TokenManager {
-    
-    private final ConcurrentHashMap<String, DemoiselleUser> repo = new ConcurrentHashMap<>();
-    
+
+    private static final ConcurrentHashMap<String, DemoiselleUser> repo = new ConcurrentHashMap<>();
+
     @Inject
     private Token token;
 
@@ -52,11 +53,11 @@ public class TokenManagerImpl implements TokenManager {
     @Override
     public void setUser(DemoiselleUser user) {
         token.setKey(null);
-        
+
         repo.entrySet().stream().parallel().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
             token.setKey(entry.getKey());
         });
-        
+
         if (token.getKey() == null) {
             String value = randomUUID().toString();
             repo.putIfAbsent(value, user.clone());
@@ -96,5 +97,5 @@ public class TokenManagerImpl implements TokenManager {
         });
         removeToken();
     }
-    
+
 }

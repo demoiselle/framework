@@ -15,6 +15,7 @@ import org.demoiselle.jee.core.api.security.TokenManager;
 
 /**
  * TODO javadoc
+ *
  * @author SERPRO
  */
 @RequestScoped
@@ -47,7 +48,6 @@ public class SecurityContextImpl implements SecurityContext {
 
     @Override
     public DemoiselleUser getUser() {
-    	//TODO tratar nullpointer
         return tm.getUser();
     }
 

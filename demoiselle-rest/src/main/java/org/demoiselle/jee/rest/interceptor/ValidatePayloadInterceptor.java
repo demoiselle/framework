@@ -12,7 +12,7 @@ import java.util.Set;
 import javax.annotation.Priority;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
-import static javax.interceptor.Interceptor.Priority.APPLICATION;
+
 import javax.interceptor.InvocationContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.UnexpectedTypeException;
@@ -21,23 +21,26 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import org.demoiselle.jee.rest.annotation.ValidatePayload;
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
+
 /**
- * 
+ * <p>
+ * Intercepts calls with {@link ValidatePayload} annotations.
+ * </p>
  * @author SERPRO
  *
  */
-//TODO revisar
-@Interceptor
 @ValidatePayload
-@Priority(APPLICATION)
+@Interceptor
+@Priority(Interceptor.Priority.LIBRARY_AFTER)
 public class ValidatePayloadInterceptor implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @AroundInvoke
     public Object manage(final InvocationContext ic) throws Exception {
-        DemoiselleRestException ex = new DemoiselleRestException();
+        DemoiselleRestException ex = new DemoiselleRestException(422);
         Set<ConstraintViolation<?>> violations = new HashSet<>();
+       
         for (Object params : ic.getParameters()) {
             if (params != null) {
                 ValidatorFactory dfv = buildDefaultValidatorFactory();
@@ -46,15 +49,15 @@ public class ValidatePayloadInterceptor implements Serializable {
                     violations.addAll(validator.validate(params));
                     violations.forEach((violation) -> {
                         String field = (violation.getRootBeanClass().getSimpleName() + "_"
-                                + violation.getPropertyPath()).toLowerCase();
+                                + violation.getPropertyPath()).toLowerCase();                       
                         ex.addMessage(field, violation.getMessage());
                     });
                 } catch (UnexpectedTypeException cause) {
-                	//TODO mensagem 
-                    throw new DemoiselleRestException("ERRO GENERICO -> ALTERAR");
+                    throw new DemoiselleRestException("Unknow validation error");
                 }
             }
         }
+        
         if (!violations.isEmpty() && !ex.getMessages().isEmpty()) {
             throw ex;
         }

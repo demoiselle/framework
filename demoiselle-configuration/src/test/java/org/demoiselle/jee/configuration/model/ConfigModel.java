@@ -2,7 +2,8 @@
  * Demoiselle Framework
  *
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
- * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
+ * See the lgpl.txt file in the root directory or
+ * <https://www.gnu.org/licenses/lgpl.html>.
  */
 package org.demoiselle.jee.configuration.model;
 
@@ -10,101 +11,109 @@ import java.util.Map;
 
 import org.demoiselle.jee.configuration.ConfigurationType;
 import org.demoiselle.jee.configuration.annotation.Configuration;
+import org.demoiselle.jee.configuration.annotation.SuppressConfigurationLogger;
 import org.demoiselle.jee.core.annotation.Ignore;
 import org.demoiselle.jee.core.annotation.Name;
 
 @Configuration(resource = "app", type = ConfigurationType.PROPERTIES, prefix = "")
 public class ConfigModel {
-	
-	private Integer configInteger;
-	private Short configShort;
-	private Boolean configBoolean;
-	private Byte configByte;
-	private Character configCharacter;
-	private Long configLong;
-	private Double configDouble;
-	private Float configFloat;
-	
-	private int configInt;
-	
-	private String configString;
-	
-	private Map<String, String> configMap;
-	
-	private String[] configArray;
-	
-	private Class<ConfigClassModel> configClassTyped;
-	
-	private ConfigEnum configEnum;
-	
-	@Ignore
-	private String configFieldWithIgnore;
-	
-	@Name("config-name-with-name")
-	private String configStringWithName;
 
-	public Integer getConfigInteger() {
-		return configInteger;
-	}
+    private Integer configInteger;
+    private Short configShort;
+    private Boolean configBoolean;
+    private Byte configByte;
+    private Character configCharacter;
+    private Long configLong;
+    private Double configDouble;
+    private Float configFloat;
 
-	public Short getConfigShort() {
-		return configShort;
-	}
+    private int configInt;
 
-	public Boolean getConfigBoolean() {
-		return configBoolean;
-	}
+    private String configString;
 
-	public Byte getConfigByte() {
-		return configByte;
-	}
+    private Map<String, String> configMap;
 
-	public Character getConfigCharacter() {
-		return configCharacter;
-	}
+    private String[] configArray;
 
-	public Long getConfigLong() {
-		return configLong;
-	}
+    private Class<ConfigClassModel> configClassTyped;
 
-	public Double getConfigDouble() {
-		return configDouble;
-	}
+    private ConfigEnum configEnum;
 
-	public Float getConfigFloat() {
-		return configFloat;
-	}
+    @Ignore
+    private String configFieldWithIgnore;
 
-	public int getConfigInt() {
-		return configInt;
-	}
+    @Name("config-name-with-name")
+    private String configStringWithName;
 
-	public String getConfigString() {
-		return configString;
-	}
+    @SuppressConfigurationLogger
+    private String configFieldWithSuppressLogger;
 
-	public Map<?, ?> getConfigMap() {
-		return configMap;
-	}
+    public Integer getConfigInteger() {
+        return configInteger;
+    }
 
-	public String getConfigStringWithName() {
-		return configStringWithName;
-	}
+    public Short getConfigShort() {
+        return configShort;
+    }
 
-	public ConfigEnum getConfigEnum() {
-		return configEnum;
-	}
+    public Boolean getConfigBoolean() {
+        return configBoolean;
+    }
 
-	public String[] getConfigArray() {
-		return configArray;
-	}
+    public Byte getConfigByte() {
+        return configByte;
+    }
 
-	public Class<ConfigClassModel> getConfigClassTyped() {
-		return configClassTyped;
-	}
+    public Character getConfigCharacter() {
+        return configCharacter;
+    }
 
-	public String getConfigFieldWithIgnore() {
-		return configFieldWithIgnore;
-	}
+    public Long getConfigLong() {
+        return configLong;
+    }
+
+    public Double getConfigDouble() {
+        return configDouble;
+    }
+
+    public Float getConfigFloat() {
+        return configFloat;
+    }
+
+    public int getConfigInt() {
+        return configInt;
+    }
+
+    public String getConfigString() {
+        return configString;
+    }
+
+    public Map<?, ?> getConfigMap() {
+        return configMap;
+    }
+
+    public String getConfigStringWithName() {
+        return configStringWithName;
+    }
+
+    public ConfigEnum getConfigEnum() {
+        return configEnum;
+    }
+
+    public String[] getConfigArray() {
+        return configArray;
+    }
+
+    public Class<ConfigClassModel> getConfigClassTyped() {
+        return configClassTyped;
+    }
+
+    public String getConfigFieldWithIgnore() {
+        return configFieldWithIgnore;
+    }
+
+    public String getConfigFieldWithSuppressLogger() {
+        return configFieldWithSuppressLogger;
+    }
 
 }

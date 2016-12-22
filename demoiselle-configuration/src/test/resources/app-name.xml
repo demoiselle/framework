@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration>
 <configuration>
-	<config-string>String do xml</config-string>
-	<config-integer>154897</config-integer>
-	<config-short>123</config-short>
-	<config-long>10000000000</config-long>
-	<config-float>1e8</config-float>
-	<config-double>10e43</config-double>
-	<config-class-untyped>org.demoiselle.jee7.configuration.Tipo</config-class-untyped>
-	<config-class-typed>org.demoiselle.jee7.configuration.Tipo</config-class-typed>
-	<config-byte>1</config-byte>
-	<config-enum>XML</config-enum>
-		
-	<config-map>
-	  <ip>10.200.23.98</ip>
-	  <url>teste.com</url>
-	  <protocol>https</protocol>
-	  <port>439</port>
-	</config-map>
-	
-	<config-array-string>a</config-array-string>
-	<config-array-string>b</config-array-string>
-	<config-array-string>c</config-array-string>
-	<config-array-string>d</config-array-string>
-	 
-	<config-array-integer>1</config-array-integer>
-	<config-array-integer>2</config-array-integer>
-	<config-array-integer>3</config-array-integer>
-	<config-array-integer>4</config-array-integer>
+   <config-string>String do xml</config-string>
+   <config-integer>154897</config-integer>
+   <config-short>123</config-short>
+   <config-long>10000000000</config-long>
+   <config-float>1e8</config-float>
+   <config-double>10e43</config-double>
+   <config-class-untyped>org.demoiselle.jee7.configuration.Tipo</config-class-untyped>
+   <config-class-typed>org.demoiselle.jee7.configuration.Tipo</config-class-typed>
+   <config-byte>1</config-byte>
+   <config-enum>XML</config-enum>
+
+   <config-map>
+      <ip>10.200.23.98</ip>
+      <url>teste.com</url>
+      <protocol>https</protocol>
+      <port>439</port>
+   </config-map>
+
+   <config-array-string>a</config-array-string>
+   <config-array-string>b</config-array-string>
+   <config-array-string>c</config-array-string>
+   <config-array-string>d</config-array-string>
+
+   <config-array-integer>1</config-array-integer>
+   <config-array-integer>2</config-array-integer>
+   <config-array-integer>3</config-array-integer>
+   <config-array-integer>4</config-array-integer>
 </configuration>

@@ -22,6 +22,4 @@ public interface Crud<T, I> {
 
     public T find(I id);
 
-    //TODO nao usar
-    public Result find(String field, String order, int init, int qtde);
 }

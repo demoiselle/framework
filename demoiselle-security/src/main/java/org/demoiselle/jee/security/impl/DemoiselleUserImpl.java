@@ -13,12 +13,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import org.demoiselle.jee.core.api.security.DemoiselleUser;;
+import org.demoiselle.jee.core.api.security.DemoiselleUser;
+
+;
 
 /**
  * TODO javadoc
+ *
  * @author SERPRO
  */
 @RequestScoped
@@ -33,12 +37,14 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
     private Map<String, List<String>> permissions;
     private Map<String, List<String>> params;
 
-    //TODO usar postconstrutor
-    
-    public DemoiselleUserImpl() {
+    @PostConstruct
+    public void init() {
         this.roles = new ArrayList<>();
         this.permissions = new ConcurrentHashMap<>();
         this.params = new ConcurrentHashMap<>();
+    }
+
+    public DemoiselleUserImpl() {
     }
 
     @Override
@@ -71,12 +77,10 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
         return Collections.unmodifiableMap(permissions);
     }
 
-
     @Override
     public Map<String, List<String>> getParams() {
         return Collections.unmodifiableMap(params);
     }
-
 
     @Override
     public void addRole(String role) {
@@ -146,10 +150,10 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
         List<String> params = this.params.get(key);
         if (params != null && !params.isEmpty()) {
             if (this.params.get(key).contains(value)) {
-            	this.params.get(key).remove(value);
+                this.params.get(key).remove(value);
             }
             if (params.isEmpty()) {
-            	this.params.remove(key);
+                this.params.remove(key);
             }
         }
     }
