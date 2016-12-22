@@ -77,14 +77,14 @@ public interface DemoiselleUser extends Principal {
      *
      * @return Params
      */
-    public Map<String, List<String>> getParams();
+    public Map<String, String> getParams();
 
     /**
      *
      * @param key Key parameter
      * @return List of parameter
      */
-    public List<String> getParams(String key);
+    public String getParams(String key);
 
     /**
      *
@@ -96,9 +96,8 @@ public interface DemoiselleUser extends Principal {
     /**
      *
      * @param key Key parameter
-     * @param value Value parameter
      */
-    public void removeParam(String key, String value);
+    public void removeParam(String key);
 
     /**
      *
