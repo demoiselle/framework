@@ -575,10 +575,10 @@ public class ConfigurationLoader implements Serializable {
         Class<? extends ConfigurationValueExtractor> selected = null;
         
         for (Class<? extends ConfigurationValueExtractor> candidate : candidates) {
-            Boolean isCadidateInternalValueExtractor = isIntenalVauleExtractor(candidate);
+            Boolean isCandidateInternalValueExtractor = isIntenalVauleExtractor(candidate);
             Boolean isSelectedInternalValueExtractor = isIntenalVauleExtractor(selected);
             
-            if (selected == null || (isSelectedInternalValueExtractor == Boolean.TRUE && isCadidateInternalValueExtractor == Boolean.FALSE)) {
+            if (selected == null || (isSelectedInternalValueExtractor == Boolean.TRUE && isCandidateInternalValueExtractor == Boolean.FALSE)) {
                 selected = candidate;
             }
         }
@@ -605,10 +605,10 @@ public class ConfigurationLoader implements Serializable {
         Set<Class<? extends ConfigurationValueExtractor>> ambiguous = new HashSet<>();             
 
         for (Class<? extends ConfigurationValueExtractor> candidate : candidates) {
-            Boolean isCadidateInternalValueExtractor = isIntenalVauleExtractor(candidate);
+            Boolean isCandidateInternalValueExtractor = isIntenalVauleExtractor(candidate);
             Boolean isSelectedInternalValueExtractor = isIntenalVauleExtractor(selected);
 
-            if (selected != candidate && (isSelectedInternalValueExtractor == Boolean.TRUE && isCadidateInternalValueExtractor == Boolean.FALSE)) {
+            if (selected != candidate && (isSelectedInternalValueExtractor == Boolean.TRUE && isCandidateInternalValueExtractor == Boolean.FALSE)) {
                 ambiguous.add(candidate);
             }
         }
