@@ -6,7 +6,6 @@
  */
 package org.demoiselle.jee.security.exception;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
@@ -70,7 +69,7 @@ public class DemoiselleSecurityExceptionTest {
      */
     @Test
     public void testGetMessages() {
-        HashSet<DemoiselleRestExceptionMessage> expResult = new HashSet<DemoiselleRestExceptionMessage>();
+        HashSet<DemoiselleRestExceptionMessage> expResult = new HashSet<>();
         HashSet<DemoiselleRestExceptionMessage> result = instance.getMessages();
         assertEquals(expResult, result);
     }

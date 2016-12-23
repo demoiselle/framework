@@ -9,6 +9,7 @@ package org.demoiselle.jee.security.exception;
 import javax.ws.rs.core.Response.Status;
 
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
+
 /**
  *
  * @author SERPRO
@@ -27,9 +28,14 @@ public class DemoiselleSecurityException extends DemoiselleRestException {
         this.statusCode = statusCode;
     }
 
+    public DemoiselleSecurityException(String string, int statusCode, Exception ex) {
+        super(string);
+        this.statusCode = statusCode;
+    }
+
     @Override
     public int getStatusCode() {
         return statusCode;
     }
-   
+
 }

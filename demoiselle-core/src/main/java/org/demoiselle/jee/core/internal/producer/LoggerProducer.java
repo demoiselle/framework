@@ -19,33 +19,32 @@ import javax.enterprise.inject.spi.InjectionPoint;
  * Produces a default {@link Logger} instance. If it's possible to infer the
  * injection point's parent class then this class'es name will be used to
  * categorize the logger, if not then the logger won't be categorized.
- * 
+ *
  * @author SERPRO
  */
 @Dependent
 public class LoggerProducer {
 
-	/**
-	 * Produces a default {@link Logger} instance. If it's possible to infer the
-	 * injection point's parent class then this class'es name will be used to
-	 * categorize the logger, if not then the logger won't be categorized.
-	 *
-	 * @param ip injection point
-	 * @return Logger logger
-	 */
-	@Default
-	@Produces
-	//TODO rever o static
-	public static final Logger create(final InjectionPoint ip) {
-		String name;
+    /**
+     * Produces a default {@link Logger} instance. If it's possible to infer the
+     * injection point's parent class then this class'es name will be used to
+     * categorize the logger, if not then the logger won't be categorized.
+     *
+     * @param ip injection point
+     * @return Logger logger
+     */
+    @Default
+    @Produces
+    public Logger create(final InjectionPoint ip) {
+        String name;
 
-		if (ip != null && ip.getMember() != null) {
-			name = ip.getMember().getDeclaringClass().getName();
-		} else {
-			name = "not.categorized";
-		}
+        if (ip != null && ip.getMember() != null) {
+            name = ip.getMember().getDeclaringClass().getName();
+        } else {
+            name = "not.categorized";
+        }
 
-		return getLogger(name);
-	}
+        return getLogger(name);
+    }
 
 }

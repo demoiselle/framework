@@ -11,11 +11,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import javax.inject.Inject;
+import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
 
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
+import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,6 +41,8 @@ public class TokenManagerImplSlaveTest {
     @Inject
     private TokenManager instance;
 
+    private static String localtoken;
+
     public TokenManagerImplSlaveTest() {
     }
 
@@ -61,13 +65,21 @@ public class TokenManagerImplSlaveTest {
     @Test
     public void test21() {
         out.println("getUser");
-        token.setKey("eyJraWQiOiJkZW1vaXNlbGxlLXNlY3VyaXR5LWp3dCIsImFsZyI6IlJTMjU2In0.eyJpc3MiOiJTVE9SRSIsImF1ZCI6IndlYiIsImV4cCI6NjAwMDAxNDk1ODQ4ODE2LCJqdGkiOiJXRHdLYVNkSXdDVl81WVBnWnZtdFBBIiwiaWF0IjoxNDc2ODEwNjA4LCJuYmYiOjE0NzY4MTA1NDgsImlkZW50aXR5IjoiMSIsIm5hbWUiOiJUZXN0ZSIsInJvbGVzIjpbIkFETUlOSVNUUkFUT1IiLCJNQU5BR0VSIl0sInBlcm1pc3Npb25zIjp7IkNhdGVnb3JpYSI6WyJDb25zdWx0YXIiXSwiUHJvZHV0byI6WyJBbHRlcmFyIl19LCJwYXJhbXMiOnt9fQ.VLVu422XNRXGdahQr93YnTt5iKMaKjybP7jifZMQ0tdIPT3-mivXDbTEfMmMEC9DwdaTQqZdwhuPQRDR7rvUQ3MFwHyPzMzKNPWqFyq-SMMEC_pOvnLjJaPgG0pCyZT9-Dl8QqAMWnzsvceL3XjLKsaS6Ov1S5wXxPQk2m0Y1rdjYGRPLgLNNoR5rH91VToM6UxOOvjUwHoqEFFMHxp6saxQVSYtF_Cjhq1Jqk-cQ3YhhZvcPvrjz6fSLhGtDDEy9-w7Yd_HFzBCr9EVhLcSXr23Vrl-ryvpxdOESK9lSizuTiZgpI-TGqo5hydXZ-uy877CPvMaFIgIueE7GpQz3w");
+        token.setKey("eyJraWQiOiJkZW1vaXNlbGxlLXNlY3VyaXR5LWp3dCIsImFsZyI6IlJTMjU2In0.eyJpc3MiOiJTVE9SRSIsImV4cCI6MTAwMTQ4MjQ5NTI3MCwiYXVkIjoid2ViIiwianRpIjoiTmxvU0NFUnktd2xXdVhtaGZhVi1IUSIsImlhdCI6MTQ4MjQ5NTI3MSwibmJmIjoxNDgyNDk1MjExLCJpZGVudGl0eSI6IjEiLCJuYW1lIjoiVGVzdGUiLCJyb2xlcyI6WyJBRE1JTklTVFJBVE9SIiwiTUFOQUdFUiJdLCJwZXJtaXNzaW9ucyI6eyJDYXRlZ29yaWEiOlsiQ29uc3VsdGFyIiwiQWx0ZXJhciIsIkluY2x1aXIiXSwiUHJvZHV0byI6WyJBbHRlcmFyIiwiRXhjbHVpciJdfSwicGFyYW1zIjp7ImZvbmUiOiI0MTM1OTM4MDAwIiwiZW5kZXJlY28iOiJydWEgY2FybG9zIHBpb2xpLCAxMzMiLCJlbWFpbCI6InVzZXJAZGVtb2lzZWxsZS5vcmcifX0.EV8L1OEFVMsuCgVSz3gyM2mJIEHczhHBvxSjTFGslHGKItlFtM32BUrzbzA9QECzSUkk-ITnUEtmm-ERTH529clymKX1-LGcboPSQlNAHv4SNRD5i8eJxjlCz_cMSTIdSZRSYOSJZHJHYf0kWEvo1vTthLGWcH_D--b9K_WYDR9hrVmljof46Dd4THXv5_VY9RJlYVHJ1bpIl69f0UDtVzDqfxNSTsBCm6tZXS40f9dh_qjEWATZeMJmjd_t2ZRzXDSLHHbJpLnNOGd2yOdp9H4tmGCxViguRa4Jck6C7cpMM6QIFB7ta67XzS4nl0NTqY64rNseKcyQS-TdAbPxAA");
         dml.setName("Teste");
         dml.setIdentity("1");
         dml.addRole("ADMINISTRATOR");
         dml.addRole("MANAGER");
+        dml.addRole("MANAGER");
         dml.addPermission("Produto", "Alterar");
+        dml.addPermission("Produto", "Excluir");
         dml.addPermission("Categoria", "Consultar");
+        dml.addPermission("Categoria", "Alterar");
+        dml.addPermission("Categoria", "Incluir");
+        dml.addPermission("Produto", "Alterar");
+        dml.addParam("email", "user@demoiselle.org");
+        dml.addParam("endereco", "rua carlos pioli, 133");
+        dml.addParam("fone", "4135938000");
         DemoiselleUser expResult = dml;
         DemoiselleUser result = instance.getUser();
         assertEquals(expResult, result);
@@ -76,17 +88,17 @@ public class TokenManagerImplSlaveTest {
     @Test
     public void test22() {
         out.println("validate");
-        token.setKey("eyJraWQiOiJkZW1vaXNlbGxlLXNlY3VyaXR5LWp3dCIsImFsZyI6IlJTMjU2In0.eyJpc3MiOiJTVE9SRSIsImF1ZCI6IndlYiIsImV4cCI6NjAwMDAxNDk1ODQ4ODE2LCJqdGkiOiJXRHdLYVNkSXdDVl81WVBnWnZtdFBBIiwiaWF0IjoxNDc2ODEwNjA4LCJuYmYiOjE0NzY4MTA1NDgsImlkZW50aXR5IjoiMSIsIm5hbWUiOiJUZXN0ZSIsInJvbGVzIjpbIkFETUlOSVNUUkFUT1IiLCJNQU5BR0VSIl0sInBlcm1pc3Npb25zIjp7IkNhdGVnb3JpYSI6WyJDb25zdWx0YXIiXSwiUHJvZHV0byI6WyJBbHRlcmFyIl19LCJwYXJhbXMiOnt9fQ.VLVu422XNRXGdahQr93YnTt5iKMaKjybP7jifZMQ0tdIPT3-mivXDbTEfMmMEC9DwdaTQqZdwhuPQRDR7rvUQ3MFwHyPzMzKNPWqFyq-SMMEC_pOvnLjJaPgG0pCyZT9-Dl8QqAMWnzsvceL3XjLKsaS6Ov1S5wXxPQk2m0Y1rdjYGRPLgLNNoR5rH91VToM6UxOOvjUwHoqEFFMHxp6saxQVSYtF_Cjhq1Jqk-cQ3YhhZvcPvrjz6fSLhGtDDEy9-w7Yd_HFzBCr9EVhLcSXr23Vrl-ryvpxdOESK9lSizuTiZgpI-TGqo5hydXZ-uy877CPvMaFIgIueE7GpQz3w");
+        token.setKey("eyJraWQiOiJkZW1vaXNlbGxlLXNlY3VyaXR5LWp3dCIsImFsZyI6IlJTMjU2In0.eyJpc3MiOiJTVE9SRSIsImV4cCI6MTAwMTQ4MjQ5NTI3MCwiYXVkIjoid2ViIiwianRpIjoiTmxvU0NFUnktd2xXdVhtaGZhVi1IUSIsImlhdCI6MTQ4MjQ5NTI3MSwibmJmIjoxNDgyNDk1MjExLCJpZGVudGl0eSI6IjEiLCJuYW1lIjoiVGVzdGUiLCJyb2xlcyI6WyJBRE1JTklTVFJBVE9SIiwiTUFOQUdFUiJdLCJwZXJtaXNzaW9ucyI6eyJDYXRlZ29yaWEiOlsiQ29uc3VsdGFyIiwiQWx0ZXJhciIsIkluY2x1aXIiXSwiUHJvZHV0byI6WyJBbHRlcmFyIiwiRXhjbHVpciJdfSwicGFyYW1zIjp7ImZvbmUiOiI0MTM1OTM4MDAwIiwiZW5kZXJlY28iOiJydWEgY2FybG9zIHBpb2xpLCAxMzMiLCJlbWFpbCI6InVzZXJAZGVtb2lzZWxsZS5vcmcifX0.EV8L1OEFVMsuCgVSz3gyM2mJIEHczhHBvxSjTFGslHGKItlFtM32BUrzbzA9QECzSUkk-ITnUEtmm-ERTH529clymKX1-LGcboPSQlNAHv4SNRD5i8eJxjlCz_cMSTIdSZRSYOSJZHJHYf0kWEvo1vTthLGWcH_D--b9K_WYDR9hrVmljof46Dd4THXv5_VY9RJlYVHJ1bpIl69f0UDtVzDqfxNSTsBCm6tZXS40f9dh_qjEWATZeMJmjd_t2ZRzXDSLHHbJpLnNOGd2yOdp9H4tmGCxViguRa4Jck6C7cpMM6QIFB7ta67XzS4nl0NTqY64rNseKcyQS-TdAbPxAA");
         boolean expResult = true;
         boolean result = instance.validate();
         assertEquals(expResult, result);
     }
 
-    @Test
+    @Test(expected = DemoiselleSecurityException.class)
     public void test23() {
         out.println("getUserError");
         instance.setUser(dml);
-        token.setKey("eyJraWQiOiJkZW1vaXNlbGxlLXNlY3VyaXR5LWp3dCIsImFsZyI6IlJTMjU2In0.eyJpc3MiOiJTVE9SRSIsImF1ZCI6IndlYiIsImV4cCI6NjAwMDAxNDk1ODQ4MzQ5LCJqdGkiOiJ2MHVfdmJRbDYzS1VFVDF0UV9FMU1nIiwiaWF0IjoxNDc2ODEwMTQxLCJuYmYiOjE0NzY4MTAwODEsImlkZW50aXR5IjoiMSIsIm5hbWUiOiJUZXN0ZSIsInJvbGVzIjpbIkFETUlOSVNUUkFUT1IiLCJNQU5BR0VSIl0sInBlcm1pc3Npb25zIjp7IkNhdGVnb3JpYSI6WyJDb25zdWx0YXIiXSwiUHJvZHV0byI6WyJBbHRlcmFyIl19LCJwYXJhbXMiOnt9fQ.a6t3ALd0AsIfXw3hbXpE91MggNNA12bn9nwwznLpFUgRMR9Jp4Jcp4fMNoONry3i5q83AFQhi6fPrwMISrbxQ9-fVJHmrAMGQbubJb__6A9aiKthfagFhI0PrZIgxYj3AyTb0ia7Fo_aM8Ji9ADktp3kd7t0v0-nWVGLcdt_FXmBumigP6803-23hBTs3lC5ewFxjXeYx4LNZujFKSMJgafUVtOePRp8lRr6x5Cu_HyjvU2W-IQKb5H3L7hlgS5MOTPn8DWryF0FA8Vwdm2AJGhulGb78igmOG5PnslrPaX56jLnMI8g820KZ_K_cVqulyqUA7arbf-JLR62VWhslQ");
+        token.setKey("eyJraWQiOiJkZW1vaXNlbGxlLXNlY3VyaXR5LWp3dCIsImFsZyI6IlJTMjU2In0.eyJpc3MiOiJTVE9SRSIsImV4cCI6MTAwMTQ4MjQ5NTI3MCwiYXVkIjoid2ViIiwianRpIjoiTmxvU0NFUnktd2xXdVhtaGZhVi1IUSIsImlhdCI6MTQ4MjQ5NTI3MSwibmJmIjoxNDgyNDk1MjExLCJpZGVudGl0eSI6IjEiLCJuYW1lIjoiVGVzdGUiLCJyb2xlcyI6WyJBRE1JTklTVFJBVE9SIiwiTUFOQUdFUiJdLCJwZXJtaXNzaW9ucyI6eyJDYXRlZ29yaWEiOlsiQ29uc3VsdGFyIiwiQWx0ZXJhciIsIkluY2x1aXIiXSwiUHJvZHV0byI6WyJBbHRlcmFyIiwiRXhjbHVpciJdfSwicGFyYW1zIjp7ImZvbmUiOiI0MTM1OTM4MDAwIiwiZW5kZXJlY28iOiJydWEgY2FybG9zIHBpb2xpLCAxMzMiLCJlbWFpbCI6InVzZXJAZGVtb2lzZWxsZS5vcmcifX0.EV8L1OEFVMsuCgVSz3gyM2mJIEHczhHBvxSjTFGslHGKItlFtM32BUrzbzA9QECzSUkk-ITnUEtmm-ERTH529clymKX1-LGcboPSQlNAHv4SNRD5i8eJxjlCz_cMSTIdSZRSYOSJZHJHYf0kWEvo1vTthLGWcH_D--b9K_WYDR9hrVmljof46Dd4THXv5_VY9RJlYVHJ1bpIl69f0UDtVzDqfxNSTsBCm6tZXS40f9dh_qjEWATZeMJmjd_t2ZRzXDSLHHbJpLnNOGd2yOdp9H4tmGCxViguRa4Jck6C7cpMM6QIFB7ta67XzS4nl0NTqY64rNseKcyQS-TdAbPxaa");
         DemoiselleUser expResult = dml;
         DemoiselleUser result = instance.getUser();
         assertNotEquals(expResult, result);

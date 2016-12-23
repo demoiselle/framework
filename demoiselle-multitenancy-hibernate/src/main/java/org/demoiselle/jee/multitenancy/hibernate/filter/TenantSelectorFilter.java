@@ -32,9 +32,9 @@ import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 
 /**
  * Filter containing the behavior to manipulate the @ContainerRequestContext
- * removing or not the tenant in URI and setting the @Tenant
- * in @MultiTenantContext.
- * 
+ * removing or not the tenant in URI and setting the @Tenant in
+ * @MultiTenantContext.
+ *
  * @author SERPRO
  *
  */
@@ -43,77 +43,76 @@ import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 @Priority(Priorities.USER)
 public class TenantSelectorFilter implements ContainerRequestFilter {
 
-	@Inject
-	private Logger log;
+    @Inject
+    private Logger log;
 
-	@Inject
-	private MultiTenancyConfiguration configuration;
+    @Inject
+    private MultiTenancyConfiguration configuration;
 
-	@Inject
-	private EntityManagerMaster entityManagerMaster;
+    @Inject
+    private EntityManagerMaster entityManagerMaster;
 
-	@Inject
-	private MultiTenantContext multitenancyContext;
+    @Inject
+    private MultiTenantContext multitenancyContext;
 
-	@Inject
-	private SecurityContext securityContext;
+    @Inject
+    private SecurityContext securityContext;
 
-	@Inject
-	private DemoiselleMultitenancyMessage messages;
+    @Inject
+    private DemoiselleMultitenancyMessage messages;
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public void filter(ContainerRequestContext requestContext) throws IOException {
+    @Override
+    @SuppressWarnings("unchecked")
+    public void filter(ContainerRequestContext requestContext) throws IOException {
 
-		String tenantNameUrl = requestContext.getUriInfo().getPathSegments().get(0).toString();
-		Tenant tenant = null;
+        String tenantNameUrl = requestContext.getUriInfo().getPathSegments().get(0).toString();
+        Tenant tenant = null;
 
-		// It's recommended to get all times the Tenant entity because the
-		// configurations can changed during application execution.
+        // It's recommended to get all times the Tenant entity because the
+        // configurations can changed during application execution.
+        // Get Tenant by name
+        Query query = entityManagerMaster.getEntityManager().createNamedQuery("Tenant.findByName");
+        query.setParameter("name", tenantNameUrl);
 
-		// Get Tenant by name
-		Query query = entityManagerMaster.getEntityManager().createNamedQuery("Tenant.findByName");
-		query.setParameter("name", tenantNameUrl);
+        // TODO usar retorno do CRUD -> AGUARDANDO CRUD
+        List<Tenant> list = query.getResultList();
 
-		// TODO usar retorno do CRUD -> AGUARDANDO CRUD
-		List<Tenant> list = query.getResultList();
+        if (list.size() == 1) {
 
-		if (list.size() == 1) {
+            tenant = list.get(0);
 
-			tenant = list.get(0);
+            // Verify if the user belongs to tenant
+            if (securityContext != null && securityContext.getUser() != null) {
+                String userTenant = securityContext.getUser().getParams("Tenant");
+                if (!userTenant.equals(tenant.getName())) {
+                    throw new DemoiselleSecurityException(messages.errorUserNotBelongTenant(tenant.getName()));
+                }
+            }
 
-			// Verify if the user belongs to tenant
-			if (securityContext != null && securityContext.getUser() != null) {
-				String userTenant = securityContext.getUser().getParams("Tenant").get(0);
-				if (!userTenant.equals(tenant.getName())) {
-					throw new DemoiselleSecurityException(messages.errorUserNotBelongTenant(tenant.getName()));
-				}
-			}
+            // Change URI removing tenant name
+            String newURi = "";
+            for (int i = 1; i < requestContext.getUriInfo().getPathSegments().size(); i++) {
+                newURi += requestContext.getUriInfo().getPathSegments().get(i).toString() + "/";
+            }
 
-			// Change URI removing tenant name
-			String newURi = "";
-			for (int i = 1; i < requestContext.getUriInfo().getPathSegments().size(); i++) {
-				newURi += requestContext.getUriInfo().getPathSegments().get(i).toString() + "/";
-			}
+            try {
+                // Set new URI path
+                requestContext.setRequestUri(new URI(newURi));
+            } catch (URISyntaxException e) {
+                log.log(Level.SEVERE, e.getMessage(), e);
+            }
 
-			try {
-				// Set new URI path
-				requestContext.setRequestUri(new URI(newURi));
-			} catch (URISyntaxException e) {
-				log.log(Level.SEVERE, e.getMessage(), e);
-			}
+            String uri = requestContext.getUriInfo().getPath();
+            log.log(Level.FINER, messages.logUriPathChanged(tenantNameUrl, uri));
 
-			String uri = requestContext.getUriInfo().getPath();
-			log.log(Level.FINER, messages.logUriPathChanged(tenantNameUrl, uri));
+        } else {
+            String uri = requestContext.getUriInfo().getPath();
+            log.log(Level.FINER, messages.logUriPathUnchanged(uri));
+            tenant = new Tenant(configuration.getMultiTenancyMasterDatabase());
+        }
 
-		} else {
-			String uri = requestContext.getUriInfo().getPath();
-			log.log(Level.FINER, messages.logUriPathUnchanged(uri));
-			tenant = new Tenant(configuration.getMultiTenancyMasterDatabase());
-		}
+        multitenancyContext.setTenant(tenant);
 
-		multitenancyContext.setTenant(tenant);
-
-	}
+    }
 
 }

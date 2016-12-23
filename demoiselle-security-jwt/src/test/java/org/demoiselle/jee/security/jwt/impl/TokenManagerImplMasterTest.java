@@ -8,7 +8,6 @@ package org.demoiselle.jee.security.jwt.impl;
 
 import static java.lang.System.out;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 import javax.inject.Inject;
 
@@ -18,6 +17,7 @@ import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertNotEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,9 +40,6 @@ public class TokenManagerImplMasterTest {
 
     @Inject
     private TokenManager instance;
-
-    @Inject
-    private DemoiselleSecurityJWTConfig config;
 
     /**
      *
@@ -89,8 +86,16 @@ public class TokenManagerImplMasterTest {
         dml.setIdentity("1");
         dml.addRole("ADMINISTRATOR");
         dml.addRole("MANAGER");
+        dml.addRole("MANAGER");
         dml.addPermission("Produto", "Alterar");
+        dml.addPermission("Produto", "Excluir");
         dml.addPermission("Categoria", "Consultar");
+        dml.addPermission("Categoria", "Alterar");
+        dml.addPermission("Categoria", "Incluir");
+        dml.addPermission("Produto", "Alterar");
+        dml.addParam("email", "user@demoiselle.org");
+        dml.addParam("endereco", "rua carlos pioli, 133");
+        dml.addParam("fone", "4135938000");
         instance.setUser(dml);
         localtoken = token.getKey();
         assertNotEquals("", token.getKey());
@@ -107,8 +112,16 @@ public class TokenManagerImplMasterTest {
         dml.setIdentity("1");
         dml.addRole("ADMINISTRATOR");
         dml.addRole("MANAGER");
+        dml.addRole("MANAGER");
         dml.addPermission("Produto", "Alterar");
+        dml.addPermission("Produto", "Excluir");
         dml.addPermission("Categoria", "Consultar");
+        dml.addPermission("Categoria", "Alterar");
+        dml.addPermission("Categoria", "Incluir");
+        dml.addPermission("Produto", "Alterar");
+        dml.addParam("email", "user@demoiselle.org");
+        dml.addParam("endereco", "rua carlos pioli, 133");
+        dml.addParam("fone", "4135938000");
         DemoiselleUser expResult = dml;
         DemoiselleUser result = instance.getUser();
         assertEquals(expResult, result);
@@ -150,5 +163,4 @@ public class TokenManagerImplMasterTest {
         boolean result = instance.validate();
         assertEquals(expResult, result);
     }
-
 }

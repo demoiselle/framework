@@ -9,9 +9,6 @@ package org.demoiselle.jee.security.jwt.impl;
 //import static java.util.Base64.getDecoder;
 import static java.util.logging.Level.WARNING;
 import static javax.ws.rs.Priorities.AUTHENTICATION;
-//import static org.jose4j.jws.AlgorithmIdentifiers.RSA_USING_SHA256;
-//import static org.jose4j.jwt.NumericDate.fromMilliseconds;
-//import static org.jose4j.jwt.NumericDate.now;
 
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -29,6 +26,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
@@ -139,19 +137,26 @@ public class TokenManagerImpl implements TokenManager {
                 list.forEach((string) -> {
                     loggedUser.addRole(string);
                 });
-                Map<String, List<String>> map = (Map) jwtClaims.getClaimValue("params");
-                map.entrySet().forEach((entry) -> {
+
+                Map<String, List<String>> mappermissions = (Map) jwtClaims.getClaimValue("permissions");
+                mappermissions.entrySet().forEach((entry) -> {
                     String key = entry.getKey();
                     List<String> value = entry.getValue();
                     value.forEach((string) -> {
                         loggedUser.addPermission(key, string);
                     });
                 });
+
+                Map<String, String> mapparams = (Map) jwtClaims.getClaimValue("params");
+                mapparams.entrySet().forEach((entry) -> {
+                    loggedUser.addParam(entry.getKey(), entry.getValue());
+                });
                 return loggedUser;
             } catch (InvalidJwtException ex) {
                 loggedUser = null;
                 token.setKey(null);
                 logger.severe(ex.getMessage());
+                throw new DemoiselleSecurityException(bundle.expired(), Response.Status.UNAUTHORIZED.getStatusCode(), ex);
             }
         }
         return null;
@@ -184,6 +189,7 @@ public class TokenManagerImpl implements TokenManager {
             token.setType("JWT");
         } catch (JoseException ex) {
             logger.severe(ex.getMessage());
+            throw new DemoiselleSecurityException(bundle.general(), Response.Status.UNAUTHORIZED.getStatusCode(), ex);
         }
 
     }

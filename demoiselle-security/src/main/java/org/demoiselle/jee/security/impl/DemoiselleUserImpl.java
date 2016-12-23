@@ -13,12 +13,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import org.demoiselle.jee.core.api.security.DemoiselleUser;;
+import org.demoiselle.jee.core.api.security.DemoiselleUser;
+
+;
 
 /**
  * TODO javadoc
+ *
  * @author SERPRO
  */
 @RequestScoped
@@ -30,15 +34,17 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
     private String identity;
     private String name;
     private List<String> roles;
+    private Map<String, String> params;
     private Map<String, List<String>> permissions;
-    private Map<String, List<String>> params;
 
-    //TODO usar postconstrutor
-    
-    public DemoiselleUserImpl() {
+    @PostConstruct
+    public void init() {
         this.roles = new ArrayList<>();
         this.permissions = new ConcurrentHashMap<>();
         this.params = new ConcurrentHashMap<>();
+    }
+
+    public DemoiselleUserImpl() {
     }
 
     @Override
@@ -71,12 +77,10 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
         return Collections.unmodifiableMap(permissions);
     }
 
-
     @Override
-    public Map<String, List<String>> getParams() {
+    public Map<String, String> getParams() {
         return Collections.unmodifiableMap(params);
     }
-
 
     @Override
     public void addRole(String role) {
@@ -123,35 +127,18 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
     }
 
     @Override
-    public List<String> getParams(String key) {
+    public String getParams(String key) {
         return params.get(key);
     }
 
     @Override
     public void addParam(String key, String value) {
-        List<String> params = this.params.get(key);
-        if (params != null && !params.isEmpty()) {
-            if (!this.params.get(key).contains(value)) {
-                this.params.get(key).add(value);
-            }
-        } else {
-            List<String> newparams = new ArrayList<>();
-            newparams.add(value);
-            this.params.put(key, newparams);
-        }
+        this.params.put(key, value);
     }
 
     @Override
-    public void removeParam(String key, String value) {
-        List<String> params = this.params.get(key);
-        if (params != null && !params.isEmpty()) {
-            if (this.params.get(key).contains(value)) {
-            	this.params.get(key).remove(value);
-            }
-            if (params.isEmpty()) {
-            	this.params.remove(key);
-            }
-        }
+    public void removeParam(String key) {
+        this.params.remove(key);
     }
 
     @Override
