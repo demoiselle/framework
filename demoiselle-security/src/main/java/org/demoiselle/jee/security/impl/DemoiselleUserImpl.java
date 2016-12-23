@@ -34,8 +34,8 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
     private String identity;
     private String name;
     private List<String> roles;
+    private Map<String, String> params;
     private Map<String, List<String>> permissions;
-    private Map<String, List<String>> params;
 
     @PostConstruct
     public void init() {
@@ -78,7 +78,7 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
     }
 
     @Override
-    public Map<String, List<String>> getParams() {
+    public Map<String, String> getParams() {
         return Collections.unmodifiableMap(params);
     }
 
@@ -127,35 +127,18 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
     }
 
     @Override
-    public List<String> getParams(String key) {
+    public String getParams(String key) {
         return params.get(key);
     }
 
     @Override
     public void addParam(String key, String value) {
-        List<String> params = this.params.get(key);
-        if (params != null && !params.isEmpty()) {
-            if (!this.params.get(key).contains(value)) {
-                this.params.get(key).add(value);
-            }
-        } else {
-            List<String> newparams = new ArrayList<>();
-            newparams.add(value);
-            this.params.put(key, newparams);
-        }
+        this.params.put(key, value);
     }
 
     @Override
-    public void removeParam(String key, String value) {
-        List<String> params = this.params.get(key);
-        if (params != null && !params.isEmpty()) {
-            if (this.params.get(key).contains(value)) {
-                this.params.get(key).remove(value);
-            }
-            if (params.isEmpty()) {
-                this.params.remove(key);
-            }
-        }
+    public void removeParam(String key) {
+        this.params.remove(key);
     }
 
     @Override

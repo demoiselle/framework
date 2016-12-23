@@ -184,10 +184,10 @@ public class DemoiselleUserImplTest {
 
     @Test
     public void test33() {
-        instance.removeParam("Teste1", "TesteParam1");
-        instance.removeParam("Teste1", "TesteParam2");
+        instance.removeParam("Teste1");
+        instance.removeParam("Teste1");
         assertEquals(instance.getParams().size(), 2);
-        assertEquals(instance.getParams("Teste2").size(), 2);
+        assertEquals(instance.getParams("Teste2").length(), 11);
     }
 
     @Test
