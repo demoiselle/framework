@@ -23,7 +23,7 @@ public interface ConfigurationMessage {
     String loadConfigurationClass(String name);
 
     @MessageTemplate("{configuration-name-attribute-cant-be-empty}")
-    String configurationNameAttributeCantBeEmpty();
+    String configurationNameAttributeCantBeEmpty(String annotationName);
 
     @MessageTemplate("{file-not-found}")
     String fileNotFound(String resource);
@@ -59,7 +59,7 @@ public interface ConfigurationMessage {
     String failOnCreateApacheConfiguration(String message);
 
     @MessageTemplate("{configuration-field-suppress}")
-    String configurationFieldSuppress(String key);
+    String configurationFieldSuppress(String key, String annotationName);
 
     @MessageTemplate("{cdi-not-already}")
     String cdiNotAlready();

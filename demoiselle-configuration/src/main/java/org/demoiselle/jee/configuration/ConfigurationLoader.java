@@ -186,7 +186,7 @@ public class ConfigurationLoader implements Serializable {
 
             // Check if the field has @SuppressLogger
             if (suppressAllFields || hasSuppressLogger(field)) {
-                strMessage = message.configurationFieldSuppress(prefix + getKey(field));
+                strMessage = message.configurationFieldSuppress(prefix + getKey(field), SuppressConfigurationLogger.class.getSimpleName());
             }
 
             logger.info(strMessage);
@@ -222,7 +222,7 @@ public class ConfigurationLoader implements Serializable {
         Name annotation = field.getAnnotation(Name.class);
 
         if (annotation != null && annotation.value().isEmpty()) {
-            throw new DemoiselleConfigurationException(message.configurationNameAttributeCantBeEmpty(),
+            throw new DemoiselleConfigurationException(message.configurationNameAttributeCantBeEmpty(Name.class.getSimpleName()),
                     new IllegalArgumentException());
         }
     }

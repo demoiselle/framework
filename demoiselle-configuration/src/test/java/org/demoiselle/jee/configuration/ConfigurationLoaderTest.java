@@ -37,6 +37,7 @@ import org.demoiselle.jee.configuration.model.ConfigWithNameAnnotationEmptyModel
 import org.demoiselle.jee.configuration.model.ConfigWithValidationModel;
 import org.demoiselle.jee.configuration.model.ConfigWithoutExtractorModel;
 import org.demoiselle.jee.configuration.util.UtilTest;
+import org.demoiselle.jee.core.annotation.Name;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -217,7 +218,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
         }
         catch (DemoiselleConfigurationException e) {
             assertNotNull(e.getMessage());
-            assertEquals(e.getMessage(), message.configurationNameAttributeCantBeEmpty());
+            assertEquals(e.getMessage(), message.configurationNameAttributeCantBeEmpty(Name.class.getSimpleName()));
         }
     }
 
