@@ -33,7 +33,6 @@ import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 /**
  * Filter containing the behavior to manipulate the @ContainerRequestContext
  * removing or not the tenant in URI and setting the @Tenant in
- * @MultiTenantContext.
  *
  * @author SERPRO
  *
