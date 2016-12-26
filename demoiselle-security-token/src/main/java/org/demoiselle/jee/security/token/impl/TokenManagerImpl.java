@@ -9,7 +9,6 @@ package org.demoiselle.jee.security.token.impl;
 import static java.util.UUID.randomUUID;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import static javax.ws.rs.Priorities.AUTHENTICATION;
@@ -44,6 +43,17 @@ public class TokenManagerImpl implements TokenManager {
         return null;
     }
 
+    @Override
+    public DemoiselleUser getUser(String issuer, String audience) {
+        DemoiselleUser dml = getUser();
+        if (dml != null) {
+            if (dml.getParams().containsValue(issuer) && dml.getParams().containsValue(audience)) {
+                return dml;
+            }
+        }
+        return null;
+    }
+
     /**
      * It will be included in the user memory and generate a unique
      * identification token to be placed in the header of HTTP requests
@@ -68,12 +78,37 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     /**
+     * It will be included in the user memory and generate a unique
+     * identification token to be placed in the header of HTTP requests
+     *
+     * @param user org.demoiselle.jee.core.api.security.DemoiselleUser
+     * @param issuer
+     * @param audience
+     */
+    @Override
+    public void setUser(DemoiselleUser user, String issuer, String audience) {
+        user.addParam("issuer", issuer);
+        user.addParam("audience", audience);
+        setUser(user);
+    }
+
+    /**
      * validate the token and the user is in memory
      *
      * @return boolean
      */
     @Override
     public boolean validate() {
+        return getUser() != null;
+    }
+
+    /**
+     * validate the token and the user is in memory
+     *
+     * @return boolean
+     */
+    @Override
+    public boolean validate(String issuer, String audience) {
         return getUser() != null;
     }
 

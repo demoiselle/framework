@@ -12,7 +12,7 @@ package org.demoiselle.jee.core.api.security;
  * the app. We have three suggestions for implementation, basic, JWT and memory,
  * but you can implement more is useful for your project or extend existing
  * ones.
- * 
+ *
  * @author SERPRO
  */
 public interface TokenManager {
@@ -26,6 +26,16 @@ public interface TokenManager {
     public DemoiselleUser getUser();
 
     /**
+     * Search the logged user being kept place through token use that is in
+     * session request
+     *
+     * @param issuer
+     * @param audience
+     * @return See {@link DemoiselleUser}
+     */
+    public DemoiselleUser getUser(String issuer, String audience);
+
+    /**
      *
      * Stores the user logged in to be used in the next requests at that time it
      * generates a token, depending on the approach, and placed in the token
@@ -34,6 +44,19 @@ public interface TokenManager {
      * @param user See {@link DemoiselleUser}
      */
     public void setUser(DemoiselleUser user);
+
+    /**
+     *
+     * Stores the user logged in to be used in the next requests at that time it
+     * generates a token, depending on the approach, and placed in the token
+     * object in the request scoped Allows a token generation for different
+     * systems, an option for sso
+     *
+     * @param user See {@link DemoiselleUser}
+     * @param issuer
+     * @param audience
+     */
+    public void setUser(DemoiselleUser user, String issuer, String audience);
 
     /**
      *
@@ -50,5 +73,15 @@ public interface TokenManager {
      * @return Boolean
      */
     public boolean validate();
+
+    /**
+     * Validates that the user is stored correctly, depending on the chosen
+     * strategy.
+     *
+     * @param issuer
+     * @param audience
+     * @return Boolean
+     */
+    public boolean validate(String issuer, String audience);
 
 }

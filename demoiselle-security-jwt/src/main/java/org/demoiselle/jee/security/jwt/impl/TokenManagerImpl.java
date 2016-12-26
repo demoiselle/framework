@@ -6,7 +6,6 @@
  */
 package org.demoiselle.jee.security.jwt.impl;
 
-//import static java.util.Base64.getDecoder;
 import static java.util.logging.Level.WARNING;
 import static javax.ws.rs.Priorities.AUTHENTICATION;
 
@@ -73,8 +72,8 @@ public class TokenManagerImpl implements TokenManager {
     private DemoiselleSecurityJWTMessages bundle;
 
     /**
-     * Starts keys that are on file demoiselle-security-jwt.properties that
-     * should be in the resource of your project
+     * Starts keys that are on file demoiselle.properties that should be in the
+     * resource of your project
      */
     @PostConstruct
     public void init() {
@@ -84,17 +83,17 @@ public class TokenManagerImpl implements TokenManager {
 
                 if (config.getType() == null) {
                     //TODO usar status
-                    throw new DemoiselleSecurityException(bundle.chooseType(), 500);
+                    throw new DemoiselleSecurityException(bundle.chooseType(), Response.Status.UNAUTHORIZED.getStatusCode());
                 }
 
                 if (!config.getType().equalsIgnoreCase(bundle.slave()) && !config.getType().equalsIgnoreCase(bundle.master())) {
-                    throw new DemoiselleSecurityException(bundle.notType(), 500);
+                    throw new DemoiselleSecurityException(bundle.notType(), Response.Status.UNAUTHORIZED.getStatusCode());
                 }
 
                 if (config.getType().equalsIgnoreCase(bundle.slave())) {
                     if (config.getPublicKey() == null || config.getPublicKey().isEmpty()) {
                         logger.warning(bundle.putKey());
-                        throw new DemoiselleSecurityException(bundle.putKey(), 500);
+                        throw new DemoiselleSecurityException(bundle.putKey(), Response.Status.UNAUTHORIZED.getStatusCode());
                     } else {
                         publicKey = getPublic();
                     }
@@ -107,6 +106,7 @@ public class TokenManagerImpl implements TokenManager {
 
             } catch (JoseException | InvalidKeySpecException | NoSuchAlgorithmException ex) {
                 logger.severe(ex.getMessage());
+                throw new DemoiselleSecurityException(bundle.general(), Response.Status.UNAUTHORIZED.getStatusCode(), ex);
             }
 
         }
@@ -120,13 +120,24 @@ public class TokenManagerImpl implements TokenManager {
      */
     @Override
     public DemoiselleUser getUser() {
+        return getUser(null, null);
+    }
+
+    /**
+     * Pick up the token that is in the request scope and draws the user into
+     * the token validating the user at this time
+     *
+     * @return DemoiselleUser principal
+     */
+    @Override
+    public DemoiselleUser getUser(String issuer, String audience) {
         if (token.getKey() != null && !token.getKey().isEmpty()) {
             try {
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                         .setRequireExpirationTime()
                         .setAllowedClockSkewInSeconds(60)
-                        .setExpectedIssuer(config.getIssuer())
-                        .setExpectedAudience(config.getAudience())
+                        .setExpectedIssuer(issuer != null ? issuer : config.getIssuer())
+                        .setExpectedAudience(audience != null ? audience : config.getAudience())
                         .setEvaluationTime(org.jose4j.jwt.NumericDate.now())
                         .setVerificationKey(publicKey)
                         .build();
@@ -164,12 +175,17 @@ public class TokenManagerImpl implements TokenManager {
 
     @Override
     public void setUser(DemoiselleUser user) {
+        setUser(user, null, null);
+    }
+
+    @Override
+    public void setUser(DemoiselleUser user, String issuer, String audience) {
         long time = (org.jose4j.jwt.NumericDate.now().getValueInMillis() + (config.getTimetoLiveMilliseconds()));
         try {
             JwtClaims claims = new JwtClaims();
-            claims.setIssuer(config.getIssuer());
+            claims.setIssuer(issuer != null ? issuer : config.getIssuer());
             claims.setExpirationTime(org.jose4j.jwt.NumericDate.fromMilliseconds(time));
-            claims.setAudience(config.getAudience());
+            claims.setAudience(audience != null ? audience : config.getAudience());
             claims.setGeneratedJwtId();
             claims.setIssuedAtToNow();
             claims.setNotBeforeMinutesInThePast(1);
@@ -199,6 +215,11 @@ public class TokenManagerImpl implements TokenManager {
         return getUser() != null;
     }
 
+    @Override
+    public boolean validate(String issuer, String audience) {
+        return getUser(issuer, audience) != null;
+    }
+
     /**
      *
      * This method creates public and private keys, RSA 2048bits. When it is not
@@ -217,8 +238,9 @@ public class TokenManagerImpl implements TokenManager {
             KeyPair kp = keyGenerator.genKeyPair();
             publicKey = kp.getPublic();
             privateKey = kp.getPrivate();
-            logger.log(WARNING, "privateKey={0}", config.getPrivateKey());
-            logger.log(WARNING, "publicKey={0}", config.getPublicKey());
+            logger.log(WARNING, "privateKey={0}", publicKey.toString());
+            logger.log(WARNING, "publicKey={0}", privateKey.toString());
+            throw new DemoiselleSecurityException(bundle.putKey(), Response.Status.UNAUTHORIZED.getStatusCode());
         }
         byte[] keyBytes = java.util.Base64.getDecoder().decode(config.getPrivateKey().replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", ""));
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);

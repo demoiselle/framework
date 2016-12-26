@@ -67,8 +67,24 @@ public class TokenManagerMock implements TokenManager {
      * @return
      */
     @Override
+    public void setUser(DemoiselleUser user, String issuer, String audience) {
+        user.addParam("issuer", issuer);
+        user.addParam("audience", audience);
+        setUser(user);
+    }
+
+    @Override
     public boolean validate() {
         return getUser() != null;
+    }
+
+    @Override
+    public boolean validate(String issuer, String audience) {
+        if (validate()) {
+            return (getUser().getParams().containsValue(issuer) && getUser().getParams().containsValue(audience));
+        } else {
+            return false;
+        }
     }
 
     public void removeToken() {
@@ -81,6 +97,17 @@ public class TokenManagerMock implements TokenManager {
             token.setKey(entry.getKey());
         });
         removeToken();
+    }
+
+    @Override
+    public DemoiselleUser getUser(String issuer, String audience) {
+        DemoiselleUser dml = getUser();
+        if (dml != null) {
+            if (dml.getParams().containsValue(issuer) && dml.getParams().containsValue(audience)) {
+                return dml;
+            }
+        }
+        return null;
     }
 
 }

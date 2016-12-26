@@ -151,4 +151,10 @@ public class TokenManagerImplTest {
         assertEquals(expResult, result);
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void test25() {
+        out.println("Delete");
+        instance.removeUser(dml);
+    }
+
 }

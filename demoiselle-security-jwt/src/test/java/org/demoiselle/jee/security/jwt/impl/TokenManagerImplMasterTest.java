@@ -78,6 +78,14 @@ public class TokenManagerImplMasterTest {
     /**
      * Test of setUser method, of class TokensManagerImpl.
      */
+     
+//     @Test
+//    public void test11() {
+//        out.println("Init");
+//        token.setKey("");
+//        assertNotEquals("", token.getKey());
+//    }
+     
     @Test
     public void test20() {
         out.println("setUser");
