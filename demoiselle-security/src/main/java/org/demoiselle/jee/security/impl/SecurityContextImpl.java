@@ -57,6 +57,16 @@ public class SecurityContextImpl implements SecurityContext {
     }
 
     @Override
+    public DemoiselleUser getUser(String issuer, String audience) {
+        return tm.getUser(issuer, audience);
+    }
+
+    @Override
+    public void setUser(DemoiselleUser loggedUser, String issuer, String audience) {
+        tm.setUser(loggedUser, issuer, audience);
+    }
+
+    @Override
     public void removeUser(DemoiselleUser loggedUser) {
         tm.removeUser(loggedUser);
     }

@@ -42,9 +42,25 @@ public interface SecurityContext {
 
     /**
      *
+     * @param issuer
+     * @param audience
+     * @return Principal
+     */
+    DemoiselleUser getUser(String issuer, String audience);
+
+    /**
+     *
      * @param loggedUser Principal
      */
     void setUser(DemoiselleUser loggedUser);
+
+    /**
+     *
+     * @param loggedUser Principal
+     * @param issuer
+     * @param audience
+     */
+    void setUser(DemoiselleUser loggedUser, String issuer, String audience);
 
     /**
      *
