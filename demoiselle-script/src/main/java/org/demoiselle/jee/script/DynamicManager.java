@@ -200,7 +200,6 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
 	 * 
 	 * @param  engineName engineName
 	 * @return Set all scripts ids
-	 * @throws ScriptException when engine not loaded  
 	 */
 	public Set<String> listScriptCache(String engineName ){	
 		if(DynamicManagerCache.scriptCache.get(engineName) == null){    	
