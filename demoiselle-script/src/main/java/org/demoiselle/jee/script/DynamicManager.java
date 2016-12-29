@@ -9,6 +9,7 @@ package org.demoiselle.jee.script;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -192,6 +193,20 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
 		}	
 		
 		return false;							
+	}
+	
+	/**
+	 * List scripts ids in engine cache.
+	 * 
+	 * @param  engineName engineName
+	 * @return Set<String> all scripts ids
+	 * @throws ScriptException when engine not loaded  
+	 */
+	public Set<String> listScriptCache(String engineName ){	
+		if(DynamicManagerCache.scriptCache.get(engineName) == null){    	
+    		throw new DemoiselleScriptException(bundle.engineNotLoaded());	    		
+    	}
+		return DynamicManagerCache.scriptCache.get(engineName).keySet();																											
 	}
 	
 	/**
