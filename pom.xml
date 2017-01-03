@@ -76,7 +76,6 @@
         <module>demoiselle-security</module>
         <module>demoiselle-security-token</module>
         <module>demoiselle-security-jwt</module>
-        <module>demoiselle-multitenancy-hibernate</module>
     </modules>
 
     <properties>
