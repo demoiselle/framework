@@ -27,10 +27,10 @@ public class PersistenceBootstrap implements javax.enterprise.inject.spi.Extensi
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void processAnnotatedType(@Observes final ProcessAnnotatedType pat) {
-        final AnnotatedType annotatedType = pat.getAnnotatedType();
-        if (annotatedType.getJavaClass().isAnnotationPresent(Entity.class)) {
-            pat.veto();
-        }
+//        final AnnotatedType annotatedType = pat.getAnnotatedType();
+//        if (annotatedType.getJavaClass().isAnnotationPresent(Entity.class)) {
+//            pat.veto();
+//        }
     }
 
 }

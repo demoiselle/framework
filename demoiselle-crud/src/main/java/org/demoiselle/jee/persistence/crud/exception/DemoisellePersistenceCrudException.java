@@ -6,7 +6,7 @@
  */
 package org.demoiselle.jee.persistence.crud.exception;
 
-import org.demoiselle.jee.core.exception.DemoiselleException;
+import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 
 /**
  *
@@ -14,7 +14,7 @@ import org.demoiselle.jee.core.exception.DemoiselleException;
  *
  * @author SERPRO
  */
-public class DemoisellePersistenceCrudException extends DemoiselleException {
+public class DemoisellePersistenceCrudException extends DemoiselleRestException {
 
     private static final long serialVersionUID = 1L;
 

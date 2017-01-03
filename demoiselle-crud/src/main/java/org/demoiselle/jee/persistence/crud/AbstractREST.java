@@ -29,6 +29,7 @@ import io.swagger.annotations.ApiOperation;
 
 /**
  * TODO JAVADOC
+ *
  * @author SERPRO
  *
  * @param <T>
@@ -64,7 +65,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @Path("{id}")
     @Transactional
     @ApiOperation(value = "remove entity")
-    public void remove(@PathParam("id") final I id) {	
+    public void remove(@PathParam("id") final I id) {
         bc.remove(id);
     }
 
@@ -72,7 +73,11 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @Transactional
     @ApiOperation(value = "list all entities with pagination filter and query")
     public Result find() {
-    	return bc.find();
+        if (uriInfo.getQueryParameters().isEmpty()) {
+            return bc.find();
+        } else {
+            return bc.find(uriInfo.getQueryParameters());
+        }
     }
 
     @GET

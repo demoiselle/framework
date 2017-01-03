@@ -17,10 +17,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
 import org.demoiselle.jee.security.DemoiselleSecurityConfig;
 import org.demoiselle.jee.security.annotation.Cors;
-import org.demoiselle.jee.security.annotation.NoCors;
 
 /**
  * TODO javadoc
+ *
  * @author SERPRO
  */
 @Provider
@@ -36,36 +36,27 @@ public class CorsFilter implements ContainerResponseFilter {
     public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
         Method method = info.getResourceMethod();
         Class<?> classe = info.getResourceClass();
+        boolean corsEnable = config.isCorsEnabled();
 
-        res.getHeaders().putSingle("Authorization", "enabled");
+        res.getHeaders().putSingle("Demoiselle-security", "enabled");
         res.getHeaders().putSingle("x-content-type-options", "nosniff");
         res.getHeaders().putSingle("x-frame-options", "SAMEORIGIN");
         res.getHeaders().putSingle("x-xss-protection", "1; mode=block");
 
-        if (method != null || classe != null) {
-            if (config.isCorsEnabled()) {
-                if (method.getAnnotation(NoCors.class) != null || classe.getAnnotation(NoCors.class) != null) {
-                    res.getHeaders().remove("Access-Control-Allow-Origin");
-                    res.getHeaders().remove("Access-Control-Allow-Methods");
-                } else {
-                	//TODO avaliar duplicidade de codigo
-                    res.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
-                    res.getHeaders().putSingle("Access-Control-Allow-Headers", "Origin, Content-type, Accept, Authorization");
-                    res.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
-                    res.getHeaders().putSingle("Access-Control-Allow-Methods", req.getMethod());
-                }
-            } else {
-                if (method.getAnnotation(Cors.class) != null || classe.getAnnotation(Cors.class) != null) {
-                    res.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
-                    res.getHeaders().putSingle("Access-Control-Allow-Headers", "Origin, Content-type, Accept, Authorization");
-                    res.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
-                    res.getHeaders().putSingle("Access-Control-Allow-Methods", req.getMethod());
-                } else {
-                    res.getHeaders().remove("Access-Control-Allow-Origin");
-                    res.getHeaders().remove("Access-Control-Allow-Methods");
-                }
-            }
+        if (method != null && classe != null && method.getAnnotation(Cors.class) != null) {
+            corsEnable = method.getAnnotation(Cors.class).enable();
         }
+
+        if (config.isCorsEnabled() && corsEnable) {
+            res.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
+            res.getHeaders().putSingle("Access-Control-Allow-Headers", "Origin, Content-type, Accept, Authorization");
+            res.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
+            res.getHeaders().putSingle("Access-Control-Allow-Methods", req.getMethod());
+        } else {
+            res.getHeaders().remove("Access-Control-Allow-Origin");
+            res.getHeaders().remove("Access-Control-Allow-Methods");
+        }
+
     }
 
 }

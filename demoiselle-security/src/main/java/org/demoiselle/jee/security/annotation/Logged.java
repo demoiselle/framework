@@ -12,12 +12,13 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
+import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
 /**
  * <p>
- * Indicates that a specific permission is required in order to invocate the
- * annotated method or class.
+ * TODO corrigir javadoc Indicates that a specific permission is required in
+ * order to invocate the annotated method or class.
  * </p>
  *
  * @author SERPRO
@@ -26,6 +27,9 @@ import javax.interceptor.InterceptorBinding;
 @InterceptorBinding
 @Target({METHOD, TYPE})
 @Retention(RUNTIME)
-//TODO remover
-public @interface NotLogged {
+public @interface Logged {
+
+    @Nonbinding
+    boolean enable() default true;
+
 }

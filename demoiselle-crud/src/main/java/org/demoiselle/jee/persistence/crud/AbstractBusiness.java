@@ -37,10 +37,6 @@ public abstract class AbstractBusiness<T, I> implements Crud<T, I> {
         return dao.find(id);
     }
 
-    public Result find(String field, String order, int init, int qtde) {
-        return dao.find(field, order, init, qtde);
-    }
-
     public Result find(MultivaluedMap<String, String> queryParams) {
         return dao.find(queryParams);
     }

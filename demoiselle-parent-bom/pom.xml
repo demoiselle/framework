@@ -46,8 +46,8 @@
         <persistence.version>1.0.2</persistence.version>
         <rest.version>2.0</rest.version>
         <concurrent.version>1.0</concurrent.version>		
-        <hibernate.version>5.2.3.Final</hibernate.version>
-        <hibernate.validator.version>5.2.4.Final</hibernate.validator.version>
+        <hibernate.version>5.2.5.Final</hibernate.version>
+        <hibernate.validator.version>5.2.5.Final</hibernate.validator.version>
         <commons.configuration.version>2.0</commons.configuration.version>
         <jaxrs.version>2.0.1</jaxrs.version>
         <javaee.version>7.0</javaee.version>

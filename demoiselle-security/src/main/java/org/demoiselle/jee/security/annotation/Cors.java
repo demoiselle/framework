@@ -12,16 +12,20 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
+import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
 /**
  * TODO corrigir javadoc
+ *
  * @author SERPRO
  */
 @Inherited
 @InterceptorBinding
 @Target({METHOD, TYPE})
 @Retention(RUNTIME)
-//TODO usar proprieade enabled padrao true
 public @interface Cors {
+
+    @Nonbinding
+    boolean enable() default true;
 }

@@ -33,13 +33,12 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     /*@Inject
     private DemoiselleCrudConfig config;*/
-	
-	@Inject
-	private DemoisellePaginationConfig paginationConfig;
+    @Inject
+    private DemoisellePaginationConfig paginationConfig;
 
     @Inject
     protected Logger logger;
-    
+
     @Inject
     private ResultSet resultSet;
 
@@ -93,31 +92,31 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     @Override
     public ResultSet find() {
-    	
+
         try {
-        	
-        	Integer firstResult = resultSet.getOffset();
-        	Integer maxResults = getMaxResult();
-        	
-        	Long count = count();
-        	
-        	if(firstResult < count){
-	            CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-	            CriteriaQuery<T> q = cb.createQuery(entityClass);
-	            q.from(entityClass);
-	            
-	            TypedQuery<T> query = getEntityManager().createQuery(q);
-	            query.setFirstResult(firstResult);
-	            query.setMaxResults(maxResults);
-	
-	            resultSet.setContent(query.getResultList());
+
+            Integer firstResult = resultSet.getOffset();
+            Integer maxResults = getMaxResult();
+
+            Long count = count();
+
+            if (firstResult < count) {
+                CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+                CriteriaQuery<T> q = cb.createQuery(entityClass);
+                q.from(entityClass);
+
+                TypedQuery<T> query = getEntityManager().createQuery(q);
+                query.setFirstResult(firstResult);
+                query.setMaxResults(maxResults);
+
+                resultSet.setContent(query.getResultList());
             }
-        	
-        	resultSet.setEntityClass(entityClass);
+
+            resultSet.setEntityClass(entityClass);
             resultSet.setCount(count);
-        	
+
             return resultSet;
-            
+
         } catch (Exception e) {
             logger.severe(e.getMessage());
             throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
@@ -125,14 +124,14 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     }
 
     private Integer getMaxResult() {
-		if(this.resultSet.getLimit().equals(0) && this.resultSet.getOffset().equals(0)){
-			return this.paginationConfig.getDefaultPagination();
-		}
-		
-		return (this.resultSet.getLimit() - this.resultSet.getOffset()) + 1;
-	}
+        if (this.resultSet.getLimit().equals(0) && this.resultSet.getOffset().equals(0)) {
+            return this.paginationConfig.getDefaultPagination();
+        }
 
-	public ResultSet find(String field, String order, int init, int qtde) {
+        return (this.resultSet.getLimit() - this.resultSet.getOffset()) + 1;
+    }
+
+    public ResultSet find(String field, String order, int init, int qtde) {
         /*try {
 
 //            if (config.getAcceptRange() < qtde) {
@@ -173,8 +172,8 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             logger.severe(e.getMessage());
             throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
         }*/
-    	
-    	return null;
+
+        return null;
 
     }
 
@@ -205,12 +204,10 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             logger.severe(e.getMessage());
             throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
         }
-    	
-
     }
 
     public ResultSet find(MultivaluedMap<String, String> queryParams, String field, String order, int init, int qtde) {
-       /* try {
+        /* try {
 
 //            if (config.getAcceptRange() < qtde) {
 //                throw new DemoisellePersistenceCrudException("A quantidade máxima aceitável é " + config.getAcceptRange());
@@ -252,8 +249,8 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             logger.severe(e.getMessage());
             throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
         }*/
-    	
-    	return null;
+
+        return null;
     }
 
     public Long count() {

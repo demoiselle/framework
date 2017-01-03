@@ -19,7 +19,7 @@ import javax.interceptor.InvocationContext;
 
 import org.demoiselle.jee.core.annotation.Name;
 import org.demoiselle.jee.core.api.security.SecurityContext;
-import org.demoiselle.jee.security.annotation.NotLogged;
+import org.demoiselle.jee.security.annotation.Logged;
 import org.demoiselle.jee.security.annotation.RequiredPermission;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
@@ -44,7 +44,6 @@ public class RequiredPermissionInterceptor implements Serializable {
     @Inject
     private DemoiselleSecurityMessages bundle;
 
-
     /**
      * <p>
      * Gets the values for both resource and operation properties of
@@ -64,7 +63,7 @@ public class RequiredPermissionInterceptor implements Serializable {
      */
     @AroundInvoke
     public Object manage(final InvocationContext ic) throws Exception {
-        if (ic.getMethod().getAnnotation(NotLogged.class) == null) {
+        if (ic.getMethod().getAnnotation(Logged.class).enable()) {
             String resource = getResource(ic);
             String operation = getOperation(ic);
 
