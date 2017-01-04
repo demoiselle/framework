@@ -8,7 +8,6 @@ package org.demoiselle.jee.rest.exception.mapper;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.inject.spi.CDI;

@@ -42,9 +42,6 @@ public class TokenManagerImplTest {
     @Inject
     private TokenManager instance;
 
-    @Inject
-    private DemoiselleSecurityJWTConfig config;
-
     public TokenManagerImplTest() {
     }
 
