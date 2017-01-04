@@ -27,7 +27,7 @@ import javax.interceptor.InterceptorBinding;
 @InterceptorBinding
 @Target({METHOD, TYPE})
 @Retention(RUNTIME)
-public @interface Logged {
+public @interface Authenticated {
 
     @Nonbinding
     boolean enable() default true;

@@ -36,6 +36,7 @@
             <artifactId>gmavenplus-plugin</artifactId>
             <version>1.0</version>
             <executions>
+            <!-- 
                <execution>
                   <goals>
                      <goal>generateStubs</goal>
@@ -44,6 +45,7 @@
                      <goal>testCompile</goal>
                   </goals>
                </execution>
+               -->
             </executions>
             <dependencies>
                <dependency>

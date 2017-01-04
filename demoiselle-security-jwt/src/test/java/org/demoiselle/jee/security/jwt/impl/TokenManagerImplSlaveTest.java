@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import javax.inject.Inject;
-import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
 
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
@@ -40,8 +39,6 @@ public class TokenManagerImplSlaveTest {
 
     @Inject
     private TokenManager instance;
-
-    private static String localtoken;
 
     public TokenManagerImplSlaveTest() {
     }

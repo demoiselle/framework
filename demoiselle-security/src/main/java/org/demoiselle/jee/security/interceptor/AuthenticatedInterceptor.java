@@ -17,21 +17,21 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 import org.demoiselle.jee.core.api.security.SecurityContext;
-import org.demoiselle.jee.security.annotation.Logged;
+import org.demoiselle.jee.security.annotation.Authenticated;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
 /**
  * <p>
- * Intercepts calls with {@link Logged} annotations.
+ * Intercepts calls with {@link Authenticated} annotations.
  * </p>
  *
  * @author SERPRO
  */
-@Logged
+@Authenticated
 @Interceptor
 @Priority(Interceptor.Priority.APPLICATION)
-public class LoggedInInterceptor implements Serializable {
+public class AuthenticatedInterceptor implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,8 +43,11 @@ public class LoggedInInterceptor implements Serializable {
 
     @AroundInvoke
     public Object manage(final InvocationContext ic) throws Exception {
-        if (ic.getMethod().getAnnotation(Logged.class).enable()) {
-            if (!securityContext.isLoggedIn()) {
+        Authenticated logged = ic.getMethod().getAnnotation(Authenticated.class);
+        if (!securityContext.isLoggedIn()) {
+            if (logged != null && !logged.enable()) {
+                return ic.proceed();
+            } else {
                 throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), UNAUTHORIZED.getStatusCode());
             }
         }

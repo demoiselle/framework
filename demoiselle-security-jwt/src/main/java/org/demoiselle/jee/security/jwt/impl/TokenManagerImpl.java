@@ -130,6 +130,7 @@ public class TokenManagerImpl implements TokenManager {
      * @return DemoiselleUser principal
      */
     @Override
+    @SuppressWarnings({"unchecked","rawtypes"})
     public DemoiselleUser getUser(String issuer, String audience) {
         if (token.getKey() != null && !token.getKey().isEmpty()) {
             try {
@@ -144,12 +145,12 @@ public class TokenManagerImpl implements TokenManager {
                 JwtClaims jwtClaims = jwtConsumer.processToClaims(token.getKey());
                 loggedUser.setIdentity((String) jwtClaims.getClaimValue("identity"));
                 loggedUser.setName((String) jwtClaims.getClaimValue("name"));
-                List<String> list = (List<String>) jwtClaims.getClaimValue("roles");
+				List<String> list = (List<String>) jwtClaims.getClaimValue("roles");
                 list.forEach((string) -> {
                     loggedUser.addRole(string);
                 });
 
-                Map<String, List<String>> mappermissions = (Map) jwtClaims.getClaimValue("permissions");
+				Map<String, List<String>> mappermissions = (Map) jwtClaims.getClaimValue("permissions");
                 mappermissions.entrySet().forEach((entry) -> {
                     String key = entry.getKey();
                     List<String> value = entry.getValue();

@@ -46,7 +46,8 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     protected abstract EntityManager getEntityManager();
 
-    public AbstractDAO() {
+    @SuppressWarnings("unchecked")
+	public AbstractDAO() {
         this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
@@ -177,10 +178,10 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     }
 
-    public ResultSet find(MultivaluedMap<String, String> queryParams) {
+	public ResultSet find(MultivaluedMap<String, String> queryParams) {
         try {
             ResultSet rs = new ResultSet();
-            List source = new ArrayList<>();
+            List<T> source = new ArrayList<T>();
 
             CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
