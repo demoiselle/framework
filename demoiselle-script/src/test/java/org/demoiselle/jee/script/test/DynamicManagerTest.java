@@ -136,10 +136,30 @@ public class DynamicManagerTest {
        
         Assert.assertEquals( 1 , contexto.get("X"));
     }
+     
+    @Test
+    public void testEvalContextNoCache() throws ScriptException {           	
+    	String javaScriptSource = "var str= 'test' +X; str ; ";           
+        dm.loadScript("nashorn", "teste3", javaScriptSource);
+        
+        SimpleBindings contexto = new SimpleBindings();  
+        contexto.put("X", 1);  
+        
+        Assert.assertEquals( "test1", dm.evalSource("nashorn",javaScriptSource, contexto));
+    }
+    
+    @Test
+    public void testEvalNoContextNoCache() throws ScriptException {           	
+    	String javaScriptSource = "var a= 1;  a ; ";           
+        dm.loadScript("nashorn", "teste3", javaScriptSource);                
+        dm.evalSource("nashorn",javaScriptSource, null);
        
+        Assert.assertEquals( 1 ,  dm.evalSource("nashorn",javaScriptSource, null));
+    }
+    
     @Test
     public void testEvalNoContext() throws ScriptException {           	    	
-    	String javaScriptSource = "var a= 1;  a; ";            	     
+    	String javaScriptSource = "var a=1;  a; ";            	     
         dm.loadScript("nashorn","teste77", javaScriptSource);                      
         Assert.assertEquals( 1 , dm.eval("nashorn","teste77", null));
     }

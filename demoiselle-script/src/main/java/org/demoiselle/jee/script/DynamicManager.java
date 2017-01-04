@@ -20,6 +20,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import javax.script.SimpleBindings;
 
 import org.demoiselle.jee.script.exception.DemoiselleScriptException;
 import org.demoiselle.jee.script.message.DemoiselleScriptMessage;
@@ -156,8 +157,7 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
 		
 		return true;
 	}
-	
-		
+			
 	/**
 	 * Only load the engine and compile the source, not cache. 
 	 * 
@@ -275,5 +275,29 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
     		throw new DemoiselleScriptException(bundle.engineNotLoaded());	    		
     	}
 		return DynamicManagerCache.scriptCache.get(engineName).size();
-	}  
+	}
+
+	/**
+	 * Run the script source with no cache.
+	 * 
+	 * @param engineName
+	 * @param source
+	 * @param context
+	 * @return Object the result of evaluate script.
+	 * @throws ScriptException
+	 */
+	public Object evalSource(String engineName, String source, SimpleBindings context) throws ScriptException  {
+		CompiledScript script = null;
+		Object result = null;
+				
+		script = compile(engineName, source);		
+					
+		if(context!= null)
+		   	result = script.eval(context);
+		else
+		  	result = script.eval();
+				   												
+		return result;
+	}
+		 
 }
