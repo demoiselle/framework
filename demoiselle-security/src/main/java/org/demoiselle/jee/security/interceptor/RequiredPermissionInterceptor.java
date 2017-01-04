@@ -19,7 +19,7 @@ import javax.interceptor.InvocationContext;
 
 import org.demoiselle.jee.core.annotation.Name;
 import org.demoiselle.jee.core.api.security.SecurityContext;
-import org.demoiselle.jee.security.annotation.Logged;
+import org.demoiselle.jee.security.annotation.Authenticated;
 import org.demoiselle.jee.security.annotation.RequiredPermission;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
@@ -63,18 +63,22 @@ public class RequiredPermissionInterceptor implements Serializable {
      */
     @AroundInvoke
     public Object manage(final InvocationContext ic) throws Exception {
-        if (ic.getMethod().getAnnotation(Logged.class).enable()) {
-            String resource = getResource(ic);
-            String operation = getOperation(ic);
+        Authenticated logged = ic.getMethod().getAnnotation(Authenticated.class);
+        String resource = getResource(ic);
+        String operation = getOperation(ic);
 
-            if (!securityContext.isLoggedIn()) {
+        if (!securityContext.isLoggedIn()) {
+            if (logged != null && !logged.enable()) {
+                return ic.proceed();
+            } else {
                 throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), UNAUTHORIZED.getStatusCode());
             }
-
-            if (!securityContext.hasPermission(resource, operation)) {
-                throw new DemoiselleSecurityException(bundle.doesNotHavePermission(operation, resource), UNAUTHORIZED.getStatusCode());
-            }
         }
+
+        if (!securityContext.hasPermission(resource, operation)) {
+            throw new DemoiselleSecurityException(bundle.doesNotHavePermission(operation, resource), UNAUTHORIZED.getStatusCode());
+        }
+
         return ic.proceed();
     }
 
