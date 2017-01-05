@@ -6,10 +6,13 @@
  */
 package org.demoiselle.jee.rest.filter;
 
+import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.Provider;
+
+import org.demoiselle.jee.core.message.DemoiselleMessage;
 
 /**
  * 
@@ -18,10 +21,12 @@ import javax.ws.rs.ext.Provider;
  */
 @Provider
 public class RestFilter implements ContainerResponseFilter {
-
+	
+    @Inject
+    private DemoiselleMessage demoiselleMessage;
+    
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
-    	//TODO usar versao do maven
-        responseContext.getHeaders().putSingle("Demoiselle", "3.0.0");
+        responseContext.getHeaders().putSingle(demoiselleMessage.projectName(), demoiselleMessage.version());
     }
 }

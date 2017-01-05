@@ -8,54 +8,53 @@ package org.demoiselle.jee.rest.exception;
 
 import java.util.HashSet;
 
-
 import javax.ws.rs.core.Response.Status;
 
 import org.demoiselle.jee.core.exception.DemoiselleException;
 
 public class DemoiselleRestException extends DemoiselleException {
 
-    private static final long serialVersionUID = 519_965_615_171_844_237L;
-   
-    protected HashSet<DemoiselleRestExceptionMessage> messages = new HashSet<DemoiselleRestExceptionMessage>();
+	private static final long serialVersionUID = 519_965_615_171_844_237L;
 
-    protected int statusCode = Status.INTERNAL_SERVER_ERROR.getStatusCode();
+	protected HashSet<DemoiselleRestExceptionMessage> messages = new HashSet<DemoiselleRestExceptionMessage>();
 
-    public DemoiselleRestException() {
-    }
-    
-    public DemoiselleRestException(int statusCode) {
-    	this.statusCode=statusCode;
-    }
+	protected int statusCode = Status.INTERNAL_SERVER_ERROR.getStatusCode();
 
-    public DemoiselleRestException(String string) {
-        super(string);
-    }
-    
-    public DemoiselleRestException(String string,int statusCode) {
-        super(string);
-        this.statusCode=statusCode;
-    }
+	public DemoiselleRestException() {
+	}
 
-    public DemoiselleRestException(Throwable cause) {
-        super(cause);
-    }
+	public DemoiselleRestException(int statusCode) {
+		this.statusCode = statusCode;
+	}
 
-    public DemoiselleRestException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public DemoiselleRestException(String string) {
+		super(string);
+	}
 
-    public int getStatusCode() {
-        return statusCode;
-    }
+	public DemoiselleRestException(String string, int statusCode) {
+		super(string);
+		this.statusCode = statusCode;
+	}
 
-    public void addMessage(String field, String msg) {
-        messages.add(new DemoiselleRestExceptionMessage(field, msg,null));
-    }
-    
-    public void addMessage(String error, String error_description, String error_link){
-    	messages.add(new DemoiselleRestExceptionMessage(error, error_description, error_link) );
-    }
+	public DemoiselleRestException(Throwable cause) {
+		super(cause);
+	}
+
+	public DemoiselleRestException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public int getStatusCode() {
+		return statusCode;
+	}
+
+	public void addMessage(String field, String msg) {
+		messages.add(new DemoiselleRestExceptionMessage(field, msg, null));
+	}
+
+	public void addMessage(String error, String error_description, String error_link) {
+		messages.add(new DemoiselleRestExceptionMessage(error, error_description, error_link));
+	}
 
 	public HashSet<DemoiselleRestExceptionMessage> getMessages() {
 		return messages;
@@ -63,6 +62,6 @@ public class DemoiselleRestException extends DemoiselleException {
 
 	public void setMessages(HashSet<DemoiselleRestExceptionMessage> msgs) {
 		this.messages = msgs;
-	} 
-    
+	}
+
 }

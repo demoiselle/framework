@@ -6,11 +6,13 @@
  */
 package org.demoiselle.jee.rest;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.inject.Inject;
+
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,7 +20,7 @@ import org.junit.runner.RunWith;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 @RunWith(CdiTestRunner.class)
 public class DemoiselleRestConfigTest {
@@ -31,6 +33,7 @@ public class DemoiselleRestConfigTest {
     @AfterClass
     public static void tearDownClass() {
     }
+    
     @Inject
     private DemoiselleRestConfig instance;
     public DemoiselleRestConfigTest() {

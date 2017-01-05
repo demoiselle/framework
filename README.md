@@ -29,9 +29,8 @@ Links úteis
 -----------
 
 * [Portal](http://frameworkdemoiselle.gov.br): Central de acesso as informações do Demoiselle
-* [Documentação](http://demoiselle.sf.net/docs): Aprenda sobre o Demoiselle seguindo os vários módulos
-* [Fórum](http://forum.frameworkdemoiselle.gov.br): Fóruns de discussão
-* [Tracker](http://tracker.frameworkdemoiselle.gov.br): Submissão/acompanhamento de Bugs, Improvements e New Features
+* [Documentação](https://demoiselle.gitbooks.io/documentacao-jee/content): Aprenda sobre o Demoiselle seguindo os vários módulos
+* [Fórum/Tracker](https://github.com/demoiselle/framework/issues): Fóruns de discussão e Submissão/acompanhamento de Bugs, Improvements e New Features 
 * [Lista de discussão](https://lists.sourceforge.net/lists/listinfo/demoiselle-users): Comunicação e troca de experiências entre os usuários do projeto.
 
 
@@ -39,8 +38,8 @@ Repositório Maven
 -----------
 
     <repository>
-        <id>demoiselle.sourceforge.net-release</id>
-        <url>http://demoiselle.sourceforge.net/repository/release</url>
+        <id>central.repository</id>
+        <url>http://repo1.maven.org/maven2</url>
     </repository>
 
 
@@ -51,7 +50,7 @@ Contribuindo
 2. Crie o seu branch (ramo) - (`git checkout -b meu_framework`)
 3. Commit seu código (`git commit -am "Explicando o motivo/objetivo"`)
 4. Agora execute o Push para o branch (`git push origin meu_framework`)
-5. Crie um caso no [mantis][1] com o link para o seu branch
+5. Dúvidas, problemas ou sugestões? Crie uma issue no [GitHub][1] com o link para o seu branch
 
 
-[1]: http://tracker.frameworkdemoiselle.gov.br
+[1]: https://github.com/demoiselle/framework/issues

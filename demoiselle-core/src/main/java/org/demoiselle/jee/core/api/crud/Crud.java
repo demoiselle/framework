@@ -6,15 +6,17 @@
  */
 package org.demoiselle.jee.core.api.crud;
 
+import javax.validation.Valid;
+
 /**
  *
  * @author SERPRO
  */
 public interface Crud<T, I> {
 
-    public T persist(T entity);
+    public T persist(@Valid T entity);
 
-    public T merge(T entity);
+    public T merge(@Valid T entity);
 
     public void remove(I id);
 
