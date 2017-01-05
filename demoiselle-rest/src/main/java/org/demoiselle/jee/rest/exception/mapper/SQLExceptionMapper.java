@@ -39,7 +39,7 @@ import org.demoiselle.jee.core.api.error.ErrorTreatmentInterface;
  * that can handle the exception’s superclass. It will continue this process
  * until there are no more superclasses to match against.
  * 
- * @link https://dennis-xlc.gitbooks.io/restful-java-with-jax-rs-2-0-2rd-edition/content/en/part1/chapter7/exception_handling.html
+ * { @link https://dennis-xlc.gitbooks.io/restful-java-with-jax-rs-2-0-2rd-edition/content/en/part1/chapter7/exception_handling.html }
  * 
  * @author 00968514901
  *
