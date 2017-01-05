@@ -8,7 +8,6 @@ package org.demoiselle.jee.rest.exception.mapper;
 
 import java.util.logging.Logger;
 
-import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
@@ -22,8 +21,8 @@ import org.demoiselle.jee.core.exception.DemoiselleException;
 @Provider
 public class DemoiselleExceptionMapper implements ExceptionMapper<DemoiselleException> {
 
-	private Logger logger = CDI.current().select(Logger.class).get();
-	
+	private static final Logger logger = Logger.getLogger(DemoiselleExceptionMapper.class.getName());
+
 	@Context
 	protected HttpServletRequest httpRequest;
 

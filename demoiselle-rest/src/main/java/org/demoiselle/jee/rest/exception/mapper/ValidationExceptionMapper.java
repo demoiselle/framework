@@ -6,9 +6,6 @@
  */
 package org.demoiselle.jee.rest.exception.mapper;
 
-import java.util.logging.Logger;
-
-import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
@@ -42,7 +39,9 @@ import org.demoiselle.jee.core.api.error.ErrorTreatment;
  * that can handle the exception’s superclass. It will continue this process
  * until there are no more superclasses to match against.
  * 
- * { @link https://dennis-xlc.gitbooks.io/restful-java-with-jax-rs-2-0-2rd-edition/content/en/part1/chapter7/exception_handling.html }
+ * { @link
+ * https://dennis-xlc.gitbooks.io/restful-java-with-jax-rs-2-0-2rd-edition/content/en/part1/chapter7/exception_handling.html
+ * }
  * 
  * @author 00968514901
  *
@@ -51,7 +50,7 @@ import org.demoiselle.jee.core.api.error.ErrorTreatment;
 @Provider
 public class ValidationExceptionMapper implements ExceptionMapper<ValidationException> {
 
-	private Logger logger = CDI.current().select(Logger.class).get();
+	// private Logger logger = CDI.current().select(Logger.class).get();
 
 	@Context
 	protected HttpServletRequest httpRequest;
@@ -62,7 +61,7 @@ public class ValidationExceptionMapper implements ExceptionMapper<ValidationExce
 	@Override
 	public Response toResponse(ValidationException exception) {
 
-		logger.fine("Using ValidationExceptionMapper");
+		// logger.fine("Using ValidationExceptionMapper");
 
 		// exception.printStackTrace();
 		//

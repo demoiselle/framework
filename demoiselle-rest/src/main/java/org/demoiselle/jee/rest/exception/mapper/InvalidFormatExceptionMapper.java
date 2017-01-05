@@ -8,7 +8,6 @@ package org.demoiselle.jee.rest.exception.mapper;
 
 import java.util.logging.Logger;
 
-import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
@@ -23,8 +22,8 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 @Provider
 public class InvalidFormatExceptionMapper implements ExceptionMapper<InvalidFormatException> {
 
-	private Logger logger = CDI.current().select(Logger.class).get();
-	
+	private static final Logger logger = Logger.getLogger(InvalidFormatExceptionMapper.class.getName());
+
 	@Context
 	protected HttpServletRequest httpRequest;
 

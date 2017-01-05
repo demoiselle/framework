@@ -9,7 +9,6 @@ package org.demoiselle.jee.rest.exception.mapper;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
@@ -39,7 +38,9 @@ import org.demoiselle.jee.core.api.error.ErrorTreatment;
  * that can handle the exception’s superclass. It will continue this process
  * until there are no more superclasses to match against.
  * 
- * { @link https://dennis-xlc.gitbooks.io/restful-java-with-jax-rs-2-0-2rd-edition/content/en/part1/chapter7/exception_handling.html }
+ * { @link
+ * https://dennis-xlc.gitbooks.io/restful-java-with-jax-rs-2-0-2rd-edition/content/en/part1/chapter7/exception_handling.html
+ * }
  * 
  * @author 00968514901
  *
@@ -48,7 +49,7 @@ import org.demoiselle.jee.core.api.error.ErrorTreatment;
 @Provider
 public class SQLExceptionMapper implements ExceptionMapper<SQLException> {
 
-	private Logger logger = CDI.current().select(Logger.class).get();
+	private static final Logger logger = Logger.getLogger(SQLExceptionMapper.class.getName());
 
 	@Context
 	protected HttpServletRequest httpRequest;

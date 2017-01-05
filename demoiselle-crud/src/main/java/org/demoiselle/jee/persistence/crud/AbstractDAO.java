@@ -9,7 +9,6 @@ package org.demoiselle.jee.persistence.crud;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -31,241 +30,227 @@ import org.demoiselle.jee.persistence.crud.pagination.ResultSet;
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
-    /*@Inject
-    private DemoiselleCrudConfig config;*/
-    @Inject
-    private DemoisellePaginationConfig paginationConfig;
+	/*
+	 * @Inject private DemoiselleCrudConfig config;
+	 */
+	@Inject
+	private DemoisellePaginationConfig paginationConfig;
 
-    private static final Logger logger = Logger.getLogger(AbstractDAO.class.getName());
+	// private static final Logger logger =
+	// Logger.getLogger(AbstractDAO.class.getName());
 
-    @Inject
-    private ResultSet resultSet;
+	@Inject
+	private ResultSet resultSet;
 
-    private final Class<T> entityClass;
+	private final Class<T> entityClass;
 
-    protected abstract EntityManager getEntityManager();
+	protected abstract EntityManager getEntityManager();
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public AbstractDAO() {
-        this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-    }
+		this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass())
+				.getActualTypeArguments()[0];
+	}
 
-    public T persist(T entity) {
-        try {
-            getEntityManager().persist(entity);
-            return entity;
-        } catch (Exception e) {
-        	// TODO: Severe? Pode cair aqui somente por ter violação de Unique
-            // logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível salvar", e);
-        }
-    }
+	public T persist(T entity) {
+		try {
+			getEntityManager().persist(entity);
+			return entity;
+		} catch (Exception e) {
+			// TODO: Severe? Pode cair aqui somente por ter violação de Unique
+			// logger.severe(e.getMessage());
+			throw new DemoisellePersistenceCrudException("Não foi possível salvar", e);
+		}
+	}
 
-    public T merge(T entity) {
-        try {
-            getEntityManager().merge(entity);
-            return entity;
-        } catch (Exception e) {
-        	// TODO: Severe? Pode cair aqui somente por ter violação de Unique
-            // logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível salvar", e);
-        }
-    }
+	public T merge(T entity) {
+		try {
+			getEntityManager().merge(entity);
+			return entity;
+		} catch (Exception e) {
+			// TODO: Severe? Pode cair aqui somente por ter violação de Unique
+			// logger.severe(e.getMessage());
+			throw new DemoisellePersistenceCrudException("Não foi possível salvar", e);
+		}
+	}
 
-    public void remove(I id) {
-        try {
-            getEntityManager().remove(getEntityManager().find(entityClass, id));
-        } catch (Exception e) {
-            // logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível excluir", e);
-        }
+	public void remove(I id) {
+		try {
+			getEntityManager().remove(getEntityManager().find(entityClass, id));
+		} catch (Exception e) {
+			// logger.severe(e.getMessage());
+			throw new DemoisellePersistenceCrudException("Não foi possível excluir", e);
+		}
 
-    }
+	}
 
-    public T find(I id) {
-        try {
-            return getEntityManager().find(entityClass, id);
-        } catch (Exception e) {
-            // logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
-        }
+	public T find(I id) {
+		try {
+			return getEntityManager().find(entityClass, id);
+		} catch (Exception e) {
+			// logger.severe(e.getMessage());
+			throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
+		}
 
-    }
+	}
 
-    @Override
-    public ResultSet find() {
+	@Override
+	public ResultSet find() {
 
-        try {
+		try {
 
-            Integer firstResult = resultSet.getOffset();
-            Integer maxResults = getMaxResult();
+			Integer firstResult = resultSet.getOffset();
+			Integer maxResults = getMaxResult();
 
-            Long count = count();
+			Long count = count();
 
-            if (firstResult < count) {
-                CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-                CriteriaQuery<T> q = cb.createQuery(entityClass);
-                q.from(entityClass);
+			if (firstResult < count) {
+				CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+				CriteriaQuery<T> q = cb.createQuery(entityClass);
+				q.from(entityClass);
 
-                TypedQuery<T> query = getEntityManager().createQuery(q);
-                query.setFirstResult(firstResult);
-                query.setMaxResults(maxResults);
+				TypedQuery<T> query = getEntityManager().createQuery(q);
+				query.setFirstResult(firstResult);
+				query.setMaxResults(maxResults);
 
-                resultSet.setContent(query.getResultList());
-            }
+				resultSet.setContent(query.getResultList());
+			}
 
-            resultSet.setEntityClass(entityClass);
-            resultSet.setCount(count);
+			resultSet.setEntityClass(entityClass);
+			resultSet.setCount(count);
 
-            return resultSet;
+			return resultSet;
 
-        } catch (Exception e) {
-            // logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
-        }
-    }
+		} catch (Exception e) {
+			// logger.severe(e.getMessage());
+			throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
+		}
+	}
 
-    private Integer getMaxResult() {
-        if (this.resultSet.getLimit().equals(0) && this.resultSet.getOffset().equals(0)) {
-            return this.paginationConfig.getDefaultPagination();
-        }
+	private Integer getMaxResult() {
+		if (this.resultSet.getLimit().equals(0) && this.resultSet.getOffset().equals(0)) {
+			return this.paginationConfig.getDefaultPagination();
+		}
 
-        return (this.resultSet.getLimit() - this.resultSet.getOffset()) + 1;
-    }
+		return (this.resultSet.getLimit() - this.resultSet.getOffset()) + 1;
+	}
 
-    public ResultSet find(String field, String order, int init, int qtde) {
-        /*try {
+	public ResultSet find(String field, String order, int init, int qtde) {
+		/*
+		 * try {
+		 * 
+		 * // if (config.getAcceptRange() < qtde) { // throw new
+		 * DemoisellePersistenceCrudException("A quantidade máxima aceitável é "
+		 * + config.getAcceptRange()); // }
+		 * 
+		 * ResultSet rs = new ResultSet(); List result = new ArrayList<>(); List
+		 * source = new ArrayList<>();
+		 * 
+		 * CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+		 * CriteriaQuery<T> q = cb.createQuery(entityClass); Root<T> c =
+		 * q.from(entityClass); q.select(c);
+		 * 
+		 * if (order.equalsIgnoreCase("asc")) { q.orderBy(cb.asc(c.get(field)));
+		 * } else { q.orderBy(cb.desc(c.get(field))); }
+		 * 
+		 * source.addAll(getEntityManager().createQuery(q).getResultList());
+		 * 
+		 * if ((init + qtde) > source.size()) { qtde = source.size() - init; }
+		 * 
+		 * for (int i = init; i < (init + qtde); i++) {
+		 * result.add(source.get(i)); }
+		 * 
+		 * rs.setContent(result); rs.setOffset(init); rs.setLimit(qtde);
+		 * rs.setCount(source.size()); return rs; } catch (Exception e) {
+		 * logger.severe(e.getMessage()); throw new
+		 * DemoisellePersistenceCrudException("Não foi possível consultar", e);
+		 * }
+		 */
 
-//            if (config.getAcceptRange() < qtde) {
-//                throw new DemoisellePersistenceCrudException("A quantidade máxima aceitável é " + config.getAcceptRange());
-//            }
+		return null;
 
-            ResultSet rs = new ResultSet();
-            List result = new ArrayList<>();
-            List source = new ArrayList<>();
-
-            CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-            CriteriaQuery<T> q = cb.createQuery(entityClass);
-            Root<T> c = q.from(entityClass);
-            q.select(c);
-
-            if (order.equalsIgnoreCase("asc")) {
-                q.orderBy(cb.asc(c.get(field)));
-            } else {
-                q.orderBy(cb.desc(c.get(field)));
-            }
-
-            source.addAll(getEntityManager().createQuery(q).getResultList());
-
-            if ((init + qtde) > source.size()) {
-                qtde = source.size() - init;
-            }
-
-            for (int i = init; i < (init + qtde); i++) {
-                result.add(source.get(i));
-            }
-
-            rs.setContent(result);
-            rs.setOffset(init);
-            rs.setLimit(qtde);
-            rs.setCount(source.size());
-            return rs;
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
-        }*/
-
-        return null;
-
-    }
+	}
 
 	public ResultSet find(MultivaluedMap<String, String> queryParams) {
-        try {
-            ResultSet rs = new ResultSet();
-            List<T> source = new ArrayList<T>();
+		try {
+			ResultSet rs = new ResultSet();
+			List<T> source = new ArrayList<T>();
 
-            CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+			CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+			CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
 
-            Root<T> root = criteriaQuery.from(entityClass);
+			Root<T> root = criteriaQuery.from(entityClass);
 
-            Predicate[] predicates = extractPredicates(queryParams, criteriaBuilder, root);
+			Predicate[] predicates = extractPredicates(queryParams, criteriaBuilder, root);
 
-            if (predicates.length > 0) {
-                criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
-                TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
-                source.addAll(query.setMaxResults(10).getResultList());
-            }
+			if (predicates.length > 0) {
+				criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
+				TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
+				source.addAll(query.setMaxResults(10).getResultList());
+			}
 
-            rs.setContent(source);
-            rs.setOffset(new Integer(0));
-            rs.setLimit(source.size());
-            rs.setCount(count());
-            return rs;
-        } catch (Exception e) {
-            // logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
-        }
-    }
+			rs.setContent(source);
+			rs.setOffset(new Integer(0));
+			rs.setLimit(source.size());
+			rs.setCount(count());
+			return rs;
+		} catch (Exception e) {
+			// logger.severe(e.getMessage());
+			throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
+		}
+	}
 
-    public ResultSet find(MultivaluedMap<String, String> queryParams, String field, String order, int init, int qtde) {
-        /* try {
+	public ResultSet find(MultivaluedMap<String, String> queryParams, String field, String order, int init, int qtde) {
+		/*
+		 * try {
+		 * 
+		 * // if (config.getAcceptRange() < qtde) { // throw new
+		 * DemoisellePersistenceCrudException("A quantidade máxima aceitável é "
+		 * + config.getAcceptRange()); // }
+		 * 
+		 * ResultSet rs = new ResultSet(); List result = new ArrayList<>(); List
+		 * source = new ArrayList<>();
+		 * 
+		 * CriteriaBuilder criteriaBuilder =
+		 * getEntityManager().getCriteriaBuilder(); CriteriaQuery<T>
+		 * criteriaQuery = criteriaBuilder.createQuery(entityClass);
+		 * 
+		 * Root<T> root = criteriaQuery.from(entityClass); Predicate[]
+		 * predicates = extractPredicates(queryParams, criteriaBuilder, root);
+		 * 
+		 * if (predicates.length > 0) {
+		 * 
+		 * criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
+		 * TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
+		 * source.addAll(query.getResultList());
+		 * 
+		 * if ((init + qtde) > source.size()) { qtde = source.size() - init; }
+		 * 
+		 * for (int i = init; i < (init + qtde); i++) {
+		 * result.add(source.get(i)); }
+		 * 
+		 * }
+		 * 
+		 * rs.setContent(result); rs.setOffset(init); rs.setLimit(qtde);
+		 * rs.setCount(source.size()); return rs; } catch (Exception e) {
+		 * logger.severe(e.getMessage()); throw new
+		 * DemoisellePersistenceCrudException("Não foi possível consultar", e);
+		 * }
+		 */
 
-//            if (config.getAcceptRange() < qtde) {
-//                throw new DemoisellePersistenceCrudException("A quantidade máxima aceitável é " + config.getAcceptRange());
-//            }
+		return null;
+	}
 
-            ResultSet rs = new ResultSet();
-            List result = new ArrayList<>();
-            List source = new ArrayList<>();
+	public Long count() {
+		CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<Long> countCriteria = criteriaBuilder.createQuery(Long.class);
+		Root<?> entityRoot = countCriteria.from(entityClass);
+		countCriteria.select(criteriaBuilder.count(entityRoot));
+		return getEntityManager().createQuery(countCriteria).getSingleResult();
+	}
 
-            CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
-
-            Root<T> root = criteriaQuery.from(entityClass);
-            Predicate[] predicates = extractPredicates(queryParams,
-                    criteriaBuilder, root);
-
-            if (predicates.length > 0) {
-
-                criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
-                TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
-                source.addAll(query.getResultList());
-
-                if ((init + qtde) > source.size()) {
-                    qtde = source.size() - init;
-                }
-
-                for (int i = init; i < (init + qtde); i++) {
-                    result.add(source.get(i));
-                }
-
-            }
-
-            rs.setContent(result);
-            rs.setOffset(init);
-            rs.setLimit(qtde);
-            rs.setCount(source.size());
-            return rs;
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-            throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
-        }*/
-
-        return null;
-    }
-
-    public Long count() {
-        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<Long> countCriteria = criteriaBuilder.createQuery(Long.class);
-        Root<?> entityRoot = countCriteria.from(entityClass);
-        countCriteria.select(criteriaBuilder.count(entityRoot));
-        return getEntityManager().createQuery(countCriteria).getSingleResult();
-    }
-
-    protected Predicate[] extractPredicates(
-            MultivaluedMap<String, String> queryParameters,
-            CriteriaBuilder criteriaBuilder, Root<T> root) {
-        return new Predicate[]{};
-    }
+	protected Predicate[] extractPredicates(MultivaluedMap<String, String> queryParameters,
+			CriteriaBuilder criteriaBuilder, Root<T> root) {
+		return new Predicate[] {};
+	}
 }

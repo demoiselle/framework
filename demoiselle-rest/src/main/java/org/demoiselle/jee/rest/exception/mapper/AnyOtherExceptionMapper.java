@@ -8,7 +8,6 @@ package org.demoiselle.jee.rest.exception.mapper;
 
 import java.util.logging.Logger;
 
-import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
@@ -27,7 +26,7 @@ import org.demoiselle.jee.core.api.error.ErrorTreatment;
 @Provider
 public class AnyOtherExceptionMapper implements ExceptionMapper<Exception> {
 
-	private Logger logger = CDI.current().select(Logger.class).get();
+	private static final Logger logger = Logger.getLogger(AnyOtherExceptionMapper.class.getName());
 
 	// private void logAllStackTrace(Exception ex) {
 	// // Get all messages from stacktrace

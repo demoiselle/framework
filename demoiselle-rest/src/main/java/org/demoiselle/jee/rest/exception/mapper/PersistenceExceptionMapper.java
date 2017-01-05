@@ -8,7 +8,6 @@ package org.demoiselle.jee.rest.exception.mapper;
 
 import java.util.logging.Logger;
 
-import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +21,7 @@ import org.demoiselle.jee.core.api.error.ErrorTreatment;
 @Provider
 public class PersistenceExceptionMapper implements ExceptionMapper<PersistenceException> {
 
-	private Logger logger = CDI.current().select(Logger.class).get();
+	private static final Logger logger = Logger.getLogger(PersistenceExceptionMapper.class.getName());
 	
 	@Context
 	protected HttpServletRequest httpRequest;
