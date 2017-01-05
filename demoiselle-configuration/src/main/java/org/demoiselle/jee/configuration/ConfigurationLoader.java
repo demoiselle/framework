@@ -52,6 +52,7 @@ import org.demoiselle.jee.configuration.extractor.impl.ConfigurationInternalDemo
 import org.demoiselle.jee.configuration.message.ConfigurationMessage;
 import org.demoiselle.jee.core.annotation.Ignore;
 import org.demoiselle.jee.core.annotation.Name;
+import org.demoiselle.jee.core.message.DemoiselleMessage;
 
 /**
  * 
@@ -69,10 +70,13 @@ public class ConfigurationLoader implements Serializable {
 
     @Inject
     private ConfigurationMessage message;
+    
+    @Inject
+    private DemoiselleMessage demoiselleMessage;
 
     @Inject
     private Logger logger;
-
+    
     // Object annotated with @Configuration
     private transient Object targetObject;
 
@@ -148,6 +152,8 @@ public class ConfigurationLoader implements Serializable {
     private void processConfiguration(final Object targetObject, Class<?> targetBaseClass) {
 
         logger.info("*******************************************************");
+        logger.info(demoiselleMessage.projectName()+ " " + demoiselleMessage.version());
+        logger.info(message.startMessage()+ "\n");
         logger.info(message.loadConfigurationClass(targetBaseClass.getName()));
 
         this.targetObject = targetObject;

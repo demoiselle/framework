@@ -63,5 +63,9 @@ public interface ConfigurationMessage {
 
     @MessageTemplate("{cdi-not-already}")
     String cdiNotAlready();
+    
+    @MessageTemplate("{start-message}")
+    String startMessage();
+    
 
 }
