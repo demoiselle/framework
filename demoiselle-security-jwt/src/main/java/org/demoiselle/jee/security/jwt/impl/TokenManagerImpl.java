@@ -54,8 +54,7 @@ public class TokenManagerImpl implements TokenManager {
     private static PublicKey publicKey;
     private static PrivateKey privateKey;
 
-    @Inject
-    private Logger logger;
+    private static final Logger logger = Logger.getLogger(TokenManagerImpl.class.getName());
 
     @Inject
     private Token token;

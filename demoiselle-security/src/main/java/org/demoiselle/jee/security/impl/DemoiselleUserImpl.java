@@ -16,9 +16,9 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
-
-;
+import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 
 /**
  * TODO javadoc
@@ -27,9 +27,6 @@ import org.demoiselle.jee.core.api.security.DemoiselleUser;
  */
 @RequestScoped
 public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
-
-    @Inject
-    private Logger logger;
 
     private String identity;
     private String name;
@@ -174,9 +171,9 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
         try {
             return (DemoiselleUser) super.clone();
         } catch (CloneNotSupportedException ex) {
-            logger.severe(ex.getLocalizedMessage());
+            throw new DemoiselleSecurityException("Erro ao clonar", Response.Status.UNAUTHORIZED.getStatusCode(), ex);
         }
-        return null;
+
     }
 
 }

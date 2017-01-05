@@ -32,8 +32,7 @@ import org.demoiselle.jee.security.DemoiselleSecurityConfig;
 @Priority(AUTHENTICATION)
 public class SecurityFilter implements ContainerRequestFilter {
 
-    @Inject
-    private Logger logger;
+    private static final Logger logger = Logger.getLogger(SecurityFilter.class.getName());
 
     @Inject
     private DemoiselleSecurityConfig config;

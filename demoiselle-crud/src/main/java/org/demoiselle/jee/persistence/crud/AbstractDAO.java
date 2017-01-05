@@ -36,8 +36,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     @Inject
     private DemoisellePaginationConfig paginationConfig;
 
-    @Inject
-    protected Logger logger;
+    private static final Logger logger = Logger.getLogger(AbstractDAO.class.getName());
 
     @Inject
     private ResultSet resultSet;

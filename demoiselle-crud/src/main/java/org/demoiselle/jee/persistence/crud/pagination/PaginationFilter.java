@@ -25,6 +25,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.persistence.crud.AbstractREST;
+import org.demoiselle.jee.rest.exception.mapper.GenericExceptionMapper;
 
 /**
  * TODO javadoc
@@ -54,21 +55,20 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
     @Inject
     private DemoisellePaginationMessage message;
 
-    @Inject
-    private Logger logger;
+    private static final Logger logger = Logger.getLogger(PaginationFilter.class.getName());
 
     public PaginationFilter() {
     }
 
-    public PaginationFilter(UriInfo uriInfo, ResourceInfo info, ResultSet resultSet,
-            DemoisellePaginationConfig dpc, Logger logger, DemoisellePaginationMessage message) {
-        this.uriInfo = uriInfo;
-        this.info = info;
-        this.resultSet = resultSet;
-        this.paginationConfig = dpc;
-        this.logger = logger;
-        this.message = message;
-    }
+//    public PaginationFilter(UriInfo uriInfo, ResourceInfo info, ResultSet resultSet,
+//            DemoisellePaginationConfig dpc, Logger logger, DemoisellePaginationMessage message) {
+//        this.uriInfo = uriInfo;
+//        this.info = info;
+//        this.resultSet = resultSet;
+//        this.paginationConfig = dpc;
+//        this.logger = logger;
+//        this.message = message;
+//    }
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {

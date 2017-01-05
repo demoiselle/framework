@@ -70,8 +70,7 @@ public class ConfigurationLoader implements Serializable {
     @Inject
     private ConfigurationMessage message;
 
-    @Inject
-    private Logger logger;
+    private static final Logger logger = Logger.getLogger(ConfigurationLoader.class.getName());
 
     // Object annotated with @Configuration
     private transient Object targetObject;
