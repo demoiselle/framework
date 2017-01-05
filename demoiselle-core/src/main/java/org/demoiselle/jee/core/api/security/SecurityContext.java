@@ -41,10 +41,10 @@ public interface SecurityContext {
     DemoiselleUser getUser();
 
     /**
-     *
-     * @param issuer
-     * @param audience
-     * @return Principal
+     * Get User
+     * @param issuer Issuer
+     * @param audience Audience
+     * @return Principal Principal
      */
     DemoiselleUser getUser(String issuer, String audience);
 
@@ -55,15 +55,15 @@ public interface SecurityContext {
     void setUser(DemoiselleUser loggedUser);
 
     /**
-     *
+     * Set User
      * @param loggedUser Principal
-     * @param issuer
-     * @param audience
+     * @param issuer Issuer
+     * @param audience Audience
      */
     void setUser(DemoiselleUser loggedUser, String issuer, String audience);
 
     /**
-     *
+     * 
      * @param loggedUser Principal
      */
     void removeUser(DemoiselleUser loggedUser);
