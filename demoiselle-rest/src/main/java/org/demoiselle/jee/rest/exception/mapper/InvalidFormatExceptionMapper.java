@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.demoiselle.jee.core.api.error.ErrorTreatmentInterface;
+import org.demoiselle.jee.core.api.error.ErrorTreatment;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
@@ -29,7 +29,7 @@ public class InvalidFormatExceptionMapper implements ExceptionMapper<InvalidForm
 	protected HttpServletRequest httpRequest;
 
 	@Inject
-	protected ErrorTreatmentInterface errorTreatment;
+	protected ErrorTreatment errorTreatment;
 
 	@Override
 	public Response toResponse(InvalidFormatException exception) {

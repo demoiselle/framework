@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.demoiselle.jee.core.api.error.ErrorTreatmentInterface;
+import org.demoiselle.jee.core.api.error.ErrorTreatment;
 
 @Provider
 public class PersistenceExceptionMapper implements ExceptionMapper<PersistenceException> {
@@ -28,7 +28,7 @@ public class PersistenceExceptionMapper implements ExceptionMapper<PersistenceEx
 	protected HttpServletRequest httpRequest;
 
 	@Inject
-	protected ErrorTreatmentInterface errorTreatment;
+	protected ErrorTreatment errorTreatment;
 
 	@Override
 	public Response toResponse(PersistenceException exception) {

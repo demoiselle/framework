@@ -7,7 +7,9 @@
 package org.demoiselle.jee.persistence.crud.bootstrap;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.persistence.Entity;
 
 /**
  *
@@ -23,12 +25,12 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
  */
 public class PersistenceBootstrap implements javax.enterprise.inject.spi.Extension {
 
-    @SuppressWarnings({"rawtypes"})
-    public void processAnnotatedType(@Observes final ProcessAnnotatedType pat) {
-//        final AnnotatedType annotatedType = pat.getAnnotatedType();
-//        if (annotatedType.getJavaClass().isAnnotationPresent(Entity.class)) {
-//            pat.veto();
-//        }
-    }
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void processAnnotatedType(@Observes final ProcessAnnotatedType pat) {
+		final AnnotatedType annotatedType = pat.getAnnotatedType();
+		if (annotatedType.getJavaClass().isAnnotationPresent(Entity.class)) {
+			pat.veto();
+		}
+	}
 
 }

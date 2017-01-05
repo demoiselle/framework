@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.demoiselle.jee.core.api.error.ErrorTreatmentInterface;
+import org.demoiselle.jee.core.api.error.ErrorTreatment;
 
 /**
  * 
@@ -25,7 +25,7 @@ import org.demoiselle.jee.core.api.error.ErrorTreatmentInterface;
  */
 
 @Provider
-public class AnyExceptionMapper implements ExceptionMapper<Exception> {
+public class AnyOtherExceptionMapper implements ExceptionMapper<Exception> {
 
 	private Logger logger = CDI.current().select(Logger.class).get();
 
@@ -46,7 +46,7 @@ public class AnyExceptionMapper implements ExceptionMapper<Exception> {
 	protected HttpServletRequest httpRequest;
 
 	@Inject
-	protected ErrorTreatmentInterface errorTreatment;
+	protected ErrorTreatment errorTreatment;
 
 	@Override
 	public Response toResponse(Exception exception) {

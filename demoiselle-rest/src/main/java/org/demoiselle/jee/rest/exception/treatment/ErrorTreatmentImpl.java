@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -19,7 +18,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import org.demoiselle.jee.core.api.error.ErrorTreatmentInterface;
+import org.demoiselle.jee.core.api.error.ErrorTreatment;
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
 
@@ -29,7 +28,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 // TODO: flag de details
 // TODO: encontrar alguma maneira de que o sistema desenvolvido possa SOBREESCREVER esse comportamento
 // TODO: everride app
-public class ErrorTreatment implements ErrorTreatmentInterface {
+public class ErrorTreatmentImpl implements ErrorTreatment {
 
 	// private Logger logger = CDI.current().select(Logger.class).get();
 
@@ -37,7 +36,11 @@ public class ErrorTreatment implements ErrorTreatmentInterface {
 	private final String FIELDNAME_ERROR_DESCRIPTION = "error_description";
 	private final String FIELDNAME_ERROR_LINK = "error_link";
 
-	public ErrorTreatment() {
+	private final String DATABASE_SQL_STATE = "sql_state";
+	private final String DATABASE_MASSAGE = "error_message";
+	private final String DATABASE_ERROR_CODE = "error_code";
+
+	public ErrorTreatmentImpl() {
 
 	}
 
@@ -90,39 +93,6 @@ public class ErrorTreatment implements ErrorTreatmentInterface {
 		}
 
 		/*
-		 * Database errors
-		 */
-		if (exception instanceof PersistenceException) {
-			HashMap<String, Object> object = new HashMap<String, Object>();
-			object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
-
-			// TODO: messages
-			object.put(FIELDNAME_ERROR, "Unhandled database exception");
-
-			a.add(object);
-			return buildResponse(a, responseMediaType, Status.INTERNAL_SERVER_ERROR);
-		}
-
-		if (exception instanceof SQLException) {
-
-			HashMap<String, Object> sqlError = new HashMap<String, Object>();
-
-			sqlError.put("SQLState", ((SQLException) exception).getSQLState());
-			sqlError.put("Error Code", ((SQLException) exception).getErrorCode());
-			sqlError.put("Message", exception.getMessage());
-
-			HashMap<String, Object> object = new HashMap<String, Object>();
-			object.put(FIELDNAME_ERROR_DESCRIPTION, sqlError);
-
-			// TODO: messages
-			object.put(FIELDNAME_ERROR, "Unhandled database exception");
-
-			a.add(object);
-
-			return buildResponse(a, responseMediaType, Status.INTERNAL_SERVER_ERROR);
-		}
-
-		/*
 		 * Data format errors
 		 */
 		if (exception instanceof InvalidFormatException) {
@@ -137,12 +107,52 @@ public class ErrorTreatment implements ErrorTreatmentInterface {
 		}
 
 		/*
-		 * Business errors
+		 * Database errors
+		 */
+		// if (exception instanceof PersistenceException) {
+		// HashMap<String, Object> object = new HashMap<String, Object>();
+		// object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
+		//
+		// // TODO: messages
+		// object.put(FIELDNAME_ERROR, "Unhandled database exception");
+		//
+		// a.add(object);
+		// return buildResponse(a, responseMediaType,
+		// Status.INTERNAL_SERVER_ERROR);
+		// }
+
+		SQLException sqlException = getSQLExceptionInException(exception);
+
+		if (sqlException != null) {
+			exception = sqlException;
+		}
+
+		if (exception instanceof SQLException) {
+
+			HashMap<String, Object> sqlError = new HashMap<String, Object>();
+
+			sqlError.put(DATABASE_SQL_STATE, ((SQLException) exception).getSQLState());
+			sqlError.put(DATABASE_ERROR_CODE, ((SQLException) exception).getErrorCode());
+			sqlError.put(DATABASE_MASSAGE, exception.getMessage());
+
+			HashMap<String, Object> object = new HashMap<String, Object>();
+			object.put(FIELDNAME_ERROR_DESCRIPTION, sqlError);
+
+			// TODO: messages
+			object.put(FIELDNAME_ERROR, "Unhandled database exception");
+
+			a.add(object);
+
+			return buildResponse(a, responseMediaType, Status.INTERNAL_SERVER_ERROR);
+		}
+
+		/*
+		 * Demoiselle errors
 		 */
 		if (exception instanceof DemoiselleRestException) {
 			DemoiselleRestException e = (DemoiselleRestException) exception;
 
-			if (!e.getMessage().isEmpty()) {
+			if (e.getMessage() != null && !e.getMessage().isEmpty()) {
 				HashMap<String, Object> object = new HashMap<String, Object>();
 				object.put(FIELDNAME_ERROR, e.getMessage());
 				object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
@@ -183,13 +193,41 @@ public class ErrorTreatment implements ErrorTreatmentInterface {
 
 	}
 
-	protected Response buildResponse(Object entity, MediaType mediaType, Status status) {
+	/**
+	 * This method return SQL Exception in stack of Exceptions (if exists), or
+	 * null.
+	 * 
+	 * @param ex
+	 *            Exception
+	 * @return SQLException or null
+	 */
+	private SQLException getSQLExceptionInException(Exception ex) {
+
+		Throwable current = ex;
+
+		// TODO: é sério!? esse treco pode ficar em loop PRA SEMPRE!
+		do {
+			if (current instanceof SQLException) {
+				return (SQLException) current;
+			}
+
+			current = current.getCause();
+
+			// TODO: e se ela estiver dentro dela mesma?
+
+		} while (current != null);
+
+		return null;
+
+	}
+
+	private Response buildResponse(Object entity, MediaType mediaType, Status status) {
 		ResponseBuilder builder = Response.status(status).entity(entity);
 		builder.type(mediaType);
 		return builder.build();
 	}
 
-	protected ArrayList<String> unwrapException(Throwable t) {
+	private ArrayList<String> unwrapException(Throwable t) {
 		ArrayList<String> array = new ArrayList<String>();
 		doUnwrapException(array, t);
 		return array;

@@ -12,7 +12,7 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.Provider;
 
-import org.demoiselle.jee.core.message.DemoiselleMessage;
+import org.demoiselle.jee.configuration.message.ConfigurationMessage;
 
 /**
  * 
@@ -21,12 +21,14 @@ import org.demoiselle.jee.core.message.DemoiselleMessage;
  */
 @Provider
 public class RestFilter implements ContainerResponseFilter {
-	
-    @Inject
-    private DemoiselleMessage demoiselleMessage;
-    
-    @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
-        responseContext.getHeaders().putSingle(demoiselleMessage.projectName(), demoiselleMessage.version());
-    }
+
+	@Inject
+	private ConfigurationMessage demoiselleMessage;
+
+	@Override
+	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
+		// responseContext.getHeaders().putSingle(demoiselleMessage.projectName(),
+		// demoiselleMessage.version());
+		responseContext.getHeaders().putSingle(demoiselleMessage.startMessage(), "");
+	}
 }
