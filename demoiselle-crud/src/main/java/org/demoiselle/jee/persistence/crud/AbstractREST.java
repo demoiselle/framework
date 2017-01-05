@@ -10,6 +10,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -49,7 +50,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @Transactional
     @ValidatePayload
     @ApiOperation(value = "persist entity")
-    public T persist(T entity) {
+    public T persist(@Valid T entity) {
         return bc.persist(entity);
     }
 
@@ -57,7 +58,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @Transactional
     @ValidatePayload
     @ApiOperation(value = "full update entity")
-    public T merge(T entity) {
+    public T merge(@Valid T entity) {
         return bc.merge(entity);
     }
 
