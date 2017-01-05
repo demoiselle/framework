@@ -18,6 +18,13 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
 public interface DemoiselleMessage {
 
     /**
+    *
+    * @return framework name 
+    */
+   @MessageTemplate("{project-name}")
+   String projectName();
+   
+    /**
      *
      * @return framework version 
      */
