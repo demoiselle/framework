@@ -6,9 +6,6 @@
  */
 package org.demoiselle.jee.security.jwt.impl;
 
-import static java.util.logging.Level.WARNING;
-import static javax.ws.rs.Priorities.AUTHENTICATION;
-
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -23,8 +20,9 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import static javax.ws.rs.Priorities.AUTHORIZATION;
 import javax.ws.rs.core.Response;
 
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
@@ -49,12 +47,12 @@ import org.jose4j.lang.JoseException;
  *
  * @author SERPRO
  */
-@ApplicationScoped
-@Priority(AUTHENTICATION)
+@RequestScoped
+@Priority(AUTHORIZATION)
 public class TokenManagerImpl implements TokenManager {
 
-    private PublicKey publicKey;
-    private PrivateKey privateKey;
+    private static PublicKey publicKey;
+    private static PrivateKey privateKey;
 
     @Inject
     private Logger logger;
@@ -82,7 +80,6 @@ public class TokenManagerImpl implements TokenManager {
             try {
 
                 if (config.getType() == null) {
-                    //TODO usar status
                     throw new DemoiselleSecurityException(bundle.chooseType(), Response.Status.UNAUTHORIZED.getStatusCode());
                 }
 
@@ -92,7 +89,6 @@ public class TokenManagerImpl implements TokenManager {
 
                 if (config.getType().equalsIgnoreCase(bundle.slave())) {
                     if (config.getPublicKey() == null || config.getPublicKey().isEmpty()) {
-                        logger.warning(bundle.putKey());
                         throw new DemoiselleSecurityException(bundle.putKey(), Response.Status.UNAUTHORIZED.getStatusCode());
                     } else {
                         publicKey = getPublic();
@@ -105,7 +101,6 @@ public class TokenManagerImpl implements TokenManager {
                 }
 
             } catch (JoseException | InvalidKeySpecException | NoSuchAlgorithmException ex) {
-                logger.severe(ex.getMessage());
                 throw new DemoiselleSecurityException(bundle.general(), Response.Status.UNAUTHORIZED.getStatusCode(), ex);
             }
 
@@ -130,7 +125,7 @@ public class TokenManagerImpl implements TokenManager {
      * @return DemoiselleUser principal
      */
     @Override
-    @SuppressWarnings({"unchecked","rawtypes"})
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public DemoiselleUser getUser(String issuer, String audience) {
         if (token.getKey() != null && !token.getKey().isEmpty()) {
             try {
@@ -145,12 +140,12 @@ public class TokenManagerImpl implements TokenManager {
                 JwtClaims jwtClaims = jwtConsumer.processToClaims(token.getKey());
                 loggedUser.setIdentity((String) jwtClaims.getClaimValue("identity"));
                 loggedUser.setName((String) jwtClaims.getClaimValue("name"));
-				List<String> list = (List<String>) jwtClaims.getClaimValue("roles");
+                List<String> list = (List<String>) jwtClaims.getClaimValue("roles");
                 list.forEach((string) -> {
                     loggedUser.addRole(string);
                 });
 
-				Map<String, List<String>> mappermissions = (Map) jwtClaims.getClaimValue("permissions");
+                Map<String, List<String>> mappermissions = (Map) jwtClaims.getClaimValue("permissions");
                 mappermissions.entrySet().forEach((entry) -> {
                     String key = entry.getKey();
                     List<String> value = entry.getValue();
@@ -167,7 +162,6 @@ public class TokenManagerImpl implements TokenManager {
             } catch (InvalidJwtException ex) {
                 loggedUser = null;
                 token.setKey(null);
-                logger.severe(ex.getMessage());
                 throw new DemoiselleSecurityException(bundle.expired(), Response.Status.UNAUTHORIZED.getStatusCode(), ex);
             }
         }
@@ -205,7 +199,6 @@ public class TokenManagerImpl implements TokenManager {
             token.setKey(jws.getCompactSerialization());
             token.setType("JWT");
         } catch (JoseException ex) {
-            logger.severe(ex.getMessage());
             throw new DemoiselleSecurityException(bundle.general(), Response.Status.UNAUTHORIZED.getStatusCode(), ex);
         }
 
@@ -239,8 +232,8 @@ public class TokenManagerImpl implements TokenManager {
             KeyPair kp = keyGenerator.genKeyPair();
             publicKey = kp.getPublic();
             privateKey = kp.getPrivate();
-            logger.log(WARNING, "privateKey={0}", publicKey.toString());
-            logger.log(WARNING, "publicKey={0}", privateKey.toString());
+            logger.warning("privateKey=" + publicKey.toString());
+            logger.warning("publicKey=" + privateKey.toString());
             throw new DemoiselleSecurityException(bundle.putKey(), Response.Status.UNAUTHORIZED.getStatusCode());
         }
         byte[] keyBytes = java.util.Base64.getDecoder().decode(config.getPrivateKey().replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", ""));
