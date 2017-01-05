@@ -6,6 +6,8 @@
  */
 package org.demoiselle.jee.security;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.After;
@@ -23,6 +25,8 @@ import org.junit.runner.RunWith;
 @RunWith(CdiTestRunner.class)
 public class DemoiselleSecurityConfigTest {
 
+    @Inject
+    private DemoiselleSecurityConfig instance;
 
     @BeforeClass
     public static void setUpClass() {
@@ -31,8 +35,7 @@ public class DemoiselleSecurityConfigTest {
     @AfterClass
     public static void tearDownClass() {
     }
-    @Inject
-    private DemoiselleSecurityConfig instance;
+
     public DemoiselleSecurityConfigTest() {
     }
 
@@ -48,7 +51,7 @@ public class DemoiselleSecurityConfigTest {
      * Test of isCorsEnabled method, of class DemoiselleSecurityConfig.
      */
     @Test
-    public void testIsCorsEnabled() {
+    public void test11() {
         boolean expResult = true;
         boolean result = instance.isCorsEnabled();
         assertEquals(expResult, result);

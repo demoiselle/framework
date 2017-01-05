@@ -54,11 +54,11 @@ import org.demoiselle.jee.core.annotation.Name;
 import org.demoiselle.jee.core.message.DemoiselleMessage;
 
 /**
- * 
+ *
  * Class responsible for managing the source of a data extraction, identified
- * which fields to be filled,
- * find the extractor for each field type, fill and validate the data field.
- * 
+ * which fields to be filled, find the extractor for each field type, fill and
+ * validate the data field.
+ *
  * @author SERPRO
  *
  */
@@ -69,13 +69,12 @@ public class ConfigurationLoader implements Serializable {
 
     @Inject
     private ConfigurationMessage message;
-    
+
     @Inject
     private DemoiselleMessage demoiselleMessage;
 
-    @Inject
-    private Logger logger;
-    
+    private static final Logger logger = Logger.getLogger(ConfigurationLoader.class.getName());
+
     // Object annotated with @Configuration
     private transient Object targetObject;
 
@@ -107,18 +106,16 @@ public class ConfigurationLoader implements Serializable {
      * <p>
      * Processes the annotated class with {@link Configuration}.
      * </p>
-     * 
+     *
      * <p>
      * After the first class configuration procedure is added to the cache to
      * avoid repeated processing.
      * </p>
-     * 
-     * @param object
-     *            Object annotated with {@link Configuration} to be populated
-     * @param baseClass
-     *            Class type to be populated
-     * @throws DemoiselleConfigurationException
-     *             When there is a problem in the process
+     *
+     * @param object Object annotated with {@link Configuration} to be populated
+     * @param baseClass Class type to be populated
+     * @throws DemoiselleConfigurationException When there is a problem in the
+     * process
      */
     public void load(final Object object, Class<?> baseClass) {
         Boolean isLoaded = loadedCache.get(object);
@@ -127,8 +124,7 @@ public class ConfigurationLoader implements Serializable {
             try {
                 processConfiguration(object, baseClass);
                 loadedCache.put(object, true);
-            }
-            catch (DemoiselleConfigurationException c) {
+            } catch (DemoiselleConfigurationException c) {
                 loadedCache.put(object, false);
                 throw c;
             }
@@ -136,23 +132,21 @@ public class ConfigurationLoader implements Serializable {
     }
 
     /**
-     * 
-     * Load values from the selected source and fill object annotated
-     * with @Configuration.
-     * 
+     *
+     * Load values from the selected source and fill object annotated with
+     * @Configuration.
+     *
      * This method has the engine to process the configuration feature.
-     * 
-     * @param targetObject
-     *            The object to fill
-     * @param targetBaseClass
-     *            The class type of object to fill
+     *
+     * @param targetObject The object to fill
+     * @param targetBaseClass The class type of object to fill
      * @throws DemoiselleConfigurationException
      */
     private void processConfiguration(final Object targetObject, Class<?> targetBaseClass) {
 
         logger.info("*******************************************************");
-        logger.info(demoiselleMessage.projectName()+ " " + demoiselleMessage.version());
-        logger.info(message.startMessage()+ "\n");
+        logger.info(demoiselleMessage.projectName() + " " + demoiselleMessage.version());
+        logger.info(message.startMessage() + "\n");
         logger.info(message.loadConfigurationClass(targetBaseClass.getName()));
 
         this.targetObject = targetObject;
@@ -219,9 +213,8 @@ public class ConfigurationLoader implements Serializable {
     /**
      * Check if the field param has {@value Name} annotation, if it has,
      * validate if the value is filled
-     * 
-     * @param field
-     *            Current field
+     *
+     * @param field Current field
      */
     private void validateField(Field field) {
         Name annotation = field.getAnnotation(Name.class);
@@ -238,8 +231,8 @@ public class ConfigurationLoader implements Serializable {
     }
 
     /**
-     * Load the name of resource that contains the values to fill object.
-     * Unless with the type of configuration is SYSTEM type.
+     * Load the name of resource that contains the values to fill object. Unless
+     * with the type of configuration is SYSTEM type.
      */
     private void identifyResourceName() {
         if (configurationType != ConfigurationType.SYSTEM) {
@@ -254,7 +247,7 @@ public class ConfigurationLoader implements Serializable {
     /**
      * Identify and create Apache Configuration based on type informed on
      * {@link ConfigurationType}
-     * 
+     *
      */
     private void loadConfigurationType() {
         BasicConfigurationBuilder<? extends Configuration> builder = createConfiguration();
@@ -272,12 +265,10 @@ public class ConfigurationLoader implements Serializable {
 
                 configureFileBuilder(urlResources);
 
-            }
-            else {
+            } else {
                 configurations.add(builder.getConfiguration());
             }
-        }
-        catch (IOException | ConfigurationException e) {
+        } catch (IOException | ConfigurationException e) {
             logger.warning(message.failOnCreateApacheConfiguration(e.getMessage()));
         }
     }
@@ -295,8 +286,7 @@ public class ConfigurationLoader implements Serializable {
 
             try {
                 configurations.add(builder.getConfiguration());
-            }
-            catch (ConfigurationException e) {
+            } catch (ConfigurationException e) {
                 logger.warning(message.failOnCreateApacheConfiguration(e.getMessage()));
             }
         }
@@ -328,8 +318,7 @@ public class ConfigurationLoader implements Serializable {
 
         if (prefixValue.endsWith(".")) {
             logger.warning(message.configurationDotAfterPrefix(resource));
-        }
-        else if (!prefixValue.isEmpty()) {
+        } else if (!prefixValue.isEmpty()) {
             prefixValue += ".";
         }
 
@@ -341,16 +330,15 @@ public class ConfigurationLoader implements Serializable {
     }
 
     /**
-     * 
+     *
      * Fill the field informed.
-     * 
+     *
      * Get the default value informed on class and retrieve value from source.
-     * 
+     *
      * If the value is present on field and on source, the value from source is
      * selected and the default value is ignored
-     * 
-     * @param field
-     *            Current field from targetObject
+     *
+     * @param field Current field from targetObject
      */
     private void fillFieldWithValue(Field field) {
         if (hasIgnoreAnnotation(field)) {
@@ -380,15 +368,12 @@ public class ConfigurationLoader implements Serializable {
                 }
                 value = extractor.getValue(prefix, key, field, config);
             }
-        }
-        catch (DemoiselleConfigurationException cause) {
+        } catch (DemoiselleConfigurationException cause) {
             throw cause;
-        }
-        catch (DemoiselleConfigurationValueExtractorException cause) {
+        } catch (DemoiselleConfigurationValueExtractorException cause) {
             throw new DemoiselleConfigurationException(
                     message.configurationNotConversion(prefix + getKey(field), field.getType().toString()), cause);
-        }
-        catch (Exception cause) {
+        } catch (Exception cause) {
             throw new DemoiselleConfigurationException(message.configurationGenericExtractionError(
                     field.getType().toString(), getValueExtractor(field).getClass().getCanonicalName()), cause);
         }
@@ -422,8 +407,7 @@ public class ConfigurationLoader implements Serializable {
         try {
             ConfigurationBootstrap bootstrap = CDI.current().select(ConfigurationBootstrap.class).get();
             cache = bootstrap.getCache();
-        }
-        catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             // CDI is not already
             logger.finest(message.cdiNotAlready());
         }
@@ -436,8 +420,7 @@ public class ConfigurationLoader implements Serializable {
 
         if (field.isAnnotationPresent(Name.class)) {
             key = field.getAnnotation(Name.class).value();
-        }
-        else {
+        } else {
             key = field.getName();
         }
 
@@ -454,7 +437,7 @@ public class ConfigurationLoader implements Serializable {
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private void validateValue(Field field) {
         ValidatorFactory dfv = Validation.buildDefaultValidatorFactory();
         Validator validator = dfv.getValidator();
@@ -539,8 +522,7 @@ public class ConfigurationLoader implements Serializable {
             result = (T) field.get(object);
             field.setAccessible(acessible);
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new DemoiselleConfigurationException(
                     message.configurationErrorGetValue(field.getName(), object.getClass().getCanonicalName()), e);
         }
@@ -555,8 +537,7 @@ public class ConfigurationLoader implements Serializable {
             field.set(object, value);
             field.setAccessible(acessible);
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new DemoiselleConfigurationException(
                     message.configurationErrorSetValue(value, field.getName(), object.getClass().getCanonicalName()),
                     e);
@@ -576,13 +557,13 @@ public class ConfigurationLoader implements Serializable {
     }
 
     private Class<? extends ConfigurationValueExtractor> selectClass(Set<Class<? extends ConfigurationValueExtractor>> candidates) {
-        
+
         Class<? extends ConfigurationValueExtractor> selected = null;
-        
+
         for (Class<? extends ConfigurationValueExtractor> candidate : candidates) {
             Boolean isCandidateInternalValueExtractor = isIntenalVauleExtractor(candidate);
             Boolean isSelectedInternalValueExtractor = isIntenalVauleExtractor(selected);
-            
+
             if (selected == null || (isSelectedInternalValueExtractor == Boolean.TRUE && isCandidateInternalValueExtractor == Boolean.FALSE)) {
                 selected = candidate;
             }
@@ -591,15 +572,15 @@ public class ConfigurationLoader implements Serializable {
         if (selected != null) {
             performAmbiguityCheck(selected, candidates);
         }
-        
+
         return selected;
     }
 
     private Boolean isIntenalVauleExtractor(Class<? extends ConfigurationValueExtractor> candidate) {
-        if(candidate == null){
+        if (candidate == null) {
             return Boolean.FALSE;
         }
-        
+
         ConfigurationInternalDemoiselleValueExtractor frameworkPackageExtractor = candidate.getPackage().getAnnotation(ConfigurationInternalDemoiselleValueExtractor.class);
         return frameworkPackageExtractor != null ? Boolean.TRUE : Boolean.FALSE;
     }
@@ -607,7 +588,7 @@ public class ConfigurationLoader implements Serializable {
     private void performAmbiguityCheck(Class<? extends ConfigurationValueExtractor> selected,
             Set<Class<? extends ConfigurationValueExtractor>> candidates) {
 
-        Set<Class<? extends ConfigurationValueExtractor>> ambiguous = new HashSet<>();             
+        Set<Class<? extends ConfigurationValueExtractor>> ambiguous = new HashSet<>();
 
         for (Class<? extends ConfigurationValueExtractor> candidate : candidates) {
             Boolean isCandidateInternalValueExtractor = isIntenalVauleExtractor(candidate);
@@ -628,7 +609,7 @@ public class ConfigurationLoader implements Serializable {
 
     private String getExceptionMessage(Set<Class<? extends ConfigurationValueExtractor>> ambiguousCandidates) {
         StringBuilder classes = new StringBuilder();
-        
+
         Class<? extends ConfigurationValueExtractor> type = ambiguousCandidates.iterator().next();
         int i = 0;
         for (Class<? extends ConfigurationValueExtractor> clazz : ambiguousCandidates) {
