@@ -31,7 +31,7 @@ public class PersistenceExceptionMapper implements ExceptionMapper<PersistenceEx
 
 	@Override
 	public Response toResponse(PersistenceException exception) {
-		logger.fine("Using PersistenceExceptionMapper");
+		logger.info("Using PersistenceExceptionMapper");
 		return errorTreatment.getFormatedError(exception, httpRequest);
 	}
 

@@ -9,6 +9,8 @@ package org.demoiselle.jee.rest.exception.treatment;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -24,13 +26,10 @@ import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
-// TODO: logs dos erros (USER CDI.current..)
 // TODO: flag de details
-// TODO: encontrar alguma maneira de que o sistema desenvolvido possa SOBREESCREVER esse comportamento
-// TODO: everride app
 public class ErrorTreatmentImpl implements ErrorTreatment {
 
-	// private Logger logger = CDI.current().select(Logger.class).get();
+	private static final Logger logger = Logger.getLogger(ErrorTreatmentImpl.class.getName());
 
 	private final String FIELDNAME_ERROR = "error";
 	private final String FIELDNAME_ERROR_DESCRIPTION = "error_description";
@@ -48,7 +47,7 @@ public class ErrorTreatmentImpl implements ErrorTreatment {
 	public Response getFormatedError(Exception exception, HttpServletRequest request) {
 
 		MediaType responseMediaType = MediaType.APPLICATION_JSON_TYPE;
-		
+
 		if (request.getHeader("content-type") != null) {
 			responseMediaType = MediaType.valueOf(request.getHeader("content-type"));
 		}
@@ -65,6 +64,7 @@ public class ErrorTreatmentImpl implements ErrorTreatment {
 		 * (Violations: @NotNull, @NotEmpty, @Size...)
 		 */
 		if (exception instanceof ConstraintViolationException) {
+
 			ConstraintViolationException c = (ConstraintViolationException) exception;
 
 			for (ConstraintViolation violation : c.getConstraintViolations()) {
@@ -88,6 +88,8 @@ public class ErrorTreatmentImpl implements ErrorTreatment {
 				HashMap<String, Object> object = new HashMap<String, Object>();
 				object.put(FIELDNAME_ERROR, pathConverted);
 				object.put(FIELDNAME_ERROR_DESCRIPTION, violation.getMessage());
+				
+				logger.log(Level.WARNING, violation.getMessage());
 
 				a.add(object);
 			}

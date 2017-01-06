@@ -31,7 +31,7 @@ public class DemoiselleExceptionMapper implements ExceptionMapper<DemoiselleExce
 
 	@Override
 	public Response toResponse(DemoiselleException exception) {
-		logger.fine("Using DemoiselleExceptionMapper");
+		logger.info("Using DemoiselleExceptionMapper");
 		return errorTreatment.getFormatedError(exception, httpRequest);
 	}
 
