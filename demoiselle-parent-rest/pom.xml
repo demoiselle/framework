@@ -76,7 +76,7 @@
             <id>wildfly-swarm</id>
             <properties>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-                <version.wildfly.swarm>2016.9</version.wildfly.swarm>
+                <version.wildfly.swarm>2016.11.0</version.wildfly.swarm>
                 <maven.compiler.source>1.8</maven.compiler.source>
                 <maven.compiler.target>1.8</maven.compiler.target>
                 <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -127,7 +127,6 @@
                 </plugins>
             </build>
         </profile>
-        <!--mvn clean package -Pwildfly-swarm && java -jar -Xmx128m target/produto-swarm.jar -->
     </profiles>
 
 </project>
