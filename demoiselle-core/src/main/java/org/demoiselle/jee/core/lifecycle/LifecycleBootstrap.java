@@ -35,101 +35,99 @@ import org.demoiselle.jee.core.message.DemoiselleMessage;
  *
  * @author SERPRO
  */
-//TODO incluir mensagem de inicializacao e fim do demoiselle
+// TODO incluir mensagem de inicializacao e fim do demoiselle
 public class LifecycleBootstrap implements Extension {
 
-    private static final Logger logger = Logger.getLogger(LifecycleBootstrap.class.getName());
-    private DemoiselleMessage message;
+	private static final Logger logger = Logger.getLogger(LifecycleBootstrap.class.getName());
+	private DemoiselleMessage message;
 
-    private List<AnnotatedMethodProcessor> methodsWithStartup = Collections.synchronizedList(new ArrayList<>());
-    private List<AnnotatedMethodProcessor> methodsWithShutdown = Collections.synchronizedList(new ArrayList<>());
+	private List<AnnotatedMethodProcessor> methodsWithStartup = Collections.synchronizedList(new ArrayList<>());
+	private List<AnnotatedMethodProcessor> methodsWithShutdown = Collections.synchronizedList(new ArrayList<>());
 
-    protected void startup(@Observes ProcessAnnotatedType<?> event) {
+	protected void startup(@Observes ProcessAnnotatedType<?> event) {
 
-        final AnnotatedType<?> annotatedType = event.getAnnotatedType();
+		final AnnotatedType<?> annotatedType = event.getAnnotatedType();
 
-        for (AnnotatedMethod<?> am : annotatedType.getMethods()) {
-            if (am.isAnnotationPresent(Startup.class)) {
-                methodsWithStartup.add(new AnnotatedMethodProcessor(am));
-            }
+		for (AnnotatedMethod<?> am : annotatedType.getMethods()) {
+			if (am.isAnnotationPresent(Startup.class)) {
+				methodsWithStartup.add(new AnnotatedMethodProcessor(am));
+			}
 
-            if (am.isAnnotationPresent(Shutdown.class)) {
-                methodsWithShutdown.add(new AnnotatedMethodProcessor(am));
-            }
-        }
-    }
+			if (am.isAnnotationPresent(Shutdown.class)) {
+				methodsWithShutdown.add(new AnnotatedMethodProcessor(am));
+			}
+		}
+	}
 
-    protected void processStartup(@Observes @Initialized(ApplicationScoped.class) Object o) {
-        execute(this.methodsWithStartup);
-    }
+	protected void processStartup(@Observes @Initialized(ApplicationScoped.class) Object o) {
+		execute(this.methodsWithStartup);
+	}
 
-    protected void processShutdown(@Observes @Destroyed(ApplicationScoped.class) Object o) {
-        execute(this.methodsWithShutdown);
-    }
+	protected void processShutdown(@Observes @Destroyed(ApplicationScoped.class) Object o) {
+		execute(this.methodsWithShutdown);
+	}
 
-    private <T> void execute(List<AnnotatedMethodProcessor> methods) {
-        Collections.sort(methods, new Comparator<AnnotatedMethodProcessor>() {
+	private <T> void execute(List<AnnotatedMethodProcessor> methods) {
+		Collections.sort(methods, new Comparator<AnnotatedMethodProcessor>() {
 
-            @Override
-            public int compare(AnnotatedMethodProcessor o1, AnnotatedMethodProcessor o2) {
-                Integer orderThis = o1.getPriority(o1.getAnnotatedMethod());
-                Integer orderOther = o2.getPriority(o2.getAnnotatedMethod());
+			@Override
+			public int compare(AnnotatedMethodProcessor o1, AnnotatedMethodProcessor o2) {
+				Integer orderThis = o1.getPriority(o1.getAnnotatedMethod());
+				Integer orderOther = o2.getPriority(o2.getAnnotatedMethod());
 
-                return orderThis.compareTo(orderOther);
-            }
-        });
+				return orderThis.compareTo(orderOther);
+			}
+		});
 
-        methods.forEach((amp) -> {
-            String cn = amp.getAnnotatedMethod().getDeclaringType().getJavaClass().getCanonicalName();
+		methods.forEach((amp) -> {
+			String cn = amp.getAnnotatedMethod().getDeclaringType().getJavaClass().getCanonicalName();
 
-            ClassLoader classLoader = getClassLoaderForResource(cn.replaceAll("\\.", "/") + ".class");
+			ClassLoader classLoader = getClassLoaderForResource(cn.replaceAll("\\.", "/") + ".class");
 
-            if (Thread.currentThread().getContextClassLoader().equals(classLoader)) {
-                try {
+			if (Thread.currentThread().getContextClassLoader().equals(classLoader)) {
+				try {
 
-                    getLogger().info(getMessage().executingMethod(amp.getAnnotatedMethod().toString()));
-                    amp.getAnnotatedMethod().getJavaMember().invoke(CDI.current().select(amp.getAnnotatedMethod().getJavaMember().getDeclaringClass()).get(), new Object[]{});
+					logger.info(getMessage().executingMethod(amp.getAnnotatedMethod().toString()));
+					amp.getAnnotatedMethod().getJavaMember().invoke(
+							CDI.current().select(amp.getAnnotatedMethod().getJavaMember().getDeclaringClass()).get(),
+							new Object[] {});
 
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    getLogger().severe(e.getMessage());
-                    throw new DemoiselleLifecycleException(e);
-                }
-            }
-        });
-    }
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					logger.severe(e.getMessage());
+					throw new DemoiselleLifecycleException(e);
+				}
+			}
+		});
+	}
 
-    private ClassLoader getClassLoaderForResource(final String resource) {
-        final String stripped = resource.charAt(0) == '/' ? resource.substring(1) : resource;
+	private ClassLoader getClassLoaderForResource(final String resource) {
+		final String stripped = resource.charAt(0) == '/' ? resource.substring(1) : resource;
 
-        URL url = null;
-        ClassLoader result = Thread.currentThread().getContextClassLoader();
+		URL url = null;
+		ClassLoader result = Thread.currentThread().getContextClassLoader();
 
-        if (result != null) {
-            url = result.getResource(stripped);
-        }
+		if (result != null) {
+			url = result.getResource(stripped);
+		}
 
-        if (url == null) {
-            result = getClass().getClassLoader();
-            url = getClass().getClassLoader().getResource(stripped);
-        }
+		if (url == null) {
+			result = getClass().getClassLoader();
+			url = getClass().getClassLoader().getResource(stripped);
+		}
 
-        if (url == null) {
-            result = null;
-        }
+		if (url == null) {
+			result = null;
+		}
 
-        return result;
-    }
+		return result;
+	}
 
-    private Logger getLogger() {
-        return this.logger;
-    }
+	private DemoiselleMessage getMessage() {
+		if (this.message == null) {
+			this.message = CDI.current().select(DemoiselleMessage.class).get();
+		}
 
-    private DemoiselleMessage getMessage() {
-        if (this.message == null) {
-            this.message = CDI.current().select(DemoiselleMessage.class).get();
-        }
-
-        return this.message;
-    }
+		return this.message;
+	}
 
 }

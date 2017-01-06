@@ -47,7 +47,11 @@ public class ErrorTreatmentImpl implements ErrorTreatment {
 	@SuppressWarnings({ "rawtypes" })
 	public Response getFormatedError(Exception exception, HttpServletRequest request) {
 
-		final MediaType responseMediaType = MediaType.valueOf(request.getHeader("content-type"));
+		MediaType responseMediaType = MediaType.APPLICATION_JSON_TYPE;
+		
+		if (request.getHeader("content-type") != null) {
+			responseMediaType = MediaType.valueOf(request.getHeader("content-type"));
+		}
 
 		// If the main cause of exception is Demoiselle Rest Exception
 		if (exception.getCause() != null && exception.getCause() instanceof DemoiselleRestException) {
