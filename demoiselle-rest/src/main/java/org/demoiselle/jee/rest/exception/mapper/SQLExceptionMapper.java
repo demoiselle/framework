@@ -59,7 +59,7 @@ public class SQLExceptionMapper implements ExceptionMapper<SQLException> {
 
 	@Override
 	public Response toResponse(SQLException exception) {
-		logger.fine("Using SQLException");
+		logger.info("Using SQLException");
 		return errorTreatment.getFormatedError(exception, httpRequest);
 	}
 

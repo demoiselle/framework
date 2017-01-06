@@ -32,7 +32,7 @@ public class InvalidFormatExceptionMapper implements ExceptionMapper<InvalidForm
 
 	@Override
 	public Response toResponse(InvalidFormatException exception) {
-		logger.fine("Using InvalidFormatExceptionMapper");
+		logger.info("Using InvalidFormatExceptionMapper");
 		return errorTreatment.getFormatedError(exception, httpRequest);
 	}
 
