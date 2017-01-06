@@ -8,7 +8,7 @@ package org.demoiselle.jee.security.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Map;
+
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -16,6 +16,7 @@ import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
+
 import org.demoiselle.jee.security.DemoiselleSecurityConfig;
 import org.demoiselle.jee.security.annotation.Cors;
 
@@ -53,10 +54,11 @@ public class CorsFilter implements ContainerResponseFilter {
         }
 
         if (config.isCorsEnabled() && corsEnable) {
+        	// TODO deixar parametrizado no demoiselle.properties (não pegar do request)
             res.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
             res.getHeaders().putSingle("Access-Control-Allow-Headers", "Origin, Content-type, Accept, Authorization");
             res.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
-            res.getHeaders().putSingle("Access-Control-Allow-Methods", req.getMethod());
+            res.getHeaders().putSingle("Access-Control-Allow-Methods", "HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE");
         } else {
             res.getHeaders().remove("Access-Control-Allow-Origin");
             res.getHeaders().remove("Access-Control-Allow-Methods");
