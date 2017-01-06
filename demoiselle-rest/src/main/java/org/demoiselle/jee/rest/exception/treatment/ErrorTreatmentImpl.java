@@ -44,7 +44,7 @@ public class ErrorTreatmentImpl implements ErrorTreatment {
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	public Response getFormatedError(Exception exception, HttpServletRequest request) {
+	public Response getFormatedError(Throwable exception, HttpServletRequest request) {
 
 		MediaType responseMediaType = MediaType.APPLICATION_JSON_TYPE;
 
@@ -88,7 +88,7 @@ public class ErrorTreatmentImpl implements ErrorTreatment {
 				HashMap<String, Object> object = new HashMap<String, Object>();
 				object.put(FIELDNAME_ERROR, pathConverted);
 				object.put(FIELDNAME_ERROR_DESCRIPTION, violation.getMessage());
-				
+
 				logger.log(Level.WARNING, violation.getMessage());
 
 				a.add(object);
@@ -207,7 +207,7 @@ public class ErrorTreatmentImpl implements ErrorTreatment {
 	 *            Exception
 	 * @return SQLException or null
 	 */
-	private SQLException getSQLExceptionInException(Exception ex) {
+	private SQLException getSQLExceptionInException(Throwable ex) {
 
 		Throwable current = ex;
 
