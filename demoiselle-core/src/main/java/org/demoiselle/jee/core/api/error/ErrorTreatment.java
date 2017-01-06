@@ -11,6 +11,6 @@ import javax.ws.rs.core.Response;
 
 public interface ErrorTreatment {
 
-	public Response getFormatedError(Exception exception, HttpServletRequest request);
+	public Response getFormatedError(Throwable exception, HttpServletRequest request);
 
 }
