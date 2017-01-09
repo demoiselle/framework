@@ -4,7 +4,7 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.persistence.crud;
+package org.demoiselle.jee.crud;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -22,9 +22,9 @@ import javax.persistence.criteria.Root;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.demoiselle.jee.core.api.crud.Crud;
-import org.demoiselle.jee.persistence.crud.exception.DemoisellePersistenceCrudException;
-import org.demoiselle.jee.persistence.crud.pagination.DemoisellePaginationConfig;
-import org.demoiselle.jee.persistence.crud.pagination.ResultSet;
+import org.demoiselle.jee.crud.exception.DemoisellePersistenceCrudException;
+import org.demoiselle.jee.crud.pagination.DemoisellePaginationConfig;
+import org.demoiselle.jee.crud.pagination.ResultSet;
 
 //TODO revisar
 @TransactionAttribute(TransactionAttributeType.MANDATORY)

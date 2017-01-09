@@ -4,7 +4,7 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.persistence.crud.bootstrap;
+package org.demoiselle.jee.crud.bootstrap;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
