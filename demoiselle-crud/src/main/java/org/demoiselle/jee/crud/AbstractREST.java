@@ -4,7 +4,7 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.persistence.crud;
+package org.demoiselle.jee.crud;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -70,14 +70,8 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 
 	@GET
 	@Transactional
-	// @ApiOperation(value = "list all entities with pagination filter and
-	// query")
 	public Result find() {
-		if (uriInfo.getQueryParameters().isEmpty()) {
-			return bc.find();
-		} else {
-			return bc.find(uriInfo.getQueryParameters());
-		}
+		return bc.find();
 	}
 
 	@GET

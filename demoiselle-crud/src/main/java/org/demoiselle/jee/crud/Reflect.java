@@ -9,7 +9,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.demoiselle.jee.persistence.crud;
+package org.demoiselle.jee.crud;
 
 import java.lang.reflect.Field;
 

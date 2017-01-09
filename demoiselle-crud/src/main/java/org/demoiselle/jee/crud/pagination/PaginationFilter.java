@@ -4,7 +4,7 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.persistence.crud.pagination;
+package org.demoiselle.jee.crud.pagination;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
-import org.demoiselle.jee.persistence.crud.AbstractREST;
+import org.demoiselle.jee.crud.AbstractREST;
 
 /**
  * TODO javadoc
@@ -59,17 +59,16 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 	public PaginationFilter() {
 	}
 
-	// public PaginationFilter(UriInfo uriInfo, ResourceInfo info, ResultSet
-	// resultSet,
-	// DemoisellePaginationConfig dpc, Logger logger,
-	// DemoisellePaginationMessage message) {
-	// this.uriInfo = uriInfo;
-	// this.info = info;
-	// this.resultSet = resultSet;
-	// this.paginationConfig = dpc;
-	// this.logger = logger;
-	// this.message = message;
-	// }
+	 public PaginationFilter(UriInfo uriInfo, ResourceInfo info, ResultSet
+	 resultSet,
+	 DemoisellePaginationConfig dpc,
+	 DemoisellePaginationMessage message) {
+    	 this.uriInfo = uriInfo;
+    	 this.info = info;
+    	 this.resultSet = resultSet;
+    	 this.paginationConfig = dpc;
+    	 this.message = message;
+	 }
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {

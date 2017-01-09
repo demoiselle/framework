@@ -11,4 +11,4 @@
  * 
  * @author SERPRO
  */
-package org.demoiselle.jee.persistence.crud.exception;
+package org.demoiselle.jee.crud.exception;
