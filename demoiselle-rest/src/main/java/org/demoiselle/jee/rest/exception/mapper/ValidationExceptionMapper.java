@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.demoiselle.jee.core.api.error.ErrorTreatment;
+import org.demoiselle.jee.core.exception.ExceptionTreatment;
 
 /**
  * {@link ExceptionMapper} for {@link ValidationException}.
@@ -42,7 +42,7 @@ import org.demoiselle.jee.core.api.error.ErrorTreatment;
  * https://dennis-xlc.gitbooks.io/restful-java-with-jax-rs-2-0-2rd-edition/content/en/part1/chapter7/exception_handling.html
  * }
  * 
- * @author 00968514901
+ * @author SERPRO
  *
  */
 
@@ -55,12 +55,12 @@ public class ValidationExceptionMapper implements ExceptionMapper<ValidationExce
 	protected HttpServletRequest httpRequest;
 
 	@Inject
-	protected ErrorTreatment errorTreatment;
+	protected ExceptionTreatment exceptionTreatment;
 
 	@Override
 	public Response toResponse(ValidationException exception) {
 		logger.info("Using ValidationExceptionMapper");
-		return errorTreatment.getFormatedError(exception, httpRequest);
+		return exceptionTreatment.getFormatedError(exception, httpRequest);
 	}
 
 }

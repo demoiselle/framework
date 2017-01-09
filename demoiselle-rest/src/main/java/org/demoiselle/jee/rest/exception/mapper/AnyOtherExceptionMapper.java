@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.demoiselle.jee.core.api.error.ErrorTreatment;
+import org.demoiselle.jee.core.exception.ExceptionTreatment;
 
 /**
  * 
@@ -24,7 +24,7 @@ import org.demoiselle.jee.core.api.error.ErrorTreatment;
  */
 
 @Provider
-public class AnyOtherExceptionMapper implements ExceptionMapper<Exception> {
+public class AnyOtherExceptionMapper implements ExceptionMapper<Throwable> {
 
 	private static final Logger logger = Logger.getLogger(AnyOtherExceptionMapper.class.getName());
 
@@ -32,12 +32,12 @@ public class AnyOtherExceptionMapper implements ExceptionMapper<Exception> {
 	protected HttpServletRequest httpRequest;
 
 	@Inject
-	protected ErrorTreatment errorTreatment;
+	protected ExceptionTreatment exceptionTreatment;
 
 	@Override
-	public Response toResponse(Exception exception) {
-		logger.info("Using AnyExceptionMapper");
-		return errorTreatment.getFormatedError(exception, httpRequest);
+	public Response toResponse(Throwable exception) {
+		logger.info("Using AnyOtherExceptionMapper");
+		return exceptionTreatment.getFormatedError(exception, httpRequest);
 	}
 
 }

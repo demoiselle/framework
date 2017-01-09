@@ -26,8 +26,6 @@ import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.rest.annotation.ValidatePayload;
 
-import io.swagger.annotations.ApiOperation;
-
 /**
  * TODO JAVADOC
  *
@@ -40,52 +38,53 @@ import io.swagger.annotations.ApiOperation;
 @Consumes(APPLICATION_JSON)
 public abstract class AbstractREST<T, I> implements Crud<T, I> {
 
-    @Inject
-    protected AbstractBusiness<T, I> bc;
+	@Inject
+	protected AbstractBusiness<T, I> bc;
 
-    @Context
-    protected UriInfo uriInfo;
+	@Context
+	protected UriInfo uriInfo;
 
-    @POST
-    @Transactional
-    @ValidatePayload
-    @ApiOperation(value = "persist entity")
-    public T persist(@Valid T entity) {
-        return bc.persist(entity);
-    }
+	@POST
+	@Transactional
+	@ValidatePayload
+	// @ApiOperation(value = "persist entity")
+	public T persist(@Valid T entity) {
+		return bc.persist(entity);
+	}
 
-    @PUT
-    @Transactional
-    @ValidatePayload
-    @ApiOperation(value = "full update entity")
-    public T merge(@Valid T entity) {
-        return bc.merge(entity);
-    }
+	@PUT
+	@Transactional
+	@ValidatePayload
+	// @ApiOperation(value = "full update entity")
+	public T merge(@Valid T entity) {
+		return bc.merge(entity);
+	}
 
-    @DELETE
-    @Path("{id}")
-    @Transactional
-    @ApiOperation(value = "remove entity")
-    public void remove(@PathParam("id") final I id) {
-        bc.remove(id);
-    }
+	@DELETE
+	@Path("{id}")
+	@Transactional
+	// @ApiOperation(value = "remove entity")
+	public void remove(@PathParam("id") final I id) {
+		bc.remove(id);
+	}
 
-    @GET
-    @Transactional
-    @ApiOperation(value = "list all entities with pagination filter and query")
-    public Result find() {
-        if (uriInfo.getQueryParameters().isEmpty()) {
-            return bc.find();
-        } else {
-            return bc.find(uriInfo.getQueryParameters());
-        }
-    }
+	@GET
+	@Transactional
+	// @ApiOperation(value = "list all entities with pagination filter and
+	// query")
+	public Result find() {
+		if (uriInfo.getQueryParameters().isEmpty()) {
+			return bc.find();
+		} else {
+			return bc.find(uriInfo.getQueryParameters());
+		}
+	}
 
-    @GET
-    @Path("{id}")
-    @Transactional
-    @ApiOperation(value = "find by ID")
-    public T find(@PathParam("id") final I id) {
-        return bc.find(id);
-    }
+	@GET
+	@Path("{id}")
+	@Transactional
+	// @ApiOperation(value = "find by ID")
+	public T find(@PathParam("id") final I id) {
+		return bc.find(id);
+	}
 }

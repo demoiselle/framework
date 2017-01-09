@@ -6,12 +6,14 @@
  */
 package org.demoiselle.jee.rest.exception.treatment;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -20,16 +22,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import org.demoiselle.jee.core.api.error.ErrorTreatment;
+import org.demoiselle.jee.core.exception.ExceptionTreatment;
+import org.demoiselle.jee.rest.DemoiselleRestConfig;
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+// TODO javadoc
+public class ExceptionTreatmentImpl implements ExceptionTreatment {
 
-// TODO: flag de details
-public class ErrorTreatmentImpl implements ErrorTreatment {
-
-	private static final Logger logger = Logger.getLogger(ErrorTreatmentImpl.class.getName());
+	private static final Logger logger = Logger.getLogger(ExceptionTreatmentImpl.class.getName());
 
 	private final String FIELDNAME_ERROR = "error";
 	private final String FIELDNAME_ERROR_DESCRIPTION = "error_description";
@@ -39,12 +40,19 @@ public class ErrorTreatmentImpl implements ErrorTreatment {
 	private final String DATABASE_MASSAGE = "error_message";
 	private final String DATABASE_ERROR_CODE = "error_code";
 
-	public ErrorTreatmentImpl() {
+	@Inject
+	private DemoiselleRestConfig config;
+
+	public ExceptionTreatmentImpl() {
 
 	}
 
 	@SuppressWarnings({ "rawtypes" })
 	public Response getFormatedError(Throwable exception, HttpServletRequest request) {
+
+		boolean isShowErrorDetails = config.isShowErrorDetails();
+
+		logger.warning("config isShowErrorDetails: " + isShowErrorDetails);
 
 		MediaType responseMediaType = MediaType.APPLICATION_JSON_TYPE;
 
@@ -99,34 +107,8 @@ public class ErrorTreatmentImpl implements ErrorTreatment {
 		}
 
 		/*
-		 * Data format errors
-		 */
-		if (exception instanceof InvalidFormatException) {
-			HashMap<String, Object> object = new HashMap<String, Object>();
-
-			// TODO: messages
-			object.put(FIELDNAME_ERROR, "Unhandled format exception exception");
-			object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
-
-			a.add(object);
-			return buildResponse(a, responseMediaType, Status.BAD_REQUEST);
-		}
-
-		/*
 		 * Database errors
 		 */
-		// if (exception instanceof PersistenceException) {
-		// HashMap<String, Object> object = new HashMap<String, Object>();
-		// object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
-		//
-		// // TODO: messages
-		// object.put(FIELDNAME_ERROR, "Unhandled database exception");
-		//
-		// a.add(object);
-		// return buildResponse(a, responseMediaType,
-		// Status.INTERNAL_SERVER_ERROR);
-		// }
-
 		SQLException sqlException = getSQLExceptionInException(exception);
 
 		if (sqlException != null) {
@@ -142,7 +124,9 @@ public class ErrorTreatmentImpl implements ErrorTreatment {
 			sqlError.put(DATABASE_MASSAGE, exception.getMessage());
 
 			HashMap<String, Object> object = new HashMap<String, Object>();
-			object.put(FIELDNAME_ERROR_DESCRIPTION, sqlError);
+
+			if (isShowErrorDetails)
+				object.put(FIELDNAME_ERROR_DESCRIPTION, sqlError);
 
 			// TODO: messages
 			object.put(FIELDNAME_ERROR, "Unhandled database exception");
@@ -169,7 +153,9 @@ public class ErrorTreatmentImpl implements ErrorTreatment {
 
 				HashMap<String, Object> object = new HashMap<String, Object>();
 				object.put(FIELDNAME_ERROR, message.getError());
-				object.put(FIELDNAME_ERROR_DESCRIPTION, message.getError_description());
+
+				if (isShowErrorDetails)
+					object.put(FIELDNAME_ERROR_DESCRIPTION, message.getError_description());
 
 				if (message.getError_link() != null && !message.getError_link().isEmpty()) {
 					object.put(FIELDNAME_ERROR_LINK, message.getError_link());
@@ -188,11 +174,25 @@ public class ErrorTreatmentImpl implements ErrorTreatment {
 		}
 
 		/*
+		 * If IO exception probably is malformed input
+		 */
+		if (exception instanceof IOException) {
+			HashMap<String, Object> object = new HashMap<String, Object>();
+			object.put(FIELDNAME_ERROR, "Unhandled malformed input/output exception");
+			if (isShowErrorDetails)
+				object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
+			a.add(object);
+
+			return buildResponse(a, responseMediaType, Status.BAD_REQUEST);
+		}
+
+		/*
 		 * Generic errors
 		 */
-		// TODO: add flag for detailed error on Response
 		HashMap<String, Object> object = new HashMap<String, Object>();
-		object.put(FIELDNAME_ERROR, unwrapException(exception));
+		object.put(FIELDNAME_ERROR, "Unhandled server exception");
+		if (isShowErrorDetails)
+			object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
 		a.add(object);
 
 		return buildResponse(a, responseMediaType, Status.INTERNAL_SERVER_ERROR);
