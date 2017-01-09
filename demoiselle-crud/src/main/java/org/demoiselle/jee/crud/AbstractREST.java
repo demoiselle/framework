@@ -70,14 +70,8 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 
 	@GET
 	@Transactional
-	// @ApiOperation(value = "list all entities with pagination filter and
-	// query")
 	public Result find() {
-		if (uriInfo.getQueryParameters().isEmpty()) {
-			return bc.find();
-		} else {
-			return bc.find(uriInfo.getQueryParameters());
-		}
+		return bc.find();
 	}
 
 	@GET
