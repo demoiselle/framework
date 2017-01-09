@@ -21,8 +21,8 @@ public interface DemoiselleMessage {
     *
     * @return framework name 
     */
-   @MessageTemplate("{project-name}")
-   String projectName();
+   @MessageTemplate("{framework-name}")
+   String frameworkName();
    
     /**
      *

@@ -7,11 +7,14 @@
 package org.demoiselle.jee.security;
 
 import static java.util.UUID.randomUUID;
+import static javax.ws.rs.Priorities.AUTHENTICATION;
+
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import static javax.ws.rs.Priorities.AUTHENTICATION;
+
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;

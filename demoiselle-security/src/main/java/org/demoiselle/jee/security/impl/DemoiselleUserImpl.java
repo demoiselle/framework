@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 
