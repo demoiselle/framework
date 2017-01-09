@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.demoiselle.jee.core.api.error.ErrorTreatment;
+import org.demoiselle.jee.core.exception.ExceptionTreatment;
 
 /**
  * {@link ExceptionMapper} for {@link ValidationException}.
@@ -55,7 +55,7 @@ public class ValidationExceptionMapper implements ExceptionMapper<ValidationExce
 	protected HttpServletRequest httpRequest;
 
 	@Inject
-	protected ErrorTreatment errorTreatment;
+	protected ExceptionTreatment errorTreatment;
 
 	@Override
 	public Response toResponse(ValidationException exception) {

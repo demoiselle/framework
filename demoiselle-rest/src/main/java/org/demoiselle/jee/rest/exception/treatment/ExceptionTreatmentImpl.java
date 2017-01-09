@@ -6,6 +6,7 @@
  */
 package org.demoiselle.jee.rest.exception.treatment;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,15 +22,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import org.demoiselle.jee.core.api.error.ErrorTreatment;
+import org.demoiselle.jee.core.exception.ExceptionTreatment;
 import org.demoiselle.jee.rest.DemoiselleRestConfig;
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
 
-// TODO: flag de details
-public class ErrorTreatmentImpl implements ErrorTreatment {
+// TODO javadoc
+public class ExceptionTreatmentImpl implements ExceptionTreatment {
 
-	private static final Logger logger = Logger.getLogger(ErrorTreatmentImpl.class.getName());
+	private static final Logger logger = Logger.getLogger(ExceptionTreatmentImpl.class.getName());
 
 	private final String FIELDNAME_ERROR = "error";
 	private final String FIELDNAME_ERROR_DESCRIPTION = "error_description";
@@ -42,7 +43,7 @@ public class ErrorTreatmentImpl implements ErrorTreatment {
 	@Inject
 	private DemoiselleRestConfig config;
 
-	public ErrorTreatmentImpl() {
+	public ExceptionTreatmentImpl() {
 
 	}
 
@@ -173,9 +174,21 @@ public class ErrorTreatmentImpl implements ErrorTreatment {
 		}
 
 		/*
+		 * If IO exception probably is malformed input
+		 */
+		if (exception instanceof IOException) {
+			HashMap<String, Object> object = new HashMap<String, Object>();
+			object.put(FIELDNAME_ERROR, "Unhandled malformed input/output exception");
+			if (isShowErrorDetails)
+				object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
+			a.add(object);
+
+			return buildResponse(a, responseMediaType, Status.BAD_REQUEST);
+		}
+
+		/*
 		 * Generic errors
 		 */
-		// TODO: add flag for detailed error on Response
 		HashMap<String, Object> object = new HashMap<String, Object>();
 		object.put(FIELDNAME_ERROR, "Unhandled server exception");
 		if (isShowErrorDetails)

@@ -13,9 +13,9 @@ import javax.ws.rs.ext.ExceptionMapper;
  * @author SERPRO
  *
  */
-public class LogMappers implements Extension {
+public class LogExceptionMappers implements Extension {
 
-	private static final Logger logger = Logger.getLogger(LogMappers.class.getName());
+	private static final Logger logger = Logger.getLogger(LogExceptionMappers.class.getName());
 
 	/**
 	 * Process all classes that extends {@link ExceptionMapper} to log for

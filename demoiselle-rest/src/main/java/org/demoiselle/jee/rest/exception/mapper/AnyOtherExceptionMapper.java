@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.demoiselle.jee.core.api.error.ErrorTreatment;
+import org.demoiselle.jee.core.exception.ExceptionTreatment;
 
 /**
  * 
@@ -32,7 +32,7 @@ public class AnyOtherExceptionMapper implements ExceptionMapper<Throwable> {
 	protected HttpServletRequest httpRequest;
 
 	@Inject
-	protected ErrorTreatment errorTreatment;
+	protected ExceptionTreatment errorTreatment;
 
 	@Override
 	public Response toResponse(Throwable exception) {
