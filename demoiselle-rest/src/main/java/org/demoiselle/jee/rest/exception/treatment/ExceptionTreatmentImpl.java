@@ -27,7 +27,12 @@ import org.demoiselle.jee.rest.DemoiselleRestConfig;
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
 
-// TODO javadoc
+/**
+ * Default implementation of All Exception Treatments iun Demoiselle Framework.
+ * 
+ * @author SERPRO
+ *
+ */
 public class ExceptionTreatmentImpl implements ExceptionTreatment {
 
 	private static final Logger logger = Logger.getLogger(ExceptionTreatmentImpl.class.getName());
@@ -51,7 +56,7 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 	public Response getFormatedError(Throwable exception, HttpServletRequest request) {
 
 		// Variable to enable to show datails of errors
-		boolean isShowErrorDetails = config.isShowErrorDetails();
+		final boolean isShowErrorDetails = config.isShowErrorDetails();
 
 		MediaType responseMediaType = MediaType.APPLICATION_JSON_TYPE;
 
@@ -76,15 +81,6 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 
 			for (ConstraintViolation violation : c.getConstraintViolations()) {
 
-				// Campo tem que ser entre 2 e 100 caracf..
-				// System.out.println(violation.getMessage());
-
-				// pesist.arg0.name
-				// System.out.println(violation.getPropertyPath());
-
-				// User
-				// System.out.println(violation.getLeafBean().getClass().getSimpleName());
-
 				String objectType = violation.getLeafBean().getClass().getSimpleName();
 				String arg = "arg0";
 
@@ -96,7 +92,7 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 				object.put(FIELDNAME_ERROR, pathConverted);
 				object.put(FIELDNAME_ERROR_DESCRIPTION, violation.getMessage());
 
-				logger.log(Level.WARNING, violation.getMessage());
+				logger.log(Level.FINEST, violation.getMessage());
 
 				a.add(object);
 			}
@@ -207,23 +203,15 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 	 * @return SQLException or null
 	 */
 	private SQLException getSQLExceptionInException(Throwable ex) {
-
 		Throwable current = ex;
-
-		// TODO: é sério!? esse treco pode ficar em loop PRA SEMPRE!
 		do {
 			if (current instanceof SQLException) {
 				return (SQLException) current;
 			}
-
 			current = current.getCause();
-
 			// TODO: e se ela estiver dentro dela mesma?
-
 		} while (current != null);
-
 		return null;
-
 	}
 
 	private Response buildResponse(Object entity, MediaType mediaType, Status status) {
@@ -242,9 +230,7 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 		if (t == null) {
 			return;
 		}
-
 		array.add(t.getMessage());
-
 		if (t.getCause() != null && t != t.getCause()) {
 			doUnwrapException(array, t.getCause());
 		}
