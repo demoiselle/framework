@@ -7,6 +7,7 @@
 package org.demoiselle.jee.security;
 
 import java.util.Map;
+
 import org.demoiselle.jee.configuration.annotation.Configuration;
 
 /**

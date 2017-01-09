@@ -6,10 +6,12 @@
  */
 package org.demoiselle.jee.security.interceptor;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.interceptor.InvocationContext;
+
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 

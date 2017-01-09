@@ -6,15 +6,17 @@
  */
 package org.demoiselle.jee.security.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+
 import org.apache.deltaspike.testcontrol.api.TestControl;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
