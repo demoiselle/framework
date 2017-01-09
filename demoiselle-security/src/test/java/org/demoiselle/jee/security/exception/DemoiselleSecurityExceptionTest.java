@@ -6,12 +6,13 @@
  */
 package org.demoiselle.jee.security.exception;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashSet;
 
 import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
