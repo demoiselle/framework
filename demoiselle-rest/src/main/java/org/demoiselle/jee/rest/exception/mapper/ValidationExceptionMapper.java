@@ -59,7 +59,7 @@ public class ValidationExceptionMapper implements ExceptionMapper<ValidationExce
 
 	@Override
 	public Response toResponse(ValidationException exception) {
-		logger.info("Using ValidationExceptionMapper");
+		logger.finest("Using ValidationExceptionMapper");
 		return exceptionTreatment.getFormatedError(exception, httpRequest);
 	}
 

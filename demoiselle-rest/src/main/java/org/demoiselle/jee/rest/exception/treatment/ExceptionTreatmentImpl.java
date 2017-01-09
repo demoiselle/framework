@@ -50,9 +50,8 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 	@SuppressWarnings({ "rawtypes" })
 	public Response getFormatedError(Throwable exception, HttpServletRequest request) {
 
+		// Variable to enable to show datails of errors
 		boolean isShowErrorDetails = config.isShowErrorDetails();
-
-		logger.warning("config isShowErrorDetails: " + isShowErrorDetails);
 
 		MediaType responseMediaType = MediaType.APPLICATION_JSON_TYPE;
 

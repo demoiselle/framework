@@ -36,7 +36,7 @@ public class AnyOtherExceptionMapper implements ExceptionMapper<Throwable> {
 
 	@Override
 	public Response toResponse(Throwable exception) {
-		logger.info("Using AnyOtherExceptionMapper");
+		logger.finest("Using AnyOtherExceptionMapper");
 		return exceptionTreatment.getFormatedError(exception, httpRequest);
 	}
 
