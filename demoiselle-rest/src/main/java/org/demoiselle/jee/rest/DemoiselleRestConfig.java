@@ -15,19 +15,30 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
 
 /**
  * TODO javadoc
+ * 
  * @author SERPRO
  */
 @Configuration(prefix = "demoiselle.rest")
 public class DemoiselleRestConfig {
 
-    private boolean gzipEnabled = false;
+	private boolean gzipEnabled = false;
 
-    public boolean isGzipEnabled() {
-        return gzipEnabled;
-    }
+	private boolean showErrorDetails = true;
 
-    public void setGzipEnabled(boolean gzipEnabled) {
-        this.gzipEnabled = gzipEnabled;
-    }
+	public boolean isGzipEnabled() {
+		return gzipEnabled;
+	}
+
+	public void setGzipEnabled(boolean gzipEnabled) {
+		this.gzipEnabled = gzipEnabled;
+	}
+
+	public boolean isShowErrorDetails() {
+		return showErrorDetails;
+	}
+
+	public void setShowErrorDetails(boolean showErrorDetails) {
+		this.showErrorDetails = showErrorDetails;
+	}
 
 }

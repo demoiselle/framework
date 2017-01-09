@@ -6,9 +6,6 @@
  */
 package org.demoiselle.jee.rest.exception;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 /**
  * Message Exception class intended to be used by REST DemoiselleFramework
  * exceptions.
@@ -20,7 +17,6 @@ public class DemoiselleRestExceptionMessage {
 	private String error;
 	private String error_description;
 
-	@JsonInclude(Include.NON_NULL)
 	private String error_link;
 
 	public DemoiselleRestExceptionMessage(String error, String error_description, String error_link) {
