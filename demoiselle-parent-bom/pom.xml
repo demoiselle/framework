@@ -52,7 +52,7 @@
         <deltaspike.version>1.7.1</deltaspike.version>
         <ejb.version>3.2</ejb.version>
         <cache.version>1.0.0</cache.version>
-        <swagger.version>1.5.10</swagger.version>
+        <swagger.version>1.5.12</swagger.version>
         <json-api.version>1.0</json-api.version>
         <!--Microcontainers -->
         <wildfly-swarm.version>2016.11.0</wildfly-swarm.version>
