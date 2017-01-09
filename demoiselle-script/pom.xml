@@ -17,18 +17,21 @@
 		<version>3.0.0-RC1-SNAPSHOT</version>
 		<relativePath>../demoiselle-parent</relativePath>
 	</parent>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.jboss.arquillian</groupId>
-				<artifactId>arquillian-bom</artifactId>
-				<version>1.1.11.Final</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+	<build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <showDeprecation>true</showDeprecation>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 	<dependencies>
 		<dependency>
@@ -41,91 +44,5 @@
 		    <artifactId>groovy-all</artifactId>
 		    <version>2.4.7</version>
 		</dependency>
-	
-		<!-- Tests -->
-		<dependency>
-			<groupId>org.jboss.arquillian.junit</groupId>
-			<artifactId>arquillian-junit-container</artifactId>
-			<scope>test</scope>
-		</dependency>
-				
-		<dependency>
-			<groupId>org.jboss.spec</groupId>
-			<artifactId>jboss-javaee-web-7.0</artifactId>
-			<version>1.0.3.Final</version>
-			<type>pom</type>
-			<scope>provided</scope>
-		</dependency>
-
 	</dependencies>
-
-	<profiles>
-		<!-- Profile to run tests with Wildfly -->
-		<profile>
-			<id>arquillian-wildfly-managed</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>org.wildfly.arquillian</groupId>
-					<artifactId>wildfly-arquillian-container-embedded</artifactId>
-					<version>2.0.0.Final</version>
-					<scope>test</scope>
-				</dependency>									
-			</dependencies>
-			<build>
-				<testResources>
-					<testResource>
-						<directory>src/test/resources</directory>
-					</testResource>
-					<testResource>
-						<directory>src/test/resources-wildfly-managed</directory>
-					</testResource>
-				</testResources>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-							    <id>unpack</id>
-							    <phase>process-test-classes</phase>
-							    <goals><goal>unpack</goal>
-							    </goals>
-								<configuration>
-									<artifactItems>
-										<artifactItem>
-											<groupId>org.wildfly</groupId>
-											<artifactId>wildfly-dist</artifactId>
-											<version>10.1.0.Final</version>
-											<type>zip</type>
-											<overWrite>false</overWrite>
-											<outputDirectory>target</outputDirectory>
-										</artifactItem>
-									</artifactItems>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>2.12.4</version>
-						<configuration>
-							<!-- Fork every test because it will launch a separate AS instance -->
-							<!--  <forkMode>always</forkMode> -->				
-							<systemPropertyVariables>
-								<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-								<jboss.http.port>8181</jboss.http.port>
-								<jboss.management.http.port>9090</jboss.management.http.port>
-							</systemPropertyVariables>
-							
-							<redirectTestOutputToFile>false</redirectTestOutputToFile>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>
