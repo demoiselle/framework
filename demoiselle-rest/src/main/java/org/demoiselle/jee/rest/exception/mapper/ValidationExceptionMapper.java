@@ -55,12 +55,12 @@ public class ValidationExceptionMapper implements ExceptionMapper<ValidationExce
 	protected HttpServletRequest httpRequest;
 
 	@Inject
-	protected ExceptionTreatment errorTreatment;
+	protected ExceptionTreatment exceptionTreatment;
 
 	@Override
 	public Response toResponse(ValidationException exception) {
 		logger.info("Using ValidationExceptionMapper");
-		return errorTreatment.getFormatedError(exception, httpRequest);
+		return exceptionTreatment.getFormatedError(exception, httpRequest);
 	}
 
 }

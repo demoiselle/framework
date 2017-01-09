@@ -32,12 +32,12 @@ public class AnyOtherExceptionMapper implements ExceptionMapper<Throwable> {
 	protected HttpServletRequest httpRequest;
 
 	@Inject
-	protected ExceptionTreatment errorTreatment;
+	protected ExceptionTreatment exceptionTreatment;
 
 	@Override
 	public Response toResponse(Throwable exception) {
 		logger.info("Using AnyOtherExceptionMapper");
-		return errorTreatment.getFormatedError(exception, httpRequest);
+		return exceptionTreatment.getFormatedError(exception, httpRequest);
 	}
 
 }
