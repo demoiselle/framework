@@ -61,10 +61,6 @@ public interface ConfigurationMessage {
     String configurationFieldSuppress(String key, String annotationName);
 
     @MessageTemplate("{cdi-not-already}")
-    String cdiNotAlready();
-    
-    @MessageTemplate("{start-message}")
-    String startMessage();
-    
+    String cdiNotAlready();    
 
 }
