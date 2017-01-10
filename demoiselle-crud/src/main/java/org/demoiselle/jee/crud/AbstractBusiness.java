@@ -7,7 +7,6 @@
 package org.demoiselle.jee.crud;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.MultivaluedMap;
 
 import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
