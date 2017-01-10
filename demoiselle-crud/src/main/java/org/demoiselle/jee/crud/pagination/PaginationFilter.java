@@ -8,7 +8,9 @@ package org.demoiselle.jee.crud.pagination;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -85,7 +87,7 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 
 		if (response.getEntity() instanceof ResultSet) {
 
-			buildHeaders(response);
+			buildHeaders().forEach((k, v) -> response.getHeaders().putSingle(k, v));
 
 			response.setEntity(resultSet.getContent());
 
@@ -106,22 +108,24 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 		return !((resultSet.getLimit() + 1) >= resultSet.getCount());
 	}
 
-	private void buildHeaders(ContainerResponseContext response) {
-		response.getHeaders().putSingle(HTTP_HEADER_CONTENT_RANGE, buildContentRange());
-		response.getHeaders().putSingle(HTTP_HEADER_ACCEPT_RANGE, buildAcceptRange());
+	private Map<String, String> buildHeaders() {
+	    Map<String, String> headers = new HashMap<>();
+		
+	    headers.put(HTTP_HEADER_CONTENT_RANGE, buildContentRange());
+	    headers.put(HTTP_HEADER_ACCEPT_RANGE, buildAcceptRange());
+	    headers.put(HttpHeaders.LINK, buildLinkHeader());
 
-		buildLinkHeader(response);
-
+		return headers;
 	}
 
-	private void buildLinkHeader(ContainerResponseContext response) {
+	private String buildLinkHeader() {
 		StringBuffer sb = new StringBuffer();
 		String url = uriInfo.getRequestUri().toString();
 		url = url.replaceFirst("\\?.*$", "");
 		url += "?" + DEFAULT_RANGE_KEY + "=";
 
 		if (resultSet.getOffset().equals(0) && resultSet.getLimit().equals(0)) {
-			resultSet.setLimit(paginationConfig.getDefaultPagination());
+			resultSet.setLimit(paginationConfig.getDefaultPagination()-1);
 		}
 
 		Integer offset = resultSet.getOffset() + 1;
@@ -129,8 +133,11 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 		Integer quantityPerPage = (limit - offset) + 1;
 
 		if (!isFirstPage()) {
-			String firstPage = url + 0 + "-" + (quantityPerPage - 1);
-			String prevPage = url + (offset - quantityPerPage) + "-" + (offset - 1);
+		    Integer prevPageRangeInit = (resultSet.getOffset() - quantityPerPage) < 0 ? 0 : (resultSet.getOffset() - quantityPerPage);
+		    Integer firstRange2 = quantityPerPage - 1 < resultSet.getOffset() - 1 ? quantityPerPage - 1 : resultSet.getOffset() - 1;
+		            
+			String firstPage = url + 0 + "-" + firstRange2;			
+			String prevPage = url + prevPageRangeInit + "-" + (resultSet.getOffset() - 1);
 
 			sb.append("<").append(firstPage).append(">; rel=\"first\",");
 			sb.append("<").append(prevPage).append(">; rel=\"prev\",");
@@ -145,7 +152,7 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 			sb.append("<").append(lastPage).append(">; rel=\"last\"");
 		}
 
-		response.getHeaders().putSingle(HttpHeaders.LINK, sb.toString());
+		return sb.toString();
 	}
 
 	private Boolean isFirstPage() {
