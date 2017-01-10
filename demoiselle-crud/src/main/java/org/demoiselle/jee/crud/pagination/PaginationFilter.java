@@ -59,10 +59,7 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 	public PaginationFilter() {
 	}
 
-	 public PaginationFilter(UriInfo uriInfo, ResourceInfo info, ResultSet
-	 resultSet,
-	 DemoisellePaginationConfig dpc,
-	 DemoisellePaginationMessage message) {
+	 public PaginationFilter(UriInfo uriInfo, ResourceInfo info, ResultSet resultSet, DemoisellePaginationConfig dpc, DemoisellePaginationMessage message) {
     	 this.uriInfo = uriInfo;
     	 this.info = info;
     	 this.resultSet = resultSet;

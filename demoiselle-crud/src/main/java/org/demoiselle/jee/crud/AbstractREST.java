@@ -26,6 +26,8 @@ import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.rest.annotation.ValidatePayload;
 
+import io.swagger.annotations.ApiOperation;
+
 /**
  * TODO JAVADOC
  *
@@ -47,7 +49,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 	@POST
 	@Transactional
 	@ValidatePayload
-	// @ApiOperation(value = "persist entity")
+	@ApiOperation(value = "persist entity")
 	public T persist(@Valid T entity) {
 		return bc.persist(entity);
 	}
@@ -55,7 +57,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 	@PUT
 	@Transactional
 	@ValidatePayload
-	// @ApiOperation(value = "full update entity")
+	@ApiOperation(value = "full update entity")
 	public T merge(@Valid T entity) {
 		return bc.merge(entity);
 	}
@@ -63,7 +65,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 	@DELETE
 	@Path("{id}")
 	@Transactional
-	// @ApiOperation(value = "remove entity")
+	@ApiOperation(value = "remove entity")
 	public void remove(@PathParam("id") final I id) {
 		bc.remove(id);
 	}
@@ -77,7 +79,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 	@GET
 	@Path("{id}")
 	@Transactional
-	// @ApiOperation(value = "find by ID")
+	@ApiOperation(value = "find by ID")
 	public T find(@PathParam("id") final I id) {
 		return bc.find(id);
 	}

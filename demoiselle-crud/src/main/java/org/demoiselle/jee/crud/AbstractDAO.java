@@ -7,8 +7,6 @@
 package org.demoiselle.jee.crud;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -30,14 +28,8 @@ import org.demoiselle.jee.crud.pagination.ResultSet;
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
-	/*
-	 * @Inject private DemoiselleCrudConfig config;
-	 */
 	@Inject
 	private DemoisellePaginationConfig paginationConfig;
-
-	// private static final Logger logger =
-	// Logger.getLogger(AbstractDAO.class.getName());
 
 	@Inject
 	private ResultSet resultSet;
