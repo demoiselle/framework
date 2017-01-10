@@ -30,6 +30,9 @@ import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
 /**
  * Default implementation of All Exception Treatments iun Demoiselle Framework.
  * 
+ * This implementation is based on the RFC 6749 (The OAuth 2.0 Authorization
+ * Framework) { @link https://tools.ietf.org/html/rfc6749#page-45 }
+ * 
  * @author SERPRO
  *
  */
