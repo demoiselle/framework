@@ -30,7 +30,7 @@ import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 /**
- * Default implementation of All Exception Treatments iun Demoiselle Framework.
+ * Default implementation of All Exception Treatments in Demoiselle Framework.
  * 
  * This implementation is based on the RFC 6749 (The OAuth 2.0 Authorization
  * Framework) { @link https://tools.ietf.org/html/rfc6749#page-45 }

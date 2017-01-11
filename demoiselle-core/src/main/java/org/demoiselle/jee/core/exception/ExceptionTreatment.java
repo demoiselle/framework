@@ -9,6 +9,12 @@ package org.demoiselle.jee.core.exception;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
+/**
+ * This interface defines a method to treat @Exception classes in Framework.
+ * 
+ * @author SERPRO
+ *
+ */
 public interface ExceptionTreatment {
 
 	public Response getFormatedError(Throwable exception, HttpServletRequest request);
