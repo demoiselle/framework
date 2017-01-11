@@ -55,7 +55,7 @@
         <swagger.version>1.5.12</swagger.version>
         <json-api.version>1.0</json-api.version>
         <!--Microcontainers -->
-        <wildfly-swarm.version>2016.11.0</wildfly-swarm.version>
+        <wildfly-swarm.version>2017.1.1</wildfly-swarm.version>
 
         <!--Test -->
         <version.arquillian>1.0.2.Final</version.arquillian>

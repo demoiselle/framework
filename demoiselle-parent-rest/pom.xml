@@ -76,7 +76,7 @@
             <id>wildfly-swarm</id>
             <properties>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-                <version.wildfly.swarm>2016.11.0</version.wildfly.swarm>
+                <version.wildfly.swarm>2017.1.1</version.wildfly.swarm>
                 <maven.compiler.source>1.8</maven.compiler.source>
                 <maven.compiler.target>1.8</maven.compiler.target>
                 <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -85,11 +85,11 @@
                 <!-- WildFly Default Swarm Fractions -->
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
-                    <artifactId>jaxrs-cdi</artifactId>
+                    <artifactId>ejb</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
-                    <artifactId>ejb</artifactId>
+                    <artifactId>jaxrs-jaxb</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
@@ -97,11 +97,20 @@
                 </dependency>
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>transactions</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>cdi</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
                     <artifactId>jpa</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
-                    <artifactId>transactions</artifactId>
+                    <artifactId>h2</artifactId>
+                    <version>2016.11.0</version>
                 </dependency>
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
