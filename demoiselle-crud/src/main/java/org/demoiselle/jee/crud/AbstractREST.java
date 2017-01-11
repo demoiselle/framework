@@ -24,7 +24,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
-import org.demoiselle.jee.rest.annotation.ValidatePayload;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -48,7 +47,6 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 
 	@POST
 	@Transactional
-	@ValidatePayload
 	@ApiOperation(value = "persist entity")
 	public T persist(@Valid T entity) {
 		return bc.persist(entity);
@@ -56,7 +54,6 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 
 	@PUT
 	@Transactional
-	@ValidatePayload
 	@ApiOperation(value = "full update entity")
 	public T merge(@Valid T entity) {
 		return bc.merge(entity);
