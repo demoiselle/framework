@@ -6,7 +6,6 @@
  */
 package org.demoiselle.jee.rest.exception.treatment;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +16,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -26,6 +26,8 @@ import org.demoiselle.jee.core.exception.ExceptionTreatment;
 import org.demoiselle.jee.rest.DemoiselleRestConfig;
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
+
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 /**
  * Default implementation of All Exception Treatments iun Demoiselle Framework.
@@ -172,9 +174,9 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 		}
 
 		/*
-		 * If IO exception probably is malformed input
+		 * If InvalidFormatException probably is malformed input or output
 		 */
-		if (exception instanceof IOException) {
+		if (exception instanceof InvalidFormatException) {
 			HashMap<String, Object> object = new HashMap<String, Object>();
 			object.put(FIELDNAME_ERROR, "Unhandled malformed input/output exception");
 			if (isShowErrorDetails)
@@ -182,6 +184,22 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 			arrayErrors.add(object);
 
 			return buildResponse(arrayErrors, responseMediaType, Status.BAD_REQUEST);
+		}
+
+		/*
+		 * Treat HTTP error code Exceptions
+		 */
+		if (exception instanceof ClientErrorException) {
+
+			ClientErrorException exClient = (ClientErrorException) exception;
+
+			HashMap<String, Object> object = new HashMap<String, Object>();
+			object.put(FIELDNAME_ERROR, "Http exception");
+			if (isShowErrorDetails)
+				object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
+			arrayErrors.add(object);
+
+			return buildResponse(arrayErrors, responseMediaType, (Status) exClient.getResponse().getStatusInfo());
 		}
 
 		/*
