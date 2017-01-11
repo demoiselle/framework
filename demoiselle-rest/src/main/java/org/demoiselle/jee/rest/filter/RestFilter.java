@@ -12,7 +12,7 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.Provider;
 
-import org.demoiselle.jee.configuration.message.ConfigurationMessage;
+import org.demoiselle.jee.core.message.DemoiselleMessage;
 
 /**
  * 
@@ -23,12 +23,11 @@ import org.demoiselle.jee.configuration.message.ConfigurationMessage;
 public class RestFilter implements ContainerResponseFilter {
 
 	@Inject
-	private ConfigurationMessage demoiselleMessage;
+	private DemoiselleMessage demoiselleMessage;
 
 	@Override
 	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
-		// responseContext.getHeaders().putSingle(demoiselleMessage.projectName(),
-		// demoiselleMessage.version());
-		responseContext.getHeaders().putSingle(demoiselleMessage.startMessage(), "");
+		// TODO: parece que não esta adicionando no header
+		responseContext.getHeaders().putSingle(demoiselleMessage.frameworkName(), demoiselleMessage.version());
 	}
 }

@@ -72,7 +72,7 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 			exception = (Exception) exception.getCause();
 		}
 
-		ArrayList<Object> a = new ArrayList<Object>();
+		ArrayList<Object> arrayErrors = new ArrayList<Object>();
 
 		/*
 		 * Treatment of Beans Validation
@@ -97,11 +97,11 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 
 				logger.log(Level.FINEST, violation.getMessage());
 
-				a.add(object);
+				arrayErrors.add(object);
 			}
 
 			// TODO: Verificar se o status code é 412 mesmo
-			return buildResponse(a, responseMediaType, Status.PRECONDITION_FAILED);
+			return buildResponse(arrayErrors, responseMediaType, Status.PRECONDITION_FAILED);
 		}
 
 		/*
@@ -110,16 +110,12 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 		SQLException sqlException = getSQLExceptionInException(exception);
 
 		if (sqlException != null) {
-			exception = sqlException;
-		}
-
-		if (exception instanceof SQLException) {
 
 			HashMap<String, Object> sqlError = new HashMap<String, Object>();
 
-			sqlError.put(DATABASE_SQL_STATE, ((SQLException) exception).getSQLState());
-			sqlError.put(DATABASE_ERROR_CODE, ((SQLException) exception).getErrorCode());
-			sqlError.put(DATABASE_MASSAGE, exception.getMessage());
+			sqlError.put(DATABASE_SQL_STATE, ((SQLException) sqlException).getSQLState());
+			sqlError.put(DATABASE_ERROR_CODE, ((SQLException) sqlException).getErrorCode());
+			sqlError.put(DATABASE_MASSAGE, sqlException.getMessage());
 
 			HashMap<String, Object> object = new HashMap<String, Object>();
 
@@ -127,11 +123,15 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 				object.put(FIELDNAME_ERROR_DESCRIPTION, sqlError);
 
 			// TODO: messages
-			object.put(FIELDNAME_ERROR, "Unhandled database exception");
+			if (exception.getMessage() != null && !exception.getMessage().isEmpty()) {
+				object.put(FIELDNAME_ERROR, exception.getMessage());
+			} else {
+				object.put(FIELDNAME_ERROR, "Unhandled database exception");
+			}
 
-			a.add(object);
+			arrayErrors.add(object);
 
-			return buildResponse(a, responseMediaType, Status.INTERNAL_SERVER_ERROR);
+			return buildResponse(arrayErrors, responseMediaType, Status.INTERNAL_SERVER_ERROR);
 		}
 
 		/*
@@ -144,7 +144,7 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 				HashMap<String, Object> object = new HashMap<String, Object>();
 				object.put(FIELDNAME_ERROR, e.getMessage());
 				object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
-				a.add(object);
+				arrayErrors.add(object);
 			}
 
 			for (DemoiselleRestExceptionMessage message : e.getMessages()) {
@@ -159,7 +159,7 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 					object.put(FIELDNAME_ERROR_LINK, message.getError_link());
 				}
 
-				a.add(object);
+				arrayErrors.add(object);
 			}
 
 			Status statusCode = Status.PRECONDITION_FAILED;
@@ -168,7 +168,7 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 				statusCode = Status.fromStatusCode(e.getStatusCode());
 			}
 
-			return buildResponse(a, responseMediaType, statusCode);
+			return buildResponse(arrayErrors, responseMediaType, statusCode);
 		}
 
 		/*
@@ -179,9 +179,9 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 			object.put(FIELDNAME_ERROR, "Unhandled malformed input/output exception");
 			if (isShowErrorDetails)
 				object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
-			a.add(object);
+			arrayErrors.add(object);
 
-			return buildResponse(a, responseMediaType, Status.BAD_REQUEST);
+			return buildResponse(arrayErrors, responseMediaType, Status.BAD_REQUEST);
 		}
 
 		/*
@@ -191,9 +191,9 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 		object.put(FIELDNAME_ERROR, "Unhandled server exception");
 		if (isShowErrorDetails)
 			object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
-		a.add(object);
+		arrayErrors.add(object);
 
-		return buildResponse(a, responseMediaType, Status.INTERNAL_SERVER_ERROR);
+		return buildResponse(arrayErrors, responseMediaType, Status.INTERNAL_SERVER_ERROR);
 
 	}
 

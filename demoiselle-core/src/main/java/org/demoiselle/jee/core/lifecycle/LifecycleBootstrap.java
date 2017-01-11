@@ -34,13 +34,12 @@ import org.demoiselle.jee.core.message.DemoiselleMessage;
  * with @Startup and @Shutdown
  *
  * @author SERPRO
- */
-// TODO incluir mensagem de inicializacao e fim do demoiselle
+ */ 
 public class LifecycleBootstrap implements Extension {
 
 	private static final Logger logger = Logger.getLogger(LifecycleBootstrap.class.getName());
 	private DemoiselleMessage message;
-
+	
 	private List<AnnotatedMethodProcessor> methodsWithStartup = Collections.synchronizedList(new ArrayList<>());
 	private List<AnnotatedMethodProcessor> methodsWithShutdown = Collections.synchronizedList(new ArrayList<>());
 
@@ -60,10 +59,22 @@ public class LifecycleBootstrap implements Extension {
 	}
 
 	protected void processStartup(@Observes @Initialized(ApplicationScoped.class) Object o) {
+	    logger.info("====================================================");
+        logger.info(getMessage().startMessage());
+        logger.info(getMessage().frameworkName() + " " + getMessage().version());
+        logger.info(getMessage().engineOn());
+        logger.info("====================================================");
+        
 		execute(this.methodsWithStartup);
 	}
 
 	protected void processShutdown(@Observes @Destroyed(ApplicationScoped.class) Object o) {
+	    
+	    logger.info("====================================================");
+        logger.info(getMessage().frameworkName() + " " + getMessage().version());
+        logger.info(getMessage().engineOff());
+        logger.info("====================================================");
+        
 		execute(this.methodsWithShutdown);
 	}
 
