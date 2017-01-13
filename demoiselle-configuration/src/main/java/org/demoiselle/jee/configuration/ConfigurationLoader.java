@@ -69,9 +69,6 @@ public class ConfigurationLoader implements Serializable {
 	@Inject
 	private ConfigurationMessage message;
 
-	// @Inject
-	// private DemoiselleMessage demoiselleMessage;
-
 	private static final Logger logger = Logger.getLogger(ConfigurationLoader.class.getName());
 
 	// Object annotated with @Configuration
@@ -148,9 +145,6 @@ public class ConfigurationLoader implements Serializable {
 	private void processConfiguration(final Object targetObject, Class<?> targetBaseClass) {
 
 		logger.info("*******************************************************");
-		// logger.info(demoiselleMessage.frameworkName() + " " +
-		// demoiselleMessage.version());
-		// logger.info(message.startMessage());
 		logger.info(message.loadConfigurationClass(targetBaseClass.getName()));
 
 		this.targetObject = targetObject;
@@ -183,17 +177,19 @@ public class ConfigurationLoader implements Serializable {
 
 		fields.forEach(field -> {
 
-			Object obj = getFieldValueFromObject(field, targetObject);
-
-			String strMessage = message.configurationFieldLoaded(prefix + getKey(field), obj);
-
-			// Check if the field has @SuppressLogger
-			if (suppressAllFields || hasSuppressLogger(field)) {
-				strMessage = message.configurationFieldSuppress(prefix + getKey(field),
-						SuppressConfigurationLogger.class.getSimpleName());
-			}
-
-			logger.info(strMessage);
+		    if(!hasIgnoreAnnotation(field)){
+    			Object obj = getFieldValueFromObject(field, targetObject);
+    
+    			String strMessage = message.configurationFieldLoaded(prefix + getKey(field), obj);
+    
+    			// Check if the field has @SuppressLogger
+    			if (suppressAllFields || hasSuppressLogger(field)) {
+    				strMessage = message.configurationFieldSuppress(prefix + getKey(field),
+    						SuppressConfigurationLogger.class.getSimpleName());
+    			}
+    
+    			logger.info(strMessage);
+		    }
 		});
 
 	}
@@ -568,8 +564,8 @@ public class ConfigurationLoader implements Serializable {
 		Class<? extends ConfigurationValueExtractor> selected = null;
 
 		for (Class<? extends ConfigurationValueExtractor> candidate : candidates) {
-			Boolean isCandidateInternalValueExtractor = isIntenalVauleExtractor(candidate);
-			Boolean isSelectedInternalValueExtractor = isIntenalVauleExtractor(selected);
+			Boolean isCandidateInternalValueExtractor = isIntenalValueExtractor(candidate);
+			Boolean isSelectedInternalValueExtractor = isIntenalValueExtractor(selected);
 
 			if (selected == null || (isSelectedInternalValueExtractor == Boolean.TRUE
 					&& isCandidateInternalValueExtractor == Boolean.FALSE)) {
@@ -584,7 +580,7 @@ public class ConfigurationLoader implements Serializable {
 		return selected;
 	}
 
-	private Boolean isIntenalVauleExtractor(Class<? extends ConfigurationValueExtractor> candidate) {
+	private Boolean isIntenalValueExtractor(Class<? extends ConfigurationValueExtractor> candidate) {
 		if (candidate == null) {
 			return Boolean.FALSE;
 		}
@@ -600,8 +596,8 @@ public class ConfigurationLoader implements Serializable {
 		Set<Class<? extends ConfigurationValueExtractor>> ambiguous = new HashSet<>();
 
 		for (Class<? extends ConfigurationValueExtractor> candidate : candidates) {
-			Boolean isCandidateInternalValueExtractor = isIntenalVauleExtractor(candidate);
-			Boolean isSelectedInternalValueExtractor = isIntenalVauleExtractor(selected);
+			Boolean isCandidateInternalValueExtractor = isIntenalValueExtractor(candidate);
+			Boolean isSelectedInternalValueExtractor = isIntenalValueExtractor(selected);
 
 			if (selected != candidate && (isSelectedInternalValueExtractor == Boolean.TRUE
 					&& isCandidateInternalValueExtractor == Boolean.FALSE)) {
