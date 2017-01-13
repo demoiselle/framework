@@ -4,13 +4,16 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.crud.pagination;
+package org.demoiselle.jee.crud;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -26,7 +29,9 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
-import org.demoiselle.jee.crud.AbstractREST;
+import org.demoiselle.jee.core.api.crud.Result;
+import org.demoiselle.jee.crud.pagination.DemoisellePaginationConfig;
+import org.demoiselle.jee.crud.pagination.DemoisellePaginationMessage;
 
 /**
  * TODO javadoc
@@ -35,7 +40,7 @@ import org.demoiselle.jee.crud.AbstractREST;
  *
  */
 @Provider
-public class PaginationFilter implements ContainerResponseFilter, ContainerRequestFilter {
+public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilter {
 
 	@Context
 	private ResourceInfo info;
@@ -44,7 +49,7 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 	private UriInfo uriInfo;
 
 	@Inject
-	private ResultSet resultSet;
+	private DemoiselleRequestContext drc;
 
 	@Inject
 	private DemoisellePaginationConfig paginationConfig;
@@ -56,15 +61,15 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 	@Inject
 	private DemoisellePaginationMessage message;
 
-	private static final Logger logger = Logger.getLogger(PaginationFilter.class.getName());
+	private static final Logger logger = Logger.getLogger(CrudFilter.class.getName());
 
-	public PaginationFilter() {
+	public CrudFilter() {
 	}
 
-	 public PaginationFilter(UriInfo uriInfo, ResourceInfo info, ResultSet resultSet, DemoisellePaginationConfig dpc, DemoisellePaginationMessage message) {
+	 public CrudFilter(UriInfo uriInfo, ResourceInfo info, DemoiselleRequestContext drc, DemoisellePaginationConfig dpc, DemoisellePaginationMessage message) {
     	 this.uriInfo = uriInfo;
     	 this.info = info;
-    	 this.resultSet = resultSet;
+    	 this.drc = drc;
     	 this.paginationConfig = dpc;
     	 this.message = message;
 	 }
@@ -74,22 +79,43 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 
 		if (isRequestPagination()) {
 			try {
-				checkAndFillRangeValues();
+				checkAndFillRangeValues();				
 			} catch (IllegalArgumentException e) {
 				throw new BadRequestException(e.getMessage());
 			}
 		}
+		
+		fillFieldsToFilter();
 
 	}
 
-	@Override
+    private void fillFieldsToFilter() {
+        uriInfo.getQueryParameters().forEach((key, values) ->{
+            if(!isReservedKey(key)){
+                Set<String> paramValues = new HashSet<>();
+                
+                values.forEach(value -> {
+                    String[] paramValueSplit = value.split("\\,");
+                    paramValues.addAll(Arrays.asList(paramValueSplit));
+                });
+                
+                drc.getFieldsFilter().put(key, paramValues);
+            }
+        });
+    }
+
+    private Boolean isReservedKey(String key) {
+        return key.equals(DEFAULT_RANGE_KEY);
+    }
+
+    @Override
 	public void filter(ContainerRequestContext req, ContainerResponseContext response) throws IOException {
 
-		if (response.getEntity() instanceof ResultSet) {
+		if (response.getEntity() instanceof Result) {
 
 			buildHeaders().forEach((k, v) -> response.getHeaders().putSingle(k, v));
 
-			response.setEntity(resultSet.getContent());
+			response.setEntity(((Result) response.getEntity()).getContent());
 
 			if (!isPartialContentResponse()) {
 				response.setStatus(Status.OK.getStatusCode());
@@ -97,7 +123,7 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 				response.setStatus(Status.PARTIAL_CONTENT.getStatusCode());
 			}
 		} else {
-			if (Status.BAD_REQUEST.getStatusCode() == response.getStatus() && resultSet.getEntityClass() == null) {
+			if (Status.BAD_REQUEST.getStatusCode() == response.getStatus() && drc.getEntityClass() == null) {
 				response.getHeaders().putSingle(HTTP_HEADER_ACCEPT_RANGE, buildAcceptRange());
 			}
 		}
@@ -105,7 +131,7 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 	}
 
 	private Boolean isPartialContentResponse() {
-		return !((resultSet.getLimit() + 1) >= resultSet.getCount());
+		return !((drc.getLimit() + 1) >= drc.getCount());
 	}
 
 	private Map<String, String> buildHeaders() {
@@ -113,7 +139,11 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 		
 	    headers.put(HTTP_HEADER_CONTENT_RANGE, buildContentRange());
 	    headers.put(HTTP_HEADER_ACCEPT_RANGE, buildAcceptRange());
-	    headers.put(HttpHeaders.LINK, buildLinkHeader());
+	    String linkHeader = buildLinkHeader();
+	    
+	    if(!linkHeader.isEmpty()){
+	        headers.put(HttpHeaders.LINK, linkHeader);
+	    }
 
 		return headers;
 	}
@@ -121,32 +151,42 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 	private String buildLinkHeader() {
 		StringBuffer sb = new StringBuffer();
 		String url = uriInfo.getRequestUri().toString();
-		url = url.replaceFirst("\\?.*$", "");
-		url += "?" + DEFAULT_RANGE_KEY + "=";
+		url = url.replaceFirst(".range=.*", "");
 
-		if (resultSet.getOffset().equals(0) && resultSet.getLimit().equals(0)) {
-			resultSet.setLimit(paginationConfig.getDefaultPagination()-1);
+		if (drc.getOffset().equals(0) && drc.getLimit() == null) {
+			drc.setLimit(paginationConfig.getDefaultPagination()-1);
 		}
 
-		Integer offset = resultSet.getOffset() + 1;
-		Integer limit = resultSet.getLimit() + 1;
+		Integer offset = drc.getOffset() + 1;
+		Integer limit = drc.getLimit() + 1;
 		Integer quantityPerPage = (limit - offset) + 1;
-
+		
+		if(uriInfo.getQueryParameters().isEmpty() 
+		        || (uriInfo.getQueryParameters().size() == 1 && uriInfo.getQueryParameters().containsKey(DEFAULT_RANGE_KEY))){
+		    url += "?" + DEFAULT_RANGE_KEY + "=";
+	    }
+		else{
+		    url += "&" + DEFAULT_RANGE_KEY + "=";
+		}
+		
 		if (!isFirstPage()) {
-		    Integer prevPageRangeInit = (resultSet.getOffset() - quantityPerPage) < 0 ? 0 : (resultSet.getOffset() - quantityPerPage);
-		    Integer firstRange2 = quantityPerPage - 1 < resultSet.getOffset() - 1 ? quantityPerPage - 1 : resultSet.getOffset() - 1;
+		    Integer prevPageRangeInit = (drc.getOffset() - quantityPerPage) < 0 ? 0 : (drc.getOffset() - quantityPerPage);
+		    Integer firstRange2 = quantityPerPage - 1 < drc.getOffset() - 1 ? quantityPerPage - 1 : drc.getOffset() - 1;
 		            
 			String firstPage = url + 0 + "-" + firstRange2;			
-			String prevPage = url + prevPageRangeInit + "-" + (resultSet.getOffset() - 1);
+			String prevPage = url + prevPageRangeInit + "-" + (drc.getOffset() - 1);
 
 			sb.append("<").append(firstPage).append(">; rel=\"first\",");
 			sb.append("<").append(prevPage).append(">; rel=\"prev\",");
 		}
 
 		if (isPartialContentResponse()) {
-			String nextPage = url + (resultSet.getOffset() + quantityPerPage) + "-"
-					+ (2 * quantityPerPage + resultSet.getOffset() - 1);
-			String lastPage = url + (resultSet.getCount() - quantityPerPage) + "-" + (resultSet.getCount() - 1);
+			String nextPage = url + (drc.getOffset() + quantityPerPage) + "-" + (2 * quantityPerPage + drc.getOffset() - 1);
+			String lastPage = url + (drc.getCount() - quantityPerPage) + "-" + (drc.getCount() - 1);
+			
+			if( offset + quantityPerPage >= drc.getCount() - 1){
+			    nextPage = lastPage;
+			}
 
 			sb.append("<").append(nextPage).append(">; rel=\"next\",");
 			sb.append("<").append(lastPage).append(">; rel=\"last\"");
@@ -156,18 +196,19 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 	}
 
 	private Boolean isFirstPage() {
-		return resultSet.getOffset().equals(0);
+		return drc.getOffset().equals(0);
 	}
 
 	private String buildContentRange() {
-		return resultSet.getOffset() + "-" + resultSet.getLimit() + "/" + resultSet.getCount();
+	    Integer limit = drc.getLimit() == null ? 0 : drc.getLimit();
+		return drc.getOffset() + "-" + (limit.equals(0) ? drc.getCount() - 1 : drc.getLimit()) + "/" + drc.getCount();
 	}
 
 	private String buildAcceptRange() {
 		String resource = "";
 
-		if (resultSet.getEntityClass() != null) {
-			resource = resultSet.getEntityClass().getSimpleName().toLowerCase();
+		if (drc.getEntityClass() != null) {
+			resource = drc.getEntityClass().getSimpleName().toLowerCase();
 		} else {
 			if (info.getResourceClass() != null) {
 				Class<?> targetClass = info.getResourceClass();
@@ -191,20 +232,24 @@ public class PaginationFilter implements ContainerResponseFilter, ContainerReque
 				String limit = range[1];
 
 				try {
-					resultSet.setOffset(new Integer(offset));
-					resultSet.setLimit(new Integer(limit));
+					drc.setOffset(new Integer(offset));
+					drc.setLimit(new Integer(limit));
 
-					if (resultSet.getOffset() > resultSet.getLimit()) {
+					if (drc.getOffset() > drc.getLimit()) {
 						logInvalidRangeParameters(rangeList.get(0));
 						throw new IllegalArgumentException(this.message.invalidRangeParameters());
 					}
 
-					if (((resultSet.getLimit() - resultSet.getOffset()) + 1) > paginationConfig
+					if (((drc.getLimit() - drc.getOffset()) + 1) > paginationConfig
 							.getDefaultPagination()) {
 						logger.warning(message.defaultPaginationNumberExceed(paginationConfig.getDefaultPagination())
-								+ ", [" + resultSet.toString() + "]");
+								+ ", [" + drc.toString() + "]");
 						throw new IllegalArgumentException(
 								message.defaultPaginationNumberExceed(paginationConfig.getDefaultPagination()));
+					}
+					
+					if(drc.getLimit().equals(0) && isRequestPagination()){
+					    drc.setLimit(null);
 					}
 
 				} catch (NumberFormatException nfe) {

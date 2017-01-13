@@ -14,22 +14,22 @@ import org.demoiselle.jee.rest.exception.DemoiselleRestException;
  *
  * @author SERPRO
  */
-public class DemoisellePersistenceCrudException extends DemoiselleRestException {
+public class DemoiselleCrudException extends DemoiselleRestException {
 
     private static final long serialVersionUID = 1L;
 
-    public DemoisellePersistenceCrudException() {
+    public DemoiselleCrudException() {
     }
 
-    public DemoisellePersistenceCrudException(String message) {
+    public DemoiselleCrudException(String message) {
         super(message);
     }
 
-    public DemoisellePersistenceCrudException(Throwable cause) {
+    public DemoiselleCrudException(Throwable cause) {
         super(cause);
     }
 
-    public DemoisellePersistenceCrudException(String message, Throwable cause) {
+    public DemoiselleCrudException(String message, Throwable cause) {
         super(message, cause);
     }
 

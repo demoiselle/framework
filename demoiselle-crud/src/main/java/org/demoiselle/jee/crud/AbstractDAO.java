@@ -7,6 +7,8 @@
 package org.demoiselle.jee.crud;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -20,7 +22,8 @@ import javax.persistence.criteria.Root;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.demoiselle.jee.core.api.crud.Crud;
-import org.demoiselle.jee.crud.exception.DemoisellePersistenceCrudException;
+import org.demoiselle.jee.core.api.crud.Result;
+import org.demoiselle.jee.crud.exception.DemoiselleCrudException;
 import org.demoiselle.jee.crud.pagination.DemoisellePaginationConfig;
 import org.demoiselle.jee.crud.pagination.ResultSet;
 
@@ -32,7 +35,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 	private DemoisellePaginationConfig paginationConfig;
 
 	@Inject
-	private ResultSet resultSet;
+	private DemoiselleRequestContext drc;
 
 	private final Class<T> entityClass;
 
@@ -51,7 +54,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 		} catch (Exception e) {
 			// TODO: Severe? Pode cair aqui somente por ter violação de Unique
 			// logger.severe(e.getMessage());
-			throw new DemoisellePersistenceCrudException("Não foi possível salvar", e);
+			throw new DemoiselleCrudException("Não foi possível salvar", e);
 		}
 	}
 
@@ -62,7 +65,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 		} catch (Exception e) {
 			// TODO: Severe? Pode cair aqui somente por ter violação de Unique
 			// logger.severe(e.getMessage());
-			throw new DemoisellePersistenceCrudException("Não foi possível salvar", e);
+			throw new DemoiselleCrudException("Não foi possível salvar", e);
 		}
 	}
 
@@ -71,7 +74,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 			getEntityManager().remove(getEntityManager().find(entityClass, id));
 		} catch (Exception e) {
 			// logger.severe(e.getMessage());
-			throw new DemoisellePersistenceCrudException("Não foi possível excluir", e);
+			throw new DemoiselleCrudException("Não foi possível excluir", e);
 		}
 
 	}
@@ -81,57 +84,104 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 			return getEntityManager().find(entityClass, id);
 		} catch (Exception e) {
 			// logger.severe(e.getMessage());
-			throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
+			throw new DemoiselleCrudException("Não foi possível consultar", e);
 		}
 
 	}
 
 	@Override
-	public ResultSet find() {
+	public Result find() {
 
 		try {
 
-			Integer firstResult = resultSet.getOffset();
+		    Result result = new ResultSet();
+		    
+			Integer firstResult = drc.getOffset();
 			Integer maxResults = getMaxResult();
 
 			Long count = count();
 
 			if (firstResult < count) {
-				CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-				CriteriaQuery<T> q = cb.createQuery(entityClass);
-				q.from(entityClass);
-
-				TypedQuery<T> query = getEntityManager().createQuery(q);
+				CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+				CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+				
+				configureCriteriaQuery(criteriaBuilder, criteriaQuery);
+				
+				TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
+				
 				query.setFirstResult(firstResult);
 				query.setMaxResults(maxResults);
 
-				resultSet.setContent(query.getResultList());
+				result.setContent(query.getResultList());
 			}
 
-			resultSet.setEntityClass(entityClass);
-			resultSet.setCount(count);
+			drc.setEntityClass(entityClass);
+			drc.setCount(count);
 
-			return resultSet;
+			return result;
 
 		} catch (Exception e) {
 			// logger.severe(e.getMessage());
-			throw new DemoisellePersistenceCrudException("Não foi possível consultar", e);
+			throw new DemoiselleCrudException("Não foi possível consultar", e);
 		}
 	}
 
-	private Integer getMaxResult() {
-		if (this.resultSet.getLimit().equals(0) && this.resultSet.getOffset().equals(0)) {
+    private void configureCriteriaQuery(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery) {
+        if(drc.getFieldsFilter().isEmpty()){
+            criteriaQuery.from(entityClass);
+        }
+        else{
+            Root<T> root = criteriaQuery.from(entityClass);
+            criteriaQuery.select(root).where(buildPredicates(criteriaBuilder, criteriaQuery, root));
+        }
+    }
+
+	/**
+     * @param root 
+	 * @return
+     */
+    private Predicate[] buildPredicates(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, Root<T> root) {
+        List<Predicate> predicates = new ArrayList<>();
+        
+        drc.getFieldsFilter().forEach((key, values) -> {
+            
+            // Many parameters for the same key, generate OR clause
+            if(values.size() > 1){
+                List<Predicate> predicateSameKey = new ArrayList<>();
+                values.forEach((value) -> {
+                    predicateSameKey.add(criteriaBuilder.equal(root.get(key), value));
+                });
+                predicates.add(criteriaBuilder.or(predicateSameKey.toArray(new Predicate[]{})));
+            }
+            else{
+                String value = values.iterator().next();
+                if("null".equals(value) || value.isEmpty()){
+                    predicates.add(criteriaBuilder.isNull(root.get(key)));
+                }
+                else{
+                    predicates.add(criteriaBuilder.equal(root.get(key), values.iterator().next()));
+                }
+            }
+        });
+        
+        return predicates.toArray(new Predicate[]{});
+    }
+
+    private Integer getMaxResult() {
+		if (drc.getLimit() == null && this.drc.getOffset() == null) {
 			return this.paginationConfig.getDefaultPagination();
 		}
 
-		return (this.resultSet.getLimit() - this.resultSet.getOffset()) + 1;
+		return (this.drc.getLimit() - this.drc.getOffset()) + 1;
 	}
 
 	public Long count() {
 		CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<Long> countCriteria = criteriaBuilder.createQuery(Long.class);
-		Root<?> entityRoot = countCriteria.from(entityClass);
+		Root<T> entityRoot = countCriteria.from(entityClass);
 		countCriteria.select(criteriaBuilder.count(entityRoot));
+		countCriteria.where(buildPredicates(criteriaBuilder, countCriteria, entityRoot));
+		
 		return getEntityManager().createQuery(countCriteria).getSingleResult();
 	}
 

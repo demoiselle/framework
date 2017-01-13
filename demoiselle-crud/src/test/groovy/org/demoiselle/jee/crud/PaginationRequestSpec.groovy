@@ -4,7 +4,7 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.crud.pagination
+package org.demoiselle.jee.crud
 
 
 import javax.ws.rs.BadRequestException
@@ -17,8 +17,11 @@ import javax.ws.rs.core.MultivaluedMap
 import javax.ws.rs.core.UriInfo
 import javax.ws.rs.core.Response.Status
 
-import org.demoiselle.jee.crud.pagination.entity.UserModelForTest
-import org.demoiselle.jee.crud.pagination.UserRestForTest
+import org.demoiselle.jee.core.api.crud.Result
+import org.demoiselle.jee.crud.entity.UserModelForTest
+import org.demoiselle.jee.crud.pagination.DemoisellePaginationConfig
+import org.demoiselle.jee.crud.pagination.DemoisellePaginationMessage
+import org.demoiselle.jee.crud.pagination.ResultSet
 
 import spock.lang.*
 import spock.lang.MockingApi.*
@@ -28,7 +31,7 @@ import spock.lang.MockingApi.*
  * @author SERPRO
  *
  */
-class PaginationFilterSpec extends Specification {
+class PaginationRequestSpec extends Specification {
     
     ContainerRequestContext requestContext = Mock()
     ContainerResponseContext responseContext = Mock()
@@ -38,10 +41,11 @@ class PaginationFilterSpec extends Specification {
     UriInfo uriInfo = Mock()
     DemoisellePaginationMessage message = Mock()
     
-    ResultSet resultSet = new ResultSet()
+    DemoiselleRequestContext drc = new DemoiselleRequestContextImpl()
+    Result result = new ResultSet()
     DemoisellePaginationConfig dpc = Mock()
     
-    PaginationFilter pf = new PaginationFilter(uriInfo, info, resultSet, dpc, message)
+    CrudFilter crudFilter = new CrudFilter(uriInfo, info, drc, dpc, message)
     
     def "A request with 'range' parameter should fill 'Result' object " () {
         
@@ -52,12 +56,11 @@ class PaginationFilterSpec extends Specification {
         uriInfo.getQueryParameters() >> mvmRequest
         
         when:
-        
-        pf.filter(requestContext)
+        crudFilter.filter(requestContext)
         
         then:
-        resultSet.offset == 10
-        resultSet.limit == 20
+        drc.offset == 10
+        drc.limit == 20
         notThrown(BadRequestException)
         
     }
@@ -73,8 +76,7 @@ class PaginationFilterSpec extends Specification {
         uriInfo.getQueryParameters() >> mvmRequest
         
         when:
-        
-        pf.filter(requestContext)
+        crudFilter.filter(requestContext)
         
         then:
         thrown(RuntimeException)
@@ -92,7 +94,7 @@ class PaginationFilterSpec extends Specification {
         -3      | -2
         -3      | -4
         -3      | -3
-        0       | 10 // Greater then default pagination
+        0       | 10 // Greater than default pagination
         
     }
     
@@ -104,14 +106,13 @@ class PaginationFilterSpec extends Specification {
         uriInfo.getQueryParameters() >> mvmRequest
         
         when:
-        pf.filter(requestContext)
+        crudFilter.filter(requestContext)
         
         then:
-        with(resultSet){
+        with(drc){
             offset == 0
             limit == 0
-            count == 0
-            content == []
+            count == 0            
             entityClass == null
         }
     }
@@ -121,29 +122,32 @@ class PaginationFilterSpec extends Specification {
         given:
         dpc.getDefaultPagination() >> 10
         
+        uriInfo.getQueryParameters() >> mvmRequest
+        
         def contentMock = 1..20
-        resultSet.content = contentMock.subList(0, 10)
-        resultSet.count = contentMock.size()
+        result.content = contentMock.subList(0, 10)
+        drc.count = contentMock.size()
+        drc.limit = null
         
         URI uri = new URI("http://localhost:9090/api/users")
         
         uriInfo.getRequestUri() >> uri
         
         responseContext.getHeaders() >> mvmResponse
-        responseContext.getEntity() >> resultSet
+        responseContext.getEntity() >> result
         
         responseContext.getStatus() >> Status.PARTIAL_CONTENT.getStatusCode()
         
         when:
-        pf.filter(requestContext, responseContext)
+        crudFilter.filter(requestContext, responseContext)
         
         then:
-        with(resultSet) {
+        with(drc) {
             offset == 0
             count == 20
-            limit == 9
-            content == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+            limit == 9            
         }
+        result.content == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         
         responseContext.status == Status.PARTIAL_CONTENT.getStatusCode()
     }
@@ -153,40 +157,47 @@ class PaginationFilterSpec extends Specification {
         
         given:
         dpc.getDefaultPagination() >> defaultPagination
+        uriInfo.getQueryParameters() >> mvmRequest
         
         def contentMock = 1..100
-        resultSet.offset = offset
-        resultSet.limit = limit
-        resultSet.content = contentMock.subList(resultSet.offset, resultSet.limit + 1)
-        resultSet.count = contentMock.size()
+        drc.offset = offset
+        drc.limit = limit
+        result.content = contentMock.subList(drc.offset, drc.limit + 1)
+        drc.count = contentMock.size()
         
-        String url = "http://localhost:9090/api/users"
+        String queryParamString = "?date=2017-01-01&mail=test@test.com,test2@test.com"
+        String url = "http://localhost:9090/api/users${queryParamString}"
         
         URI uri = new URI(url)
         
         uriInfo.getRequestUri() >> uri
+        uriInfo.getRequestUri().toString() >> url
         
+        mvmRequest.putSingle("mail", "test@test.com,test2@test.com")
+        mvmRequest.putSingle("date", "2017-01-01")
+        
+        requestContext.getHeaders() >> mvmRequest
         responseContext.getHeaders() >> mvmResponse
-        responseContext.getEntity() >> resultSet
+        responseContext.getEntity() >> result
         
         responseContext.getStatus() >> Status.PARTIAL_CONTENT.getStatusCode()
         
         when:
-        pf.filter(requestContext, responseContext)
+        crudFilter.filter(requestContext, responseContext)
         
-        Integer quantityPerPage = (resultSet.limit - resultSet.offset) + 1
+        Integer quantityPerPage = (drc.limit - drc.offset) + 1
         
         String linkHeader = responseContext.getHeaders().get(HttpHeaders.LINK).first()
         String linkHeaderExpected = ""
         
         // First page
-        if(resultSet.offset != 0){
+        if(drc.offset != 0){
             def prevRange1 = (offset - quantityPerPage) < 0 ? 0 : (offset - quantityPerPage)
             def firstRange2 = quantityPerPage - 1 < offset - 1 ? quantityPerPage - 1 : offset - 1
-            linkHeaderExpected = "<${url}?range=0-${firstRange2}>; rel=\"first\",<${url}?range=${prevRange1}-${offset-1}>; rel=\"prev\","
+            linkHeaderExpected = "<${url}&range=0-${firstRange2}>; rel=\"first\",<${url}&range=${prevRange1}-${offset-1}>; rel=\"prev\","
         }
         
-        linkHeaderExpected += "<${url}?range=${resultSet.limit+1}-${resultSet.limit+quantityPerPage}>; rel=\"next\",<${url}?range=${resultSet.count - quantityPerPage}-${resultSet.count-1}>; rel=\"last\""
+        linkHeaderExpected += "<${url}&range=${drc.limit+1}-${drc.limit+quantityPerPage}>; rel=\"next\",<${url}&range=${drc.count - quantityPerPage}-${drc.count-1}>; rel=\"last\""
 
         then:
         !responseContext.getHeaders().isEmpty()
@@ -204,12 +215,13 @@ class PaginationFilterSpec extends Specification {
         10                  |1      |1
         10                  |0      |0
         25                  |0      |0
-        25                  |18     |30        
+        25                  |18     |30
     }
     
     def "A response header should have a 'Accept-Range' field"(){
         given:
         dpc.getDefaultPagination() >> 50
+        uriInfo.getQueryParameters() >> mvmRequest
         
         String url = "http://localhost:9090/api/users"
         
@@ -219,20 +231,20 @@ class PaginationFilterSpec extends Specification {
         info.getResourceClass() >> UserRestForTest.class 
         
         responseContext.getHeaders() >> mvmResponse
-        responseContext.getEntity() >> resultSet
+        responseContext.getEntity() >> result
         
         String expectedRangeHeader = "usermodelfortest 50"
         
         when:
-        pf.filter(requestContext, responseContext)
+        crudFilter.filter(requestContext, responseContext)
 
         then:
         !responseContext.getHeaders().isEmpty()
         !responseContext.getHeaders().get('Accept-Range').isEmpty()
         
         when: "Set a entityClass"
-        resultSet.entityClass = UserModelForTest.class
-        pf.filter(requestContext, responseContext)
+        drc.entityClass = UserModelForTest.class
+        crudFilter.filter(requestContext, responseContext)
         
         then:
         !responseContext.getHeaders().get('Accept-Range').isEmpty()
@@ -240,13 +252,49 @@ class PaginationFilterSpec extends Specification {
         acceptRangeHeader == expectedRangeHeader
         
         when: "An entityClass not filled"
-        resultSet.entityClass = null
-        pf.filter(requestContext, responseContext)
+        drc.entityClass = null
+        crudFilter.filter(requestContext, responseContext)
         
         then:
         !responseContext.getHeaders().get('Accept-Range').isEmpty()
         String acceptRangeHeader2 = responseContext.getHeaders().get('Accept-Range').first()
         acceptRangeHeader2 == expectedRangeHeader
     }
+    
+    def "A response header should have a 'Content-Range' field"(offset, limit, count){
+        given:
+        
+        String url = "http://localhost:9090/api/users"
+        
+        URI uri = new URI(url)
+        
+        uriInfo.getRequestUri() >> uri
+        uriInfo.getQueryParameters() >> mvmRequest
+        
+        drc.offset = offset
+        drc.limit = limit
+        drc.count = count
+        
+        responseContext.getHeaders() >> mvmResponse
+        responseContext.getEntity() >> result
+        
+        String expectedContentRangeHeader = "${offset}-${limit}/${count}"
+        
+        when:
+        crudFilter.filter(requestContext, responseContext)
+        
+        String contentRangeHeader = responseContext.getHeaders().get('Content-Range').first()
+
+        then:
+        !responseContext.getHeaders().isEmpty()
+        !responseContext.getHeaders().get('Content-Range').isEmpty()
+        contentRangeHeader == expectedContentRangeHeader
+        
+        where:
+        offset  |limit  |count
+        0       |10     |20
+        11      |15     |50        
+    }
+    
 
 }
