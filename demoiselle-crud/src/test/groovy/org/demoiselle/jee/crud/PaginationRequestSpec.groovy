@@ -52,6 +52,7 @@ class PaginationRequestSpec extends Specification {
         given:
         
         dpc.getDefaultPagination() >> 20
+        dpc.getIsEnabled() >> true
         mvmRequest.putSingle("range", "10-20") 
         uriInfo.getQueryParameters() >> mvmRequest
         
@@ -72,6 +73,7 @@ class PaginationRequestSpec extends Specification {
         String parameter = "${offset}-${limit}".toString()
         
         dpc.getDefaultPagination() >> 10
+        dpc.getIsEnabled() >> true
         mvmRequest.putSingle("range", parameter) 
         uriInfo.getQueryParameters() >> mvmRequest
         
@@ -102,6 +104,7 @@ class PaginationRequestSpec extends Specification {
         
         given:
         dpc.getDefaultPagination() >> 10
+        dpc.getDefaultPagination() >> true
         mvmRequest.containsKey("range") >> false        
         uriInfo.getQueryParameters() >> mvmRequest
         
@@ -110,9 +113,9 @@ class PaginationRequestSpec extends Specification {
         
         then:
         with(drc){
-            offset == 0
-            limit == 0
-            count == 0            
+            offset == null
+            limit == null
+            count == null         
             entityClass == null
         }
     }
@@ -121,13 +124,13 @@ class PaginationRequestSpec extends Specification {
      
         given:
         dpc.getDefaultPagination() >> 10
+        dpc.getIsEnabled() >> true
         
         uriInfo.getQueryParameters() >> mvmRequest
         
         def contentMock = 1..20
         result.content = contentMock.subList(0, 10)
         drc.count = contentMock.size()
-        drc.limit = null
         
         URI uri = new URI("http://localhost:9090/api/users")
         
@@ -157,6 +160,7 @@ class PaginationRequestSpec extends Specification {
         
         given:
         dpc.getDefaultPagination() >> defaultPagination
+        dpc.getIsEnabled() >> true
         uriInfo.getQueryParameters() >> mvmRequest
         
         def contentMock = 1..100
@@ -221,6 +225,7 @@ class PaginationRequestSpec extends Specification {
     def "A response header should have a 'Accept-Range' field"(){
         given:
         dpc.getDefaultPagination() >> 50
+        dpc.getIsEnabled() >> true
         uriInfo.getQueryParameters() >> mvmRequest
         
         String url = "http://localhost:9090/api/users"
@@ -270,6 +275,8 @@ class PaginationRequestSpec extends Specification {
         
         uriInfo.getRequestUri() >> uri
         uriInfo.getQueryParameters() >> mvmRequest
+        
+        dpc.getIsEnabled() >> true
         
         drc.offset = offset
         drc.limit = limit

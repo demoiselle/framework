@@ -24,9 +24,9 @@ import javax.enterprise.context.RequestScoped;
 @RequestScoped
 public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
 
-    private Integer offset = new Integer(0);
-    private Integer limit = new Integer(0);
-    private Long count = new Long(0);
+    private Integer offset = null;
+    private Integer limit = null;
+    private Long count = null;
     private Class<?> entityClass = null;
     private Map<String, Set<String>> fieldsFilter = new HashMap<>();
 
@@ -80,7 +80,7 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     public void setFieldsFilter(Map<String, Set<String>> fieldsFilter) {
         this.fieldsFilter = fieldsFilter;
     }
-
+    
     @Override
     public String toString() {
         return "DemoiselleRequestContextImpl [offset=" + offset + ", limit=" + limit + ", count=" + count + "]";

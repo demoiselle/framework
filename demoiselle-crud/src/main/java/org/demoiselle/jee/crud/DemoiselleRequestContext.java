@@ -36,4 +36,5 @@ public interface DemoiselleRequestContext {
     
     Map<String, Set<String>> getFieldsFilter();
     void setFieldsFilter(Map<String, Set<String>> fieldsFilter);
+    
 }
