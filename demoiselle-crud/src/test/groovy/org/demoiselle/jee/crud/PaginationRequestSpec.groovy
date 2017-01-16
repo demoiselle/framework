@@ -303,5 +303,27 @@ class PaginationRequestSpec extends Specification {
         11      |15     |50        
     }
     
+    def "A request with pagination disabled should not put HTTP headers"(){
+        given:
+        dpc.getIsEnabled() >> false
+        String url = "http://localhost:9090/api/users"
+        
+        URI uri = new URI(url)
+        
+        uriInfo.getRequestUri() >> uri
+        uriInfo.getQueryParameters() >> mvmRequest
+        
+        responseContext.getHeaders() >> mvmResponse
+        responseContext.getEntity() >> result
+        
+        when:
+        crudFilter.filter(requestContext, responseContext)
+        
+        then:        
+        !responseContext.getHeaders().containsKey('Content-Range')
+        !responseContext.getHeaders().containsKey('Accept-Range')
+        !responseContext.getHeaders().containsKey('Links')
+        
+    }
 
 }
