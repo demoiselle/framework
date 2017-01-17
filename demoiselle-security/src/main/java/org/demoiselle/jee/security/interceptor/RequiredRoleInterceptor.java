@@ -9,6 +9,7 @@ package org.demoiselle.jee.security.interceptor;
 import static java.util.Arrays.asList;
 import static javax.ws.rs.Priorities.AUTHORIZATION;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static javax.ws.rs.core.Response.Status.FORBIDDEN;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import javax.ws.rs.ForbiddenException;
 
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.annotation.Authenticated;
@@ -82,7 +84,7 @@ public class RequiredRoleInterceptor implements Serializable {
         });
 
         if (userRoles.isEmpty()) {
-            throw new DemoiselleSecurityException(bundle.doesNotHaveRole(roles.toString()), UNAUTHORIZED.getStatusCode());
+            throw new DemoiselleSecurityException(bundle.doesNotHaveRole(roles.toString()), FORBIDDEN.getStatusCode());
         }
 
         return ic.proceed();
