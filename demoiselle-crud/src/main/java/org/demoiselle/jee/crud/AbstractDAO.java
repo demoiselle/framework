@@ -96,28 +96,31 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
 		    Result result = new ResultSet();
 		    
-			Integer firstResult = drc.getOffset();
-			Integer maxResults = getMaxResult();
+			
 
-			Long count = count();
-
-			if (firstResult < count) {
-				CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-				CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
-				
-				configureCriteriaQuery(criteriaBuilder, criteriaQuery);
-				
-				TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
-				
-				query.setFirstResult(firstResult);
-				query.setMaxResults(maxResults);
-
-				result.setContent(query.getResultList());
+			CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+			CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+			
+			configureCriteriaQuery(criteriaBuilder, criteriaQuery);
+			
+			TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
+			
+			if(paginationConfig.getIsEnabled()){
+			    Integer firstResult = drc.getOffset() == null ? 0 : drc.getOffset();
+	            Integer maxResults = getMaxResult();
+	            Long count = count();
+	            
+			    if(firstResult < count){
+    			    query.setFirstResult(firstResult);
+    			    query.setMaxResults(maxResults);
+			    }
+			    
+			    drc.setCount(count);
 			}
 
+			result.setContent(query.getResultList());
 			drc.setEntityClass(entityClass);
-			drc.setCount(count);
-
+			
 			return result;
 
 		} catch (Exception e) {
@@ -168,11 +171,11 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     }
 
     private Integer getMaxResult() {
-		if (drc.getLimit() == null && this.drc.getOffset() == null) {
+		if (drc.getLimit() == null && drc.getOffset() == null) {
 			return this.paginationConfig.getDefaultPagination();
 		}
 
-		return (this.drc.getLimit() - this.drc.getOffset()) + 1;
+		return (drc.getLimit() - drc.getOffset()) + 1;
 	}
 
 	public Long count() {

@@ -113,7 +113,9 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 
 		if (response.getEntity() instanceof Result) {
 
-			buildHeaders().forEach((k, v) -> response.getHeaders().putSingle(k, v));
+		    if(paginationConfig.getIsEnabled()){
+		        buildHeaders().forEach((k, v) -> response.getHeaders().putSingle(k, v));
+		    }
 
 			response.setEntity(((Result) response.getEntity()).getContent());
 
@@ -131,7 +133,9 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 	}
 
 	private Boolean isPartialContentResponse() {
-		return !((drc.getLimit() + 1) >= drc.getCount());
+	    Integer limit = drc.getLimit() == null ? 0 : drc.getLimit();
+	    Long count = drc.getCount() == null ? 0 : drc.getCount();
+		return !((limit + 1) >= count);
 	}
 
 	private Map<String, String> buildHeaders() {
@@ -153,7 +157,8 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 		String url = uriInfo.getRequestUri().toString();
 		url = url.replaceFirst(".range=.*", "");
 
-		if (drc.getOffset().equals(0) && drc.getLimit() == null) {
+		if (drc.getOffset() == null && drc.getLimit() == null) {
+		    drc.setOffset(new Integer(0));
 			drc.setLimit(paginationConfig.getDefaultPagination()-1);
 		}
 
@@ -201,7 +206,9 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 
 	private String buildContentRange() {
 	    Integer limit = drc.getLimit() == null ? 0 : drc.getLimit();
-		return drc.getOffset() + "-" + (limit.equals(0) ? drc.getCount() - 1 : drc.getLimit()) + "/" + drc.getCount();
+	    Integer offset = drc.getOffset() == null ? 0 : drc.getOffset();
+	    Long count = drc.getCount() == null ? 0 : drc.getCount();
+		return offset + "-" + (limit.equals(0) ? count - 1 : drc.getLimit()) + "/" + count;
 	}
 
 	private String buildAcceptRange() {
@@ -209,12 +216,12 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 
 		if (drc.getEntityClass() != null) {
 			resource = drc.getEntityClass().getSimpleName().toLowerCase();
-		} else {
+		} 
+		else {
 			if (info.getResourceClass() != null) {
 				Class<?> targetClass = info.getResourceClass();
 				if (targetClass.getSuperclass().equals(AbstractREST.class)) {
-					Class<?> type = (Class<?>) ((ParameterizedType) targetClass.getGenericSuperclass())
-							.getActualTypeArguments()[0];
+					Class<?> type = (Class<?>) ((ParameterizedType) targetClass.getGenericSuperclass()).getActualTypeArguments()[0];
 					resource = type.getSimpleName().toLowerCase();
 				}
 			}
@@ -240,23 +247,18 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 						throw new IllegalArgumentException(this.message.invalidRangeParameters());
 					}
 
-					if (((drc.getLimit() - drc.getOffset()) + 1) > paginationConfig
-							.getDefaultPagination()) {
-						logger.warning(message.defaultPaginationNumberExceed(paginationConfig.getDefaultPagination())
-								+ ", [" + drc.toString() + "]");
-						throw new IllegalArgumentException(
-								message.defaultPaginationNumberExceed(paginationConfig.getDefaultPagination()));
-					}
-					
-					if(drc.getLimit().equals(0) && isRequestPagination()){
-					    drc.setLimit(null);
+					if (((drc.getLimit() - drc.getOffset()) + 1) > paginationConfig.getDefaultPagination()) {
+						logger.warning(message.defaultPaginationNumberExceed(paginationConfig.getDefaultPagination()) + ", [" + drc.toString() + "]");
+						throw new IllegalArgumentException(message.defaultPaginationNumberExceed(paginationConfig.getDefaultPagination()));
 					}
 
-				} catch (NumberFormatException nfe) {
+				} 
+				catch (NumberFormatException nfe) {
 					logInvalidRangeParameters(rangeList.get(0));
 					throw new IllegalArgumentException(message.invalidRangeParameters());
 				}
-			} else {
+			} 
+			else {
 				logInvalidRangeParameters(rangeList.get(0));
 				throw new IllegalArgumentException(message.invalidRangeParameters());
 			}
