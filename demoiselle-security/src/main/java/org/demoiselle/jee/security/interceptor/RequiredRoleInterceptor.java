@@ -20,7 +20,6 @@ import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import javax.ws.rs.ForbiddenException;
 
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.annotation.Authenticated;
