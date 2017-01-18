@@ -14,7 +14,7 @@ package org.demoiselle.jee.rest;
 import org.demoiselle.jee.configuration.annotation.Configuration;
 
 /**
- * TODO javadoc
+ * Configurations of REST module.
  * 
  * @author SERPRO
  */
@@ -33,10 +33,20 @@ public class DemoiselleRestConfig {
 		this.gzipEnabled = gzipEnabled;
 	}
 
+	/**
+	 * Return true or false if the detailed errors should return to user.
+	 * 
+	 * @return true or false
+	 */
 	public boolean isShowErrorDetails() {
 		return showErrorDetails;
 	}
 
+	/**
+	 * Set if the detailed erros should return to user.
+	 * 
+	 * @param showErrorDetails
+	 */
 	public void setShowErrorDetails(boolean showErrorDetails) {
 		this.showErrorDetails = showErrorDetails;
 	}

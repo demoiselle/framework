@@ -102,7 +102,6 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 				arrayErrors.add(object);
 			}
 
-			// TODO: Verificar se o status code é 412 mesmo
 			return buildResponse(arrayErrors, responseMediaType, Status.PRECONDITION_FAILED);
 		}
 
