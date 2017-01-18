@@ -5,9 +5,8 @@
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
 /**
- * Esta pacote tem o objetivo de conter as classes relacionadas as Exceptions da
- * persistencia do framework Demoiselle.
- * TODO EN
+ * This package is intended to contain as related classes as Exceptions of the
+ * persistence of the Demoiselle Framework.
  * 
  * @author SERPRO
  */
