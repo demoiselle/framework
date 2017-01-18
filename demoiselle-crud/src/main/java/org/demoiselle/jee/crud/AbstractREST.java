@@ -19,9 +19,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response.Status;
 
 import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
+import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -39,6 +41,9 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 
 	@Inject
 	protected AbstractBusiness<T, I> bc;
+	
+	@Inject
+	private DemoiselleCrudMessage crudMessage;
 
 	@POST
 	@Transactional
@@ -68,7 +73,16 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 	@GET
 	@Transactional
 	@Override
-	public abstract Result find();
+	public Result find(){
+	    /*
+	     * For security reasons we opted to throw the exception below so that the developer who is 
+	     * extending this class overrides its own find () method using the @Search annotation (...) 
+	     * defining the field fields that input and return.
+	     * 
+	     * TODO definir link de documentação
+	     */
+	    throw new DemoiselleRestException(crudMessage.methodFindNotImplemented(), Status.NOT_IMPLEMENTED.getStatusCode());
+	}
 		
 	@GET
 	@Path("{id}")
