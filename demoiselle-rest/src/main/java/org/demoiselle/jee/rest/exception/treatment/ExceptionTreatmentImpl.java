@@ -26,6 +26,7 @@ import org.demoiselle.jee.core.exception.ExceptionTreatment;
 import org.demoiselle.jee.rest.DemoiselleRestConfig;
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
+import org.demoiselle.jee.rest.message.DemoiselleRESTMessage;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
@@ -49,6 +50,9 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 	private final String DATABASE_SQL_STATE = "sql_state";
 	private final String DATABASE_MASSAGE = "error_message";
 	private final String DATABASE_ERROR_CODE = "error_code";
+
+	@Inject
+	private DemoiselleRESTMessage messages;
 
 	@Inject
 	private DemoiselleRestConfig config;
@@ -87,10 +91,12 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 			for (ConstraintViolation violation : c.getConstraintViolations()) {
 
 				String objectType = violation.getLeafBean().getClass().getSimpleName();
+
+				// This is fixed because REST beans validations only accept ONE
+				// parameter
 				String arg = "arg0";
 
-				// TODO: Ver como fica com mais de um arg (arg0, arg1, arg2)
-				// ANTES: pesist.arg0.name / DEPOIS: pesist.User.name
+				// Before: pesist.arg0.name / After: pesist.User.name
 				String pathConverted = violation.getPropertyPath().toString().replaceAll(arg, objectType);
 
 				HashMap<String, Object> object = new HashMap<String, Object>();
@@ -123,11 +129,10 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 			if (isShowErrorDetails)
 				object.put(FIELDNAME_ERROR_DESCRIPTION, sqlError);
 
-			// TODO: messages
 			if (exception.getMessage() != null && !exception.getMessage().isEmpty()) {
 				object.put(FIELDNAME_ERROR, exception.getMessage());
 			} else {
-				object.put(FIELDNAME_ERROR, "Unhandled database exception");
+				object.put(FIELDNAME_ERROR, messages.unhandledDatabaseException());
 			}
 
 			arrayErrors.add(object);
@@ -177,7 +182,7 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 		 */
 		if (exception instanceof InvalidFormatException) {
 			HashMap<String, Object> object = new HashMap<String, Object>();
-			object.put(FIELDNAME_ERROR, "Unhandled malformed input/output exception");
+			object.put(FIELDNAME_ERROR, messages.unhandledMalformedInputOutputException());
 			if (isShowErrorDetails)
 				object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
 			arrayErrors.add(object);
@@ -193,7 +198,7 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 			ClientErrorException exClient = (ClientErrorException) exception;
 
 			HashMap<String, Object> object = new HashMap<String, Object>();
-			object.put(FIELDNAME_ERROR, "Http exception");
+			object.put(FIELDNAME_ERROR, messages.httpException());
 			if (isShowErrorDetails)
 				object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
 			arrayErrors.add(object);
@@ -205,7 +210,7 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 		 * Generic errors
 		 */
 		HashMap<String, Object> object = new HashMap<String, Object>();
-		object.put(FIELDNAME_ERROR, "Unhandled server exception");
+		object.put(FIELDNAME_ERROR, messages.unhandledServerException());
 		if (isShowErrorDetails)
 			object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
 		arrayErrors.add(object);
@@ -229,11 +234,21 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 				return (SQLException) current;
 			}
 			current = current.getCause();
-			// TODO: e se ela estiver dentro dela mesma?
 		} while (current != null);
 		return null;
 	}
 
+	/**
+	 * Method that return @Response object with media type and status code.
+	 * 
+	 * @param entity
+	 *            Entity inside a response
+	 * @param mediaType
+	 *            Media Type of response
+	 * @param status
+	 *            Status code of response
+	 * @return Created response
+	 */
 	private Response buildResponse(Object entity, MediaType mediaType, Status status) {
 		ResponseBuilder builder = Response.status(status).entity(entity);
 		builder.type(mediaType);
