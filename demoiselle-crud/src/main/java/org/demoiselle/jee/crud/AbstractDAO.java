@@ -17,6 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.core.MultivaluedMap;
@@ -96,8 +97,6 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
 		    Result result = new ResultSet();
 		    
-			
-
 			CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
 			CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
 			
@@ -117,36 +116,62 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 			    
 			    drc.setCount(count);
 			}
-
+			
 			result.setContent(query.getResultList());
 			drc.setEntityClass(entityClass);
 			
 			return result;
 
-		} catch (Exception e) {
+		} 
+		catch(Exception e) {
 			// logger.severe(e.getMessage());
 			throw new DemoiselleCrudException("Não foi possível consultar", e);
 		}
 	}
 
     private void configureCriteriaQuery(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery) {
-        if(drc.getFieldsFilter().isEmpty()){
-            criteriaQuery.from(entityClass);
+        Root<T> from = criteriaQuery.from(entityClass);
+        if(!drc.getFilters().isEmpty()){
+            criteriaQuery.select(from).where(buildPredicates(criteriaBuilder, criteriaQuery, from));
         }
-        else{
-            Root<T> root = criteriaQuery.from(entityClass);
-            criteriaQuery.select(root).where(buildPredicates(criteriaBuilder, criteriaQuery, root));
-        }
+        
+        configureOrder(criteriaBuilder, criteriaQuery, from);
     }
 
 	/**
+     * @param criteriaQuery
+     * @param root
+     */
+    private void configureOrder(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, Root<T> root) {
+        
+        if(!drc.getSorts().isEmpty()){
+            List<Order> orders = new ArrayList<>();
+            
+            drc.getSorts().forEach( (key, values) -> {
+                values.forEach( (field) -> {
+                    if(CrudSort.ASC.equals(key)){
+                        orders.add(criteriaBuilder.asc(root.get(field)));
+                    }
+                    
+                    if(CrudSort.DESC.equals(key)){
+                        orders.add(criteriaBuilder.desc(root.get(field)));
+                    }
+                });
+            });
+            
+            criteriaQuery.orderBy(orders);
+        }
+        
+    }
+
+    /**
      * @param root 
 	 * @return
      */
     private Predicate[] buildPredicates(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, Root<T> root) {
         List<Predicate> predicates = new ArrayList<>();
         
-        drc.getFieldsFilter().forEach((key, values) -> {
+        drc.getFilters().forEach((key, values) -> {
             
             // Many parameters for the same key, generate OR clause
             if(values.size() > 1){

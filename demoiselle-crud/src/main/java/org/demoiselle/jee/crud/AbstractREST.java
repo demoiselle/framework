@@ -19,8 +19,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
 
 import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
@@ -42,12 +40,10 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 	@Inject
 	protected AbstractBusiness<T, I> bc;
 
-	@Context
-	protected UriInfo uriInfo;
-
 	@POST
 	@Transactional
 	@ApiOperation(value = "persist entity")
+	@Override
 	public T persist(@Valid T entity) {
 		return bc.persist(entity);
 	}
@@ -55,6 +51,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 	@PUT
 	@Transactional
 	@ApiOperation(value = "full update entity")
+	@Override
 	public T merge(@Valid T entity) {
 		return bc.merge(entity);
 	}
@@ -63,20 +60,21 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 	@Path("{id}")
 	@Transactional
 	@ApiOperation(value = "remove entity")
+	@Override
 	public void remove(@PathParam("id") final I id) {
 		bc.remove(id);
 	}
 
 	@GET
 	@Transactional
-	public Result find() {
-		return bc.find();
-	}
-
+	@Override
+	public abstract Result find();
+		
 	@GET
 	@Path("{id}")
 	@Transactional
 	@ApiOperation(value = "find by ID")
+	@Override
 	public T find(@PathParam("id") final I id) {
 		return bc.find(id);
 	}
