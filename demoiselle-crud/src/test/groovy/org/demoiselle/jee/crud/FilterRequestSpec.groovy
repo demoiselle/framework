@@ -27,15 +27,12 @@ import spock.lang.Specification
 class FilterRequestSpec extends Specification {
     
     ContainerRequestContext requestContext = Mock()
-    ContainerResponseContext responseContext = Mock()
     ResourceInfo info = Mock()
     MultivaluedMap mvmRequest = new MultivaluedHashMap()
-    MultivaluedMap mvmResponse = new MultivaluedHashMap()
     UriInfo uriInfo = Mock()
     DemoisellePaginationMessage message = Mock()
     
     DemoiselleRequestContext drc = new DemoiselleRequestContextImpl()
-    Result result = new ResultSet()
     DemoisellePaginationConfig dpc = Mock()
     
     CrudFilter crudFilter = new CrudFilter(uriInfo, info, drc, dpc, message)
@@ -45,8 +42,15 @@ class FilterRequestSpec extends Specification {
         given:
         dpc.getDefaultPagination() >> 50
         mvmRequest.putSingle("range", "10-20")
-        mvmRequest.putSingle("type", "one")
-        mvmRequest.put("days", ["sunday", "friday", "monday"])
+        mvmRequest.putSingle("name", "john john")
+        mvmRequest.put("mail", ["john@test.com", "john2@test.com", "john3@test.com"])
+
+        info.getResourceClass() >> UserRestForTest.class
+        info.getResourceClass().getSuperclass() >> AbstractREST.class
+        info.getResourceMethod() >> AbstractREST.class.getDeclaredMethod("find")
+        
+        URI uri = new URI("http://localhost:9090/api/users")
+        uriInfo.getRequestUri() >> uri
         
         uriInfo.getQueryParameters() >> mvmRequest
         
@@ -54,12 +58,12 @@ class FilterRequestSpec extends Specification {
         crudFilter.filter(requestContext)
         
         then:
-        drc.fieldsFilter.containsKey("type")
-        drc.fieldsFilter.containsKey("days")
-        !drc.fieldsFilter.containsKey("range")
+        drc.filters.containsKey("mail")
+        drc.filters.containsKey("name")
+        !drc.filters.containsKey("range")
         
-        drc.fieldsFilter.get("type") == ["one"].toSet()
-        drc.fieldsFilter.get("days") == ["sunday", "friday", "monday"].toSet()
+        drc.filters.get("name") == ["john john"].toSet()
+        drc.filters.get("mail") == ["john@test.com", "john2@test.com", "john3@test.com"].toSet()
     }
 
 }

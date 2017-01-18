@@ -10,6 +10,8 @@ import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.AbstractREST;
 import org.demoiselle.jee.crud.entity.UserModelForTest;
 
+import javax.ws.rs.GET;
+
 /**
  * 
  * @author SERPRO
@@ -18,6 +20,7 @@ import org.demoiselle.jee.crud.entity.UserModelForTest;
 public class UserRestForTest extends AbstractREST<UserModelForTest, Long> {
 
     @Override
+    @GET
     public Result find() {
         return null;
     }

@@ -15,9 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.GET;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -55,6 +58,9 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 	private DemoisellePaginationConfig paginationConfig;
 
 	private final String DEFAULT_RANGE_KEY = "range";
+	private final String DEFAULT_SORT_KEY = "sort";
+	private final String DEFAULT_SORT_DESC_KEY = "desc";
+	
 	private final String HTTP_HEADER_CONTENT_RANGE = "Content-Range";
 	private final String HTTP_HEADER_ACCEPT_RANGE = "Accept-Range";
 
@@ -77,19 +83,113 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 
-		if (isRequestPagination()) {
-			try {
-				checkAndFillRangeValues();				
-			} catch (IllegalArgumentException e) {
-				throw new BadRequestException(e.getMessage());
-			}
-		}
-		
-		fillFieldsToFilter();
-
+	    if(isRequestForCrud()){
+    	    try {
+    	        
+        		if (isRequestPagination()) {
+       				checkAndFillRangeValues();				
+        		}
+        		
+        		fillFieldsToSort();
+        		fillFieldsToFilter();
+    	    } 
+    	    catch (IllegalArgumentException e) {
+                throw new BadRequestException(e.getMessage());
+            }
+	    }
 	}
 
+    /**
+     * @return
+     */
+    private Boolean isRequestForCrud() {
+        if(info.getResourceClass().getSuperclass() != null
+				&& info.getResourceClass().getSuperclass().equals(AbstractREST.class)
+                && info.getResourceMethod().isAnnotationPresent(GET.class)){
+            return Boolean.TRUE;
+        }
+        
+        return Boolean.FALSE;
+    }
+
+    private void fillFieldsToSort() {
+        
+        String url = uriInfo.getRequestUri().toString();
+        Pattern pattern = Pattern.compile("[\\?&]([^&=]+)=*([^&=]+)");
+        Matcher matcher = pattern.matcher(url);
+        
+        Set<String> ascList = new HashSet<>();
+        Set<String> descList = new HashSet<>();
+        Boolean descAll = Boolean.FALSE;
+        
+        while(matcher.find()){
+            String group = matcher.group().substring(1);
+            String keyValue[] = group.split("=");
+            if(keyValue != null && keyValue.length > 0){
+                
+                if(DEFAULT_SORT_DESC_KEY.equalsIgnoreCase(keyValue[0]) || DEFAULT_SORT_KEY.equalsIgnoreCase(keyValue[0])){
+                    
+                    if(keyValue.length == 2){
+                        String[] paramValueSplit = keyValue[1].split("\\,");
+                        
+                        if(DEFAULT_SORT_DESC_KEY.equalsIgnoreCase(keyValue[0])){
+                            descList.addAll(Arrays.asList(paramValueSplit));
+                        }
+                        else{
+                            ascList.addAll(Arrays.asList(paramValueSplit));
+                        }
+                    }
+                    else{
+                        if(DEFAULT_SORT_DESC_KEY.equalsIgnoreCase(keyValue[0])){
+                            descAll = Boolean.TRUE;
+                        }
+                    }
+                }
+            }
+            
+        }
+        
+        
+        descList.forEach( (field) -> {
+            ascList.remove(field);
+        });
+        
+        drc.getSorts().clear();
+        
+        if(!descAll){
+            drc.getSorts().put(CrudSort.ASC, ascList);
+            drc.getSorts().put(CrudSort.DESC, descList);
+        }
+        else{
+            drc.getSorts().put(CrudSort.DESC, ascList);
+        }
+        
+        drc.getSorts().forEach( (key, values) -> {
+            values.forEach( (value) -> {
+                checkIfExistField(value);
+            });
+            
+        });
+        
+    }
+
+    /**
+     * @param field
+     */
+    private void checkIfExistField(String field) {
+        Class<?> targetClass = getTargetClass();
+        if(targetClass != null) {
+            try{
+                targetClass.getDeclaredField(field);
+            }
+            catch(NoSuchFieldException e){
+                throw new IllegalArgumentException(e);
+            }
+        }
+    }
+
     private void fillFieldsToFilter() {
+                
         uriInfo.getQueryParameters().forEach((key, values) ->{
             if(!isReservedKey(key)){
                 Set<String> paramValues = new HashSet<>();
@@ -99,13 +199,17 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
                     paramValues.addAll(Arrays.asList(paramValueSplit));
                 });
                 
-                drc.getFieldsFilter().put(key, paramValues);
+                drc.getFilters().put(key, paramValues);
             }
         });
+        
+        for(String field : drc.getFilters().keySet()){
+            checkIfExistField(field);
+        }
     }
 
     private Boolean isReservedKey(String key) {
-        return key.equals(DEFAULT_RANGE_KEY);
+        return key.equalsIgnoreCase(DEFAULT_RANGE_KEY) || key.equalsIgnoreCase(DEFAULT_SORT_DESC_KEY) || key.equalsIgnoreCase(DEFAULT_SORT_KEY);
     }
 
     @Override
@@ -155,7 +259,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 	private String buildLinkHeader() {
 		StringBuffer sb = new StringBuffer();
 		String url = uriInfo.getRequestUri().toString();
-		url = url.replaceFirst(".range=.*", "");
+		url = url.replaceFirst(".range=([^&]*)", "");
 
 		if (drc.getOffset() == null && drc.getLimit() == null) {
 		    drc.setOffset(new Integer(0));
@@ -219,15 +323,20 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 		} 
 		else {
 			if (info.getResourceClass() != null) {
-				Class<?> targetClass = info.getResourceClass();
-				if (targetClass.getSuperclass().equals(AbstractREST.class)) {
-					Class<?> type = (Class<?>) ((ParameterizedType) targetClass.getGenericSuperclass()).getActualTypeArguments()[0];
-					resource = type.getSimpleName().toLowerCase();
-				}
+				resource = getTargetClass().getSimpleName().toLowerCase();
 			}
 		}
 
 		return resource + " " + paginationConfig.getDefaultPagination();
+	}
+	
+	private Class<?> getTargetClass(){
+	    Class<?> targetClass = info.getResourceClass();
+        if (targetClass.getSuperclass().equals(AbstractREST.class)) {
+            Class<?> type = (Class<?>) ((ParameterizedType) targetClass.getGenericSuperclass()).getActualTypeArguments()[0];
+            return type;
+        }
+        return null;
 	}
 
 	private void checkAndFillRangeValues() throws IllegalArgumentException {

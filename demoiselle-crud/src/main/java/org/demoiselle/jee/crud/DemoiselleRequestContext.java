@@ -34,7 +34,10 @@ public interface DemoiselleRequestContext {
     Class<?> getEntityClass();
     void setEntityClass(Class<?> entityClass);
     
-    Map<String, Set<String>> getFieldsFilter();
-    void setFieldsFilter(Map<String, Set<String>> fieldsFilter);
+    Map<String, Set<String>> getFilters();
+    void setFilters(Map<String, Set<String>> filters);
+    
+    Map<CrudSort, Set<String>> getSorts();
+    void setSorts(Map<CrudSort, Set<String>> sorts);
     
 }

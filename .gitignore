@@ -17,3 +17,5 @@
 /demoiselle-crud/nbproject/
 /demoiselle-multitenancy-hibernate/
 /.DS_Store
+/.idea
+**.iml

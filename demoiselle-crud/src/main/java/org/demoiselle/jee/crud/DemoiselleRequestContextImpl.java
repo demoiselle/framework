@@ -28,7 +28,8 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     private Integer limit = null;
     private Long count = null;
     private Class<?> entityClass = null;
-    private Map<String, Set<String>> fieldsFilter = new HashMap<>();
+    private Map<String, Set<String>> filters = new HashMap<>();
+    private Map<CrudSort, Set<String>> sorts = new HashMap<>();
 
     @Override
     public Integer getLimit() {
@@ -72,15 +73,25 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     
 
     @Override
-    public Map<String, Set<String>> getFieldsFilter() {
-        return fieldsFilter;
+    public Map<String, Set<String>> getFilters() {
+        return filters;
     }
 
     @Override
-    public void setFieldsFilter(Map<String, Set<String>> fieldsFilter) {
-        this.fieldsFilter = fieldsFilter;
+    public void setFilters(Map<String, Set<String>> fieldsFilter) {
+        this.filters = fieldsFilter;
     }
     
+    @Override
+    public Map<CrudSort, Set<String>> getSorts() {
+        return sorts;
+    }
+
+    @Override
+    public void setSorts(Map<CrudSort, Set<String>> sorts) {
+        this.sorts = sorts;
+    }
+
     @Override
     public String toString() {
         return "DemoiselleRequestContextImpl [offset=" + offset + ", limit=" + limit + ", count=" + count + "]";

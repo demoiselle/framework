@@ -8,6 +8,7 @@ package org.demoiselle.jee.crud
 
 
 import javax.ws.rs.BadRequestException
+import javax.ws.rs.GET
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.container.ContainerResponseContext
 import javax.ws.rs.container.ResourceInfo
@@ -24,7 +25,8 @@ import org.demoiselle.jee.crud.pagination.DemoisellePaginationMessage
 import org.demoiselle.jee.crud.pagination.ResultSet
 
 import spock.lang.*
-import spock.lang.MockingApi.*
+
+import java.lang.reflect.Method
 
 /**
  * 
@@ -55,6 +57,8 @@ class PaginationRequestSpec extends Specification {
         dpc.getIsEnabled() >> true
         mvmRequest.putSingle("range", "10-20") 
         uriInfo.getQueryParameters() >> mvmRequest
+
+        configureRequestForCrud()
         
         when:
         crudFilter.filter(requestContext)
@@ -100,13 +104,15 @@ class PaginationRequestSpec extends Specification {
         
     }
     
-    def "A request without 'range' parameter should not populate 'ResultSet' object"() {
+    def "A request without 'range' parameter should not populate 'Result' object"() {
         
         given:
         dpc.getDefaultPagination() >> 10
         dpc.getDefaultPagination() >> true
         mvmRequest.containsKey("range") >> false        
         uriInfo.getQueryParameters() >> mvmRequest
+
+        configureRequestForCrud()
         
         when:
         crudFilter.filter(requestContext)
@@ -324,6 +330,15 @@ class PaginationRequestSpec extends Specification {
         !responseContext.getHeaders().containsKey('Accept-Range')
         !responseContext.getHeaders().containsKey('Links')
         
+    }
+
+    private configureRequestForCrud(){
+        info.getResourceClass() >> UserRestForTest.class
+        info.getResourceClass().getSuperclass() >> AbstractREST.class
+        info.getResourceMethod() >> AbstractREST.class.getDeclaredMethod("find")
+        
+        URI uri = new URI("http://localhost:9090/api/users")
+        uriInfo.getRequestUri() >> uri
     }
 
 }
