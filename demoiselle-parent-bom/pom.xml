@@ -45,8 +45,7 @@
         <servlet.version>3.1.0</servlet.version>
         <persistence.version>1.0.2</persistence.version>
         <rest.version>2.0</rest.version>
-        <concurrent.version>1.0</concurrent.version>		
-        <commons.configuration.version>2.0</commons.configuration.version>
+        <concurrent.version>1.0</concurrent.version>
         <jaxrs.version>2.0.1</jaxrs.version>
         <javaee.version>7.0</javaee.version>
         <deltaspike.version>1.7.1</deltaspike.version>
@@ -54,6 +53,11 @@
         <cache.version>1.0.0</cache.version>
         <swagger.version>1.5.12</swagger.version>
         <json-api.version>1.0</json-api.version>
+        <commons-configuration2.version>2.0</commons-configuration2.version>
+        <commons-beanutils.version>1.9.2</commons-beanutils.version>
+        <hibernate-validator.version>5.3.0.Final</hibernate-validator.version>
+        <jose4j.version>0.5.2</jose4j.version>
+
         <!--Microcontainers -->
         <wildfly-swarm.version>2017.1.1</wildfly-swarm.version>
 
@@ -238,6 +242,22 @@
                 <scope>runtime</scope>
                 <version>${deltaspike.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-configuration2</artifactId>
+                <version>${commons-configuration2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${commons-beanutils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.version}</version>
+            </dependency>
 
             <!-- Swagger -->
             <dependency>
@@ -290,15 +310,51 @@
             </dependency>
 
             <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>2.4.7</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.spockframework</groupId>
+                <artifactId>spock-core</artifactId>
+                <version>1.0-groovy-2.4</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib-nodep</artifactId>
+                <version>3.2.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.objenesis</groupId>
+                <artifactId>objenesis</artifactId>
+                <version>2.4</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- security -->
+            <dependency>
+                <groupId>org.bitbucket.b_c</groupId>
+                <artifactId>jose4j</artifactId>
+                <version>${jose4j.version}</version>
+            </dependency>
+
+            <!-- swarm -->
+
+            <dependency>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>bom-all</artifactId>
                 <version>${wildfly-swarm.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-                  
+
         </dependencies>
 
     </dependencyManagement>
-
 </project>
