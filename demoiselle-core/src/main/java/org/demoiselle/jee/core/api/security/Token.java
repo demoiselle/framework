@@ -6,9 +6,9 @@
  */
 package org.demoiselle.jee.core.api.security;
 
-//TODO JAVADOC
+
 /**
- *
+ * Object loaded with each request and saves the token that comes in the header
  * @author SERPRO
  */
 public interface Token {

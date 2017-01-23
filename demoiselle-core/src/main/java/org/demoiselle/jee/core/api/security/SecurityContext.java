@@ -6,9 +6,11 @@
  */
 package org.demoiselle.jee.core.api.security;
 
-//TODO JAVADOC
+
 /**
- *
+ * Security context is the main object of demoiselle security, in it there are 
+ * interactions that guarantee the use of the module, 
+ * the JWT and Token submodules are connected to it.
  * @author SERPRO
  */
 public interface SecurityContext {

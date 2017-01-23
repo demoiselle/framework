@@ -16,7 +16,9 @@ public interface Crud<T, I> {
 
     public T persist(@Valid T entity);
 
-    public T merge(@Valid T entity);
+    public T mergeFull(@Valid T entity);
+
+    public T mergeHalf(T entity);
 
     public void remove(I id);
 

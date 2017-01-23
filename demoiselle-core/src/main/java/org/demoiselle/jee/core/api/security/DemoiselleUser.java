@@ -10,9 +10,8 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
-//TODO JAVADOC
 /**
- *
+ * DemoiselleUser is the object where logged user is stored
  * @author SERPRO
  */
 public interface DemoiselleUser extends Principal {
