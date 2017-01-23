@@ -16,15 +16,15 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
 @Configuration(prefix = "demoiselle.crud.pagination")
 public class DemoisellePaginationConfig {
 	
-    private Boolean isEnabled = Boolean.TRUE;
+    private Boolean isGlobalEnabled = Boolean.TRUE;
 	private Integer defaultPagination = new Integer(20);
 
 	public Integer getDefaultPagination() {
 		return defaultPagination;
 	}
 
-    public Boolean getIsEnabled() {       
-        return isEnabled;
+    public Boolean getIsGlobalEnabled() {       
+        return isGlobalEnabled;
     }
 
 }

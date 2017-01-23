@@ -27,6 +27,7 @@ import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.exception.DemoiselleCrudException;
 import org.demoiselle.jee.crud.pagination.DemoisellePaginationConfig;
 import org.demoiselle.jee.crud.pagination.ResultSet;
+import org.demoiselle.jee.crud.sort.CrudSort;
 
 //TODO revisar
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
@@ -104,7 +105,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 			
 			TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
 			
-			if(paginationConfig.getIsEnabled()){
+			//if(paginationConfig.getIsGlobalEnabled()){
 			    Integer firstResult = drc.getOffset() == null ? 0 : drc.getOffset();
 	            Integer maxResults = getMaxResult();
 	            Long count = count();
@@ -115,7 +116,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 			    }
 			    
 			    drc.setCount(count);
-			}
+			//}
 			
 			result.setContent(query.getResultList());
 			drc.setEntityClass(entityClass);

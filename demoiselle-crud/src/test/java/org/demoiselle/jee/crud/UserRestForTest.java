@@ -21,6 +21,7 @@ public class UserRestForTest extends AbstractREST<UserModelForTest, Long> {
 
     @Override
     @GET
+    @Search(fields={"name"}, withPagination = true, quantityPerPage = 10)
     public Result find() {
         return null;
     }

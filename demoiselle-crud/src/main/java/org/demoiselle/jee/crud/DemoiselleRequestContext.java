@@ -14,6 +14,8 @@ package org.demoiselle.jee.crud;
 import java.util.Map;
 import java.util.Set;
 
+import org.demoiselle.jee.crud.sort.CrudSort;
+
 /**
  * 
  * @author SERPRO

@@ -13,6 +13,8 @@ import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
 
+import org.demoiselle.jee.crud.sort.CrudSort;
+
 /**
  * @author SERPRO
  *
