@@ -17,7 +17,10 @@ public enum ReservedKeyWords {
     
     // Sort
     DEFAULT_SORT_DESC_KEY("desc"),
-    DEFAULT_SORT_KEY("sort");
+    DEFAULT_SORT_KEY("sort"),
+    
+    // Fields
+    DEFAULT_FIELD_KEY("fields");
     
     private final String key;
 

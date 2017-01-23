@@ -85,6 +85,7 @@ public class FilterHelper {
     private Boolean isReservedKey(String key) {
         return key.equalsIgnoreCase(ReservedKeyWords.DEFAULT_RANGE_KEY.getKey()) 
                 || key.equalsIgnoreCase(ReservedKeyWords.DEFAULT_SORT_DESC_KEY.getKey()) 
-                || key.equalsIgnoreCase(ReservedKeyWords.DEFAULT_SORT_KEY.getKey());
+                || key.equalsIgnoreCase(ReservedKeyWords.DEFAULT_SORT_KEY.getKey())
+                || key.equalsIgnoreCase(ReservedKeyWords.DEFAULT_FIELD_KEY.getKey());
     }
 }

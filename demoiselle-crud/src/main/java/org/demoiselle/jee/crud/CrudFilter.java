@@ -30,6 +30,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.core.api.crud.Result;
+import org.demoiselle.jee.crud.fields.FieldHelper;
 import org.demoiselle.jee.crud.filter.FilterHelper;
 import org.demoiselle.jee.crud.pagination.PaginationHelper;
 import org.demoiselle.jee.crud.sort.SortHelper;
@@ -61,6 +62,9 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 	@Inject
 	private FilterHelper filterHelper;
 	
+	@Inject
+	private FieldHelper fieldHelper;
+	
 	private static final Logger logger = Logger.getLogger(CrudFilter.class.getName());
 	
     public CrudFilter() {}
@@ -71,7 +75,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         this.drc = drc;
         this.paginationHelper = paginationHelper;
         this.sortHelper = sortHelper;
-        this.filterHelper = filterHelper;
+        this.filterHelper = filterHelper;        
     }
 
 	@Override
@@ -82,6 +86,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
     	        paginationHelper.execute(resourceInfo, uriInfo);
     	        sortHelper.execute(resourceInfo, uriInfo);
     	        filterHelper.execute(resourceInfo, uriInfo);
+    	        //fieldHelper.execute(resourceInfo, uriInfo);
     	    } 
     	    catch (IllegalArgumentException e) {
                 throw new BadRequestException(e.getMessage());
@@ -113,7 +118,6 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         }
 
     }
-
    
     private Boolean isRequestForCrud() {
         if(resourceInfo.getResourceClass().getSuperclass() != null
@@ -131,7 +135,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         List<Object> content = (List<Object>) ((Result) response.getEntity()).getContent();
         
         try{
-            //Valida if fields exists on fields field from @Search annotation
+            //Validate if fields exists on fields field from @Search annotation
             if(resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)){
                 content = new ArrayList<>();
                 Class<?> targetClass = CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass());

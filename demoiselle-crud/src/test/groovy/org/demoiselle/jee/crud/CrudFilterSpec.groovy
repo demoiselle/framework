@@ -48,6 +48,7 @@ class CrudFilterSpec extends Specification{
     SortHelper sortHelper = new SortHelper(resourceInfo, uriInfo, drc)
     PaginationHelper paginationHelper = new PaginationHelper(resourceInfo, uriInfo, dpc, drc)
     FilterHelper filterHelper = new FilterHelper(resourceInfo, uriInfo, drc, filterHelperMessage)
+    //FieldHelper fieldHelper = new FieldHelper()
     CrudFilter crudFilter = new CrudFilter(resourceInfo, uriInfo, drc, paginationHelper, sortHelper, filterHelper)
     
     def "A request with 'range' parameter should fill 'Result' object " () {
