@@ -6,6 +6,7 @@
  */
 package org.demoiselle.jee.crud;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,189 +33,205 @@ import org.demoiselle.jee.crud.pagination.ResultSet;
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
-	@Inject
-	private DemoisellePaginationConfig paginationConfig;
+    @Inject
+    private DemoisellePaginationConfig paginationConfig;
 
-	@Inject
-	private DemoiselleRequestContext drc;
+    @Inject
+    private DemoiselleRequestContext drc;
 
-	private final Class<T> entityClass;
+    private final Class<T> entityClass;
 
-	protected abstract EntityManager getEntityManager();
+    protected abstract EntityManager getEntityManager();
 
-	@SuppressWarnings("unchecked")
-	public AbstractDAO() {
-		this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass())
-				.getActualTypeArguments()[0];
-	}
+    @SuppressWarnings("unchecked")
+    public AbstractDAO() {
+        this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass())
+                .getActualTypeArguments()[0];
+    }
 
-	public T persist(T entity) {
-		try {
-			getEntityManager().persist(entity);
-			return entity;
-		} catch (Exception e) {
-			// TODO: Severe? Pode cair aqui somente por ter violação de Unique
-			// logger.severe(e.getMessage());
-			throw new DemoiselleCrudException("Não foi possível salvar", e);
-		}
-	}
+    @Override
+    public T persist(T entity) {
+        try {
+            getEntityManager().persist(entity);
+            return entity;
+        } catch (Exception e) {
+            // TODO: Severe? Pode cair aqui somente por ter violação de Unique
+            throw new DemoiselleCrudException("Não foi possível salvar", e);
+        }
+    }
 
-	public T merge(T entity) {
-		try {
-			getEntityManager().merge(entity);
-			return entity;
-		} catch (Exception e) {
-			// TODO: Severe? Pode cair aqui somente por ter violação de Unique
-			// logger.severe(e.getMessage());
-			throw new DemoiselleCrudException("Não foi possível salvar", e);
-		}
-	}
+    @Override
+    public T mergeHalf(T entity) {
+        try {
+            StringBuffer sb = new StringBuffer();
+            sb.append("UPDATE ");
+            sb.append(entity.getClass().getCanonicalName());
+            sb.append(" SET ");
+            for (Method object : entityClass.getDeclaredMethods()) {
+                sb.append(" ").append(" ").append(" ");
+            }
+            sb.append(" WHERE ").append("id = ").append(" ");
+            
+            getEntityManager().createQuery(sb.toString()).executeUpdate();
+            return entity;
+        } catch (Exception e) {
+            // TODO: Severe? Pode cair aqui somente por ter violação de Unique
+            throw new DemoiselleCrudException("Não foi possível salvar", e);
+        }
+    }
 
-	public void remove(I id) {
-		try {
-			getEntityManager().remove(getEntityManager().find(entityClass, id));
-		} catch (Exception e) {
-			// logger.severe(e.getMessage());
-			throw new DemoiselleCrudException("Não foi possível excluir", e);
-		}
+    @Override
+    public T mergeFull(T entity) {
+        try {
+            getEntityManager().merge(entity);
+            return entity;
+        } catch (Exception e) {
+            // TODO: Severe? Pode cair aqui somente por ter violação de Unique
+            throw new DemoiselleCrudException("Não foi possível salvar", e);
+        }
+    }
 
-	}
+    @Override
+    public void remove(I id) {
+        try {
+            getEntityManager().remove(getEntityManager().find(entityClass, id));
+        } catch (Exception e) {
+            throw new DemoiselleCrudException("Não foi possível excluir", e);
+        }
+    }
 
-	public T find(I id) {
-		try {
-			return getEntityManager().find(entityClass, id);
-		} catch (Exception e) {
-			// logger.severe(e.getMessage());
-			throw new DemoiselleCrudException("Não foi possível consultar", e);
-		}
+    @Override
+    public T find(I id) {
+        try {
+            return getEntityManager().find(entityClass, id);
+        } catch (Exception e) {
+            throw new DemoiselleCrudException("Não foi possível consultar", e);
+        }
 
-	}
+    }
 
-	@Override
-	public Result find() {
+    @Override
+    public Result find() {
 
-		try {
+        try {
 
-		    Result result = new ResultSet();
-		    
-			CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-			CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
-			
-			configureCriteriaQuery(criteriaBuilder, criteriaQuery);
-			
-			TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
-			
-			if(paginationConfig.getIsEnabled()){
-			    Integer firstResult = drc.getOffset() == null ? 0 : drc.getOffset();
-	            Integer maxResults = getMaxResult();
-	            Long count = count();
-	            
-			    if(firstResult < count){
-    			    query.setFirstResult(firstResult);
-    			    query.setMaxResults(maxResults);
-			    }
-			    
-			    drc.setCount(count);
-			}
-			
-			result.setContent(query.getResultList());
-			drc.setEntityClass(entityClass);
-			
-			return result;
+            Result result = new ResultSet();
 
-		} 
-		catch(Exception e) {
-			// logger.severe(e.getMessage());
-			throw new DemoiselleCrudException("Não foi possível consultar", e);
-		}
-	}
+            CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+
+            configureCriteriaQuery(criteriaBuilder, criteriaQuery);
+
+            TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
+
+            if (paginationConfig.getIsEnabled()) {
+                Integer firstResult = drc.getOffset() == null ? 0 : drc.getOffset();
+                Integer maxResults = getMaxResult();
+                Long count = count();
+
+                if (firstResult < count) {
+                    query.setFirstResult(firstResult);
+                    query.setMaxResults(maxResults);
+                }
+
+                drc.setCount(count);
+            }
+
+            result.setContent(query.getResultList());
+            drc.setEntityClass(entityClass);
+
+            return result;
+
+        } catch (Exception e) {
+            // logger.severe(e.getMessage());
+            throw new DemoiselleCrudException("Não foi possível consultar", e);
+        }
+    }
 
     private void configureCriteriaQuery(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery) {
         Root<T> from = criteriaQuery.from(entityClass);
-        if(!drc.getFilters().isEmpty()){
+        if (!drc.getFilters().isEmpty()) {
             criteriaQuery.select(from).where(buildPredicates(criteriaBuilder, criteriaQuery, from));
         }
-        
+
         configureOrder(criteriaBuilder, criteriaQuery, from);
     }
 
-	/**
+    /**
      * @param criteriaQuery
      * @param root
      */
     private void configureOrder(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, Root<T> root) {
-        
-        if(!drc.getSorts().isEmpty()){
+
+        if (!drc.getSorts().isEmpty()) {
             List<Order> orders = new ArrayList<>();
-            
-            drc.getSorts().forEach( (key, values) -> {
-                values.forEach( (field) -> {
-                    if(CrudSort.ASC.equals(key)){
+
+            drc.getSorts().forEach((key, values) -> {
+                values.forEach((field) -> {
+                    if (CrudSort.ASC.equals(key)) {
                         orders.add(criteriaBuilder.asc(root.get(field)));
                     }
-                    
-                    if(CrudSort.DESC.equals(key)){
+
+                    if (CrudSort.DESC.equals(key)) {
                         orders.add(criteriaBuilder.desc(root.get(field)));
                     }
                 });
             });
-            
+
             criteriaQuery.orderBy(orders);
         }
-        
+
     }
 
     /**
-     * @param root 
-	 * @return
+     * @param root
+     * @return
      */
     private Predicate[] buildPredicates(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, Root<T> root) {
         List<Predicate> predicates = new ArrayList<>();
-        
+
         drc.getFilters().forEach((key, values) -> {
-            
+
             // Many parameters for the same key, generate OR clause
-            if(values.size() > 1){
+            if (values.size() > 1) {
                 List<Predicate> predicateSameKey = new ArrayList<>();
                 values.forEach((value) -> {
                     predicateSameKey.add(criteriaBuilder.equal(root.get(key), value));
                 });
                 predicates.add(criteriaBuilder.or(predicateSameKey.toArray(new Predicate[]{})));
-            }
-            else{
+            } else {
                 String value = values.iterator().next();
-                if("null".equals(value) || value.isEmpty()){
+                if ("null".equals(value) || value.isEmpty()) {
                     predicates.add(criteriaBuilder.isNull(root.get(key)));
-                }
-                else{
+                } else {
                     predicates.add(criteriaBuilder.equal(root.get(key), values.iterator().next()));
                 }
             }
         });
-        
+
         return predicates.toArray(new Predicate[]{});
     }
 
     private Integer getMaxResult() {
-		if (drc.getLimit() == null && drc.getOffset() == null) {
-			return this.paginationConfig.getDefaultPagination();
-		}
+        if (drc.getLimit() == null && drc.getOffset() == null) {
+            return this.paginationConfig.getDefaultPagination();
+        }
 
-		return (drc.getLimit() - drc.getOffset()) + 1;
-	}
+        return (drc.getLimit() - drc.getOffset()) + 1;
+    }
 
-	public Long count() {
-		CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-		CriteriaQuery<Long> countCriteria = criteriaBuilder.createQuery(Long.class);
-		Root<T> entityRoot = countCriteria.from(entityClass);
-		countCriteria.select(criteriaBuilder.count(entityRoot));
-		countCriteria.where(buildPredicates(criteriaBuilder, countCriteria, entityRoot));
-		
-		return getEntityManager().createQuery(countCriteria).getSingleResult();
-	}
+    public Long count() {
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> countCriteria = criteriaBuilder.createQuery(Long.class);
+        Root<T> entityRoot = countCriteria.from(entityClass);
+        countCriteria.select(criteriaBuilder.count(entityRoot));
+        countCriteria.where(buildPredicates(criteriaBuilder, countCriteria, entityRoot));
 
-	protected Predicate[] extractPredicates(MultivaluedMap<String, String> queryParameters,
-			CriteriaBuilder criteriaBuilder, Root<T> root) {
-		return new Predicate[] {};
-	}
+        return getEntityManager().createQuery(countCriteria).getSingleResult();
+    }
+
+    protected Predicate[] extractPredicates(MultivaluedMap<String, String> queryParameters,
+            CriteriaBuilder criteriaBuilder, Root<T> root) {
+        return new Predicate[]{};
+    }
 }

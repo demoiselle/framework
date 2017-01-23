@@ -11,30 +11,39 @@ import javax.inject.Inject;
 import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
 
-//TODO revisar
 public abstract class AbstractBusiness<T, I> implements Crud<T, I> {
 
-	@Inject
-	protected AbstractDAO<T, I> dao;
+    @Inject
+    protected AbstractDAO<T, I> dao;
 
-	public T persist(T entity) {
-		return dao.persist(entity);
-	}
+    @Override
+    public T persist(T entity) {
+        return dao.persist(entity);
+    }
 
-	public T merge(T entity) {
-		return dao.merge(entity);
-	}
+    @Override
+    public T mergeFull(T entity) {
+        return dao.mergeFull(entity);
+    }
 
-	public void remove(I id) {
-		dao.remove(id);
-	}
+    @Override
+    public T mergeHalf(T entity) {
+        return dao.mergeHalf(entity);
+    }
 
-	public Result find() {
-		return dao.find();
-	}
+    @Override
+    public void remove(I id) {
+        dao.remove(id);
+    }
 
-	public T find(I id) {
-		return dao.find(id);
-	}
+    @Override
+    public Result find() {
+        return dao.find();
+    }
+
+    @Override
+    public T find(I id) {
+        return dao.find(id);
+    }
 
 }

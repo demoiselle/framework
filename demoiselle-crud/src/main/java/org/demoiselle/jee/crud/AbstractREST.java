@@ -26,6 +26,7 @@ import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.jaxrs.PATCH;
 
 /**
  * TODO JAVADOC
@@ -39,57 +40,65 @@ import io.swagger.annotations.ApiOperation;
 @Consumes(APPLICATION_JSON)
 public abstract class AbstractREST<T, I> implements Crud<T, I> {
 
-	@Inject
-	protected AbstractBusiness<T, I> bc;
-	
-	@Inject
-	private DemoiselleCrudMessage crudMessage;
+    @Inject
+    protected AbstractBusiness<T, I> bc;
 
-	@POST
-	@Transactional
-	@ApiOperation(value = "persist entity")
-	@Override
-	public T persist(@Valid T entity) {
-		return bc.persist(entity);
-	}
+    @Inject
+    private DemoiselleCrudMessage crudMessage;
 
-	@PUT
-	@Transactional
-	@ApiOperation(value = "full update entity")
-	@Override
-	public T merge(@Valid T entity) {
-		return bc.merge(entity);
-	}
+    @POST
+    @Transactional
+    @ApiOperation(value = "persist entity")
+    @Override
+    public T persist(@Valid T entity) {
+        return bc.persist(entity);
+    }
 
-	@DELETE
-	@Path("{id}")
-	@Transactional
-	@ApiOperation(value = "remove entity")
-	@Override
-	public void remove(@PathParam("id") final I id) {
-		bc.remove(id);
-	}
+    @PUT
+    @Transactional
+    @ApiOperation(value = "full update entity")
+    @Override
+    public T mergeFull(@Valid T entity) {
+        return bc.mergeFull(entity);
+    }
 
-	@GET
-	@Transactional
-	@Override
-	public Result find(){
-	    /*
+    @PATCH
+    @Transactional
+    @ApiOperation(value = "partial update entity")
+    @Override
+    public T mergeHalf(T entity) {
+        return bc.mergeHalf(entity);
+    }
+
+    @DELETE
+    @Path("{id}")
+    @Transactional
+    @ApiOperation(value = "remove entity")
+    @Override
+    public void remove(@PathParam("id") final I id) {
+        bc.remove(id);
+    }
+
+    @GET
+    @Path("{id}")
+    @Transactional
+    @ApiOperation(value = "find by ID")
+    @Override
+    public T find(@PathParam("id") final I id) {
+        return bc.find(id);
+    }
+
+    @GET
+    @Transactional
+    @Override
+    public Result find() {
+        /*
 	     * For security reasons we opted to throw the exception below so that the developer who is 
 	     * extending this class overrides its own find () method using the @Search annotation (...) 
 	     * defining the field fields that input and return.
 	     * 
 	     * TODO definir link de documentação
-	     */
-	    throw new DemoiselleRestException(crudMessage.methodFindNotImplemented(), Status.NOT_IMPLEMENTED.getStatusCode());
-	}
-		
-	@GET
-	@Path("{id}")
-	@Transactional
-	@ApiOperation(value = "find by ID")
-	@Override
-	public T find(@PathParam("id") final I id) {
-		return bc.find(id);
-	}
+         */
+        throw new DemoiselleRestException(crudMessage.methodFindNotImplemented(), Status.NOT_IMPLEMENTED.getStatusCode());
+    }
 }
