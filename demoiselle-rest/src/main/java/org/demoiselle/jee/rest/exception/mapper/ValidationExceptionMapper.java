@@ -19,20 +19,6 @@ import javax.ws.rs.ext.Provider;
 import org.demoiselle.jee.core.exception.ExceptionTreatment;
 
 /**
- * {@link ExceptionMapper} for {@link ValidationException}.
- * <p>
- * Send a {@link ViolationReport} in {@link Response} in addition to HTTP
- * 400/500 status code. Supported media types are: {@code application/json} /
- * {@code application/xml} (if appropriate provider is registered on server).
- * </p>
- *
- * @see org.jboss.resteasy.api.validation.ResteasyViolationExceptionMapper The
- *      original WildFly class:
- *      {@code org.jboss.resteasy.api.validation.ResteasyViolationExceptionMapper}
- *      
- */
-
-/**
  * When an exception is thrown, JAX-RS will first try to find an ExceptionMapper
  * for that exception’s type. If it cannot find one, it will look for a mapper
  * that can handle the exception’s superclass. It will continue this process
@@ -45,7 +31,6 @@ import org.demoiselle.jee.core.exception.ExceptionTreatment;
  * @author SERPRO
  *
  */
-
 @Provider
 public class ValidationExceptionMapper implements ExceptionMapper<ValidationException> {
 
