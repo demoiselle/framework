@@ -57,6 +57,10 @@
         <commons-beanutils.version>1.9.2</commons-beanutils.version>
         <hibernate-validator.version>5.3.0.Final</hibernate-validator.version>
         <jose4j.version>0.5.2</jose4j.version>
+        <objenesis.version>2.4</objenesis.version>
+        <cglib-nodep.version>3.2.0</cglib-nodep.version>        
+        <spock-core.version>1.0-groovy-2.4</spock-core.version>
+        <groovy-all.version>2.4.7</groovy-all.version>
 
         <!--Microcontainers -->
         <wildfly-swarm.version>2017.1.1</wildfly-swarm.version>
@@ -312,27 +316,27 @@
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-all</artifactId>
-                <version>2.4.7</version>                
+                <version>${groovy-all.version}</version>                
             </dependency>
 
             <dependency>
                 <groupId>org.spockframework</groupId>
                 <artifactId>spock-core</artifactId>
-                <version>1.0-groovy-2.4</version>
+                <version>${spock-core.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>cglib</groupId>
                 <artifactId>cglib-nodep</artifactId>
-                <version>3.2.0</version>
+                <version>${cglib-nodep.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.objenesis</groupId>
                 <artifactId>objenesis</artifactId>
-                <version>2.4</version>
+                <version>${objenesis.version}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -344,7 +348,6 @@
             </dependency>
 
             <!-- swarm -->
-
             <dependency>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>bom-all</artifactId>
