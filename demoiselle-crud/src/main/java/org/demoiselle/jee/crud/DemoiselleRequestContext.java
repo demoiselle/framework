@@ -11,8 +11,11 @@
  */
 package org.demoiselle.jee.crud;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.demoiselle.jee.crud.sort.CrudSort;
 
 /**
  * 
@@ -39,5 +42,8 @@ public interface DemoiselleRequestContext {
     
     Map<CrudSort, Set<String>> getSorts();
     void setSorts(Map<CrudSort, Set<String>> sorts);
+    
+    List<String> getFields();
+    void setFields(List<String> fields);
     
 }

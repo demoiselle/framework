@@ -16,21 +16,6 @@
         <version>3.0.0-SNAPSHOT</version>
         <relativePath>../demoiselle-parent</relativePath>
     </parent>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <showDeprecation>true</showDeprecation>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
     <dependencies>
         
         <dependency>
@@ -41,13 +26,11 @@
         <dependency>
             <groupId>org.bitbucket.b_c</groupId>
             <artifactId>jose4j</artifactId>
-            <version>0.5.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.3.0.Final</version>
             <scope>test</scope>
         </dependency>
 

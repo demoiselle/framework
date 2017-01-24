@@ -20,26 +20,28 @@ import javax.ws.rs.core.Response.Status
 
 import org.demoiselle.jee.core.api.crud.Result
 import org.demoiselle.jee.crud.entity.UserModelForTest
+import org.demoiselle.jee.crud.filter.FilterHelper
 import org.demoiselle.jee.crud.pagination.DemoisellePaginationConfig
 import org.demoiselle.jee.crud.pagination.DemoisellePaginationMessage
+import org.demoiselle.jee.crud.pagination.PaginationHelper
 import org.demoiselle.jee.crud.pagination.ResultSet
+import org.demoiselle.jee.crud.sort.SortHelper
 
 import spock.lang.*
 
 import java.lang.reflect.Method
+import java.util.concurrent.ForkJoinTask.RunnableExecuteAction
 
 /**
  * 
  * @author SERPRO
  *
  */
-class PaginationRequestSpec extends Specification {
+class PaginationHelperSpec extends Specification {
     
-    ContainerRequestContext requestContext = Mock()
-    ContainerResponseContext responseContext = Mock()
-    ResourceInfo info = Mock()
     MultivaluedMap mvmRequest = new MultivaluedHashMap()
-    MultivaluedMap mvmResponse = new MultivaluedHashMap()
+    
+    ResourceInfo resourceInfo = Mock()
     UriInfo uriInfo = Mock()
     DemoisellePaginationMessage message = Mock()
     
@@ -47,21 +49,21 @@ class PaginationRequestSpec extends Specification {
     Result result = new ResultSet()
     DemoisellePaginationConfig dpc = Mock()
     
-    CrudFilter crudFilter = new CrudFilter(uriInfo, info, drc, dpc, message)
+    PaginationHelper paginationHelper = new PaginationHelper(resourceInfo, uriInfo, dpc, drc)
     
     def "A request with 'range' parameter should fill 'Result' object " () {
         
         given:
         
         dpc.getDefaultPagination() >> 20
-        dpc.getIsEnabled() >> true
+        dpc.getIsGlobalEnabled() >> true
         mvmRequest.putSingle("range", "10-20") 
         uriInfo.getQueryParameters() >> mvmRequest
 
         configureRequestForCrud()
         
         when:
-        crudFilter.filter(requestContext)
+        paginationHelper.execute(resourceInfo, uriInfo)
         
         then:
         drc.offset == 10
@@ -77,12 +79,12 @@ class PaginationRequestSpec extends Specification {
         String parameter = "${offset}-${limit}".toString()
         
         dpc.getDefaultPagination() >> 10
-        dpc.getIsEnabled() >> true
+        dpc.getIsGlobalEnabled() >> true
         mvmRequest.putSingle("range", parameter) 
         uriInfo.getQueryParameters() >> mvmRequest
         
         when:
-        crudFilter.filter(requestContext)
+        paginationHelper.execute(resourceInfo, uriInfo)
         
         then:
         thrown(RuntimeException)
@@ -108,14 +110,14 @@ class PaginationRequestSpec extends Specification {
         
         given:
         dpc.getDefaultPagination() >> 10
-        dpc.getDefaultPagination() >> true
+        dpc.getIsGlobalEnabled() >> true
         mvmRequest.containsKey("range") >> false        
         uriInfo.getQueryParameters() >> mvmRequest
 
         configureRequestForCrud()
         
         when:
-        crudFilter.filter(requestContext)
+        paginationHelper.execute(resourceInfo, uriInfo)
         
         then:
         with(drc){
@@ -126,47 +128,12 @@ class PaginationRequestSpec extends Specification {
         }
     }
     
-    def "A valided request should return a response paginated"() {
-     
-        given:
-        dpc.getDefaultPagination() >> 10
-        dpc.getIsEnabled() >> true
-        
-        uriInfo.getQueryParameters() >> mvmRequest
-        
-        def contentMock = 1..20
-        result.content = contentMock.subList(0, 10)
-        drc.count = contentMock.size()
-        
-        URI uri = new URI("http://localhost:9090/api/users")
-        
-        uriInfo.getRequestUri() >> uri
-        
-        responseContext.getHeaders() >> mvmResponse
-        responseContext.getEntity() >> result
-        
-        responseContext.getStatus() >> Status.PARTIAL_CONTENT.getStatusCode()
-        
-        when:
-        crudFilter.filter(requestContext, responseContext)
-        
-        then:
-        with(drc) {
-            offset == 0
-            count == 20
-            limit == 9            
-        }
-        result.content == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        
-        responseContext.status == Status.PARTIAL_CONTENT.getStatusCode()
-    }
-    
     @Unroll
     def "A partial response should build a 'Link' header with parameters: [defaultPagination: #defaultPagination, offset: #offset, limit: #limit]"(defaultPagination, offset, limit){
         
         given:
         dpc.getDefaultPagination() >> defaultPagination
-        dpc.getIsEnabled() >> true
+        dpc.getIsGlobalEnabled() >> true
         uriInfo.getQueryParameters() >> mvmRequest
         
         def contentMock = 1..100
@@ -186,18 +153,12 @@ class PaginationRequestSpec extends Specification {
         mvmRequest.putSingle("mail", "test@test.com,test2@test.com")
         mvmRequest.putSingle("date", "2017-01-01")
         
-        requestContext.getHeaders() >> mvmRequest
-        responseContext.getHeaders() >> mvmResponse
-        responseContext.getEntity() >> result
-        
-        responseContext.getStatus() >> Status.PARTIAL_CONTENT.getStatusCode()
-        
         when:
-        crudFilter.filter(requestContext, responseContext)
+        paginationHelper.execute(resourceInfo, uriInfo)
         
         Integer quantityPerPage = (drc.limit - drc.offset) + 1
         
-        String linkHeader = responseContext.getHeaders().get(HttpHeaders.LINK).first()
+        String linkHeader = paginationHelper.buildHeaders().get(HttpHeaders.LINK)
         String linkHeaderExpected = ""
         
         // First page
@@ -210,7 +171,6 @@ class PaginationRequestSpec extends Specification {
         linkHeaderExpected += "<${url}&range=${drc.limit+1}-${drc.limit+quantityPerPage}>; rel=\"next\",<${url}&range=${drc.count - quantityPerPage}-${drc.count-1}>; rel=\"last\""
 
         then:
-        !responseContext.getHeaders().isEmpty()
         
         linkHeader == linkHeaderExpected 
         
@@ -231,7 +191,7 @@ class PaginationRequestSpec extends Specification {
     def "A response header should have a 'Accept-Range' field"(){
         given:
         dpc.getDefaultPagination() >> 50
-        dpc.getIsEnabled() >> true
+        dpc.getIsGlobalEnabled() >> true
         uriInfo.getQueryParameters() >> mvmRequest
         
         String url = "http://localhost:9090/api/users"
@@ -239,36 +199,32 @@ class PaginationRequestSpec extends Specification {
         URI uri = new URI(url)
         
         uriInfo.getRequestUri() >> uri
-        info.getResourceClass() >> UserRestForTest.class 
-        
-        responseContext.getHeaders() >> mvmResponse
-        responseContext.getEntity() >> result
+        resourceInfo.getResourceClass() >> UserRestForTest.class 
         
         String expectedRangeHeader = "usermodelfortest 50"
         
         when:
-        crudFilter.filter(requestContext, responseContext)
+        paginationHelper.execute(resourceInfo, uriInfo)
 
         then:
-        !responseContext.getHeaders().isEmpty()
-        !responseContext.getHeaders().get('Accept-Range').isEmpty()
+        !paginationHelper.buildHeaders().get("Accept-Range").isEmpty()
         
         when: "Set a entityClass"
         drc.entityClass = UserModelForTest.class
-        crudFilter.filter(requestContext, responseContext)
+        paginationHelper.execute(resourceInfo, uriInfo)
         
         then:
-        !responseContext.getHeaders().get('Accept-Range').isEmpty()
-        String acceptRangeHeader = responseContext.getHeaders().get('Accept-Range').first()
+        !paginationHelper.buildHeaders().get("Accept-Range").isEmpty()
+        String acceptRangeHeader = paginationHelper.buildHeaders().get("Accept-Range")
         acceptRangeHeader == expectedRangeHeader
         
         when: "An entityClass not filled"
         drc.entityClass = null
-        crudFilter.filter(requestContext, responseContext)
+        paginationHelper.execute(resourceInfo, uriInfo)
         
         then:
-        !responseContext.getHeaders().get('Accept-Range').isEmpty()
-        String acceptRangeHeader2 = responseContext.getHeaders().get('Accept-Range').first()
+        !paginationHelper.buildHeaders().get("Accept-Range").isEmpty()
+        String acceptRangeHeader2 = paginationHelper.buildHeaders().get("Accept-Range")
         acceptRangeHeader2 == expectedRangeHeader
     }
     
@@ -282,25 +238,21 @@ class PaginationRequestSpec extends Specification {
         uriInfo.getRequestUri() >> uri
         uriInfo.getQueryParameters() >> mvmRequest
         
-        dpc.getIsEnabled() >> true
+        dpc.getIsGlobalEnabled() >> true
         
         drc.offset = offset
         drc.limit = limit
         drc.count = count
         
-        responseContext.getHeaders() >> mvmResponse
-        responseContext.getEntity() >> result
-        
         String expectedContentRangeHeader = "${offset}-${limit}/${count}"
         
         when:
-        crudFilter.filter(requestContext, responseContext)
+        paginationHelper.execute(resourceInfo, uriInfo)
         
-        String contentRangeHeader = responseContext.getHeaders().get('Content-Range').first()
+        String contentRangeHeader = paginationHelper.buildHeaders().get("Content-Range")
 
         then:
-        !responseContext.getHeaders().isEmpty()
-        !responseContext.getHeaders().get('Content-Range').isEmpty()
+        !paginationHelper.buildHeaders().get("Content-Range").isEmpty()
         contentRangeHeader == expectedContentRangeHeader
         
         where:
@@ -311,7 +263,7 @@ class PaginationRequestSpec extends Specification {
     
     def "A request with pagination disabled should not put HTTP headers"(){
         given:
-        dpc.getIsEnabled() >> false
+        dpc.getIsGlobalEnabled() >> false
         String url = "http://localhost:9090/api/users"
         
         URI uri = new URI(url)
@@ -319,23 +271,20 @@ class PaginationRequestSpec extends Specification {
         uriInfo.getRequestUri() >> uri
         uriInfo.getQueryParameters() >> mvmRequest
         
-        responseContext.getHeaders() >> mvmResponse
-        responseContext.getEntity() >> result
-        
         when:
-        crudFilter.filter(requestContext, responseContext)
+        paginationHelper.execute(resourceInfo, uriInfo)
         
         then:        
-        !responseContext.getHeaders().containsKey('Content-Range')
-        !responseContext.getHeaders().containsKey('Accept-Range')
-        !responseContext.getHeaders().containsKey('Links')
+        !paginationHelper.buildHeaders().containsKey('Content-Range')
+        !paginationHelper.buildHeaders().containsKey('Accept-Range')
+        !paginationHelper.buildHeaders().containsKey('Links')
         
     }
 
     private configureRequestForCrud(){
-        info.getResourceClass() >> UserRestForTest.class
-        info.getResourceClass().getSuperclass() >> AbstractREST.class
-        info.getResourceMethod() >> AbstractREST.class.getDeclaredMethod("find")
+        resourceInfo.getResourceClass() >> UserRestForTest.class
+        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
+        resourceInfo.getResourceMethod() >> AbstractREST.class.getDeclaredMethod("find")
         
         URI uri = new URI("http://localhost:9090/api/users")
         uriInfo.getRequestUri() >> uri

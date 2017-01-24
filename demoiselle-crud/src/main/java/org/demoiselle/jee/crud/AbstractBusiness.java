@@ -27,8 +27,8 @@ public abstract class AbstractBusiness<T, I> implements Crud<T, I> {
     }
 
     @Override
-    public T mergeHalf(T entity) {
-        return dao.mergeHalf(entity);
+    public T mergeHalf(I id, T entity) {
+        return dao.mergeHalf(id, entity);
     }
 
     @Override

@@ -2,16 +2,19 @@
  * Demoiselle Framework
  *
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
- * See the lgpl.txt file in the root directory or
- * <https://www.gnu.org/licenses/lgpl.html>.
+ * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
 package org.demoiselle.jee.crud;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
+
+import org.demoiselle.jee.crud.sort.CrudSort;
 
 /**
  * @author SERPRO
@@ -30,6 +33,7 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     private Class<?> entityClass = null;
     private Map<String, Set<String>> filters = new HashMap<>();
     private Map<CrudSort, Set<String>> sorts = new HashMap<>();
+    private List<String> fields = new ArrayList<>();
 
     @Override
     public Integer getLimit() {
@@ -90,6 +94,16 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     @Override
     public void setSorts(Map<CrudSort, Set<String>> sorts) {
         this.sorts = sorts;
+    }
+    
+    @Override
+    public List<String> getFields() {
+        return this.fields;
+    }
+
+    @Override
+    public void setFields(List<String> fields) {
+        this.fields = fields;
     }
 
     @Override

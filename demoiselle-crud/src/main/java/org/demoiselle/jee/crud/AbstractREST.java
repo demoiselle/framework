@@ -63,11 +63,12 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     }
 
     @PATCH
+    @Path("{id}")
     @Transactional
     @ApiOperation(value = "partial update entity")
     @Override
-    public T mergeHalf(T entity) {
-        return bc.mergeHalf(entity);
+    public T mergeHalf(@PathParam("id") final I id, T entity) {
+        return bc.mergeHalf(id, entity);
     }
 
     @DELETE
@@ -94,8 +95,8 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     public Result find() {
         /*
 	     * For security reasons we opted to throw the exception below so that the developer who is 
-	     * extending this class overrides its own find () method using the @Search annotation (...) 
-	     * defining the field fields that input and return.
+	     * extending this class overrides its own find() method using the @Search annotation (...) 
+	     * defining the field fields.
 	     * 
 	     * TODO definir link de documentação
          */

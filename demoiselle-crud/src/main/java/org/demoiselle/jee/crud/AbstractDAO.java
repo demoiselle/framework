@@ -28,6 +28,7 @@ import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.exception.DemoiselleCrudException;
 import org.demoiselle.jee.crud.pagination.DemoisellePaginationConfig;
 import org.demoiselle.jee.crud.pagination.ResultSet;
+import org.demoiselle.jee.crud.sort.CrudSort;
 
 //TODO revisar
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
@@ -61,18 +62,11 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     }
 
     @Override
-    public T mergeHalf(T entity) {
+    public T mergeHalf(I id, T entity) {
         try {
-            StringBuffer sb = new StringBuffer();
-            sb.append("UPDATE ");
-            sb.append(entity.getClass().getCanonicalName());
-            sb.append(" SET ");
-            for (Method object : entityClass.getDeclaredMethods()) {
-                sb.append(" ").append(" ").append(" ");
-            }
-            sb.append(" WHERE ").append("id = ").append(" ");
-            
-            getEntityManager().createQuery(sb.toString()).executeUpdate();
+            T entityOld = find(id);
+
+            //getEntityManager().createQuery(sb.toString()).executeUpdate();
             return entity;
         } catch (Exception e) {
             // TODO: Severe? Pode cair aqui somente por ter violação de Unique
@@ -124,18 +118,18 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
             TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
 
-            if (paginationConfig.getIsEnabled()) {
-                Integer firstResult = drc.getOffset() == null ? 0 : drc.getOffset();
-                Integer maxResults = getMaxResult();
-                Long count = count();
+            //if(paginationConfig.getIsGlobalEnabled()){
+            Integer firstResult = drc.getOffset() == null ? 0 : drc.getOffset();
+            Integer maxResults = getMaxResult();
+            Long count = count();
 
-                if (firstResult < count) {
-                    query.setFirstResult(firstResult);
-                    query.setMaxResults(maxResults);
-                }
-
-                drc.setCount(count);
+            if (firstResult < count) {
+                query.setFirstResult(firstResult);
+                query.setMaxResults(maxResults);
             }
+
+            drc.setCount(count);
+            //}
 
             result.setContent(query.getResultList());
             drc.setEntityClass(entityClass);
