@@ -115,7 +115,7 @@ public class ConfigurationLoader implements Serializable {
 	 * @throws DemoiselleConfigurationException
 	 *             When there is a problem in the process
 	 */
-	public void load(final Object object, Class<?> baseClass) {
+	public synchronized void load(final Object object, Class<?> baseClass) {
 		Boolean isLoaded = loadedCache.get(object);
 
 		if (isLoaded == null || !isLoaded) {
