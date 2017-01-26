@@ -68,7 +68,7 @@ public class ConfigurationMapValueExtractor implements ConfigurationValueExtract
         try{
             Map<String, Object> value = null;
     
-            String regexp = "^(" + prefix + ")(" + key + ")(\\.(\\w+))?$";
+            String regexp = "^(" + prefix + ")(" + key + ")(\\.([^=]*))?$";
             Pattern pattern = Pattern.compile(regexp);
     
             for (Iterator<String> iter = configuration.getKeys(); iter.hasNext();) {

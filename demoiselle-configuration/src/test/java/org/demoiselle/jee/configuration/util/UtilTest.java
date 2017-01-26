@@ -56,6 +56,8 @@ public class UtilTest {
     public static final String CONFIG_MAP_FIELD_IP = CONFIG_MAP_FIELD + ".ip";
     public static final String CONFIG_MAP_FIELD_PROTOCOL = CONFIG_MAP_FIELD + ".protocol";
     public static final String CONFIG_MAP_FIELD_PORT = CONFIG_MAP_FIELD + ".port";
+    
+    public static final String CONFIG_MAP_FIELD_WITH_HIFEN = "demoiselle.configuration." + CONFIG_MAP_FIELD + ".key-with-hifen";
 
     public static final String CONFIG_STRING_FIELD_WITH_IGNORE_ANNOTATION = "configFieldWithIgnore";
 
@@ -76,6 +78,7 @@ public class UtilTest {
     public static final String CONFIG_MAP_VALUE_IP = "10.10.10.10";
     public static final String CONFIG_MAP_VALUE_PROTOCOL = "http";
     public static final String CONFIG_MAP_VALUE_PORT = "578";
+    public static final String CONFIG_MAP_VALUE_WITH_HIFEN = "1; othervalue=12, 123";
     public static final Map<String, String> CONFIG_MAP_VALUE = new HashMap<>();
     public static final ConfigEnum CONFIG_ENUM_VALUE = ConfigEnum.ENUM2;
     public static final String CONFIG_STRING_NAME_ANNOTATION_FIELD = "config-name-with-name";
@@ -165,6 +168,8 @@ public class UtilTest {
         sb.append(CONFIG_MAP_FIELD_IP).append("=").append(CONFIG_MAP_VALUE_IP).append("\n");
         sb.append(CONFIG_MAP_FIELD_PROTOCOL).append("=").append(CONFIG_MAP_VALUE_PROTOCOL).append("\n");
         sb.append(CONFIG_MAP_FIELD_PORT).append("=").append(CONFIG_MAP_VALUE_PORT).append("\n");
+        
+        sb.append(CONFIG_MAP_FIELD_WITH_HIFEN).append("=").append(CONFIG_MAP_VALUE_WITH_HIFEN).append("\n");
 
         sb.append(CONFIG_ENUM_FIELD).append("=").append(CONFIG_ENUM_VALUE.name()).append("\n");
 
@@ -202,54 +207,43 @@ public class UtilTest {
         String keyMapIp = CONFIG_MAP_FIELD_IP.replaceAll(CONFIG_MAP_FIELD + ".", "");
         String keyMapPort = CONFIG_MAP_FIELD_PORT.replaceAll(CONFIG_MAP_FIELD + ".", "");
         String keyMapProtocol = CONFIG_MAP_FIELD_PROTOCOL.replaceAll(CONFIG_MAP_FIELD + ".", "");
+        String keyWithHifen = CONFIG_MAP_FIELD_WITH_HIFEN.substring(CONFIG_MAP_FIELD_WITH_HIFEN.lastIndexOf(".") + 1, CONFIG_MAP_FIELD_WITH_HIFEN.length());
 
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         sb.append("<configuration>");
-        sb.append("	<").append(CONFIG_STRING_FIELD).append(">").append(CONFIG_STRING_VALUE).append("</")
-                .append(CONFIG_STRING_FIELD).append(">");
-        sb.append("	<").append(CONFIG_INTEGER_FIELD).append(">").append(CONFIG_INTEGER_VALUE).append("</")
-                .append(CONFIG_INTEGER_FIELD).append(">");
-        sb.append("	<").append(CONFIG_SHORT_FIELD).append(">").append(CONFIG_SHORT_VALUE).append("</")
-                .append(CONFIG_SHORT_FIELD).append(">");
-        sb.append("	<").append(CONFIG_LONG_FIELD).append(">").append(CONFIG_LONG_VALUE).append("</")
-                .append(CONFIG_LONG_FIELD).append(">");
-        sb.append("	<").append(CONFIG_FLOAT_FIELD).append(">").append(CONFIG_FLOAT_VALUE).append("</")
-                .append(CONFIG_FLOAT_FIELD).append(">");
-        sb.append("	<").append(CONFIG_DOUBLE_FIELD).append(">").append(CONFIG_DOUBLE_VALUE).append("</")
-                .append(CONFIG_DOUBLE_FIELD).append(">");
-        sb.append("	<").append(CONFIG_BOOLEAN_FIELD).append(">").append(CONFIG_BOOLEAN_VALUE).append("</")
-                .append(CONFIG_BOOLEAN_FIELD).append(">");
-        sb.append("	<").append(CONFIG_BYTE_FIELD).append(">").append(CONFIG_BYTE_VALUE).append("</")
-                .append(CONFIG_BYTE_FIELD).append(">");
-        sb.append("	<").append(CONFIG_CHARACTER_FIELD).append(">").append(CONFIG_CHARACTER_VALUE).append("</")
-                .append(CONFIG_CHARACTER_FIELD).append(">");
-        sb.append("	<").append(CONFIG_CLASS_TYPED_FIELD).append(">").append(CONFIG_CLASS_TYPED_VALUE.getCanonicalName())
-                .append("</").append(CONFIG_CLASS_TYPED_FIELD).append(">");
-        sb.append("	<").append(CONFIG_ENUM_FIELD).append(">").append(CONFIG_ENUM_VALUE).append("</")
-                .append(CONFIG_ENUM_FIELD).append(">");
+        sb.append("	<").append(CONFIG_STRING_FIELD).append(">").append(CONFIG_STRING_VALUE).append("</").append(CONFIG_STRING_FIELD).append(">");
+        sb.append("	<").append(CONFIG_INTEGER_FIELD).append(">").append(CONFIG_INTEGER_VALUE).append("</").append(CONFIG_INTEGER_FIELD).append(">");
+        sb.append("	<").append(CONFIG_SHORT_FIELD).append(">").append(CONFIG_SHORT_VALUE).append("</").append(CONFIG_SHORT_FIELD).append(">");
+        sb.append("	<").append(CONFIG_LONG_FIELD).append(">").append(CONFIG_LONG_VALUE).append("</").append(CONFIG_LONG_FIELD).append(">");
+        sb.append("	<").append(CONFIG_FLOAT_FIELD).append(">").append(CONFIG_FLOAT_VALUE).append("</").append(CONFIG_FLOAT_FIELD).append(">");
+        sb.append("	<").append(CONFIG_DOUBLE_FIELD).append(">").append(CONFIG_DOUBLE_VALUE).append("</").append(CONFIG_DOUBLE_FIELD).append(">");
+        sb.append("	<").append(CONFIG_BOOLEAN_FIELD).append(">").append(CONFIG_BOOLEAN_VALUE).append("</").append(CONFIG_BOOLEAN_FIELD).append(">");
+        sb.append("	<").append(CONFIG_BYTE_FIELD).append(">").append(CONFIG_BYTE_VALUE).append("</").append(CONFIG_BYTE_FIELD).append(">");
+        sb.append("	<").append(CONFIG_CHARACTER_FIELD).append(">").append(CONFIG_CHARACTER_VALUE).append("</").append(CONFIG_CHARACTER_FIELD).append(">");
+        sb.append("	<").append(CONFIG_CLASS_TYPED_FIELD).append(">").append(CONFIG_CLASS_TYPED_VALUE.getCanonicalName()).append("</").append(CONFIG_CLASS_TYPED_FIELD).append(">");
+        sb.append("	<").append(CONFIG_ENUM_FIELD).append(">").append(CONFIG_ENUM_VALUE).append("</").append(CONFIG_ENUM_FIELD).append(">");
         sb.append("	");
         sb.append("	<").append(CONFIG_MAP_FIELD).append(">");
-        sb.append("	  <").append(keyMapIp).append(">").append(CONFIG_MAP_VALUE_IP).append("</").append(keyMapIp)
-                .append(">");
-        sb.append("	  <").append(keyMapPort).append(">").append(CONFIG_MAP_VALUE_PORT).append("</").append(keyMapPort)
-                .append(">");
-        sb.append("	  <").append(keyMapProtocol).append(">").append(CONFIG_MAP_VALUE_PROTOCOL).append("</")
-                .append(keyMapProtocol).append(">");
+        sb.append("	  <").append(keyMapIp).append(">").append(CONFIG_MAP_VALUE_IP).append("</").append(keyMapIp).append(">");
+        sb.append("	  <").append(keyMapPort).append(">").append(CONFIG_MAP_VALUE_PORT).append("</").append(keyMapPort).append(">");
+        sb.append("	  <").append(keyMapProtocol).append(">").append(CONFIG_MAP_VALUE_PROTOCOL).append("</").append(keyMapProtocol).append(">");        
         sb.append("	</").append(CONFIG_MAP_FIELD).append(">");
         sb.append("	");
-        sb.append("	<").append(CONFIG_ARRAY_FIELD).append(">").append(CONFIG_ARRAY_VALUE_1).append("</")
-                .append(CONFIG_ARRAY_FIELD).append(">");
-        sb.append("	<").append(CONFIG_ARRAY_FIELD).append(">").append(CONFIG_ARRAY_VALUE_2).append("</")
-                .append(CONFIG_ARRAY_FIELD).append(">");
-        sb.append("	<").append(CONFIG_ARRAY_FIELD).append(">").append(CONFIG_ARRAY_VALUE_3).append("</")
-                .append(CONFIG_ARRAY_FIELD).append(">");
+        sb.append("	<").append(CONFIG_ARRAY_FIELD).append(">").append(CONFIG_ARRAY_VALUE_1).append("</").append(CONFIG_ARRAY_FIELD).append(">");
+        sb.append("	<").append(CONFIG_ARRAY_FIELD).append(">").append(CONFIG_ARRAY_VALUE_2).append("</").append(CONFIG_ARRAY_FIELD).append(">");
+        sb.append("	<").append(CONFIG_ARRAY_FIELD).append(">").append(CONFIG_ARRAY_VALUE_3).append("</").append(CONFIG_ARRAY_FIELD).append(">");
         sb.append("	");
-        sb.append(" <").append(CONFIG_STRING_NAME_ANNOTATION_FIELD).append(">")
-                .append(CONFIG_STRING_NAME_ANNOTATION_VALUE).append("</").append(CONFIG_STRING_NAME_ANNOTATION_FIELD)
-                .append(">");
-        sb.append("	<").append(CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_FIELD).append(">")
-                .append(CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_VALUE).append("</")
-                .append(CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_FIELD).append(">");
+        sb.append(" <").append(CONFIG_STRING_NAME_ANNOTATION_FIELD).append(">").append(CONFIG_STRING_NAME_ANNOTATION_VALUE).append("</").append(CONFIG_STRING_NAME_ANNOTATION_FIELD).append(">");
+        sb.append("	<").append(CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_FIELD).append(">").append(CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_VALUE).append("</") .append(CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_FIELD).append(">");
+        
+        sb.append(" <demoiselle>");
+        sb.append("   <configuration>");
+        sb.append("     <").append(CONFIG_MAP_FIELD).append(">");
+        sb.append("       <").append(keyWithHifen).append(">").append(CONFIG_MAP_VALUE_WITH_HIFEN).append("</").append(keyWithHifen).append(">");
+        sb.append("     </").append(CONFIG_MAP_FIELD).append(">");
+        sb.append("   </configuration>");
+        sb.append(" </demoiselle>");
+        
         sb.append("</configuration>");
 
         File file = createTempFile(prefix, ".xml");
@@ -281,8 +275,9 @@ public class UtilTest {
         System.setProperty(CONFIG_CLASS_TYPED_FIELD, CONFIG_CLASS_TYPED_VALUE.getCanonicalName());
 
         System.setProperty(CONFIG_STRING_NAME_ANNOTATION_FIELD, CONFIG_STRING_NAME_ANNOTATION_VALUE);
-        System.setProperty(CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_FIELD,
-                CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_VALUE);
+        System.setProperty(CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_FIELD, CONFIG_STRING_SUPPRESS_LOGGER_ANNOTATION_VALUE);
+        
+        System.setProperty(CONFIG_MAP_FIELD_WITH_HIFEN, CONFIG_MAP_VALUE_WITH_HIFEN);
 
     }
 
