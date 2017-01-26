@@ -45,11 +45,13 @@ public class HashCashTest {
     public void testMintCash_String_int() throws Exception {
         System.out.println("mintCash");
         String resource = "Demoiselle";
-        int value = 20;
-        int version = 1;
-        String expResult = "[1:20:170126:demoiselle::8rMvEMTreLTeHHso:000000kntSb]";
-        String result = HashCash.mintCash(resource, value, version).toString();
-        assertEquals(expResult, result);
+        int value = 21;
+        int version = 0;
+        Date data = new Date(170126153655l);
+        HashCash expResult = HashCash.mintCash(resource, data, value, version);
+        HashCash novo = new HashCash(expResult.toString());
+        System.out.println(novo.toString());
+        assertEquals(expResult, novo);
     }
 
 //    /**

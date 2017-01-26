@@ -8,6 +8,8 @@ package org.demoiselle.jee.security.pow.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -24,13 +26,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import org.demoiselle.jee.security.pow.annotation.ProofOfWork;
+import org.demoiselle.jee.security.pow.execution.HashCash;
 
 /**
  *
  * @author SERPRO
  */
 @Provider
-@PreMatching
 @Priority(HEADER_DECORATOR)
 public class PowFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
@@ -50,23 +52,31 @@ public class PowFilter implements ContainerRequestFilter, ContainerResponseFilte
         if (method != null && classe != null && method.getAnnotation(ProofOfWork.class) != null) {
             Response.ResponseBuilder responseBuilder = Response.status(Response.Status.PARTIAL_CONTENT);
             try {
-                if (req.getHeaders().containsKey("hashcash")) {
-                    String hashcash = req.getHeaders().get("hashcash").toString();
-                    if (hashcash != null && !hashcash.isEmpty() && repo.containsKey(hashcash)) {
-//                        Long time = repo.get(hashcash);
+                if (req.getHeaders().containsKey("x-hashcash-result")) {
+                    String tag = req.getHeaders().get("x-hashcash-result").toString();
+                    if (tag != null && !tag.isEmpty()) {
+                        HashCash hashcash = new HashCash(tag.replace("[", "").replace("]", ""));
+                        Long time = repo.get(hashcash.getResource());
+
+                        if (!hashcash.getResource().equals(hashcash.getResource())) {
+                            req.abortWith(responseBuilder.build());
+                        }
 //                        if (System.currentTimeMillis() <= (time + 5000)) {
-                        req.abortWith(responseBuilder.build());
+                        //req.abortWith(responseBuilder.build());
 //                        }
                         //HashCash.mintCash(hashcash, HEADER_DECORATOR)
                     } else {
                         req.abortWith(responseBuilder.build());
                     }
-                    repo.remove(hashcash);
+                    repo.remove(tag);
+                }else{
+                    req.abortWith(responseBuilder.build());
                 }
-
-            } catch (Exception e) {
+                
+            } catch (IllegalArgumentException | NoSuchAlgorithmException e) {
                 logger.severe(e.getMessage());
             }
+
         }
     }
 
@@ -77,8 +87,12 @@ public class PowFilter implements ContainerRequestFilter, ContainerResponseFilte
 
         if (method != null && classe != null && method.getAnnotation(ProofOfWork.class) != null) {
             String id = UUID.randomUUID().toString();
-            repo.putIfAbsent(id, System.currentTimeMillis());
-            res.getHeaders().putSingle("hash", id);
+            Long time = System.currentTimeMillis();
+            repo.putIfAbsent(id, time);
+            res.getHeaders().putSingle("x-hashcash-resource", id);
+            res.getHeaders().putSingle("x-hashcash-version", "1");
+            res.getHeaders().putSingle("x-hashcash-bits", "25");
+            res.getHeaders().putSingle("x-hashcash-time", time);
         }
 
     }

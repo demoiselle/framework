@@ -45,14 +45,10 @@ public class SecurityFilter implements ContainerRequestFilter {
         if (req.getMethod().equals("OPTIONS")) {
             Response.ResponseBuilder responseBuilder = ok();
             if (config.isCorsEnabled()) {
-            	//TODO deixar parametrizado no demoiselle.properties
-                responseBuilder.header("Access-Control-Allow-Headers", "origin, content-type, accept, Authorization");
-                responseBuilder.header("Access-Control-Allow-Credentials", "true");
-                responseBuilder.header("Access-Control-Allow-Origin", "*");
-                responseBuilder.header("Access-Control-Allow-Methods", "HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE");
+                config.getParamsHeaderSecuriry().entrySet().forEach((entry) -> {
+                    responseBuilder.header(entry.getKey(), entry.getValue());
+                });
             }
-            //TODO deixar parametrizado no demoiselle.properties
-            responseBuilder.header("Access-Control-Max-Age", "3600000");
             req.abortWith(responseBuilder.build());
         }
 
@@ -65,7 +61,6 @@ public class SecurityFilter implements ContainerRequestFilter {
                 }
             }
         } catch (Exception e) {
-        	//TODO usar mensagem do demoiselle
             logger.severe(e.getMessage());
         }
     }

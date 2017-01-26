@@ -8,6 +8,9 @@ package org.demoiselle.jee.security.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.PostConstruct;
 
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -42,23 +45,18 @@ public class CorsFilter implements ContainerResponseFilter {
 
         res.getHeaders().putSingle("Demoiselle-security", "enabled");
 
-        res.getHeaders().putSingle("x-content-type-options", "nosniff");
-        res.getHeaders().putSingle("x-frame-options", "SAMEORIGIN");
-        res.getHeaders().putSingle("x-xss-protection", "1; mode=block");
+        config.getParamsHeaderSecuriry().entrySet().forEach((entry) -> {
+            res.getHeaders().putSingle(entry.getKey(), entry.getValue());
+        });
 
-//        config.getParamsHeaderSecuriry().entrySet().forEach(en -> {
-//            res.getHeaders().putSingle(en.getKey(), en.getValue());
-//        });
         if (method != null && classe != null && method.getAnnotation(Cors.class) != null) {
             corsEnable = method.getAnnotation(Cors.class).enable();
         }
 
         if (config.isCorsEnabled() && corsEnable) {
-        	// TODO deixar parametrizado no demoiselle.properties (não pegar do request)
-            res.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
-            res.getHeaders().putSingle("Access-Control-Allow-Headers", "Origin, Content-type, Accept, Authorization");
-            res.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
-            res.getHeaders().putSingle("Access-Control-Allow-Methods", "HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE");
+            config.getParamsHeaderCors().entrySet().forEach((entry) -> {
+                res.getHeaders().putSingle(entry.getKey(), entry.getValue());
+            });
         } else {
             res.getHeaders().remove("Access-Control-Allow-Origin");
             res.getHeaders().remove("Access-Control-Allow-Methods");
