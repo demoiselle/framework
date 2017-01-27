@@ -158,7 +158,7 @@ class PaginationHelperSpec extends Specification {
         
         Integer quantityPerPage = (drc.limit - drc.offset) + 1
         
-        String linkHeader = paginationHelper.buildHeaders().get(HttpHeaders.LINK)
+        String linkHeader = paginationHelper.buildHeaders(resourceInfo, uriInfo).get(HttpHeaders.LINK)
         String linkHeaderExpected = ""
         
         // First page
@@ -207,15 +207,15 @@ class PaginationHelperSpec extends Specification {
         paginationHelper.execute(resourceInfo, uriInfo)
 
         then:
-        !paginationHelper.buildHeaders().get("Accept-Range").isEmpty()
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo).get("Accept-Range").isEmpty()
         
         when: "Set a entityClass"
         drc.entityClass = UserModelForTest.class
         paginationHelper.execute(resourceInfo, uriInfo)
         
         then:
-        !paginationHelper.buildHeaders().get("Accept-Range").isEmpty()
-        String acceptRangeHeader = paginationHelper.buildHeaders().get("Accept-Range")
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo).get("Accept-Range").isEmpty()
+        String acceptRangeHeader = paginationHelper.buildHeaders(resourceInfo, uriInfo).get("Accept-Range")
         acceptRangeHeader == expectedRangeHeader
         
         when: "An entityClass not filled"
@@ -223,8 +223,8 @@ class PaginationHelperSpec extends Specification {
         paginationHelper.execute(resourceInfo, uriInfo)
         
         then:
-        !paginationHelper.buildHeaders().get("Accept-Range").isEmpty()
-        String acceptRangeHeader2 = paginationHelper.buildHeaders().get("Accept-Range")
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo).get("Accept-Range").isEmpty()
+        String acceptRangeHeader2 = paginationHelper.buildHeaders(resourceInfo, uriInfo).get("Accept-Range")
         acceptRangeHeader2 == expectedRangeHeader
     }
     
@@ -249,10 +249,10 @@ class PaginationHelperSpec extends Specification {
         when:
         paginationHelper.execute(resourceInfo, uriInfo)
         
-        String contentRangeHeader = paginationHelper.buildHeaders().get("Content-Range")
+        String contentRangeHeader = paginationHelper.buildHeaders(resourceInfo, uriInfo).get("Content-Range")
 
         then:
-        !paginationHelper.buildHeaders().get("Content-Range").isEmpty()
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo).get("Content-Range").isEmpty()
         contentRangeHeader == expectedContentRangeHeader
         
         where:
@@ -275,9 +275,9 @@ class PaginationHelperSpec extends Specification {
         paginationHelper.execute(resourceInfo, uriInfo)
         
         then:        
-        !paginationHelper.buildHeaders().containsKey('Content-Range')
-        !paginationHelper.buildHeaders().containsKey('Accept-Range')
-        !paginationHelper.buildHeaders().containsKey('Links')
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo).containsKey('Content-Range')
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo).containsKey('Accept-Range')
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo).containsKey('Links')
         
     }
 
