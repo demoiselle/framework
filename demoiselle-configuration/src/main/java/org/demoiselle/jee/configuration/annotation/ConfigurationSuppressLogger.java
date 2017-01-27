@@ -23,6 +23,6 @@ import java.lang.annotation.Target;
  */
 @Target({ TYPE, FIELD })
 @Retention(RUNTIME)
-public @interface SuppressConfigurationLogger {
+public @interface ConfigurationSuppressLogger {
 
 }

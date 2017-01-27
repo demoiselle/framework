@@ -8,7 +8,7 @@ package org.demoiselle.jee.security.jwt.impl;
 
 import java.io.Serializable;
 import org.demoiselle.jee.configuration.annotation.Configuration;
-import org.demoiselle.jee.configuration.annotation.SuppressConfigurationLogger;
+import org.demoiselle.jee.configuration.annotation.ConfigurationSuppressLogger;
 
 /**
  *
@@ -21,7 +21,7 @@ public class DemoiselleSecurityJWTMock implements Serializable {
 
     private String type;
 
-    @SuppressConfigurationLogger
+    @ConfigurationSuppressLogger
     private String privateKey;
 
     private String publicKey;

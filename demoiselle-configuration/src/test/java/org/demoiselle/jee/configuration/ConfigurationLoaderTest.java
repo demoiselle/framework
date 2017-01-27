@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.configuration.annotation.Configuration;
+import org.demoiselle.jee.configuration.annotation.ConfigurationName;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationException;
 import org.demoiselle.jee.configuration.extractor.AbstractConfigurationTest;
 import org.demoiselle.jee.configuration.message.ConfigurationMessage;
@@ -36,7 +37,6 @@ import org.demoiselle.jee.configuration.model.ConfigWithNameAnnotationEmptyModel
 import org.demoiselle.jee.configuration.model.ConfigWithValidationModel;
 import org.demoiselle.jee.configuration.model.ConfigWithoutExtractorModel;
 import org.demoiselle.jee.configuration.util.UtilTest;
-import org.demoiselle.jee.core.annotation.Name;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -213,7 +213,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 			configLoader.load(model, baseClass);
 		} catch (DemoiselleConfigurationException e) {
 			assertNotNull(e.getMessage());
-			assertEquals(e.getMessage(), message.configurationNameAttributeCantBeEmpty(Name.class.getSimpleName()));
+			assertEquals(e.getMessage(), message.configurationNameAttributeCantBeEmpty(ConfigurationName.class.getSimpleName()));
 		}
 	}
 

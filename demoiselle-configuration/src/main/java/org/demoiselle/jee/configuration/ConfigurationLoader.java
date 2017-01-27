@@ -43,14 +43,14 @@ import org.apache.commons.configuration2.builder.BasicConfigurationBuilder;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.demoiselle.jee.configuration.annotation.SuppressConfigurationLogger;
+import org.demoiselle.jee.configuration.annotation.ConfigurationIgnore;
+import org.demoiselle.jee.configuration.annotation.ConfigurationName;
+import org.demoiselle.jee.configuration.annotation.ConfigurationSuppressLogger;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationException;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 import org.demoiselle.jee.configuration.extractor.impl.ConfigurationInternalDemoiselleValueExtractor;
 import org.demoiselle.jee.configuration.message.ConfigurationMessage;
-import org.demoiselle.jee.core.annotation.Ignore;
-import org.demoiselle.jee.core.annotation.Name;
 
 /**
  *
@@ -185,7 +185,7 @@ public class ConfigurationLoader implements Serializable {
     			// Check if the field has @SuppressLogger
     			if (suppressAllFields || hasSuppressLogger(field)) {
     				strMessage = message.configurationFieldSuppress(prefix + getKey(field),
-    						SuppressConfigurationLogger.class.getSimpleName());
+    						ConfigurationSuppressLogger.class.getSimpleName());
     			}
     
     			logger.info(strMessage);
@@ -195,12 +195,12 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private Boolean hasSuppressLogger() {
-		return targetObject.getClass().getAnnotation(SuppressConfigurationLogger.class) == null ? Boolean.FALSE
+		return targetObject.getClass().getAnnotation(ConfigurationSuppressLogger.class) == null ? Boolean.FALSE
 				: Boolean.TRUE;
 	}
 
 	private Boolean hasSuppressLogger(Field field) {
-		return field.getAnnotation(SuppressConfigurationLogger.class) == null ? Boolean.FALSE : Boolean.TRUE;
+		return field.getAnnotation(ConfigurationSuppressLogger.class) == null ? Boolean.FALSE : Boolean.TRUE;
 	}
 
 	private void loadFieldsFromTargetObject() {
@@ -219,11 +219,11 @@ public class ConfigurationLoader implements Serializable {
 	 *            Current field
 	 */
 	private void validateField(Field field) {
-		Name annotation = field.getAnnotation(Name.class);
+		ConfigurationName annotation = field.getAnnotation(ConfigurationName.class);
 
 		if (annotation != null && annotation.value().isEmpty()) {
 			throw new DemoiselleConfigurationException(
-					message.configurationNameAttributeCantBeEmpty(Name.class.getSimpleName()),
+					message.configurationNameAttributeCantBeEmpty(ConfigurationName.class.getSimpleName()),
 					new IllegalArgumentException());
 		}
 	}
@@ -422,8 +422,8 @@ public class ConfigurationLoader implements Serializable {
 	private String getKey(Field field) {
 		String key;
 
-		if (field.isAnnotationPresent(Name.class)) {
-			key = field.getAnnotation(Name.class).value();
+		if (field.isAnnotationPresent(ConfigurationName.class)) {
+			key = field.getAnnotation(ConfigurationName.class).value();
 		} else {
 			key = field.getName();
 		}
@@ -432,7 +432,7 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private boolean hasIgnoreAnnotation(Field field) {
-		return field.isAnnotationPresent(Ignore.class);
+		return field.isAnnotationPresent(ConfigurationIgnore.class);
 	}
 
 	private void validateValues() {

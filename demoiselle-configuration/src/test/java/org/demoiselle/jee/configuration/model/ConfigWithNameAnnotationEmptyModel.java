@@ -6,7 +6,7 @@
  */
 package org.demoiselle.jee.configuration.model;
 
-import org.demoiselle.jee.core.annotation.Name;
+import org.demoiselle.jee.configuration.annotation.ConfigurationName;
 
 /**
  * 
@@ -15,7 +15,7 @@ import org.demoiselle.jee.core.annotation.Name;
  */
 public class ConfigWithNameAnnotationEmptyModel {
 
-    @Name
+    @ConfigurationName
     public String configString;
 
     public String getConfigString() {

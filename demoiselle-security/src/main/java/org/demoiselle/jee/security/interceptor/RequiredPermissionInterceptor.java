@@ -17,7 +17,6 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import org.demoiselle.jee.core.annotation.Name;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.annotation.Authenticated;
 import org.demoiselle.jee.security.annotation.RequiredPermission;
@@ -104,11 +103,12 @@ public class RequiredPermissionInterceptor implements Serializable {
         }
 
         if ((requiredPermission.resource()) == null || (requiredPermission.resource()).trim().isEmpty()) {
-            if (ic.getTarget().getClass().getAnnotation(Name.class) == null) {
+            //TODO rever necesidade do @Name
+            //if (ic.getTarget().getClass().getAnnotation(Name.class) == null) {
                 return ic.getTarget().getClass().getSimpleName();
-            } else {
-                return ic.getTarget().getClass().getAnnotation(Name.class).value();
-            }
+            //} else {
+            //    return ic.getTarget().getClass().getAnnotation(Name.class).value();
+            //}
         } else {
             return requiredPermission.resource();
         }
@@ -136,11 +136,12 @@ public class RequiredPermissionInterceptor implements Serializable {
         }
 
         if (requiredPermission.operation() == null || requiredPermission.operation().trim().isEmpty()) {
-            if (ic.getMethod().getAnnotation(Name.class) == null) {
+            //TODO rever necesidade do @Name
+            //if (ic.getMethod().getAnnotation(Name.class) == null) {
                 return ic.getMethod().getName();
-            } else {
-                return ic.getMethod().getAnnotation(Name.class).value();
-            }
+            //} else {
+            //    return ic.getMethod().getAnnotation(Name.class).value();
+            //}
         } else {
             return requiredPermission.operation();
         }

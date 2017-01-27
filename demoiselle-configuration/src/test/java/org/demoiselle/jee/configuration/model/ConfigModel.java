@@ -10,9 +10,9 @@ import java.util.Map;
 
 import org.demoiselle.jee.configuration.ConfigurationType;
 import org.demoiselle.jee.configuration.annotation.Configuration;
-import org.demoiselle.jee.configuration.annotation.SuppressConfigurationLogger;
-import org.demoiselle.jee.core.annotation.Ignore;
-import org.demoiselle.jee.core.annotation.Name;
+import org.demoiselle.jee.configuration.annotation.ConfigurationIgnore;
+import org.demoiselle.jee.configuration.annotation.ConfigurationName;
+import org.demoiselle.jee.configuration.annotation.ConfigurationSuppressLogger;
 
 /**
  * 
@@ -43,13 +43,13 @@ public class ConfigModel {
 
     private ConfigEnum configEnum;
 
-    @Ignore
+    @ConfigurationIgnore
     private String configFieldWithIgnore;
 
-    @Name("config-name-with-name")
+    @ConfigurationName("config-name-with-name")
     private String configStringWithName;
 
-    @SuppressConfigurationLogger
+    @ConfigurationSuppressLogger
     private String configFieldWithSuppressLogger;
 
     public Integer getConfigInteger() {
