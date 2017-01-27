@@ -15,6 +15,7 @@ import javax.ws.rs.core.MultivaluedMap
 import javax.ws.rs.core.UriInfo
 
 import org.demoiselle.jee.core.api.crud.Result
+import org.demoiselle.jee.crud.fields.FieldHelper
 import org.demoiselle.jee.crud.filter.FilterHelper
 import org.demoiselle.jee.crud.filter.FilterHelperMessage
 import org.demoiselle.jee.crud.pagination.DemoisellePaginationConfig
@@ -48,7 +49,7 @@ class CrudFilterSpec extends Specification{
     SortHelper sortHelper = new SortHelper(resourceInfo, uriInfo, drc)
     PaginationHelper paginationHelper = new PaginationHelper(resourceInfo, uriInfo, dpc, drc)
     FilterHelper filterHelper = new FilterHelper(resourceInfo, uriInfo, drc, filterHelperMessage)
-    //FieldHelper fieldHelper = new FieldHelper()
+    FieldHelper fieldHelper = new FieldHelper(resourceInfo, uriInfo, drc)
     CrudFilter crudFilter = new CrudFilter(resourceInfo, uriInfo, drc, paginationHelper, sortHelper, filterHelper)
     
     def "A request with 'range' parameter should fill 'Result' object " () {

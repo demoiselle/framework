@@ -30,7 +30,6 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.core.api.crud.Result;
-import org.demoiselle.jee.crud.fields.FieldHelper;
 import org.demoiselle.jee.crud.filter.FilterHelper;
 import org.demoiselle.jee.crud.pagination.PaginationHelper;
 import org.demoiselle.jee.crud.sort.SortHelper;
@@ -62,8 +61,8 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 	@Inject
 	private FilterHelper filterHelper;
 	
-	@Inject
-	private FieldHelper fieldHelper;
+	//@Inject
+	//private FieldHelper fieldHelper;
 	
 	private static final Logger logger = Logger.getLogger(CrudFilter.class.getName());
 	
@@ -100,7 +99,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 
         if (response.getEntity() instanceof Result) {
 
-            paginationHelper.buildHeaders().forEach((k, v) -> response.getHeaders().putSingle(k, v));
+            paginationHelper.buildHeaders(resourceInfo, uriInfo).forEach((k, v) -> response.getHeaders().putSingle(k, v));
 
             response.setEntity(buildContent(response));
 

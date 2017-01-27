@@ -59,12 +59,16 @@ public class PaginationHelper {
     }
     
     public void execute(ResourceInfo resourceInfo, UriInfo uriInfo) {
-        this.resourceInfo = resourceInfo == null ? this.resourceInfo : resourceInfo;
-        this.uriInfo = uriInfo == null ? this.uriInfo : uriInfo;
+        fillObjects(resourceInfo, uriInfo);
         
         if (isPaginationEnabled() && isRequestPagination()) {
             checkAndFillRangeValues();              
         }
+    }
+
+    private void fillObjects(ResourceInfo resourceInfo, UriInfo uriInfo) {
+        this.resourceInfo = resourceInfo == null ? this.resourceInfo : resourceInfo;
+        this.uriInfo = uriInfo == null ? this.uriInfo : uriInfo;
     }
 
     private boolean isPaginationEnabled() {
@@ -151,7 +155,8 @@ public class PaginationHelper {
         return resource + " " + paginationConfig.getDefaultPagination();
     }
     
-    public Map<String, String> buildHeaders() {        
+    public Map<String, String> buildHeaders(ResourceInfo resourceInfo, UriInfo uriInfo) {
+        fillObjects(resourceInfo, uriInfo);
         Map<String, String> headers = new HashMap<>();
         
         if(isPaginationEnabled()){
