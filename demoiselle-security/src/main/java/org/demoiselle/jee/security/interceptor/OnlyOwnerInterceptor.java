@@ -10,7 +10,6 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.annotation.OnlyOwner;
-import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 
 /**
  *
