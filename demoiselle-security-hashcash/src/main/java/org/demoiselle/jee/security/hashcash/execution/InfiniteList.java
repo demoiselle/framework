@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.demoiselle.jee.security.pow.execution;
+package org.demoiselle.jee.security.hashcash.execution;
 
 import java.util.ArrayList;
 import java.util.Arrays;

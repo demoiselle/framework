@@ -6,6 +6,7 @@
  */
 package org.demoiselle.jee.security.pow.execution;
 
+import org.demoiselle.jee.security.hashcash.execution.HashCash;
 import java.util.Date;
 import org.junit.After;
 import org.junit.AfterClass;

@@ -4,7 +4,7 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.security.pow.filter;
+package org.demoiselle.jee.security.hashcash.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -23,7 +23,7 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
-import org.demoiselle.jee.security.pow.execution.HashCash;
+import org.demoiselle.jee.security.hashcash.execution.HashCash;
 
 /**
  *

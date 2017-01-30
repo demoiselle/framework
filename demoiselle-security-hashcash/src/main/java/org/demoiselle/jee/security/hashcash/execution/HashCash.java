@@ -1,4 +1,4 @@
-package org.demoiselle.jee.security.pow.execution;
+package org.demoiselle.jee.security.hashcash.execution;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
