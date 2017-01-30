@@ -46,7 +46,7 @@ public class HashCashTest {
         System.out.println("mintCash");
         String resource = "Demoiselle";
         int value = 21;
-        int version = 0;
+        int version = 1;
         Date data = new Date(170126153655l);
         HashCash expResult = HashCash.mintCash(resource, data, value, version);
         HashCash novo = new HashCash(expResult.toString());
@@ -54,21 +54,21 @@ public class HashCashTest {
         assertEquals(expResult, novo);
     }
 
-//    /**
-//     * Test of mintCash method, of class HashCash.
-//     */
-//    @Test
-//    public void testMintCash_3args_1() throws Exception {
-//        System.out.println("mintCash");
-//        String resource = "";
-//        int value = 0;
-//        int version = 0;
-//        HashCash expResult = null;
-//        HashCash result = HashCash.mintCash(resource, value, version);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+    /**
+     * Test of mintCash method, of class HashCash.
+     */
+    @Test
+    public void testMintCash_3args_1() throws Exception {
+        System.out.println("mintCash");
+        String resource = "";
+        int value = 21;
+        int version = 1;
+        HashCash expResult = new HashCash("1:21:170127:demoiselle::xo0v+a96R9XirGjQ:0000000QrY7");
+        //HashCash result = HashCash.mintCash(resource, value, version);
+        //assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        //fail("The test case is a prototype.");
+    }
 //
 //    /**
 //     * Test of mintCash method, of class HashCash.

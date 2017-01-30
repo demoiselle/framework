@@ -25,6 +25,6 @@ import javax.interceptor.InterceptorBinding;
 @InterceptorBinding
 @Target({METHOD, TYPE})
 @Retention(RUNTIME)
-public @interface ProofOfWork {
+public @interface HashCash {
 
 }

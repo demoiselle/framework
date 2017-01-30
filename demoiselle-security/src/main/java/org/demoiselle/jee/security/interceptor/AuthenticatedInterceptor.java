@@ -6,8 +6,6 @@
  */
 package org.demoiselle.jee.security.interceptor;
 
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
-
 import java.io.Serializable;
 
 import javax.annotation.Priority;
@@ -15,6 +13,7 @@ import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import static javax.ws.rs.core.Response.Status.FORBIDDEN;
 
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.annotation.Authenticated;
@@ -48,7 +47,7 @@ public class AuthenticatedInterceptor implements Serializable {
             if (logged != null && !logged.enable()) {
                 return ic.proceed();
             } else {
-                throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), UNAUTHORIZED.getStatusCode());
+                throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), FORBIDDEN.getStatusCode());
             }
         }
         return ic.proceed();

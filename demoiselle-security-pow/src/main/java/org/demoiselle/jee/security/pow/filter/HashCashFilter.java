@@ -34,9 +34,9 @@ import org.demoiselle.jee.security.pow.execution.HashCash;
  */
 @Provider
 @Priority(HEADER_DECORATOR)
-public class PowFilter implements ContainerRequestFilter, ContainerResponseFilter {
+public class HashCashFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
-    private static final Logger logger = Logger.getLogger(PowFilter.class.getName());
+    private static final Logger logger = Logger.getLogger(HashCashFilter.class.getName());
 
     @Context
     private ResourceInfo info;
@@ -69,10 +69,10 @@ public class PowFilter implements ContainerRequestFilter, ContainerResponseFilte
                         req.abortWith(responseBuilder.build());
                     }
                     repo.remove(tag);
-                }else{
+                } else {
                     req.abortWith(responseBuilder.build());
                 }
-                
+
             } catch (IllegalArgumentException | NoSuchAlgorithmException e) {
                 logger.severe(e.getMessage());
             }

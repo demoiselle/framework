@@ -159,17 +159,17 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
         if (!drc.getSorts().isEmpty()) {
             List<Order> orders = new ArrayList<>();
-            
+
             Set<String> ascOrder = drc.getSorts().get(CrudSort.ASC);
             Set<String> descOrder = drc.getSorts().get(CrudSort.DESC);
 
-            if(ascOrder != null){
+            if (ascOrder != null) {
                 ascOrder.forEach((field) -> {
                     orders.add(criteriaBuilder.asc(root.get(field)));
                 });
             }
-            
-            if(descOrder != null){
+
+            if (descOrder != null) {
                 descOrder.forEach((field) -> {
                     orders.add(criteriaBuilder.desc(root.get(field)));
                 });
