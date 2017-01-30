@@ -45,7 +45,7 @@ class FilterHelperSpec extends Specification {
 
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
-        resourceInfo.getResourceMethod() >> AbstractREST.class.getDeclaredMethod("find")
+        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("find")
         
         URI uri = new URI("http://localhost:9090/api/users")
         uriInfo.getRequestUri() >> uri
@@ -73,7 +73,7 @@ class FilterHelperSpec extends Specification {
 
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
-        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("find")
+        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearch")
         
         URI uri = new URI("http://localhost:9090/api/users")
         uriInfo.getRequestUri() >> uri

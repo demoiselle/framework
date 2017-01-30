@@ -21,10 +21,20 @@ public class UserRestForTest extends AbstractREST<UserModelForTest, Long> {
 
     @Override
     @GET
-    @Search(fields={"name"}, withPagination = true, quantityPerPage = 10)
     public Result find() {
         return null;
     }
 
+    @GET
+    @Search(fields={"name"}, quantityPerPage = 10, withPagination = true)
+    public Result findWithSearch() {
+        return null;
+    }
+    
+    @GET
+    @Search(fields={"name"}, withPagination = false)
+    public Result findWithSearchAnnotationAndPaginationDisabled(){
+        return null;
+    }
     
 }

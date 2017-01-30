@@ -41,4 +41,8 @@ public interface DemoiselleRequestContext {
     List<String> getFields();
     void setFields(List<String> fields);
     
+    Boolean isPaginationEnabled();
+    void setPaginationEnabled(Boolean isPaginationEnabled);
+    
+    
 }

@@ -47,7 +47,7 @@ class CrudFilterSpec extends Specification{
     UriInfo uriInfo = Mock()
     
     SortHelper sortHelper = new SortHelper(resourceInfo, uriInfo, drc)
-    PaginationHelper paginationHelper = new PaginationHelper(resourceInfo, uriInfo, dpc, drc)
+    PaginationHelper paginationHelper = new PaginationHelper(resourceInfo, uriInfo, dpc, drc, message)
     FilterHelper filterHelper = new FilterHelper(resourceInfo, uriInfo, drc, filterHelperMessage)
     FieldHelper fieldHelper = new FieldHelper(resourceInfo, uriInfo, drc)
     CrudFilter crudFilter = new CrudFilter(resourceInfo, uriInfo, drc, paginationHelper, sortHelper, filterHelper)
@@ -76,7 +76,7 @@ class CrudFilterSpec extends Specification{
     private configureRequestForCrud(){
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
-        resourceInfo.getResourceMethod() >> AbstractREST.class.getDeclaredMethod("find")
+        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("find")
         
         URI uri = new URI("http://localhost:9090/api/users")
         uriInfo.getRequestUri() >> uri

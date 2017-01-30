@@ -21,6 +21,7 @@ import javax.ws.rs.core.UriInfo;
 import org.demoiselle.jee.crud.CrudUtilHelper;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedKeyWords;
+import org.demoiselle.jee.crud.Search;
 
 /**
  * @author SERPRO
@@ -47,22 +48,32 @@ public class PaginationHelper {
     
     private static final Logger logger = Logger.getLogger(PaginationHelper.class.getName());
     
-    public PaginationHelper(){
-        
-    }
+    public PaginationHelper(){}
     
-    public PaginationHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoisellePaginationConfig paginationConfig, DemoiselleRequestContext drc){
+    public PaginationHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoisellePaginationConfig paginationConfig, DemoiselleRequestContext drc, DemoisellePaginationMessage message){
         this.resourceInfo = resourceInfo;
         this.uriInfo = uriInfo;
         this.paginationConfig = paginationConfig;
         this.drc = drc;
+        this.message = message;
     }
     
     public void execute(ResourceInfo resourceInfo, UriInfo uriInfo) {
         fillObjects(resourceInfo, uriInfo);
         
-        if (isPaginationEnabled() && isRequestPagination()) {
-            checkAndFillRangeValues();              
+        drc.setPaginationEnabled(isPaginationEnabled());
+        
+        if (drc.isPaginationEnabled()) {
+            
+            if(isRequestPagination()){
+                checkAndFillRangeValues();
+            }
+            
+            if(hasSearchAnnotation() && !isRequestPagination()) {
+                Search search = resourceInfo.getResourceMethod().getAnnotation(Search.class);
+                drc.setLimit(search.quantityPerPage() - 1);
+                drc.setOffset(new Integer(0));
+            }
         }
     }
 
@@ -71,17 +82,25 @@ public class PaginationHelper {
         this.uriInfo = uriInfo == null ? this.uriInfo : uriInfo;
     }
 
-    private boolean isPaginationEnabled() {
-        //TODO add pagination from @Search annotation
+    private Boolean isPaginationEnabled() {
+        if(paginationConfig.getIsGlobalEnabled() == Boolean.FALSE){
+            return Boolean.FALSE;
+        }
+        
+        if(hasSearchAnnotation()) {
+            Search searchAnnotation = resourceInfo.getResourceMethod().getAnnotation(Search.class);
+            return searchAnnotation.withPagination();
+        }
+        
         return paginationConfig.getIsGlobalEnabled();
     }
 
     private Boolean isRequestPagination() {
         // Verify if contains 'range' in url
         if (uriInfo.getQueryParameters().containsKey(ReservedKeyWords.DEFAULT_RANGE_KEY.getKey())) {
-            return true;
+            return Boolean.TRUE;
         }
-        return false;
+        return Boolean.FALSE;
     }
     
     private void checkAndFillRangeValues() throws IllegalArgumentException {
@@ -101,9 +120,9 @@ public class PaginationHelper {
                         throw new IllegalArgumentException(this.message.invalidRangeParameters());
                     }
 
-                    if (((drc.getLimit() - drc.getOffset()) + 1) > paginationConfig.getDefaultPagination()) {
-                        logger.warning(message.defaultPaginationNumberExceed(paginationConfig.getDefaultPagination()) + ", [" + drc.toString() + "]");
-                        throw new IllegalArgumentException(message.defaultPaginationNumberExceed(paginationConfig.getDefaultPagination()));
+                    if (((drc.getLimit() - drc.getOffset()) + 1) > getDefaultNumberPagination()) {
+                        logger.warning(message.defaultPaginationNumberExceed(getDefaultNumberPagination()) + ", [" + drc.toString() + "]");
+                        throw new IllegalArgumentException(message.defaultPaginationNumberExceed(getDefaultNumberPagination()));
                     }
 
                 } 
@@ -120,6 +139,19 @@ public class PaginationHelper {
 
     }
     
+    private Integer getDefaultNumberPagination() {
+        if(hasSearchAnnotation()){
+            Search searchAnnotation = resourceInfo.getResourceMethod().getAnnotation(Search.class);
+            return searchAnnotation.quantityPerPage();
+        }
+        
+        return paginationConfig.getDefaultPagination();
+    }
+
+    private Boolean hasSearchAnnotation() {
+        return resourceInfo.getResourceMethod().isAnnotationPresent(Search.class);
+    }
+
     public Boolean isPartialContentResponse() {
         Integer limit = drc.getLimit() == null ? 0 : drc.getLimit();
         Long count = drc.getCount() == null ? 0 : drc.getCount();
@@ -152,14 +184,14 @@ public class PaginationHelper {
             }
         }
 
-        return resource + " " + paginationConfig.getDefaultPagination();
+        return resource + " " + getDefaultNumberPagination();
     }
     
     public Map<String, String> buildHeaders(ResourceInfo resourceInfo, UriInfo uriInfo) {
         fillObjects(resourceInfo, uriInfo);
         Map<String, String> headers = new HashMap<>();
         
-        if(isPaginationEnabled()){
+        if(drc.isPaginationEnabled()){
             headers.put(HTTP_HEADER_CONTENT_RANGE, buildContentRange());
             headers.put(HTTP_HEADER_ACCEPT_RANGE, buildAcceptRange());
             String linkHeader = buildLinkHeader();
@@ -179,7 +211,7 @@ public class PaginationHelper {
 
         if (drc.getOffset() == null && drc.getLimit() == null) {
             drc.setOffset(new Integer(0));
-            drc.setLimit(paginationConfig.getDefaultPagination()-1);
+            drc.setLimit(getDefaultNumberPagination()-1);
         }
 
         Integer offset = drc.getOffset() + 1;
@@ -224,9 +256,6 @@ public class PaginationHelper {
         return drc.getOffset().equals(0);
     }
 
-    /**
-     * @param response
-     */
     public void buildAcceptRangeWithResponse(ContainerResponseContext response) {
         if(response != null){
             response.getHeaders().putSingle(HTTP_HEADER_ACCEPT_RANGE, buildAcceptRange());
