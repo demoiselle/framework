@@ -7,7 +7,7 @@
 /**
  * This package is intended to contain as related classes as Exceptions of the
  * persistence of the Demoiselle Framework.
- * 
+ *
  * @author SERPRO
  */
 package org.demoiselle.jee.crud.exception;
