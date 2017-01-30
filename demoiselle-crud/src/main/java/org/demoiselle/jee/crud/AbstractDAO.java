@@ -6,6 +6,7 @@
  */
 package org.demoiselle.jee.crud;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,9 +65,22 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     @Override
     public T mergeHalf(I id, T entity) {
         try {
-            T entityOld = find(id);
-
-            //getEntityManager().createQuery(sb.toString()).executeUpdate();
+//            StringBuilder sb = new StringBuilder();
+//            sb.append("UPDATE ");
+//            sb.append(entity.getClass().getCanonicalName());
+//            sb.append(" SET ");
+//            for (Method method : entityClass.getDeclaredMethods()) {
+//                Object obj = method.invoke(entityClass);
+//                if (obj != null) {
+//                    sb.append(method.getName()).append(" = ").append(obj);
+//                }
+//            }
+//            sb.append(" WHERE ")
+//                    .append(CrudUtilHelper.getMethodAnnotatedWithID(entityClass))
+//                    .append(" = ")
+//                    .append(id);
+//            System.err.println(sb.toString());
+//            //getEntityManager().createQuery(sb.toString()).executeUpdate();
             return entity;
         } catch (Exception e) {
             // TODO: Severe? Pode cair aqui somente por ter violação de Unique
@@ -159,17 +173,17 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
         if (!drc.getSorts().isEmpty()) {
             List<Order> orders = new ArrayList<>();
-            
+
             Set<String> ascOrder = drc.getSorts().get(CrudSort.ASC);
             Set<String> descOrder = drc.getSorts().get(CrudSort.DESC);
 
-            if(ascOrder != null){
+            if (ascOrder != null) {
                 ascOrder.forEach((field) -> {
                     orders.add(criteriaBuilder.asc(root.get(field)));
                 });
             }
-            
-            if(descOrder != null){
+
+            if (descOrder != null) {
                 descOrder.forEach((field) -> {
                     orders.add(criteriaBuilder.desc(root.get(field)));
                 });

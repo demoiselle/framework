@@ -7,7 +7,7 @@
 package org.demoiselle.jee.security.interceptor;
 
 import static javax.ws.rs.Priorities.AUTHORIZATION;
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static javax.ws.rs.core.Response.Status.FORBIDDEN;
 
 import java.io.Serializable;
 
@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.annotation.Authenticated;
@@ -75,7 +76,7 @@ public class RequiredPermissionInterceptor implements Serializable {
         }
 
         if (!securityContext.hasPermission(resource, operation)) {
-            throw new DemoiselleSecurityException(bundle.doesNotHavePermission(operation, resource), UNAUTHORIZED.getStatusCode());
+            throw new DemoiselleSecurityException(bundle.doesNotHavePermission(operation, resource), FORBIDDEN.getStatusCode());
         }
 
         return ic.proceed();
@@ -105,7 +106,7 @@ public class RequiredPermissionInterceptor implements Serializable {
         if ((requiredPermission.resource()) == null || (requiredPermission.resource()).trim().isEmpty()) {
             //TODO rever necesidade do @Name
             //if (ic.getTarget().getClass().getAnnotation(Name.class) == null) {
-                return ic.getTarget().getClass().getSimpleName();
+            return ic.getTarget().getClass().getSimpleName();
             //} else {
             //    return ic.getTarget().getClass().getAnnotation(Name.class).value();
             //}
@@ -138,7 +139,7 @@ public class RequiredPermissionInterceptor implements Serializable {
         if (requiredPermission.operation() == null || requiredPermission.operation().trim().isEmpty()) {
             //TODO rever necesidade do @Name
             //if (ic.getMethod().getAnnotation(Name.class) == null) {
-                return ic.getMethod().getName();
+            return ic.getMethod().getName();
             //} else {
             //    return ic.getMethod().getAnnotation(Name.class).value();
             //}
