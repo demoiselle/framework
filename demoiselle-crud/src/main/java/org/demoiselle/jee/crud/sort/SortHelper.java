@@ -7,7 +7,7 @@
 package org.demoiselle.jee.crud.sort;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,8 +51,8 @@ public class SortHelper {
         Pattern pattern = Pattern.compile("[\\?&]([^&=]+)=*([^&=]+)");
         Matcher matcher = pattern.matcher(url);
         
-        Set<String> ascList = new HashSet<>();
-        Set<String> descList = new HashSet<>();
+        Set<String> ascList = new LinkedHashSet<>();
+        Set<String> descList = new LinkedHashSet<>();
         Boolean descAll = Boolean.FALSE;
         
         while(matcher.find()){

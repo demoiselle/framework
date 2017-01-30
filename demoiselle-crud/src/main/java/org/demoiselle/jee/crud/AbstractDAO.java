@@ -6,10 +6,10 @@
  */
 package org.demoiselle.jee.crud;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -159,18 +159,21 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
         if (!drc.getSorts().isEmpty()) {
             List<Order> orders = new ArrayList<>();
+            
+            Set<String> ascOrder = drc.getSorts().get(CrudSort.ASC);
+            Set<String> descOrder = drc.getSorts().get(CrudSort.DESC);
 
-            drc.getSorts().forEach((key, values) -> {
-                values.forEach((field) -> {
-                    if (CrudSort.ASC.equals(key)) {
-                        orders.add(criteriaBuilder.asc(root.get(field)));
-                    }
-
-                    if (CrudSort.DESC.equals(key)) {
-                        orders.add(criteriaBuilder.desc(root.get(field)));
-                    }
+            if(ascOrder != null){
+                ascOrder.forEach((field) -> {
+                    orders.add(criteriaBuilder.asc(root.get(field)));
                 });
-            });
+            }
+            
+            if(descOrder != null){
+                descOrder.forEach((field) -> {
+                    orders.add(criteriaBuilder.desc(root.get(field)));
+                });
+            }
 
             criteriaQuery.orderBy(orders);
         }
