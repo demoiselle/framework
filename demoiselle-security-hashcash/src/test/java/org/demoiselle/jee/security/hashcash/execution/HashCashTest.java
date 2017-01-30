@@ -4,7 +4,7 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.security.pow.execution;
+package org.demoiselle.jee.security.hashcash.execution;
 
 import org.demoiselle.jee.security.hashcash.execution.HashCash;
 import java.util.Date;
