@@ -34,6 +34,7 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     private Map<String, Set<String>> filters = new HashMap<>();
     private Map<CrudSort, Set<String>> sorts = new HashMap<>();
     private List<String> fields = new ArrayList<>();
+    private Boolean isPaginationEnabled = Boolean.TRUE;
 
     @Override
     public Integer getLimit() {
@@ -105,10 +106,20 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     public void setFields(List<String> fields) {
         this.fields = fields;
     }
+    
+    @Override
+    public Boolean isPaginationEnabled() {
+        return this.isPaginationEnabled;
+    }
+
+    @Override
+    public void setPaginationEnabled(Boolean isPaginationEnabled) {
+        this.isPaginationEnabled = isPaginationEnabled;
+    }
 
     @Override
     public String toString() {
-        return "DemoiselleRequestContextImpl [offset=" + offset + ", limit=" + limit + ", count=" + count + "]";
+        return "DemoiselleRequestContextImpl [offset=" + offset + ", limit=" + limit + ", count=" + count + ", paginationEnabled=" + isPaginationEnabled +"]";
     }
 
 }

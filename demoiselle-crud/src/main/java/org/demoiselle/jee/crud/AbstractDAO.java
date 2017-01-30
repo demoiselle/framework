@@ -118,18 +118,18 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
             TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
 
-            //if(paginationConfig.getIsGlobalEnabled()){
-            Integer firstResult = drc.getOffset() == null ? 0 : drc.getOffset();
-            Integer maxResults = getMaxResult();
-            Long count = count();
-
-            if (firstResult < count) {
-                query.setFirstResult(firstResult);
-                query.setMaxResults(maxResults);
+            if(drc.isPaginationEnabled()){
+                Integer firstResult = drc.getOffset() == null ? 0 : drc.getOffset();
+                Integer maxResults = getMaxResult();
+                Long count = count();
+    
+                if (firstResult < count) {
+                    query.setFirstResult(firstResult);
+                    query.setMaxResults(maxResults);
+                }
+    
+                drc.setCount(count);
             }
-
-            drc.setCount(count);
-            //}
 
             result.setContent(query.getResultList());
             drc.setEntityClass(entityClass);
@@ -211,7 +211,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     private Integer getMaxResult() {
         if (drc.getLimit() == null && drc.getOffset() == null) {
-            return this.paginationConfig.getDefaultPagination();
+            return paginationConfig.getDefaultPagination();
         }
 
         return (drc.getLimit() - drc.getOffset()) + 1;
