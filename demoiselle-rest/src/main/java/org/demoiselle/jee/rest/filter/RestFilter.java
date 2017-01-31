@@ -27,8 +27,6 @@ public class RestFilter implements ContainerResponseFilter {
 
 	@Override
 	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
-		// Remove spaces from string to add key header
-		String key = demoiselleMessage.frameworkName().replace(" ", "");
-		responseContext.getHeaders().putSingle(key, demoiselleMessage.version());
+		responseContext.getHeaders().putSingle("Demoiselle-Version", demoiselleMessage.frameworkName());
 	}
 }
