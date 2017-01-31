@@ -5,8 +5,8 @@
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
 /**
- * This package has the API for  facilitators for the Security
+ * This package has the API for facilitators for the Scripts
  *
  * @author SERPRO
  */
-package org.demoiselle.jee.core.api.security;
+package org.demoiselle.jee.core.api.script;

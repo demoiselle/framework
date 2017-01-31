@@ -17,11 +17,6 @@ import java.lang.annotation.Target;
 import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
-/**
- * TODO corrigir javadoc
- *
- * @author SERPRO
- */
 @Inherited
 @InterceptorBinding
 @Target({METHOD, TYPE})

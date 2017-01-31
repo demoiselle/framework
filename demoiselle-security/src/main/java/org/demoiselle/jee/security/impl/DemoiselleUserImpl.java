@@ -20,11 +20,6 @@ import javax.ws.rs.core.Response;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 
-/**
- * TODO javadoc
- *
- * @author SERPRO
- */
 @RequestScoped
 public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
 

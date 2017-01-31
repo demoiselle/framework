@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
+import org.demoiselle.jee.core.api.security.TokenType;
 
 /**
  *
@@ -62,7 +63,7 @@ public class TokenManagerMock implements TokenManager {
             token.setKey(value);
         }
 
-        token.setType("Token");
+        token.setType(TokenType.UUID);
     }
 
     /**

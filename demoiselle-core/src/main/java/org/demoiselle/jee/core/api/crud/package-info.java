@@ -5,7 +5,7 @@
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
 /**
- * This package has the facilitators for the CRUD
+ * This package has the API for  facilitators for the CRUD
  *
  * @author SERPRO
  */

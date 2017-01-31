@@ -15,6 +15,7 @@ import static javax.ws.rs.Priorities.AUTHENTICATION;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
+import org.demoiselle.jee.core.api.security.TokenType;
 
 /**
  *
@@ -73,8 +74,7 @@ public class TokenManagerImpl implements TokenManager {
             repo.putIfAbsent(value, user.clone());
             token.setKey(value);
         }
-        //TODO usar enum
-        token.setType("Token");
+        token.setType(TokenType.UUID);
     }
 
     /**

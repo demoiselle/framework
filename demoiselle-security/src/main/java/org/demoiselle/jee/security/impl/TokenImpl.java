@@ -11,6 +11,7 @@ import java.util.Objects;
 import javax.enterprise.context.RequestScoped;
 
 import org.demoiselle.jee.core.api.security.Token;
+import org.demoiselle.jee.core.api.security.TokenType;
 
 /**
  *
@@ -20,7 +21,7 @@ import org.demoiselle.jee.core.api.security.Token;
 public class TokenImpl implements Token {
 
     private String key;
-    private String type;
+    private TokenType type;
 
     @Override
     public String getKey() {
@@ -33,12 +34,12 @@ public class TokenImpl implements Token {
     }
 
     @Override
-    public String getType() {
+    public TokenType getType() {
         return type;
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(TokenType type) {
         this.type = type;
     }
 

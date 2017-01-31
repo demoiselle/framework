@@ -28,6 +28,7 @@ import javax.ws.rs.core.Response;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
+import org.demoiselle.jee.core.api.security.TokenType;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityJWTMessages;
 import org.jose4j.jws.JsonWebSignature;
@@ -196,7 +197,7 @@ public class TokenManagerImpl implements TokenManager {
             jws.setKeyIdHeaderValue("demoiselle-security-jwt");
             jws.setAlgorithmHeaderValue(config.getAlgorithmIdentifiers());
             token.setKey(jws.getCompactSerialization());
-            token.setType("JWT");
+            token.setType(TokenType.JWT);
         } catch (JoseException ex) {
             throw new DemoiselleSecurityException(bundle.general(), Response.Status.UNAUTHORIZED.getStatusCode(), ex);
         }

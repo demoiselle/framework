@@ -15,11 +15,6 @@ import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.core.api.security.TokenManager;
 
-/**
- * TODO javadoc
- *
- * @author SERPRO
- */
 @RequestScoped
 public class SecurityContextImpl implements SecurityContext {
 

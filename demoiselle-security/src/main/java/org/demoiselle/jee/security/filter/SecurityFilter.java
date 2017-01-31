@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.core.api.security.Token;
+import org.demoiselle.jee.core.api.security.TokenType;
 import org.demoiselle.jee.security.DemoiselleSecurityConfig;
 
 /**
@@ -56,7 +57,7 @@ public class SecurityFilter implements ContainerRequestFilter {
             if (req.getHeaders().containsKey("Authorization")) {
                 String chave = req.getHeaders().get("Authorization").toString().replace("[", "").replace("]", "");
                 if (!chave.isEmpty()) {
-                    token.setType(chave.split(" ")[0]);
+                    token.setType(TokenType.valueOf(chave.split(" ")[0].toUpperCase()));
                     token.setKey(chave.split(" ")[1]);
                 }
             }

@@ -23,11 +23,6 @@ import javax.ws.rs.ext.Provider;
 import org.demoiselle.jee.security.DemoiselleSecurityConfig;
 import org.demoiselle.jee.security.annotation.Cors;
 
-/**
- * TODO javadoc
- *
- * @author SERPRO
- */
 @Provider
 public class CorsFilter implements ContainerResponseFilter {
 

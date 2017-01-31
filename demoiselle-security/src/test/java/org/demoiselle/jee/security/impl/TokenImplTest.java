@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import org.apache.deltaspike.testcontrol.api.TestControl;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.Token;
+import org.demoiselle.jee.core.api.security.TokenType;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -68,13 +69,13 @@ public class TokenImplTest {
     @Test
     public void test13() {
         String type = "Teste";
-        instance.setType(type);
+        instance.setType(TokenType.JWT);
     }
 
     @Test
     public void test14() {
-        String expResult = "Teste";
-        String result = instance.getType();
+        TokenType expResult = TokenType.JWT;
+        TokenType result = instance.getType();
         assertEquals(expResult, result);
     }
 
@@ -95,7 +96,7 @@ public class TokenImplTest {
 
     @Test
     public void test17() {
-        String expResult = "Token{\"key\"=123456789, \"type\"=Teste}";
+        String expResult = "Token{\"key\"=123456789, \"type\"=JWT}";
         String result = instance.toString();
         assertEquals(expResult, result);
     }
