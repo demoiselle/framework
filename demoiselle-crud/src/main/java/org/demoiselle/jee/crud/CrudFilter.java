@@ -8,9 +8,10 @@ package org.demoiselle.jee.crud;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -30,6 +31,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.core.api.crud.Result;
+import org.demoiselle.jee.crud.field.FieldHelper;
 import org.demoiselle.jee.crud.filter.FilterHelper;
 import org.demoiselle.jee.crud.pagination.PaginationHelper;
 import org.demoiselle.jee.crud.sort.SortHelper;
@@ -61,20 +63,21 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 	@Inject
 	private FilterHelper filterHelper;
 	
-	//@Inject
-	//private FieldHelper fieldHelper;
+	@Inject
+	private FieldHelper fieldHelper;
 	
 	private static final Logger logger = Logger.getLogger(CrudFilter.class.getName());
 	
     public CrudFilter() {}
     
-    public CrudFilter(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, PaginationHelper paginationHelper, SortHelper sortHelper, FilterHelper filterHelper){
+    public CrudFilter(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, PaginationHelper paginationHelper, SortHelper sortHelper, FilterHelper filterHelper, FieldHelper fieldHelper){
         this.resourceInfo = resourceInfo;
         this.uriInfo = uriInfo;
         this.drc = drc;
         this.paginationHelper = paginationHelper;
         this.sortHelper = sortHelper;
-        this.filterHelper = filterHelper;        
+        this.filterHelper = filterHelper;
+        this.fieldHelper = fieldHelper;
     }
 
 	@Override
@@ -85,7 +88,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
     	        paginationHelper.execute(resourceInfo, uriInfo);
     	        sortHelper.execute(resourceInfo, uriInfo);
     	        filterHelper.execute(resourceInfo, uriInfo);
-    	        //fieldHelper.execute(resourceInfo, uriInfo);
+    	        fieldHelper.execute(resourceInfo, uriInfo);
     	    } 
     	    catch (IllegalArgumentException e) {
                 throw new BadRequestException(e.getMessage());
@@ -134,15 +137,16 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         List<Object> content = (List<Object>) ((Result) response.getEntity()).getContent();
         
         try{
-            //Validate if fields exists on fields field from @Search annotation
-            if(resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)){
-                content = new ArrayList<>();
+            
+            List<String> searchFields = getFields();
+            
+            if(searchFields != null){
+                content = new LinkedList<>();
                 Class<?> targetClass = CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass());
-                Search search = resourceInfo.getResourceMethod().getAnnotation(Search.class);
-                List<String> searchFields = Arrays.asList(search.fields());
-                
-                for(Object object : ((Result) response.getEntity()).getContent()){
-                    Map<String, Object> keyValue = new HashMap<>();
+                Iterator<?> it = ((Result) response.getEntity()).getContent().iterator();
+                while(it.hasNext()){
+                    Object object = it.next();
+                    Map<String, Object> keyValue = new LinkedHashMap<>();
                     
                     for(Field field : object.getClass().getDeclaredFields()){
                         if(searchFields.contains(field.getName())){
@@ -151,22 +155,39 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
                             actualField.setAccessible(true);                                
                             keyValue.put(field.getName(), actualField.get(object));                                
                             actualField.setAccessible(acessible);
-                            
                         }
                     }
                     
                     content.add(keyValue);
                 }
-                
             }
             
         }
         catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e){
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
+//        catch(Exception e){
+//            logger.log(Level.SEVERE, e.getMessage(), e);
+//        }
         
         return content;
         
+    }
+
+    private List<String> getFields() {
+        
+        if(!drc.getFields().isEmpty()){
+            return drc.getFields();
+        }
+        
+        //Validate if fields exists on fields field from @Search annotation
+        if(resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)){
+            Search search = resourceInfo.getResourceMethod().getAnnotation(Search.class);
+            return Arrays.asList(search.fields());
+        }
+        
+        
+        return null;
     }
 
     
