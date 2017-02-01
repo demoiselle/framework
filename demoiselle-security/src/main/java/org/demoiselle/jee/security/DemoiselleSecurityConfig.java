@@ -6,8 +6,8 @@
  */
 package org.demoiselle.jee.security;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.demoiselle.jee.configuration.annotation.Configuration;
 
@@ -22,8 +22,8 @@ public class DemoiselleSecurityConfig {
     private boolean hashcashEnabled;
     private long wait;
 
-    private final Map<String, String> paramsHeaderSecuriry = new HashMap<>();
-    private final Map<String, String> paramsHeaderCors = new HashMap<>();
+    private final Map<String, String> paramsHeaderSecuriry = new ConcurrentHashMap<>();
+    private final Map<String, String> paramsHeaderCors = new ConcurrentHashMap<>();
 
     public boolean isCorsEnabled() {
         return corsEnabled;

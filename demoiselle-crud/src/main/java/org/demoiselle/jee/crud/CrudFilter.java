@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,56 +43,54 @@ import org.demoiselle.jee.crud.sort.SortHelper;
 @Provider
 public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilter {
 
-	@Context
-	private ResourceInfo resourceInfo;
-	
-	@Context
+    @Context
+    private ResourceInfo resourceInfo;
+
+    @Context
     private UriInfo uriInfo;
 
-	@Inject
-	private DemoiselleRequestContext drc;
+    @Inject
+    private DemoiselleRequestContext drc;
 
-	@Inject
-	private PaginationHelper paginationHelper;
-	
-	@Inject
-	private SortHelper sortHelper;
-	
-	@Inject
-	private FilterHelper filterHelper;
-	
-	//@Inject
-	//private FieldHelper fieldHelper;
-	
-	private static final Logger logger = Logger.getLogger(CrudFilter.class.getName());
-	
-    public CrudFilter() {}
-    
-    public CrudFilter(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, PaginationHelper paginationHelper, SortHelper sortHelper, FilterHelper filterHelper){
+    @Inject
+    private PaginationHelper paginationHelper;
+
+    @Inject
+    private SortHelper sortHelper;
+
+    @Inject
+    private FilterHelper filterHelper;
+
+    //@Inject
+    //private FieldHelper fieldHelper;
+    private static final Logger logger = Logger.getLogger(CrudFilter.class.getName());
+
+    public CrudFilter() {
+    }
+
+    public CrudFilter(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, PaginationHelper paginationHelper, SortHelper sortHelper, FilterHelper filterHelper) {
         this.resourceInfo = resourceInfo;
         this.uriInfo = uriInfo;
         this.drc = drc;
         this.paginationHelper = paginationHelper;
         this.sortHelper = sortHelper;
-        this.filterHelper = filterHelper;        
+        this.filterHelper = filterHelper;
     }
 
-	@Override
-	public void filter(ContainerRequestContext requestContext) throws IOException {
+    @Override
+    public void filter(ContainerRequestContext requestContext) throws IOException {
 
-	    if(isRequestForCrud()){
-    	    try {
-    	        paginationHelper.execute(resourceInfo, uriInfo);
-    	        sortHelper.execute(resourceInfo, uriInfo);
-    	        filterHelper.execute(resourceInfo, uriInfo);
-    	        //fieldHelper.execute(resourceInfo, uriInfo);
-    	    } 
-    	    catch (IllegalArgumentException e) {
+        if (isRequestForCrud()) {
+            try {
+                paginationHelper.execute(resourceInfo, uriInfo);
+                sortHelper.execute(resourceInfo, uriInfo);
+                filterHelper.execute(resourceInfo, uriInfo);
+                //fieldHelper.execute(resourceInfo, uriInfo);
+            } catch (IllegalArgumentException e) {
                 throw new BadRequestException(e.getMessage());
             }
-	    }
-	}
-	
+        }
+    }
 
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext response) throws IOException {
@@ -105,69 +103,65 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 
             if (!paginationHelper.isPartialContentResponse()) {
                 response.setStatus(Status.OK.getStatusCode());
-            } 
-            else {
+            } else {
                 response.setStatus(Status.PARTIAL_CONTENT.getStatusCode());
             }
-        }
-        else {
+        } else {
             if (Status.BAD_REQUEST.getStatusCode() == response.getStatus() && drc.getEntityClass() == null) {
                 paginationHelper.buildAcceptRangeWithResponse(response);
             }
         }
 
     }
-   
+
     private Boolean isRequestForCrud() {
-        if(resourceInfo.getResourceClass().getSuperclass() != null
-				&& resourceInfo.getResourceClass().getSuperclass().equals(AbstractREST.class)
-                && resourceInfo.getResourceMethod().isAnnotationPresent(GET.class)){
+        if (resourceInfo.getResourceClass().getSuperclass() != null
+                && resourceInfo.getResourceClass().getSuperclass().equals(AbstractREST.class)
+                && resourceInfo.getResourceMethod().isAnnotationPresent(GET.class)) {
             return Boolean.TRUE;
         }
-        
+
         return Boolean.FALSE;
     }
-    
-    private Object buildContent(ContainerResponseContext response){
-        
+
+    private Object buildContent(ContainerResponseContext response) {
+
         @SuppressWarnings("unchecked")
         List<Object> content = (List<Object>) ((Result) response.getEntity()).getContent();
-        
-        try{
+
+        try {
             //Validate if fields exists on fields field from @Search annotation
-            if(resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)){
+            if (resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)) {
                 content = new ArrayList<>();
                 Class<?> targetClass = CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass());
                 Search search = resourceInfo.getResourceMethod().getAnnotation(Search.class);
                 List<String> searchFields = Arrays.asList(search.fields());
-                
-                for(Object object : ((Result) response.getEntity()).getContent()){
-                    Map<String, Object> keyValue = new HashMap<>();
-                    
-                    for(Field field : object.getClass().getDeclaredFields()){
-                        if(searchFields.contains(field.getName())){
-                            Field actualField = targetClass.getDeclaredField(field.getName());                            
+
+                for (Object object : ((Result) response.getEntity()).getContent()) {
+                    Map<String, Object> keyValue = new ConcurrentHashMap<>();
+
+                    for (Field field : object.getClass().getDeclaredFields()) {
+                        if (searchFields.contains(field.getName())) {
+                            Field actualField = targetClass.getDeclaredField(field.getName());
                             boolean acessible = actualField.isAccessible();
-                            actualField.setAccessible(true);                                
-                            keyValue.put(field.getName(), actualField.get(object));                                
+                            actualField.setAccessible(true);
+                            keyValue.put(field.getName(), actualField.get(object));
                             actualField.setAccessible(acessible);
-                            
+
                         }
                     }
-                    
+
                     content.add(keyValue);
                 }
-                
+
             }
-            
-        }
-        catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e){
+
+        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
-        
+
         return content;
-        
+
     }
 
-    
 }

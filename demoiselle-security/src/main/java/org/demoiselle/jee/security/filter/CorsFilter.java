@@ -8,11 +8,10 @@ package org.demoiselle.jee.security.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import javax.annotation.PostConstruct;
+import javax.annotation.Priority;
 
 import javax.inject.Inject;
+import static javax.ws.rs.Priorities.AUTHORIZATION;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
@@ -23,7 +22,17 @@ import javax.ws.rs.ext.Provider;
 import org.demoiselle.jee.security.DemoiselleSecurityConfig;
 import org.demoiselle.jee.security.annotation.Cors;
 
+/**
+ * <p>
+ * Server cors handling
+ * </p>
+ *
+ * @see <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/cors.html">Documentation</a>
+ *
+ * @author SERPRO
+ */
 @Provider
+@Priority(AUTHORIZATION)
 public class CorsFilter implements ContainerResponseFilter {
 
     @Inject
@@ -40,7 +49,7 @@ public class CorsFilter implements ContainerResponseFilter {
 
         res.getHeaders().putSingle("Demoiselle-security", "enabled");
 
-        config.getParamsHeaderSecuriry().entrySet().forEach((entry) -> {
+        config.getParamsHeaderSecuriry().entrySet().parallelStream().forEach((entry) -> {
             res.getHeaders().putSingle(entry.getKey(), entry.getValue());
         });
 
@@ -49,7 +58,7 @@ public class CorsFilter implements ContainerResponseFilter {
         }
 
         if (config.isCorsEnabled() && corsEnable) {
-            config.getParamsHeaderCors().entrySet().forEach((entry) -> {
+            config.getParamsHeaderCors().entrySet().parallelStream().forEach((entry) -> {
                 res.getHeaders().putSingle(entry.getKey(), entry.getValue());
             });
         } else {

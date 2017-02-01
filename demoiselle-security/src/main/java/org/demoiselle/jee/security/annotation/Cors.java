@@ -17,6 +17,14 @@ import java.lang.annotation.Target;
 import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
+/**
+ * <p>
+ * Server cors handling
+ * </p>
+ * 
+ * @see <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/cors.html">Documentation</a>
+ * @author SERPRO
+ */
 @Inherited
 @InterceptorBinding
 @Target({METHOD, TYPE})

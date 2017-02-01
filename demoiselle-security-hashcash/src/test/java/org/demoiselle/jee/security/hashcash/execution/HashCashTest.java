@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author 70744416353
+ * @author SERPRO
  */
 public class HashCashTest {
 

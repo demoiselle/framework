@@ -11,12 +11,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.time.DateParser;
 import org.apache.commons.lang3.time.FastDateFormat;
 
@@ -188,7 +187,7 @@ public class HashCash {
      * Inverse of {@link #serializeExtensions(Map)}
      */
     private static Map<String, List<String>> deserializeExtensions(String extensions) {
-        Map<String, List<String>> result = new HashMap<String, List<String>>();
+        Map<String, List<String>> result = new ConcurrentHashMap<String, List<String>>();
         if (null == extensions || extensions.length() == 0) {
             return result;
         }

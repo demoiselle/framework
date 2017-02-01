@@ -18,9 +18,12 @@ import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
 /**
+ * <p>
  * Indicates that a specific permission is required in order to invocate the
  * annotated method or class.
- *
+ * </p>
+ * 
+ * @see <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/security.html">Documentation</a>
  * @author SERPRO
  */
 @Inherited

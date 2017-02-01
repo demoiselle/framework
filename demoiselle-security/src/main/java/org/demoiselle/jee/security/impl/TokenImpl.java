@@ -14,6 +14,12 @@ import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenType;
 
 /**
+ * <p>
+ * Object loaded to each request containing the token sent in http header
+ * </p>
+ *
+ * @see
+ * <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/security.html">Documentation</a>
  *
  * @author SERPRO
  */

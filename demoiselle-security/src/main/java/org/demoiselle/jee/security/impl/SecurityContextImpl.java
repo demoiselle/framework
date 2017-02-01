@@ -15,6 +15,16 @@ import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.core.api.security.TokenManager;
 
+/**
+ * <p>
+ * It manages the security features and serves as a hub for specific 
+ * imlementations, look at JWT and Token
+ * </p>
+ *
+ * @see <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/security.html">Documentation</a>
+ *
+ * @author SERPRO
+ */
 @RequestScoped
 public class SecurityContextImpl implements SecurityContext {
 

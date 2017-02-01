@@ -178,13 +178,13 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             Set<String> descOrder = drc.getSorts().get(CrudSort.DESC);
 
             if (ascOrder != null) {
-                ascOrder.forEach((field) -> {
+                ascOrder.parallelStream().forEach((field) -> {
                     orders.add(criteriaBuilder.asc(root.get(field)));
                 });
             }
 
             if (descOrder != null) {
-                descOrder.forEach((field) -> {
+                descOrder.parallelStream().forEach((field) -> {
                     orders.add(criteriaBuilder.desc(root.get(field)));
                 });
             }
@@ -206,7 +206,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             // Many parameters for the same key, generate OR clause
             if (values.size() > 1) {
                 List<Predicate> predicateSameKey = new ArrayList<>();
-                values.forEach((value) -> {
+                values.parallelStream().forEach((value) -> {
                     predicateSameKey.add(criteriaBuilder.equal(root.get(key), value));
                 });
                 predicates.add(criteriaBuilder.or(predicateSameKey.toArray(new Predicate[]{})));

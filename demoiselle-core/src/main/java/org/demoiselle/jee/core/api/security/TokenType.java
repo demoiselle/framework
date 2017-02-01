@@ -9,5 +9,5 @@ public enum TokenType {
     BASIC,
     BEARER,
     MAC,
-    UUID
+    TOKEN
 }

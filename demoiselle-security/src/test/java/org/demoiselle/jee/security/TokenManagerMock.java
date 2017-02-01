@@ -53,7 +53,7 @@ public class TokenManagerMock implements TokenManager {
     public void setUser(DemoiselleUser user) {
         token.setKey(null);
 
-        repo.entrySet().stream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
+        repo.entrySet().parallelStream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
             token.setKey(entry.getKey());
         });
 
@@ -63,7 +63,7 @@ public class TokenManagerMock implements TokenManager {
             token.setKey(value);
         }
 
-        token.setType(TokenType.UUID);
+        token.setType(TokenType.TOKEN);
     }
 
     /**
@@ -97,7 +97,7 @@ public class TokenManagerMock implements TokenManager {
 
     @Override
     public void removeUser(DemoiselleUser user) {
-        repo.entrySet().stream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
+        repo.entrySet().parallelStream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).parallel().forEach((entry) -> {
             token.setKey(entry.getKey());
         });
         removeToken();

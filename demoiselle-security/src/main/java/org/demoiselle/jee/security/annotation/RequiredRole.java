@@ -22,7 +22,8 @@ import javax.interceptor.InterceptorBinding;
  * Indicates that the annotated method or class requires the user to have one or
  * more roles associated in order to be invocated.
  * </p>
- *
+ * 
+ * @see <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/security.html">Documentation</a>
  * @author SERPRO
  */
 @Inherited
