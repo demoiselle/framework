@@ -18,7 +18,6 @@
    </parent>
 
    <build>
-   <pluginManagement>
       <plugins>
          <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
@@ -74,7 +73,6 @@
          </plugin>
 
       </plugins>
-      </pluginManagement>
    </build>
 
    <dependencies>
@@ -88,7 +86,6 @@
          <groupId>org.demoiselle.jee</groupId>
          <artifactId>demoiselle-rest</artifactId>
       </dependency>
-
 
       <dependency>
          <groupId>org.codehaus.groovy</groupId>
