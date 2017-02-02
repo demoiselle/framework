@@ -152,7 +152,7 @@ public class TokenManagerImpl implements TokenManager {
                 mappermissions.entrySet().stream().forEach((entry) -> {
                     String key = entry.getKey();
                     List<String> value = entry.getValue();
-                    value.forEach((string) -> {
+                    value.stream().forEach((string) -> {
                         loggedUser.addPermission(key, string);
                     });
                 });
