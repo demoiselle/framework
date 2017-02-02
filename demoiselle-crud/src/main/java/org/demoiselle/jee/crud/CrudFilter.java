@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,20 +62,22 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
     @Inject
     private FilterHelper filterHelper;
 
-    //@Inject
-    //private FieldHelper fieldHelper;
+//    @Inject
+//    private FieldHelper fieldHelper;
     private static final Logger logger = Logger.getLogger(CrudFilter.class.getName());
 
     public CrudFilter() {
     }
 
     public CrudFilter(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, PaginationHelper paginationHelper, SortHelper sortHelper, FilterHelper filterHelper) {
+
         this.resourceInfo = resourceInfo;
         this.uriInfo = uriInfo;
         this.drc = drc;
         this.paginationHelper = paginationHelper;
         this.sortHelper = sortHelper;
         this.filterHelper = filterHelper;
+
     }
 
     @Override
@@ -143,6 +146,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
                     for (Field field : object.getClass().getDeclaredFields()) {
                         if (searchFields.contains(field.getName())) {
                             Field actualField = targetClass.getDeclaredField(field.getName());
+
                             boolean acessible = actualField.isAccessible();
                             actualField.setAccessible(true);
                             keyValue.put(field.getName(), actualField.get(object));

@@ -6,13 +6,8 @@
  */
 package org.demoiselle.jee.crud;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.util.Map;
-import java.util.Set;
-import javax.persistence.Id;
-import org.reflections.Reflections;
 
 /**
  * @author SERPRO

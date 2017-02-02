@@ -37,4 +37,10 @@ public class UserRestForTest extends AbstractREST<UserModelForTest, Long> {
         return null;
     }
     
+    @GET
+    @Search(fields={"id", "name", "email"})
+    public Result findWithSearchAndFields(){
+        return null;
+    }
+    
 }

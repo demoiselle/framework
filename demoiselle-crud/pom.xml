@@ -73,7 +73,6 @@
          </plugin>
 
       </plugins>
-      
    </build>
 
    <dependencies>
@@ -87,7 +86,6 @@
          <groupId>org.demoiselle.jee</groupId>
          <artifactId>demoiselle-rest</artifactId>
       </dependency>
-
 
       <dependency>
          <groupId>org.codehaus.groovy</groupId>

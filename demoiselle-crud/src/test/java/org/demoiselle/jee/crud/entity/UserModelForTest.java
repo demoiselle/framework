@@ -12,10 +12,19 @@ package org.demoiselle.jee.crud.entity;
  *
  */
 public class UserModelForTest {
-
+    
+    private Long id;
     private String name;
     private String mail;
     private Integer age;
+    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
