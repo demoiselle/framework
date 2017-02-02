@@ -52,7 +52,7 @@ public class DemoiselleRestConfigTest {
      */
     @Test
     public void test13() {
-        //TODO implementar teste do config
+        //TODO PGP implementar teste do config
         boolean expResult = false;
         boolean result = false;
         assertEquals(expResult, result);

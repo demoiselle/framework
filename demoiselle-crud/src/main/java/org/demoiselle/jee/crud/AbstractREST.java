@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.jaxrs.PATCH;
 
 /**
- * TODO JAVADOC
+ * TODO CLF JAVADOC
  *
  * @author SERPRO
  *
@@ -98,7 +98,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 	     * extending this class overrides its own find() method using the @Search annotation (...) 
 	     * defining the field fields.
 	     * 
-	     * TODO definir link de documentação
+	     * TODO CLF definir link de documentação
          */
         throw new DemoiselleRestException(crudMessage.methodFindNotImplemented(), Status.NOT_IMPLEMENTED.getStatusCode());
     }

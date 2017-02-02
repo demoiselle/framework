@@ -17,7 +17,7 @@ import org.demoiselle.jee.crud.sort.CrudSort;
  * @author SERPRO
  *
  */
-//TODO mover para demoisele-core
+//TODO CLF mover para demoisele-core
 public interface DemoiselleRequestContext {
 
     Integer getLimit();

@@ -10,7 +10,7 @@ import org.apache.deltaspike.core.api.message.MessageBundle;
 import org.apache.deltaspike.core.api.message.MessageTemplate;
 
 @MessageBundle
-// TODO merge
+// TODO CLF fazer merge com a classe DemoiselleMessage
 public interface DemoisellePaginationMessage {
 	
 	@MessageTemplate("{invalid-range-parameters}")

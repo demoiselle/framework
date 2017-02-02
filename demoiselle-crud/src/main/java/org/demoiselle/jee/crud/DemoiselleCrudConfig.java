@@ -12,7 +12,7 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
  *
  * @author SERPRO
  */
-//TODO revisar
+//TODO CLF revisar
 @Configuration(prefix = "demoiselle.crud")
 public class DemoiselleCrudConfig {
 
