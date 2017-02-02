@@ -87,7 +87,7 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 
             ConstraintViolationException c = (ConstraintViolationException) exception;
 
-            c.getConstraintViolations().parallelStream().forEach((violation) -> {
+            c.getConstraintViolations().stream().forEach((violation) -> {
                 String objectType = violation.getLeafBean().getClass().getSimpleName();
 
                 // This is fixed because REST beans validations only accept ONE
@@ -152,7 +152,7 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
                 arrayErrors.add(object);
             }
 
-            e.getMessages().parallelStream().map((message) -> {
+            e.getMessages().stream().map((message) -> {
                 Map<String, Object> object = new ConcurrentHashMap<>();
                 object.put(FIELDNAME_ERROR, message.getError());
                 if (isShowErrorDetails) {

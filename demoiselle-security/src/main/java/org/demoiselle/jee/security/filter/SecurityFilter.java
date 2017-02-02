@@ -29,7 +29,8 @@ import org.demoiselle.jee.security.DemoiselleSecurityConfig;
  * Server cors handling
  * </p>
  *
- * @see <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/cors.html">Documentation</a>
+ * @see
+ * <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/cors.html">Documentation</a>
  *
  * @author SERPRO
  */

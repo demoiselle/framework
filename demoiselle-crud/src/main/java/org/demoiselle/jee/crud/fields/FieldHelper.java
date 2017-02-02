@@ -49,7 +49,7 @@ public class FieldHelper {
             if (ReservedKeyWords.DEFAULT_FIELD_KEY.getKey().equalsIgnoreCase(key)) {
                 Set<String> paramValues = new HashSet<>();
 
-                values.parallelStream().forEach(value -> {
+                values.stream().forEach(value -> {
                     String[] paramValueSplit = value.split("\\,");
                     paramValues.addAll(Arrays.asList(paramValueSplit));
                 });

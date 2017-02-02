@@ -78,7 +78,7 @@ public class RequiredRoleInterceptor implements Serializable {
             }
         }
 
-        roles.parallelStream().filter((role) -> (securityContext.hasRole(role))).forEach((role) -> {
+        roles.stream().filter((role) -> (securityContext.hasRole(role))).forEach((role) -> {
             userRoles.add(role);
         });
 

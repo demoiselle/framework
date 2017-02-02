@@ -56,7 +56,7 @@ public class FilterHelper {
             if(!isReservedKey(key)){
                 Set<String> paramValues = new HashSet<>();
                 
-                values.parallelStream().forEach(value -> {
+                values.stream().forEach(value -> {
                     String[] paramValueSplit = value.split("\\,");
                     paramValues.addAll(Arrays.asList(paramValueSplit));
                 });
@@ -69,13 +69,13 @@ public class FilterHelper {
         if(resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)){
             Search search = resourceInfo.getResourceMethod().getAnnotation(Search.class);
             List<String> searchFields = Arrays.asList(search.fields());
-            drc.getFilters().keySet().parallelStream().filter((field) -> (!searchFields.contains(field))).forEachOrdered((field) -> {
+            drc.getFilters().keySet().stream().filter((field) -> (!searchFields.contains(field))).forEachOrdered((field) -> {
                 throw new BadRequestException(message.filterFieldRequestNotExistsOnSearchField(field));
             });
         }
         
         // Validade if fields exists on model
-        drc.getFilters().keySet().parallelStream().forEach((field) -> {
+        drc.getFilters().keySet().stream().forEach((field) -> {
             CrudUtilHelper.checkIfExistField(CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass()), field);
         });
     }

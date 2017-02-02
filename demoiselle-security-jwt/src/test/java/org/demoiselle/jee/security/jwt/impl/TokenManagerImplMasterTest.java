@@ -15,6 +15,7 @@ import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
+import org.demoiselle.jee.core.api.security.TokenType;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertNotEquals;
@@ -78,18 +79,17 @@ public class TokenManagerImplMasterTest {
     /**
      * Test of setUser method, of class TokensManagerImpl.
      */
-     
 //     @Test
 //    public void test11() {
 //        out.println("Init");
 //        token.setKey("");
 //        assertNotEquals("", token.getKey());
 //    }
-     
     @Test
     public void test20() {
         out.println("setUser");
         token.setKey("");
+        token.setType(TokenType.JWT);
         dml.setName("Teste");
         dml.setIdentity("1");
         dml.addRole("ADMINISTRATOR");
@@ -116,6 +116,7 @@ public class TokenManagerImplMasterTest {
     public void test21() {
         out.println("getUser");
         token.setKey(localtoken);
+        token.setType(TokenType.JWT);
         dml.setName("Teste");
         dml.setIdentity("1");
         dml.addRole("ADMINISTRATOR");
@@ -142,6 +143,7 @@ public class TokenManagerImplMasterTest {
     public void test22() {
         out.println("validate");
         token.setKey(localtoken);
+        token.setType(TokenType.JWT);
         boolean expResult = true;
         boolean result = instance.validate();
         assertEquals(expResult, result);
@@ -155,6 +157,7 @@ public class TokenManagerImplMasterTest {
         out.println("getUserError");
         instance.setUser(dml);
         token.setKey("");
+        token.setType(TokenType.JWT);
         DemoiselleUser expResult = dml;
         DemoiselleUser result = instance.getUser();
         assertNotEquals(expResult, result);
@@ -167,6 +170,7 @@ public class TokenManagerImplMasterTest {
     public void test24() {
         out.println("validateError");
         token.setKey("");
+        token.setType(TokenType.JWT);
         boolean expResult = false;
         boolean result = instance.validate();
         assertEquals(expResult, result);

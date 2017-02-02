@@ -73,7 +73,7 @@ public class TokenImpl implements Token {
 
     @Override
     public String toString() {
-        return "Token{" + "\"key\"=" + key + ", \"type\"=" + type + '}';
+        return "Token{" + "\"key\"=" + key + ", \"type\"=" + type.toString() + '}';
     }
 
 }

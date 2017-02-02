@@ -79,7 +79,7 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
         ScriptEngineManager manager = new ScriptEngineManager();
         List<ScriptEngineFactory> factories = manager.getEngineFactories();
 
-        factories.parallelStream().forEach((factory) -> {
+        factories.stream().forEach((factory) -> {
             listaEngines.addAll(factory.getNames());
         });
         return listaEngines;

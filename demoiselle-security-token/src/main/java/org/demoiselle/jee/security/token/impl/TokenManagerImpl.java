@@ -65,7 +65,7 @@ public class TokenManagerImpl implements TokenManager {
     public void setUser(DemoiselleUser user) {
         token.setKey(null);
 
-        repo.entrySet().parallelStream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).parallel().forEach((entry) -> {
+        repo.entrySet().stream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).parallel().forEach((entry) -> {
             token.setKey(entry.getKey());
         });
 
@@ -127,7 +127,7 @@ public class TokenManagerImpl implements TokenManager {
      */
     @Override
     public void removeUser(DemoiselleUser user) {
-        repo.entrySet().parallelStream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).parallel().forEach((entry) -> {
+        repo.entrySet().stream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).parallel().forEach((entry) -> {
             token.setKey(entry.getKey());
         });
         removeToken();
