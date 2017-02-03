@@ -43,13 +43,15 @@ public class AuthenticatedInterceptor implements Serializable {
     @AroundInvoke
     public Object manage(final InvocationContext ic) throws Exception {
         Authenticated logged = ic.getMethod().getAnnotation(Authenticated.class);
-        if (!securityContext.isLoggedIn()) {
-            if (logged != null && !logged.enable()) {
-                return ic.proceed();
-            } else {
-                throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), FORBIDDEN.getStatusCode());
-            }
+
+        if (logged != null && !logged.enable()) {
+            return ic.proceed();
         }
+
+        if (!securityContext.isLoggedIn()) {
+            throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), FORBIDDEN.getStatusCode());
+        }
+
         return ic.proceed();
     }
 }

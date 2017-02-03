@@ -67,12 +67,12 @@ public class RequiredPermissionInterceptor implements Serializable {
         String resource = getResource(ic);
         String operation = getOperation(ic);
 
+        if (logged != null && !logged.enable()) {
+            return ic.proceed();
+        }
+
         if (!securityContext.isLoggedIn()) {
-            if (logged != null && !logged.enable()) {
-                return ic.proceed();
-            } else {
-                throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), UNAUTHORIZED.getStatusCode());
-            }
+            throw new DemoiselleSecurityException(bundle.doesNotHavePermission(operation, resource), FORBIDDEN.getStatusCode());
         }
 
         if (!securityContext.hasPermission(resource, operation)) {
