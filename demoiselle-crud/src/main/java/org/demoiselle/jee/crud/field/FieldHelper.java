@@ -6,11 +6,14 @@
  */
 package org.demoiselle.jee.crud.field;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -57,7 +60,7 @@ public class FieldHelper {
                 Set<String> paramValues = new HashSet<>();
                 
                 values.forEach(value -> {
-                    String[] paramValueSplit = value.split("\\,");
+                    String[] paramValueSplit = value.split(",(?![^(]*\\))");
                     paramValues.addAll(Arrays.asList(paramValueSplit));
                 });
                 
@@ -74,13 +77,63 @@ public class FieldHelper {
         //Validate fields
         drc.getFields().forEach( (field) -> {
             //Check if method is annotated with @Search
+            String fieldStr = field.replaceAll("\\([^)]*\\)", "");
             if(!fieldsFromAnnotation.isEmpty()){
-                if(!fieldsFromAnnotation.contains(field)){
-                    throw new IllegalArgumentException(message.filterFieldRequestNotExistsOnSearchField(field));
+                if(!fieldsFromAnnotation.contains(fieldStr)){
+                    throw new IllegalArgumentException(message.fieldRequestDoesNotExistsOnSearchField(fieldStr));
                 }
             }
             
-            CrudUtilHelper.checkIfExistField(CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()), field);
+            Class<?> targetClass = CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass());
+                
+            // Check if searchField has a second level
+            Pattern pattern = Pattern.compile("\\([^)]*\\)");
+            Matcher matcher = pattern.matcher(field);            
+            
+            if(matcher.find()){
+                String masterField = field.replaceAll("\\([^)]*\\)", "");
+                
+                Field fieldMaster;
+                
+                try {
+                    fieldMaster = targetClass.getDeclaredField(masterField);
+                }
+                catch (SecurityException | NoSuchFieldException e) {
+                    throw new IllegalArgumentException(this.message.fieldRequestDoesNotExistsOnObject(field, targetClass.getName()));
+                }
+                
+                Class<?> fieldClazz = fieldMaster.getType();
+                                        
+                Matcher m = Pattern.compile("\\(([^\\)]+)\\)").matcher(field);
+                if(m.find()){
+                    String secondFields[] = m.group(1).split("\\,");
+                    for(String secondFieldStr : secondFields){
+                        try{
+                            CrudUtilHelper.checkIfExistField(fieldClazz, secondFieldStr);
+                        }
+                        catch(IllegalArgumentException e){
+                            throw new IllegalArgumentException(this.message.fieldRequestDoesNotExistsOnObject(secondFieldStr, fieldClazz.getName()));
+                        }
+                    }
+                }
+                else{
+                    try{
+                        CrudUtilHelper.checkIfExistField(CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()), masterField);
+                    }
+                    catch(IllegalArgumentException e){
+                        throw new IllegalArgumentException(this.message.fieldRequestDoesNotExistsOnObject(masterField, CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()).getName()));
+                    }
+                }
+                
+            }
+            else{
+                try{
+                    CrudUtilHelper.checkIfExistField(CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()), field);
+                }
+                catch(IllegalArgumentException e){
+                    throw new IllegalArgumentException(this.message.fieldRequestDoesNotExistsOnObject(field, CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()).getName()));
+                }
+            }
         });
     }
 

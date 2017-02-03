@@ -210,11 +210,13 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                     predicateSameKey.add(criteriaBuilder.equal(root.get(key), value));
                 });
                 predicates.add(criteriaBuilder.or(predicateSameKey.toArray(new Predicate[]{})));
-            } else {
+            } 
+            else {
                 String value = values.iterator().next();
                 if ("null".equals(value) || value.isEmpty()) {
                     predicates.add(criteriaBuilder.isNull(root.get(key)));
-                } else {
+                } 
+                else {
                     predicates.add(criteriaBuilder.equal(root.get(key), values.iterator().next()));
                 }
             }

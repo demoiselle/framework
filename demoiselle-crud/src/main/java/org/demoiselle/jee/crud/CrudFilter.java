@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
@@ -148,13 +150,54 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
                     Object object = it.next();
                     Map<String, Object> keyValue = new LinkedHashMap<>();
                     
-                    for(Field field : object.getClass().getDeclaredFields()){
-                        if(searchFields.contains(field.getName())){
-                            Field actualField = targetClass.getDeclaredField(field.getName());                            
-                            boolean acessible = actualField.isAccessible();
-                            actualField.setAccessible(true);                                
-                            keyValue.put(field.getName(), actualField.get(object));                                
-                            actualField.setAccessible(acessible);
+                    for(String searchField : searchFields){
+                        // Check if searchField has a second level
+                        Pattern pattern = Pattern.compile("\\([^)]*\\)");
+                        Matcher matcher = pattern.matcher(searchField);
+                        
+                        if(matcher.find()){
+                            String masterField = searchField.replaceAll("\\([^)]*\\)", "");
+                            
+                            Field field = targetClass.getDeclaredField(masterField); 
+                            Class<?> fieldClazz = field.getType();
+                                                    
+                            Matcher m = Pattern.compile("\\(([^\\)]+)\\)").matcher(searchField);
+                            if(m.find()){
+                                String secondFields[] = m.group(1).split("\\,");
+                                
+                                Map<String, Object> keyValueSecond = new LinkedHashMap<>();
+                                
+                                for(String secondFieldStr : secondFields){
+                                    Field secondField = fieldClazz.getDeclaredField(secondFieldStr);
+                                    
+                                    boolean acessible = field.isAccessible();
+                                    boolean acessibleSecond = secondField.isAccessible();
+                                    
+                                    field.setAccessible(true);  
+                                    secondField.setAccessible(true);       
+                                    Object secondObject = (Object) field.get(object);                                
+                                    keyValueSecond.put(secondField.getName(), secondField.get(secondObject)); 
+                                    
+                                    secondField.setAccessible(acessibleSecond);
+                                    field.setAccessible(acessible);
+                                }
+                                
+                                keyValue.put(masterField, keyValueSecond);
+                            }
+                            else{
+                                if(masterField.contains(field.getName())){
+                                    keyValue.put(field.getName(), getValueFromField(targetClass, field, object));
+                                }
+                            }                            
+                        }
+                        else{
+                            for(Field field : object.getClass().getDeclaredFields()){
+                                                                
+                                if(searchFields.contains(field.getName())){
+                                    keyValue.put(field.getName(), getValueFromField(targetClass, field, object));
+                                }
+                            
+                            }
                         }
                     }
                     
@@ -166,12 +209,20 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e){
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
-//        catch(Exception e){
-//            logger.log(Level.SEVERE, e.getMessage(), e);
-//        }
         
         return content;
         
+    }
+    
+    private Object getValueFromField(Class<?> targetClass, Field field, Object object) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
+        Object result = null;
+        Field actualField = targetClass.getDeclaredField(field.getName());                            
+        boolean acessible = actualField.isAccessible();
+        actualField.setAccessible(true);                                
+        result = actualField.get(object);                                
+        actualField.setAccessible(acessible);
+        
+        return result;
     }
 
     private List<String> getFields() {
@@ -185,7 +236,6 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
             Search search = resourceInfo.getResourceMethod().getAnnotation(Search.class);
             return Arrays.asList(search.fields());
         }
-        
         
         return null;
     }

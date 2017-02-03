@@ -65,7 +65,7 @@ public class FilterHelper {
             }
         });
         
-        //Valida if fields exists on fields field from @Search annotation
+        //Valid if fields exists on fields attribute from @Search annotation
         if(resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)){
             Search search = resourceInfo.getResourceMethod().getAnnotation(Search.class);
             List<String> searchFields = Arrays.asList(search.fields());
@@ -76,7 +76,7 @@ public class FilterHelper {
             }
         }
         
-        // Validade if fields exists on model
+        // Valid if fields exists on model
         for(String field : drc.getFilters().keySet()){
             CrudUtilHelper.checkIfExistField(CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass()), field);
         }
