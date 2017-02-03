@@ -54,8 +54,7 @@ public interface DemoiselleMessage {
 
 	/**
 	 *
-	 * @param key
-	 *            search key
+	 * @param key search key
 	 * @return message for key not found
 	 */
 	@MessageTemplate("{key-not-found}")
@@ -63,10 +62,8 @@ public interface DemoiselleMessage {
 
 	/**
 	 *
-	 * @param interfaceString
-	 *            interface name
-	 * @param implementation
-	 *            implementations name
+	 * @param interfaceString interface name
+	 * @param implementation implementations name
 	 * @return message for ambiguous
 	 */
 	@MessageTemplate("{ambiguous-strategy-resolution}")
@@ -74,8 +71,7 @@ public interface DemoiselleMessage {
 
 	/**
 	 *
-	 * @param implementation
-	 *            implementations name
+	 * @param implementation implementations name
 	 * @return message for ambiguous
 	 */
 	@MessageTemplate("{ambiguous-bean-resolution}")
@@ -83,8 +79,7 @@ public interface DemoiselleMessage {
 
 	/**
 	 *
-	 * @param bean
-	 *            bean name
+	 * @param bean bean name
 	 * @return message for bean not found
 	 */
 	@MessageTemplate("{bean-not-found}")
@@ -92,20 +87,16 @@ public interface DemoiselleMessage {
 
 	/**
 	 *
-	 * @param clazz
-	 *            class name
-	 * @param ex
-	 *            exception handler name
-	 * @return message for more than one exception handler defined for same
-	 *         class
+	 * @param clazz class name
+	 * @param ex exception handler name
+	 * @return message for more than one exception handler defined for same class
 	 */
 	@MessageTemplate("{more-than-one-exceptionhandler-defined-for-same-class}")
 	String moreThanOneExceptionhandlerDefinedForSameClass(String clazz, String ex);
 
 	/**
 	 *
-	 * @param ex
-	 *            Exception name
+	 * @param ex  Exception name           
 	 * @return message for handling Exception
 	 */
 	@MessageTemplate("{handling-exception}")
@@ -127,8 +118,7 @@ public interface DemoiselleMessage {
 
 	/**
 	 *
-	 * @param setting
-	 *            Setting
+	 * @param setting            
 	 * @return message for setting up bean manager exception
 	 */
 	@MessageTemplate("{setting-up-bean-manager}")
@@ -141,13 +131,27 @@ public interface DemoiselleMessage {
 	@MessageTemplate("{processing-fail}")
 	String processingFail();
 
-	// TODO CCL JAVADOC
+	/**
+	 *
+	 * @param method
+	 * @return message for executing-method
+	 */
 	@MessageTemplate("{executing-method}")
 	String executingMethod(String method);
 
+	/**
+	 * 
+	 * @param method
+	 * @return message for startup method
+	 */
 	@MessageTemplate("{add-startup-method}")
 	String addStartupMethod(String method);
 
+	/**
+	 * 
+	 * @param method
+	 * @return message for shutdown method
+	 */
 	@MessageTemplate("{add-shutdown-method}")
 	String addShutdownMethod(String method);
 
