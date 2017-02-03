@@ -84,7 +84,7 @@ public class SortHelper {
         }
         
         // Values that exists on DESC list should removed from ASC list
-        descList.forEach( (field) -> {
+        descList.stream().forEach( (field) -> {
             ascList.remove(field);
         });
         
@@ -100,7 +100,7 @@ public class SortHelper {
         
         // Validate if the fields are valid
         drc.getSorts().forEach( (key, values) -> {
-            values.forEach( (field) -> {
+            values.stream().forEach( (field) -> {
                 CrudUtilHelper.checkIfExistField(CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass()), field);
             });
         });

@@ -31,20 +31,22 @@ import org.demoiselle.jee.crud.Search;
  */
 @RequestScoped
 public class FieldHelper {
-    
+
     private UriInfo uriInfo;
-    
+
     private ResourceInfo resourceInfo;
-    
+
     @Inject
     private FieldHelperMessage message;
     
     @Inject
     private DemoiselleRequestContext drc;
-    
-    public FieldHelper(){}
-    
-    public FieldHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, FieldHelperMessage message){
+
+
+    public FieldHelper() {
+    }
+
+    public FieldHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, FieldHelperMessage message) {
         this.uriInfo = uriInfo;
         this.resourceInfo = resourceInfo;
         this.drc = drc;
@@ -54,16 +56,16 @@ public class FieldHelper {
     public void execute(ResourceInfo resourceInfo, UriInfo uriInfo) {
         this.resourceInfo = resourceInfo == null ? this.resourceInfo : resourceInfo;
         this.uriInfo = uriInfo == null ? this.uriInfo : uriInfo;
-        
-        uriInfo.getQueryParameters().forEach( (key, values) -> {
-            if(ReservedKeyWords.DEFAULT_FIELD_KEY.getKey().equalsIgnoreCase(key)) {
+
+        uriInfo.getQueryParameters().forEach((key, values) -> {
+            if (ReservedKeyWords.DEFAULT_FIELD_KEY.getKey().equalsIgnoreCase(key)) {
                 Set<String> paramValues = new HashSet<>();
                 
                 values.forEach(value -> {
                     String[] paramValueSplit = value.split(",(?![^(]*\\))");
                     paramValues.addAll(Arrays.asList(paramValueSplit));
                 });
-                
+
                 drc.getFields().addAll(paramValues);
             }
         });

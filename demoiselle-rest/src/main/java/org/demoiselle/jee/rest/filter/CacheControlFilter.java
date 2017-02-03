@@ -8,6 +8,8 @@ package org.demoiselle.jee.rest.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import javax.annotation.Priority;
+import static javax.ws.rs.Priorities.HEADER_DECORATOR;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
@@ -20,8 +22,8 @@ import org.demoiselle.jee.rest.annotation.CacheControl;
  *
  * @author SERPRO
  */
-//TODO usar priority
 @Provider
+@Priority(HEADER_DECORATOR)
 public class CacheControlFilter implements ContainerResponseFilter {
 
     @Context
@@ -30,24 +32,11 @@ public class CacheControlFilter implements ContainerResponseFilter {
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
         if (req.getMethod().equals("GET")) {
-            if (info.getResourceMethod() != null) {
-                Method method = info.getResourceMethod();
-                //TODO rever publicacao de codigo
-                if (method != null) {
-                    CacheControl max = info.getResourceMethod().getAnnotation(CacheControl.class);
-                    if (max != null) {
-                        res.getHeaders().putSingle("Cache-Control", max.value());
-                    }
-                }
-            } 
-            if (info.getResourceClass() != null) {
-                @SuppressWarnings("rawtypes")
-				Class classe = info.getResourceClass();
-                if (classe != null) {
-                    CacheControl max = info.getResourceClass().getAnnotation(CacheControl.class);
-                    if (max != null) {
-                        res.getHeaders().putSingle("Cache-Control", max.value());
-                    }
+            Method method = info.getResourceMethod();
+            if (method != null) {
+                CacheControl max = method.getAnnotation(CacheControl.class);
+                if (max != null) {
+                    res.getHeaders().putSingle("Cache-Control", max.value());
                 }
             }
         }

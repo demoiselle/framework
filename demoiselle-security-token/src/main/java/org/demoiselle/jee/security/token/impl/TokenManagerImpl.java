@@ -15,6 +15,7 @@ import static javax.ws.rs.Priorities.AUTHENTICATION;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
+import org.demoiselle.jee.core.api.security.TokenType;
 
 /**
  *
@@ -64,7 +65,7 @@ public class TokenManagerImpl implements TokenManager {
     public void setUser(DemoiselleUser user) {
         token.setKey(null);
 
-        repo.entrySet().stream().parallel().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
+        repo.entrySet().stream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).parallel().forEach((entry) -> {
             token.setKey(entry.getKey());
         });
 
@@ -73,8 +74,7 @@ public class TokenManagerImpl implements TokenManager {
             repo.putIfAbsent(value, user.clone());
             token.setKey(value);
         }
-        //TODO usar enum
-        token.setType("Token");
+        token.setType(TokenType.TOKEN);
     }
 
     /**
@@ -127,7 +127,7 @@ public class TokenManagerImpl implements TokenManager {
      */
     @Override
     public void removeUser(DemoiselleUser user) {
-        repo.entrySet().stream().parallel().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
+        repo.entrySet().stream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).parallel().forEach((entry) -> {
             token.setKey(entry.getKey());
         });
         removeToken();

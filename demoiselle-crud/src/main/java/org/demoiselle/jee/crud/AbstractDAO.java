@@ -31,7 +31,7 @@ import org.demoiselle.jee.crud.pagination.DemoisellePaginationConfig;
 import org.demoiselle.jee.crud.pagination.ResultSet;
 import org.demoiselle.jee.crud.sort.CrudSort;
 
-//TODO revisar
+//TODO CLF revisar
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
@@ -57,7 +57,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             getEntityManager().persist(entity);
             return entity;
         } catch (Exception e) {
-            // TODO: Severe? Pode cair aqui somente por ter violação de Unique
+            // TODO: CLF Severe? Pode cair aqui somente por ter violação de Unique
             throw new DemoiselleCrudException("Não foi possível salvar", e);
         }
     }
@@ -83,7 +83,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 //            //getEntityManager().createQuery(sb.toString()).executeUpdate();
             return entity;
         } catch (Exception e) {
-            // TODO: Severe? Pode cair aqui somente por ter violação de Unique
+            // TODO: CLF Severe? Pode cair aqui somente por ter violação de Unique
             throw new DemoiselleCrudException("Não foi possível salvar", e);
         }
     }
@@ -94,7 +94,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             getEntityManager().merge(entity);
             return entity;
         } catch (Exception e) {
-            // TODO: Severe? Pode cair aqui somente por ter violação de Unique
+            // TODO: CLF Severe? Pode cair aqui somente por ter violação de Unique
             throw new DemoiselleCrudException("Não foi possível salvar", e);
         }
     }
@@ -178,13 +178,13 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             Set<String> descOrder = drc.getSorts().get(CrudSort.DESC);
 
             if (ascOrder != null) {
-                ascOrder.forEach((field) -> {
+                ascOrder.stream().forEach((field) -> {
                     orders.add(criteriaBuilder.asc(root.get(field)));
                 });
             }
 
             if (descOrder != null) {
-                descOrder.forEach((field) -> {
+                descOrder.stream().forEach((field) -> {
                     orders.add(criteriaBuilder.desc(root.get(field)));
                 });
             }
@@ -206,7 +206,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             // Many parameters for the same key, generate OR clause
             if (values.size() > 1) {
                 List<Predicate> predicateSameKey = new ArrayList<>();
-                values.forEach((value) -> {
+                values.stream().forEach((value) -> {
                     predicateSameKey.add(criteriaBuilder.equal(root.get(key), value));
                 });
                 predicates.add(criteriaBuilder.or(predicateSameKey.toArray(new Predicate[]{})));

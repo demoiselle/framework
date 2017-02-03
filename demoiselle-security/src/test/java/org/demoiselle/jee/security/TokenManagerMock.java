@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
+import org.demoiselle.jee.core.api.security.TokenType;
 
 /**
  *
@@ -62,7 +63,7 @@ public class TokenManagerMock implements TokenManager {
             token.setKey(value);
         }
 
-        token.setType("Token");
+        token.setType(TokenType.TOKEN);
     }
 
     /**
@@ -96,7 +97,7 @@ public class TokenManagerMock implements TokenManager {
 
     @Override
     public void removeUser(DemoiselleUser user) {
-        repo.entrySet().stream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).forEach((entry) -> {
+        repo.entrySet().stream().filter((entry) -> (entry.getValue().getIdentity().equalsIgnoreCase(user.getIdentity()))).parallel().forEach((entry) -> {
             token.setKey(entry.getKey());
         });
         removeToken();

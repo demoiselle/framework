@@ -28,6 +28,7 @@ import javax.ws.rs.core.Response;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
+import org.demoiselle.jee.core.api.security.TokenType;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityJWTMessages;
 import org.jose4j.jws.JsonWebSignature;
@@ -126,6 +127,9 @@ public class TokenManagerImpl implements TokenManager {
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public DemoiselleUser getUser(String issuer, String audience) {
+        if (!token.getType().equals(TokenType.JWT)) {
+            throw new DemoiselleSecurityException(bundle.notJwt(), Response.Status.BAD_REQUEST.getStatusCode());
+        }
         if (token.getKey() != null && !token.getKey().isEmpty()) {
             try {
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
@@ -140,21 +144,21 @@ public class TokenManagerImpl implements TokenManager {
                 loggedUser.setIdentity((String) jwtClaims.getClaimValue("identity"));
                 loggedUser.setName((String) jwtClaims.getClaimValue("name"));
                 List<String> list = (List<String>) jwtClaims.getClaimValue("roles");
-                list.forEach((string) -> {
+                list.stream().forEach((string) -> {
                     loggedUser.addRole(string);
                 });
 
                 Map<String, List<String>> mappermissions = (Map) jwtClaims.getClaimValue("permissions");
-                mappermissions.entrySet().forEach((entry) -> {
+                mappermissions.entrySet().stream().forEach((entry) -> {
                     String key = entry.getKey();
                     List<String> value = entry.getValue();
-                    value.forEach((string) -> {
+                    value.stream().forEach((string) -> {
                         loggedUser.addPermission(key, string);
                     });
                 });
 
                 Map<String, String> mapparams = (Map) jwtClaims.getClaimValue("params");
-                mapparams.entrySet().forEach((entry) -> {
+                mapparams.entrySet().stream().forEach((entry) -> {
                     loggedUser.addParam(entry.getKey(), entry.getValue());
                 });
                 return loggedUser;
@@ -196,7 +200,7 @@ public class TokenManagerImpl implements TokenManager {
             jws.setKeyIdHeaderValue("demoiselle-security-jwt");
             jws.setAlgorithmHeaderValue(config.getAlgorithmIdentifiers());
             token.setKey(jws.getCompactSerialization());
-            token.setType("JWT");
+            token.setType(TokenType.JWT);
         } catch (JoseException ex) {
             throw new DemoiselleSecurityException(bundle.general(), Response.Status.UNAUTHORIZED.getStatusCode(), ex);
         }

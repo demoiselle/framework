@@ -7,9 +7,6 @@
 package org.demoiselle.jee.security.hashcash.filter;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.security.NoSuchAlgorithmException;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -23,7 +20,7 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
-import org.demoiselle.jee.security.hashcash.execution.HashCash;
+import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 
 /**
  *
@@ -42,7 +39,7 @@ public class HashCashFilter implements ContainerRequestFilter, ContainerResponse
 
     @Override
     public void filter(ContainerRequestContext req) throws IOException {
-
+        throw new DemoiselleRestException("Não implementado", Response.Status.NOT_IMPLEMENTED.getStatusCode());
 //        Method method = info.getResourceMethod();
 //        Class<?> classe = info.getResourceClass();
 //
@@ -79,6 +76,7 @@ public class HashCashFilter implements ContainerRequestFilter, ContainerResponse
 
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
+        throw new DemoiselleRestException("Não implementado", Response.Status.NOT_IMPLEMENTED.getStatusCode());
 //        Method method = info.getResourceMethod();
 //        Class<?> classe = info.getResourceClass();
 //

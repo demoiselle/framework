@@ -21,17 +21,7 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
 @Configuration(prefix = "demoiselle.rest")
 public class DemoiselleRestConfig {
 
-	private boolean gzipEnabled = false;
-
 	private boolean showErrorDetails = true;
-
-	public boolean isGzipEnabled() {
-		return gzipEnabled;
-	}
-
-	public void setGzipEnabled(boolean gzipEnabled) {
-		this.gzipEnabled = gzipEnabled;
-	}
 
 	/**
 	 * Return true or false if the detailed errors should return to user.

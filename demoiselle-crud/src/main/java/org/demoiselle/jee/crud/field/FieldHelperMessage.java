@@ -16,6 +16,10 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
 @MessageBundle
 public interface FieldHelperMessage {
 
-    @MessageTemplate("{filter-field-request-not-exists-on-search-field}")
-    String filterFieldRequestNotExistsOnSearchField(String field);
+    @MessageTemplate("{field-request-does-not-exists-on-search-annotation-field}")
+    String fieldRequestDoesNotExistsOnSearchField(String field);
+    
+    @MessageTemplate("{field-request-does-not-exists-on-object}")
+    String fieldRequestDoesNotExistsOnObject(String field, String className);
+    
 }

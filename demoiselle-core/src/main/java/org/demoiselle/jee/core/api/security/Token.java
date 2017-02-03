@@ -6,9 +6,9 @@
  */
 package org.demoiselle.jee.core.api.security;
 
-
 /**
  * Object loaded with each request and saves the token that comes in the header
+ *
  * @author SERPRO
  */
 public interface Token {
@@ -27,12 +27,11 @@ public interface Token {
     /**
      * @return Type name
      */
-    public String getType();
+    public TokenType getType();
 
     /**
      *
      * @param type Type name
      */
-    //TODO usar enum
-    public void setType(String type);
+    public void setType(TokenType type);
 }

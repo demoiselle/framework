@@ -90,7 +90,7 @@ public class LifecycleBootstrap implements Extension {
 			}
 		});
 
-		methods.forEach((amp) -> {
+		methods.stream().forEach((amp) -> {
 			String cn = amp.getAnnotatedMethod().getDeclaringType().getJavaClass().getCanonicalName();
 
 			ClassLoader classLoader = getClassLoaderForResource(cn.replaceAll("\\.", "/") + ".class");

@@ -39,7 +39,7 @@ import org.demoiselle.jee.crud.pagination.PaginationHelper;
 import org.demoiselle.jee.crud.sort.SortHelper;
 
 /**
- * TODO javadoc
+ * TODO CLF javadoc
  *
  * @author SERPRO
  *
@@ -47,32 +47,34 @@ import org.demoiselle.jee.crud.sort.SortHelper;
 @Provider
 public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilter {
 
-	@Context
-	private ResourceInfo resourceInfo;
-	
-	@Context
+    @Context
+    private ResourceInfo resourceInfo;
+
+    @Context
     private UriInfo uriInfo;
 
-	@Inject
-	private DemoiselleRequestContext drc;
+    @Inject
+    private DemoiselleRequestContext drc;
 
-	@Inject
-	private PaginationHelper paginationHelper;
-	
-	@Inject
-	private SortHelper sortHelper;
-	
-	@Inject
-	private FilterHelper filterHelper;
-	
-	@Inject
-	private FieldHelper fieldHelper;
-	
-	private static final Logger logger = Logger.getLogger(CrudFilter.class.getName());
-	
-    public CrudFilter() {}
+    @Inject
+    private PaginationHelper paginationHelper;
+
+    @Inject
+    private SortHelper sortHelper;
+
+    @Inject
+    private FilterHelper filterHelper;
+
+    @Inject
+    private FieldHelper fieldHelper;
     
-    public CrudFilter(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, PaginationHelper paginationHelper, SortHelper sortHelper, FilterHelper filterHelper, FieldHelper fieldHelper){
+    private static final Logger logger = Logger.getLogger(CrudFilter.class.getName());
+
+    public CrudFilter() {
+    }
+
+    public CrudFilter(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, PaginationHelper paginationHelper, SortHelper sortHelper, FilterHelper filterHelper, FieldHelper fieldHelper) {
+
         this.resourceInfo = resourceInfo;
         this.uriInfo = uriInfo;
         this.drc = drc;
@@ -82,22 +84,21 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         this.fieldHelper = fieldHelper;
     }
 
-	@Override
-	public void filter(ContainerRequestContext requestContext) throws IOException {
+    @Override
+    public void filter(ContainerRequestContext requestContext) throws IOException {
 
-	    if(isRequestForCrud()){
-    	    try {
-    	        paginationHelper.execute(resourceInfo, uriInfo);
-    	        sortHelper.execute(resourceInfo, uriInfo);
-    	        filterHelper.execute(resourceInfo, uriInfo);
-    	        fieldHelper.execute(resourceInfo, uriInfo);
-    	    } 
-    	    catch (IllegalArgumentException e) {
+        if (isRequestForCrud()) {
+            try {
+                paginationHelper.execute(resourceInfo, uriInfo);
+                sortHelper.execute(resourceInfo, uriInfo);
+                filterHelper.execute(resourceInfo, uriInfo);
+                fieldHelper.execute(resourceInfo, uriInfo);
+            } 
+            catch (IllegalArgumentException e) {
                 throw new BadRequestException(e.getMessage());
             }
-	    }
-	}
-	
+        }
+    }
 
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext response) throws IOException {
@@ -114,7 +115,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
             else {
                 response.setStatus(Status.PARTIAL_CONTENT.getStatusCode());
             }
-        }
+        } 
         else {
             if (Status.BAD_REQUEST.getStatusCode() == response.getStatus() && drc.getEntityClass() == null) {
                 paginationHelper.buildAcceptRangeWithResponse(response);
@@ -122,24 +123,23 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         }
 
     }
-   
+
     private Boolean isRequestForCrud() {
-        if(resourceInfo.getResourceClass().getSuperclass() != null
-				&& resourceInfo.getResourceClass().getSuperclass().equals(AbstractREST.class)
-                && resourceInfo.getResourceMethod().isAnnotationPresent(GET.class)){
+        if (resourceInfo.getResourceClass().getSuperclass() != null
+                && resourceInfo.getResourceClass().getSuperclass().equals(AbstractREST.class)
+                && resourceInfo.getResourceMethod().isAnnotationPresent(GET.class)) {
             return Boolean.TRUE;
         }
-        
+
         return Boolean.FALSE;
     }
-    
-    private Object buildContent(ContainerResponseContext response){
-        
+
+    private Object buildContent(ContainerResponseContext response) {
+
         @SuppressWarnings("unchecked")
         List<Object> content = (List<Object>) ((Result) response.getEntity()).getContent();
         
         try{
-            
             List<String> searchFields = getFields();
             
             if(searchFields != null){
@@ -198,15 +198,16 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
                                 }
                             
                             }
+
                         }
                     }
-                    
                     content.add(keyValue);
                 }
+
             }
-            
-        }
-        catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e){
+
+        } 
+        catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
         
@@ -238,7 +239,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         }
         
         return null;
+
     }
 
-    
 }

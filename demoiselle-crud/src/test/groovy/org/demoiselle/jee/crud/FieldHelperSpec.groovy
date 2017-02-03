@@ -78,7 +78,7 @@ class FieldHelperSpec extends Specification {
         fieldHelper.execute(resourceInfo, uriInfo)
         
         then:
-        1 * fieldHelperMessage.filterFieldRequestNotExistsOnSearchField("newInvalidField")
+        1 * fieldHelperMessage.fieldRequestDoesNotExistsOnSearchField("newInvalidField")
         thrown(IllegalArgumentException)
         
     }

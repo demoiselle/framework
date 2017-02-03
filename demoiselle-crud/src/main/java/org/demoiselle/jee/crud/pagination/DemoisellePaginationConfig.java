@@ -11,7 +11,7 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
 /**
  * 
  * @author SERPRO
- * TODO revisar configs
+ * TODO CLF usar valores default do configuration
  */ 
 @Configuration(prefix = "demoiselle.crud.pagination")
 public class DemoisellePaginationConfig {

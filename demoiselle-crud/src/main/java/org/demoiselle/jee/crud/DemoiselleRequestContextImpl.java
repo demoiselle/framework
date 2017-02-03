@@ -7,10 +7,10 @@
 package org.demoiselle.jee.crud;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.RequestScoped;
 
@@ -31,8 +31,8 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     private Integer limit = null;
     private Long count = null;
     private Class<?> entityClass = null;
-    private Map<String, Set<String>> filters = new HashMap<>();
-    private Map<CrudSort, Set<String>> sorts = new HashMap<>();
+    private Map<String, Set<String>> filters = new ConcurrentHashMap<>();
+    private Map<CrudSort, Set<String>> sorts = new ConcurrentHashMap<>();
     private List<String> fields = new ArrayList<>();
     private Boolean isPaginationEnabled = Boolean.TRUE;
 
@@ -65,8 +65,8 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     public void setCount(Long count) {
         this.count = count;
     }
-    
-    @Override    
+
+    @Override
     public Class<?> getEntityClass() {
         return entityClass;
     }
@@ -75,7 +75,6 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     public void setEntityClass(Class<?> entityClass) {
         this.entityClass = entityClass;
     }
-    
 
     @Override
     public Map<String, Set<String>> getFilters() {
@@ -86,7 +85,7 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     public void setFilters(Map<String, Set<String>> fieldsFilter) {
         this.filters = fieldsFilter;
     }
-    
+
     @Override
     public Map<CrudSort, Set<String>> getSorts() {
         return sorts;
@@ -96,7 +95,7 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     public void setSorts(Map<CrudSort, Set<String>> sorts) {
         this.sorts = sorts;
     }
-    
+
     @Override
     public List<String> getFields() {
         return this.fields;
@@ -106,7 +105,7 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     public void setFields(List<String> fields) {
         this.fields = fields;
     }
-    
+
     @Override
     public Boolean isPaginationEnabled() {
         return this.isPaginationEnabled;
@@ -119,7 +118,7 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
 
     @Override
     public String toString() {
-        return "DemoiselleRequestContextImpl [offset=" + offset + ", limit=" + limit + ", count=" + count + ", paginationEnabled=" + isPaginationEnabled +"]";
+        return "DemoiselleRequestContextImpl [offset=" + offset + ", limit=" + limit + ", count=" + count + ", paginationEnabled=" + isPaginationEnabled + "]";
     }
 
 }

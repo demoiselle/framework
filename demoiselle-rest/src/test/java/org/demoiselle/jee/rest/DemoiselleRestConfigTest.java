@@ -25,7 +25,6 @@ import org.junit.runner.RunWith;
 @RunWith(CdiTestRunner.class)
 public class DemoiselleRestConfigTest {
 
-
     @BeforeClass
     public static void setUpClass() {
     }
@@ -33,9 +32,10 @@ public class DemoiselleRestConfigTest {
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Inject
     private DemoiselleRestConfig instance;
+
     public DemoiselleRestConfigTest() {
     }
 
@@ -51,28 +51,10 @@ public class DemoiselleRestConfigTest {
      * Test of isGzipEnabled method, of class DemoiselleRestConfig.
      */
     @Test
-    public void test11() {
-        boolean expResult = false;
-        boolean result = instance.isGzipEnabled();
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of setGzipEnabled method, of class DemoiselleRestConfig.
-     */
-    @Test
-    public void test12() {
-        boolean gzipEnabled = false;
-        instance.setGzipEnabled(gzipEnabled);
-    }
-
-    /**
-     * Test of isGzipEnabled method, of class DemoiselleRestConfig.
-     */
-    @Test
     public void test13() {
+        //TODO PGP implementar teste do config
         boolean expResult = false;
-        boolean result = instance.isGzipEnabled();
+        boolean result = false;
         assertEquals(expResult, result);
     }
 }

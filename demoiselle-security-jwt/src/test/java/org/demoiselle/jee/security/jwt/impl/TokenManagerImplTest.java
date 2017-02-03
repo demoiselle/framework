@@ -17,6 +17,7 @@ import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
+import org.demoiselle.jee.core.api.security.TokenType;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -65,6 +66,7 @@ public class TokenManagerImplTest {
     public void test20() {
         out.println("setUser");
         token.setKey("");
+        token.setType(TokenType.JWT);
         dml.setName("Teste");
         dml.setIdentity("1");
         dml.addRole("ADMINISTRATOR");
@@ -88,6 +90,7 @@ public class TokenManagerImplTest {
     public void test21() {
         out.println("getUser");
         token.setKey(localtoken);
+        token.setType(TokenType.JWT);
         dml.setName("Teste");
         dml.setIdentity("1");
         dml.addRole("ADMINISTRATOR");
@@ -111,6 +114,7 @@ public class TokenManagerImplTest {
     public void test22() {
         out.println("validate");
         token.setKey(localtoken);
+        token.setType(TokenType.JWT);
         boolean expResult = true;
         boolean result = instance.validate();
         assertEquals(expResult, result);
@@ -120,6 +124,7 @@ public class TokenManagerImplTest {
     public void test23() {
         out.println("getUserError");
         token.setKey(localtoken);
+        token.setType(TokenType.JWT);
         dml.setName("Teste2");
         dml.setIdentity("2");
         dml.addRole("ADMINISTRATOR");
@@ -143,6 +148,7 @@ public class TokenManagerImplTest {
     public void test24() {
         out.println("validateError");
         token.setKey("");
+        token.setType(TokenType.JWT);
         boolean expResult = false;
         boolean result = instance.validate();
         assertEquals(expResult, result);

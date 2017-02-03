@@ -18,8 +18,11 @@ import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
 /**
- * TODO corrigir javadoc
- *
+ * <p>
+ * Server cors handling
+ * </p>
+ * 
+ * @see <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/cors.html">Documentation</a>
  * @author SERPRO
  */
 @Inherited

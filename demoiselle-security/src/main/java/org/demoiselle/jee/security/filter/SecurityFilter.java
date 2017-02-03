@@ -6,7 +6,6 @@
  */
 package org.demoiselle.jee.security.filter;
 
-import static javax.ws.rs.Priorities.AUTHENTICATION;
 import static javax.ws.rs.core.Response.ok;
 
 import java.io.IOException;
@@ -14,6 +13,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
+import static javax.ws.rs.Priorities.AUTHORIZATION;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
@@ -21,15 +21,22 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.core.api.security.Token;
+import org.demoiselle.jee.core.api.security.TokenType;
 import org.demoiselle.jee.security.DemoiselleSecurityConfig;
 
 /**
+ * <p>
+ * Server cors handling
+ * </p>
+ *
+ * @see
+ * <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/cors.html">Documentation</a>
  *
  * @author SERPRO
  */
 @Provider
 @PreMatching
-@Priority(AUTHENTICATION)
+@Priority(AUTHORIZATION)
 public class SecurityFilter implements ContainerRequestFilter {
 
     private static final Logger logger = Logger.getLogger(SecurityFilter.class.getName());
@@ -45,7 +52,7 @@ public class SecurityFilter implements ContainerRequestFilter {
         if (req.getMethod().equals("OPTIONS")) {
             Response.ResponseBuilder responseBuilder = ok();
             if (config.isCorsEnabled()) {
-                config.getParamsHeaderSecuriry().entrySet().forEach((entry) -> {
+                config.getParamsHeaderSecuriry().entrySet().parallelStream().forEach((entry) -> {
                     responseBuilder.header(entry.getKey(), entry.getValue());
                 });
             }
@@ -56,7 +63,7 @@ public class SecurityFilter implements ContainerRequestFilter {
             if (req.getHeaders().containsKey("Authorization")) {
                 String chave = req.getHeaders().get("Authorization").toString().replace("[", "").replace("]", "");
                 if (!chave.isEmpty()) {
-                    token.setType(chave.split(" ")[0]);
+                    token.setType(TokenType.valueOf(chave.split(" ")[0].toUpperCase()));
                     token.setKey(chave.split(" ")[1]);
                 }
             }

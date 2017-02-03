@@ -21,7 +21,13 @@ import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 
 /**
- * TODO javadoc
+ * <p>
+ * The demoiselle is used to keep the user logged into request scope and
+ * transported to the frontend by jwt
+ * </p>
+ *
+ * @see
+ * <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/security.html">Documentation</a>
  *
  * @author SERPRO
  */
@@ -106,7 +112,7 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
         } else {
             List<String> newoperations = new ArrayList<>();
             newoperations.add(operation);
-            permissions.put(resource, newoperations);
+            permissions.putIfAbsent(resource, newoperations);
         }
     }
 
@@ -130,7 +136,7 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
 
     @Override
     public void addParam(String key, String value) {
-        this.params.put(key, value);
+        this.params.putIfAbsent(key, value);
     }
 
     @Override
