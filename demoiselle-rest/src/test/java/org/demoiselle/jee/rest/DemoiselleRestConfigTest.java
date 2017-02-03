@@ -48,13 +48,23 @@ public class DemoiselleRestConfigTest {
     }
 
     /**
-     * Test of isGzipEnabled method, of class DemoiselleRestConfig.
+     * Test of isErrorDetails method, of class DemoiselleRestConfig.
      */
     @Test
-    public void test13() {
-        //TODO PGP implementar teste do config
-        boolean expResult = false;
-        boolean result = false;
-        assertEquals(expResult, result);
+    public void test1() {
+        
+        boolean expResult = instance.isShowErrorDetails();
+        assertEquals(expResult, true);
+    } 
+    
+    /**
+     * Test of setshowErrorDetails method, of class DemoiselleRestConfig.
+     */
+    @Test
+    public void test2() {        
+    	instance.setShowErrorDetails(false);
+        boolean expResult = instance.isShowErrorDetails();
+        
+        assertEquals(expResult, false);
     }
 }
