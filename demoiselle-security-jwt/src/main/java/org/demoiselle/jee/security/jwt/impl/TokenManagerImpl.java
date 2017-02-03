@@ -127,10 +127,7 @@ public class TokenManagerImpl implements TokenManager {
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public DemoiselleUser getUser(String issuer, String audience) {
-        if (!token.getType().equals(TokenType.JWT)) {
-            throw new DemoiselleSecurityException(bundle.notJwt(), Response.Status.BAD_REQUEST.getStatusCode());
-        }
-        if (token.getKey() != null && !token.getKey().isEmpty()) {
+        if (token.getKey() != null && !token.getKey().isEmpty() && token.getType().equals(TokenType.JWT)) {
             try {
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                         .setRequireExpirationTime()
