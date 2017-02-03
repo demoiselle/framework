@@ -23,5 +23,5 @@ import java.lang.annotation.Target;
 public @interface Search {
     String[] fields();
     boolean withPagination() default true;
-    int quantityPerPage() default 25;
+    int quantityPerPage() default 20;
 }
