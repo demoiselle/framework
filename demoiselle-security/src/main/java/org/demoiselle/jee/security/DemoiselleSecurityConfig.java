@@ -19,8 +19,6 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
 public class DemoiselleSecurityConfig {
 
     private boolean corsEnabled;
-    private boolean hashcashEnabled;
-    private long wait;
 
     private final Map<String, String> paramsHeaderSecuriry = new ConcurrentHashMap<>();
     private final Map<String, String> paramsHeaderCors = new ConcurrentHashMap<>();
@@ -35,14 +33,6 @@ public class DemoiselleSecurityConfig {
 
     public Map<String, String> getParamsHeaderCors() {
         return paramsHeaderCors;
-    }
-
-    public boolean isHashcashEnabled() {
-        return hashcashEnabled;
-    }
-
-    public long getWait() {
-        return wait;
     }
 
 }
