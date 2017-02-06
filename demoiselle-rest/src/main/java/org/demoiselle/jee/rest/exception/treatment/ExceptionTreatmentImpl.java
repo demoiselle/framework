@@ -171,7 +171,17 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
             if (e.getStatusCode() != 0) {
                 statusCode = Status.fromStatusCode(e.getStatusCode());
             }
-
+            
+            if(config.isShowErrorDetails()){
+	            if(exception.getMessage() != null)
+	    			logger.log(Level.INFO, exception.getMessage());
+	            
+				if(exception.getCause() != null && exception.getCause().getMessage() != null)
+					logger.log(Level.INFO, exception.getCause().getMessage());	 
+				
+				//e.printStackTrace();
+            }
+            
             return buildResponse(arrayErrors, responseMediaType, statusCode);
         }
 
