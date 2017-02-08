@@ -27,7 +27,8 @@ import org.demoiselle.jee.security.annotation.Cors;
  * Server cors handling
  * </p>
  *
- * @see <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/cors.html">Documentation</a>
+ * @see
+ * <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/cors.html">Documentation</a>
  *
  * @author SERPRO
  */
@@ -46,8 +47,6 @@ public class CorsFilter implements ContainerResponseFilter {
         Method method = info.getResourceMethod();
         Class<?> classe = info.getResourceClass();
         boolean corsEnable = config.isCorsEnabled();
-
-        res.getHeaders().putSingle("Demoiselle-security", "enabled");
 
         config.getParamsHeaderSecuriry().entrySet().parallelStream().forEach((entry) -> {
             res.getHeaders().putSingle(entry.getKey(), entry.getValue());
