@@ -6,20 +6,25 @@
  */
 package org.demoiselle.jee.security.hashcash.execution;
 
-import org.demoiselle.jee.security.hashcash.execution.HashCash;
-import java.util.Date;
+import javax.inject.Inject;
+import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author SERPRO
  */
+@RunWith(CdiTestRunner.class)
 public class HashCashTest {
+
+    @Inject
+    private Generator gera;
 
     public HashCashTest() {
     }
@@ -40,18 +45,12 @@ public class HashCashTest {
     public void tearDown() {
     }
 
-    /**
-     * Test of mintCash method, of class HashCash.
-     */
     @Test
     public void testMintCash_String_int() throws Exception {
-        //TODO Teste do componente
         System.out.println("mintCash");
-        String resource = "Demoiselle";
-        String value = resource;
-        int version = 1;
-        Date data = new Date(170126153655l);
-        assertEquals(resource, value);
+        System.out.println(gera.token());
+
+        assertEquals(" ", " ");
     }
 
 }
