@@ -48,6 +48,8 @@ public class CorsFilter implements ContainerResponseFilter {
         Class<?> classe = info.getResourceClass();
         boolean corsEnable = config.isCorsEnabled();
 
+        res.getHeaders().putSingle("Demoiselle-security", "Enable");
+
         config.getParamsHeaderSecuriry().entrySet().parallelStream().forEach((entry) -> {
             res.getHeaders().putSingle(entry.getKey(), entry.getValue());
         });
