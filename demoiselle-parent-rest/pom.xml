@@ -117,10 +117,6 @@
                     <artifactId>arquillian</artifactId>
                     <scope>test</scope>
                 </dependency>
-                <dependency>
-                    <groupId>org.wildfly.swarm</groupId>
-                    <artifactId>swagger</artifactId>
-                </dependency>
             </dependencies>
             <build>
                 <finalName>${project.artifactId}</finalName>
