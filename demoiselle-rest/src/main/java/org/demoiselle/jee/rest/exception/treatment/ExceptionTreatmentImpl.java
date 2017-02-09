@@ -174,12 +174,11 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
             
             if(config.isShowErrorDetails()){
 	            if(exception.getMessage() != null)
-	    			logger.log(Level.FINEST, exception.getMessage());
+	    			logger.log(Level.WARNING, exception.getMessage());
 	            
 				if(exception.getCause() != null && exception.getCause().getMessage() != null)
-					logger.log(Level.FINEST, exception.getCause().getMessage());	 
-				
-				//e.printStackTrace();
+					logger.log(Level.WARNING, exception.getCause().getMessage());	 
+					
             }
             
             return buildResponse(arrayErrors, responseMediaType, statusCode);
