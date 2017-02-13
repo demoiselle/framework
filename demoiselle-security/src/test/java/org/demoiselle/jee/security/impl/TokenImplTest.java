@@ -96,7 +96,7 @@ public class TokenImplTest {
 
     @Test
     public void test17() {
-        String expResult = "Token{\"key\"=123456789, \"type\"=JWT}";
+        String expResult = "{\"key\":\"123456789\", \"type\":\"JWT\"}";
         String result = instance.toString();
         assertEquals(expResult, result);
     }
