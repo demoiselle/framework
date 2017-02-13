@@ -10,7 +10,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -27,7 +26,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.exception.DemoiselleCrudException;
-import org.demoiselle.jee.crud.pagination.DemoisellePaginationConfig;
+import org.demoiselle.jee.crud.pagination.PaginationHelperConfig;
 import org.demoiselle.jee.crud.pagination.ResultSet;
 import org.demoiselle.jee.crud.sort.CrudSort;
 
@@ -36,7 +35,7 @@ import org.demoiselle.jee.crud.sort.CrudSort;
 public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     @Inject
-    private DemoisellePaginationConfig paginationConfig;
+    private PaginationHelperConfig paginationConfig;
 
     @Inject
     private DemoiselleRequestContext drc;
@@ -158,66 +157,52 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     private void configureCriteriaQuery(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery) {
         Root<T> from = criteriaQuery.from(entityClass);
-        if (!drc.getFilters().isEmpty()) {
+        if (drc.getFilters() != null) {
             criteriaQuery.select(from).where(buildPredicates(criteriaBuilder, criteriaQuery, from));
         }
 
         configureOrder(criteriaBuilder, criteriaQuery, from);
     }
 
-    /**
-     * @param criteriaQuery
-     * @param root
-     */
     private void configureOrder(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, Root<T> root) {
 
         if (!drc.getSorts().isEmpty()) {
             List<Order> orders = new ArrayList<>();
 
-            Set<String> ascOrder = drc.getSorts().get(CrudSort.ASC);
-            Set<String> descOrder = drc.getSorts().get(CrudSort.DESC);
-
-            if (ascOrder != null) {
-                ascOrder.stream().forEach((field) -> {
-                    orders.add(criteriaBuilder.asc(root.get(field)));
-                });
-            }
-
-            if (descOrder != null) {
-                descOrder.stream().forEach((field) -> {
-                    orders.add(criteriaBuilder.desc(root.get(field)));
-                });
-            }
+            drc.getSorts().stream().forEachOrdered( sortModel -> {
+                
+                if(sortModel.getType().equals(CrudSort.ASC)){
+                    orders.add(criteriaBuilder.asc(root.get(sortModel.getValue())));
+                }
+                else{
+                    orders.add(criteriaBuilder.desc(root.get(sortModel.getValue())));
+                }
+            });
 
             criteriaQuery.orderBy(orders);
         }
 
     }
 
-    /**
-     * @param root
-     * @return
-     */
     private Predicate[] buildPredicates(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, Root<T> root) {
         List<Predicate> predicates = new ArrayList<>();
 
-        drc.getFilters().forEach((key, values) -> {
+        drc.getFilters().getChildren().stream().forEach( child -> {
 
             // Many parameters for the same key, generate OR clause
-            if (values.size() > 1) {
+            if (!child.getChildren().isEmpty()) {
                 List<Predicate> predicateSameKey = new ArrayList<>();
-                values.stream().forEach((value) -> {
-                    predicateSameKey.add(criteriaBuilder.equal(root.get(key), value));
+                child.getChildren().stream().forEach((value) -> {
+                    predicateSameKey.add(criteriaBuilder.equal(root.get(child.getKey()), value));
                 });
                 predicates.add(criteriaBuilder.or(predicateSameKey.toArray(new Predicate[]{})));
             } 
-            else {
-                String value = values.iterator().next();
-                if ("null".equals(value) || value.isEmpty()) {
-                    predicates.add(criteriaBuilder.isNull(root.get(key)));
+            else {                
+                if ("null".equals(child.getValue()) || child.getValue().isEmpty()) {
+                    predicates.add(criteriaBuilder.isNull(root.get(child.getKey())));
                 } 
                 else {
-                    predicates.add(criteriaBuilder.equal(root.get(key), values.iterator().next()));
+                    predicates.add(criteriaBuilder.equal(root.get(child.getKey()), child.getValue()));
                 }
             }
         });

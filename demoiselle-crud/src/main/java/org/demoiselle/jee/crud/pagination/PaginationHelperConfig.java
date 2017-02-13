@@ -14,7 +14,7 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
  * TODO CLF usar valores default do configuration
  */ 
 @Configuration(prefix = "demoiselle.crud.pagination")
-public class DemoisellePaginationConfig {
+public class PaginationHelperConfig {
 	
     private Boolean isGlobalEnabled = Boolean.TRUE;
 	private Integer defaultPagination = new Integer(20);

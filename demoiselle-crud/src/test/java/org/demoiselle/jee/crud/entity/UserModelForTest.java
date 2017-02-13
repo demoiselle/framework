@@ -17,6 +17,7 @@ public class UserModelForTest {
     private String name;
     private String mail;
     private Integer age;
+    private AddressModelForTest address;
     
     public Long getId() {
         return id;
@@ -49,4 +50,13 @@ public class UserModelForTest {
     public void setAge(Integer age) {
         this.age = age;
     }
+
+    public AddressModelForTest getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressModelForTest address) {
+        this.address = address;
+    }
+    
 }

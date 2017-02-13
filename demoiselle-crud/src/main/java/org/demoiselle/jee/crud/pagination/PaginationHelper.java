@@ -38,20 +38,22 @@ public class PaginationHelper {
     private DemoiselleRequestContext drc;
 
     @Inject
-    private DemoisellePaginationMessage message;
+    private PaginationHelperMessage message;
 
     @Inject
-    private DemoisellePaginationConfig paginationConfig;
+    private PaginationHelperConfig paginationConfig;
 
     private final String HTTP_HEADER_CONTENT_RANGE = "Content-Range";
     private final String HTTP_HEADER_ACCEPT_RANGE = "Accept-Range";
+    private final String HTTP_HEADER_ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
+    
 
     private static final Logger logger = Logger.getLogger(PaginationHelper.class.getName());
 
     public PaginationHelper() {
     }
 
-    public PaginationHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoisellePaginationConfig paginationConfig, DemoiselleRequestContext drc, DemoisellePaginationMessage message) {
+    public PaginationHelper(ResourceInfo resourceInfo, UriInfo uriInfo, PaginationHelperConfig paginationConfig, DemoiselleRequestContext drc, PaginationHelperMessage message) {
         this.resourceInfo = resourceInfo;
         this.uriInfo = uriInfo;
         this.paginationConfig = paginationConfig;
@@ -71,8 +73,7 @@ public class PaginationHelper {
             }
 
             if (hasSearchAnnotation() && !isRequestPagination()) {
-                Search search = resourceInfo.getResourceMethod().getAnnotation(Search.class);
-                drc.setLimit(search.quantityPerPage() - 1);
+                drc.setLimit(getDefaultNumberPagination() - 1);
                 drc.setOffset(new Integer(0));
             }
         }
@@ -198,7 +199,9 @@ public class PaginationHelper {
                 headers.put(HttpHeaders.LINK, linkHeader);
             }
         }
-
+        
+        headers.put(HTTP_HEADER_ACCESS_CONTROL_EXPOSE_HEADERS, HTTP_HEADER_ACCEPT_RANGE + ", " + HTTP_HEADER_CONTENT_RANGE + ", " + HttpHeaders.LINK);
+        
         return headers;
     }
 

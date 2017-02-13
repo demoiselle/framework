@@ -18,8 +18,8 @@ import javax.ws.rs.core.UriInfo
 
 import org.demoiselle.jee.core.api.crud.Result
 import org.demoiselle.jee.crud.entity.UserModelForTest
-import org.demoiselle.jee.crud.pagination.DemoisellePaginationConfig
-import org.demoiselle.jee.crud.pagination.DemoisellePaginationMessage
+import org.demoiselle.jee.crud.pagination.PaginationHelperConfig
+import org.demoiselle.jee.crud.pagination.PaginationHelperMessage
 import org.demoiselle.jee.crud.pagination.PaginationHelper
 import org.demoiselle.jee.crud.pagination.ResultSet
 
@@ -36,11 +36,11 @@ class PaginationHelperSpec extends Specification {
     
     ResourceInfo resourceInfo = Mock()
     UriInfo uriInfo = Mock()
-    DemoisellePaginationMessage message = Mock()
+    PaginationHelperMessage message = Mock()
     
     DemoiselleRequestContext drc = new DemoiselleRequestContextImpl()
     Result result = new ResultSet()
-    DemoisellePaginationConfig dpc = Mock()
+    PaginationHelperConfig dpc = Mock()
     
     PaginationHelper paginationHelper = new PaginationHelper(resourceInfo, uriInfo, dpc, drc, message)
     
@@ -282,7 +282,7 @@ class PaginationHelperSpec extends Specification {
         then:        
         !paginationHelper.buildHeaders(resourceInfo, uriInfo).containsKey('Content-Range')
         !paginationHelper.buildHeaders(resourceInfo, uriInfo).containsKey('Accept-Range')
-        !paginationHelper.buildHeaders(resourceInfo, uriInfo).containsKey('Links')
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo).containsKey('Link')
         
     }
     
@@ -366,7 +366,7 @@ class PaginationHelperSpec extends Specification {
         drc.isPaginationEnabled() == Boolean.FALSE
         
     }
-
+    
     private configureRequestForCrud(){
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class

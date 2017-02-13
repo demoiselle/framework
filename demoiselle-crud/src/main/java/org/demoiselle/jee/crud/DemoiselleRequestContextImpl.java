@@ -6,15 +6,14 @@
  */
 package org.demoiselle.jee.crud;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.RequestScoped;
 
-import org.demoiselle.jee.crud.sort.CrudSort;
+import org.demoiselle.jee.crud.field.TreeNodeField;
+import org.demoiselle.jee.crud.sort.SortModel;
 
 /**
  * @author SERPRO
@@ -31,9 +30,10 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     private Integer limit = null;
     private Long count = null;
     private Class<?> entityClass = null;
-    private Map<String, Set<String>> filters = new ConcurrentHashMap<>();
-    private Map<CrudSort, Set<String>> sorts = new ConcurrentHashMap<>();
-    private List<String> fields = new ArrayList<>();
+    //private Map<String, Set<String>> filters = new ConcurrentHashMap<>();
+    private TreeNodeField<String, Set<String>> filters = null; 
+    private List<SortModel> sorts = new LinkedList<>();
+    private TreeNodeField<String, Set<String>> fields = null;
     private Boolean isPaginationEnabled = Boolean.TRUE;
 
     @Override
@@ -76,33 +76,43 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
         this.entityClass = entityClass;
     }
 
+//    @Override
+//    public Map<String, Set<String>> getFilters() {
+//        return filters;
+//    }
+//
+//    @Override
+//    public void setFilters(Map<String, Set<String>> fieldsFilter) {
+//        this.filters = fieldsFilter;
+//    }
+    
     @Override
-    public Map<String, Set<String>> getFilters() {
+    public TreeNodeField<String, Set<String>> getFilters() {
         return filters;
     }
 
     @Override
-    public void setFilters(Map<String, Set<String>> fieldsFilter) {
-        this.filters = fieldsFilter;
+    public void setFilters(TreeNodeField<String, Set<String>> filters) {
+        this.filters = filters;
+    }
+    
+    @Override
+    public List<SortModel> getSorts() {
+        return this.sorts;
     }
 
     @Override
-    public Map<CrudSort, Set<String>> getSorts() {
-        return sorts;
-    }
-
-    @Override
-    public void setSorts(Map<CrudSort, Set<String>> sorts) {
+    public void setSorts(List<SortModel> sorts) {
         this.sorts = sorts;
     }
 
     @Override
-    public List<String> getFields() {
+    public TreeNodeField<String, Set<String>> getFields() {
         return this.fields;
     }
 
     @Override
-    public void setFields(List<String> fields) {
+    public void setFields(TreeNodeField<String, Set<String>> fields) {
         this.fields = fields;
     }
 

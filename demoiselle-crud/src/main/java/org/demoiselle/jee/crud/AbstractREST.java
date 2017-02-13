@@ -44,7 +44,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     protected AbstractBusiness<T, I> bc;
 
     @Inject
-    private DemoiselleCrudMessage crudMessage;
+    private CrudMessage crudMessage;
 
     @POST
     @Transactional
