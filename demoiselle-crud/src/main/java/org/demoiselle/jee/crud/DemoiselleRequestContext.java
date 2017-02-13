@@ -7,17 +7,16 @@
 package org.demoiselle.jee.crud;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.demoiselle.jee.crud.sort.CrudSort;
+import org.demoiselle.jee.crud.field.TreeNodeField;
+import org.demoiselle.jee.crud.sort.SortModel;
 
 /**
  * 
  * @author SERPRO
  *
  */
-//TODO CLF mover para demoisele-core
 public interface DemoiselleRequestContext {
 
     Integer getLimit();
@@ -32,17 +31,18 @@ public interface DemoiselleRequestContext {
     Class<?> getEntityClass();
     void setEntityClass(Class<?> entityClass);
     
-    Map<String, Set<String>> getFilters();
-    void setFilters(Map<String, Set<String>> filters);
+    //Map<String, Set<String>> getFilters();
+    //void setFilters(Map<String, Set<String>> filters);
+    TreeNodeField<String, Set<String>> getFilters();
+    void setFilters(TreeNodeField<String, Set<String>> filters);
     
-    Map<CrudSort, Set<String>> getSorts();
-    void setSorts(Map<CrudSort, Set<String>> sorts);
+    List<SortModel> getSorts();
+    void setSorts(List<SortModel> sorts);
     
-    List<String> getFields();
-    void setFields(List<String> fields);
+    TreeNodeField<String, Set<String>> getFields();
+    void setFields(TreeNodeField<String, Set<String>> fields);
     
     Boolean isPaginationEnabled();
     void setPaginationEnabled(Boolean isPaginationEnabled);
-    
     
 }

@@ -11,7 +11,7 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
 
 @MessageBundle
 // TODO CLF fazer merge com a classe DemoiselleMessage
-public interface DemoisellePaginationMessage {
+public interface PaginationHelperMessage {
 	
 	@MessageTemplate("{invalid-range-parameters}")
 	String invalidRangeParameters();
@@ -20,4 +20,3 @@ public interface DemoisellePaginationMessage {
 	String defaultPaginationNumberExceed(Integer defaultPaginationNumber);
 
 }
-		

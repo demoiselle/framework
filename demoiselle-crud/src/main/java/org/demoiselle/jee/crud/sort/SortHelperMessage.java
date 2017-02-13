@@ -4,7 +4,7 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.crud;
+package org.demoiselle.jee.crud.sort;
 
 import org.apache.deltaspike.core.api.message.MessageBundle;
 import org.apache.deltaspike.core.api.message.MessageTemplate;
@@ -14,9 +14,12 @@ import org.apache.deltaspike.core.api.message.MessageTemplate;
  *
  */
 @MessageBundle
-public interface DemoiselleCrudMessage {
+public interface SortHelperMessage {
     
-    @MessageTemplate("{method-find-not-implemented}")
-    String methodFindNotImplemented();
-
+    @MessageTemplate("{sort-request-malformed}")
+    String sortRequestMalFormed(String sort);
+    
+    @MessageTemplate("{desc-parameter-without-sort-parameter}")
+    String descParameterWithoutSortParameter();
+    
 }

@@ -26,7 +26,7 @@ public class UserRestForTest extends AbstractREST<UserModelForTest, Long> {
     }
 
     @GET
-    @Search(fields={"name"}, quantityPerPage = 10, withPagination = true)
+    @Search(fields={"name", "address"}, quantityPerPage = 10, withPagination = true)
     public Result findWithSearch() {
         return null;
     }
@@ -38,7 +38,7 @@ public class UserRestForTest extends AbstractREST<UserModelForTest, Long> {
     }
     
     @GET
-    @Search(fields={"id", "name", "email"})
+    @Search(fields={"id", "name", "mail"})
     public Result findWithSearchAndFields(){
         return null;
     }

@@ -6,7 +6,7 @@
  */
 package org.demoiselle.jee.crud.pagination;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.demoiselle.jee.core.api.crud.Result;
@@ -18,7 +18,7 @@ import org.demoiselle.jee.core.api.crud.Result;
  */
 public class ResultSet implements Result{
 	
-	private List<?> content = new ArrayList<>();
+	private List<?> content = new LinkedList<>();
 	
 	@Override
 	public List<?> getContent() {
