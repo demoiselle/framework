@@ -76,7 +76,7 @@
             <id>wildfly-swarm</id>
             <properties>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-                <version.wildfly.swarm>2017.1.1</version.wildfly.swarm>
+                <version.wildfly.swarm>2017.2.0</version.wildfly.swarm>
                 <maven.compiler.source>1.8</maven.compiler.source>
                 <maven.compiler.target>1.8</maven.compiler.target>
                 <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -86,6 +86,10 @@
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
                     <artifactId>ejb</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>logging</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
@@ -102,6 +106,10 @@
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
                     <artifactId>cdi</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>infinispan</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
