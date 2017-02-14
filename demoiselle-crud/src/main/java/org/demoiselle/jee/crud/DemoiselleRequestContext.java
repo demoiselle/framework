@@ -9,13 +9,12 @@ package org.demoiselle.jee.crud;
 import java.util.List;
 import java.util.Set;
 
-import org.demoiselle.jee.crud.field.TreeNodeField;
 import org.demoiselle.jee.crud.sort.SortModel;
 
 /**
+ * Class used to make a Context of the Request and Response of CRUD feature.
  * 
- * @author SERPRO
- *
+ * @author SERPRO 
  */
 public interface DemoiselleRequestContext {
 
@@ -31,8 +30,6 @@ public interface DemoiselleRequestContext {
     Class<?> getEntityClass();
     void setEntityClass(Class<?> entityClass);
     
-    //Map<String, Set<String>> getFilters();
-    //void setFilters(Map<String, Set<String>> filters);
     TreeNodeField<String, Set<String>> getFilters();
     void setFilters(TreeNodeField<String, Set<String>> filters);
     

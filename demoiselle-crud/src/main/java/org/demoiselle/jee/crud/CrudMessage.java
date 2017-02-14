@@ -10,8 +10,10 @@ import org.apache.deltaspike.core.api.message.MessageBundle;
 import org.apache.deltaspike.core.api.message.MessageTemplate;
 
 /**
- * @author SERPRO
- *
+ * 
+ * Messages used to inform user about CRUD feature
+ * 
+ * @author SERPRO 
  */
 @MessageBundle
 public interface CrudMessage {

@@ -35,16 +35,29 @@ import javax.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.field.FieldHelper;
-import org.demoiselle.jee.crud.field.TreeNodeField;
 import org.demoiselle.jee.crud.filter.FilterHelper;
 import org.demoiselle.jee.crud.pagination.PaginationHelper;
 import org.demoiselle.jee.crud.sort.SortHelper;
 
 /**
- * TODO CLF javadoc
+ * Class responsible for managing the Request and Response used on CRUD feature.
+ * 
+ * The request will be treat if:
+ *  - The target class of request is a subclass of {@link AbstractREST} and 
+ *  - The target method of request is annotated with {@link GET} annotation
+ *  
+ *  The request will be treated and parsed for:
+ *  - {@link PaginationHelper} to extract information about 'pagination' like a 'range' parameter;
+ *  - {@link FieldHelper} to extract information about 'field' like a 'fields=field1,field2,...' parameter;
+ *  - {@link FilterHelper} to extract information about the fields of entity that will be filter on the database.
+ *  - {@link SortHelper} to extract information about the 'sort' link a 'sort' and 'desc' parameters;
+ *  
+ * The response will be treat if:
+ *  - The type of return is a {@link Result} type.
+ *  
+ *  The response will build the result and the HTTP Headers.
  *
  * @author SERPRO
- *
  */
 @Provider
 public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilter {
@@ -123,6 +136,11 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 
     }
 
+    /**
+     * Check if the actual request is valid for a Crud feature.
+     * 
+     * @return is a request for crud or not
+     */
     private Boolean isRequestForCrud() {
         if (resourceInfo.getResourceClass().getSuperclass() != null
                 && resourceInfo.getResourceClass().getSuperclass().equals(AbstractREST.class)
@@ -133,6 +151,15 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         return Boolean.FALSE;
     }
 
+    /**
+     * Build the result used on 'Body' HTTP Response.
+     * 
+     * If the request used the {@link FieldHelper} feature or used the {@link Search} annotation the 
+     * result from database will be parsed to a Map to filter theses fields.
+     * 
+     * @param response
+     * @return result
+     */
     private Object buildContent(ContainerResponseContext response) {
 
         @SuppressWarnings("unchecked")
@@ -144,7 +171,6 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
             content = new LinkedList<>();
             Class<?> targetClass = CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass());
             Iterator<?> it = ((Result) response.getEntity()).getContent().iterator();
-            
             
             while(it.hasNext()){
                 Object object = it.next();
@@ -216,6 +242,20 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         
     }
     
+    /**
+     * Invoke the field to get the value from the object
+     * 
+     * @param targetClass Class that represent the object
+     * @param field Field that will be invoked
+     * @param object The actual object that has the value
+     * 
+     * @return Value from field 
+     * 
+     * @throws NoSuchFieldException
+     * @throws SecurityException
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     */
     private Object getValueFromField(Class<?> targetClass, Field field, Object object) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
         Object result = null;
         Field actualField = targetClass.getDeclaredField(field.getName());
@@ -227,6 +267,11 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         return result;
     }
 
+    /**
+     * Retrieve the fields used to build the content.
+     * 
+     * @return
+     */
     private TreeNodeField<String, Set<String>> getFields() {
         
         if(drc.getFields() != null){

@@ -18,15 +18,30 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.UriInfo;
 
+import org.demoiselle.jee.crud.AbstractDAO;
 import org.demoiselle.jee.crud.CrudMessage;
 import org.demoiselle.jee.crud.CrudUtilHelper;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedKeyWords;
 import org.demoiselle.jee.crud.Search;
+import org.demoiselle.jee.crud.TreeNodeField;
 
 /**
+ * Class responsible for managing the 'sort' parameter comes from Url Query String.
+ * 
+ * Ex:
+ * 
+ * Given a request
+ * <pre>
+ * GET {@literal http://localhost:8080/api/users?sort=field1,field2&desc=field2}
+ * </pre>
+ * 
+ * This class will processing the request above and parse the 'sort=...' and 'desc=...' parameters to 
+ * list of {@link SortModel} objects.
+ * 
+ * This list will be use on {@link AbstractDAO} class to execute the sort on database.
+ * 
  * @author SERPRO
- *
  */
 @RequestScoped
 public class SortHelper {
@@ -44,7 +59,6 @@ public class SortHelper {
     @Inject
     private CrudMessage crudMessage;
     
-    
     public SortHelper(){}
     
     public SortHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, SortHelperMessage sortHelperMessage, CrudMessage crudMessage){
@@ -55,6 +69,13 @@ public class SortHelper {
         this.crudMessage = crudMessage;
     }
 
+    /**
+     * Open the request query string to extract values from 'sort' and 'desc' parameters and 
+     * fill the {@link DemoiselleRequestContext#setSorts(List)}
+     * 
+     * @param resourceInfo ResourceInfo
+     * @param uriInfo UriInfo
+     */
     public void execute(ResourceInfo resourceInfo, UriInfo uriInfo) {
         this.resourceInfo = resourceInfo == null ? this.resourceInfo : resourceInfo;
         this.uriInfo = uriInfo == null ? this.uriInfo : uriInfo;
@@ -111,14 +132,14 @@ public class SortHelper {
         if(this.resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)){
             Search search = this.resourceInfo.getResourceMethod().getAnnotation(Search.class);
             List<String> searchFields = Arrays.asList(search.fields());
-            drc.getSorts().stream().filter((sortModel) -> (!searchFields.contains(sortModel.getValue()))).forEachOrdered((sortModel) -> {
-                throw new BadRequestException(crudMessage.fieldRequestDoesNotExistsOnSearchField(sortModel.getValue()));
+            drc.getSorts().stream().filter((sortModel) -> (!searchFields.contains(sortModel.getField()))).forEachOrdered((sortModel) -> {
+                throw new BadRequestException(crudMessage.fieldRequestDoesNotExistsOnSearchField(sortModel.getField()));
             });
         }
         
         // Validate if the fields are valid
         drc.getSorts().stream().forEach( sortModel -> {
-            CrudUtilHelper.checkIfExistField(CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()), sortModel.getValue());
+            CrudUtilHelper.checkIfExistField(CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()), sortModel.getField());
         });
         
     }

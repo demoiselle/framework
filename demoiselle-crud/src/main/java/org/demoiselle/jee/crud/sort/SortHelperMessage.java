@@ -10,8 +10,10 @@ import org.apache.deltaspike.core.api.message.MessageBundle;
 import org.apache.deltaspike.core.api.message.MessageTemplate;
 
 /**
+ * 
+ * Messages used to inform user about Sort feature
+ * 
  * @author SERPRO
- *
  */
 @MessageBundle
 public interface SortHelperMessage {

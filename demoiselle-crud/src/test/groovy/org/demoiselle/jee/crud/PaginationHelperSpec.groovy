@@ -27,8 +27,10 @@ import spock.lang.*
 
 /**
  * 
+ * Test of {@link PaginationHelper} class.
+ * 
  * @author SERPRO
- *
+
  */
 class PaginationHelperSpec extends Specification {
     

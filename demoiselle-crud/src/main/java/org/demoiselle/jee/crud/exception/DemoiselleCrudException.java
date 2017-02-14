@@ -10,7 +10,7 @@ import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 
 /**
  *
- * Exception for all persistence errors in Framework.
+ * Exception for all persistence errors in CRUD.
  *
  * @author SERPRO
  */

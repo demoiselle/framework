@@ -14,8 +14,24 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation to be used in methods that want to change the 
+ * default paging behavior and determine the fields that can be used by the 
+ * request and in the return of the result.
+ * 
+ * Ex.
+ * 
+ * <pre>
+ * &#64;GET
+ * &#64;Search(fields={"field1", "field2"}, withPagination = true, quantityPerPage = 2)
+ * public Result myNewMethod(){
+ *    ...
+ * }
+ * </pre>
+ * 
+ * The method above will filter just 'field1' and 'field2' and the default pagination page will be 2 
+ * register per page.
+ * 
  * @author SERPRO
- *
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

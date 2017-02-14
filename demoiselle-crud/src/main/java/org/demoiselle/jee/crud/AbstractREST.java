@@ -33,8 +33,6 @@ import io.swagger.jaxrs.PATCH;
  *
  * @author SERPRO
  *
- * @param <T>
- * @param <I>
  */
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)

@@ -18,13 +18,26 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 
+import org.demoiselle.jee.crud.AbstractDAO;
 import org.demoiselle.jee.crud.CrudUtilHelper;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedKeyWords;
 import org.demoiselle.jee.crud.Search;
 
 /**
- * @author SERPRO
+ * Class responsible for managing the 'range' parameter comes from Url Query String.
+ * 
+ * Ex:
+ * 
+ * Given a request
+ * <pre>
+ * GET @{literal http://localhost:8080/api/users?range=0-10}
+ * </pre>
+ * 
+ * This class will processing the request above and parse the range parameters to 
+ * {@link DemoiselleRequestContext} object.
+ * 
+ * This object will be use on {@link AbstractDAO} class to execute the pagination on database.
  *
  */
 @RequestScoped
@@ -61,6 +74,13 @@ public class PaginationHelper {
         this.message = message;
     }
 
+    /**
+     * Open the request query string to extract values from 'range' parameter and 
+     * fill the {@link DemoiselleRequestContext#setOffset(Integer)} and  {@link DemoiselleRequestContext#setLimit(Integer)} 
+     * 
+     * @param resourceInfo ResourceInfo
+     * @param uriInfo UriInfo
+     */
     public void execute(ResourceInfo resourceInfo, UriInfo uriInfo) {
         fillObjects(resourceInfo, uriInfo);
 
@@ -84,6 +104,11 @@ public class PaginationHelper {
         this.uriInfo = uriInfo == null ? this.uriInfo : uriInfo;
     }
 
+    /**
+     * Check the pagination is enabled
+     * 
+     * @return pagination enabled/disabled
+     */
     private Boolean isPaginationEnabled() {
         if (paginationConfig.getIsGlobalEnabled() == Boolean.FALSE) {
             return Boolean.FALSE;
@@ -97,6 +122,11 @@ public class PaginationHelper {
         return paginationConfig.getIsGlobalEnabled();
     }
 
+    /**
+     * Check if the actual request has the 'range' parameter on query string
+     * 
+     * @return is request pagination or not
+     */
     private Boolean isRequestPagination() {
         // Verify if contains 'range' in url
         if (uriInfo.getQueryParameters().containsKey(ReservedKeyWords.DEFAULT_RANGE_KEY.getKey())) {
@@ -105,6 +135,16 @@ public class PaginationHelper {
         return Boolean.FALSE;
     }
 
+    /**
+     * Check if the value of 'range' parameter is valid using the rules:
+     * 
+     *  - Value formatted like offset-limit (range=0-10);
+     *  - The 'offset' and 'limit' should be a integer;
+     *  - The 'offset' should be less than or equals 'limit';
+     * 
+     * 
+     * @throws IllegalArgumentException The format is invalid
+     */
     private void checkAndFillRangeValues() throws IllegalArgumentException {
         List<String> rangeList = uriInfo.getQueryParameters().get(ReservedKeyWords.DEFAULT_RANGE_KEY.getKey());
         if (!rangeList.isEmpty()) {
@@ -127,11 +167,13 @@ public class PaginationHelper {
                         throw new IllegalArgumentException(message.defaultPaginationNumberExceed(getDefaultNumberPagination()));
                     }
 
-                } catch (NumberFormatException nfe) {
+                } 
+                catch (NumberFormatException nfe) {
                     logInvalidRangeParameters(rangeList.get(0));
                     throw new IllegalArgumentException(message.invalidRangeParameters());
                 }
-            } else {
+            } 
+            else {
                 logInvalidRangeParameters(rangeList.get(0));
                 throw new IllegalArgumentException(message.invalidRangeParameters());
             }
@@ -139,6 +181,12 @@ public class PaginationHelper {
 
     }
 
+    /**
+     * Get default pagination number, if the target method is annotated with Search annotation the default annotation 
+     * will be {@link Search#quantityPerPage()} otherwise the default pagination will be {@link PaginationHelperConfig#getDefaultPagination()} value;
+     * 
+     * @return Number per page
+     */
     private Integer getDefaultNumberPagination() {
         if (hasSearchAnnotation()) {
             Search searchAnnotation = resourceInfo.getResourceMethod().getAnnotation(Search.class);
@@ -152,6 +200,10 @@ public class PaginationHelper {
         return resourceInfo.getResourceMethod().isAnnotationPresent(Search.class);
     }
 
+    /**
+     * Check if the actual response is a Partial Content (HTTP 206 code)
+     * @return is partial content or not
+     */
     public Boolean isPartialContentResponse() {
         Integer limit = drc.getLimit() == null ? 0 : drc.getLimit();
         Long count = drc.getCount() == null ? 0 : drc.getCount();
@@ -162,6 +214,11 @@ public class PaginationHelper {
         logger.warning(message.invalidRangeParameters() + ", [params: " + range + "]");
     }
 
+    /**
+     * Build the 'Content-Range' HTTP Header value.
+     * 
+     * @return 'Content-Range' value
+     */
     private String buildContentRange() {
         Integer limit = drc.getLimit() == null ? 0 : drc.getLimit();
         Integer offset = drc.getOffset() == null ? 0 : drc.getOffset();
@@ -169,6 +226,11 @@ public class PaginationHelper {
         return offset + "-" + (limit.equals(0) ? count - 1 : drc.getLimit()) + "/" + count;
     }
 
+    /**
+     * Build the 'Accept-Range' HTTP Header value.
+     * 
+     * @return 'Accept-Range' value
+     */
     public String buildAcceptRange() {
         String resource = "";
 
@@ -186,6 +248,14 @@ public class PaginationHelper {
         return resource + " " + getDefaultNumberPagination();
     }
 
+    /**
+     * Set the 'Content-Range', 'Accept-Range', 'Link' and 'Access-Control-Expose-Headers' HTTP headers;
+     * 
+     * @param resourceInfo ResourceInfo
+     * @param uriInfo UriInfo
+     * 
+     * @return A map with HTTP headers
+     */
     public Map<String, String> buildHeaders(ResourceInfo resourceInfo, UriInfo uriInfo) {
         fillObjects(resourceInfo, uriInfo);
         Map<String, String> headers = new ConcurrentHashMap<>();
@@ -205,6 +275,11 @@ public class PaginationHelper {
         return headers;
     }
 
+    /**
+     * Build the 'Link' HTTP header value
+     * 
+     * @return 'Link' value
+     */
     private String buildLinkHeader() {
         StringBuffer sb = new StringBuffer();
         String url = uriInfo.getRequestUri().toString();

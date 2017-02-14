@@ -12,15 +12,16 @@ import javax.ws.rs.core.MultivaluedHashMap
 import javax.ws.rs.core.MultivaluedMap
 import javax.ws.rs.core.UriInfo
 
-import org.demoiselle.jee.crud.field.TreeNodeField
+import org.demoiselle.jee.crud.TreeNodeField
 import org.demoiselle.jee.crud.filter.FilterHelper
 import org.demoiselle.jee.crud.pagination.PaginationHelperConfig
 
 import spock.lang.*
 
 /**
+ * Test of {@link FilterHelper} class.
+ * 
  * @author SERPRO
- *
  */
 class FilterHelperSpec extends Specification {
     

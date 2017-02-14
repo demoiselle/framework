@@ -9,8 +9,13 @@ package org.demoiselle.jee.crud.pagination;
 import org.apache.deltaspike.core.api.message.MessageBundle;
 import org.apache.deltaspike.core.api.message.MessageTemplate;
 
+/**
+ * 
+ * Messages used to inform user about Pagination feature
+ * 
+ * @author SERPRO
+ */
 @MessageBundle
-// TODO CLF fazer merge com a classe DemoiselleMessage
 public interface PaginationHelperMessage {
 	
 	@MessageTemplate("{invalid-range-parameters}")

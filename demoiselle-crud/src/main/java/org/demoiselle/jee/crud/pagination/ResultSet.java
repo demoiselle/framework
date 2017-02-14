@@ -10,11 +10,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.demoiselle.jee.core.api.crud.Result;
+import org.demoiselle.jee.crud.AbstractDAO;
 
 /**
+ * This classes implements {@link org.demoiselle.jee.core.api.crud.Result} to hold the results came from {@link AbstractDAO}
  * 
  * @author SERPRO
- *
  */
 public class ResultSet implements Result{
 	

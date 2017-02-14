@@ -4,14 +4,16 @@
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.crud.field;
+package org.demoiselle.jee.crud;
 
 import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * 
+ * This class helps the CRUD feature to hold the fields on a Tree structure.
+ * 
  * @author SERPRO
- *
  */
 public class TreeNodeField<T, K> {
 
@@ -63,7 +65,7 @@ public class TreeNodeField<T, K> {
 
     @Override
     public String toString() {
-        return "TreeNodeField [data=" + key + ", value=" + value + ", children=" + children + "]";
+        return "TreeNodeField [key=" + key + ", value=" + value + ", children=" + children + "]";
     }
     
 }

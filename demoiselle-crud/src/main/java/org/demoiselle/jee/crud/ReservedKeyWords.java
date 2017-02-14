@@ -7,6 +7,8 @@
 package org.demoiselle.jee.crud;
 
 /**
+ * Hold the reserved keywords.
+ * 
  * @author SERPRO
  *
  */

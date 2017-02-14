@@ -20,11 +20,22 @@ import org.demoiselle.jee.crud.CrudMessage;
 import org.demoiselle.jee.crud.CrudUtilHelper;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedKeyWords;
-import org.demoiselle.jee.crud.field.TreeNodeField;
+import org.demoiselle.jee.crud.TreeNodeField;
 
 /**
+ * Class responsible for managing the 'filter' parameter comes from Url Query String.
+ * 
+ * Ex:
+ * 
+ * Given a request
+ * <pre>
+ * GET {@literal http://localhost:8080/api/users?field1=value1&field2=value2&field3(subField1)=subFieldValue1}
+ * </pre>
+ * 
+ * This class will processing the request above and parse the values informed on parameters to 
+ * a {@link org.demoiselle.jee.crud.TreeNodeField} object.
+ * 
  * @author SERPRO
- *
  */
 @RequestScoped
 public class FilterHelper {
@@ -48,6 +59,13 @@ public class FilterHelper {
         this.crudMessage = crudMessage;
     }
     
+    /**
+     * Open the request query string to extract values used to filter the resource and 
+     * fill the {@link TreeNodeField} object and set the result object on {@link DemoiselleRequestContext#setFields(TreeNodeField)} object.
+     * 
+     * @param resourceInfo ResourceInfo
+     * @param uriInfo UriInfo
+     */
     public void execute(ResourceInfo resourceInfo, UriInfo uriInfo) {
         this.resourceInfo = resourceInfo == null ? this.resourceInfo : resourceInfo;
         this.uriInfo = uriInfo == null ? this.uriInfo : uriInfo;
@@ -76,7 +94,6 @@ public class FilterHelper {
             CrudUtilHelper.validateFields(tnf, this.resourceInfo, this.crudMessage);
             
             drc.setFilters(tnf);
-                        
         }
         
     }

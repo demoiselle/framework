@@ -183,10 +183,10 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             drc.getSorts().stream().forEachOrdered( sortModel -> {
                 
                 if(sortModel.getType().equals(CrudSort.ASC)){
-                    orders.add(criteriaBuilder.asc(root.get(sortModel.getValue())));
+                    orders.add(criteriaBuilder.asc(root.get(sortModel.getField())));
                 }
                 else{
-                    orders.add(criteriaBuilder.desc(root.get(sortModel.getValue())));
+                    orders.add(criteriaBuilder.desc(root.get(sortModel.getField())));
                 }
             });
 

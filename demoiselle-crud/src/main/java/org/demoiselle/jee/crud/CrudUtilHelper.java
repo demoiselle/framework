@@ -18,14 +18,20 @@ import java.util.regex.Pattern;
 
 import javax.ws.rs.container.ResourceInfo;
 
-import org.demoiselle.jee.crud.field.TreeNodeField;
-
 /**
+ * Class used to support CRUD feature. 
+ * 
  * @author SERPRO
- *
  */
 public class CrudUtilHelper {
 
+    /**
+     * Given a Class that extends {@link AbstractREST} this method will return the target Class used on {@literal AbstractREST<TargetClass, I>}
+     * 
+     * @param targetClass Target class
+     * 
+     * @return Class used on {@literal AbstractREST<TargetClass, I>}
+     */
     public static Class<?> getTargetClass(Class<?> targetClass) {
         if (targetClass.getSuperclass().equals(AbstractREST.class)) {
             Class<?> type = (Class<?>) ((ParameterizedType) targetClass.getGenericSuperclass()).getActualTypeArguments()[0];
@@ -34,16 +40,33 @@ public class CrudUtilHelper {
         return null;
     }
 
+    /**
+     * Check if the 'field' parameter exists on 'targetClass'
+     * 
+     * @param targetClass The classs 
+     * @param field Field to checked
+     * 
+     * @throws IllegalArgumentException When the 'field' doesn't exists on 'targetClass'
+     */
     public static void checkIfExistField(Class<?> targetClass, String field) {
         if (targetClass != null) {
             try {
                 targetClass.getDeclaredField(field);
-            } catch (NoSuchFieldException e) {
+            } 
+            catch (NoSuchFieldException e) {
                 throw new IllegalArgumentException(e);
             }
         }
     }
     
+    /**
+     * Given a string like 'field1,field2(subField1,subField2)' this method will 
+     * return a List with [field1, field2(subField1,subField2)] values
+     * 
+     * @param fields String with field to be extracted
+     * 
+     * @return List Parsed values
+     */
     public static List<String> extractFields(String fields) {
         List<String> results = new LinkedList<>();
         
@@ -120,6 +143,13 @@ public class CrudUtilHelper {
         return results;
     }
     
+    /**
+     * Fill the {@link TreeNodeField} object based on parameters.
+     * 
+     * @param tnf TreeNodeField actual node 
+     * @param field String of field
+     * @param value List with values
+     */
     public static void fillLeafTreeNodeField(TreeNodeField<String, Set<String>> tnf, String field, Set<String> value) {
         
         String actualField = field;
@@ -156,6 +186,13 @@ public class CrudUtilHelper {
         return tnfFinded == null ? tnf.addChild(masterField, null) : tnfFinded;
     }
 
+    /**
+     * Validate the fields based on {@link Search#fields()} or if field exists on targetClass
+     * 
+     * @param tnf TreeNodeField filled
+     * @param resourceInfo ResourceInfo
+     * @param crudMessage CrudMessage
+     */
     public static void validateFields(TreeNodeField<String, Set<String>> tnf, ResourceInfo resourceInfo, CrudMessage crudMessage) {
         
         // Get fields from @Search.fields attribute
@@ -216,6 +253,7 @@ public class CrudUtilHelper {
         return matcher.find();
     }
 
+    // TODO CASSIO substituir pelo jpa2
     public static String getMethodAnnotatedWithID(Class<?> targetClass) {
         return "id";
     }

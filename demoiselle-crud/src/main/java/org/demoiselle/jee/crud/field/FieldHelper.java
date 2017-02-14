@@ -20,10 +20,22 @@ import org.demoiselle.jee.crud.CrudMessage;
 import org.demoiselle.jee.crud.CrudUtilHelper;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedKeyWords;
+import org.demoiselle.jee.crud.TreeNodeField;
 
 /**
+ * Class responsible for managing the 'fields' parameter comes from Url Query String.
+ * 
+ * Ex:
+ * 
+ * Given a request
+ * <pre>
+ * GET {@literal http://localhost:8080/api/users?fields=field1,field2,field3(subField1,subField2)}
+ * </pre>
+ * 
+ * This class will processing the request above and parse the 'fields=...' parameter to 
+ * a {@link org.demoiselle.jee.crud.TreeNodeField} object.
+ * 
  * @author SERPRO
- *
  */
 @RequestScoped
 public class FieldHelper {
@@ -52,6 +64,13 @@ public class FieldHelper {
         this.crudMessage = crudMessage;
     }
 
+    /**
+     * Open the request query string to extract values from 'fields' parameter and 
+     * fill the {@link TreeNodeField} object and set the result object on {@link DemoiselleRequestContext#setFields(TreeNodeField)} object.
+     * 
+     * @param resourceInfo ResourceInfo
+     * @param uriInfo UriInfo
+     */
     public void execute(ResourceInfo resourceInfo, UriInfo uriInfo) {
         this.resourceInfo = resourceInfo == null ? this.resourceInfo : resourceInfo;
         this.uriInfo = uriInfo == null ? this.uriInfo : uriInfo;
@@ -60,7 +79,7 @@ public class FieldHelper {
          * Populate the fields
          * 
          * Ex: 
-         *      The request 'url?field1,field2,field3(fieldA,fieldB),field4'
+         *      The request 'url?fields=field1,field2,field3(fieldA,fieldB),field4'
          *      It will be parse to ["field1", "field2", "field3(fieldA,fieldB)", "field4"]
          * 
          */

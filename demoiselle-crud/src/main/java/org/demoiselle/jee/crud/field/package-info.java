@@ -6,8 +6,8 @@
  */
 
 /**
- * This package is intended to contain as related classes as Exceptions of the CRUD Demoiselle Framework.
+ * This package is intended to contain as related classes about Field feature of Demoiselle CRUD Framework.
  *
  * @author SERPRO
  */
-package org.demoiselle.jee.crud.exception;
+package org.demoiselle.jee.crud.field;

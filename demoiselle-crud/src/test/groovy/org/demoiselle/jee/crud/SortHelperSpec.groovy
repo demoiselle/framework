@@ -18,8 +18,9 @@ import org.demoiselle.jee.crud.sort.SortHelperMessage
 import spock.lang.*
 
 /**
+ * Test of {@link SortHelper} class.
+ * 
  * @author SERPRO
- *
  */
 class SortHelperSpec extends Specification {
 
@@ -52,10 +53,10 @@ class SortHelperSpec extends Specification {
         drc.getSorts() != null
         drc.getSorts().size() == 2
               
-        drc.getSorts().get(0).getValue() == "id"
+        drc.getSorts().get(0).getField() == "id"
         drc.getSorts().get(0).getType() == CrudSort.ASC
         
-        drc.getSorts().get(1).getValue() == "name"
+        drc.getSorts().get(1).getField() == "name"
         drc.getSorts().get(1).getType() == CrudSort.ASC
     }
     
@@ -79,10 +80,10 @@ class SortHelperSpec extends Specification {
         drc.getSorts() != null
         drc.getSorts().size() == 2
         
-        drc.getSorts().get(0).getValue() == "id"
+        drc.getSorts().get(0).getField() == "id"
         drc.getSorts().get(0).getType() == CrudSort.DESC
         
-        drc.getSorts().get(1).getValue() == "name"
+        drc.getSorts().get(1).getField() == "name"
         drc.getSorts().get(1).getType() == CrudSort.DESC
         
     }
@@ -106,10 +107,10 @@ class SortHelperSpec extends Specification {
         then:
         drc.getSorts() != null
         drc.getSorts().size() == 2
-        drc.getSorts().get(0).getValue() == "id"
+        drc.getSorts().get(0).getField() == "id"
         drc.getSorts().get(0).getType() == CrudSort.ASC
 
-        drc.getSorts().get(1).getValue() == "name"
+        drc.getSorts().get(1).getField() == "name"
         drc.getSorts().get(1).getType() == CrudSort.DESC
     }
     
@@ -133,13 +134,13 @@ class SortHelperSpec extends Specification {
         drc.getSorts() != null
         
         drc.getSorts().get(0).getType() == CrudSort.ASC
-        drc.getSorts().get(0).getValue() == "id"
+        drc.getSorts().get(0).getField() == "id"
         
         drc.getSorts().get(1).getType() == CrudSort.DESC
-        drc.getSorts().get(1).getValue() == "name"
+        drc.getSorts().get(1).getField() == "name"
         
         drc.getSorts().get(2).getType() == CrudSort.DESC
-        drc.getSorts().get(2).getValue() == "mail"
+        drc.getSorts().get(2).getField() == "mail"
     }
     
     def "A request without 'sort' and 'desc' query string parameters should throw IllegalArgumentException"() {

@@ -30,8 +30,9 @@ import org.demoiselle.jee.crud.sort.SortHelperMessage
 import spock.lang.*
 
 /**
+ * Test of {@link CrudFilter} class.
+ * 
  * @author SERPRO
- *
  */
 class CrudFilterSpec extends Specification{
     

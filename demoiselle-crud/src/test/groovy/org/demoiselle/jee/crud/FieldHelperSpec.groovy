@@ -11,15 +11,16 @@ import javax.ws.rs.core.MultivaluedHashMap
 import javax.ws.rs.core.MultivaluedMap
 import javax.ws.rs.core.UriInfo
 
-import org.demoiselle.jee.crud.field.TreeNodeField;
 import org.demoiselle.jee.crud.field.FieldHelper
 import org.demoiselle.jee.crud.field.FieldHelperMessage
+import org.demoiselle.jee.crud.TreeNodeField;
 
 import spock.lang.*
 
 /**
+ * Test of {@link FieldHelper} class.
+ * 
  * @author SERPRO
- *
  */
 class FieldHelperSpec extends Specification {
 

@@ -7,8 +7,9 @@
 package org.demoiselle.jee.crud.sort;
 
 /**
+ * Enum to hold types supported by Sort feature
+ * 
  * @author SERPRO
- *
  */
 public enum CrudSort {
     

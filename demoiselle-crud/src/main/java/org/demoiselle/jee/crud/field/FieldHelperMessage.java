@@ -10,12 +10,13 @@ import org.apache.deltaspike.core.api.message.MessageBundle;
 import org.apache.deltaspike.core.api.message.MessageTemplate;
 
 /**
+ * Messages used to inform user about Field feature
+ * 
  * @author SERPRO
- *
  */
 @MessageBundle
 public interface FieldHelperMessage {
-
+    
     @MessageTemplate("{field-request-malformed}")
     String fieldRequestMalFormed(String fieldName, String field);
     

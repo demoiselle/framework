@@ -9,9 +9,9 @@ package org.demoiselle.jee.crud.pagination;
 import org.demoiselle.jee.configuration.annotation.Configuration;
 
 /**
+ * Class responsible for hold configuration about Pagination feature.
  * 
  * @author SERPRO
- * TODO CLF usar valores default do configuration
  */ 
 @Configuration(prefix = "demoiselle.crud.pagination")
 public class PaginationHelperConfig {
@@ -23,7 +23,7 @@ public class PaginationHelperConfig {
 		return defaultPagination;
 	}
 
-    public Boolean getIsGlobalEnabled() {       
+    public Boolean getIsGlobalEnabled() {
         return isGlobalEnabled;
     }
 

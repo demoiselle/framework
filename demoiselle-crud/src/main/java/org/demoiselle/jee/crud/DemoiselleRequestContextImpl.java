@@ -12,16 +12,12 @@ import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
 
-import org.demoiselle.jee.crud.field.TreeNodeField;
 import org.demoiselle.jee.crud.sort.SortModel;
 
 /**
+ * Implementation from {@link DemoiselleRequestContext}
+ * 
  * @author SERPRO
- *
- */
-/**
- * @author SERPRO
- *
  */
 @RequestScoped
 public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
@@ -30,7 +26,6 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     private Integer limit = null;
     private Long count = null;
     private Class<?> entityClass = null;
-    //private Map<String, Set<String>> filters = new ConcurrentHashMap<>();
     private TreeNodeField<String, Set<String>> filters = null; 
     private List<SortModel> sorts = new LinkedList<>();
     private TreeNodeField<String, Set<String>> fields = null;
@@ -76,16 +71,6 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
         this.entityClass = entityClass;
     }
 
-//    @Override
-//    public Map<String, Set<String>> getFilters() {
-//        return filters;
-//    }
-//
-//    @Override
-//    public void setFilters(Map<String, Set<String>> fieldsFilter) {
-//        this.filters = fieldsFilter;
-//    }
-    
     @Override
     public TreeNodeField<String, Set<String>> getFilters() {
         return filters;
