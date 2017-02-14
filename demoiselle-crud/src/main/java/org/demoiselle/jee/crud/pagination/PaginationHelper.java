@@ -210,8 +210,11 @@ public class PaginationHelper {
         String url = uriInfo.getRequestUri().toString();
         url = url.replaceFirst(".range=([^&]*)", "");
 
-        if (drc.getOffset() == null && drc.getLimit() == null) {
+        if (drc.getOffset() == null){
             drc.setOffset(new Integer(0));
+        }
+        
+        if (drc.getLimit() == null){
             drc.setLimit(getDefaultNumberPagination() - 1);
         }
 
