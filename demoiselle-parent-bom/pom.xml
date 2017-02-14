@@ -55,6 +55,7 @@
         <json-api.version>1.0</json-api.version>
         <commons-configuration2.version>2.0</commons-configuration2.version>
         <commons-beanutils.version>1.9.2</commons-beanutils.version>
+        <commons-lang3.version>3.3.2</commons-lang3.version>
         <hibernate-validator.version>5.3.0.Final</hibernate-validator.version>
         <jose4j.version>0.5.2</jose4j.version>
         <objenesis.version>2.4</objenesis.version>
@@ -63,7 +64,7 @@
         <groovy-all.version>2.4.7</groovy-all.version>
 
         <!--Microcontainers -->
-        <wildfly-swarm.version>2017.1.1</wildfly-swarm.version>
+        <wildfly-swarm.version>2017.2.0</wildfly-swarm.version>
 
         <!--Test -->
         <version.arquillian>1.0.2.Final</version.arquillian>
@@ -246,10 +247,17 @@
                 <scope>runtime</scope>
                 <version>${deltaspike.version}</version>
             </dependency>
+            
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-configuration2</artifactId>
                 <version>${commons-configuration2.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
             </dependency>
 
             <dependency>
@@ -257,6 +265,7 @@
                 <artifactId>commons-beanutils</artifactId>
                 <version>${commons-beanutils.version}</version>
             </dependency>
+            
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
