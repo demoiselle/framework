@@ -126,7 +126,8 @@ public class CrudUtilHelper {
         
         if(hasSubField(actualField)){
             String masterField = actualField.substring(0, actualField.indexOf("("));
-            TreeNodeField<String, Set<String>> masterTNF = tnf.addChild(masterField, null);
+            
+            TreeNodeField<String, Set<String>> masterTNF = getTreeNodeField(masterField, tnf);
            
             actualField = actualField.substring(actualField.indexOf("(") + 1, actualField.length() - 1);
             List<String> subFields = extractFields(actualField);
@@ -146,6 +147,15 @@ public class CrudUtilHelper {
         
     }
     
+    private static TreeNodeField<String, Set<String>> getTreeNodeField(String masterField, TreeNodeField<String, Set<String>> tnf) {
+        TreeNodeField<String, Set<String>> tnfFinded = tnf.getChildren().stream()
+                                                                .filter( child -> child.getKey().equalsIgnoreCase(masterField))
+                                                                .findAny()
+                                                                .orElse(null);
+        
+        return tnfFinded == null ? tnf.addChild(masterField, null) : tnfFinded;
+    }
+
     public static void validateFields(TreeNodeField<String, Set<String>> tnf, ResourceInfo resourceInfo, CrudMessage crudMessage) {
         
         // Get fields from @Search.fields attribute

@@ -76,8 +76,7 @@ public class FilterHelper {
             CrudUtilHelper.validateFields(tnf, this.resourceInfo, this.crudMessage);
             
             drc.setFilters(tnf);
-            
-            System.out.println(drc.getFilters().containsKey("mail"));
+                        
         }
         
     }

@@ -9,7 +9,9 @@ package org.demoiselle.jee.crud;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -18,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -43,6 +46,8 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     private final Class<T> entityClass;
 
     protected abstract EntityManager getEntityManager();
+    
+    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     @SuppressWarnings("unchecked")
     public AbstractDAO() {
@@ -145,12 +150,18 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             }
 
             result.setContent(query.getResultList());
+            if(result.getContent() != null && !result.getContent().isEmpty() 
+                    && drc.isPaginationEnabled() 
+                    && result.getContent().size() <= drc.getCount() && drc.getCount() < getMaxResult()){
+                drc.setLimit(drc.getCount().intValue());
+            }
             drc.setEntityClass(entityClass);
 
             return result;
 
-        } catch (Exception e) {
-            // logger.severe(e.getMessage());
+        } 
+        catch (Exception e) {
+            logger.severe(e.getMessage());
             throw new DemoiselleCrudException("Não foi possível consultar", e);
         }
     }
@@ -185,27 +196,61 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     }
 
     private Predicate[] buildPredicates(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, Root<T> root) {
-        List<Predicate> predicates = new ArrayList<>();
+        List<Predicate> predicates = new LinkedList<>();
 
-        drc.getFilters().getChildren().stream().forEach( child -> {
-
-            // Many parameters for the same key, generate OR clause
-            if (!child.getChildren().isEmpty()) {
-                List<Predicate> predicateSameKey = new ArrayList<>();
-                child.getChildren().stream().forEach((value) -> {
-                    predicateSameKey.add(criteriaBuilder.equal(root.get(child.getKey()), value));
-                });
-                predicates.add(criteriaBuilder.or(predicateSameKey.toArray(new Predicate[]{})));
-            } 
-            else {                
-                if ("null".equals(child.getValue()) || child.getValue().isEmpty()) {
-                    predicates.add(criteriaBuilder.isNull(root.get(child.getKey())));
+        if(drc.getFilters() != null){
+            drc.getFilters().getChildren().stream().forEach( child -> {
+                
+                List<Predicate> predicateAndKeys = new LinkedList<>();
+                List<Predicate> predicateSameKey = new LinkedList<>();
+    
+                // Many parameters for the same key, generate OR clause
+                if (!child.getChildren().isEmpty()) {
+                    
+                    Join<?, ?> join = root.join(child.getKey());
+                    child.getChildren().stream().forEach( values -> {
+                        
+                        predicateSameKey.clear();
+                        
+                        if(!child.getChildren().isEmpty()){
+                            
+                            values.getValue().stream().forEach( value ->{
+                                if ("null".equals(value) || value == null){
+                                    predicateSameKey.add(criteriaBuilder.isNull(join.get(values.getKey())));
+                                }
+                                else{
+                                    if (values.getValue().isEmpty()) {
+                                        predicateSameKey.add(criteriaBuilder.isEmpty(join.get(values.getKey())));
+                                    } 
+                                    else {
+                                        predicateSameKey.add(criteriaBuilder.equal(join.get(values.getKey()), value));
+                                    }
+                                }
+                            });
+                            
+                            predicates.add(criteriaBuilder.or(predicateSameKey.toArray(new Predicate[]{})));
+                        }
+                    });
                 } 
                 else {
-                    predicates.add(criteriaBuilder.equal(root.get(child.getKey()), child.getValue()));
+                    child.getValue().stream().forEach( value -> {      
+                        if ("null".equals(value) || value == null){
+                            predicateAndKeys.add(criteriaBuilder.isNull(root.get(child.getKey())));
+                        } 
+                        else{
+                            if(child.getValue().isEmpty()) {
+                                predicateAndKeys.add(criteriaBuilder.isEmpty(root.get(child.getKey())));
+                            }
+                            else {
+                                predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), value));
+                            }
+                        }
+                    });
+                    
+                    predicates.add(criteriaBuilder.and(predicateAndKeys.toArray(new Predicate[]{})));
                 }
-            }
-        });
+            });
+        }
 
         return predicates.toArray(new Predicate[]{});
     }
@@ -223,7 +268,10 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         CriteriaQuery<Long> countCriteria = criteriaBuilder.createQuery(Long.class);
         Root<T> entityRoot = countCriteria.from(entityClass);
         countCriteria.select(criteriaBuilder.count(entityRoot));
-        countCriteria.where(buildPredicates(criteriaBuilder, countCriteria, entityRoot));
+        
+        if(drc.getFilters() != null){
+            countCriteria.where(buildPredicates(criteriaBuilder, countCriteria, entityRoot));
+        }
 
         return getEntityManager().createQuery(countCriteria).getSingleResult();
     }
