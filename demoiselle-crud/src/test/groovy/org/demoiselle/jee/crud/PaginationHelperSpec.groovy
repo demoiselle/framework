@@ -278,6 +278,10 @@ class PaginationHelperSpec extends Specification {
         uriInfo.getRequestUri() >> uri
         uriInfo.getQueryParameters() >> mvmRequest
         
+        resourceInfo.getResourceClass() >> UserRestForTest.class
+        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
+        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("find")
+        
         when:
         paginationHelper.execute(resourceInfo, uriInfo)
         

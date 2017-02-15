@@ -151,10 +151,11 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
             result.setContent(query.getResultList());
             if(result.getContent() != null && !result.getContent().isEmpty() 
-                    && drc.isPaginationEnabled() 
+                    && drc.isPaginationEnabled()
                     && result.getContent().size() <= drc.getCount() && drc.getCount() < getMaxResult()){
-                drc.setLimit(drc.getCount().intValue());
+                    drc.setLimit(drc.getCount().intValue());
             }
+            
             drc.setEntityClass(entityClass);
 
             return result;

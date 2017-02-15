@@ -43,7 +43,7 @@ public class CrudUtilHelper {
     /**
      * Check if the 'field' parameter exists on 'targetClass'
      * 
-     * @param targetClass The classs 
+     * @param targetClass The class
      * @param field Field to checked
      * 
      * @throws IllegalArgumentException When the 'field' doesn't exists on 'targetClass'
@@ -197,17 +197,56 @@ public class CrudUtilHelper {
         
         // Get fields from @Search.fields attribute
         List<String> fieldsFromAnnotation = new ArrayList<>();
+        final TreeNodeField<String, Set<String>> searchFieldsTnf = new TreeNodeField<>(getTargetClass(resourceInfo.getResourceClass()).getName(), null);
+        
         if(resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)){
             String fieldsAnnotation[] = resourceInfo.getResourceMethod().getAnnotation(Search.class).fields();
-            fieldsFromAnnotation.addAll(Arrays.asList(fieldsAnnotation));
+            
+            if(fieldsAnnotation != null && !fieldsAnnotation[0].equals("*")){
+            
+                fieldsFromAnnotation.addAll(Arrays.asList(fieldsAnnotation));
+                if(!fieldsFromAnnotation.isEmpty()){
+                    // Transform fields from annotation into TreeNodeField                
+                    fieldsFromAnnotation.stream().forEach( searchField -> {
+                        fillLeafTreeNodeField(searchFieldsTnf, searchField, null);
+                    });
+                }
+            }
         }
         
         //Validate fields
-        tnf.getChildren().stream().forEach( (leaf) -> {
+        tnf.getChildren().stream().forEach( leaf -> {
             
-            if(!fieldsFromAnnotation.isEmpty()){
-                if(!fieldsFromAnnotation.contains(leaf.getKey())){
-                    throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnSearchField(leaf.getKey()));                                                               
+            if(!searchFieldsTnf.getChildren().isEmpty()){
+                
+                try{
+                    // 1st level
+                    if(!searchFieldsTnf.containsKey(leaf.getKey())){
+                        throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnSearchField(leaf.getKey()));
+                    }
+                    
+                    if(!leaf.getChildren().isEmpty()){
+                        leaf.getChildren().stream().forEach( leafItem -> {
+                            
+                            /*
+                             * Given a @Search(fields={field1,field2}) and a request like a 'fields=field1,field2(subField1)' 
+                             * the request is valid because de @Search.fields specified the root type (field2)
+                             *
+                             */
+                            if(!searchFieldsTnf.getChildByKey(leafItem.getParent().getKey()).getChildren().isEmpty()){
+
+                                searchFieldsTnf.getChildByKey(leafItem.getParent().getKey()).getChildren().stream().forEach( sfTnf -> {
+                                    if(!sfTnf.getParent().containsKey(leafItem.getKey())){
+                                        throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnSearchField(leafItem.getParent().getKey() + "(" + leafItem.getKey() + ")"));
+                                    }
+                                });
+                                
+                            }
+                        });
+                    }
+                }
+                catch(IllegalArgumentException e){
+                    throw e;
                 }
             }
             

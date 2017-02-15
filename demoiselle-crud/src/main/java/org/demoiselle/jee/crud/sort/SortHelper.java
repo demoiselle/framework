@@ -24,7 +24,6 @@ import org.demoiselle.jee.crud.CrudUtilHelper;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedKeyWords;
 import org.demoiselle.jee.crud.Search;
-import org.demoiselle.jee.crud.TreeNodeField;
 
 /**
  * Class responsible for managing the 'sort' parameter comes from Url Query String.

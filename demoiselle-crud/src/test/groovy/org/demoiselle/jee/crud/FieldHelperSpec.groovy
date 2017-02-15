@@ -238,4 +238,65 @@ class FieldHelperSpec extends Specification {
         1 * crudMessage.fieldRequestDoesNotExistsOnObject('idInvalid', 'org.demoiselle.jee.crud.entity.AddressModelForTest')
     }
     
+    def "A request with 'fields' query string with a field and subfield and @Search.fields filled should be validated"() {
+        given:
+        resourceInfo.getResourceClass() >> UserRestForTest.class
+        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
+        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearchAndFieldsWithSubFields")
+        
+        URI uri = new URI("http://localhost:9090/api/users")
+        uriInfo.getRequestUri() >> uri
+        
+        mvmRequest.addAll("fields", ["id", "address(address)"])
+                
+        uriInfo.getQueryParameters() >> mvmRequest
+        
+        when:
+        fieldHelper.execute(resourceInfo, uriInfo)
+        
+        then:
+        thrown(IllegalArgumentException)
+        1 * crudMessage.fieldRequestDoesNotExistsOnSearchField('address(address)')
+    }
+    
+    def "A request with 'fields' query string with a field and subfield and @Search.fields without subfield should be accept"() {
+        given:
+        resourceInfo.getResourceClass() >> UserRestForTest.class
+        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
+        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearch")
+        
+        URI uri = new URI("http://localhost:9090/api/users")
+        uriInfo.getRequestUri() >> uri
+        
+        mvmRequest.addAll("fields", ["name", "address(address,street)"])
+                
+        uriInfo.getQueryParameters() >> mvmRequest
+        
+        when:
+        fieldHelper.execute(resourceInfo, uriInfo)
+        
+        then:
+        notThrown(IllegalArgumentException)       
+    }
+    
+    def "A request with 'fields' query string and @Search.fields with '*' value should be accept"(){
+        given:
+        resourceInfo.getResourceClass() >> UserRestForTest.class
+        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
+        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearchAndAllFields")
+        
+        URI uri = new URI("http://localhost:9090/api/users")
+        uriInfo.getRequestUri() >> uri
+        
+        mvmRequest.addAll("fields", ["name", "address(address,street)"])
+                
+        uriInfo.getQueryParameters() >> mvmRequest
+        
+        when:
+        fieldHelper.execute(resourceInfo, uriInfo)
+        
+        then:
+        notThrown(IllegalArgumentException)
+    }
+    
 }

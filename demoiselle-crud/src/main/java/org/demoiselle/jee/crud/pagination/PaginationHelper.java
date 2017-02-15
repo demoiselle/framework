@@ -21,6 +21,7 @@ import javax.ws.rs.core.UriInfo;
 import org.demoiselle.jee.crud.AbstractDAO;
 import org.demoiselle.jee.crud.CrudUtilHelper;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
+import org.demoiselle.jee.crud.ReservedHTTPHeaders;
 import org.demoiselle.jee.crud.ReservedKeyWords;
 import org.demoiselle.jee.crud.Search;
 
@@ -56,11 +57,6 @@ public class PaginationHelper {
     @Inject
     private PaginationHelperConfig paginationConfig;
 
-    private final String HTTP_HEADER_CONTENT_RANGE = "Content-Range";
-    private final String HTTP_HEADER_ACCEPT_RANGE = "Accept-Range";
-    private final String HTTP_HEADER_ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
-    
-
     private static final Logger logger = Logger.getLogger(PaginationHelper.class.getName());
 
     public PaginationHelper() {
@@ -95,6 +91,14 @@ public class PaginationHelper {
             if (hasSearchAnnotation() && !isRequestPagination()) {
                 drc.setLimit(getDefaultNumberPagination() - 1);
                 drc.setOffset(new Integer(0));
+            }           
+        }
+        
+        if (hasSearchAnnotation() && isRequestPagination()) {
+            Search searchAnnotation = resourceInfo.getResourceMethod().getAnnotation(Search.class);
+            // Pagination @Search.withPagination is disabled but the request parameter has 'range' parameter
+            if (searchAnnotation.withPagination() == Boolean.FALSE){
+                throw new IllegalArgumentException(message.paginationIsNotEnabled());
             }
         }
     }
@@ -220,10 +224,10 @@ public class PaginationHelper {
      * @return 'Content-Range' value
      */
     private String buildContentRange() {
-        Integer limit = drc.getLimit() == null ? 0 : drc.getLimit();
+        Integer limit = drc.getLimit() == null ? getDefaultNumberPagination() - 1 : drc.getLimit();
         Integer offset = drc.getOffset() == null ? 0 : drc.getOffset();
         Long count = drc.getCount() == null ? 0 : drc.getCount();
-        return offset + "-" + (limit.equals(0) ? count - 1 : drc.getLimit()) + "/" + count;
+        return offset + "-" + (limit.equals(0) ? count - 1 : limit) + "/" + count;
     }
 
     /**
@@ -261,16 +265,14 @@ public class PaginationHelper {
         Map<String, String> headers = new ConcurrentHashMap<>();
 
         if (drc.isPaginationEnabled()) {
-            headers.put(HTTP_HEADER_CONTENT_RANGE, buildContentRange());
-            headers.put(HTTP_HEADER_ACCEPT_RANGE, buildAcceptRange());
+            headers.put(ReservedHTTPHeaders.HTTP_HEADER_CONTENT_RANGE.getKey(), buildContentRange());
+            headers.put(ReservedHTTPHeaders.HTTP_HEADER_ACCEPT_RANGE.getKey(), buildAcceptRange());
             String linkHeader = buildLinkHeader();
 
             if (!linkHeader.isEmpty()) {
                 headers.put(HttpHeaders.LINK, linkHeader);
             }
         }
-        
-        headers.put(HTTP_HEADER_ACCESS_CONTROL_EXPOSE_HEADERS, HTTP_HEADER_ACCEPT_RANGE + ", " + HTTP_HEADER_CONTENT_RANGE + ", " + HttpHeaders.LINK);
         
         return headers;
     }
@@ -336,7 +338,7 @@ public class PaginationHelper {
 
     public void buildAcceptRangeWithResponse(ContainerResponseContext response) {
         if (response != null) {
-            response.getHeaders().putSingle(HTTP_HEADER_ACCEPT_RANGE, buildAcceptRange());
+            response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_ACCEPT_RANGE.getKey(), buildAcceptRange());
         }
 
     }

@@ -24,4 +24,7 @@ public interface PaginationHelperMessage {
 	@MessageTemplate("{default-pagination-number-exceed}")
 	String defaultPaginationNumberExceed(Integer defaultPaginationNumber);
 
+	@MessageTemplate("{pagination-is-not-enabled}")
+    String paginationIsNotEnabled();
+
 }

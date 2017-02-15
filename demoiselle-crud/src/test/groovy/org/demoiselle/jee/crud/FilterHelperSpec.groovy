@@ -93,11 +93,11 @@ class FilterHelperSpec extends Specification {
         thrown(RuntimeException)
     }
     
-    def "A request with filter parameter that has subfield and the target method annotated with @Search should validade the field without subfield"() {
+    def "A request with filter parameter that has subfield and the target method annotated with @Search should be validade"() {
         given:
         dpc.getDefaultPagination() >> 50
         mvmRequest.putSingle("name", "john john")
-        mvmRequest.putSingle("address(street)", "my street")
+        mvmRequest.putSingle("address(street,invalidField)", "my street")
 
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
@@ -112,13 +112,8 @@ class FilterHelperSpec extends Specification {
         filterHelper.execute(resourceInfo, uriInfo)
         
         then:
-        notThrown(IllegalArgumentException)
-        drc.filters.containsKey("name")
-        drc.filters.getChildByKey("name").getValue() == ["john john"].toSet()
-        
-        drc.filters.containsKey("address")
-        drc.filters.getChildByKey("address").containsKey("street")
-        drc.filters.getChildByKey("address").getChildByKey("street").getValue() == ["my street"].toSet()
+        thrown(IllegalArgumentException)
+        1 * crudMessage.fieldRequestDoesNotExistsOnObject('invalidField', 'org.demoiselle.jee.crud.entity.AddressModelForTest')
     }
 
 }

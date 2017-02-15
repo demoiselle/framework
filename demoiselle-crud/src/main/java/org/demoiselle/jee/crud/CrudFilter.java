@@ -29,6 +29,7 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
@@ -117,9 +118,9 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 
         if (response.getEntity() instanceof Result) {
 
-            paginationHelper.buildHeaders(resourceInfo, uriInfo).forEach((k, v) -> response.getHeaders().putSingle(k, v));
-
-            response.setEntity(buildContent(response));
+            buildHeaders(response);
+            
+            response.setEntity(buildContentBody(response));
 
             if (!paginationHelper.isPartialContentResponse()) {
                 response.setStatus(Status.OK.getStatusCode());
@@ -134,6 +135,16 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
             }
         }
 
+    }
+
+    /**
+     * Build all HTTP Headers.
+     * 
+     */
+    private void buildHeaders(ContainerResponseContext response) {
+        String exposeHeaders = ReservedHTTPHeaders.HTTP_HEADER_ACCEPT_RANGE.getKey() + ", " + ReservedHTTPHeaders.HTTP_HEADER_CONTENT_RANGE.getKey() + ", " + HttpHeaders.LINK;
+        response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_ACCESS_CONTROL_EXPOSE_HEADERS.getKey(), exposeHeaders);
+        paginationHelper.buildHeaders(resourceInfo, uriInfo).forEach((k, v) -> response.getHeaders().putSingle(k, v));
     }
 
     /**
@@ -160,7 +171,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
      * @param response
      * @return result
      */
-    private Object buildContent(ContainerResponseContext response) {
+    private Object buildContentBody(ContainerResponseContext response) {
 
         @SuppressWarnings("unchecked")
         List<Object> content = (List<Object>) ((Result) response.getEntity()).getContent();
@@ -191,7 +202,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
                                 .filter( (f) -> searchFields.contains(f.getName()))
                                 .forEach( (field) -> {
                                     try{
-                                        keyValue.put(field.getName(), getValueFromField(targetClass, field, object));
+                                        keyValue.put(field.getName(), getValueFromObjectField(targetClass, field, object));
                                     } 
                                     catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
                                         logger.log(Level.SEVERE, e.getMessage(), e);
@@ -256,7 +267,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
      * @throws IllegalArgumentException
      * @throws IllegalAccessException
      */
-    private Object getValueFromField(Class<?> targetClass, Field field, Object object) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
+    private Object getValueFromObjectField(Class<?> targetClass, Field field, Object object) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
         Object result = null;
         Field actualField = targetClass.getDeclaredField(field.getName());
         boolean acessible = actualField.isAccessible();
@@ -279,13 +290,17 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         }
         
         if(resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)){
-            Search search = resourceInfo.getResourceMethod().getAnnotation(Search.class);
-            TreeNodeField<String, Set<String>> tnf = new TreeNodeField<>(CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass()).getName(), ConcurrentHashMap.newKeySet(1));
-            for(String field : search.fields()){
-                tnf.addChild(field, null);
-            }
+            String fieldsAnnotation[] = resourceInfo.getResourceMethod().getAnnotation(Search.class).fields();
             
-            return tnf;
+            if(fieldsAnnotation != null && !fieldsAnnotation[0].equals("*")){
+            
+                TreeNodeField<String, Set<String>> tnf = new TreeNodeField<>(CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass()).getName(), ConcurrentHashMap.newKeySet(1));
+                for(String field : fieldsAnnotation){
+                    tnf.addChild(field, null);
+                }
+                
+                return tnf;
+            }
         }
         
         return null;
