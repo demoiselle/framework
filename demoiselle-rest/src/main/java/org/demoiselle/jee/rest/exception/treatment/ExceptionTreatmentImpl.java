@@ -55,7 +55,7 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 
     @Inject
     private DemoiselleRestConfig config;
-
+  
     public ExceptionTreatmentImpl() {
 
     }
@@ -118,22 +118,32 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 
             Map<String, Object> sqlError = new ConcurrentHashMap<>();
 
+            Integer errorCode = ((SQLException) sqlException).getErrorCode();
+            
             sqlError.put(DATABASE_SQL_STATE, ((SQLException) sqlException).getSQLState());
-            sqlError.put(DATABASE_ERROR_CODE, ((SQLException) sqlException).getErrorCode());
+            sqlError.put(DATABASE_ERROR_CODE, errorCode);
             sqlError.put(DATABASE_MASSAGE, sqlException.getMessage());
 
             Map<String, Object> object = new ConcurrentHashMap<>();
 
             if (isShowErrorDetails) {
-                object.put(FIELDNAME_ERROR_DESCRIPTION, sqlError);
+                object.put(FIELDNAME_ERROR_DESCRIPTION, sqlError);        
             }
-
-            if (exception.getMessage() != null && !exception.getMessage().isEmpty()) {
-                object.put(FIELDNAME_ERROR, exception.getMessage());
-            } else {
-                object.put(FIELDNAME_ERROR, messages.unhandledDatabaseException());
-            }
-
+            
+            /*
+    		 * First verify custom sqlError messages in demoiselle.properties file:
+    		 * Ex : demoiselle.rest.sqlError.<errorCode>= the msg...
+             */
+            
+            if( config.getSqlError().get(errorCode.toString()) != null ){
+            	object.put(FIELDNAME_ERROR, config.getSqlError().get(errorCode.toString()) );
+            }else {
+	            if (exception.getMessage() != null && !exception.getMessage().isEmpty()) {
+	                object.put(FIELDNAME_ERROR, exception.getMessage());
+	            } else {
+	                object.put(FIELDNAME_ERROR, messages.unhandledDatabaseException());
+	            }
+            }       
             arrayErrors.add(object);
 
             return buildResponse(arrayErrors, responseMediaType, Status.INTERNAL_SERVER_ERROR);

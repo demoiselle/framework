@@ -11,6 +11,9 @@
  */
 package org.demoiselle.jee.rest;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.demoiselle.jee.configuration.annotation.Configuration;
 
 /**
@@ -20,7 +23,9 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
  */
 @Configuration(prefix = "demoiselle.rest")
 public class DemoiselleRestConfig {
-
+	
+	private Map<String, String> sqlError = new HashMap<String,String>();	
+	
 	private boolean showErrorDetails = true;
 
 	/**
@@ -33,12 +38,30 @@ public class DemoiselleRestConfig {
 	}
 
 	/**
-	 * Set if the detailed erros should return to user.
+	 * Set if the detailed errors should return to user.
 	 * 
 	 * @param showErrorDetails
 	 */
 	public void setShowErrorDetails(boolean showErrorDetails) {
 		this.showErrorDetails = showErrorDetails;
+	}
+	
+	/**
+	 * Set the map of custom database error messages
+	 * 
+	 * @param sqlError 
+	 */	
+	public void setSqlError(Map<String, String> sqlError) {
+		this.sqlError = sqlError;
+	}	
+	
+	/**
+	 * Return the map of custom Sql Error messages from demoiselle.properties loaded by configuration module.
+	 * 
+	 * @return mapped sql Errors
+	 */	
+	public Map<String, String> getSqlError() {
+		return  this.sqlError;
 	}
 
 }
