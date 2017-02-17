@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.persistence.Id;
 
 import javax.ws.rs.container.ResourceInfo;
 
@@ -291,9 +292,15 @@ public class CrudUtilHelper {
         return matcher.find();
     }
 
-    // TODO CASSIO substituir pelo jpa2
-    public static String getMethodAnnotatedWithID(Class<?> targetClass) {
-        return "id";
+    public static String getMethodAnnotatedWithID(Class<?> targetClass) {    	
+    	String name = null;
+    	for (Field field :  targetClass.getDeclaredFields() ) {
+            if (field.isAnnotationPresent(Id.class)) {
+            	name = field.getName();
+            	break;
+            }
+    	}       
+        return name;
     }
-
+    
 }
