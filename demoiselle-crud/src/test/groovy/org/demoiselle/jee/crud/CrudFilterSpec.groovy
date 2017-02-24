@@ -12,6 +12,7 @@ import javax.ws.rs.container.ResourceInfo
 import javax.ws.rs.core.MultivaluedHashMap
 import javax.ws.rs.core.MultivaluedMap
 import javax.ws.rs.core.UriInfo
+import javax.ws.rs.core.Response.Status
 
 import org.demoiselle.jee.core.api.crud.Result
 import org.demoiselle.jee.crud.entity.AddressModelForTest
@@ -265,6 +266,23 @@ class CrudFilterSpec extends Specification{
         !mvmResponse.containsKey("Accept-Range")
         !mvmResponse.containsKey("Link")
         !mvmResponse.containsKey("Access-Control-Expose-Headers")
+    }
+
+     def "A request that doesn't is for a CRUD and throws a Exception should treat the accept-range header"() {
+        given:
+        resourceInfo.getResourceClass() >> UserRestWithoutAbstractRESTForTest.class
+        resourceInfo.getResourceClass().getSuperclass() >> Object.class
+        resourceInfo.getResourceMethod() >> UserRestWithoutAbstractRESTForTest.class.getDeclaredMethod("findWithException")
+        
+        responseContext.getStatus() >> Status.BAD_REQUEST.getStatusCode()
+        drc.entityClass = null
+        
+        when:
+        crudFilter.filter(requestContext, responseContext)
+        
+        then:
+        notThrown(RuntimeException)
+        !mvmResponse.containsKey("Accept-Range")
     }
     
     private configureRequestForCrud(){

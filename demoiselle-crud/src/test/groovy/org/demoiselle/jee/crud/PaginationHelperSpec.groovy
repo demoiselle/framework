@@ -372,7 +372,7 @@ class PaginationHelperSpec extends Specification {
         drc.isPaginationEnabled() == Boolean.FALSE
         
     }
-    
+
     private configureRequestForCrud(){
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class

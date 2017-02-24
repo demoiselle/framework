@@ -22,5 +22,9 @@ public class UserRestWithoutAbstractRESTForTest {
         return null;
     }
 
+    @GET
+    public Result findWithException() {
+        throw null;
+    }
     
 }

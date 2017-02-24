@@ -240,16 +240,21 @@ public class PaginationHelper {
 
         if (drc.getEntityClass() != null) {
             resource = drc.getEntityClass().getSimpleName().toLowerCase();
-        } else {
-            if (resourceInfo.getResourceClass() != null) {
+        } 
+        else {
+            if (resourceInfo != null && resourceInfo.getResourceClass() != null) {
                 Class<?> targetClass = CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass());
                 if (targetClass != null) {
                     resource = targetClass.getSimpleName().toLowerCase();
                 }
             }
         }
+        
+        if(!resource.isEmpty()){
+            return resource + " " + getDefaultNumberPagination();
+        }
 
-        return resource + " " + getDefaultNumberPagination();
+        return null;
     }
 
     /**
@@ -338,7 +343,10 @@ public class PaginationHelper {
 
     public void buildAcceptRangeWithResponse(ContainerResponseContext response) {
         if (response != null) {
-            response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_ACCEPT_RANGE.getKey(), buildAcceptRange());
+            String acceptRangeHeader = buildAcceptRange();
+            if(acceptRangeHeader != null){
+                response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_ACCEPT_RANGE.getKey(), acceptRangeHeader);
+            }
         }
 
     }
