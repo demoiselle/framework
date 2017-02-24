@@ -274,7 +274,7 @@ class CrudFilterSpec extends Specification{
         resourceInfo.getResourceClass().getSuperclass() >> Object.class
         resourceInfo.getResourceMethod() >> UserRestWithoutAbstractRESTForTest.class.getDeclaredMethod("findWithException")
         
-        responseContext.getStatus() >> Status.BAD_REQUEST.getStatusCode()
+        responseContext.getStatus() >> Status.BAD_REQUEST.statusCode
         drc.entityClass = null
         
         when:
@@ -282,6 +282,8 @@ class CrudFilterSpec extends Specification{
         
         then:
         notThrown(RuntimeException)
+        responseContext.status == Status.BAD_REQUEST.statusCode
+        1 * responseContext.getEntity()
         !mvmResponse.containsKey("Accept-Range")
     }
     

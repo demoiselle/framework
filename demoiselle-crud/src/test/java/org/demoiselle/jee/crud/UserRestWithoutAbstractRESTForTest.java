@@ -7,6 +7,7 @@
 package org.demoiselle.jee.crud;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.core.Response;
 
 import org.demoiselle.jee.core.api.crud.Result;
 
@@ -23,8 +24,9 @@ public class UserRestWithoutAbstractRESTForTest {
     }
 
     @GET
-    public Result findWithException() {
-        throw null;
+    public Response findWithException() {
+        ErrorMsgForTest entity = new ErrorMsgForTest();
+        return Response.status(400).entity(entity).type("application/json").build();
     }
     
 }
