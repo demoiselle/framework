@@ -145,6 +145,23 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.4.13</version>
+                        <configuration>
+                            <imageName>${project.build.finalName}-demoiselle</imageName>
+                            <baseImage>demoiselleframework/docker</baseImage>
+                            <entryPoint>["java", "-jar", "/opt/${project.build.finalName}-swarm.jar"]</entryPoint>
+                            <resources>
+                                <resource>
+                                    <targetPath>/opt</targetPath>
+                                    <directory>${project.build.directory}</directory>
+                                    <include>${project.build.finalName}-swarm.jar</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
