@@ -76,7 +76,7 @@
             <id>wildfly-swarm</id>
             <properties>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-                <version.wildfly.swarm>2017.2.0</version.wildfly.swarm>
+                <version.wildfly.swarm>2017.6.1</version.wildfly.swarm>
                 <maven.compiler.source>1.8</maven.compiler.source>
                 <maven.compiler.target>1.8</maven.compiler.target>
                 <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -90,6 +90,10 @@
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
                     <artifactId>logging</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.wildfly.swarm</groupId>
+                    <artifactId>logstash</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>org.wildfly.swarm</groupId>
@@ -148,7 +152,7 @@
                     <plugin>
                         <groupId>com.spotify</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.4.13</version>
+                        <version>1.0.0</version>
                         <configuration>
                             <imageName>${project.build.finalName}-demoiselle</imageName>
                             <baseImage>demoiselleframework/docker</baseImage>
