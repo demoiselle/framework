@@ -66,7 +66,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @ApiOperation(value = "partial update entity")
     @Override
     public T mergeHalf(@PathParam("id") final I id, T entity) {
-        throw new DemoiselleRestException("Ainda não implementado", Status.NOT_IMPLEMENTED.getStatusCode());
+	return bc.mergeHalf(id, entity);
     }
 
     @DELETE
