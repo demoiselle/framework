@@ -68,25 +68,45 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     @Override
     public T mergeHalf(I id, T entity) {
         try {
-            StringBuilder sb = new StringBuilder();
+            final StringBuilder sb = new StringBuilder();
+            final Map<String, Object> params = new HashMap<>();
+            //
             sb.append("UPDATE ");
-            sb.append(entity.getClass().getCanonicalName());
+            sb.append(entityClass.getCanonicalName());
             sb.append(" SET ");
-            for (Method method : entityClass.getDeclaredMethods()) {
-                Object obj = method.invoke(entityClass);
-                if (obj != null) {
-                    sb.append(method.getName()).append(" = ").append(obj);
+            //
+            for (final Field field : entityClass.getDeclaredFields()) {
+            	if (!field.isAnnotationPresent(Column.class)) {
+            		continue;
+            	}
+            	//
+            	field.setAccessible(true);
+            	//
+            	final String name = field.getName();
+                final Object value = field.get(entity);
+                //
+                if (value != null) {
+                	sb.append(name).append(" = :").append(name);
+                	params.put(name, value);
                 }
             }
-            sb.append(" WHERE ")
-                    .append(CrudUtilHelper.getMethodAnnotatedWithID(entityClass))
-                    .append(" = ")
-                    .append(id);
-            System.err.println(sb.toString());
-//            //getEntityManager().createQuery(sb.toString()).executeUpdate();
+            //
+            final String idName =
+            	CrudUtilHelper.getMethodAnnotatedWithID(entityClass);
+            //
+            sb.append(" WHERE ").append(idName).append(" = :").append(idName);
+            params.put(idName, id);
+            //
+            final Query query = getEntityManager().createQuery(sb.toString());
+            //
+            for (final Map.Entry<String, Object> entry : params.entrySet()) {
+            	query.setParameter(entry.getKey(), entry.getValue());
+            }
+            //
+            query.executeUpdate();
+            //
             return entity;
-        } catch (Exception e) {
-            // TODO: CLF Severe? Pode cair aqui somente por ter violação de Unique
+        } catch (final Exception e) {
             throw new DemoiselleCrudException("Não foi possível salvar", e);
         }
     }
