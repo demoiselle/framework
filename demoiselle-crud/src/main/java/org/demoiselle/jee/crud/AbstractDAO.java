@@ -68,7 +68,6 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     @Override
     public T mergeHalf(I id, T entity) {
         try {
-        	final Class<T> entityClass = getEntityClass();
             final StringBuilder sb = new StringBuilder();
             final Map<String, Object> params = new HashMap<>();
             //
