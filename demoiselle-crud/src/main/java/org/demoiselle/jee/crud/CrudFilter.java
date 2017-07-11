@@ -154,7 +154,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
      */
     private Boolean isRequestForCrud() {
         if (resourceInfo.getResourceClass().getSuperclass() != null
-                && resourceInfo.getResourceClass().getSuperclass().equals(AbstractREST.class)
+                && resourceInfo.getResourceClass().isInstance(AbstractREST.class)
                 && resourceInfo.getResourceMethod().isAnnotationPresent(GET.class)) {
             return Boolean.TRUE;
         }
