@@ -91,6 +91,10 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                 final Object value = field.get(entity);
                 //
                 if (value != null) {
+                    if (!params.isEmpty()) {
+                		sb.append(", ");
+                	}
+                    //
                 	sb.append(name).append(" = :").append(name);
                 	params.put(name, value);
                 }
