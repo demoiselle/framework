@@ -21,6 +21,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
+import javax.persistence.ManyToOne;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -81,8 +82,12 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             sb.append(" SET ");
             //
             for (final Field field : entityClass.getDeclaredFields()) {
-            	if (!field.isAnnotationPresent(Column.class)) {
-            		continue;
+            	if (!field.isAnnotationPresent(ManyToOne.class)) {
+            		final Column column = field.getAnnotation(Column.class);
+            		//
+            		if (column == null || !column.updatable()) {
+            			continue;
+            		}
             	}
             	//
             	field.setAccessible(true);
@@ -100,19 +105,21 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                 }
             }
             //
-            final String idName =
-            	CrudUtilHelper.getMethodAnnotatedWithID(entityClass);
-            //
-            sb.append(" WHERE ").append(idName).append(" = :").append(idName);
-            params.put(idName, id);
-            //
-            final Query query = getEntityManager().createQuery(sb.toString());
-            //
-            for (final Map.Entry<String, Object> entry : params.entrySet()) {
-            	query.setParameter(entry.getKey(), entry.getValue());
+            if (!params.isEmpty()) {
+            	final String idName =
+            		CrudUtilHelper.getMethodAnnotatedWithID(entityClass);
+            	//
+            	sb.append(" WHERE ").append(idName).append(" = :").append(idName);
+            	params.put(idName, id);
+            	//
+            	final Query query = getEntityManager().createQuery(sb.toString());
+            	//
+            	for (final Map.Entry<String, Object> entry : params.entrySet()) {
+            		query.setParameter(entry.getKey(), entry.getValue());
+            	}
+            	//
+            	query.executeUpdate();
             }
-            //
-            query.executeUpdate();
             //
             return entity;
         } catch (final Exception e) {
