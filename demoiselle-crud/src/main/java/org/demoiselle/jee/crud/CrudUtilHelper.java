@@ -35,7 +35,7 @@ public class CrudUtilHelper {
      * @return Class used on {@literal AbstractREST<TargetClass, I>}
      */
     public static Class<?> getTargetClass(Class<?> targetClass) {
-        if (targetClass.getSuperclass().equals(AbstractREST.class)) {
+        if (AbstractREST.class.isAssignableFrom(targetClass)) {
             Class<?> type = (Class<?>) ((ParameterizedType) targetClass.getGenericSuperclass()).getActualTypeArguments()[0];
             return type;
         }
