@@ -228,7 +228,9 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
                                 field.setAccessible(true);  
                                 secondField.setAccessible(true);
                                 Object secondObject = (Object) field.get(object);
-                                keyValueSecond.put(secondField.getName(), secondField.get(secondObject)); 
+                                if (secondObject != null) {
+                                    keyValueSecond.put(secondField.getName(), secondField.get(secondObject));
+                                }
                                   
                                 secondField.setAccessible(acessibleSecond);
                                 field.setAccessible(acessible);
