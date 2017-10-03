@@ -180,4 +180,20 @@ public class Faces {
 		return getFacesContext().getViewRoot().getViewId();
 	}
 	
+	/**
+	 * Returns the application initialization parameter. This returns the
+	 * <code>&lt;param-value&gt;</code> of a <code>&lt;context-param&gt;</code> in
+	 * <code>web.xml</code> associated with the given
+	 * <code>&lt;param-name&gt;</code>.
+	 * 
+	 * @param name
+	 *            The application initialization parameter name.
+	 * @return The application initialization parameter value associated with the
+	 *         given name.
+	 * @see ExternalContext#getInitParameter(String)
+	 */
+	public static String getInitParameter(String name) {
+		return getFacesContext().getExternalContext().getInitParameter(name);
+	}
+
 }
