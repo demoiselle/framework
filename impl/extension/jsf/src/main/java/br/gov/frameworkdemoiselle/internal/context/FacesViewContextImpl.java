@@ -46,13 +46,10 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import br.gov.frameworkdemoiselle.annotation.Priority;
 import br.gov.frameworkdemoiselle.context.ViewContext;
-import br.gov.frameworkdemoiselle.lifecycle.BeforeRequestDestroyed;
 import br.gov.frameworkdemoiselle.lifecycle.BeforeSessionDestroyed;
 import br.gov.frameworkdemoiselle.lifecycle.ViewScoped;
 import br.gov.frameworkdemoiselle.util.Beans;
@@ -120,7 +117,7 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 			synchronized (this) {
 				currentViewStore = (FacesViewBeanStore) viewStoreInSession.get(sessionId);
 				if (currentViewStore == null) {
-					currentViewStore = new FacesViewBeanStore(getSessionTimeout());
+					currentViewStore = new FacesViewBeanStore();
 					viewStoreInSession.put(sessionId, currentViewStore);
 				}
 			}
@@ -150,21 +147,8 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 		if (sessionId != null) {
 			final FacesViewBeanStore store = viewStoreInSession.get(sessionId);
 			if (store != null) {
-				store.destroyStoresInSession(this);
+				store.destroyStores(this);
 				viewStoreInSession.remove(sessionId);
-			}
-		}
-	}
-
-	/*
-	 * Called at each new request at a given session.
-	 * Destroys any expired views.
-	 */
-	private synchronized void clearExpiredViews(String sessionId) {
-		if (sessionId != null) {
-			final FacesViewBeanStore store = viewStoreInSession.get(sessionId);
-			if (store != null) {
-				store.destroyStoresInSession(this, true);
 			}
 		}
 	}
@@ -177,16 +161,6 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 		final HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext()
 				.getSession(true);
 		return session != null ? session.getId() : null;
-	}
-
-	/*
-	 * Returns the configured session timeout in seconds. This is the maximum
-	 * inactive interval, not the remaining timeout for this session.
-	 */
-	private int getSessionTimeout() {
-		final HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext()
-				.getSession(true);
-		return session != null ? session.getMaxInactiveInterval() : 0;
 	}
 
 	/**
@@ -212,39 +186,6 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 				}
 			} catch (ContextNotActiveException ce) {
 				// Nada a fazer, contexto não está ativo.
-			}
-		}
-
-		/**
-		 * Called before the current request is about to go out of scope. Checks if any currently
-		 * active views have expired and requests the destruction of those beans according to CDI
-		 * lifecycle.
-		 * 
-		 */
-		protected void clearExpiredViews(@Observes BeforeRequestDestroyed event) {
-			ServletRequest request = event.getRequest();
-			
-			if (HttpServletRequest.class.isInstance(request)) {
-				HttpSession session = ((HttpServletRequest) request).getSession(false);
-				
-				if (session != null) {
-					try {
-						final Context context = Beans.getBeanManager().getContext(ViewScoped.class);
-						final String currentSessionId = session.getId();
-
-						if (FacesViewContextImpl.class.isInstance(context)) {
-							new Thread() {
-
-								@Override
-								public void run() {
-									((FacesViewContextImpl) context).clearExpiredViews(currentSessionId);
-								}
-							}.start();
-						}
-					} catch (ContextNotActiveException ce) {
-						// Nada a fazer, contexto não está ativo.
-					}
-				}
 			}
 		}
 	}

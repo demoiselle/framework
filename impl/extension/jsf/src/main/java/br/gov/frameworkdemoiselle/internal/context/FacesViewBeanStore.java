@@ -54,13 +54,7 @@ public class FacesViewBeanStore implements Serializable {
 
 	private static volatile Integer maxActiveViewScopes;
 
-	private final Map<Long, FacesViewData> viewStore = Collections.synchronizedMap(new LRUViewStoreMap());
-
-	private long maxInactiveTimeInSeconds;
-
-	public FacesViewBeanStore(long maxInactiveTimeInSeconds) {
-		this.maxInactiveTimeInSeconds = maxInactiveTimeInSeconds;
-	}
+	private final Map<Long, BeanStore> viewStore = Collections.synchronizedMap(new LRUViewStoreMap());
 
 	/**
 	 * Gets the store that contains the view scoped beans for that view ID. If no store exists (new view) one is
@@ -75,28 +69,16 @@ public class FacesViewBeanStore implements Serializable {
 	 *             if the view associated with the requested view ID has expired
 	 */
 	public BeanStore getStoreForView(Long viewId, AbstractCustomContext context) {
-		FacesViewData data = null;
+		BeanStore store;
 		synchronized (viewStore) {
-			data = viewStore.get(viewId);
-			if (data == null) {
-				BeanStore store = AbstractCustomContext.createStore();
-				data = new FacesViewData();
-				data.store = store;
-				viewStore.put(viewId, data);
-			} else if (data.isExpired(maxInactiveTimeInSeconds)) {
-				throw new IllegalStateException(getMessageBundle().getString("view-expired"));
+			store = viewStore.get(viewId);
+			if (store == null) {
+				store = AbstractCustomContext.createStore();
+				viewStore.put(viewId, store);
 			}
 		}
 
-		data.lastTimeAccessed = System.currentTimeMillis();
-		return data.store;
-	}
-
-	/**
-	 * @see #destroyStoresInSession(AbstractCustomContext, boolean)
-	 */
-	public void destroyStoresInSession(AbstractCustomContext context) {
-		destroyStoresInSession(context, false);
+		return store;
 	}
 
 	/**
@@ -105,18 +87,14 @@ public class FacesViewBeanStore implements Serializable {
 	 * 
 	 * @param context
 	 *            ViewContext managing the view scoped beans
-	 * @param onlyExpired
-	 *            Only destroy beans if the underlying view has expired
 	 */
-	public void destroyStoresInSession(final AbstractCustomContext context, final boolean onlyExpired) {
-		for (Iterator<Entry<Long, FacesViewData>> it = viewStore.entrySet().iterator(); it.hasNext();) {
-			Entry<Long, FacesViewData> currentEntry = it.next();
-			FacesViewData data = currentEntry.getValue();
+	public synchronized void destroyStores(final AbstractCustomContext context) {
+		for (Iterator<Entry<Long, BeanStore>> it = viewStore.entrySet().iterator(); it.hasNext();) {
+			Entry<Long, BeanStore> currentEntry = it.next();
+			BeanStore store = currentEntry.getValue();
 
-			if (!onlyExpired || data.isExpired(maxInactiveTimeInSeconds)) {
-				destroyStore(context, data);
-				it.remove();
-			}
+			destroyStore(context, store);
+			it.remove();
 		}
 	}
 
@@ -129,25 +107,25 @@ public class FacesViewBeanStore implements Serializable {
 	 *            ID of the current view
 	 */
 	public void destroyStore(final AbstractCustomContext context, Long viewId) {
-		FacesViewData viewData = viewStore.remove(viewId);
-		if (viewData != null) {
-			destroyStore(context, viewData);
+		BeanStore store = viewStore.remove(viewId);
+		if (store != null) {
+			destroyStore(context, store);
 		}
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void destroyStore(final AbstractCustomContext context, FacesViewData data) {
-		for (String id : data.store) {
+	private void destroyStore(final AbstractCustomContext context, BeanStore store) {
+		for (String id : store) {
 			Contextual contextual = context.getContextualStore().getContextual(id);
-			Object instance = data.store.getInstance(id);
-			CreationalContext creationalContext = data.store.getCreationalContext(id);
+			Object instance = store.getInstance(id);
+			CreationalContext creationalContext = store.getCreationalContext(id);
 
 			if (contextual != null && instance != null) {
 				contextual.destroy(instance, creationalContext);
 			}
 		}
 
-		data.store.clear();
+		store.clear();
 	}
 
 	/**
@@ -184,11 +162,11 @@ public class FacesViewBeanStore implements Serializable {
 		return ResourceBundle.getBundle("demoiselle-jsf-bundle");
 	}
 
-	private final class LRUViewStoreMap extends LinkedHashMap<Long, FacesViewBeanStore.FacesViewData> {
+	private final class LRUViewStoreMap extends LinkedHashMap<Long, BeanStore> {
 
 		private static final long serialVersionUID = -2520661683192850878L;
 
-		protected boolean removeEldestEntry(Map.Entry<Long, FacesViewData> eldest) {
+		protected boolean removeEldestEntry(Map.Entry<Long, BeanStore> eldest) {
 			if (size() > getMaxActiveViewScopes()) {
 
 				final Context context = Beans.getBeanManager().getContext(ViewScoped.class);
@@ -199,23 +177,6 @@ public class FacesViewBeanStore implements Serializable {
 				return true;
 			}
 			return false;
-		}
-	}
-
-	/**
-	 * Contains a {@link BeanStore} with some metadata, like the last time this store was accessed (used to determine
-	 * when a store expires).
-	 * 
-	 * @author serpro
-	 */
-	private static class FacesViewData {
-
-		long lastTimeAccessed;
-
-		BeanStore store;
-
-		public synchronized boolean isExpired(long viewTimeoutInSeconds) {
-			return ((System.currentTimeMillis() - lastTimeAccessed) / 1000) > viewTimeoutInSeconds;
 		}
 	}
 }
