@@ -50,6 +50,12 @@
 			<var>messages</var>
 		</resource-bundle>
 
+		<system-event-listener>
+			<system-event-listener-class>br.gov.frameworkdemoiselle.internal.context.FacesViewContextEventListener</system-event-listener-class>
+			<system-event-class>javax.faces.event.PreDestroyViewMapEvent</system-event-class>
+			<source-class>javax.faces.component.UIViewRoot</source-class>
+		</system-event-listener>
+
 		<locale-config>
 			<default-locale>pt</default-locale>
 			<supported-locale>pt</supported-locale>

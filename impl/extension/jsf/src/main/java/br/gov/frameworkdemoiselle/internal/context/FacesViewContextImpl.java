@@ -129,6 +129,19 @@ public class FacesViewContextImpl extends AbstractCustomContext implements ViewC
 		return currentViewStore.getStoreForView(viewId, this);
 	}
 
+	/**
+	 * Called by the {@link FacesViewContextEventListener} on the PreDestroyViewMapEvent event so that we can destroy
+	 * all beans associated with the view that's been cleared.
+	 */
+	public void clearView() {
+		FacesViewBeanStore beanStore = viewStoreInSession.get(getSessionId());
+		Long viewId = (Long) Faces.getViewMap().get(FACES_KEY);
+		if (viewId == null || beanStore == null) {
+			return;
+		}
+		beanStore.destroyStore(this, viewId);
+	}
+
 	/*
 	 * Called before the session is invalidated for that user.
 	 * Destroys all view scoped beans stored on that session.

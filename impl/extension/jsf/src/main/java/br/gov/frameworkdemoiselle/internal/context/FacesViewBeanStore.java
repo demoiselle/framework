@@ -120,6 +120,21 @@ public class FacesViewBeanStore implements Serializable {
 		}
 	}
 
+	/**
+	 * Destroys all view scoped beans and the associated {@link BeanStore} for the specified viewId.
+	 * 
+	 * @param context
+	 *            ViewContext managing the view scoped beans
+	 * @param viewId
+	 *            ID of the current view
+	 */
+	public void destroyStore(final AbstractCustomContext context, Long viewId) {
+		FacesViewData viewData = viewStore.remove(viewId);
+		if (viewData != null) {
+			destroyStore(context, viewData);
+		}
+	}
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void destroyStore(final AbstractCustomContext context, FacesViewData data) {
 		for (String id : data.store) {
