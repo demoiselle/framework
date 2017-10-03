@@ -65,8 +65,6 @@ public class FacesViewBeanStore implements Serializable {
 	 * @param context
 	 *            Reference to the {@link ViewContext} class managing the view scope
 	 * @return The {@link BeanStore} that stores view scoped beans for this view ID
-	 * @throws IllegalStateException
-	 *             if the view associated with the requested view ID has expired
 	 */
 	public BeanStore getStoreForView(Long viewId, AbstractCustomContext context) {
 		BeanStore store;
