@@ -8,13 +8,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.enterprise.context.spi.Context;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.inject.Inject;
 
-import br.gov.frameworkdemoiselle.context.ViewContext;
-import br.gov.frameworkdemoiselle.lifecycle.ViewScoped;
-import br.gov.frameworkdemoiselle.util.Beans;
+import br.gov.frameworkdemoiselle.internal.bootstrap.CustomContextBootstrap;
 import br.gov.frameworkdemoiselle.util.Faces;
 import br.gov.frameworkdemoiselle.util.ResourceBundle;
 
@@ -24,6 +25,7 @@ import br.gov.frameworkdemoiselle.util.ResourceBundle;
  * 
  * @author SERPRO
  */
+@SessionScoped
 public class FacesViewBeanStore implements Serializable {
 
 	private static final long serialVersionUID = -8265458933971929432L;
@@ -54,7 +56,15 @@ public class FacesViewBeanStore implements Serializable {
 
 	private static volatile Integer maxActiveViewScopes;
 
-	private final Map<Long, BeanStore> viewStore = Collections.synchronizedMap(new LRUViewStoreMap());
+	private Map<Long, BeanStore> viewStore;
+
+	@Inject
+	private CustomContextBootstrap bootstrap;
+
+	@PostConstruct
+	protected void postConstruct() {
+		viewStore = Collections.synchronizedMap(new LRUViewStoreMap());
+	}
 
 	/**
 	 * Gets the store that contains the view scoped beans for that view ID. If no store exists (new view) one is
@@ -62,18 +72,14 @@ public class FacesViewBeanStore implements Serializable {
 	 * 
 	 * @param viewId
 	 *            ID of the current view
-	 * @param context
-	 *            Reference to the {@link ViewContext} class managing the view scope
 	 * @return The {@link BeanStore} that stores view scoped beans for this view ID
 	 */
-	public BeanStore getStoreForView(Long viewId, AbstractCustomContext context) {
-		BeanStore store;
-		synchronized (viewStore) {
-			store = viewStore.get(viewId);
-			if (store == null) {
-				store = AbstractCustomContext.createStore();
-				viewStore.put(viewId, store);
-			}
+	public BeanStore getStoreForView(Long viewId) {
+		BeanStore store = viewStore.get(viewId);
+
+		if (store == null) {
+			store = AbstractCustomContext.createStore();
+			viewStore.put(viewId, store);
 		}
 
 		return store;
@@ -82,16 +88,14 @@ public class FacesViewBeanStore implements Serializable {
 	/**
 	 * Destroys all View scoped beans and the associated {@link BeanStore} for this user's session. The destroyed beans
 	 * will respect CDI bean lifecycle, thus they'll trigger any events associated with destroying beans.
-	 * 
-	 * @param context
-	 *            ViewContext managing the view scoped beans
 	 */
-	public synchronized void destroyStores(final AbstractCustomContext context) {
+	@PreDestroy
+	public void destroyStores() {
 		for (Iterator<Entry<Long, BeanStore>> it = viewStore.entrySet().iterator(); it.hasNext();) {
 			Entry<Long, BeanStore> currentEntry = it.next();
 			BeanStore store = currentEntry.getValue();
 
-			destroyStore(context, store);
+			destroyStore(store);
 			it.remove();
 		}
 	}
@@ -99,22 +103,22 @@ public class FacesViewBeanStore implements Serializable {
 	/**
 	 * Destroys all view scoped beans and the associated {@link BeanStore} for the specified viewId.
 	 * 
-	 * @param context
-	 *            ViewContext managing the view scoped beans
 	 * @param viewId
 	 *            ID of the current view
 	 */
-	public void destroyStore(final AbstractCustomContext context, Long viewId) {
+	public void destroyStore(Long viewId) {
 		BeanStore store = viewStore.remove(viewId);
 		if (store != null) {
-			destroyStore(context, store);
+			destroyStore(store);
 		}
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void destroyStore(final AbstractCustomContext context, BeanStore store) {
+	private void destroyStore(BeanStore store) {
+		ContextualStore contextualStore = bootstrap.getContextualStore();
+
 		for (String id : store) {
-			Contextual contextual = context.getContextualStore().getContextual(id);
+			Contextual contextual = contextualStore.getContextual(id);
 			Object instance = store.getInstance(id);
 			CreationalContext creationalContext = store.getCreationalContext(id);
 
@@ -167,11 +171,7 @@ public class FacesViewBeanStore implements Serializable {
 		protected boolean removeEldestEntry(Map.Entry<Long, BeanStore> eldest) {
 			if (size() > getMaxActiveViewScopes()) {
 
-				final Context context = Beans.getBeanManager().getContext(ViewScoped.class);
-
-				if (context instanceof AbstractCustomContext) {
-					destroyStore((AbstractCustomContext) context, eldest.getValue());
-				}
+				destroyStore(eldest.getValue());
 				return true;
 			}
 			return false;
