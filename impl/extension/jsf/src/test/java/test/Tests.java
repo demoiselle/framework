@@ -50,6 +50,7 @@ import br.gov.frameworkdemoiselle.annotation.Redirect;
 import br.gov.frameworkdemoiselle.internal.bootstrap.JsfBootstrap;
 import br.gov.frameworkdemoiselle.internal.configuration.ExceptionHandlerConfig;
 import br.gov.frameworkdemoiselle.internal.configuration.JsfSecurityConfig;
+import br.gov.frameworkdemoiselle.internal.context.FacesViewBeanStore;
 import br.gov.frameworkdemoiselle.internal.context.FacesViewContextImpl;
 import br.gov.frameworkdemoiselle.internal.implementation.AbstractExceptionHandler;
 import br.gov.frameworkdemoiselle.internal.implementation.ApplicationExceptionHandler;
@@ -125,6 +126,7 @@ public final class Tests {
 				.addClass(PreviousView.class)
 				.addClass(Redirect.class)
 				.addClass(NextView.class)
+				.addClass(FacesViewBeanStore.class)
 				.addAsResource(createFileAsset("src/main/resources/demoiselle-jsf-bundle.properties"),
 						"demoiselle-jsf-bundle.properties")
 				.addAsWebInfResource(createFileAsset("src/test/resources/test/beans.xml"), "beans.xml")
