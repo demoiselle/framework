@@ -183,16 +183,6 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-site-plugin</artifactId>
-					<version>${maven.site.plugin.version}</version>
-					<configuration>
-						<inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-						<outputEncoding>${project.build.sourceEncoding}</outputEncoding>
-						<locales>pt_BR</locales>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>${maven.assembly.plugin.version}</version>
 				</plugin>
@@ -316,7 +306,6 @@
 		<maven.compiler.plugin.version>3.3</maven.compiler.plugin.version>
 		<maven.war.plugin.version>2.6</maven.war.plugin.version>
 		<maven.deploy.plugin.version>2.8.2</maven.deploy.plugin.version>
-		<maven.site.plugin.version>3.4</maven.site.plugin.version>
 		<maven.assembly.plugin.version>2.5.5</maven.assembly.plugin.version>
 		<maven.javadoc.plugin.version>2.10.3</maven.javadoc.plugin.version>
 		<maven.source.plugin.version>2.4</maven.source.plugin.version>
@@ -326,8 +315,6 @@
 		<wagon.plugin.version>1.0-beta-3</wagon.plugin.version>
 		<eclipse.lifecycle.mapping.plugin.version>1.0.0</eclipse.lifecycle.mapping.plugin.version>
 		<java.version>1.7</java.version>
-		<site.url>file://${project.build.directory}/tmp</site.url>
-		<htdocs.url>sftp://web.sourceforge.net/home/project-web/demoiselle/htdocs</htdocs.url>
 		<snapshot.url>${htdocs.url}/repository/snapshot</snapshot.url>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
