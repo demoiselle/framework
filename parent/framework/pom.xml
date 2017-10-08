@@ -247,6 +247,10 @@
 		</extensions>
 	</build>
 	<distributionManagement>
+        <site>
+            <id>demoiselle.sourceforge.net</id>
+            <url>${site.url}</url>
+        </site>
         <snapshotRepository>
             <id>sonatype-nexus-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
