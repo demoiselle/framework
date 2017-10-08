@@ -31,7 +31,7 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-parent</artifactId>
-		<version>9</version>
+		<version>11-RC1</version>
 		<relativePath>../../../internal/parent/demoiselle</relativePath>
 	</parent>
 
@@ -85,28 +85,6 @@
 			</releases>
 		</repository>
 	</repositories>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-				<executions>
-					<execution>
-						<id>default-site</id>
-						<phase>none</phase>
-					</execution>
-					<execution>
-						 <id>default-deploy</id>
-						 <phase>none</phase>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 
 	<!-- <properties> <arquillian.bom.version>1.1.1.Final</arquillian.bom.version> 
 		<arquillian.weld.version>1.0.0.CR7</arquillian.weld.version> <arquillian.container.glassfish.version>1.0.0.CR4</arquillian.container.glassfish.version> 
