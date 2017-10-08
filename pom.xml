@@ -37,7 +37,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>br.gov.frameworkdemoiselle</groupId>
+	<groupId>br.gov.frameworkdemoiselle</groupId>
     <artifactId>demoiselle-framework-build</artifactId>
     <version>2.5.2-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -131,17 +131,6 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
-  			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>wagon-maven-plugin</artifactId>
-				<configuration>
-					<serverId>demoiselle.sourceforge.net</serverId>
-					<url>${upload.url}</url>
-					<fromDir>${project.build.directory}/assembly</fromDir>
-					<toDir>${project.context}/${project.version}</toDir>
-					<skip>false</skip>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
