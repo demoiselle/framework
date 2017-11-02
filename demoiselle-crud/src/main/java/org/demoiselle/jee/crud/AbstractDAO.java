@@ -82,43 +82,43 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             sb.append(" SET ");
             //
             for (final Field field : entityClass.getDeclaredFields()) {
-            	if (!field.isAnnotationPresent(ManyToOne.class)) {
-            		final Column column = field.getAnnotation(Column.class);
-            		//
-            		if (column == null || !column.updatable()) {
-            			continue;
-            		}
-            	}
-            	//
-            	field.setAccessible(true);
-            	//
-            	final String name = field.getName();
+                if (!field.isAnnotationPresent(ManyToOne.class)) {
+                    final Column column = field.getAnnotation(Column.class);
+                    //
+                    if (column == null || !column.updatable()) {
+                        continue;
+                    }
+                }
+                //
+                field.setAccessible(true);
+                //
+                final String name = field.getName();
                 final Object value = field.get(entity);
                 //
                 if (value != null) {
                     if (!params.isEmpty()) {
-                		sb.append(", ");
-                	}
+                        sb.append(", ");
+                    }
                     //
-                	sb.append(name).append(" = :").append(name);
-                	params.put(name, value);
+                    sb.append(name).append(" = :").append(name);
+                    params.put(name, value);
                 }
             }
             //
             if (!params.isEmpty()) {
-            	final String idName =
-            		CrudUtilHelper.getMethodAnnotatedWithID(entityClass);
-            	//
-            	sb.append(" WHERE ").append(idName).append(" = :").append(idName);
-            	params.put(idName, id);
-            	//
-            	final Query query = getEntityManager().createQuery(sb.toString());
-            	//
-            	for (final Map.Entry<String, Object> entry : params.entrySet()) {
-            		query.setParameter(entry.getKey(), entry.getValue());
-            	}
-            	//
-            	query.executeUpdate();
+                final String idName
+                        = CrudUtilHelper.getMethodAnnotatedWithID(entityClass);
+                //
+                sb.append(" WHERE ").append(idName).append(" = :").append(idName);
+                params.put(idName, id);
+                //
+                final Query query = getEntityManager().createQuery(sb.toString());
+                //
+                for (final Map.Entry<String, Object> entry : params.entrySet()) {
+                    query.setParameter(entry.getKey(), entry.getValue());
+                }
+                //
+                query.executeUpdate();
             }
             //
             return entity;
@@ -254,7 +254,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                                 } else if (values.getValue().isEmpty()) {
                                     predicateSameKey.add(criteriaBuilder.isEmpty(join.get(values.getKey())));
                                 } else if (isLikeFilter(values.getKey(), value)) {
-                                	predicateSameKey.add(buildLikePredicate(criteriaBuilder, criteriaQuery, join, values.getKey(), value));
+                                    predicateSameKey.add(buildLikePredicate(criteriaBuilder, criteriaQuery, join, values.getKey(), value));
                                 } else {
                                     predicateSameKey.add(criteriaBuilder.equal(join.get(values.getKey()), value));
                                 }
@@ -270,9 +270,13 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                         } else if (child.getValue().isEmpty()) {
                             predicateAndKeys.add(criteriaBuilder.isEmpty(root.get(child.getKey())));
                         } else if (isLikeFilter(child.getKey(), value)) {
-                    		predicateAndKeys.add(buildLikePredicate(criteriaBuilder, criteriaQuery, root, child.getKey(), value));
-                    	} else {
-                    		predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), value));
+                            predicateAndKeys.add(buildLikePredicate(criteriaBuilder, criteriaQuery, root, child.getKey(), value));
+                        } else if (value.equalsIgnoreCase("isTrue")) {
+                            predicateAndKeys.add(criteriaBuilder.isTrue(root.get(child.getKey())));
+                        } else if (value.equalsIgnoreCase("isFalse")) {
+                            predicateAndKeys.add(criteriaBuilder.isFalse(root.get(child.getKey())));
+                        } else {
+                            predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), value));
                         }
                     });
 
@@ -283,22 +287,22 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
         return predicates.toArray(new Predicate[]{});
     }
-    
+
     private boolean isLikeFilter(String key, String value) {
-    	return value.startsWith("*") || value.endsWith("*");
+        return value.startsWith("*") || value.endsWith("*");
     }
-    
+
     private Predicate buildLikePredicate(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, From<?, ?> root, String key, String value) {
-    	String pattern = value.trim();
-    	//
-    	if (pattern.startsWith("*")) {
-    		pattern = "%" + pattern.substring(1);
-    	}
-    	if (pattern.endsWith("*")) {
-    		pattern = pattern.substring(0, pattern.length() -1) + "%";
-    	}
-    	//
-    	return criteriaBuilder.like(criteriaBuilder.lower(root.get(key)), pattern.toLowerCase());
+        String pattern = value.trim();
+        //
+        if (pattern.startsWith("*")) {
+            pattern = "%" + pattern.substring(1);
+        }
+        if (pattern.endsWith("*")) {
+            pattern = pattern.substring(0, pattern.length() - 1) + "%";
+        }
+        //
+        return criteriaBuilder.like(criteriaBuilder.lower(root.get(key)), pattern.toLowerCase());
     }
 
     private Integer getMaxResult() {
