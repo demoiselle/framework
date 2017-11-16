@@ -232,8 +232,8 @@ public class TokenManagerImpl implements TokenManager {
             KeyPair kp = keyGenerator.genKeyPair();
             publicKey = kp.getPublic();
             privateKey = kp.getPrivate();
-            logger.warning("privateKey=" + publicKey.toString());
-            logger.warning("publicKey=" + privateKey.toString());
+            logger.warning("privateKey=Generated");
+            logger.warning("publicKey=Generated");
             throw new DemoiselleSecurityException(bundle.putKey(), Response.Status.UNAUTHORIZED.getStatusCode());
         }
         byte[] keyBytes = java.util.Base64.getDecoder().decode(config.getPrivateKey().replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", ""));
