@@ -148,6 +148,35 @@ public class CrudUtilHelper {
 
         return results;
     }
+    
+    /**
+     * 
+     * Extract fields from {@link Search} annotation to fill the {@link TreeNodeField} object
+     * 
+     * @param resourceInfo ResourceInfo
+     * @return TreeNodeField filled with fields
+     */
+    public static TreeNodeField<String, Set<String>> extractFieldsFromSearchAnnotation(ResourceInfo resourceInfo) {
+        List<String> fieldsFromAnnotation = new ArrayList<>();
+        final TreeNodeField<String, Set<String>> searchFieldsTnf = new TreeNodeField<>(CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass()).getName(), null);
+        
+        if (resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)) {
+            String fieldsAnnotation[] = resourceInfo.getResourceMethod().getAnnotation(Search.class).fields();
+
+            if (fieldsAnnotation != null && !fieldsAnnotation[0].equals("*")) {
+
+                fieldsFromAnnotation.addAll(Arrays.asList(fieldsAnnotation));
+                if (!fieldsFromAnnotation.isEmpty()) {
+                    // Transform fields from annotation into TreeNodeField                
+                    fieldsFromAnnotation.stream().forEach(searchField -> {
+                        fillLeafTreeNodeField(searchFieldsTnf, searchField, null);
+                    });
+                }
+            }
+        }
+        
+        return searchFieldsTnf;
+    }
 
     /**
      * Fill the {@link TreeNodeField} object based on parameters.
@@ -201,23 +230,7 @@ public class CrudUtilHelper {
     public static void validateFields(TreeNodeField<String, Set<String>> tnf, ResourceInfo resourceInfo, CrudMessage crudMessage) {
 
         // Get fields from @Search.fields attribute
-        List<String> fieldsFromAnnotation = new ArrayList<>();
-        final TreeNodeField<String, Set<String>> searchFieldsTnf = new TreeNodeField<>(getTargetClass(resourceInfo.getResourceClass()).getName(), null);
-
-        if (resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)) {
-            String fieldsAnnotation[] = resourceInfo.getResourceMethod().getAnnotation(Search.class).fields();
-
-            if (fieldsAnnotation != null && !fieldsAnnotation[0].equals("*")) {
-
-                fieldsFromAnnotation.addAll(Arrays.asList(fieldsAnnotation));
-                if (!fieldsFromAnnotation.isEmpty()) {
-                    // Transform fields from annotation into TreeNodeField                
-                    fieldsFromAnnotation.stream().forEach(searchField -> {
-                        fillLeafTreeNodeField(searchFieldsTnf, searchField, null);
-                    });
-                }
-            }
-        }
+        final TreeNodeField<String, Set<String>> searchFieldsTnf = extractFieldsFromSearchAnnotation(resourceInfo);
 
         //Validate fields
         tnf.getChildren().stream().forEach(leaf -> {
@@ -229,13 +242,31 @@ public class CrudUtilHelper {
                     if (!searchFieldsTnf.containsKey(leaf.getKey())) {
                         throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnSearchField(leaf.getKey()));
                     }
+                    
+                    // 2nd level
+                    searchFieldsTnf.getChildren()
+                        .stream()
+                        .filter( (searchTnf) -> !searchTnf.getChildren().isEmpty())
+                        .forEach( searchLeaf -> {
+                            if(leaf.getChildByKey(searchLeaf.getKey()).getChildren() != null){
+                                leaf.getChildByKey(searchLeaf.getKey()).getChildren()
+                                    .stream()
+                                   /* .filter( l -> {
+                                        System.out.println(l);
+                                        return !l.containsKey(searchLeaf.getKey());
+                                    })*/
+                                    .forEach( l -> {
+                                        throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnSearchField(l.getParent().getKey() + "(" + l.getKey() + ")"));
+                                    });
+                            }
+                        });
 
                     if (!leaf.getChildren().isEmpty()) {
                         leaf.getChildren().stream().forEach(leafItem -> {
 
                             /*
                              * Given a @Search(fields={field1,field2}) and a request like a 'fields=field1,field2(subField1)' 
-                             * the request is valid because de @Search.fields specified the root type (field2)
+                             * the request is valid because the @Search.fields specified the root type (field2)
                              *
                              */
                             if (!searchFieldsTnf.getChildByKey(leafItem.getParent().getKey()).getChildren().isEmpty()) {
@@ -249,7 +280,17 @@ public class CrudUtilHelper {
                             }
                         });
                     }
-                } catch (IllegalArgumentException e) {
+                    
+                    /*//Validate fields on @Search.fields with subfields
+                    searchFieldsTnf.getChildren().stream().forEach(searchLeaf -> {
+                        if(!searchLeaf.getChildren().isEmpty()) {
+                            if(tnf.getChildByKey(searchLeaf.getParent().getKey()).getChildren() == null){
+                                throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnSearchField(tnf.getParent().getKey() + "(" + tnf.getKey() + ")"));
+                            }
+                        }
+                    });*/
+                } 
+                catch (IllegalArgumentException e) {
                     throw e;
                 }
             }
@@ -261,7 +302,8 @@ public class CrudUtilHelper {
 
                 try {
                     fieldMaster = targetClass.getDeclaredField(leaf.getKey());
-                } catch (SecurityException | NoSuchFieldException e) {
+                } 
+                catch (SecurityException | NoSuchFieldException e) {
                     throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(leaf.getKey(), targetClass.getName()));
                 }
 
@@ -270,14 +312,17 @@ public class CrudUtilHelper {
                 leaf.getChildren().forEach((subLeaf) -> {
                     try {
                         CrudUtilHelper.checkIfExistField(fieldClazz, subLeaf.getKey());
-                    } catch (IllegalArgumentException e) {
+                    } 
+                    catch (IllegalArgumentException e) {
                         throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(subLeaf.getKey(), fieldClazz.getName()));
                     }
                 });
-            } else {
+            } 
+            else {
                 try {
                     CrudUtilHelper.checkIfExistField(getTargetClass(resourceInfo.getResourceClass()), leaf.getKey());
-                } catch (IllegalArgumentException e) {
+                } 
+                catch (IllegalArgumentException e) {
                     throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(leaf.getKey(), getTargetClass(resourceInfo.getResourceClass()).getName()));
                 }
             }
@@ -302,5 +347,7 @@ public class CrudUtilHelper {
     	}       
         return name;
     }
+
+    
     
 }
