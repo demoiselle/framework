@@ -287,6 +287,58 @@ class CrudFilterSpec extends Specification{
         !mvmResponse.containsKey("Accept-Range")
     }
     
+    def "A request without 'fields' defined should use 'fields' from @Search.fields should respect fields and subfiels"(){
+        given:
+        
+        dpc.getDefaultPagination() >> 20
+        dpc.getIsGlobalEnabled() >> true
+        
+        drc.count = 10
+                
+        uriInfo.getQueryParameters() >> mvmRequest
+        
+        responseContext.getHeaders() >> mvmResponse
+
+        def users = []
+        
+        5.times {
+            AddressModelForTest address = new AddressModelForTest(street: "my street ${it}")
+            users << new UserModelForTest(id: it, name: "John${it}", mail: "john${it}@test.com", address: address)
+        }
+        
+        Result result = new ResultSet()
+        
+        result.getContent().addAll(users)
+        responseContext.getEntity() >> result
+
+        resourceInfo.getResourceClass() >> UserRestForTest.class
+        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
+        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearchAndFieldsWithSubFields")
+        
+        URI uri = new URI("http://localhost:9090/api/users")
+        uriInfo.getRequestUri() >> uri
+        
+        def userExpected = [
+            ['id': 0, 'name': 'John0', 'address': ['street': users[0].address.street] ],
+            ['id': 1, 'name': 'John1', 'address': ['street': users[1].address.street] ],
+            ['id': 2, 'name': 'John2', 'address': ['street': users[2].address.street] ],
+            ['id': 3, 'name': 'John3', 'address': ['street': users[3].address.street] ],
+            ['id': 4, 'name': 'John4', 'address': ['street': users[4].address.street] ]
+        ]
+        
+        when:
+        crudFilter.filter(requestContext)
+        crudFilter.filter(requestContext, responseContext)
+        
+        then:
+        notThrown(RuntimeException)
+        
+        1 * responseContext.setEntity( {
+            it == userExpected
+        })
+        
+    }
+    
     private configureRequestForCrud(){
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class

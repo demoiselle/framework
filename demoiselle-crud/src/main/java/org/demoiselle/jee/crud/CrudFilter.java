@@ -15,7 +15,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -290,21 +289,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
             return drc.getFields();
         }
         
-        if(resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)){
-            String fieldsAnnotation[] = resourceInfo.getResourceMethod().getAnnotation(Search.class).fields();
-            
-            if(fieldsAnnotation != null && !fieldsAnnotation[0].equals("*")){
-            
-                TreeNodeField<String, Set<String>> tnf = new TreeNodeField<>(CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass()).getName(), ConcurrentHashMap.newKeySet(1));
-                for(String field : fieldsAnnotation){
-                    tnf.addChild(field, null);
-                }
-                
-                return tnf;
-            }
-        }
-        
-        return null;
+        return CrudUtilHelper.extractFieldsFromSearchAnnotation(resourceInfo);
 
     }
 

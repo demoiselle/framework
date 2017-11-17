@@ -86,6 +86,32 @@ class FieldHelperSpec extends Specification {
         
     }
     
+    def "A request with 'fields' query string and method annotated with @Search with subfields should be validated with @Search.fields property"(){
+        
+        given:
+        
+        resourceInfo.getResourceClass() >> UserRestForTest.class
+        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
+        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearchAndFieldsWithSubFields")
+        
+        def invalidFields = ["id", "name", "address"]
+        
+        URI uri = new URI("http://localhost:9090/api/users")
+        uriInfo.getRequestUri() >> uri
+        
+        mvmRequest.addAll("fields", invalidFields.join(","))
+                
+        uriInfo.getQueryParameters() >> mvmRequest
+        
+        when:
+        fieldHelper.execute(resourceInfo, uriInfo)
+        
+        then:
+        1 * crudMessage.fieldRequestDoesNotExistsOnSearchField("address")
+        thrown(IllegalArgumentException)
+        
+    }
+    
     def "A request with 'fields' query string and method that haven't @Search annotation should be executated" () {
         given:
         resourceInfo.getResourceClass() >> UserRestForTest.class
