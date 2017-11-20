@@ -86,7 +86,7 @@ class FieldHelperSpec extends Specification {
         
     }
     
-    def "A request with 'fields' query string and method annotated with @Search with subfields should be validated with @Search.fields property"(){
+    def "A request with 'fields' query string and method annotated with @Search with subfields should be respect @Search.fields property"(){
         
         given:
         
@@ -107,8 +107,19 @@ class FieldHelperSpec extends Specification {
         fieldHelper.execute(resourceInfo, uriInfo)
         
         then:
-        1 * crudMessage.fieldRequestDoesNotExistsOnSearchField("address")
-        thrown(IllegalArgumentException)
+        
+        notThrown(IllegalArgumentException)
+        drc.getFields() != null
+        drc.getFields().getChildren().size() == 3
+        
+        drc.getFields().getChildren().get(0).getKey() == "id"
+        drc.getFields().getChildren().get(1).getKey() == "name"
+        
+        TreeNodeField<String> addressNode = drc.getFields().getChildren().get(2)
+        
+        addressNode.getKey() == "address"
+        addressNode.getChildren().size() == 1
+        addressNode.getChildren().get(0).getKey() == "street"
         
     }
     

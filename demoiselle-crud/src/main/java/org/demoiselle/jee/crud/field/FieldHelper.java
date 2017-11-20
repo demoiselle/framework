@@ -102,6 +102,23 @@ public class FieldHelper {
             
             CrudUtilHelper.validateFields(tnf, this.resourceInfo, this.crudMessage);
             
+            // Remove fields not declared in @Search.fields property
+            TreeNodeField<String, Set<String>> searchFields = CrudUtilHelper.extractFieldsFromSearchAnnotation(this.resourceInfo);
+            if(!searchFields.getChildren().isEmpty()) {
+                
+                searchFields.getChildren().stream()
+                    .filter( (it) -> !it.getChildren().isEmpty())
+                    .filter( (it) -> tnf.containsKey(it.getKey()))
+                    .forEach( (item) -> {
+                        if(tnf.getChildByKey(item.getKey()).getChildren() == null
+                                || tnf.getChildByKey(item.getKey()).getChildren().isEmpty()) {
+                            item.getChildren().forEach( ch -> {
+                                tnf.getChildByKey(item.getKey()).addChild(ch.getKey(), ch.getValue());   
+                            });
+                        }
+                    });
+            }
+            
             drc.setFields(tnf);
         }
         

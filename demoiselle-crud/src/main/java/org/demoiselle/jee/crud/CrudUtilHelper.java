@@ -204,7 +204,8 @@ public class CrudUtilHelper {
                     fillLeafTreeNodeField(masterTNF, actualSubField, value);
                 }
             }
-        } else {
+        } 
+        else {
             tnf.addChild(actualField, value);
         }
 
@@ -242,24 +243,6 @@ public class CrudUtilHelper {
                     if (!searchFieldsTnf.containsKey(leaf.getKey())) {
                         throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnSearchField(leaf.getKey()));
                     }
-                    
-                    // 2nd level
-                    searchFieldsTnf.getChildren()
-                        .stream()
-                        .filter( (searchTnf) -> !searchTnf.getChildren().isEmpty())
-                        .forEach( searchLeaf -> {
-                            if(leaf.getChildByKey(searchLeaf.getKey()).getChildren() != null){
-                                leaf.getChildByKey(searchLeaf.getKey()).getChildren()
-                                    .stream()
-                                   /* .filter( l -> {
-                                        System.out.println(l);
-                                        return !l.containsKey(searchLeaf.getKey());
-                                    })*/
-                                    .forEach( l -> {
-                                        throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnSearchField(l.getParent().getKey() + "(" + l.getKey() + ")"));
-                                    });
-                            }
-                        });
 
                     if (!leaf.getChildren().isEmpty()) {
                         leaf.getChildren().stream().forEach(leafItem -> {
@@ -281,14 +264,6 @@ public class CrudUtilHelper {
                         });
                     }
                     
-                    /*//Validate fields on @Search.fields with subfields
-                    searchFieldsTnf.getChildren().stream().forEach(searchLeaf -> {
-                        if(!searchLeaf.getChildren().isEmpty()) {
-                            if(tnf.getChildByKey(searchLeaf.getParent().getKey()).getChildren() == null){
-                                throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnSearchField(tnf.getParent().getKey() + "(" + tnf.getKey() + ")"));
-                            }
-                        }
-                    });*/
                 } 
                 catch (IllegalArgumentException e) {
                     throw e;
