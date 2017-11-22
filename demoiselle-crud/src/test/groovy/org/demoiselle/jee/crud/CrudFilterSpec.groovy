@@ -339,6 +339,50 @@ class CrudFilterSpec extends Specification{
         
     }
     
+    def "A request without 'fields' defined and @Search.fields using '*' should return all fields"() {
+        given:
+        
+        dpc.getDefaultPagination() >> 20
+        dpc.getIsGlobalEnabled() >> true
+        
+        drc.count = 10
+                
+        uriInfo.getQueryParameters() >> mvmRequest
+        
+        responseContext.getHeaders() >> mvmResponse
+
+        def users = []
+        
+        10.times {
+            CountryModelForTest country = new CountryModelForTest(id: it, name: "country ${it}")
+            AddressModelForTest address = new AddressModelForTest(id: it, street: "my street ${it}", address: "address ${it}", country: country)
+            users << new UserModelForTest(id: it, name: "John${it}", age: it, mail: "john${it}@test.com", address: address)
+        }
+        
+        Result result = new ResultSet()
+        
+        result.getContent().addAll(users)
+        responseContext.getEntity() >> result
+
+        resourceInfo.getResourceClass() >> UserRestForTest.class
+        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
+        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearchAndAllFields")
+        
+        URI uri = new URI("http://localhost:9090/api/users")
+        uriInfo.getRequestUri() >> uri
+        
+        when:
+        crudFilter.filter(requestContext)
+        crudFilter.filter(requestContext, responseContext)
+        
+        then:
+        notThrown(RuntimeException)
+        
+        1 * responseContext.setEntity( {
+            it == users
+        })
+    }
+    
     private configureRequestForCrud(){
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class

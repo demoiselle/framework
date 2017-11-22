@@ -27,5 +27,9 @@ public class CountryModelForTest {
     public void setName(String name) {
         this.name = name;
     }
+    @Override
+    public String toString() {
+        return "CountryModelForTest [id=" + id + ", name=" + name + "]";
+    }
     
 }

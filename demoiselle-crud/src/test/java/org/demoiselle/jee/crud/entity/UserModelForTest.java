@@ -58,5 +58,11 @@ public class UserModelForTest {
     public void setAddress(AddressModelForTest address) {
         this.address = address;
     }
+
+    @Override
+    public String toString() {
+        return "UserModelForTest [id=" + id + ", name=" + name + ", mail=" + mail + ", age=" + age + ", address="
+                + address + "]";
+    }
     
 }

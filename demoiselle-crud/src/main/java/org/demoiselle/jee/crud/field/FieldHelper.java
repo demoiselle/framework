@@ -104,7 +104,7 @@ public class FieldHelper {
             
             // Remove fields not declared in @Search.fields property
             TreeNodeField<String, Set<String>> searchFields = CrudUtilHelper.extractFieldsFromSearchAnnotation(this.resourceInfo);
-            if(!searchFields.getChildren().isEmpty()) {
+            if(searchFields != null && !searchFields.getChildren().isEmpty()) {
                 
                 searchFields.getChildren().stream()
                     .filter( (it) -> !it.getChildren().isEmpty())

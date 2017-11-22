@@ -158,7 +158,6 @@ public class CrudUtilHelper {
      */
     public static TreeNodeField<String, Set<String>> extractFieldsFromSearchAnnotation(ResourceInfo resourceInfo) {
         List<String> fieldsFromAnnotation = new ArrayList<>();
-        final TreeNodeField<String, Set<String>> searchFieldsTnf = new TreeNodeField<>(CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass()).getName(), null);
         
         if (resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)) {
             String fieldsAnnotation[] = resourceInfo.getResourceMethod().getAnnotation(Search.class).fields();
@@ -167,15 +166,18 @@ public class CrudUtilHelper {
 
                 fieldsFromAnnotation.addAll(Arrays.asList(fieldsAnnotation));
                 if (!fieldsFromAnnotation.isEmpty()) {
+                    final TreeNodeField<String, Set<String>> searchFieldsTnf = new TreeNodeField<>(CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass()).getName(), null);
                     // Transform fields from annotation into TreeNodeField                
                     fieldsFromAnnotation.stream().forEach(searchField -> {
                         fillLeafTreeNodeField(searchFieldsTnf, searchField, null);
                     });
+                    
+                    return searchFieldsTnf;
                 }
             }
         }
         
-        return searchFieldsTnf;
+        return null;
     }
 
     /**
@@ -236,7 +238,7 @@ public class CrudUtilHelper {
         //Validate fields
         tnf.getChildren().stream().forEach(leaf -> {
 
-            if (!searchFieldsTnf.getChildren().isEmpty()) {
+            if (searchFieldsTnf != null && !searchFieldsTnf.getChildren().isEmpty()) {
 
                 try {
                     // 1st level
