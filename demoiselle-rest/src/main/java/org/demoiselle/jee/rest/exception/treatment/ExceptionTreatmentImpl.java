@@ -77,7 +77,7 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
             exception = (Exception) exception.getCause();
         }
 
-        ArrayList<Object> arrayErrors = new ArrayList<Object>();
+        ArrayList<Object> arrayErrors = new ArrayList<>();
 
         /*
 		 * Treatment of Beans Validation
@@ -98,8 +98,8 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
                 String pathConverted = violation.getPropertyPath().toString().replaceAll(arg, objectType);
 
                 Map<String, Object> object = new ConcurrentHashMap<>();
-                object.put(FIELDNAME_ERROR, pathConverted);
-                object.put(FIELDNAME_ERROR_DESCRIPTION, violation.getMessage());
+                object.putIfAbsent(FIELDNAME_ERROR, pathConverted);
+                object.putIfAbsent(FIELDNAME_ERROR_DESCRIPTION, violation.getMessage());
 
                 logger.log(Level.FINEST, violation.getMessage());
 
@@ -120,14 +120,14 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 
             Integer errorCode = ((SQLException) sqlException).getErrorCode();
             
-            sqlError.put(DATABASE_SQL_STATE, ((SQLException) sqlException).getSQLState());
-            sqlError.put(DATABASE_ERROR_CODE, errorCode);
-            sqlError.put(DATABASE_MASSAGE, sqlException.getMessage());
+            sqlError.putIfAbsent(DATABASE_SQL_STATE, ((SQLException) sqlException).getSQLState());
+            sqlError.putIfAbsent(DATABASE_ERROR_CODE, errorCode);
+            sqlError.putIfAbsent(DATABASE_MASSAGE, sqlException.getMessage());
 
             Map<String, Object> object = new ConcurrentHashMap<>();
 
             if (isShowErrorDetails) {
-                object.put(FIELDNAME_ERROR_DESCRIPTION, sqlError);        
+                object.putIfAbsent(FIELDNAME_ERROR_DESCRIPTION, sqlError);        
             }
             
             /*
@@ -136,12 +136,12 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
              */
             
             if( config.getSqlError().get(errorCode.toString()) != null ){
-            	object.put(FIELDNAME_ERROR, config.getSqlError().get(errorCode.toString()) );
+            	object.putIfAbsent(FIELDNAME_ERROR, config.getSqlError().get(errorCode.toString()) );
             }else {
 	            if (exception.getMessage() != null && !exception.getMessage().isEmpty()) {
-	                object.put(FIELDNAME_ERROR, exception.getMessage());
+	                object.putIfAbsent(FIELDNAME_ERROR, exception.getMessage());
 	            } else {
-	                object.put(FIELDNAME_ERROR, messages.unhandledDatabaseException());
+	                object.putIfAbsent(FIELDNAME_ERROR, messages.unhandledDatabaseException());
 	            }
             }       
             arrayErrors.add(object);
@@ -157,19 +157,19 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 
             if (e.getMessage() != null && !e.getMessage().isEmpty()) {
                 Map<String, Object> object = new ConcurrentHashMap<>();
-                object.put(FIELDNAME_ERROR, e.getMessage());
-                object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
+                object.putIfAbsent(FIELDNAME_ERROR, e.getMessage());
+                object.putIfAbsent(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
                 arrayErrors.add(object);
             }
 
             e.getMessages().stream().map((message) -> {
                 Map<String, Object> object = new ConcurrentHashMap<>();
-                object.put(FIELDNAME_ERROR, message.getError());
+                object.putIfAbsent(FIELDNAME_ERROR, message.getError());
                 if (isShowErrorDetails) {
-                    object.put(FIELDNAME_ERROR_DESCRIPTION, message.getError_description());
+                    object.putIfAbsent(FIELDNAME_ERROR_DESCRIPTION, message.getError_description());
                 }
                 if (message.getError_link() != null && !message.getError_link().isEmpty()) {
-                    object.put(FIELDNAME_ERROR_LINK, message.getError_link());
+                    object.putIfAbsent(FIELDNAME_ERROR_LINK, message.getError_link());
                 }
                 return object;
             }).forEachOrdered((object) -> {
@@ -199,9 +199,9 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
          */
         if (exception instanceof InvalidFormatException) {
             Map<String, Object> object = new ConcurrentHashMap<>();
-            object.put(FIELDNAME_ERROR, messages.unhandledMalformedInputOutputException());
+            object.putIfAbsent(FIELDNAME_ERROR, messages.unhandledMalformedInputOutputException());
             if (isShowErrorDetails) {
-                object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
+                object.putIfAbsent(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
             }
             arrayErrors.add(object);
 
@@ -216,9 +216,9 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
             ClientErrorException exClient = (ClientErrorException) exception;
 
             Map<String, Object> object = new ConcurrentHashMap<>();
-            object.put(FIELDNAME_ERROR, messages.httpException());
+            object.putIfAbsent(FIELDNAME_ERROR, messages.httpException());
             if (isShowErrorDetails) {
-                object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
+                object.putIfAbsent(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
             }
             arrayErrors.add(object);
 
@@ -229,9 +229,9 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 		 * Generic errors
          */
         Map<String, Object> object = new ConcurrentHashMap<>();
-        object.put(FIELDNAME_ERROR, messages.unhandledServerException());
+        object.putIfAbsent(FIELDNAME_ERROR, messages.unhandledServerException());
         if (isShowErrorDetails) {
-            object.put(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
+            object.putIfAbsent(FIELDNAME_ERROR_DESCRIPTION, unwrapException(exception));
         }
         arrayErrors.add(object);
 
