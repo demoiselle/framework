@@ -26,19 +26,21 @@ import org.demoiselle.jee.crud.ReservedKeyWords;
 import org.demoiselle.jee.crud.Search;
 
 /**
- * Class responsible for managing the 'range' parameter comes from Url Query String.
- * 
+ * Class responsible for managing the 'range' parameter comes from Url Query
+ * String.
+ *
  * Ex:
- * 
+ *
  * Given a request
  * <pre>
  * GET @{literal http://localhost:8080/api/users?range=0-10}
  * </pre>
- * 
- * This class will processing the request above and parse the range parameters to 
- * {@link DemoiselleRequestContext} object.
- * 
- * This object will be use on {@link AbstractDAO} class to execute the pagination on database.
+ *
+ * This class will processing the request above and parse the range parameters
+ * to {@link DemoiselleRequestContext} object.
+ *
+ * This object will be use on {@link AbstractDAO} class to execute the
+ * pagination on database.
  *
  */
 @RequestScoped
@@ -71,9 +73,10 @@ public class PaginationHelper {
     }
 
     /**
-     * Open the request query string to extract values from 'range' parameter and 
-     * fill the {@link DemoiselleRequestContext#setOffset(Integer)} and  {@link DemoiselleRequestContext#setLimit(Integer)} 
-     * 
+     * Open the request query string to extract values from 'range' parameter
+     * and fill the {@link DemoiselleRequestContext#setOffset(Integer)} and
+     * {@link DemoiselleRequestContext#setLimit(Integer)}
+     *
      * @param resourceInfo ResourceInfo
      * @param uriInfo UriInfo
      */
@@ -91,13 +94,13 @@ public class PaginationHelper {
             if (hasSearchAnnotation() && !isRequestPagination()) {
                 drc.setLimit(getDefaultNumberPagination() - 1);
                 drc.setOffset(new Integer(0));
-            }           
+            }
         }
-        
+
         if (hasSearchAnnotation() && isRequestPagination()) {
             Search searchAnnotation = resourceInfo.getResourceMethod().getAnnotation(Search.class);
             // Pagination @Search.withPagination is disabled but the request parameter has 'range' parameter
-            if (searchAnnotation.withPagination() == Boolean.FALSE){
+            if (searchAnnotation.withPagination() == Boolean.FALSE) {
                 throw new IllegalArgumentException(message.paginationIsNotEnabled());
             }
         }
@@ -110,7 +113,7 @@ public class PaginationHelper {
 
     /**
      * Check the pagination is enabled
-     * 
+     *
      * @return pagination enabled/disabled
      */
     private Boolean isPaginationEnabled() {
@@ -128,7 +131,7 @@ public class PaginationHelper {
 
     /**
      * Check if the actual request has the 'range' parameter on query string
-     * 
+     *
      * @return is request pagination or not
      */
     private Boolean isRequestPagination() {
@@ -141,12 +144,12 @@ public class PaginationHelper {
 
     /**
      * Check if the value of 'range' parameter is valid using the rules:
-     * 
-     *  - Value formatted like offset-limit (range=0-10);
-     *  - The 'offset' and 'limit' should be a integer;
-     *  - The 'offset' should be less than or equals 'limit';
-     * 
-     * 
+     *
+     * - Value formatted like offset-limit (range=0-10); - The 'offset' and
+     * 'limit' should be a integer; - The 'offset' should be less than or equals
+     * 'limit';
+     *
+     *
      * @throws IllegalArgumentException The format is invalid
      */
     private void checkAndFillRangeValues() throws IllegalArgumentException {
@@ -171,13 +174,11 @@ public class PaginationHelper {
                         throw new IllegalArgumentException(message.defaultPaginationNumberExceed(getDefaultNumberPagination()));
                     }
 
-                } 
-                catch (NumberFormatException nfe) {
+                } catch (NumberFormatException nfe) {
                     logInvalidRangeParameters(rangeList.get(0));
                     throw new IllegalArgumentException(message.invalidRangeParameters());
                 }
-            } 
-            else {
+            } else {
                 logInvalidRangeParameters(rangeList.get(0));
                 throw new IllegalArgumentException(message.invalidRangeParameters());
             }
@@ -186,9 +187,11 @@ public class PaginationHelper {
     }
 
     /**
-     * Get default pagination number, if the target method is annotated with Search annotation the default annotation 
-     * will be {@link Search#quantityPerPage()} otherwise the default pagination will be {@link PaginationHelperConfig#getDefaultPagination()} value;
-     * 
+     * Get default pagination number, if the target method is annotated with
+     * Search annotation the default annotation will be
+     * {@link Search#quantityPerPage()} otherwise the default pagination will be
+     * {@link PaginationHelperConfig#getDefaultPagination()} value;
+     *
      * @return Number per page
      */
     private Integer getDefaultNumberPagination() {
@@ -206,6 +209,7 @@ public class PaginationHelper {
 
     /**
      * Check if the actual response is a Partial Content (HTTP 206 code)
+     *
      * @return is partial content or not
      */
     public Boolean isPartialContentResponse() {
@@ -220,7 +224,7 @@ public class PaginationHelper {
 
     /**
      * Build the 'Content-Range' HTTP Header value.
-     * 
+     *
      * @return 'Content-Range' value
      */
     private String buildContentRange() {
@@ -232,7 +236,7 @@ public class PaginationHelper {
 
     /**
      * Build the 'Accept-Range' HTTP Header value.
-     * 
+     *
      * @return 'Accept-Range' value
      */
     public String buildAcceptRange() {
@@ -240,8 +244,7 @@ public class PaginationHelper {
 
         if (drc.getEntityClass() != null) {
             resource = drc.getEntityClass().getSimpleName().toLowerCase();
-        } 
-        else {
+        } else {
             if (resourceInfo != null && resourceInfo.getResourceClass() != null) {
                 Class<?> targetClass = CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass());
                 if (targetClass != null) {
@@ -249,8 +252,8 @@ public class PaginationHelper {
                 }
             }
         }
-        
-        if(!resource.isEmpty()){
+
+        if (!resource.isEmpty()) {
             return resource + " " + getDefaultNumberPagination();
         }
 
@@ -258,11 +261,12 @@ public class PaginationHelper {
     }
 
     /**
-     * Set the 'Content-Range', 'Accept-Range', 'Link' and 'Access-Control-Expose-Headers' HTTP headers;
-     * 
+     * Set the 'Content-Range', 'Accept-Range', 'Link' and
+     * 'Access-Control-Expose-Headers' HTTP headers;
+     *
      * @param resourceInfo ResourceInfo
      * @param uriInfo UriInfo
-     * 
+     *
      * @return A map with HTTP headers
      */
     public Map<String, String> buildHeaders(ResourceInfo resourceInfo, UriInfo uriInfo) {
@@ -270,21 +274,21 @@ public class PaginationHelper {
         Map<String, String> headers = new ConcurrentHashMap<>();
 
         if (drc.isPaginationEnabled()) {
-            headers.put(ReservedHTTPHeaders.HTTP_HEADER_CONTENT_RANGE.getKey(), buildContentRange());
-            headers.put(ReservedHTTPHeaders.HTTP_HEADER_ACCEPT_RANGE.getKey(), buildAcceptRange());
+            headers.putIfAbsent(ReservedHTTPHeaders.HTTP_HEADER_CONTENT_RANGE.getKey(), buildContentRange());
+            headers.putIfAbsent(ReservedHTTPHeaders.HTTP_HEADER_ACCEPT_RANGE.getKey(), buildAcceptRange());
             String linkHeader = buildLinkHeader();
 
             if (!linkHeader.isEmpty()) {
-                headers.put(HttpHeaders.LINK, linkHeader);
+                headers.putIfAbsent(HttpHeaders.LINK, linkHeader);
             }
         }
-        
+
         return headers;
     }
 
     /**
      * Build the 'Link' HTTP header value
-     * 
+     *
      * @return 'Link' value
      */
     private String buildLinkHeader() {
@@ -292,11 +296,11 @@ public class PaginationHelper {
         String url = uriInfo.getRequestUri().toString();
         url = url.replaceFirst(".range=([^&]*)", "");
 
-        if (drc.getOffset() == null){
+        if (drc.getOffset() == null) {
             drc.setOffset(new Integer(0));
         }
-        
-        if (drc.getLimit() == null){
+
+        if (drc.getLimit() == null) {
             drc.setLimit(getDefaultNumberPagination() - 1);
         }
 
@@ -344,7 +348,7 @@ public class PaginationHelper {
     public void buildAcceptRangeWithResponse(ContainerResponseContext response) {
         if (response != null) {
             String acceptRangeHeader = buildAcceptRange();
-            if(acceptRangeHeader != null){
+            if (acceptRangeHeader != null) {
                 response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_ACCEPT_RANGE.getKey(), acceptRangeHeader);
             }
         }

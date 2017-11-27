@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javax.ejb.TransactionAttribute;
@@ -75,7 +76,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     public T mergeHalf(I id, T entity) {
         try {
             final StringBuilder sb = new StringBuilder();
-            final Map<String, Object> params = new HashMap<>();
+            final Map<String, Object> params = new ConcurrentHashMap<>();
             //
             sb.append("UPDATE ");
             sb.append(entityClass.getCanonicalName());
@@ -101,7 +102,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                     }
                     //
                     sb.append(name).append(" = :").append(name);
-                    params.put(name, value);
+                    params.putIfAbsent(name, value);
                 }
             }
             //
@@ -110,7 +111,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                         = CrudUtilHelper.getMethodAnnotatedWithID(entityClass);
                 //
                 sb.append(" WHERE ").append(idName).append(" = :").append(idName);
-                params.put(idName, id);
+                params.putIfAbsent(idName, id);
                 //
                 final Query query = getEntityManager().createQuery(sb.toString());
                 //

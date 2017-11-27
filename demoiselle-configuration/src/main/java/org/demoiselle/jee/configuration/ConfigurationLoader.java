@@ -119,9 +119,9 @@ public class ConfigurationLoader implements Serializable {
         if (isLoaded == null || !isLoaded) {
             try {
                 processConfiguration(object, baseClass);
-                loadedCache.put(object, true);
+                loadedCache.putIfAbsent(object, true);
             } catch (DemoiselleConfigurationException c) {
-                loadedCache.put(object, false);
+                loadedCache.putIfAbsent(object, false);
                 throw c;
             }
         }
@@ -545,9 +545,9 @@ public class ConfigurationLoader implements Serializable {
 
     private ConfigurationValueExtractor selectValueExtractorElected(Set<ConfigurationValueExtractor> candidates) {
 
-        Map<Class<? extends ConfigurationValueExtractor>, ConfigurationValueExtractor> map = new HashMap<>();
+        Map<Class<? extends ConfigurationValueExtractor>, ConfigurationValueExtractor> map = new ConcurrentHashMap<>();
 
-        candidates.stream().filter(Objects::nonNull).forEach(candidate -> map.put(candidate.getClass(), candidate));
+        candidates.stream().filter(Objects::nonNull).forEach(candidate -> map.putIfAbsent(candidate.getClass(), candidate));
 
         Class<? extends ConfigurationValueExtractor> elected = selectClass(map.keySet());
         return map.get(elected);

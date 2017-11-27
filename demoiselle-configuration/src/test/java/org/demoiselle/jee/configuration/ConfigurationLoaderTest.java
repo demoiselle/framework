@@ -22,6 +22,7 @@ import java.net.URLClassLoader;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 
@@ -123,7 +124,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 	public void objectWithIncompatibleTypeShoutThrowConfigurationException() throws IOException, Exception {
 
 		Properties properties = new Properties();
-		properties.put("configBooleanIncompatible", "7");
+		properties.putIfAbsent("configBooleanIncompatible", "7");
 
 		makeConfigurationRuntime(ConfigIncompatibleTypeModel.class, ConfigurationType.PROPERTIES,
 				utilTest.createPropertiesFile("test", properties));
@@ -293,7 +294,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 		Map<Class<? extends Annotation>, Annotation> annotations = (Map<Class<? extends Annotation>, Annotation>) field
 				.get(object);
 
-		annotations.put(Configuration.class, configuration);
+		annotations.putIfAbsent(Configuration.class, configuration);
 
 		URLClassLoader ucl = (URLClassLoader) Thread.currentThread().getContextClassLoader();
 		Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);

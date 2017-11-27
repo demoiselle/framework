@@ -80,7 +80,7 @@ public class FilterHelper {
                     paramValues.addAll(CrudUtilHelper.extractFields(value));
                 });
                 
-                filters.put(key, paramValues);
+                filters.putIfAbsent(key, paramValues);
             }
         });
         
