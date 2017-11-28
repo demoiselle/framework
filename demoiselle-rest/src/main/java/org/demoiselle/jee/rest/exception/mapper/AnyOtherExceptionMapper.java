@@ -6,6 +6,7 @@
  */
 package org.demoiselle.jee.rest.exception.mapper;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -38,7 +39,7 @@ public class AnyOtherExceptionMapper implements ExceptionMapper<Throwable> {
 
 	@Override
 	public Response toResponse(Throwable exception) {
-		logger.finest("Using AnyOtherExceptionMapper");
+		logger.log(Level.SEVERE, "Using AnyOtherExceptionMapper", exception);
 		return exceptionTreatment.getFormatedError(exception, httpRequest);
 	}
 
