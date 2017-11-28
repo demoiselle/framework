@@ -81,7 +81,7 @@ public class ConfigurationMapValueExtractor implements ConfigurationValueExtract
                             + (matcher.group(3) != null ? matcher.group(3) : "");
 
                     if (value == null) {
-                        value = new ConcurrentHashMap<>();
+                        value = new HashMap<>();
                     }
 
                     String mapKey = matcher.group(4) == null ? "default" : matcher.group(4);

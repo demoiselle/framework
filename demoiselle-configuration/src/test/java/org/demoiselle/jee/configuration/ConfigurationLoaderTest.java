@@ -124,7 +124,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 	public void objectWithIncompatibleTypeShoutThrowConfigurationException() throws IOException, Exception {
 
 		Properties properties = new Properties();
-		properties.putIfAbsent("configBooleanIncompatible", "7");
+		properties.put("configBooleanIncompatible", "7");
 
 		makeConfigurationRuntime(ConfigIncompatibleTypeModel.class, ConfigurationType.PROPERTIES,
 				utilTest.createPropertiesFile("test", properties));
@@ -294,7 +294,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 		Map<Class<? extends Annotation>, Annotation> annotations = (Map<Class<? extends Annotation>, Annotation>) field
 				.get(object);
 
-		annotations.putIfAbsent(Configuration.class, configuration);
+		annotations.put(Configuration.class, configuration);
 
 		URLClassLoader ucl = (URLClassLoader) Thread.currentThread().getContextClassLoader();
 		Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
