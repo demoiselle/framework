@@ -5,7 +5,7 @@
     <groupId>org.demoiselle.jee</groupId>
     <artifactId>demoiselle-build</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.3-SNAPSHOT</version>
+    <version>3.0.2</version>
 
     <name>Demoiselle JEE Build</name>
     <description>Framework de integração para Java EE 7 baseado na especificação CDI 1.2 (JSR 346).</description>
