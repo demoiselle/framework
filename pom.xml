@@ -166,6 +166,7 @@
 
     <reporting>
         <plugins>
+	    <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -178,6 +179,7 @@
                     </reportSet>
                 </reportSets>
             </plugin>
+	    -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
