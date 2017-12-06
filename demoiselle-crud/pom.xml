@@ -13,7 +13,7 @@
    <parent>
       <groupId>org.demoiselle.jee</groupId>
       <artifactId>demoiselle-parent</artifactId>
-      <version>3.0.2-RC2</version>
+      <version>3.0.2-SNAPSHOT</version>
       <relativePath>../demoiselle-parent</relativePath>
    </parent>
 
@@ -29,7 +29,7 @@
                <encoding>UTF-8</encoding>
             </configuration>
          </plugin>
-
+<!-- 
          <plugin>
             <groupId>org.codehaus.gmavenplus</groupId>
             <artifactId>gmavenplus-plugin</artifactId>
@@ -53,7 +53,7 @@
                </dependency>
             </dependencies>
          </plugin>
-
+ -->
          <!-- Optional -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -90,7 +90,6 @@
       <dependency>
          <groupId>org.codehaus.groovy</groupId>
          <artifactId>groovy-all</artifactId>
-         <version>2.4.9</version>
          <scope>test</scope>
       </dependency>
 
