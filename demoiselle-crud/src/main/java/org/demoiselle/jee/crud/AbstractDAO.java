@@ -9,7 +9,6 @@ package org.demoiselle.jee.crud;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -256,6 +255,8 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                                     predicateSameKey.add(criteriaBuilder.isEmpty(join.get(values.getKey())));
                                 } else if (isLikeFilter(values.getKey(), value)) {
                                     predicateSameKey.add(buildLikePredicate(criteriaBuilder, criteriaQuery, join, values.getKey(), value));
+                                } else if (isEnumFilter(child.getKey(), value)) {
+                                	predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), convertEnumToInt(child.getKey(), value)));
                                 } else {
                                     predicateSameKey.add(criteriaBuilder.equal(join.get(values.getKey()), value));
                                 }
@@ -276,6 +277,8 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                             predicateAndKeys.add(criteriaBuilder.isTrue(root.get(child.getKey())));
                         } else if (value.equalsIgnoreCase("isFalse")) {
                             predicateAndKeys.add(criteriaBuilder.isFalse(root.get(child.getKey())));
+                        } else if (isEnumFilter(child.getKey(), value)) {
+                        	predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), convertEnumToInt(child.getKey(), value)));
                         } else {
                             predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), value));
                         }
@@ -288,6 +291,46 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
         return predicates.toArray(new Predicate[]{});
     }
+    
+    private boolean isEnumFilter(String key, String value) {
+		Field[] fields = entityClass.getDeclaredFields();
+
+		for (Field field : fields) {
+			if (key.equalsIgnoreCase(field.getName())) {
+				return field.getType().isEnum();
+			}
+		}
+
+		return false;
+	}
+
+	private int convertEnumToInt(String key, String value) {
+		Field[] fields = entityClass.getDeclaredFields();
+		try {
+
+			for (Field field : fields) {
+				if (key.equals(field.getName())) {
+					if (field.getType().isEnum()) {
+						Class<?> c = Class.forName(field.getType().getName());
+						Object[] objects = c.getEnumConstants();
+						for (Object obj : objects) {
+							if (obj.toString().equalsIgnoreCase(value))
+								return ((Enum<?>)obj).ordinal();							
+						}
+					} else {
+						throw new DemoiselleCrudException("Não foi possível consultar");	
+					}
+				}
+			}
+			
+			// If doesnt find any constant throws
+			throw new DemoiselleCrudException("Não foi possível encontrar o valor [%s] nas constantes".replace("%s", value));
+			
+		} catch (IllegalArgumentException | ClassNotFoundException | SecurityException e) {
+			throw new DemoiselleCrudException("Não foi possível consultar", e);
+		}		
+		
+	}
 
     private boolean isLikeFilter(String key, String value) {
         return value.startsWith("*") || value.endsWith("*");
