@@ -68,7 +68,6 @@ public class TokenImplTest {
 
     @Test
     public void test13() {
-        String type = "Teste";
         instance.setType(TokenType.JWT);
     }
 

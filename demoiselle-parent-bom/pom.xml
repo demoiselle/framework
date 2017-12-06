@@ -27,12 +27,12 @@
     <parent>
         <groupId>org.demoiselle.jee</groupId>
         <artifactId>demoiselle-build</artifactId>
-        <version>3.0.3-SNAPSHOT</version>
+        <version>3.0.2-SNAPSHOT</version>
     </parent>
 
     <properties>
         <!-- General -->
-        <demoiselle.version>3.0.3-SNAPSHOT</demoiselle.version>
+        <demoiselle.version>3.0.2-SNAPSHOT</demoiselle.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependencies versions -->

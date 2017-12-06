@@ -22,7 +22,6 @@ import java.net.URLClassLoader;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 

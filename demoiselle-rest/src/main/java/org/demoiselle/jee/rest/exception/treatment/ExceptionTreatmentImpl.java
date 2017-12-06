@@ -60,7 +60,6 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 
     }
 
-    @SuppressWarnings({"rawtypes"})
     public Response getFormatedError(Throwable exception, HttpServletRequest request) {
 
         // Variable to enable to show datails of errors
