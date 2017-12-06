@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.demoiselle.jee</groupId>
         <artifactId>demoiselle-parent</artifactId>		
-        <version>3.0.2-SNAPSHOT</version>
+        <version>3.0.2-RC1</version>
         <relativePath>../demoiselle-parent</relativePath>
     </parent>		
 	
