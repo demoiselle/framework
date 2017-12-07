@@ -201,7 +201,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         }
     }
 
-    private void configureCriteriaQuery(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery) {
+    protected void configureCriteriaQuery(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery) {
         Root<T> from = criteriaQuery.from(entityClass);
         if (drc.getFilters() != null) {
             criteriaQuery.select(from).where(buildPredicates(criteriaBuilder, criteriaQuery, from));
@@ -210,7 +210,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         configureOrder(criteriaBuilder, criteriaQuery, from);
     }
 
-    private void configureOrder(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, Root<T> root) {
+    protected void configureOrder(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, Root<T> root) {
 
         if (!drc.getSorts().isEmpty()) {
             List<Order> orders = new ArrayList<>();
@@ -229,7 +229,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     }
 
-    private Predicate[] buildPredicates(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, Root<T> root) {
+    protected Predicate[] buildPredicates(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, Root<T> root) {
         List<Predicate> predicates = new LinkedList<>();
 
         if (drc.getFilters() != null) {
@@ -292,7 +292,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         return predicates.toArray(new Predicate[]{});
     }
     
-    private boolean isEnumFilter(String key, String value) {
+    protected boolean isEnumFilter(String key, String value) {
 		Field[] fields = entityClass.getDeclaredFields();
 
 		for (Field field : fields) {
@@ -304,7 +304,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 		return false;
 	}
 
-	private int convertEnumToInt(String key, String value) {
+	protected int convertEnumToInt(String key, String value) {
 		Field[] fields = entityClass.getDeclaredFields();
 		try {
 
@@ -332,11 +332,11 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 		
 	}
 
-    private boolean isLikeFilter(String key, String value) {
+    protected boolean isLikeFilter(String key, String value) {
         return value.startsWith("*") || value.endsWith("*");
     }
 
-    private Predicate buildLikePredicate(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, From<?, ?> root, String key, String value) {
+    protected Predicate buildLikePredicate(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, From<?, ?> root, String key, String value) {
         String pattern = value.trim();
         //
         if (pattern.startsWith("*")) {
@@ -349,7 +349,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         return criteriaBuilder.like(criteriaBuilder.lower(root.get(key)), pattern.toLowerCase());
     }
 
-    private Integer getMaxResult() {
+    protected Integer getMaxResult() {
         if (drc.getLimit() == null || drc.getOffset() == null) {
             return paginationConfig.getDefaultPagination();
         }
