@@ -83,7 +83,6 @@ public class JDBCConfigValueExtractor implements ConfigurationValueExtractor {
 		return value;
 	}
 
-	@Override
 	public boolean isSupported(Field field) {
 		return field.getType() == JDBCConfigurationStore.class;
 	}

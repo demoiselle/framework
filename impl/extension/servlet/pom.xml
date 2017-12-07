@@ -43,9 +43,9 @@
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-extension-parent</artifactId>
+		<artifactId>demoiselle-framework-build</artifactId>
 		<version>2.5.2-SNAPSHOT</version>
-		<relativePath>../../../parent/extension</relativePath>
+		<relativePath>../..</relativePath>
 	</parent>
 
 	<name>Demoiselle Framework Servlet Extension</name>
@@ -66,7 +66,23 @@
 		<url>http://www.serpro.gov.br</url>
 	</organization>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>br.gov.frameworkdemoiselle</groupId>
+				<artifactId>demoiselle-framework-bom</artifactId>
+				<version>2.5.2-SNAPSHOT</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
 	<dependencies>
+		<dependency>
+			<groupId>br.gov.frameworkdemoiselle</groupId>
+			<artifactId>demoiselle-core</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>

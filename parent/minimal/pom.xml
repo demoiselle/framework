@@ -43,11 +43,11 @@
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
-		<artifactId>demoiselle-framework-parent</artifactId>
+		<artifactId>demoiselle-framework-build</artifactId>
 		<version>2.5.2-SNAPSHOT</version>
-		<relativePath>../framework</relativePath>
+		<relativePath>../..</relativePath>
 	</parent>
-
+	
 	<name>Demoiselle Framework Minimal Parent</name>
 	<description>
 		Configurações úteis para todas as aplicações que utilizam o framework. O ideal é que toda aplicação que
