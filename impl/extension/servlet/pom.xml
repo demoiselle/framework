@@ -93,15 +93,18 @@
 			<version>1.4</version>
 		</dependency>
 
-		<!--
+		<!-- for tests -->
 		<dependency>
-			<groupId>javax.el</groupId>
-			<artifactId>el-api</artifactId>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		-->
-
-		<!-- for tests -->
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<version>1.1.10.Final</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.jboss.arquillian.container</groupId>
 			<artifactId>arquillian-glassfish-embedded-3.1</artifactId>
@@ -118,15 +121,12 @@
 			<version>4.3</version>
 			<scope>test</scope>
 		</dependency>
-
-		<!--
 		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
-			<scope>test</scope>
+		    <groupId>org.jboss.shrinkwrap.resolver</groupId>
+		    <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+		    <version>2.2.1</version>
+		    <scope>test</scope>
 		</dependency>
-		-->
 	</dependencies>
 
 	<repositories>
