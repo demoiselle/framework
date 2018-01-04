@@ -50,7 +50,12 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 	/**
 	 * Formato da data/hora. ISO8601.
 	 */
-	private static final String ISO8601_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	private static final String ISO8601_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+
+	/**
+	 * Formato da data/hora. ISO8601/UTC.
+	 */
+	private static final String ISO8601_UTC_PATTERN = ISO8601_PATTERN + "'Z'";
 
 	/**
 	 * Time zone padrão. UTC.
@@ -356,9 +361,12 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 	}
 
 	protected Date convertStringToDate(String key, String value) {
-		final SimpleDateFormat formatter = new SimpleDateFormat(ISO8601_PATTERN);
+		final String pattern = getDatePattern(value);
+		final SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 		//
-		formatter.setTimeZone(timeZoneUTC);
+		if (ISO8601_UTC_PATTERN.equals(pattern)) {
+			formatter.setTimeZone(timeZoneUTC);
+		}
 		//
 		try {
 			return formatter.parse(value);
@@ -377,12 +385,20 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     protected boolean isDateFilter(String key, String value) {
     	try {
-			DateUtils.parseDate(value, ISO8601_PATTERN);
+			DateUtils.parseDate(value, getDatePattern(value));
 			//
 			return true;
 		} catch (final ParseException e) {
 			return false;
 		}
+    }
+
+    protected String getDatePattern(String date) {
+    	if (date.endsWith("Z")) {
+    		return ISO8601_UTC_PATTERN;
+    	} else {
+    		return ISO8601_PATTERN;
+    	}
     }
 
     protected Predicate buildLikePredicate(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, From<?, ?> root, String key, String value) {
