@@ -39,13 +39,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>demoiselle-jsf-parent</artifactId>
-	<version>2.5.2-RC2-SNAPSHOT</version>
+	<version>=2.5.2</version>
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-framework-build</artifactId>
-		<version>2.5.2-RC2-SNAPSHOT</version>
+		<version>=2.5.2</version>
 		<relativePath>../..</relativePath>
 	</parent>
 
@@ -73,7 +73,7 @@
 			<dependency>
 				<groupId>br.gov.frameworkdemoiselle</groupId>
 				<artifactId>demoiselle-framework-bom</artifactId>
-				<version>2.5.2-RC2-SNAPSHOT</version>
+				<version>=2.5.2</version>
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
