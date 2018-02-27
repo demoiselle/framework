@@ -130,8 +130,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     @Override
     public T mergeFull(T entity) {
         try {
-            getEntityManager().merge(entity);
-            return entity;
+            return getEntityManager().merge(entity);
         } catch (Exception e) {
             // TODO: CLF Severe? Pode cair aqui somente por ter violação de Unique
             throw new DemoiselleCrudException("Não foi possível salvar", e);
