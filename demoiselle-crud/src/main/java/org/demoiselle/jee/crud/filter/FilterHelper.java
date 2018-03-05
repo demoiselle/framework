@@ -14,13 +14,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import org.demoiselle.jee.crud.CrudMessage;
 import org.demoiselle.jee.crud.CrudUtilHelper;
+import org.demoiselle.jee.crud.DemoiselleCrud;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedKeyWords;
 import org.demoiselle.jee.crud.TreeNodeField;
+import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig;
+
+import static org.demoiselle.jee.crud.CrudUtilHelper.extractSearchFieldsFromAnnotation;
 
 /**
  * Class responsible for managing the 'filter' parameter comes from Url Query String.
@@ -49,10 +54,14 @@ public class FilterHelper {
     
     @Inject
     private CrudMessage crudMessage;
-    
+
+    @Inject
+    private DemoiselleCrudConfig crudConfig;
+
     public FilterHelper(){}
     
-    public FilterHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, CrudMessage crudMessage){
+    public FilterHelper(ResourceInfo resourceInfo, DemoiselleCrudConfig crudConfig, UriInfo uriInfo, DemoiselleRequestContext drc, CrudMessage crudMessage){
+        this.crudConfig = crudConfig;
         this.uriInfo = uriInfo;
         this.resourceInfo = resourceInfo;
         this.drc = drc;
@@ -61,7 +70,7 @@ public class FilterHelper {
     
     /**
      * Open the request query string to extract values used to filter the resource and 
-     * fill the {@link TreeNodeField} object and set the result object on {@link DemoiselleRequestContext#setFields(TreeNodeField)} object.
+     * fill the {@link TreeNodeField} object and set the fields parameter on {@link DemoiselleRequestContext#getFieldsContext()} object.
      * 
      * @param resourceInfo ResourceInfo
      * @param uriInfo UriInfo
@@ -69,36 +78,58 @@ public class FilterHelper {
     public void execute(ResourceInfo resourceInfo, UriInfo uriInfo) {
         this.resourceInfo = resourceInfo == null ? this.resourceInfo : resourceInfo;
         this.uriInfo = uriInfo == null ? this.uriInfo : uriInfo;
-        
+        final TreeNodeField<String, Set<String>> searchFieldsTnf = extractSearchFieldsFromAnnotation(resourceInfo);
+        drc.getFilterContext().setFilterEnabled(isSearchEnabled());
+        if (drc.getFilterContext().isFilterEnabled()) {
+            drc.getFilterContext().setFilters(
+                    extractFiltersFromParameterMap(
+                            CrudUtilHelper.getTargetClass(this.resourceInfo),
+                            uriInfo.getQueryParameters(),
+                            searchFieldsTnf,
+                            crudMessage));
+        }
+    }
+
+    public boolean isSearchEnabled() {
+        boolean isGlobalSearchEnabled = crudConfig.isSearchEnabled();
+        boolean isAbstractRestRequest = CrudUtilHelper.getAbstractRestTargetClass(resourceInfo) != null;
+        boolean isSearchEnabledInConfig = drc.getDemoiselleCrudAnnotation() != null &&
+                drc.getDemoiselleCrudAnnotation().enableSearch();
+        return isGlobalSearchEnabled && (isAbstractRestRequest || isSearchEnabledInConfig);
+    }
+
+    public static TreeNodeField<String,Set<String>> extractFiltersFromParameterMap(Class<?> targetClass,
+                                                                                    MultivaluedMap<String, String> parameterMap,
+                                                                                    TreeNodeField<String, Set<String>> searchFieldsTnf,
+                                                                                    CrudMessage crudMessage) {
         Map<String, Set<String>> filters = new ConcurrentHashMap<>(5);
-        
-        uriInfo.getQueryParameters().forEach((key, values) ->{
+
+        parameterMap.forEach((key, values) ->{
             if(!isReservedKey(key)){
                 Set<String> paramValues = new LinkedHashSet<>();
-                
+
                 values.stream().forEach(value -> {
                     paramValues.addAll(CrudUtilHelper.extractFields(value));
                 });
-                
+
                 filters.putIfAbsent(key, paramValues);
             }
         });
-        
-        TreeNodeField<String, Set<String>> tnf = new TreeNodeField<>(CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()).getName(), ConcurrentHashMap.newKeySet(1));
-        
+
+        TreeNodeField<String, Set<String>> tnf = new TreeNodeField<>(targetClass.getName(), ConcurrentHashMap.newKeySet(1));
+
         if(!filters.isEmpty()){
             filters.forEach( (key, value) ->
-                CrudUtilHelper.fillLeafTreeNodeField(tnf, key, value)
+                    CrudUtilHelper.fillLeafTreeNodeField(tnf, key, value)
             );
-            
-            CrudUtilHelper.validateFields(tnf, this.resourceInfo, this.crudMessage);
-            
-            drc.setFilters(tnf);
+
+            CrudUtilHelper.validateFields(tnf, searchFieldsTnf, crudMessage, targetClass);
+            return tnf;
         }
-        
+        return null;
     }
 
-    private Boolean isReservedKey(String key) {
+    private static Boolean isReservedKey(String key) {
         return key.equalsIgnoreCase(ReservedKeyWords.DEFAULT_RANGE_KEY.getKey()) 
                 || key.equalsIgnoreCase(ReservedKeyWords.DEFAULT_SORT_DESC_KEY.getKey()) 
                 || key.equalsIgnoreCase(ReservedKeyWords.DEFAULT_SORT_KEY.getKey())

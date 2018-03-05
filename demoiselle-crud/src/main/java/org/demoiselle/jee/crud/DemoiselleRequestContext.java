@@ -9,6 +9,10 @@ package org.demoiselle.jee.crud;
 import java.util.List;
 import java.util.Set;
 
+import org.demoiselle.jee.crud.fields.FieldsContext;
+import org.demoiselle.jee.crud.filter.FilterContext;
+import org.demoiselle.jee.crud.pagination.PaginationContext;
+import org.demoiselle.jee.crud.sort.SortContext;
 import org.demoiselle.jee.crud.sort.SortModel;
 
 /**
@@ -18,28 +22,31 @@ import org.demoiselle.jee.crud.sort.SortModel;
  */
 public interface DemoiselleRequestContext {
 
-    Integer getLimit();
-    void setLimit(Integer limit);
+    boolean isAbstractRestRequest();
+    void setAbstractRestRequest(boolean abstractRestRequest);
 
-    Integer getOffset();
-    void setOffset(Integer offset);
+    DemoiselleCrud getDemoiselleCrudAnnotation();
+    void setDemoiselleCrudAnnotation(DemoiselleCrud demoiselleCrudAnnotation);
 
-    Long getCount();
-    void setCount(Long count);
-    
+    PaginationContext getPaginationContext();
+    void setPaginationContext(PaginationContext paginationContext);
+
+    FilterContext getFilterContext();
+    void setFilterContext(FilterContext filterContext);
+
+    FieldsContext getFieldsContext();
+    void setFieldsContext(FieldsContext fieldsContext);
+
+    SortContext getSortContext();
+    void setSortContext(SortContext sortContext);
+
+//    List<SortModel> getSorts();
+//    void setSorts(List<SortModel> sorts);
+//
+//    TreeNodeField<String, Set<String>> getFields();
+//    void setFields(TreeNodeField<String, Set<String>> fields);
+//
     Class<?> getEntityClass();
     void setEntityClass(Class<?> entityClass);
-    
-    TreeNodeField<String, Set<String>> getFilters();
-    void setFilters(TreeNodeField<String, Set<String>> filters);
-    
-    List<SortModel> getSorts();
-    void setSorts(List<SortModel> sorts);
-    
-    TreeNodeField<String, Set<String>> getFields();
-    void setFields(TreeNodeField<String, Set<String>> fields);
-    
-    Boolean isPaginationEnabled();
-    void setPaginationEnabled(Boolean isPaginationEnabled);
-    
+
 }

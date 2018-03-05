@@ -26,31 +26,31 @@ public class UserRestForTest extends AbstractREST<UserModelForTest, Long> {
     }
 
     @GET
-    @Search(fields={"name", "address"}, quantityPerPage = 10, withPagination = true)
+    @DemoiselleCrud(searchFields = {"name", "address"}, pageSize = 10)
     public Result findWithSearch() {
         return null;
     }
     
     @GET
-    @Search(fields={"name"}, withPagination = false)
+    @DemoiselleCrud(searchFields ={"name"}, enablePagination = false)
     public Result findWithSearchAnnotationAndPaginationDisabled(){
         return null;
     }
     
     @GET
-    @Search(fields={"id", "name", "mail"})
+    @DemoiselleCrud(searchFields={"id", "name", "mail"})
     public Result findWithSearchAndFields(){
         return null;
     }
     
     @GET
-    @Search(fields={"id", "name", "address(street)"})
+    @DemoiselleCrud(searchFields={"id", "name", "address(street)"})
     public Result findWithSearchAndFieldsWithSubFields(){
         return null;
     }
     
     @GET
-    @Search(fields={"*"})
+    @DemoiselleCrud(searchFields={"*"})
     public Result findWithSearchAndAllFields(){
         return null;
     }

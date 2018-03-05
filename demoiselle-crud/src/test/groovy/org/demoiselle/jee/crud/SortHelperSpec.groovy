@@ -6,6 +6,8 @@
  */
 package org.demoiselle.jee.crud
 
+import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig
+
 import javax.ws.rs.container.ResourceInfo
 import javax.ws.rs.core.MultivaluedHashMap
 import javax.ws.rs.core.MultivaluedMap
@@ -29,10 +31,11 @@ class SortHelperSpec extends Specification {
     DemoiselleRequestContext drc = new DemoiselleRequestContextImpl()
     SortHelperMessage message = Mock()
     CrudMessage crudMessage = Mock()
-    
+
+    DemoiselleCrudConfig crudConfig = new DemoiselleCrudConfig(true, true, true, true, 50)
     MultivaluedMap mvmRequest = new MultivaluedHashMap<>()
     
-    SortHelper sortHelper = new SortHelper(resourceInfo, uriInfo, drc, message, crudMessage)
+    SortHelper sortHelper = new SortHelper(resourceInfo, uriInfo, crudConfig, drc, message, crudMessage)
     
     def "A request with 'sort' query string should populate 'DemoiselleRequestContext.sorts'"(){
         given:
@@ -50,14 +53,14 @@ class SortHelperSpec extends Specification {
         sortHelper.execute(resourceInfo, uriInfo)
         
         then:
-        drc.getSorts() != null
-        drc.getSorts().size() == 2
+        drc.getSortContext().getSorts() != null
+        drc.getSortContext().getSorts().size() == 2
               
-        drc.getSorts().get(0).getField() == "id"
-        drc.getSorts().get(0).getType() == CrudSort.ASC
+        drc.getSortContext().getSorts().get(0).getField() == "id"
+        drc.getSortContext().getSorts().get(0).getType() == CrudSort.ASC
         
-        drc.getSorts().get(1).getField() == "name"
-        drc.getSorts().get(1).getType() == CrudSort.ASC
+        drc.getSortContext().getSorts().get(1).getField() == "name"
+        drc.getSortContext().getSorts().get(1).getType() == CrudSort.ASC
     }
     
     def "A request with 'sort' query string and 'desc' without parameters should add all parameters as DESC order"() {
@@ -77,14 +80,14 @@ class SortHelperSpec extends Specification {
         sortHelper.execute(resourceInfo, uriInfo)
         
         then:
-        drc.getSorts() != null
-        drc.getSorts().size() == 2
+        drc.getSortContext().getSorts() != null
+        drc.getSortContext().getSorts().size() == 2
         
-        drc.getSorts().get(0).getField() == "id"
-        drc.getSorts().get(0).getType() == CrudSort.DESC
+        drc.getSortContext().getSorts().get(0).getField() == "id"
+        drc.getSortContext().getSorts().get(0).getType() == CrudSort.DESC
         
-        drc.getSorts().get(1).getField() == "name"
-        drc.getSorts().get(1).getType() == CrudSort.DESC
+        drc.getSortContext().getSorts().get(1).getField() == "name"
+        drc.getSortContext().getSorts().get(1).getType() == CrudSort.DESC
         
     }
     
@@ -105,13 +108,13 @@ class SortHelperSpec extends Specification {
         sortHelper.execute(resourceInfo, uriInfo)
         
         then:
-        drc.getSorts() != null
-        drc.getSorts().size() == 2
-        drc.getSorts().get(0).getField() == "id"
-        drc.getSorts().get(0).getType() == CrudSort.ASC
+        drc.getSortContext().getSorts() != null
+        drc.getSortContext().getSorts().size() == 2
+        drc.getSortContext().getSorts().get(0).getField() == "id"
+        drc.getSortContext().getSorts().get(0).getType() == CrudSort.ASC
 
-        drc.getSorts().get(1).getField() == "name"
-        drc.getSorts().get(1).getType() == CrudSort.DESC
+        drc.getSortContext().getSorts().get(1).getField() == "name"
+        drc.getSortContext().getSorts().get(1).getType() == CrudSort.DESC
     }
     
     def "A request with 'sort' and 'desc' query string parameters should respect the order"() {
@@ -131,16 +134,16 @@ class SortHelperSpec extends Specification {
         sortHelper.execute(resourceInfo, uriInfo)
         
         then:
-        drc.getSorts() != null
+        drc.getSortContext().getSorts() != null
         
-        drc.getSorts().get(0).getType() == CrudSort.ASC
-        drc.getSorts().get(0).getField() == "id"
+        drc.getSortContext().getSorts().get(0).getType() == CrudSort.ASC
+        drc.getSortContext().getSorts().get(0).getField() == "id"
         
-        drc.getSorts().get(1).getType() == CrudSort.DESC
-        drc.getSorts().get(1).getField() == "name"
+        drc.getSortContext().getSorts().get(1).getType() == CrudSort.DESC
+        drc.getSortContext().getSorts().get(1).getField() == "name"
         
-        drc.getSorts().get(2).getType() == CrudSort.DESC
-        drc.getSorts().get(2).getField() == "mail"
+        drc.getSortContext().getSorts().get(2).getType() == CrudSort.DESC
+        drc.getSortContext().getSorts().get(2).getField() == "mail"
     }
     
     def "A request without 'sort' and 'desc' query string parameters should throw IllegalArgumentException"() {

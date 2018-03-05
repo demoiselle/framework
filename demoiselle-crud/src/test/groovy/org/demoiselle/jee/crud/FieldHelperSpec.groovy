@@ -6,6 +6,8 @@
  */
 package org.demoiselle.jee.crud
 
+import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig
+
 import javax.ws.rs.container.ResourceInfo
 import javax.ws.rs.core.MultivaluedHashMap
 import javax.ws.rs.core.MultivaluedMap
@@ -29,14 +31,13 @@ class FieldHelperSpec extends Specification {
     DemoiselleRequestContext drc = new DemoiselleRequestContextImpl()
     FieldHelperMessage fieldHelperMessage = Mock()
     CrudMessage crudMessage = Mock()
-    
+    DemoiselleCrudConfig crudConfig = new DemoiselleCrudConfig(false, true, false, false, 20)
     MultivaluedMap mvmRequest = new MultivaluedHashMap<>()
     
-    FieldHelper fieldHelper = new FieldHelper(resourceInfo, uriInfo, drc, fieldHelperMessage, crudMessage);
+    FieldHelper fieldHelper = new FieldHelper(resourceInfo, uriInfo, crudConfig, drc, fieldHelperMessage, crudMessage)
     
-    def "A request with 'fields' query string should populate 'DemoiselleRequestContext.fields'"(){
+    def "A request with 'fields' query string should populate 'DemoiselleRequestContext.fieldsContext.fields'"(){
         given:
-        
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
         resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearchAndFields")
@@ -51,21 +52,20 @@ class FieldHelperSpec extends Specification {
         fieldHelper.execute(resourceInfo, uriInfo)
         
         then:
-        drc.getFields() != null
-        drc.getFields().getChildren().get(0).getKey() == "id"
-        drc.getFields().getChildren().get(1).getKey() == "name"
-        drc.getFields().getChildren().size() == 2
+        drc.getFieldsContext().getFields() != null
+        drc.getFieldsContext().getFields().getChildren().get(0).getKey() == "id"
+        drc.getFieldsContext().getFields().getChildren().get(1).getKey() == "name"
+        drc.getFieldsContext().getFields().getChildren().size() == 2
     }
     
     def "A request with 'fields' query string and method annotated with @Search should be validated with @Search.fields property"(){
         
         given:
-        
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
         resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearchAndFields")
         
-        def fields = UserRestForTest.class.getDeclaredMethod("findWithSearchAndFields").getAnnotation(Search.class).fields() as List       
+        def fields = UserRestForTest.class.getDeclaredMethod("findWithSearchAndFields").getAnnotation(DemoiselleCrud.class).filterFields() as List
         def invalidFields = fields
         
         URI uri = new URI("http://localhost:9090/api/users")
@@ -89,7 +89,6 @@ class FieldHelperSpec extends Specification {
     def "A request with 'fields' query string and method annotated with @Search with subfields should be respect @Search.fields property"(){
         
         given:
-        
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
         resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearchAndFieldsWithSubFields")
@@ -109,11 +108,11 @@ class FieldHelperSpec extends Specification {
         then:
         
         notThrown(IllegalArgumentException)
-        drc.getFields() != null
-        drc.getFields().getChildren().size() == 3
+        drc.getFieldsContext().getFields() != null
+        drc.getFieldsContext().getFields().getChildren().size() == 3
         
-        drc.getFields().getChildren().get(0).getKey() == "id"
-        drc.getFields().getChildren().get(1).getKey() == "name"
+        drc.getFieldsContext().getFields().getChildren().get(0).getKey() == "id"
+        drc.getFieldsContext().getFields().getChildren().get(1).getKey() == "name"
         
         TreeNodeField<String> addressNode = drc.getFields().getChildren().get(2)
         
@@ -144,14 +143,15 @@ class FieldHelperSpec extends Specification {
         
         then:
         notThrown(IllegalArgumentException)
-        drc.getFields() != null
-        drc.getFields().getChildren().get(0).getKey() == "id"
-        drc.getFields().getChildren().get(1).getKey() == "name"
-        drc.getFields().getChildren().size() == 2
+        drc.getFieldsContext().getFields() != null
+        drc.getFieldsContext().getFields().getChildren().get(0).getKey() == "id"
+        drc.getFieldsContext().getFields().getChildren().get(1).getKey() == "name"
+        drc.getFieldsContext().getFields().getChildren().size() == 2
     }
     
     def "A request with 'fields' query string can be fields with subfields like field(subField1,subField2,subField2(subSubField1))"(){
         given:
+        crudConfig.isFilterFields() >> true
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
         resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("find")
@@ -171,11 +171,11 @@ class FieldHelperSpec extends Specification {
         
         then:
         notThrown(IllegalArgumentException)
-        drc.getFields() != null
-        drc.getFields().getChildren().size() == 3
+        drc.getFieldsContext().getFields() != null
+        drc.getFieldsContext().getFields().getChildren().size() == 3
         
-        drc.getFields().getChildren().get(0).getKey() == "id"
-        drc.getFields().getChildren().get(1).getKey() == "name"
+        drc.getFieldsContext().getFields().getChildren().get(0).getKey() == "id"
+        drc.getFieldsContext().getFields().getChildren().get(1).getKey() == "name"
         
         TreeNodeField<String> addressNode = drc.getFields().getChildren().get(2)
         
@@ -193,6 +193,7 @@ class FieldHelperSpec extends Specification {
     
     def "A request with 'fields' query string with invalid format should throw IllegalArgumentException"() {
         given:
+        crudConfig.isFilterFields() >> true
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
         resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("find")

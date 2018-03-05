@@ -6,8 +6,6 @@
  */
 package org.demoiselle.jee.crud;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -21,13 +19,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response.Status;
 
-import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.jaxrs.PATCH;
 import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.jaxrs.PATCH;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
  * TODO CLF JAVADOC
@@ -37,13 +35,15 @@ import io.swagger.jaxrs.PATCH;
  */
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
-public abstract class AbstractREST<T, I> implements Crud<T, I> {
+
+public abstract class SimpleAbstractREST<T, I> implements Crud<T, I> {
 
     @Inject
     protected AbstractBusiness<T, I> bc;
 
     @Inject
     private CrudMessage crudMessage;
+
 
     @POST
     @Transactional

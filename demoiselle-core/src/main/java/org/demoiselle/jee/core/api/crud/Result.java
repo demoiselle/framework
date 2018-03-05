@@ -8,14 +8,23 @@ package org.demoiselle.jee.core.api.crud;
 
 import java.util.List;
 
+import org.demoiselle.jee.crud.fields.FieldsContext;
+import org.demoiselle.jee.crud.pagination.PaginationContext;
+
 /**
- * 
+ *
+ *
  * @author SERPRO
  *
  */
 public interface Result {
-
-	public List<?> getContent();
-	public void setContent(List<?> content);
-
+    PaginationContext getPaginationContext();
+    void setPaginationContext(PaginationContext paginationContext);
+    FieldsContext getFieldsContext();
+    void setFieldsContext(FieldsContext fieldsContext);
+    Long getCount();
+    void setCount(Long count);
+	List<?> getContent();
+	Class<?> getEntityClass();
+	void setContent(List<?> content);
 }

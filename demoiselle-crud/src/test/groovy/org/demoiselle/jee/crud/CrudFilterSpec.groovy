@@ -6,15 +6,8 @@
  */
 package org.demoiselle.jee.crud
 
-import javax.ws.rs.container.ContainerRequestContext
-import javax.ws.rs.container.ContainerResponseContext
-import javax.ws.rs.container.ResourceInfo
-import javax.ws.rs.core.MultivaluedHashMap
-import javax.ws.rs.core.MultivaluedMap
-import javax.ws.rs.core.UriInfo
-import javax.ws.rs.core.Response.Status
-
 import org.demoiselle.jee.core.api.crud.Result
+import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig
 import org.demoiselle.jee.crud.entity.AddressModelForTest
 import org.demoiselle.jee.crud.entity.CountryModelForTest
 import org.demoiselle.jee.crud.entity.UserModelForTest
@@ -22,13 +15,19 @@ import org.demoiselle.jee.crud.field.FieldHelper
 import org.demoiselle.jee.crud.field.FieldHelperMessage
 import org.demoiselle.jee.crud.filter.FilterHelper
 import org.demoiselle.jee.crud.pagination.PaginationHelper
-import org.demoiselle.jee.crud.pagination.PaginationHelperConfig
 import org.demoiselle.jee.crud.pagination.PaginationHelperMessage
 import org.demoiselle.jee.crud.pagination.ResultSet
 import org.demoiselle.jee.crud.sort.SortHelper
 import org.demoiselle.jee.crud.sort.SortHelperMessage
+import spock.lang.Specification
 
-import spock.lang.*
+import javax.ws.rs.container.ContainerRequestContext
+import javax.ws.rs.container.ContainerResponseContext
+import javax.ws.rs.container.ResourceInfo
+import javax.ws.rs.core.MultivaluedHashMap
+import javax.ws.rs.core.MultivaluedMap
+import javax.ws.rs.core.Response.Status
+import javax.ws.rs.core.UriInfo
 
 /**
  * Test of {@link CrudFilter} class.
@@ -49,22 +48,22 @@ class CrudFilterSpec extends Specification{
     
     DemoiselleRequestContext drc = new DemoiselleRequestContextImpl()
     Result result = new ResultSet()
-    PaginationHelperConfig dpc = Mock()
+    DemoiselleCrudConfig crudConfig = Mock()
     
     UriInfo uriInfo = Mock()
     
-    SortHelper sortHelper = new SortHelper(resourceInfo, uriInfo, drc, sortHelperMessage, crudMessage)
-    PaginationHelper paginationHelper = new PaginationHelper(resourceInfo, uriInfo, dpc, drc, paginationMessage)
-    FilterHelper filterHelper = new FilterHelper(resourceInfo, uriInfo, drc, crudMessage)
-    FieldHelper fieldHelper = new FieldHelper(resourceInfo, uriInfo, drc, fieldHelperMessage, crudMessage)
-    CrudFilter crudFilter = new CrudFilter(resourceInfo, uriInfo, drc, paginationHelper, sortHelper, filterHelper, fieldHelper)
+    SortHelper sortHelper = new SortHelper(resourceInfo, uriInfo, crudConfig, drc, sortHelperMessage, crudMessage)
+    PaginationHelper paginationHelper = new PaginationHelper(resourceInfo, uriInfo,  crudConfig, drc, paginationMessage)
+    FilterHelper filterHelper = new FilterHelper(resourceInfo, crudConfig, uriInfo, drc, crudMessage)
+    FieldHelper fieldHelper = new FieldHelper(resourceInfo, uriInfo, crudConfig, drc, fieldHelperMessage, crudMessage)
+    CrudFilter crudFilter = new CrudFilter(resourceInfo, uriInfo, crudConfig, drc, paginationHelper, sortHelper, filterHelper, fieldHelper)
     
     def "A request with 'range' parameter should fill 'Result' object " () {
         
         given:
         
-        dpc.getDefaultPagination() >> 20
-        dpc.getIsGlobalEnabled() >> true
+        crudConfig.getDefaultPagination() >> 20
+        crudConfig.isPaginationEnabled() >> true
         mvmRequest.putSingle("range", "10-20")
         uriInfo.getQueryParameters() >> mvmRequest
 
@@ -74,8 +73,8 @@ class CrudFilterSpec extends Specification{
         crudFilter.filter(requestContext)
         
         then:
-        drc.offset == 10
-        drc.limit == 20
+        drc.getPaginationContext().getOffset() == 10
+        drc.getPaginationContext().getLimit() == 20
         notThrown(RuntimeException)
         
     }
@@ -83,10 +82,8 @@ class CrudFilterSpec extends Specification{
     def "A response with 'range', 'sort', 'desc', 'fields' should fill 'Response' object"(){
         given:
         
-        dpc.getDefaultPagination() >> 20
-        dpc.getIsGlobalEnabled() >> true
-        
-        drc.count = 100
+        crudConfig.getDefaultPagination() >> 20
+        crudConfig.getIsGlobalEnabled() >> true
         
         mvmRequest.addAll("sort", ["id", "name"])
         mvmRequest.putSingle("desc", "name")
@@ -142,8 +139,8 @@ class CrudFilterSpec extends Specification{
     def "A request that return all elements should set Response.status with 200 status code"(){
         given:
         
-        dpc.getDefaultPagination() >> 20
-        dpc.getIsGlobalEnabled() >> true
+        crudConfig.getDefaultPagination() >> 20
+        crudConfig.getIsGlobalEnabled() >> true
         
         drc.count = 10
         
@@ -180,8 +177,8 @@ class CrudFilterSpec extends Specification{
     }
     
     def "A request with invalid fields should throw a RuntimeException"() {
-        dpc.getDefaultPagination() >> 20
-        dpc.getIsGlobalEnabled() >> true
+        crudConfig.getDefaultPagination() >> 20
+        crudConfig.getIsGlobalEnabled() >> true
         
         mvmRequest.addAll("fields", ["id", "name", "invalidField"])
         uriInfo.getQueryParameters() >> mvmRequest
@@ -200,8 +197,8 @@ class CrudFilterSpec extends Specification{
     def "A request without 'fields' defined should use 'fields' from @Search.fields"(){
         given:
         
-        dpc.getDefaultPagination() >> 20
-        dpc.getIsGlobalEnabled() >> true
+        crudConfig.getDefaultPagination() >> 20
+        crudConfig.getIsGlobalEnabled() >> true
         
         drc.count = 10
                 
@@ -290,8 +287,8 @@ class CrudFilterSpec extends Specification{
     def "A request without 'fields' defined should use 'fields' from @Search.fields should respect fields and subfiels"(){
         given:
         
-        dpc.getDefaultPagination() >> 20
-        dpc.getIsGlobalEnabled() >> true
+        crudConfig.getDefaultPagination() >> 20
+        crudConfig.getIsGlobalEnabled() >> true
         
         drc.count = 10
                 
@@ -342,8 +339,8 @@ class CrudFilterSpec extends Specification{
     def "A request without 'fields' defined and @Search.fields using '*' should return all fields"() {
         given:
         
-        dpc.getDefaultPagination() >> 20
-        dpc.getIsGlobalEnabled() >> true
+        crudConfig.getDefaultPagination() >> 20
+        crudConfig.getIsGlobalEnabled() >> true
         
         drc.count = 10
                 

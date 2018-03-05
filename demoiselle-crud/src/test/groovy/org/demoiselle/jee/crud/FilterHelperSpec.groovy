@@ -6,17 +6,16 @@
  */
 package org.demoiselle.jee.crud
 
+import org.demoiselle.jee.crud.TreeNodeField
+import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig
+import org.demoiselle.jee.crud.filter.FilterHelper
+import spock.lang.Specification
+
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.container.ResourceInfo
 import javax.ws.rs.core.MultivaluedHashMap
 import javax.ws.rs.core.MultivaluedMap
 import javax.ws.rs.core.UriInfo
-
-import org.demoiselle.jee.crud.TreeNodeField
-import org.demoiselle.jee.crud.filter.FilterHelper
-import org.demoiselle.jee.crud.pagination.PaginationHelperConfig
-
-import spock.lang.*
 
 /**
  * Test of {@link FilterHelper} class.
@@ -32,14 +31,13 @@ class FilterHelperSpec extends Specification {
     CrudMessage crudMessage = Mock()
     
     DemoiselleRequestContext drc = new DemoiselleRequestContextImpl()
-    PaginationHelperConfig dpc = Mock()
+    DemoiselleCrudConfig crudConfig= new DemoiselleCrudConfig(true, true, true, true, 50)
     
-    FilterHelper filterHelper = new FilterHelper(resourceInfo, uriInfo, drc, crudMessage)
+    FilterHelper filterHelper = new FilterHelper(resourceInfo, crudConfig, uriInfo, drc, crudMessage)
     
-    def "A request with filter should populate 'DemoiselleRequestContext.filters'"(){
+    def "A request with filter should populate 'DemoiselleRequestContext.filterContext.filters'"(){
         
         given:
-        dpc.getDefaultPagination() >> 50
         mvmRequest.addAll("mail", ["john@test.com", "john2@test.com", "john3@test.com"])
         mvmRequest.putSingle("name", "john john")
         mvmRequest.putSingle("range", "10-20")
@@ -57,23 +55,22 @@ class FilterHelperSpec extends Specification {
         filterHelper.execute(resourceInfo, uriInfo)
         
         then:
-        drc.filters.containsKey("mail")
-        TreeNodeField<String, Set<String>> mailNode = drc.filters.getChildByKey("mail")
+        drc.getFilterContext().getFilters().containsKey("mail")
+        TreeNodeField<String, Set<String>> mailNode = drc.getFilterContext().getFilters().getChildByKey("mail")
         
         mailNode.getValue() == ["john@test.com", "john2@test.com", "john3@test.com"].toSet()
-        
-        drc.filters.containsKey("name")
-        TreeNodeField<String, Set<String>> nameNode = drc.filters.getChildByKey("name")
+
+        drc.getFilterContext().getFilters().containsKey("name")
+        TreeNodeField<String, Set<String>> nameNode = drc.getFilterContext().getFilters().getChildByKey("name")
         nameNode.getValue() == ["john john"].toSet()
         
-        !drc.filters.containsKey("range")
+        !drc.getFilterContext().getFilters().containsKey("range")
         
     }
     
     def "A request with filter parameter and the target method annotated with @Search should validate the fields values"(){
         
         given:
-        dpc.getDefaultPagination() >> 50
         mvmRequest.putSingle("name", "john john")
         mvmRequest.put("mail", ["john@test.com", "john2@test.com", "john3@test.com"])
 
@@ -95,7 +92,6 @@ class FilterHelperSpec extends Specification {
     
     def "A request with filter parameter that has subfield and the target method annotated with @Search should be validade"() {
         given:
-        dpc.getDefaultPagination() >> 50
         mvmRequest.putSingle("name", "john john")
         mvmRequest.putSingle("address(street,invalidField)", "my street")
 

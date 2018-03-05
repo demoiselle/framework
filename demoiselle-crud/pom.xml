@@ -13,7 +13,7 @@
    <parent>
       <groupId>org.demoiselle.jee</groupId>
       <artifactId>demoiselle-parent</artifactId>
-      <version>3.0.3-SNAPSHOT</version>
+      <version>3.1.0-SNAPSHOT</version>
       <relativePath>../demoiselle-parent</relativePath>
    </parent>
 
@@ -29,7 +29,6 @@
                <encoding>UTF-8</encoding>
             </configuration>
          </plugin>
-<!-- 
          <plugin>
             <groupId>org.codehaus.gmavenplus</groupId>
             <artifactId>gmavenplus-plugin</artifactId>
@@ -53,7 +52,6 @@
                </dependency>
             </dependencies>
          </plugin>
- -->
          <!-- Optional -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -110,6 +108,15 @@
          <artifactId>objenesis</artifactId>
          <scope>test</scope>
       </dependency>
+       <dependency>
+           <groupId>org.spockframework</groupId>
+           <artifactId>spock-core</artifactId>
+           <scope>compile</scope>
+       </dependency>
+       <dependency>
+           <groupId>org.codehaus.groovy</groupId>
+           <artifactId>groovy-all</artifactId>
+       </dependency>
 
    </dependencies>
 

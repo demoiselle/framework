@@ -6,8 +6,15 @@
  */
 package org.demoiselle.jee.crud
 
-
-import java.lang.reflect.Method
+import org.demoiselle.jee.core.api.crud.Result
+import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig
+import org.demoiselle.jee.crud.entity.UserModelForTest
+import org.demoiselle.jee.crud.pagination.PaginationContext
+import org.demoiselle.jee.crud.pagination.PaginationHelper
+import org.demoiselle.jee.crud.pagination.PaginationHelperMessage
+import org.demoiselle.jee.crud.pagination.ResultSet
+import spock.lang.Specification
+import spock.lang.Unroll
 
 import javax.ws.rs.BadRequestException
 import javax.ws.rs.container.ResourceInfo
@@ -15,15 +22,6 @@ import javax.ws.rs.core.HttpHeaders
 import javax.ws.rs.core.MultivaluedHashMap
 import javax.ws.rs.core.MultivaluedMap
 import javax.ws.rs.core.UriInfo
-
-import org.demoiselle.jee.core.api.crud.Result
-import org.demoiselle.jee.crud.entity.UserModelForTest
-import org.demoiselle.jee.crud.pagination.PaginationHelperConfig
-import org.demoiselle.jee.crud.pagination.PaginationHelperMessage
-import org.demoiselle.jee.crud.pagination.PaginationHelper
-import org.demoiselle.jee.crud.pagination.ResultSet
-
-import spock.lang.*
 
 /**
  * 
@@ -42,16 +40,17 @@ class PaginationHelperSpec extends Specification {
     
     DemoiselleRequestContext drc = new DemoiselleRequestContextImpl()
     Result result = new ResultSet()
-    PaginationHelperConfig dpc = Mock()
-    
-    PaginationHelper paginationHelper = new PaginationHelper(resourceInfo, uriInfo, dpc, drc, message)
+    DemoiselleCrudConfig crudConfig = Mock()
+
+    PaginationHelper paginationHelper = new PaginationHelper(resourceInfo, uriInfo, crudConfig,  drc, message)
     
     def "A request with 'range' parameter should fill 'Result' object " () {
         
         given:
         configureRequestForCrud()
-        dpc.getDefaultPagination() >> 20
-        dpc.getIsGlobalEnabled() >> true
+        crudConfig.getDefaultPagination() >> 20
+        crudConfig.getIsGlobalEnabled() >> true
+        drc.paginationContext = new PaginationContext(20, 10, true)
         mvmRequest.putSingle("range", "10-20") 
         uriInfo.getQueryParameters() >> mvmRequest
 
@@ -61,8 +60,8 @@ class PaginationHelperSpec extends Specification {
         paginationHelper.execute(resourceInfo, uriInfo)
         
         then:
-        drc.offset == 10
-        drc.limit == 20
+        drc.paginationContext.offset == 10
+        drc.paginationContext.limit == 20
         notThrown(BadRequestException)
         
     }
@@ -73,8 +72,8 @@ class PaginationHelperSpec extends Specification {
         configureRequestForCrud()
         String parameter = "${offset}-${limit}".toString()
         
-        dpc.getDefaultPagination() >> 10
-        dpc.getIsGlobalEnabled() >> true
+        crudConfig.getDefaultPagination() >> 10
+        crudConfig.isPaginationEnabled() >> true
         mvmRequest.putSingle("range", parameter) 
         uriInfo.getQueryParameters() >> mvmRequest
         
@@ -100,29 +99,7 @@ class PaginationHelperSpec extends Specification {
         0       | 10 // Greater than default pagination
         
     }
-    
-    def "A request without 'range' parameter should not populate 'Result' object"() {
-        
-        given:
-        dpc.getDefaultPagination() >> 10
-        dpc.getIsGlobalEnabled() >> true
-        mvmRequest.containsKey("range") >> false        
-        uriInfo.getQueryParameters() >> mvmRequest
 
-        configureRequestForCrud()
-        
-        when:
-        paginationHelper.execute(resourceInfo, uriInfo)
-        
-        then:
-        with(drc){
-            offset == null
-            limit == null
-            count == null         
-            entityClass == null
-        }
-    }
-    
     @Unroll
     def "A partial response should build a 'Link' header with parameters: [defaultPagination: #defaultPagination, offset: #offset, limit: #limit]"(defaultPagination, offset, limit){
         
@@ -132,15 +109,16 @@ class PaginationHelperSpec extends Specification {
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
         resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("find")
         
-        dpc.getDefaultPagination() >> defaultPagination
-        dpc.getIsGlobalEnabled() >> true
+        crudConfig.getDefaultPagination() >> defaultPagination
+        crudConfig.isPaginationEnabled() >> true
         
         def contentMock = 1..100
-        drc.offset = offset
-        drc.limit = limit
-        result.content = contentMock.subList(drc.offset, drc.limit + 1)
-        drc.count = contentMock.size()
-        
+        drc.paginationContext.offset = offset
+        drc.paginationContext.limit = limit
+        result.paginationContext = drc.paginationContext
+        result.entityClass = UserRestForTest.class
+        result.content = contentMock.subList(drc.paginationContext.offset, drc.paginationContext.limit + 1)
+        result.count = result.content.size()
         String queryParamString = "?date=2017-01-01&mail=test@test.com,test2@test.com"
         String url = "http://localhost:9090/api/users${queryParamString}"
         
@@ -157,19 +135,19 @@ class PaginationHelperSpec extends Specification {
         when:
         paginationHelper.execute(resourceInfo, uriInfo)
         
-        Integer quantityPerPage = (drc.limit - drc.offset) + 1
+        Integer quantityPerPage = (drc.paginationContext.limit - drc.paginationContext.offset) + 1
         
-        String linkHeader = paginationHelper.buildHeaders(resourceInfo, uriInfo).get(HttpHeaders.LINK)
+        String linkHeader = paginationHelper.buildHeaders(resourceInfo, uriInfo, result).get(HttpHeaders.LINK)
         String linkHeaderExpected = ""
         
         // First page
-        if(drc.offset != 0){
+        if(drc.paginationContext.offset != 0){
             def prevRange1 = (offset - quantityPerPage) < 0 ? 0 : (offset - quantityPerPage)
             def firstRange2 = quantityPerPage - 1 < offset - 1 ? quantityPerPage - 1 : offset - 1
             linkHeaderExpected = "<${url}&range=0-${firstRange2}>; rel=\"first\",<${url}&range=${prevRange1}-${offset-1}>; rel=\"prev\","
         }
         
-        linkHeaderExpected += "<${url}&range=${drc.limit+1}-${drc.limit+quantityPerPage}>; rel=\"next\",<${url}&range=${drc.count - quantityPerPage}-${drc.count-1}>; rel=\"last\""
+        linkHeaderExpected += "<${url}&range=${result.paginationContext.limit+1}-${result.paginationContext.limit+quantityPerPage}>; rel=\"next\",<${url}&range=${result.count - quantityPerPage}-${result.count -1}>; rel=\"last\""
 
         then:
         
@@ -191,10 +169,12 @@ class PaginationHelperSpec extends Specification {
     
     def "A response header should have a 'Accept-Range' field"(){
         given:
-        dpc.getDefaultPagination() >> 50
-        dpc.getIsGlobalEnabled() >> true
+        crudConfig.getDefaultPagination() >> 50
+        crudConfig.isPaginationEnabled() >> true
+        drc.paginationContext = new PaginationContext(50, 0, true);
+        result.paginationContext = drc.paginationContext
         uriInfo.getQueryParameters() >> mvmRequest
-        
+
         String url = "http://localhost:9090/api/users"
         
         URI uri = new URI(url)
@@ -203,31 +183,32 @@ class PaginationHelperSpec extends Specification {
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
         resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("find")
-        
+
+        result.entityClass = UserModelForTest.class
+
         String expectedRangeHeader = "usermodelfortest 50"
         
         when:
         paginationHelper.execute(resourceInfo, uriInfo)
 
         then:
-        !paginationHelper.buildHeaders(resourceInfo, uriInfo).get("Accept-Range").isEmpty()
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo, result).get("Accept-Range").isEmpty()
         
         when: "Set a entityClass"
-        drc.entityClass = UserModelForTest.class
         paginationHelper.execute(resourceInfo, uriInfo)
         
         then:
-        !paginationHelper.buildHeaders(resourceInfo, uriInfo).get("Accept-Range").isEmpty()
-        String acceptRangeHeader = paginationHelper.buildHeaders(resourceInfo, uriInfo).get("Accept-Range")
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo, result).get("Accept-Range").isEmpty()
+        String acceptRangeHeader = paginationHelper.buildHeaders(resourceInfo, uriInfo, result).get("Accept-Range")
         acceptRangeHeader == expectedRangeHeader
         
         when: "An entityClass not filled"
-        drc.entityClass = null
+        result.entityClass = null
         paginationHelper.execute(resourceInfo, uriInfo)
         
         then:
-        !paginationHelper.buildHeaders(resourceInfo, uriInfo).get("Accept-Range").isEmpty()
-        String acceptRangeHeader2 = paginationHelper.buildHeaders(resourceInfo, uriInfo).get("Accept-Range")
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo, result).get("Accept-Range").isEmpty()
+        String acceptRangeHeader2 = paginationHelper.buildHeaders(resourceInfo, uriInfo, result).get("Accept-Range")
         acceptRangeHeader2 == expectedRangeHeader
     }
     
@@ -244,22 +225,26 @@ class PaginationHelperSpec extends Specification {
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
         resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("find")
-        
-        dpc.getIsGlobalEnabled() >> true
-        
-        drc.offset = offset
-        drc.limit = limit
-        drc.count = count
-        
+
+        mvmRequest.putSingle("range", new String("${offset}-${offset+(offset+count > limit ? limit : offset+count)}"))
+
+        uriInfo.getQueryParameters() >> mvmRequest
+
+        crudConfig.isPaginationEnabled() >> true
+        crudConfig.getDefaultPagination() >> 50
+        result.paginationContext = new PaginationContext(limit, offset, true)
+        drc.paginationContext = result.paginationContext
+        result.entityClass = UserModelForTest.class
+        result.count = count
         String expectedContentRangeHeader = "${offset}-${limit}/${count}"
         
         when:
         paginationHelper.execute(resourceInfo, uriInfo)
         
-        String contentRangeHeader = paginationHelper.buildHeaders(resourceInfo, uriInfo).get("Content-Range")
+        String contentRangeHeader = paginationHelper.buildHeaders(resourceInfo, uriInfo, result).get("Content-Range")
 
         then:
-        !paginationHelper.buildHeaders(resourceInfo, uriInfo).get("Content-Range").isEmpty()
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo, result).get("Content-Range").isEmpty()
         contentRangeHeader == expectedContentRangeHeader
         
         where:
@@ -270,7 +255,11 @@ class PaginationHelperSpec extends Specification {
     
     def "A request with pagination disabled should not put HTTP headers"(){
         given:
-        dpc.getIsGlobalEnabled() >> false
+        crudConfig.isPaginationEnabled() >> false
+        drc.paginationContext = PaginationContext.disabledPagination()
+        drc.entityClass = UserRestForTest.class
+
+
         String url = "http://localhost:9090/api/users"
         
         URI uri = new URI(url)
@@ -281,25 +270,26 @@ class PaginationHelperSpec extends Specification {
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
         resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("find")
-        
+
         when:
         paginationHelper.execute(resourceInfo, uriInfo)
-        
-        then:        
-        !paginationHelper.buildHeaders(resourceInfo, uriInfo).containsKey('Content-Range')
-        !paginationHelper.buildHeaders(resourceInfo, uriInfo).containsKey('Accept-Range')
-        !paginationHelper.buildHeaders(resourceInfo, uriInfo).containsKey('Link')
+        then:
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo, result).containsKey('Content-Range')
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo, result).containsKey('Accept-Range')
+        !paginationHelper.buildHeaders(resourceInfo, uriInfo, result).containsKey('Link')
         
     }
     
     def "A method annotated with @Search annotation should override default configurations"() {
         
         given:
-        dpc.getDefaultPagination() >> 50
-        dpc.getIsGlobalEnabled() >> true
+        crudConfig.getDefaultPagination() >> 50
+        crudConfig.isPaginationEnabled() >> true
         uriInfo.getQueryParameters() >> mvmRequest
-        
-        Integer quantityPerPage = UserRestForTest.class.getDeclaredMethod("findWithSearch").getAnnotation(Search.class).quantityPerPage()
+
+        DemoiselleCrud crudAnnotation = UserRestForTest.class.getDeclaredMethod("findWithSearch").getAnnotation(DemoiselleCrud.class);
+        drc.demoiselleCrudAnnotation = crudAnnotation
+        Integer quantityPerPage = crudAnnotation.pageSize()
         
         String url = "http://localhost:9090/api/users"
         
@@ -314,18 +304,18 @@ class PaginationHelperSpec extends Specification {
         paginationHelper.execute(resourceInfo, uriInfo)
         
         then:
-        drc.limit != 50
-        drc.limit == quantityPerPage - 1
+        drc.paginationContext.limit != 50
+        drc.paginationContext.limit == quantityPerPage - 1
         
     }
     
     def "A method annotated with @Search and own withPagination property set with 'true' and default pagination disabled should not be paginated"(){
         
         given:
-        dpc.getIsGlobalEnabled() >> false
+        crudConfig.isPaginationEnabled() >> false
         uriInfo.getQueryParameters() >> mvmRequest
         
-        Boolean withPagination = UserRestForTest.class.getDeclaredMethod("findWithSearch").getAnnotation(Search.class).withPagination()
+        Boolean withPagination = UserRestForTest.class.getDeclaredMethod("findWithSearch").getAnnotation(DemoiselleCrud.class).enablePagination()
         
         String url = "http://localhost:9090/api/users"
         
@@ -341,18 +331,19 @@ class PaginationHelperSpec extends Specification {
         
         then:
         withPagination == Boolean.TRUE
-        dpc.getIsGlobalEnabled() == Boolean.FALSE
-        drc.isPaginationEnabled() == Boolean.FALSE
+        crudConfig.paginationEnabled== Boolean.FALSE
+        drc.paginationContext.isPaginationEnabled() == Boolean.FALSE
         
     }
     
     def "A method annotated with @Search and own withPagination property set with 'false' and default pagination enabled should be paginated"(){
         
         given:
-        dpc.getIsGlobalEnabled() >> true
+        crudConfig.isPaginationEnabled() >> true
+        crudConfig.getDefaultPagination() >> 50
+        result.entityClass = UserModelForTest.class
         uriInfo.getQueryParameters() >> mvmRequest
-        
-        Boolean withPagination = UserRestForTest.class.getDeclaredMethod("findWithSearchAnnotationAndPaginationDisabled").getAnnotation(Search.class).withPagination()
+        drc.demoiselleCrudAnnotation = UserRestForTest.class.getDeclaredMethod("findWithSearchAnnotationAndPaginationDisabled").getAnnotation(DemoiselleCrud.class)
         
         String url = "http://localhost:9090/api/users"
         
@@ -367,9 +358,9 @@ class PaginationHelperSpec extends Specification {
         paginationHelper.execute(resourceInfo, uriInfo)
         
         then:
-        withPagination == Boolean.FALSE
-        dpc.getIsGlobalEnabled() == Boolean.TRUE
-        drc.isPaginationEnabled() == Boolean.FALSE
+        drc.demoiselleCrudAnnotation.enablePagination() == Boolean.FALSE
+        crudConfig.isPaginationEnabled() == Boolean.TRUE
+        drc.paginationContext.isPaginationEnabled() == Boolean.FALSE
         
     }
 

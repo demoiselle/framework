@@ -30,16 +30,38 @@ public class CrudUtilHelper {
      * Given a Class that extends {@link AbstractREST} this method will return
      * the target Class used on {@literal AbstractREST<TargetClass, I>}
      *
-     * @param targetClass Target class
+     * @param resourceInfo Resource Info of the request
      *
      * @return Class used on {@literal AbstractREST<TargetClass, I>}
      */
-    public static Class<?> getTargetClass(Class<?> targetClass) {
-        if (AbstractREST.class.isAssignableFrom(targetClass)) {
-            Class<?> type = (Class<?>) ((ParameterizedType) targetClass.getGenericSuperclass()).getActualTypeArguments()[0];
+    public static Class<?> getTargetClass(ResourceInfo resourceInfo) {
+        DemoiselleCrud annotation  = getDemoiselleCrudAnnotation(resourceInfo);
+        if (annotation != null) {
+            return annotation.value();
+        }
+        return getAbstractRestTargetClass(resourceInfo);
+    }
+
+    public static Class<?> getAbstractRestTargetClass(ResourceInfo resourceInfo) {
+        Class<?> resourceClass = resourceInfo.getResourceClass();
+        if (AbstractREST.class.isAssignableFrom(resourceClass)) {
+            Class<?> type = (Class<?>) ((ParameterizedType) resourceClass.getGenericSuperclass()).getActualTypeArguments()[0];
             return type;
         }
         return null;
+    }
+
+    public static DemoiselleCrud getDemoiselleCrudAnnotation(ResourceInfo resourceInfo) {
+        if (resourceInfo == null) {
+            return null;
+        }
+        if (resourceInfo.getResourceMethod() != null
+                && resourceInfo.getResourceMethod().isAnnotationPresent(DemoiselleCrud.class)) {
+            return resourceInfo.getResourceMethod().getAnnotation(DemoiselleCrud.class);
+        }
+        Class<?> targetClass = resourceInfo.getResourceClass();
+        DemoiselleCrud annotation = getTargetClassAnnotation(targetClass);
+        return annotation;
     }
 
     /**
@@ -148,35 +170,35 @@ public class CrudUtilHelper {
 
         return results;
     }
-    
+
     /**
-     * 
-     * Extract fields from {@link Search} annotation to fill the {@link TreeNodeField} object
-     * 
+     *
+     * Extract fields from {@link DemoiselleCrud} annotation to fill the {@link TreeNodeField} object
+     *
      * @param resourceInfo ResourceInfo
      * @return TreeNodeField filled with fields
      */
-    public static TreeNodeField<String, Set<String>> extractFieldsFromSearchAnnotation(ResourceInfo resourceInfo) {
+    public static TreeNodeField<String, Set<String>> extractSearchFieldsFromAnnotation(ResourceInfo resourceInfo) {
         List<String> fieldsFromAnnotation = new ArrayList<>();
-        
-        if (resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)) {
-            String fieldsAnnotation[] = resourceInfo.getResourceMethod().getAnnotation(Search.class).fields();
+
+        if (resourceInfo.getResourceMethod().isAnnotationPresent(DemoiselleCrud.class)) {
+            String fieldsAnnotation[] = resourceInfo.getResourceMethod().getAnnotation(DemoiselleCrud.class).searchFields();
 
             if (fieldsAnnotation != null && !fieldsAnnotation[0].equals("*")) {
 
                 fieldsFromAnnotation.addAll(Arrays.asList(fieldsAnnotation));
                 if (!fieldsFromAnnotation.isEmpty()) {
-                    final TreeNodeField<String, Set<String>> searchFieldsTnf = new TreeNodeField<>(CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass()).getName(), null);
-                    // Transform fields from annotation into TreeNodeField                
+                    final TreeNodeField<String, Set<String>> searchFieldsTnf = new TreeNodeField<>(CrudUtilHelper.getTargetClass(resourceInfo).getName(), null);
+                    // Transform fields from annotation into TreeNodeField
                     fieldsFromAnnotation.stream().forEach(searchField -> {
                         fillLeafTreeNodeField(searchFieldsTnf, searchField, null);
                     });
-                    
+
                     return searchFieldsTnf;
                 }
             }
         }
-        
+
         return null;
     }
 
@@ -206,7 +228,7 @@ public class CrudUtilHelper {
                     fillLeafTreeNodeField(masterTNF, actualSubField, value);
                 }
             }
-        } 
+        }
         else {
             tnf.addChild(actualField, value);
         }
@@ -222,27 +244,19 @@ public class CrudUtilHelper {
         return tnfFinded == null ? tnf.addChild(masterField, null) : tnfFinded;
     }
 
-    /**
-     * Validate the fields based on {@link Search#fields()} or if field exists
-     * on targetClass
-     *
-     * @param tnf TreeNodeField filled
-     * @param resourceInfo ResourceInfo
-     * @param crudMessage CrudMessage
-     */
-    public static void validateFields(TreeNodeField<String, Set<String>> tnf, ResourceInfo resourceInfo, CrudMessage crudMessage) {
-
+    public static void validateFields(TreeNodeField<String, Set<String>> requestedFieldsTnf,
+                                      TreeNodeField<String, Set<String>> defaultFieldsTnf,
+                                      CrudMessage crudMessage,
+                                      Class<?> targetClass) {
         // Get fields from @Search.fields attribute
-        final TreeNodeField<String, Set<String>> searchFieldsTnf = extractFieldsFromSearchAnnotation(resourceInfo);
-
         //Validate fields
-        tnf.getChildren().stream().forEach(leaf -> {
+        requestedFieldsTnf.getChildren().stream().forEach(leaf -> {
 
-            if (searchFieldsTnf != null && !searchFieldsTnf.getChildren().isEmpty()) {
+            if (defaultFieldsTnf != null && !defaultFieldsTnf.getChildren().isEmpty()) {
 
                 try {
                     // 1st level
-                    if (!searchFieldsTnf.containsKey(leaf.getKey())) {
+                    if (!defaultFieldsTnf.containsKey(leaf.getKey())) {
                         throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnSearchField(leaf.getKey()));
                     }
 
@@ -250,13 +264,13 @@ public class CrudUtilHelper {
                         leaf.getChildren().stream().forEach(leafItem -> {
 
                             /*
-                             * Given a @Search(fields={field1,field2}) and a request like a 'fields=field1,field2(subField1)' 
+                             * Given a @Search(fields={field1,field2}) and a request like a 'fields=field1,field2(subField1)'
                              * the request is valid because the @Search.fields specified the root type (field2)
                              *
                              */
-                            if (!searchFieldsTnf.getChildByKey(leafItem.getParent().getKey()).getChildren().isEmpty()) {
+                            if (!defaultFieldsTnf.getChildByKey(leafItem.getParent().getKey()).getChildren().isEmpty()) {
 
-                                searchFieldsTnf.getChildByKey(leafItem.getParent().getKey()).getChildren().stream().forEach(sfTnf -> {
+                                defaultFieldsTnf.getChildByKey(leafItem.getParent().getKey()).getChildren().stream().forEach(sfTnf -> {
                                     if (!sfTnf.getParent().containsKey(leafItem.getKey())) {
                                         throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnSearchField(leafItem.getParent().getKey() + "(" + leafItem.getKey() + ")"));
                                     }
@@ -265,21 +279,20 @@ public class CrudUtilHelper {
                             }
                         });
                     }
-                    
-                } 
+
+                }
                 catch (IllegalArgumentException e) {
                     throw e;
                 }
             }
 
-            Class<?> targetClass = getTargetClass(resourceInfo.getResourceClass());
 
             if (!leaf.getChildren().isEmpty()) {
                 Field fieldMaster;
 
                 try {
                     fieldMaster = targetClass.getDeclaredField(leaf.getKey());
-                } 
+                }
                 catch (SecurityException | NoSuchFieldException e) {
                     throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(leaf.getKey(), targetClass.getName()));
                 }
@@ -289,18 +302,18 @@ public class CrudUtilHelper {
                 leaf.getChildren().forEach((subLeaf) -> {
                     try {
                         CrudUtilHelper.checkIfExistField(fieldClazz, subLeaf.getKey());
-                    } 
+                    }
                     catch (IllegalArgumentException e) {
                         throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(subLeaf.getKey(), fieldClazz.getName()));
                     }
                 });
-            } 
+            }
             else {
                 try {
-                    CrudUtilHelper.checkIfExistField(getTargetClass(resourceInfo.getResourceClass()), leaf.getKey());
-                } 
+                    CrudUtilHelper.checkIfExistField(targetClass, leaf.getKey());
+                }
                 catch (IllegalArgumentException e) {
-                    throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(leaf.getKey(), getTargetClass(resourceInfo.getResourceClass()).getName()));
+                    throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(leaf.getKey(), targetClass.getName()));
                 }
             }
         });
@@ -314,17 +327,37 @@ public class CrudUtilHelper {
         return matcher.find();
     }
 
-    public static String getMethodAnnotatedWithID(Class<?> targetClass) {    	
+    public static String getMethodAnnotatedWithID(Class<?> targetClass) {
     	String name = null;
     	for (Field field :  targetClass.getDeclaredFields() ) {
             if (field.isAnnotationPresent(Id.class)) {
             	name = field.getName();
             	break;
             }
-    	}       
+    	}
         return name;
     }
 
-    
-    
+    /**
+     * Get the {@link DemoiselleCrud} annotation present on the given resourceClass or any parent class of its hierarchy.
+     *
+     * @param resourceClass The resource class that may be annotated.
+     * @return The annotation present on the class or its hierarchy, if any.
+     */
+    public static DemoiselleCrud getTargetClassAnnotation(Class<?> resourceClass) {
+        DemoiselleCrud annotation;
+        if(resourceClass == null) {
+            return null;
+        }
+        annotation = resourceClass.getAnnotation(DemoiselleCrud.class);
+        Class<?> currClass = resourceClass;
+        while (annotation != null && currClass != null && !currClass.equals(Object.class)) {
+            annotation = resourceClass.getAnnotation(DemoiselleCrud.class);
+            currClass = currClass.getSuperclass();
+        }
+        return annotation;
+    }
+
+
+
 }

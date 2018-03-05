@@ -6,6 +6,7 @@
  */
 package org.demoiselle.jee.crud.sort;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -21,9 +22,10 @@ import javax.ws.rs.core.UriInfo;
 import org.demoiselle.jee.crud.AbstractDAO;
 import org.demoiselle.jee.crud.CrudMessage;
 import org.demoiselle.jee.crud.CrudUtilHelper;
+import org.demoiselle.jee.crud.DemoiselleCrud;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedKeyWords;
-import org.demoiselle.jee.crud.Search;
+import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig;
 
 /**
  * Class responsible for managing the 'sort' parameter comes from Url Query
@@ -60,12 +62,16 @@ public class SortHelper {
     @Inject
     private CrudMessage crudMessage;
 
+    @Inject
+    private DemoiselleCrudConfig crudConfig;
+
     public SortHelper() {
     }
 
-    public SortHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, SortHelperMessage sortHelperMessage, CrudMessage crudMessage) {
+    public SortHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleCrudConfig crudConfig, DemoiselleRequestContext drc, SortHelperMessage sortHelperMessage, CrudMessage crudMessage) {
         this.resourceInfo = resourceInfo;
         this.uriInfo = uriInfo;
+        this.crudConfig = crudConfig;
         this.drc = drc;
         this.sortHelperMessage = sortHelperMessage;
         this.crudMessage = crudMessage;
@@ -73,7 +79,7 @@ public class SortHelper {
 
     /**
      * Open the request query string to extract values from 'sort' and 'desc'
-     * parameters and fill the {@link DemoiselleRequestContext#setSorts(List)}
+     * parameters and fill the {@link DemoiselleRequestContext#getSortContext()}
      *
      * @param resourceInfo ResourceInfo
      * @param uriInfo UriInfo
@@ -92,7 +98,8 @@ public class SortHelper {
         if (descValues != null && sortValues == null) {
             throw new IllegalArgumentException(sortHelperMessage.descParameterWithoutSortParameter());
         }
-
+        drc.getSortContext().setSortEnabled(isSortEnabled());
+        drc.getSortContext().setSorts(new ArrayList<>());
         if (descValues != null) {
 
             //&desc without parameters
@@ -112,37 +119,56 @@ public class SortHelper {
         }
 
         if (sortValues != null) {
-
+            drc.getSortContext().setSorts(new ArrayList<>());
             for (String field : sortValues) {
                 if (descAll == Boolean.TRUE) {
-                    drc.getSorts().add(new SortModel(CrudSort.DESC, field));
+                    drc.getSortContext().getSorts().add(new SortModel(CrudSort.DESC, field));
                 } else {
                     // Field was set to desc
                     if (descList.contains(field)) {
-                        drc.getSorts().add(new SortModel(CrudSort.DESC, field));
+                        drc.getSortContext().getSorts().add(new SortModel(CrudSort.DESC, field));
                     } else {
-                        drc.getSorts().add(new SortModel(CrudSort.ASC, field));
+                        drc.getSortContext().getSorts().add(new SortModel(CrudSort.ASC, field));
                     }
                 }
             }
         }
 
         //Valid if fields exists on fields attribute from @Search annotation
-        if (this.resourceInfo.getResourceMethod().isAnnotationPresent(Search.class)) {
-            Search search = this.resourceInfo.getResourceMethod().getAnnotation(Search.class);
-            List<String> searchFields = Arrays.asList(search.fields());
+        if (this.resourceInfo.getResourceMethod().isAnnotationPresent(DemoiselleCrud.class)) {
+            DemoiselleCrud demoiselleCrud = this.resourceInfo.getResourceMethod().getAnnotation(DemoiselleCrud.class);
+            List<String> searchFields = Arrays.asList(demoiselleCrud.searchFields());
             if (searchFields.get(0) != null && !searchFields.get(0).equals("*")) {
-                drc.getSorts().stream().filter((sortModel) -> (!searchFields.contains(sortModel.getField()))).forEachOrdered((sortModel) -> {
+                drc.getSortContext().getSorts().stream().filter((sortModel) -> (!searchFields.contains(sortModel.getField()))).forEachOrdered((sortModel) -> {
                     throw new BadRequestException(crudMessage.fieldRequestDoesNotExistsOnSearchField(sortModel.getField()));
                 });
             }
         }
 
         // Validate if the fields are valid
-        drc.getSorts().stream().forEach(sortModel -> {
-            CrudUtilHelper.checkIfExistField(CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()), sortModel.getField());
+        drc.getSortContext().getSorts().stream().forEach(sortModel -> {
+            CrudUtilHelper.checkIfExistField(drc.getEntityClass(), sortModel.getField());
         });
 
+    }
+
+    private boolean isSortEnabled() {
+        boolean isGlobalSortEnabled = crudConfig.isSortEnabled();
+        boolean isWithSortParameters = hasSortParametersInRequest();
+        boolean isAbstractRestClass = CrudUtilHelper.getAbstractRestTargetClass(resourceInfo) != null;
+        boolean isSortEnabledInAnnotation = CrudUtilHelper.getDemoiselleCrudAnnotation(resourceInfo) != null
+                && CrudUtilHelper.getDemoiselleCrudAnnotation(resourceInfo).enableSort();
+        return isGlobalSortEnabled && isWithSortParameters && (isAbstractRestClass || isSortEnabledInAnnotation);
+
+    }
+
+    private boolean hasSortParametersInRequest() {
+        for (String queryStringKey : uriInfo.getQueryParameters().keySet()) {
+            if (ReservedKeyWords.DEFAULT_SORT_KEY.getKey().equalsIgnoreCase(queryStringKey)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<String> getValuesFromQueryString(String key) {

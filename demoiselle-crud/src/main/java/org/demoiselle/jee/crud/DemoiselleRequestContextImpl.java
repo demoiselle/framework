@@ -6,114 +6,149 @@
  */
 package org.demoiselle.jee.crud;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.demoiselle.jee.crud.fields.FieldsContext;
+import org.demoiselle.jee.crud.filter.FilterContext;
+import org.demoiselle.jee.crud.pagination.PaginationContext;
+import org.demoiselle.jee.crud.sort.SortContext;
 import org.demoiselle.jee.crud.sort.SortModel;
+
 
 /**
  * Implementation from {@link DemoiselleRequestContext}
- * 
+ *
  * @author SERPRO
  */
 @RequestScoped
 public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
 
-    private Integer offset = null;
-    private Integer limit = null;
-    private Long count = null;
     private Class<?> entityClass = null;
-    private TreeNodeField<String, Set<String>> filters = null; 
-    private List<SortModel> sorts = new LinkedList<>();
-    private TreeNodeField<String, Set<String>> fields = null;
-    private Boolean isPaginationEnabled = Boolean.TRUE;
+
+    private FieldsContext fieldsContext = FieldsContext.disabledFields();
+    private PaginationContext paginationContext = PaginationContext.disabledPagination();
+    private SortContext sortContext = SortContext.disabledSort();
+    private FilterContext filterContext = FilterContext.disabledFilter();
+    private DemoiselleCrud demoiselleCrudAnnotation;
+    private boolean abstractRestRequest;
 
     @Override
-    public Integer getLimit() {
-        return limit;
+    public boolean isAbstractRestRequest() {return abstractRestRequest;
     }
 
     @Override
-    public void setLimit(Integer limit) {
-        this.limit = limit;
+    public void setAbstractRestRequest(boolean abstractRestRequest) {
+        this.abstractRestRequest = abstractRestRequest;
     }
 
     @Override
-    public Integer getOffset() {
-        return offset;
+    public FieldsContext getFieldsContext() {
+        return fieldsContext;
     }
 
     @Override
-    public void setOffset(Integer offset) {
-        this.offset = offset;
+    public void setFieldsContext(FieldsContext fieldsContext) {
+        this.fieldsContext = fieldsContext;
     }
 
-    @Override
-    public Long getCount() {
-        return count;
-    }
 
-    @Override
-    public void setCount(Long count) {
-        this.count = count;
-    }
 
-    @Override
     public Class<?> getEntityClass() {
         return entityClass;
     }
 
-    @Override
     public void setEntityClass(Class<?> entityClass) {
         this.entityClass = entityClass;
     }
 
     @Override
-    public TreeNodeField<String, Set<String>> getFilters() {
-        return filters;
+    public PaginationContext getPaginationContext() {
+        return paginationContext;
     }
 
     @Override
-    public void setFilters(TreeNodeField<String, Set<String>> filters) {
-        this.filters = filters;
-    }
-    
-    @Override
-    public List<SortModel> getSorts() {
-        return this.sorts;
+    public void setPaginationContext(PaginationContext paginationContext) {
+        this.paginationContext = paginationContext;
     }
 
     @Override
-    public void setSorts(List<SortModel> sorts) {
-        this.sorts = sorts;
+    public DemoiselleCrud getDemoiselleCrudAnnotation() {
+        return demoiselleCrudAnnotation;
     }
 
     @Override
-    public TreeNodeField<String, Set<String>> getFields() {
-        return this.fields;
+    public void setDemoiselleCrudAnnotation(DemoiselleCrud demoiselleCrudAnnotation) {
+        this.demoiselleCrudAnnotation = demoiselleCrudAnnotation;
     }
 
     @Override
-    public void setFields(TreeNodeField<String, Set<String>> fields) {
-        this.fields = fields;
+    public SortContext getSortContext() {
+        return sortContext;
     }
 
     @Override
-    public Boolean isPaginationEnabled() {
-        return this.isPaginationEnabled;
+    public void setSortContext(SortContext sortContext) {
+        this.sortContext = sortContext;
     }
 
     @Override
-    public void setPaginationEnabled(Boolean isPaginationEnabled) {
-        this.isPaginationEnabled = isPaginationEnabled;
+    public FilterContext getFilterContext() {
+        return filterContext;
+    }
+
+    @Override
+    public void setFilterContext(FilterContext filterContext) {
+        this.filterContext = filterContext;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DemoiselleRequestContextImpl that = (DemoiselleRequestContextImpl) o;
+
+        return new EqualsBuilder()
+                .append(entityClass, that.entityClass)
+                .append(fieldsContext, that.fieldsContext)
+                .append(filterContext, that.filterContext)
+                .append(paginationContext, that.paginationContext)
+                .append(sortContext, that.sortContext)
+                .append(demoiselleCrudAnnotation, that.demoiselleCrudAnnotation)
+                .append(abstractRestRequest, that.abstractRestRequest)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(entityClass)
+                .append(fieldsContext)
+                .append(sortContext)
+                .append(filterContext)
+                .append(paginationContext)
+                .append(demoiselleCrudAnnotation)
+                .append(abstractRestRequest)
+                .toHashCode();
     }
 
     @Override
     public String toString() {
-        return "DemoiselleRequestContextImpl [offset=" + offset + ", limit=" + limit + ", count=" + count + ", paginationEnabled=" + isPaginationEnabled + "]";
-    }
+        return "DemoiselleRequestContextImpl{" +
+                "entityClass=" + entityClass +
+                ", filterContext=" + fieldsContext +
+                ", sortContext=" + sortContext +
+                ", filterContext=" + filterContext +
+                ", paginationContext=" + paginationContext +
+                ", abstractRestRequest=" + abstractRestRequest +
+                ", demoiselleCrudAnnotation=" + demoiselleCrudAnnotation +
 
+                '}';
+    }
 }

@@ -12,8 +12,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import org.demoiselle.jee.crud.CrudMessage;
@@ -21,6 +23,7 @@ import org.demoiselle.jee.crud.CrudUtilHelper;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedKeyWords;
 import org.demoiselle.jee.crud.TreeNodeField;
+import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig;
 
 /**
  * Class responsible for managing the 'fields' parameter comes from Url Query String.
@@ -53,12 +56,16 @@ public class FieldHelper {
     @Inject
     private DemoiselleRequestContext drc;
 
+    @Inject
+    private DemoiselleCrudConfig crudConfig;
+
     public FieldHelper() {
     }
 
-    public FieldHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, FieldHelperMessage fieldHelperMessage, CrudMessage crudMessage) {
+    public FieldHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleCrudConfig crudConfig, DemoiselleRequestContext drc, FieldHelperMessage fieldHelperMessage, CrudMessage crudMessage) {
         this.uriInfo = uriInfo;
         this.resourceInfo = resourceInfo;
+        this.crudConfig = crudConfig;
         this.drc = drc;
         this.fieldHelperMessage = fieldHelperMessage;
         this.crudMessage = crudMessage;
@@ -66,7 +73,7 @@ public class FieldHelper {
 
     /**
      * Open the request query string to extract values from 'fields' parameter and 
-     * fill the {@link TreeNodeField} object and set the result object on {@link DemoiselleRequestContext#setFields(TreeNodeField)} object.
+     * fill the {@link TreeNodeField} object and set the fields object on {@link DemoiselleRequestContext#getFieldsContext()}.
      * 
      * @param resourceInfo ResourceInfo
      * @param uriInfo UriInfo
@@ -75,63 +82,91 @@ public class FieldHelper {
         this.resourceInfo = resourceInfo == null ? this.resourceInfo : resourceInfo;
         this.uriInfo = uriInfo == null ? this.uriInfo : uriInfo;
 
-        /* 
-         * Populate the fields
-         * 
-         * Ex: 
-         *      The request 'url?fields=field1,field2,field3(fieldA,fieldB),field4'
-         *      It will be parse to ["field1", "field2", "field3(fieldA,fieldB)", "field4"]
-         * 
-         */
-        
+        drc.getFieldsContext().setFieldsEnabled(isFilterFieldsEnabled());
+        if (drc.getFieldsContext().isFieldsEnabled()) {
+            /*
+             * Populate the fields
+             *
+             * Ex:
+             *      The request 'url?fields=field1,field2,field3(fieldA,fieldB),field4'
+             *      It will be parse to ["field1", "field2", "field3(fieldA,fieldB)", "field4"]
+             *
+             */
+            TreeNodeField<String, Set<String>> fields = null;
+            if (drc.getEntityClass() != null) {
+                TreeNodeField<String, Set<String>> searchFields = CrudUtilHelper.extractSearchFieldsFromAnnotation(this.resourceInfo);
+                List<String> queryStringFields = extractQueryStringFieldsFromMap(uriInfo.getQueryParameters());
+                fields = extractFieldsFromParameter(drc.getEntityClass(), queryStringFields, searchFields);
+            }
+            drc.getFieldsContext().setFields(fields);
+        }
+
+    }
+
+    private boolean isFilterFieldsEnabled() {
+        boolean globalFilterFields = crudConfig.isFilterFields();
+        boolean abstractRestRequest = drc.isAbstractRestRequest();
+        boolean isAnnotationPresent = drc.getDemoiselleCrudAnnotation() != null && drc.getDemoiselleCrudAnnotation().enableFilterFields();
+        return globalFilterFields && (abstractRestRequest || isAnnotationPresent);
+    }
+
+    public static List<String> extractQueryStringFieldsFromMap(MultivaluedMap<String, String> parameterMap) {
         List<String> queryStringFields = new LinkedList<>();
-        uriInfo.getQueryParameters().forEach((key, values) -> {
+        parameterMap.forEach((key, values) -> {
             if (ReservedKeyWords.DEFAULT_FIELD_KEY.getKey().equalsIgnoreCase(key)) {
                 values.forEach(value -> {
                     queryStringFields.addAll(extractFields(value));
                 });
             }
         });
-        
-        TreeNodeField<String, Set<String>> tnf = new TreeNodeField<>(CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()).getName(), ConcurrentHashMap.newKeySet(1));
-        
+        return queryStringFields;
+    }
+
+    public static TreeNodeField<String, Set<String>> extractFieldsFromParameter(Class<?> entityClass,
+                                                                                List<String> queryStringFields,
+                                                                                TreeNodeField<String, Set<String>> searchFields) {
+
+
+        CrudMessage crudMessage = CDI.current().select(CrudMessage.class).get();
+        TreeNodeField<String, Set<String>> tnf = new TreeNodeField<>(entityClass.getName(), ConcurrentHashMap.newKeySet(1));
+
         if(!queryStringFields.isEmpty()) {
             queryStringFields.forEach((field) -> {
                 CrudUtilHelper.fillLeafTreeNodeField(tnf, field, null);
             });
-            
-            CrudUtilHelper.validateFields(tnf, this.resourceInfo, this.crudMessage);
-            
+
+
+            CrudUtilHelper.validateFields(tnf, searchFields, crudMessage, entityClass);
+
             // Remove fields not declared in @Search.fields property
-            TreeNodeField<String, Set<String>> searchFields = CrudUtilHelper.extractFieldsFromSearchAnnotation(this.resourceInfo);
+
             if(searchFields != null && !searchFields.getChildren().isEmpty()) {
-                
+
                 searchFields.getChildren().stream()
-                    .filter( (it) -> !it.getChildren().isEmpty())
-                    .filter( (it) -> tnf.containsKey(it.getKey()))
-                    .forEach( (item) -> {
-                        if(tnf.getChildByKey(item.getKey()).getChildren() == null
-                                || tnf.getChildByKey(item.getKey()).getChildren().isEmpty()) {
-                            item.getChildren().forEach( ch -> {
-                                tnf.getChildByKey(item.getKey()).addChild(ch.getKey(), ch.getValue());   
-                            });
-                        }
-                    });
+                        .filter( (it) -> !it.getChildren().isEmpty())
+                        .filter( (it) -> tnf.containsKey(it.getKey()))
+                        .forEach( (item) -> {
+                            if(tnf.getChildByKey(item.getKey()).getChildren() == null
+                                    || tnf.getChildByKey(item.getKey()).getChildren().isEmpty()) {
+                                item.getChildren().forEach( ch -> {
+                                    tnf.getChildByKey(item.getKey()).addChild(ch.getKey(), ch.getValue());
+                                });
+                            }
+                        });
             }
-            
-            drc.setFields(tnf);
         }
-        
+        return tnf;
     }
-    
 
-    private List<String> extractFields(String fields){
 
+    private static List<String> extractFields(String fields){
+
+        FieldHelperMessage fieldHelperMessage = CDI.current().select(FieldHelperMessage.class).get();
         try{
             return CrudUtilHelper.extractFields(fields);
         }
         catch(IllegalArgumentException e){
-            throw new IllegalArgumentException(this.fieldHelperMessage.fieldRequestMalFormed(ReservedKeyWords.DEFAULT_FIELD_KEY.getKey(), fields));
+            throw new IllegalArgumentException(fieldHelperMessage.fieldRequestMalFormed(ReservedKeyWords.DEFAULT_FIELD_KEY.getKey(), fields));
         }
     }
     
