@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang3.StringUtils;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.AbstractDAO;
 import org.demoiselle.jee.crud.CrudUtilHelper;

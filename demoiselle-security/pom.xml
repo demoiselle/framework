@@ -21,5 +21,17 @@
             <groupId>org.demoiselle.jee</groupId>
             <artifactId>demoiselle-rest</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.demoiselle.jee</groupId>
+            <artifactId>demoiselle-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.demoiselle.jee</groupId>
+            <artifactId>demoiselle-configuration</artifactId>
+        </dependency>
     </dependencies>
 </project>
