@@ -228,7 +228,7 @@ public class PaginationHelper {
      * @param result The result object from the current response
      */
     public Boolean isPartialContentResponse(Result result) {
-        Integer limit = result.getPaginationContext().getLimit() == null ? 0 : result.getPaginationContext().getLimit();
+        Integer limit = result.getPaginationContext() == null || result.getPaginationContext().getLimit() == null ? 0 : result.getPaginationContext().getLimit();
         Long count = result.getCount() == null ? 0 : result.getCount();
         return !((limit + 1) >= count);
     }

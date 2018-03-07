@@ -8,6 +8,8 @@ package org.demoiselle.jee.crud;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -199,9 +201,9 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
                                 .filter( (f) -> searchFields.contains(f.getName()))
                                 .forEach( (field) -> {
                                     try{
-                                        keyValue.put(field.getName(), getValueFromObjectField(targetClass, field, object));
+                                        keyValue.put(field.getName(), getValueFromObjectField(targetClass, field.getName(), object));
                                     }
-                                    catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+                                    catch (IllegalArgumentException | IllegalAccessException | SecurityException | NoSuchMethodException | InvocationTargetException e) {
                                         logger.log(Level.SEVERE, e.getMessage(), e);
                                     }
                                 });
@@ -271,24 +273,19 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
      * Invoke the field to get the value from the object
      *
      * @param targetClass Class that represent the object
-     * @param field Field that will be invoked
+     * @param fieldName Field name that will be invoked
      * @param object The actual object that has the value
      *
      * @return Value from field 
      *
-     * @throws NoSuchFieldException
      * @throws SecurityException
      * @throws IllegalArgumentException
      * @throws IllegalAccessException
      */
-    private Object getValueFromObjectField(Class<?> targetClass, Field field, Object object) throws NoSuchFieldException, IllegalAccessException {
-        Object result = null;
-        Field actualField = targetClass.getDeclaredField(field.getName());
-        boolean acessible = actualField.isAccessible();
-        actualField.setAccessible(true);
-        result = actualField.get(object);
-        actualField.setAccessible(acessible);
-
+    private Object getValueFromObjectField(Class<?> targetClass, String fieldName, Object object) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        Object result;
+        Method fieldGetter = CrudUtilHelper.getPropertyGetter(targetClass, fieldName);
+        result = fieldGetter.invoke(object);
         return result;
     }
 

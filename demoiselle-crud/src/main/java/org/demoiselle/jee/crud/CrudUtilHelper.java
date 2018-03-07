@@ -6,7 +6,11 @@
  */
 package org.demoiselle.jee.crud;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +22,10 @@ import java.util.regex.Pattern;
 import javax.persistence.Id;
 
 import javax.ws.rs.container.ResourceInfo;
+
+import org.apache.commons.beanutils.BeanUtilsBean;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Class used to support CRUD feature.
@@ -59,6 +67,10 @@ public class CrudUtilHelper {
                 && resourceInfo.getResourceMethod().isAnnotationPresent(DemoiselleCrud.class)) {
             return resourceInfo.getResourceMethod().getAnnotation(DemoiselleCrud.class);
         }
+        if (resourceInfo.getResourceClass() != null
+                && resourceInfo.getResourceClass().isAnnotationPresent(DemoiselleCrud.class)) {
+            return resourceInfo.getResourceClass().getAnnotation(DemoiselleCrud.class);
+        }
         Class<?> targetClass = resourceInfo.getResourceClass();
         DemoiselleCrud annotation = getTargetClassAnnotation(targetClass);
         return annotation;
@@ -74,18 +86,16 @@ public class CrudUtilHelper {
      * 'targetClass'
      */
     public static void checkIfExistField(Class<?> targetClass, String field) {
-        if (targetClass != null) {
-            do {
-                Field[] fields = targetClass.getDeclaredFields();
-                for (Field f : fields) {
-                    if (f.getName().equalsIgnoreCase(field)) {
-                        return;
-                    }
-                }
-                targetClass = targetClass.getSuperclass();
-            } while (targetClass != null);
-            throw new IllegalArgumentException();
+        try {
+            getPropertyGetter(targetClass, field);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(e);
         }
+    }
+
+    public static Method getPropertyGetter(Class<?> targetClass, String field) throws NoSuchMethodException {
+        String getterMethodName = "get"+StringUtils.capitalize(field);
+        return targetClass.getMethod(getterMethodName);
     }
 
     /**
@@ -288,16 +298,13 @@ public class CrudUtilHelper {
 
 
             if (!leaf.getChildren().isEmpty()) {
-                Field fieldMaster;
 
+                Class<?> fieldClazz;
                 try {
-                    fieldMaster = targetClass.getDeclaredField(leaf.getKey());
-                }
-                catch (SecurityException | NoSuchFieldException e) {
+                    fieldClazz = PropertyUtils.getPropertyType(targetClass, leaf.getKey());
+                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(leaf.getKey(), targetClass.getName()));
                 }
-
-                Class<?> fieldClazz = fieldMaster.getType();
 
                 leaf.getChildren().forEach((subLeaf) -> {
                     try {

@@ -8,6 +8,8 @@ package org.demoiselle.jee.crud.pagination;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.AbstractDAO;
@@ -18,25 +20,25 @@ import org.demoiselle.jee.crud.fields.FieldsContext;
  * 
  * @author SERPRO
  */
-public class ResultSet implements Result{
+public class ResultSet<T>  implements Result<T> {
 
     private PaginationContext paginationContext;
     private FieldsContext fieldsContext;
     private Long count;
-    private Class<?> entityClass;
-	private List<?> content = new LinkedList<>();
+    private Class<T> entityClass;
+	private List<T> content = new LinkedList<>();
 
 	@Override
-	public List<?> getContent() {
+	public List<T> getContent() {
         return content;
     }
 
     @Override
-	public void setContent(List<?> content) {
-		this.content = (List<?>) content;
+	public void setContent(List<T> content) {
+		this.content = content;
 	}
 
-    public static <T> Result forList(List<T> resultList, Class<T> entityClass, PaginationContext paginationContext, FieldsContext fieldsContext) {
+    public static <V> ResultSet<V> forList(List<V> resultList, Class<V> entityClass, PaginationContext paginationContext, FieldsContext fieldsContext) {
         ResultSet resultSet = new ResultSet();
         resultSet.setCount((long) resultList.size());
         resultSet.setContent(resultList);
@@ -72,12 +74,16 @@ public class ResultSet implements Result{
     }
 
     @Override
-    public Class<?> getEntityClass() {
+    public Class<T> getEntityClass() {
         return entityClass;
     }
 
-    public void setEntityClass(Class<?> entityClass) {
+    public void setEntityClass(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 
+    public static <T, V> ResultSet<V> transform(Result<T> result, Class<V> resultClass, Function<T, V> transformer) {
+	    List<V> resultList = result.getContent().stream().map(transformer).collect(Collectors.toList());
+	    return ResultSet.forList(resultList, resultClass, result.getPaginationContext(), result.getFieldsContext());
+    }
 }

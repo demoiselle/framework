@@ -93,9 +93,9 @@ public class FilterHelper {
     public boolean isSearchEnabled() {
         boolean isGlobalSearchEnabled = crudConfig.isSearchEnabled();
         boolean isAbstractRestRequest = CrudUtilHelper.getAbstractRestTargetClass(resourceInfo) != null;
-        boolean isSearchEnabledInConfig = drc.getDemoiselleCrudAnnotation() != null &&
+        boolean isSearchEnabledInAnnotation = drc.getDemoiselleCrudAnnotation() != null &&
                 drc.getDemoiselleCrudAnnotation().enableSearch();
-        return isGlobalSearchEnabled && (isAbstractRestRequest || isSearchEnabledInConfig);
+        return isGlobalSearchEnabled && (isAbstractRestRequest || isSearchEnabledInAnnotation);
     }
 
     public static TreeNodeField<String,Set<String>> extractFiltersFromParameterMap(Class<?> targetClass,
