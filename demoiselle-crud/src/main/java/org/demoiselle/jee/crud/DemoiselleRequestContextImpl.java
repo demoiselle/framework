@@ -6,10 +6,9 @@
  */
 package org.demoiselle.jee.crud;
 
-import java.util.List;
-import java.util.Set;
-
 import javax.enterprise.context.RequestScoped;
+
+import java.util.function.Function;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -17,7 +16,6 @@ import org.demoiselle.jee.crud.fields.FieldsContext;
 import org.demoiselle.jee.crud.filter.FilterContext;
 import org.demoiselle.jee.crud.pagination.PaginationContext;
 import org.demoiselle.jee.crud.sort.SortContext;
-import org.demoiselle.jee.crud.sort.SortModel;
 
 
 /**
@@ -29,13 +27,15 @@ import org.demoiselle.jee.crud.sort.SortModel;
 public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
 
     private Class<?> entityClass = null;
+    private Class<?> resultClass = null;
 
     private FieldsContext fieldsContext = FieldsContext.disabledFields();
     private PaginationContext paginationContext = PaginationContext.disabledPagination();
     private SortContext sortContext = SortContext.disabledSort();
     private FilterContext filterContext = FilterContext.disabledFilter();
-    private DemoiselleCrud demoiselleCrudAnnotation;
+    private DemoiselleResult demoiselleResultAnnotation;
     private boolean abstractRestRequest;
+    private Function resultTransformer;
 
     @Override
     public boolean isAbstractRestRequest() {return abstractRestRequest;
@@ -77,13 +77,13 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     }
 
     @Override
-    public DemoiselleCrud getDemoiselleCrudAnnotation() {
-        return demoiselleCrudAnnotation;
+    public DemoiselleResult getDemoiselleResultAnnotation() {
+        return demoiselleResultAnnotation;
     }
 
     @Override
-    public void setDemoiselleCrudAnnotation(DemoiselleCrud demoiselleCrudAnnotation) {
-        this.demoiselleCrudAnnotation = demoiselleCrudAnnotation;
+    public void setDemoiselleResultAnnotation(DemoiselleResult demoiselleResultAnnotation) {
+        this.demoiselleResultAnnotation = demoiselleResultAnnotation;
     }
 
     @Override
@@ -107,48 +107,22 @@ public class DemoiselleRequestContextImpl implements DemoiselleRequestContext {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DemoiselleRequestContextImpl that = (DemoiselleRequestContextImpl) o;
-
-        return new EqualsBuilder()
-                .append(entityClass, that.entityClass)
-                .append(fieldsContext, that.fieldsContext)
-                .append(filterContext, that.filterContext)
-                .append(paginationContext, that.paginationContext)
-                .append(sortContext, that.sortContext)
-                .append(demoiselleCrudAnnotation, that.demoiselleCrudAnnotation)
-                .append(abstractRestRequest, that.abstractRestRequest)
-                .isEquals();
+    public Class<?> getResultClass() {
+        return resultClass;
     }
 
     @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(entityClass)
-                .append(fieldsContext)
-                .append(sortContext)
-                .append(filterContext)
-                .append(paginationContext)
-                .append(demoiselleCrudAnnotation)
-                .append(abstractRestRequest)
-                .toHashCode();
+    public void setResultClass(Class<?> resultClass) {
+        this.resultClass = resultClass;
     }
 
     @Override
-    public String toString() {
-        return "DemoiselleRequestContextImpl{" +
-                "entityClass=" + entityClass +
-                ", filterContext=" + fieldsContext +
-                ", sortContext=" + sortContext +
-                ", filterContext=" + filterContext +
-                ", paginationContext=" + paginationContext +
-                ", abstractRestRequest=" + abstractRestRequest +
-                ", demoiselleCrudAnnotation=" + demoiselleCrudAnnotation +
+    public Function getResultTransformer() {
+        return resultTransformer;
+    }
 
-                '}';
+    @Override
+    public void setResultTransformer(Function resultTransformer) {
+        this.resultTransformer = resultTransformer;
     }
 }

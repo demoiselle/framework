@@ -26,7 +26,7 @@ public interface Result<T> {
     Long getCount();
     void setCount(Long count);
 	List<T> getContent();
-	Class<T> getEntityClass();
+	Class<T> getResultType();
 	void setContent(List<T> content);
 
 }

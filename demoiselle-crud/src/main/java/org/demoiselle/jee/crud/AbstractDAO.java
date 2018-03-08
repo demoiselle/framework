@@ -166,13 +166,11 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     @Override
     public Result find() {
-
         try {
-
             CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
             Root<T> root = criteriaQuery.from(entityClass);
-            return new DemoiselleCrudHelper<T>(getEntityManager(), entityClass)
+            return new DemoiselleCrudHelper(getEntityManager(), entityClass)
                     .executeQuery(criteriaQuery, root);
         } catch (Exception e) {
             logger.severe(e.getMessage());

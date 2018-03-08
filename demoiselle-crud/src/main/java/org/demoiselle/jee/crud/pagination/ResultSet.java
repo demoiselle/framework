@@ -74,7 +74,7 @@ public class ResultSet<T>  implements Result<T> {
     }
 
     @Override
-    public Class<T> getEntityClass() {
+    public Class<T> getResultType() {
         return entityClass;
     }
 

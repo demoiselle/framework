@@ -65,7 +65,7 @@ class FieldHelperSpec extends Specification {
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
         resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearchAndFields")
         
-        def fields = UserRestForTest.class.getDeclaredMethod("findWithSearchAndFields").getAnnotation(DemoiselleCrud.class).filterFields() as List
+        def fields = UserRestForTest.class.getDeclaredMethod("findWithSearchAndFields").getAnnotation(DemoiselleResult.class).filterFields() as List
         def invalidFields = fields
         
         URI uri = new URI("http://localhost:9090/api/users")

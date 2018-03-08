@@ -287,8 +287,8 @@ class PaginationHelperSpec extends Specification {
         crudConfig.isPaginationEnabled() >> true
         uriInfo.getQueryParameters() >> mvmRequest
 
-        DemoiselleCrud crudAnnotation = UserRestForTest.class.getDeclaredMethod("findWithSearch").getAnnotation(DemoiselleCrud.class);
-        drc.demoiselleCrudAnnotation = crudAnnotation
+        DemoiselleResult crudAnnotation = UserRestForTest.class.getDeclaredMethod("findWithSearch").getAnnotation(DemoiselleResult.class);
+        drc.demoiselleResultAnnotation = crudAnnotation
         Integer quantityPerPage = crudAnnotation.pageSize()
         
         String url = "http://localhost:9090/api/users"
@@ -315,7 +315,7 @@ class PaginationHelperSpec extends Specification {
         crudConfig.isPaginationEnabled() >> false
         uriInfo.getQueryParameters() >> mvmRequest
         
-        Boolean withPagination = UserRestForTest.class.getDeclaredMethod("findWithSearch").getAnnotation(DemoiselleCrud.class).enablePagination()
+        Boolean withPagination = UserRestForTest.class.getDeclaredMethod("findWithSearch").getAnnotation(DemoiselleResult.class).enablePagination()
         
         String url = "http://localhost:9090/api/users"
         
@@ -343,7 +343,7 @@ class PaginationHelperSpec extends Specification {
         crudConfig.getDefaultPagination() >> 50
         result.entityClass = UserModelForTest.class
         uriInfo.getQueryParameters() >> mvmRequest
-        drc.demoiselleCrudAnnotation = UserRestForTest.class.getDeclaredMethod("findWithSearchAnnotationAndPaginationDisabled").getAnnotation(DemoiselleCrud.class)
+        drc.demoiselleResultAnnotation = UserRestForTest.class.getDeclaredMethod("findWithSearchAnnotationAndPaginationDisabled").getAnnotation(DemoiselleResult.class)
         
         String url = "http://localhost:9090/api/users"
         
@@ -358,7 +358,7 @@ class PaginationHelperSpec extends Specification {
         paginationHelper.execute(resourceInfo, uriInfo)
         
         then:
-        drc.demoiselleCrudAnnotation.enablePagination() == Boolean.FALSE
+        drc.demoiselleResultAnnotation.enablePagination() == Boolean.FALSE
         crudConfig.isPaginationEnabled() == Boolean.TRUE
         drc.paginationContext.isPaginationEnabled() == Boolean.FALSE
         

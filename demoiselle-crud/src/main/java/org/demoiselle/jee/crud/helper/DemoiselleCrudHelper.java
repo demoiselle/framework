@@ -12,14 +12,18 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.CrudMessage;
+import org.demoiselle.jee.crud.CrudUtilHelper;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedKeyWords;
+import org.demoiselle.jee.crud.TreeNodeField;
 import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig;
 import org.demoiselle.jee.crud.field.FieldHelper;
 import org.demoiselle.jee.crud.fields.FieldsContext;
@@ -33,6 +37,8 @@ import org.demoiselle.jee.crud.pagination.QueryPredicatesHelper;
 import org.demoiselle.jee.crud.pagination.QuerySortHelper;
 import org.demoiselle.jee.crud.pagination.ResultSet;
 import org.demoiselle.jee.crud.sort.SortContext;
+import org.demoiselle.jee.crud.sort.SortHelper;
+import org.demoiselle.jee.crud.sort.SortModel;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -43,9 +49,10 @@ import org.slf4j.LoggerFactory;
  * @author SERPRO
  * @param <T> JPA Entity type that will be used for the queries.
  */
-public class DemoiselleCrudHelper<T> {
+public class DemoiselleCrudHelper<T, V> {
     private final EntityManager em;
     private final Class<T> entityClass;
+    private Class<V> resultClass;
     private final DemoiselleRequestContext drc;
     private final CrudMessage crudMessage;
     private final FieldsContext fieldsContext;
@@ -53,6 +60,7 @@ public class DemoiselleCrudHelper<T> {
     private final PaginationHelperMessage paginationHelperMessage;
     private PaginationContext paginationContext;
     private final SortContext sortContext;
+    private Function<T, V> resultTransformer;
 
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(DemoiselleCrudHelper.class);
 
@@ -67,6 +75,16 @@ public class DemoiselleCrudHelper<T> {
         this.entityClass = entityClass;
         this.drc = CDI.current().select(DemoiselleRequestContext.class).get();
         this.drc.setEntityClass(entityClass);
+        if (this.drc.getResultClass() != Object.class) {
+            this.resultClass = (Class<V>) this.drc.getResultClass();
+        } else {
+            this.resultClass = (Class<V>) this.entityClass;
+        }
+        if (drc.getResultTransformer() != null) {
+            this.resultTransformer = drc.getResultTransformer();
+        } else {
+            this.resultTransformer = (Function<T,V>)Function.identity();
+        }
         this.paginationContext = drc.getPaginationContext().copy();
         this.fieldsContext = drc.getFieldsContext().copy();
         this.filterContext = drc.getFilterContext().copy();
@@ -90,12 +108,19 @@ public class DemoiselleCrudHelper<T> {
         TypedQuery<T> query = em.createQuery(criteriaQuery);
 
         Logger logger = LogManager.getLogManager().getLogger(DemoiselleCrudHelper.class.getName());
+        ResultSet<T> resultSet;
         if (paginationContext.isPaginationEnabled()) {
             LOG.debug("Paginating the result for criteriaQuery = {}, root = {}", new Object[]{criteriaQuery, root});
-            return QueryPaginationHelper.createFor(em, entityClass, paginationContext, fieldsContext).getPaginatedResult(query);
+            resultSet = QueryPaginationHelper.createFor(em, entityClass, paginationContext, fieldsContext, filterContext).getPaginatedResult(query);
         } else {
-            return ResultSet.forList(em.createQuery(criteriaQuery).getResultList(), entityClass, paginationContext, fieldsContext);
+            resultSet = ResultSet.forList(em.createQuery(criteriaQuery).getResultList(),
+                                     entityClass, paginationContext, fieldsContext);
         }
+        if (resultClass != Object.class) {
+            return ResultSet.transform(resultSet, resultClass, resultTransformer);
+        }
+        return resultSet;
+
     }
 
     /**
@@ -106,6 +131,9 @@ public class DemoiselleCrudHelper<T> {
      */
     private void addSortIfEnabled(CriteriaQuery<T> criteriaQuery, Root<T> root) {
         if (sortContext.isSortEnabled()) {
+            if (drc.getDemoiselleResultAnnotation() != null) {
+                SortHelper.validateSorts(sortContext.getSorts(), Arrays.asList(drc.getDemoiselleResultAnnotation().searchFields()), entityClass);
+            }
             new QuerySortHelper(sortContext).configureOrder(em.getCriteriaBuilder(), criteriaQuery, root);
         }
     }
@@ -117,7 +145,8 @@ public class DemoiselleCrudHelper<T> {
      * @param root The root JPA entity class for the query.
      */
     private void addSearchIfEnabled(CriteriaQuery criteriaQuery, Root root) {
-        addSearchIfEnabledForQuery(filterContext, entityClass, em.getCriteriaBuilder(), criteriaQuery, root);
+        TreeNodeField<String, Set<String>> defaultFields = CrudUtilHelper.extractSearchFieldsFromAnnotation(drc.getDemoiselleResultAnnotation(), entityClass);
+        addSearchIfEnabledForQuery(filterContext, entityClass, em.getCriteriaBuilder(), criteriaQuery, root, defaultFields);
     }
 
     /**
@@ -129,89 +158,80 @@ public class DemoiselleCrudHelper<T> {
      * @param criteriaQuery
      * @param root
      */
-    private static void addSearchIfEnabledForQuery(FilterContext filterContext, Class<?> entityClass, CriteriaBuilder cb, CriteriaQuery criteriaQuery, Root root) { LOG.debug("Adding search for query if needed");
+    private static void addSearchIfEnabledForQuery(FilterContext filterContext,
+                                                   Class<?> entityClass,
+                                                   CriteriaBuilder cb,
+                                                   CriteriaQuery criteriaQuery,
+                                                   Root root,
+                                                   TreeNodeField<String, Set<String>> defaultFields) { LOG.debug("Adding search for query if needed");
         if (filterContext.isFilterEnabled() && filterContext.getFilters() != null) {
             LOG.debug("Detected that search needs to be enabled for this query");
+            CrudMessage crudMessage = CDI.current().select(CrudMessage.class).get();
+            CrudUtilHelper.validateFields(filterContext.getFilters(), defaultFields, crudMessage, entityClass);
             QueryPredicatesHelper predicatesHelper = new QueryPredicatesHelper(entityClass, filterContext);
             criteriaQuery.where(predicatesHelper.buildPredicates(cb, criteriaQuery, root));
         }
     }
 
     public Long getCount() {
+        return getCount(filterContext);
+    }
+
+    public Long getCount(FilterContext filterContextArg) {
         LOG.debug("Getting count for the query ");
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> countCriteria = cb.createQuery(Long.class);
         Root<T> entityRoot = countCriteria.from(entityClass);
         countCriteria.select(cb.count(entityRoot));
 
-        addSearchIfEnabledForQuery(filterContext, entityClass, cb, countCriteria, entityRoot);
+        TreeNodeField<String, Set<String>> defaultFields = CrudUtilHelper.extractSearchFieldsFromAnnotation(drc.getDemoiselleResultAnnotation(), entityClass);
+        addSearchIfEnabledForQuery(filterContextArg, entityClass, cb, countCriteria, entityRoot, defaultFields);
         return em.createQuery(countCriteria).getSingleResult();
     }
 
-    public DemoiselleCrudHelper<T> setSortEnabled(boolean sortEnabled) {
-        sortContext.setSortEnabled(sortEnabled);
-        return this;
-    }
-
-    public DemoiselleCrudHelper<T> setPaginationEnabled(boolean paginationEnabled) {
-        paginationContext.setPaginationEnabled(paginationEnabled);
-        return this;
-    }
-
-    public DemoiselleCrudHelper<T> setSearchEnabled(boolean searchEnabled) {
-        filterContext.setFilterEnabled(searchEnabled);
-        return this;
-    }
-
-    public DemoiselleCrudHelper<T> setFilterFieldsEnabled(boolean filterFieldsEnabled) {
-        fieldsContext.setFieldsEnabled(filterFieldsEnabled);
-        return this;
-    }
-
-    public DemoiselleCrudHelper<T> setPaginationLimit(int limit) {
+    public DemoiselleCrudHelper<T, V> setPaginationLimit(int limit) {
         paginationContext.setLimit(limit);
         return this;
     }
 
-    public DemoiselleCrudHelper<T> setPaginationOffset(int offset) {
+    public DemoiselleCrudHelper<T, V> setPaginationOffset(int offset) {
         paginationContext.setOffset(offset);
         return this;
     }
 
-    public DemoiselleCrudHelper<T> setPaginationRange(int maxPageSize, String... ranges) {
+    public DemoiselleCrudHelper<T, V> setPaginationRange(int maxPageSize, String... ranges) {
         paginationContext = PaginationHelper.createContextFromRange(paginationHelperMessage, maxPageSize, Arrays.asList(ranges));
         return this;
     }
 
-    public DemoiselleCrudHelper<T> setFilterFields(String... fields) {
+    public DemoiselleCrudHelper<T, V> setFilterFields(String... fields) {
         fieldsContext.setFields(null);
         return this;
     }
 
-    public DemoiselleCrudHelper<T> enableSearchFromRequest() {
+    public DemoiselleCrudHelper<T, V> enableSearchFromRequest() {
         HttpServletRequest servletRequest = CDI.current().select(HttpServletRequest.class).get();
         Map<String, String[]> map = servletRequest.getParameterMap();
         MultivaluedMap<String, String> multivaluedMap = generateMultivalueMapFrom(map);
         return enableSearchWithParameters(multivaluedMap);
     }
 
-    public DemoiselleCrudHelper<T> enableSearchWithParameters(Map.Entry<String, String>... entries) {
+    public DemoiselleCrudHelper<T, V> enableSearchWithParameters(Map.Entry<String, String>... entries) {
         MultivaluedMap<String, String> multivaluedMap = new MultivaluedHashMap<>();
         Stream.of(entries).forEach(entry -> multivaluedMap.add(entry.getKey(), entry.getValue()));
         return enableSearchWithParameters(multivaluedMap);
     }
 
-    private DemoiselleCrudHelper<T> enableSearchWithParameters(MultivaluedMap<String, String> parameterMap) {
+    private DemoiselleCrudHelper<T, V> enableSearchWithParameters(MultivaluedMap<String, String> parameterMap) {
         fieldsContext.setFieldsEnabled(true);
         fieldsContext.setFields(FilterHelper.extractFiltersFromParameterMap(entityClass,
-                parameterMap,
-                null,
-                crudMessage));
+                parameterMap
+        ));
         return this;
     }
 
-    public DemoiselleCrudHelper<T> disableSearch() {
-        fieldsContext.setFieldsEnabled(false);
+    public DemoiselleCrudHelper<T, V> disableSearch() {
+        filterContext.setFilterEnabled(false);
         return this;
     }
 
@@ -224,8 +244,8 @@ public class DemoiselleCrudHelper<T> {
         return multivaluedMap;
     }
 
-    public DemoiselleCrudHelper<T> enablePaginationFromRequest() {
-        setPaginationEnabled(true);
+    public DemoiselleCrudHelper<T, V> enablePaginationFromRequest() {
+        paginationContext.setPaginationEnabled(true);
         HttpServletRequest servletRequest = CDI.current().select(HttpServletRequest.class).get();
 
         MultivaluedMap<String, String> paramMap = generateMultivalueMapFrom(servletRequest.getParameterMap());
@@ -236,18 +256,18 @@ public class DemoiselleCrudHelper<T> {
         return this;
     }
 
-    public DemoiselleCrudHelper<T> enablePaginationWithRanges(String... ranges) {
+    public DemoiselleCrudHelper<T, V> enablePaginationWithRanges(String... ranges) {
         return enablePaginationWithRanges(Arrays.asList(ranges));
     }
 
-    public DemoiselleCrudHelper<T> enablePaginationWithRanges(List<String> ranges) {
-        setPaginationEnabled(true);
+    public DemoiselleCrudHelper<T, V> enablePaginationWithRanges(List<String> ranges) {
+        paginationContext.setPaginationEnabled(true);
         DemoiselleCrudConfig crudConfig = CDI.current().select(DemoiselleCrudConfig.class).get();
         paginationContext = PaginationHelper.createContextFromRange(paginationHelperMessage, crudConfig.getDefaultPagination(), ranges);
         return this;
     }
 
-    public DemoiselleCrudHelper<T> enableFilterFromRequest() {
+    public DemoiselleCrudHelper<T, V> enableFilterFromRequest() {
         LOG.debug("Habilitando o filtro buscando os campos através do Request");
         HttpServletRequest servletRequest = CDI.current().select(HttpServletRequest.class).get();
 
@@ -257,16 +277,52 @@ public class DemoiselleCrudHelper<T> {
         return this;
     }
 
-    public DemoiselleCrudHelper<T> enableFilterForFields(String... fields) {
+    public DemoiselleCrudHelper<T, V> enableFilterForFields(String... fields) {
         return enableFilterForFields(Arrays.asList(fields));
     }
 
-    public DemoiselleCrudHelper<T> enableFilterForFields(List<String> fields) {
+    public DemoiselleCrudHelper<T, V> enableFilterForFields(List<String> fields) {
         if (fields.isEmpty()) {
             return this;
         }
-        setFilterFieldsEnabled(true);
-        filterContext.setFilters(FieldHelper.extractFieldsFromParameter(entityClass, fields, null));
+        fieldsContext.setFieldsEnabled(true);
+        fieldsContext.setFields(FieldHelper.extractFieldsFromParameter(resultClass, fields, null));
+        return this;
+    }
+
+    public DemoiselleCrudHelper<T, V> enableSort(List<SortModel>  sortModels) {
+        sortContext.setSortEnabled(true);
+        sortContext.setSorts(sortModels);
+        return this;
+    }
+
+    public DemoiselleCrudHelper<T, V> enableSort(SortModel... sortModels) {
+        enableSort(Arrays.asList(sortModels));
+        return this;
+    }
+    public DemoiselleCrudHelper<T, V> enableSortFromRequest() {
+        HttpServletRequest servletRequest = CDI.current().select(HttpServletRequest.class).get();
+
+        MultivaluedMap<String, String> paramMap = generateMultivalueMapFrom(servletRequest.getParameterMap());
+        List<SortModel> sorts = SortHelper.extractSortsFromParameterMap(paramMap);
+        enableSort(sorts);
+        return this;
+    }
+
+    public DemoiselleCrudHelper<T, V> disableSort() {
+        sortContext.setSortEnabled(false);
+        return this;
+    }
+
+    public DemoiselleCrudHelper<T, V> transformResultWith(Class resultClassArg, Function resultTransformerFn) {
+        resultTransformer = resultTransformerFn;
+        resultClass = resultClassArg;
+        return this;
+    }
+
+    public DemoiselleCrudHelper<T, V> disableTransform() {
+        resultClass = (Class<V>) entityClass;
+        resultTransformer = (Function<T,V>)Function.identity();
         return this;
     }
 

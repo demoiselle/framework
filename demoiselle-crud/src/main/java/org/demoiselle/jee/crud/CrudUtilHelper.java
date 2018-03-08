@@ -6,8 +6,6 @@
  */
 package org.demoiselle.jee.crud;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -23,7 +21,6 @@ import javax.persistence.Id;
 
 import javax.ws.rs.container.ResourceInfo;
 
-import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,12 +39,32 @@ public class CrudUtilHelper {
      *
      * @return Class used on {@literal AbstractREST<TargetClass, I>}
      */
-    public static Class<?> getTargetClass(ResourceInfo resourceInfo) {
-        DemoiselleCrud annotation  = getDemoiselleCrudAnnotation(resourceInfo);
+    public static Class<?> getEntityClass(ResourceInfo resourceInfo) {
+        DemoiselleResult annotation  = getDemoiselleResultAnnotation(resourceInfo);
         if (annotation != null) {
-            return annotation.value();
+            return annotation.entityClass();
         }
         return getAbstractRestTargetClass(resourceInfo);
+    }
+
+    /**
+     * Given a Class that extends {@link AbstractREST} this method will return
+     * the target Class used on {@literal AbstractREST<TargetClass, I>}
+     *
+     * @param resourceInfo Resource Info of the request
+     *
+     * @return Class used on {@literal AbstractREST<TargetClass, I>}
+     */
+    public static Class<?> getResultClass(ResourceInfo resourceInfo) {
+        DemoiselleResult annotation  = getDemoiselleResultAnnotation(resourceInfo);
+        if (annotation != null) {
+            if (annotation.resultClass() == Object.class) {
+                return annotation.entityClass();
+            } else {
+                return annotation.resultClass();
+            }
+        }
+        return Object.class;
     }
 
     public static Class<?> getAbstractRestTargetClass(ResourceInfo resourceInfo) {
@@ -59,20 +76,20 @@ public class CrudUtilHelper {
         return null;
     }
 
-    public static DemoiselleCrud getDemoiselleCrudAnnotation(ResourceInfo resourceInfo) {
+    public static DemoiselleResult getDemoiselleResultAnnotation(ResourceInfo resourceInfo) {
         if (resourceInfo == null) {
             return null;
         }
         if (resourceInfo.getResourceMethod() != null
-                && resourceInfo.getResourceMethod().isAnnotationPresent(DemoiselleCrud.class)) {
-            return resourceInfo.getResourceMethod().getAnnotation(DemoiselleCrud.class);
+                && resourceInfo.getResourceMethod().isAnnotationPresent(DemoiselleResult.class)) {
+            return resourceInfo.getResourceMethod().getAnnotation(DemoiselleResult.class);
         }
         if (resourceInfo.getResourceClass() != null
-                && resourceInfo.getResourceClass().isAnnotationPresent(DemoiselleCrud.class)) {
-            return resourceInfo.getResourceClass().getAnnotation(DemoiselleCrud.class);
+                && resourceInfo.getResourceClass().isAnnotationPresent(DemoiselleResult.class)) {
+            return resourceInfo.getResourceClass().getAnnotation(DemoiselleResult.class);
         }
         Class<?> targetClass = resourceInfo.getResourceClass();
-        DemoiselleCrud annotation = getTargetClassAnnotation(targetClass);
+        DemoiselleResult annotation = getTargetClassAnnotation(targetClass);
         return annotation;
     }
 
@@ -183,32 +200,40 @@ public class CrudUtilHelper {
 
     /**
      *
-     * Extract fields from {@link DemoiselleCrud} annotation to fill the {@link TreeNodeField} object
+     * Extract fields from {@link DemoiselleResult} annotation to fill the {@link TreeNodeField} object
      *
      * @param resourceInfo ResourceInfo
      * @return TreeNodeField filled with fields
      */
     public static TreeNodeField<String, Set<String>> extractSearchFieldsFromAnnotation(ResourceInfo resourceInfo) {
-        List<String> fieldsFromAnnotation = new ArrayList<>();
-
-        if (resourceInfo.getResourceMethod().isAnnotationPresent(DemoiselleCrud.class)) {
-            String fieldsAnnotation[] = resourceInfo.getResourceMethod().getAnnotation(DemoiselleCrud.class).searchFields();
-
-            if (fieldsAnnotation != null && !fieldsAnnotation[0].equals("*")) {
-
-                fieldsFromAnnotation.addAll(Arrays.asList(fieldsAnnotation));
-                if (!fieldsFromAnnotation.isEmpty()) {
-                    final TreeNodeField<String, Set<String>> searchFieldsTnf = new TreeNodeField<>(CrudUtilHelper.getTargetClass(resourceInfo).getName(), null);
-                    // Transform fields from annotation into TreeNodeField
-                    fieldsFromAnnotation.stream().forEach(searchField -> {
-                        fillLeafTreeNodeField(searchFieldsTnf, searchField, null);
-                    });
-
-                    return searchFieldsTnf;
-                }
-            }
+        DemoiselleResult annotation = CrudUtilHelper.getDemoiselleResultAnnotation(resourceInfo);
+        if (annotation != null) {
+            return extractSearchFieldsFromAnnotation(annotation, getEntityClass(resourceInfo));
         }
 
+        return null;
+    }
+
+    public static TreeNodeField<String, Set<String>> extractSearchFieldsFromAnnotation(DemoiselleResult annotation, Class<?> entityClass) {
+        if (annotation == null) {
+            return null;
+        }
+        List<String> fieldsFromAnnotation = new ArrayList<>();
+        String fieldsAnnotation[] = annotation.searchFields();
+
+        if (fieldsAnnotation != null && !fieldsAnnotation[0].equals("*")) {
+
+            fieldsFromAnnotation.addAll(Arrays.asList(fieldsAnnotation));
+            if (!fieldsFromAnnotation.isEmpty()) {
+                final TreeNodeField<String, Set<String>> searchFieldsTnf = new TreeNodeField<>(entityClass.getName(), null);
+                // Transform fields from annotation into TreeNodeField
+                fieldsFromAnnotation.stream().forEach(searchField -> {
+                    fillLeafTreeNodeField(searchFieldsTnf, searchField, null);
+                });
+
+                return searchFieldsTnf;
+            }
+        }
         return null;
     }
 
@@ -320,7 +345,7 @@ public class CrudUtilHelper {
                     CrudUtilHelper.checkIfExistField(targetClass, leaf.getKey());
                 }
                 catch (IllegalArgumentException e) {
-                    throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(leaf.getKey(), targetClass.getName()));
+                        throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(leaf.getKey(), targetClass.getName()));
                 }
             }
         });
@@ -346,20 +371,20 @@ public class CrudUtilHelper {
     }
 
     /**
-     * Get the {@link DemoiselleCrud} annotation present on the given resourceClass or any parent class of its hierarchy.
+     * Get the {@link DemoiselleResult} annotation present on the given resourceClass or any parent class of its hierarchy.
      *
      * @param resourceClass The resource class that may be annotated.
      * @return The annotation present on the class or its hierarchy, if any.
      */
-    public static DemoiselleCrud getTargetClassAnnotation(Class<?> resourceClass) {
-        DemoiselleCrud annotation;
+    public static DemoiselleResult getTargetClassAnnotation(Class<?> resourceClass) {
+        DemoiselleResult annotation;
         if(resourceClass == null) {
             return null;
         }
-        annotation = resourceClass.getAnnotation(DemoiselleCrud.class);
+        annotation = resourceClass.getAnnotation(DemoiselleResult.class);
         Class<?> currClass = resourceClass;
         while (annotation != null && currClass != null && !currClass.equals(Object.class)) {
-            annotation = resourceClass.getAnnotation(DemoiselleCrud.class);
+            annotation = resourceClass.getAnnotation(DemoiselleResult.class);
             currClass = currClass.getSuperclass();
         }
         return annotation;

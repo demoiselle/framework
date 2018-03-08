@@ -19,7 +19,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.demoiselle.jee.crud.CrudMessage;
 import org.demoiselle.jee.crud.CrudUtilHelper;
-import org.demoiselle.jee.crud.DemoiselleCrud;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedKeyWords;
 import org.demoiselle.jee.crud.TreeNodeField;
@@ -78,30 +77,26 @@ public class FilterHelper {
     public void execute(ResourceInfo resourceInfo, UriInfo uriInfo) {
         this.resourceInfo = resourceInfo == null ? this.resourceInfo : resourceInfo;
         this.uriInfo = uriInfo == null ? this.uriInfo : uriInfo;
-        final TreeNodeField<String, Set<String>> searchFieldsTnf = extractSearchFieldsFromAnnotation(resourceInfo);
         drc.getFilterContext().setFilterEnabled(isSearchEnabled());
         if (drc.getFilterContext().isFilterEnabled()) {
             drc.getFilterContext().setFilters(
                     extractFiltersFromParameterMap(
-                            CrudUtilHelper.getTargetClass(this.resourceInfo),
-                            uriInfo.getQueryParameters(),
-                            searchFieldsTnf,
-                            crudMessage));
+                            CrudUtilHelper.getEntityClass(this.resourceInfo),
+                            uriInfo.getQueryParameters()
+                    ));
         }
     }
 
     public boolean isSearchEnabled() {
         boolean isGlobalSearchEnabled = crudConfig.isSearchEnabled();
         boolean isAbstractRestRequest = CrudUtilHelper.getAbstractRestTargetClass(resourceInfo) != null;
-        boolean isSearchEnabledInAnnotation = drc.getDemoiselleCrudAnnotation() != null &&
-                drc.getDemoiselleCrudAnnotation().enableSearch();
+        boolean isSearchEnabledInAnnotation = drc.getDemoiselleResultAnnotation() != null &&
+                drc.getDemoiselleResultAnnotation().enableSearch();
         return isGlobalSearchEnabled && (isAbstractRestRequest || isSearchEnabledInAnnotation);
     }
 
     public static TreeNodeField<String,Set<String>> extractFiltersFromParameterMap(Class<?> targetClass,
-                                                                                    MultivaluedMap<String, String> parameterMap,
-                                                                                    TreeNodeField<String, Set<String>> searchFieldsTnf,
-                                                                                    CrudMessage crudMessage) {
+                                                                                   MultivaluedMap<String, String> parameterMap) {
         Map<String, Set<String>> filters = new ConcurrentHashMap<>(5);
 
         parameterMap.forEach((key, values) ->{
@@ -123,7 +118,6 @@ public class FilterHelper {
                     CrudUtilHelper.fillLeafTreeNodeField(tnf, key, value)
             );
 
-            CrudUtilHelper.validateFields(tnf, searchFieldsTnf, crudMessage, targetClass);
             return tnf;
         }
         return null;

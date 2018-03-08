@@ -7,6 +7,7 @@ import javax.persistence.Query;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig;
 import org.demoiselle.jee.crud.fields.FieldsContext;
+import org.demoiselle.jee.crud.filter.FilterContext;
 import org.demoiselle.jee.crud.helper.DemoiselleCrudHelper;
 
 /**
@@ -41,6 +42,7 @@ public class QueryPaginationHelper<T> {
      * The filter context with the current query filter parameters.
      */
     private FieldsContext fieldsContext;
+    private FilterContext filterContext;
 
     /**
      * Create a new instance of the Helper for an EntityManager, an entity class and pagination/filter parameters
@@ -51,14 +53,15 @@ public class QueryPaginationHelper<T> {
      * @param <T> The entity class type
      * @return A new QueryPaginationHelper instance for the givewn parameters.
      */
-    public static <T> QueryPaginationHelper<T> createFor(EntityManager em, Class<T> entityClass, PaginationContext paginationContext, FieldsContext fieldsContext) {
-        return new QueryPaginationHelper<>(em, entityClass, paginationContext, fieldsContext);
+    public static <T> QueryPaginationHelper<T> createFor(EntityManager em, Class<T> entityClass, PaginationContext paginationContext, FieldsContext fieldsContext, FilterContext filterContext) {
+        return new QueryPaginationHelper<>(em, entityClass, paginationContext, fieldsContext, filterContext);
     }
 
-    private QueryPaginationHelper(EntityManager entityManager, Class<T> entityClass, PaginationContext paginationContext, FieldsContext fieldsContext) {
+    private QueryPaginationHelper(EntityManager entityManager, Class<T> entityClass, PaginationContext paginationContext, FieldsContext fieldsContext, FilterContext filterContext) {
         this.entityManager = entityManager;
         this.entityClass = entityClass;
         this.fieldsContext = fieldsContext;
+        this.filterContext = filterContext;
         this.crudConfig = CDI.current().select(DemoiselleCrudConfig.class).get();
         this.paginationContext = paginationContext;
     }
@@ -70,7 +73,7 @@ public class QueryPaginationHelper<T> {
      * @return The result list wrapped in a {@link Result} object, which will contain parameters such as the limit/offset for the pagination and the
      * search parameters.
      */
-    public Result getPaginatedResult(Query query) {
+    public ResultSet getPaginatedResult(Query query) {
         ResultSet result = new ResultSet();
         result.setFieldsContext(fieldsContext);
         if (paginationContext.isPaginationEnabled()) {
@@ -108,6 +111,6 @@ public class QueryPaginationHelper<T> {
     }
 
     private Long getResultCount() {
-        return new DemoiselleCrudHelper<T>(entityManager, entityClass).getCount();
+        return new DemoiselleCrudHelper(entityManager, entityClass).getCount(filterContext);
     }
 }

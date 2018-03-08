@@ -30,6 +30,14 @@ public class SortModel {
         return field;
     }
 
+    public static SortModel asc(String field) {
+        return new SortModel(CrudSort.ASC, field);
+    }
+
+    public static SortModel desc(String field) {
+        return new SortModel(CrudSort.DESC, field);
+    }
+
     @Override
     public String toString() {
         return "SortModel [type=" + type + ", field=" + field + "]";

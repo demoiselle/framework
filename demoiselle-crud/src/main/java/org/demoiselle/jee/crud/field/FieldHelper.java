@@ -96,7 +96,11 @@ public class FieldHelper {
             if (drc.getEntityClass() != null) {
                 TreeNodeField<String, Set<String>> searchFields = CrudUtilHelper.extractSearchFieldsFromAnnotation(this.resourceInfo);
                 List<String> queryStringFields = extractQueryStringFieldsFromMap(uriInfo.getQueryParameters());
-                fields = extractFieldsFromParameter(drc.getEntityClass(), queryStringFields, searchFields);
+                Class fieldsClass = drc.getResultClass();
+                if (fieldsClass == Object.class || fieldsClass == null) {
+                    fieldsClass = drc.getEntityClass();
+                }
+                fields = extractFieldsFromParameter(fieldsClass, queryStringFields, searchFields);
             }
             drc.getFieldsContext().setFields(fields);
         }
@@ -106,7 +110,7 @@ public class FieldHelper {
     private boolean isFilterFieldsEnabled() {
         boolean globalFilterFields = crudConfig.isFilterFields();
         boolean abstractRestRequest = drc.isAbstractRestRequest();
-        boolean isAnnotationPresent = drc.getDemoiselleCrudAnnotation() != null && drc.getDemoiselleCrudAnnotation().enableFilterFields();
+        boolean isAnnotationPresent = drc.getDemoiselleResultAnnotation() != null && drc.getDemoiselleResultAnnotation().enableFilterFields();
         return globalFilterFields && (abstractRestRequest || isAnnotationPresent);
     }
 

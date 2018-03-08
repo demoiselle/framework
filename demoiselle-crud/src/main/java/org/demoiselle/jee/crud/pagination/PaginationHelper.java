@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.AbstractDAO;
 import org.demoiselle.jee.crud.CrudUtilHelper;
-import org.demoiselle.jee.crud.DemoiselleCrud;
+import org.demoiselle.jee.crud.DemoiselleResult;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedHTTPHeaders;
 import org.demoiselle.jee.crud.ReservedKeyWords;
@@ -96,7 +96,7 @@ public class PaginationHelper {
             }
         }
 
-        if (hasDemoiselleCrudAnnotation() && isRequestPagination() && !drc.getDemoiselleCrudAnnotation().enablePagination()) {
+        if (hasDemoiselleCrudAnnotation() && isRequestPagination() && !drc.getDemoiselleResultAnnotation().enablePagination()) {
             throw new IllegalArgumentException(message.paginationIsNotEnabled());
         }
     }
@@ -117,8 +117,8 @@ public class PaginationHelper {
         }
 
         if (hasDemoiselleCrudAnnotation()) {
-            DemoiselleCrud demoiselleCrudAnnotation = drc.getDemoiselleCrudAnnotation();
-            return demoiselleCrudAnnotation.enablePagination();
+            DemoiselleResult demoiselleResultAnnotation = drc.getDemoiselleResultAnnotation();
+            return demoiselleResultAnnotation.enablePagination();
         }
 
         return true;
@@ -138,7 +138,7 @@ public class PaginationHelper {
     }
 
     /**
-     * Check if the value of 'range' parameter is valid using the rules:
+     * Check if the entityClass of 'range' parameter is valid using the rules:
      *
      * - Value formatted like offset-limit (range=0-10); - The 'offset' and
      * 'limit' should be a integer; - The 'offset' should be less than or equals
@@ -200,8 +200,8 @@ public class PaginationHelper {
     /**
      * Get default pagination number, if the target method is annotated with
      * Search annotation the default annotation will be
-     * {@link DemoiselleCrud#pageSize()} otherwise the default pagination will be
-     * {@link DemoiselleCrudConfig#getDefaultPagination()} value;
+     * {@link DemoiselleResult#pageSize()} otherwise the default pagination will be
+     * {@link DemoiselleCrudConfig#getDefaultPagination()} entityClass;
      *
      * @return Number per page
      */
@@ -209,7 +209,7 @@ public class PaginationHelper {
         Integer quantityPerPage = crudConfig.getDefaultPagination();
 
         if (hasDemoiselleCrudAnnotation()) {
-            DemoiselleCrud paginateResult = drc.getDemoiselleCrudAnnotation();
+            DemoiselleResult paginateResult = drc.getDemoiselleResultAnnotation();
             if (paginateResult.pageSize() >= 0) {
                 quantityPerPage = paginateResult.pageSize();
             }
@@ -218,7 +218,7 @@ public class PaginationHelper {
     }
 
     private Boolean hasDemoiselleCrudAnnotation() {
-        return drc.getDemoiselleCrudAnnotation() != null;
+        return drc.getDemoiselleResultAnnotation() != null;
     }
 
     /**
@@ -238,9 +238,9 @@ public class PaginationHelper {
     }
 
     /**
-     * Build the 'Content-Range' HTTP Header value.
+     * Build the 'Content-Range' HTTP Header entityClass.
      *
-     * @return 'Content-Range' value
+     * @return 'Content-Range' entityClass
      */
     private String buildContentRange(Result result) {
         Integer limit = result.getPaginationContext().getLimit() == null ? getQuantityPerPage() - 1 : result.getPaginationContext().getLimit();
@@ -250,16 +250,16 @@ public class PaginationHelper {
     }
 
     /**
-     * Build the 'Accept-Range' HTTP Header value.
+     * Build the 'Accept-Range' HTTP Header entityClass.
      *
      * @param entityClass The entity class of the current request, if any
-     * @return 'Accept-Range' value
+     * @return 'Accept-Range' entityClass
      */
     public String buildAcceptRange(Class<?> entityClass) {
         String resource = "";
         String resourceClass = "";
         if (resourceInfo != null) {
-            Class<?> targetClass = CrudUtilHelper.getTargetClass(resourceInfo);
+            Class<?> targetClass = CrudUtilHelper.getEntityClass(resourceInfo);
             if (targetClass != null) {
                 resourceClass = targetClass.getSimpleName().toLowerCase();
             } else {
@@ -288,7 +288,7 @@ public class PaginationHelper {
 
         Class<?> entityClass;
         if (result != null) {
-            entityClass = result.getEntityClass();
+            entityClass = result.getResultType();
         } else {
             entityClass = null;
         }
@@ -307,9 +307,9 @@ public class PaginationHelper {
     }
 
     /**
-     * Build the 'Link' HTTP header value
+     * Build the 'Link' HTTP header entityClass
      *
-     * @return 'Link' value
+     * @return 'Link' entityClass
      */
     private String buildLinkHeader(Result result) {
         StringBuffer sb = new StringBuffer();
@@ -378,7 +378,7 @@ public class PaginationHelper {
 
     private Class<?> getEntityClassForResponse(ContainerResponseContext response) {
         if (response.getEntity() instanceof Result) {
-            return ((Result)response.getEntity()).getEntityClass();
+            return ((Result)response.getEntity()).getResultType();
         }
         return null;
     }

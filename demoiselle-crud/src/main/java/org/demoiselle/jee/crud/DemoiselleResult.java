@@ -10,6 +10,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Function;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
@@ -17,8 +18,9 @@ import static java.lang.annotation.ElementType.TYPE;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({METHOD, TYPE})
-public @interface DemoiselleCrud {
-    Class<?> value() default Object.class;
+public @interface DemoiselleResult {
+    Class<?> entityClass() default Object.class;
+    Class<?> resultClass() default Object.class;
     boolean enableSort() default true;
     boolean enablePagination() default true;
     int pageSize() default 20;
@@ -26,4 +28,6 @@ public @interface DemoiselleCrud {
     String[] searchFields() default {"*"};
     boolean enableFilterFields() default true;
     String[] filterFields() default {};
+
+    Class<? extends Function> resultTransformer() default IdentityFunction.class;
 }

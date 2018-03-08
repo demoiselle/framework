@@ -6,14 +6,12 @@
  */
 package org.demoiselle.jee.crud;
 
-import java.util.List;
-import java.util.Set;
+import java.util.function.Function;
 
 import org.demoiselle.jee.crud.fields.FieldsContext;
 import org.demoiselle.jee.crud.filter.FilterContext;
 import org.demoiselle.jee.crud.pagination.PaginationContext;
 import org.demoiselle.jee.crud.sort.SortContext;
-import org.demoiselle.jee.crud.sort.SortModel;
 
 /**
  * Class used to make a Context of the Request and Response of CRUD feature.
@@ -25,8 +23,8 @@ public interface DemoiselleRequestContext {
     boolean isAbstractRestRequest();
     void setAbstractRestRequest(boolean abstractRestRequest);
 
-    DemoiselleCrud getDemoiselleCrudAnnotation();
-    void setDemoiselleCrudAnnotation(DemoiselleCrud demoiselleCrudAnnotation);
+    DemoiselleResult getDemoiselleResultAnnotation();
+    void setDemoiselleResultAnnotation(DemoiselleResult demoiselleResultAnnotation);
 
     PaginationContext getPaginationContext();
     void setPaginationContext(PaginationContext paginationContext);
@@ -48,5 +46,11 @@ public interface DemoiselleRequestContext {
 //
     Class<?> getEntityClass();
     void setEntityClass(Class<?> entityClass);
+
+    Class<?> getResultClass();
+    void setResultClass(Class<?> resultClass);
+
+    Function getResultTransformer();
+    void setResultTransformer(Function resultTransformer);
 
 }

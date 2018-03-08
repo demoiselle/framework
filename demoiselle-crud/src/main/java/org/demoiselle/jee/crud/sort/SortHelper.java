@@ -14,15 +14,17 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import org.demoiselle.jee.crud.AbstractDAO;
 import org.demoiselle.jee.crud.CrudMessage;
 import org.demoiselle.jee.crud.CrudUtilHelper;
-import org.demoiselle.jee.crud.DemoiselleCrud;
+import org.demoiselle.jee.crud.DemoiselleResult;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedKeyWords;
 import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig;
@@ -88,18 +90,32 @@ public class SortHelper {
         this.resourceInfo = resourceInfo == null ? this.resourceInfo : resourceInfo;
         this.uriInfo = uriInfo == null ? this.uriInfo : uriInfo;
 
+        List<SortModel> sorts = extractSortsFromParameterMap(uriInfo.getQueryParameters());
+        drc.getSortContext().setSortEnabled(isSortEnabled());
+        drc.getSortContext().setSorts(sorts);
+    }
+
+
+    public static List<SortModel> extractSortsFromParameterMap(MultivaluedMap<String, String> map) {
+        List<String> descValues = getValuesFromParameterMap(map, ReservedKeyWords.DEFAULT_SORT_DESC_KEY.getKey());
+        List<String> sortValues = getValuesFromParameterMap(map, ReservedKeyWords.DEFAULT_SORT_KEY.getKey());
+        List<SortModel> sorts = getSortsFromParameters(sortValues, descValues);
+        return sorts;
+    }
+
+    private static List<SortModel> getSortsFromParameters(List<String> sortValues, List<String> descValues) {
+        CrudMessage crudMessage = CDI.current().select(CrudMessage.class).select().get();
+        SortHelperMessage sortHelperMessage = CDI.current().select(SortHelperMessage.class).get();
         Set<String> descList = new LinkedHashSet<>();
         Boolean descAll = Boolean.FALSE;
-
-        List<String> descValues = getValuesFromQueryString(ReservedKeyWords.DEFAULT_SORT_DESC_KEY.getKey());
-        List<String> sortValues = getValuesFromQueryString(ReservedKeyWords.DEFAULT_SORT_KEY.getKey());
 
         // 'desc' parameter was filled and 'sort' parameter not
         if (descValues != null && sortValues == null) {
             throw new IllegalArgumentException(sortHelperMessage.descParameterWithoutSortParameter());
         }
-        drc.getSortContext().setSortEnabled(isSortEnabled());
-        drc.getSortContext().setSorts(new ArrayList<>());
+
+        List<SortModel> sorts  = new ArrayList<>();
+
         if (descValues != null) {
 
             //&desc without parameters
@@ -119,45 +135,41 @@ public class SortHelper {
         }
 
         if (sortValues != null) {
-            drc.getSortContext().setSorts(new ArrayList<>());
             for (String field : sortValues) {
                 if (descAll == Boolean.TRUE) {
-                    drc.getSortContext().getSorts().add(new SortModel(CrudSort.DESC, field));
+                    sorts.add(new SortModel(CrudSort.DESC, field));
                 } else {
                     // Field was set to desc
                     if (descList.contains(field)) {
-                        drc.getSortContext().getSorts().add(new SortModel(CrudSort.DESC, field));
+                        sorts.add(new SortModel(CrudSort.DESC, field));
                     } else {
-                        drc.getSortContext().getSorts().add(new SortModel(CrudSort.ASC, field));
+                        sorts.add(new SortModel(CrudSort.ASC, field));
                     }
                 }
             }
         }
+        return sorts;
+    }
 
-        //Valid if fields exists on fields attribute from @Search annotation
-        if (this.resourceInfo.getResourceMethod().isAnnotationPresent(DemoiselleCrud.class)) {
-            DemoiselleCrud demoiselleCrud = this.resourceInfo.getResourceMethod().getAnnotation(DemoiselleCrud.class);
-            List<String> searchFields = Arrays.asList(demoiselleCrud.searchFields());
-            if (searchFields.get(0) != null && !searchFields.get(0).equals("*")) {
-                drc.getSortContext().getSorts().stream().filter((sortModel) -> (!searchFields.contains(sortModel.getField()))).forEachOrdered((sortModel) -> {
-                    throw new BadRequestException(crudMessage.fieldRequestDoesNotExistsOnSearchField(sortModel.getField()));
-                });
-            }
+    public static void validateSorts(List<SortModel> sorts, List<String> searchFields, Class<?> entityClass) {
+        CrudMessage crudMessage = CDI.current().select(CrudMessage.class).select().get();
+        if (searchFields != null && searchFields.get(0) != null && !searchFields.get(0).equals("*")) {
+            sorts.stream().filter((sortModel) -> (!searchFields.contains(sortModel.getField()))).forEachOrdered((sortModel) -> {
+                throw new BadRequestException(crudMessage.fieldRequestDoesNotExistsOnSearchField(sortModel.getField()));
+            });
         }
-
         // Validate if the fields are valid
-        drc.getSortContext().getSorts().stream().forEach(sortModel -> {
-            CrudUtilHelper.checkIfExistField(drc.getEntityClass(), sortModel.getField());
+        sorts.stream().forEach(sortModel -> {
+            CrudUtilHelper.checkIfExistField(entityClass, sortModel.getField());
         });
-
     }
 
     private boolean isSortEnabled() {
         boolean isGlobalSortEnabled = crudConfig.isSortEnabled();
         boolean isWithSortParameters = hasSortParametersInRequest();
         boolean isAbstractRestClass = CrudUtilHelper.getAbstractRestTargetClass(resourceInfo) != null;
-        boolean isSortEnabledInAnnotation = CrudUtilHelper.getDemoiselleCrudAnnotation(resourceInfo) != null
-                && CrudUtilHelper.getDemoiselleCrudAnnotation(resourceInfo).enableSort();
+        boolean isSortEnabledInAnnotation = CrudUtilHelper.getDemoiselleResultAnnotation(resourceInfo) != null
+                && CrudUtilHelper.getDemoiselleResultAnnotation(resourceInfo).enableSort();
         return isGlobalSortEnabled && isWithSortParameters && (isAbstractRestClass || isSortEnabledInAnnotation);
 
     }
@@ -171,12 +183,11 @@ public class SortHelper {
         return false;
     }
 
-    private List<String> getValuesFromQueryString(String key) {
-
-        for (String queryStringKey : uriInfo.getQueryParameters().keySet()) {
+    private static List<String> getValuesFromParameterMap(MultivaluedMap<String, String> map, String key) {
+        for (String queryStringKey : map.keySet()) {
             if (key.equalsIgnoreCase(queryStringKey)) {
                 List<String> result = new LinkedList<>();
-                for (String value : uriInfo.getQueryParameters().get(queryStringKey)) {
+                for (String value : map.get(queryStringKey)) {
                     result.addAll(CrudUtilHelper.extractFields(value));
                 }
                 return result;

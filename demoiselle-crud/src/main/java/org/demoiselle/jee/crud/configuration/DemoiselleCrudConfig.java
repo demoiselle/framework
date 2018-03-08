@@ -2,7 +2,6 @@ package org.demoiselle.jee.crud.configuration;
 
 import org.demoiselle.jee.configuration.annotation.Configuration;
 import org.demoiselle.jee.configuration.annotation.ConfigurationName;
-import org.demoiselle.jee.crud.DemoiselleCrud;
 
 /**
  * Configurations of the Demoiselle CRUD module

@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -107,15 +108,22 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
     @Override
     public void filter(ContainerRequestContext requestContext) {
         drc.setAbstractRestRequest(isAbstractRestRequest(resourceInfo));
-        drc.setDemoiselleCrudAnnotation(CrudUtilHelper.getDemoiselleCrudAnnotation(resourceInfo));
-        drc.setEntityClass(CrudUtilHelper.getTargetClass(this.resourceInfo));
+        drc.setDemoiselleResultAnnotation(CrudUtilHelper.getDemoiselleResultAnnotation(resourceInfo));
+        drc.setEntityClass(CrudUtilHelper.getEntityClass(this.resourceInfo));
+        drc.setResultClass(CrudUtilHelper.getResultClass(this.resourceInfo));
         try {
+            if (drc.getDemoiselleResultAnnotation() != null) {
+                drc.setResultTransformer(drc.getDemoiselleResultAnnotation().resultTransformer().newInstance());
+            } else {
+                drc.setResultTransformer(Function.identity());
+            }
             filterHelper.execute(resourceInfo, uriInfo);
             sortHelper.execute(resourceInfo, uriInfo);
             paginationHelper.execute(resourceInfo, uriInfo);
             fieldHelper.execute(resourceInfo, uriInfo);
         }
-        catch (IllegalArgumentException e) {
+        catch (IllegalArgumentException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
             throw new BadRequestException(e.getMessage());
         }
     }
@@ -164,7 +172,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
     /**
      * Build the result used on 'Body' HTTP Response.
      *
-     * If the request used the {@link FieldHelper} feature or used the {@link DemoiselleCrud} annotation the
+     * If the request used the {@link FieldHelper} feature or used the {@link DemoiselleResult} annotation the
      * result from database will be parsed to a Map to filter theses fields.
      *
      * @param response
@@ -255,26 +263,26 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
     }
 
     /**
-     * Get the Entity Class from the given result, defaulting to the target class parameter of the {@link DemoiselleCrud} if it's present on the REST method.
+     * Get the Entity Class from the given result, defaulting to the target class parameter of the {@link DemoiselleResult} if it's present on the REST method.
      *
      * @param result The result object
-     * @return The given entity class of the result or the {@link DemoiselleCrud} annotation.
+     * @return The given entity class of the result or the {@link DemoiselleResult} annotation.
      */
     private Class<?> getEntityClassFrom(Result result) {
-        if (result.getEntityClass() != null) {
-            return result.getEntityClass();
+        if (result.getResultType() != null) {
+            return result.getResultType();
         } else if (drc.getEntityClass() != null) {
             return drc.getEntityClass();
         }
-        return CrudUtilHelper.getTargetClass(resourceInfo);
+        return CrudUtilHelper.getEntityClass(resourceInfo);
     }
 
     /**
-     * Invoke the field to get the value from the object
+     * Invoke the field to get the entityClass from the object
      *
      * @param targetClass Class that represent the object
      * @param fieldName Field name that will be invoked
-     * @param object The actual object that has the value
+     * @param object The actual object that has the entityClass
      *
      * @return Value from field 
      *
