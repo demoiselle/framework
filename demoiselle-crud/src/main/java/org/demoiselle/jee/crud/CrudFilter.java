@@ -36,6 +36,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.monitorjbl.json.JsonViewModule;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig;
 import org.demoiselle.jee.crud.field.FieldHelper;
@@ -183,7 +185,6 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         @SuppressWarnings("unchecked")
         Result result = ((Result) response.getEntity());
         List<Object> content = (List<Object>) result.getContent();
-
         TreeNodeField<String, Set<String>> fields = getFields();
         if(fields != null && fields.getValue() != null && (!fields.getValue().isEmpty() || !fields.getChildren().isEmpty())){
             content = new LinkedList<>();

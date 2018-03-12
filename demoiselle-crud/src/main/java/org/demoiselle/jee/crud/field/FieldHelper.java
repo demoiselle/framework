@@ -140,10 +140,7 @@ public class FieldHelper {
             });
 
 
-            CrudUtilHelper.validateFields(tnf, searchFields, crudMessage, entityClass);
-
             // Remove fields not declared in @Search.fields property
-
             if(searchFields != null && !searchFields.getChildren().isEmpty()) {
 
                 searchFields.getChildren().stream()

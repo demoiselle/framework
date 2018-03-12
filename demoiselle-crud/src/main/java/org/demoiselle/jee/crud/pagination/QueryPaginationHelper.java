@@ -6,6 +6,7 @@ import javax.persistence.Query;
 
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig;
+import org.demoiselle.jee.crud.field.QueryFieldsHelper;
 import org.demoiselle.jee.crud.fields.FieldsContext;
 import org.demoiselle.jee.crud.filter.FilterContext;
 import org.demoiselle.jee.crud.helper.DemoiselleCrudHelper;
@@ -88,7 +89,7 @@ public class QueryPaginationHelper<T> {
 
             result.setCount(count);
         }
-
+        QueryFieldsHelper.configEntityGraphHints(entityManager, query, entityClass, fieldsContext);
         result.setContent(query.getResultList());
         if (result.getContent() != null && !result.getContent().isEmpty()
                 && paginationContext.isPaginationEnabled()

@@ -23,6 +23,7 @@ import javax.ws.rs.container.ResourceInfo;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 
 /**
  * Class used to support CRUD feature.
@@ -94,7 +95,9 @@ public class CrudUtilHelper {
     }
 
     /**
-     * Check if the 'field' parameter exists on 'targetClass'
+     * Check if the 'field' parameter exists on 'targetClass'. First, it checks if a getter for
+     * the property exists. Then. it checks if a Field exists.
+     *
      *
      * @param targetClass The class
      * @param field Field to checked
@@ -103,6 +106,20 @@ public class CrudUtilHelper {
      * 'targetClass'
      */
     public static void checkIfExistField(Class<?> targetClass, String field) {
+        try {
+            checkIfExistProperty(targetClass, field);
+        } catch(IllegalArgumentException e) {
+            checkIfExistInstanceField(targetClass, field);
+        }
+    }
+
+    private static void checkIfExistInstanceField(Class<?> targetClass, String fieldName) {
+        if (FieldUtils.getField(targetClass, fieldName) == null) {
+            throw new IllegalArgumentException("O campo "+fieldName+ " não existe na classe "+targetClass);
+        }
+    }
+
+    private static void checkIfExistProperty(Class<?> targetClass, String field) {
         try {
             getPropertyGetter(targetClass, field);
         } catch (NoSuchMethodException e) {
@@ -214,18 +231,29 @@ public class CrudUtilHelper {
         return null;
     }
 
+    public static TreeNodeField<String, Set<String>> extractFilterFieldsFromAnnotation(DemoiselleResult annotation, Class<?> entityClass) {
+        if (annotation == null) {
+            return null;
+        }
+        String fieldsAnnotation[] = annotation.filterFields();
+        return convertFieldsStringToTree(fieldsAnnotation, entityClass);
+    }
+
     public static TreeNodeField<String, Set<String>> extractSearchFieldsFromAnnotation(DemoiselleResult annotation, Class<?> entityClass) {
         if (annotation == null) {
             return null;
         }
-        List<String> fieldsFromAnnotation = new ArrayList<>();
         String fieldsAnnotation[] = annotation.searchFields();
+        return convertFieldsStringToTree(fieldsAnnotation, entityClass);
+    }
 
-        if (fieldsAnnotation != null && !fieldsAnnotation[0].equals("*")) {
+    private static TreeNodeField<String, Set<String>> convertFieldsStringToTree(String[] fieldsAnnotation, Class<?> clazz) {
 
+        if (fieldsAnnotation != null && fieldsAnnotation.length > 0 && !fieldsAnnotation[0].equals("*")) {
+            List<String> fieldsFromAnnotation = new ArrayList<>();
             fieldsFromAnnotation.addAll(Arrays.asList(fieldsAnnotation));
             if (!fieldsFromAnnotation.isEmpty()) {
-                final TreeNodeField<String, Set<String>> searchFieldsTnf = new TreeNodeField<>(entityClass.getName(), null);
+                final TreeNodeField<String, Set<String>> searchFieldsTnf = new TreeNodeField<>(clazz.getName(), null);
                 // Transform fields from annotation into TreeNodeField
                 fieldsFromAnnotation.stream().forEach(searchField -> {
                     fillLeafTreeNodeField(searchFieldsTnf, searchField, null);
@@ -235,6 +263,7 @@ public class CrudUtilHelper {
             }
         }
         return null;
+
     }
 
     /**
@@ -345,7 +374,7 @@ public class CrudUtilHelper {
                     CrudUtilHelper.checkIfExistField(targetClass, leaf.getKey());
                 }
                 catch (IllegalArgumentException e) {
-                        throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(leaf.getKey(), targetClass.getName()));
+                    throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(leaf.getKey(), targetClass.getName()));
                 }
             }
         });

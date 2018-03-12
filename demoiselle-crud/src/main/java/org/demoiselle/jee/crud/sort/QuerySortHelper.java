@@ -1,4 +1,4 @@
-package org.demoiselle.jee.crud.pagination;
+package org.demoiselle.jee.crud.sort;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;

@@ -28,7 +28,7 @@ import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.exception.DemoiselleCrudException;
 import org.demoiselle.jee.crud.helper.DemoiselleCrudHelper;
-import org.demoiselle.jee.crud.pagination.QueryPredicatesHelper;
+import org.demoiselle.jee.crud.filter.QueryPredicatesHelper;
 
 //TODO CLF revisar
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
