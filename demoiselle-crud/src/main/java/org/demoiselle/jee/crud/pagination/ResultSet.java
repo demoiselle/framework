@@ -38,14 +38,17 @@ public class ResultSet<T>  implements Result<T> {
 		this.content = content;
 	}
 
-    public static <V> ResultSet<V> forList(List<V> resultList, Class<V> entityClass, PaginationContext paginationContext, FieldsContext fieldsContext) {
+    public static <V> ResultSet<V> forList(List<V> resultList, Class<V> entityClass, PaginationContext paginationContext, FieldsContext fieldsContext, long count) {
         ResultSet resultSet = new ResultSet();
-        resultSet.setCount((long) resultList.size());
+        resultSet.setCount((long) count);
         resultSet.setContent(resultList);
         resultSet.setEntityClass(entityClass);
         resultSet.setPaginationContext(paginationContext);
         resultSet.setFieldsContext(fieldsContext);
         return resultSet;
+    }
+    public static <V> ResultSet<V> forList(List<V> resultList, Class<V> entityClass, PaginationContext paginationContext, FieldsContext fieldsContext) {
+        return ResultSet.forList(resultList, entityClass, paginationContext, fieldsContext, resultList.size());
     }
 
     public PaginationContext getPaginationContext() {
@@ -84,6 +87,6 @@ public class ResultSet<T>  implements Result<T> {
 
     public static <T, V> ResultSet<V> transform(Result<T> result, Class<V> resultClass, Function<T, V> transformer) {
 	    List<V> resultList = result.getContent().stream().map(transformer).collect(Collectors.toList());
-	    return ResultSet.forList(resultList, resultClass, result.getPaginationContext(), result.getFieldsContext());
+	    return ResultSet.<V>forList(resultList, resultClass, result.getPaginationContext(), result.getFieldsContext(), result.getCount());
     }
 }

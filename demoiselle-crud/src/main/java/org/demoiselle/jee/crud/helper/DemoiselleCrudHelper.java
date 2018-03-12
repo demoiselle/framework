@@ -17,11 +17,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import com.fasterxml.jackson.databind.PropertyName;
-import com.fasterxml.jackson.databind.SerializationConfig;
-import com.fasterxml.jackson.databind.introspect.BasicBeanDescription;
-import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
-import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.CrudMessage;
 import org.demoiselle.jee.crud.CrudUtilHelper;
@@ -30,17 +25,18 @@ import org.demoiselle.jee.crud.ReservedKeyWords;
 import org.demoiselle.jee.crud.TreeNodeField;
 import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig;
 import org.demoiselle.jee.crud.field.FieldHelper;
+import org.demoiselle.jee.crud.field.JsonFilterTransformer;
 import org.demoiselle.jee.crud.field.QueryFieldsHelper;
 import org.demoiselle.jee.crud.fields.FieldsContext;
 import org.demoiselle.jee.crud.filter.FilterContext;
 import org.demoiselle.jee.crud.filter.FilterHelper;
+import org.demoiselle.jee.crud.filter.QueryPredicatesHelper;
 import org.demoiselle.jee.crud.pagination.PaginationContext;
 import org.demoiselle.jee.crud.pagination.PaginationHelper;
 import org.demoiselle.jee.crud.pagination.PaginationHelperMessage;
 import org.demoiselle.jee.crud.pagination.QueryPaginationHelper;
-import org.demoiselle.jee.crud.filter.QueryPredicatesHelper;
-import org.demoiselle.jee.crud.sort.QuerySortHelper;
 import org.demoiselle.jee.crud.pagination.ResultSet;
+import org.demoiselle.jee.crud.sort.QuerySortHelper;
 import org.demoiselle.jee.crud.sort.SortContext;
 import org.demoiselle.jee.crud.sort.SortHelper;
 import org.demoiselle.jee.crud.sort.SortModel;
@@ -113,7 +109,7 @@ public class DemoiselleCrudHelper<T, V> {
         addSortIfEnabled(criteriaQuery, root);
         TypedQuery<T> query = em.createQuery(criteriaQuery);
 
-        ResultSet<T> resultSet;
+        ResultSet resultSet;
         if (paginationContext.isPaginationEnabled()) {
             LOG.debug("Paginating the result for criteriaQuery = {}, root = {}", new Object[]{criteriaQuery, root});
             resultSet = QueryPaginationHelper
@@ -127,10 +123,13 @@ public class DemoiselleCrudHelper<T, V> {
                     entityClass, paginationContext, fieldsContext);
         }
         if (resultClass != entityClass) {
-            return ResultSet.transform(resultSet, resultClass, resultTransformer);
+            resultSet = ResultSet.transform(resultSet, resultClass, resultTransformer);
+        }
+        if (fieldsContext.isFieldsEnabled()) {
+            String[] fields = fieldsContext.getFlatFields().toArray(new String[fieldsContext.getFlatFields().size()]);
+            resultSet = ResultSet.transform(resultSet, resultClass, new JsonFilterTransformer(resultClass, fields));
         }
         return resultSet;
-
     }
 
     private void validateFilterFieldsIfEnabled() {
@@ -310,6 +309,7 @@ public class DemoiselleCrudHelper<T, V> {
             return this;
         }
         fieldsContext.setFieldsEnabled(true);
+        fieldsContext.setFlatFields(fields);
         fieldsContext.setFields(FieldHelper.extractFieldsFromParameter(resultClass, fields, null));
         return this;
     }

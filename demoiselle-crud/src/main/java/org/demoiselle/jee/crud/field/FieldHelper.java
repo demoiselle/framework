@@ -96,6 +96,7 @@ public class FieldHelper {
             if (drc.getEntityClass() != null) {
                 TreeNodeField<String, Set<String>> searchFields = CrudUtilHelper.extractSearchFieldsFromAnnotation(this.resourceInfo);
                 List<String> queryStringFields = extractQueryStringFieldsFromMap(uriInfo.getQueryParameters());
+                drc.getFieldsContext().setFlatFields(queryStringFields);
                 Class fieldsClass = drc.getResultClass();
                 if (fieldsClass == Object.class || fieldsClass == null) {
                     fieldsClass = drc.getEntityClass();
