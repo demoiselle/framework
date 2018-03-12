@@ -135,14 +135,7 @@ public class DemoiselleCrudHelper<T, V> {
     private void validateFilterFieldsIfEnabled() {
         if (fieldsContext.isFieldsEnabled()) {
             LOG.debug("Field filtering is enabled, validating fields...");
-            TreeNodeField<String, Set<String>> searchFields;
-            if (drc.getDemoiselleResultAnnotation() != null) {
-                searchFields = CrudUtilHelper.extractFilterFieldsFromAnnotation(this.drc.getDemoiselleResultAnnotation(), resultClass);
-            } else {
-                searchFields = null;
-            }
-            CrudUtilHelper.validateFields(fieldsContext.getFields(),
-                    searchFields, crudMessage, resultClass);
+            CrudUtilHelper.validateFlatFields(fieldsContext.getFlatFields(), crudMessage, resultClass);
         }
     }
 

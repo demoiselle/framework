@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.enterprise.inject.spi.CDI;
 import javax.persistence.Id;
 
 import javax.ws.rs.container.ResourceInfo;
@@ -109,14 +110,25 @@ public class CrudUtilHelper {
         try {
             checkIfExistProperty(targetClass, field);
         } catch(IllegalArgumentException e) {
-            checkIfExistInstanceField(targetClass, field);
+            getInstanceField(targetClass, field);
         }
     }
 
-    private static void checkIfExistInstanceField(Class<?> targetClass, String fieldName) {
-        if (FieldUtils.getField(targetClass, fieldName) == null) {
-            throw new IllegalArgumentException("O campo "+fieldName+ " não existe na classe "+targetClass);
+    public static Class<?> getFieldOrPropertyClass(Class<?> targetClass, String fieldOrProperty) {
+        try {
+            return getPropertyGetter(targetClass, fieldOrProperty).getReturnType();
+        } catch(NoSuchMethodException exc) {
+            return getInstanceField(targetClass, fieldOrProperty).getType();
         }
+    }
+
+    private static Field getInstanceField(Class<?> targetClass, String fieldName) {
+        Field field = FieldUtils.getField(targetClass, fieldName);
+        if (field == null) {
+            String message = CDI.current().select(CrudMessage.class).get().fieldRequestDoesNotExistsOnObject(fieldName, targetClass.getName());
+            throw new IllegalArgumentException(message);
+        }
+        return field;
     }
 
     private static void checkIfExistProperty(Class<?> targetClass, String field) {
@@ -306,6 +318,19 @@ public class CrudUtilHelper {
                 .orElse(null);
 
         return tnfFinded == null ? tnf.addChild(masterField, null) : tnfFinded;
+    }
+
+    public static void validateFlatFields(List<String> flatFields, CrudMessage crudMessage, Class resultClass) {
+        for (String fullPath : flatFields) {
+            Class currClass = resultClass;
+            String pathPart = fullPath;
+            while (pathPart.contains(".")) {
+                String currField = pathPart.substring(0, pathPart.indexOf("."));
+                currClass = getFieldOrPropertyClass(currClass, currField);
+                pathPart = pathPart.substring(pathPart.indexOf(".")+1);
+            }
+            checkIfExistField(currClass, pathPart);
+        }
     }
 
     public static void validateFields(TreeNodeField<String, Set<String>> requestedFieldsTnf,
