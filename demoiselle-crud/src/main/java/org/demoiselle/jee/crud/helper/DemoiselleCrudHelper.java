@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -126,7 +127,12 @@ public class DemoiselleCrudHelper<T, V> {
             resultSet = ResultSet.transform(resultSet, resultClass, resultTransformer);
         }
         if (fieldsContext.isFieldsEnabled()) {
-            String[] fields = fieldsContext.getFlatFields().toArray(new String[fieldsContext.getFlatFields().size()]);
+            List<String> fields;
+            if (fieldsContext.getFlatFields() != null && !fieldsContext.getFlatFields().isEmpty()) {
+                fields = fieldsContext.getFlatFields();
+            } else {
+                fields = fieldsContext.getAllowedFields();
+            }
             resultSet = ResultSet.transform(resultSet, resultClass, new JsonFilterTransformer(resultClass, fields));
         }
         return resultSet;
