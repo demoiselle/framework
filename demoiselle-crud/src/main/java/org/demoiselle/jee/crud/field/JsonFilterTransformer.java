@@ -15,7 +15,7 @@ public class JsonFilterTransformer implements Function {
     private Class resultClass;
     private String[] fields;
 
-
+    private static final JsonViewModule JSON_VIEW_MODULE = new JsonViewModule();
     public JsonFilterTransformer(Class resultClass, String... fields) {
         this.resultClass = resultClass;
         this.fields = fields;
@@ -28,7 +28,7 @@ public class JsonFilterTransformer implements Function {
     @Override
     public Object apply(Object o) {
         try {
-            Json.mapper().registerModule(new JsonViewModule());
+            Json.mapper().registerModule(JSON_VIEW_MODULE);
             String value = Json.mapper()
                     .writeValueAsString(
                             JsonView.with(o)

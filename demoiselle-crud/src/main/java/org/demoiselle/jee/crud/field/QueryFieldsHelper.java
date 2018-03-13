@@ -4,11 +4,15 @@ import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.Subgraph;
+import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.Metamodel;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.demoiselle.jee.crud.fields.FieldsContext;
 
 public class QueryFieldsHelper {
@@ -39,7 +43,28 @@ public class QueryFieldsHelper {
 
     public static void configEntityGraphHints(EntityManager em, Query query, Class<?> entityClass, FieldsContext fieldsContext) {
         if (fieldsContext.isFieldsEnabled()) {
-            configEntityGraphHints(em, query, entityClass, fieldsContext.getFlatFields());
+            configEntityGraphHints(em, query, entityClass, excludeNonEntityFields(em.getMetamodel(), entityClass, fieldsContext.getFlatFields()));
+        }
+    }
+
+    private static List<String> excludeNonEntityFields(Metamodel metaModel, Class<?> entityClass, List<String> flatFields) {
+        return flatFields.stream()
+                .filter(field -> isEntityField(metaModel, entityClass, field))
+                .collect(Collectors.toList());
+    }
+
+    private static boolean isEntityField(Metamodel metaModel, Class<?> entityClass, String field) {
+        if (!field.contains(".")) {
+            return metaModel.entity(entityClass).getAttributes().stream().anyMatch(attr -> attr.getName().toLowerCase() == field);
+        } else {
+            Class<?> currClass = entityClass;
+            for (String currField : StringUtils.split(field, ".")) {
+                if (!metaModel.entity(currClass).getAttributes().stream().anyMatch(attr -> attr.getName().toLowerCase() == currField)) {
+                    return false;
+                }
+                currClass = metaModel.entity(currClass).getAttribute(currField).getJavaType();
+            }
+            return true;
         }
     }
 

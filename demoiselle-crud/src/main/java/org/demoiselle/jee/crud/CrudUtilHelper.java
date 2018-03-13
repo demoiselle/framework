@@ -10,10 +10,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -117,10 +120,22 @@ public class CrudUtilHelper {
 
     public static Class<?> getFieldOrPropertyClass(Class<?> targetClass, String fieldOrProperty) {
         try {
-            return getPropertyGetter(targetClass, fieldOrProperty).getReturnType();
+            return getClassFromType(getPropertyGetter(targetClass, fieldOrProperty).getGenericReturnType());
         } catch(NoSuchMethodException exc) {
-            return getInstanceField(targetClass, fieldOrProperty).getType();
+            return getClassFromType(getInstanceField(targetClass, fieldOrProperty).getType());
         }
+    }
+
+    private static Class<?> getClassFromType(Type type) {
+        if (type instanceof ParameterizedType) {
+            ParameterizedType paramType = (ParameterizedType)type;
+            if (Collection.class.isAssignableFrom((Class<?>)paramType.getRawType())) {
+                return (Class<?>)paramType.getActualTypeArguments()[0];
+            } else {
+                return ((Class<?>)paramType.getRawType());
+            }
+        }
+        return (Class<?>)type;
     }
 
     private static Field getInstanceField(Class<?> targetClass, String fieldName) {
@@ -320,7 +335,7 @@ public class CrudUtilHelper {
                 String message = crudMessage.fieldRequestDoesNotExistsOnDemoiselleResultField(fullPath);
                 throw new IllegalArgumentException(message);
             }
-            validateFieldPath(fullPath, resultClass);
+            validateFieldPath(fullPath, resultClass, true);
         }
     }
 
@@ -333,15 +348,20 @@ public class CrudUtilHelper {
 
     }
 
-    private static void validateFieldPath(String fullPath, Class resultClass) {
+    private static void validateFieldPath(String fullPath, Class resultClass, boolean considerWildcards) {
         Class currClass = resultClass;
         String pathPart = fullPath;
         while (pathPart.contains(".")) {
             String currField = pathPart.substring(0, pathPart.indexOf("."));
+            if (currField.equalsIgnoreCase("*") && considerWildcards) {
+                return;
+            }
             currClass = getFieldOrPropertyClass(currClass, currField);
             pathPart = pathPart.substring(pathPart.indexOf(".")+1);
         }
-        checkIfExistField(currClass, pathPart);
+        if (!pathPart.equalsIgnoreCase("*") || !considerWildcards) {
+            checkIfExistField(currClass, pathPart);
+        }
     }
 
     public static void validateFields(TreeNodeField<String, Set<String>> requestedFieldsTnf,

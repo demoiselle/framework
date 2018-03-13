@@ -27,7 +27,7 @@ public @interface DemoiselleResult {
     boolean enableSearch() default true;
     String[] searchFields() default {"*"};
     boolean enableFilterFields() default true;
-    String[] filterFields() default {};
+    String[] filterFields() default {"*"};
 
     Class<? extends Function> resultTransformer() default IdentityFunction.class;
 }
