@@ -223,20 +223,5 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         return result;
     }
 
-    /**
-     * Retrieve the fields used to build the content.
-     *
-     * @return The fields from the DemoiselleCrudContext, if any, otherwise the fields from the annotation
-     */
-    private TreeNodeField<String, Set<String>> getFields() {
-
-        if(drc.getFieldsContext().getFields() != null){
-            return drc.getFieldsContext().getFields();
-        }
-
-        return CrudUtilHelper.extractSearchFieldsFromAnnotation(resourceInfo);
-
-    }
-
 
 }

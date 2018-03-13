@@ -23,6 +23,7 @@ import javax.persistence.Id;
 import javax.ws.rs.container.ResourceInfo;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -243,14 +244,6 @@ public class CrudUtilHelper {
         return null;
     }
 
-    public static TreeNodeField<String, Set<String>> extractFilterFieldsFromAnnotation(DemoiselleResult annotation, Class<?> entityClass) {
-        if (annotation == null) {
-            return null;
-        }
-        String fieldsAnnotation[] = annotation.filterFields();
-        return convertFieldsStringToTree(fieldsAnnotation, entityClass);
-    }
-
     public static TreeNodeField<String, Set<String>> extractSearchFieldsFromAnnotation(DemoiselleResult annotation, Class<?> entityClass) {
         if (annotation == null) {
             return null;
@@ -320,17 +313,35 @@ public class CrudUtilHelper {
         return tnfFinded == null ? tnf.addChild(masterField, null) : tnfFinded;
     }
 
-    public static void validateFlatFields(List<String> flatFields, CrudMessage crudMessage, Class resultClass) {
+    public static void validateFlatFields(List<String> flatFields, List<String> allowedFields, Class resultClass) {
+        CrudMessage crudMessage = CDI.current().select(CrudMessage.class).get();
         for (String fullPath : flatFields) {
-            Class currClass = resultClass;
-            String pathPart = fullPath;
-            while (pathPart.contains(".")) {
-                String currField = pathPart.substring(0, pathPart.indexOf("."));
-                currClass = getFieldOrPropertyClass(currClass, currField);
-                pathPart = pathPart.substring(pathPart.indexOf(".")+1);
+            if (!isAllowedField(fullPath, allowedFields)) {
+                String message = crudMessage.fieldRequestDoesNotExistsOnDemoiselleResultField(fullPath);
+                throw new IllegalArgumentException(message);
             }
-            checkIfExistField(currClass, pathPart);
+            validateFieldPath(fullPath, resultClass);
         }
+    }
+
+    private static boolean isAllowedField(String fullPath, List<String> allowedGlobs) {
+        return allowedGlobs.stream().anyMatch(glob -> FilenameUtils.wildcardMatch(fullPath, glob));
+    }
+
+
+    public static void main(String[] args) {
+
+    }
+
+    private static void validateFieldPath(String fullPath, Class resultClass) {
+        Class currClass = resultClass;
+        String pathPart = fullPath;
+        while (pathPart.contains(".")) {
+            String currField = pathPart.substring(0, pathPart.indexOf("."));
+            currClass = getFieldOrPropertyClass(currClass, currField);
+            pathPart = pathPart.substring(pathPart.indexOf(".")+1);
+        }
+        checkIfExistField(currClass, pathPart);
     }
 
     public static void validateFields(TreeNodeField<String, Set<String>> requestedFieldsTnf,
@@ -346,7 +357,7 @@ public class CrudUtilHelper {
                 try {
                     // 1st level
                     if (!defaultFieldsTnf.containsKey(leaf.getKey())) {
-                        throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnSearchField(leaf.getKey()));
+                        throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnDemoiselleResultField(leaf.getKey()));
                     }
 
                     if (!leaf.getChildren().isEmpty()) {
@@ -361,7 +372,7 @@ public class CrudUtilHelper {
 
                                 defaultFieldsTnf.getChildByKey(leafItem.getParent().getKey()).getChildren().stream().forEach(sfTnf -> {
                                     if (!sfTnf.getParent().containsKey(leafItem.getKey())) {
-                                        throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnSearchField(leafItem.getParent().getKey() + "(" + leafItem.getKey() + ")"));
+                                        throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnDemoiselleResultField(leafItem.getParent().getKey() + "(" + leafItem.getKey() + ")"));
                                     }
                                 });
 

@@ -135,7 +135,7 @@ public class DemoiselleCrudHelper<T, V> {
     private void validateFilterFieldsIfEnabled() {
         if (fieldsContext.isFieldsEnabled()) {
             LOG.debug("Field filtering is enabled, validating fields...");
-            CrudUtilHelper.validateFlatFields(fieldsContext.getFlatFields(), crudMessage, resultClass);
+            CrudUtilHelper.validateFlatFields(fieldsContext.getFlatFields(), fieldsContext.getAllowedFields(), resultClass);
         }
     }
 
@@ -221,7 +221,7 @@ public class DemoiselleCrudHelper<T, V> {
     }
 
     public DemoiselleCrudHelper<T, V> setFilterFields(String... fields) {
-        fieldsContext.setFields(null);
+        fieldsContext.setFlatFields(Arrays.asList(fields));
         return this;
     }
 
@@ -283,27 +283,40 @@ public class DemoiselleCrudHelper<T, V> {
         return this;
     }
 
-    public DemoiselleCrudHelper<T, V> enableFilterFromRequest() {
+    public DemoiselleCrudHelper<T, V> enableFilterFromRequest(String... allowedFields) {
+        List<String> allowedFieldsArr = Arrays.asList("*");
+        if (allowedFields.length == 0) {
+            if (drc != null && drc.getFieldsContext().getAllowedFields() != null) {
+                allowedFieldsArr = drc.getFieldsContext().getAllowedFields();
+            }
+        } else {
+            allowedFieldsArr = Arrays.asList(allowedFields);
+        }
+        return enableFilterFromRequest(allowedFieldsArr);
+    }
+
+    public DemoiselleCrudHelper<T, V> enableFilterFromRequest(List<String> allowedFields) {
         LOG.debug("Habilitando o filtro buscando os campos através do Request");
         HttpServletRequest servletRequest = CDI.current().select(HttpServletRequest.class).get();
 
         MultivaluedMap<String, String> paramMap = generateMultivalueMapFrom(servletRequest.getParameterMap());
         List<String> queryStringFields = FieldHelper.extractQueryStringFieldsFromMap(paramMap);
-        enableFilterForFields(queryStringFields);
+
+        enableFilterForFields(queryStringFields, allowedFields);
         return this;
     }
 
     public DemoiselleCrudHelper<T, V> enableFilterForFields(String... fields) {
-        return enableFilterForFields(Arrays.asList(fields));
+        return enableFilterForFields(Arrays.asList(fields), Arrays.asList("*"));
     }
 
-    public DemoiselleCrudHelper<T, V> enableFilterForFields(List<String> fields) {
+    public DemoiselleCrudHelper<T, V> enableFilterForFields(List<String> fields, List<String> allowedFields) {
         if (fields.isEmpty()) {
             return this;
         }
         fieldsContext.setFieldsEnabled(true);
         fieldsContext.setFlatFields(fields);
-        fieldsContext.setFields(FieldHelper.extractFieldsFromParameter(resultClass, fields, null));
+        fieldsContext.setAllowedFields(allowedFields);
         return this;
     }
 

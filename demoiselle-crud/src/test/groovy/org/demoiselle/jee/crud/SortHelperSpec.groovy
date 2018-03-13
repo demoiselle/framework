@@ -206,7 +206,7 @@ class SortHelperSpec extends Specification {
         
         then:
         thrown(RuntimeException)
-        1 * crudMessage.fieldRequestDoesNotExistsOnSearchField('invalidField')
+        1 * crudMessage.fieldRequestDoesNotExistsOnDemoiselleResultField('invalidField')
     }
     
     def "A request with 'sort' parameters and a 'desc' parameter that doesn't match the 'sort' parameter shold throw RuntimeException"() {
@@ -228,7 +228,7 @@ class SortHelperSpec extends Specification {
         
         then:
         thrown(RuntimeException)
-        1 * crudMessage.fieldRequestDoesNotExistsOnSearchField('id1')
+        1 * crudMessage.fieldRequestDoesNotExistsOnDemoiselleResultField('id1')
     }
     
 }

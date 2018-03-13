@@ -39,7 +39,7 @@ public class QueryFieldsHelper {
 
     public static void configEntityGraphHints(EntityManager em, Query query, Class<?> entityClass, FieldsContext fieldsContext) {
         if (fieldsContext.isFieldsEnabled()) {
-            configEntityGraphHints(em, query, entityClass, fieldsContext.getFields().getValue());
+            configEntityGraphHints(em, query, entityClass, fieldsContext.getFlatFields());
         }
     }
 

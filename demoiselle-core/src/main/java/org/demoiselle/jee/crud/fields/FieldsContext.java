@@ -1,7 +1,7 @@
 package org.demoiselle.jee.crud.fields;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -11,13 +11,13 @@ public class FieldsContext {
     private static final FieldsContext DISABLED_FILTER = new FieldsContext(false, null, null);
 
     private boolean fieldsEnabled;
+    private List<String> allowedFields;
     private List<String> flatFields;
-    private TreeNodeField<String, Set<String>> fields;
 
-    public FieldsContext(boolean fieldsEnabled, TreeNodeField<String, Set<String>> fields, List<String> flatFields) {
+    public FieldsContext(boolean fieldsEnabled, List<String> flatFields, List<String> allowedFields) {
         this.fieldsEnabled = fieldsEnabled;
-        this.fields = fields;
         this.flatFields = flatFields;
+        this.allowedFields = allowedFields;
     }
 
     public boolean isFieldsEnabled() {
@@ -26,14 +26,6 @@ public class FieldsContext {
 
     public void setFieldsEnabled(boolean fieldsEnabled) {
         this.fieldsEnabled = fieldsEnabled;
-    }
-
-    public TreeNodeField<String, Set<String>> getFields() {
-        return fields;
-    }
-
-    public void setFields(TreeNodeField<String, Set<String>> fields) {
-        this.fields = fields;
     }
 
     public static final FieldsContext disabledFields() {
@@ -48,15 +40,29 @@ public class FieldsContext {
         this.flatFields = flatFields;
     }
 
+    public List<String> getAllowedFields() {
+        return allowedFields;
+    }
+
+    public void setAllowedFields(String... allowedFields) {
+        setAllowedFields(Arrays.asList(allowedFields));
+    }
+
+    public void setAllowedFields(List<String> allowedFields) {
+        this.allowedFields = allowedFields;
+    }
+
     public FieldsContext copy() {
         TreeNodeField<String, Set<String>> filtersCopy = null;
-        if(this.fields != null) {
-            filtersCopy = new TreeNodeField<>(fields.getKey(), new HashSet<>(fields.getValue()));
-        }
         List<String> flatFieldsCopy = null;
         if (flatFields != null) {
             flatFieldsCopy = new ArrayList<>(flatFields);
         }
-        return new FieldsContext(fieldsEnabled, filtersCopy, flatFieldsCopy);
+        List<String> allowedFieldsCopy = null;
+        if(allowedFields != null) {
+            allowedFieldsCopy = new ArrayList<>(allowedFields);
+        }
+        return new FieldsContext(fieldsEnabled, flatFieldsCopy, allowedFieldsCopy);
     }
+
 }

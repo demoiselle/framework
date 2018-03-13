@@ -7,7 +7,6 @@
 package org.demoiselle.jee.crud.sort;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +23,6 @@ import javax.ws.rs.core.UriInfo;
 import org.demoiselle.jee.crud.AbstractDAO;
 import org.demoiselle.jee.crud.CrudMessage;
 import org.demoiselle.jee.crud.CrudUtilHelper;
-import org.demoiselle.jee.crud.DemoiselleResult;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedKeyWords;
 import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig;
@@ -126,7 +124,7 @@ public class SortHelper {
                     //&desc=a,b,c
                     if (!value.isEmpty()) {
                         if (!sortValues.contains(value)) {
-                            throw new BadRequestException(crudMessage.fieldRequestDoesNotExistsOnSearchField(value));
+                            throw new BadRequestException(crudMessage.fieldRequestDoesNotExistsOnDemoiselleResultField(value));
                         }
                         descList.add(value);
                     }
@@ -155,7 +153,7 @@ public class SortHelper {
         CrudMessage crudMessage = CDI.current().select(CrudMessage.class).select().get();
         if (searchFields != null && searchFields.get(0) != null && !searchFields.get(0).equals("*")) {
             sorts.stream().filter((sortModel) -> (!searchFields.contains(sortModel.getField()))).forEachOrdered((sortModel) -> {
-                throw new BadRequestException(crudMessage.fieldRequestDoesNotExistsOnSearchField(sortModel.getField()));
+                throw new BadRequestException(crudMessage.fieldRequestDoesNotExistsOnDemoiselleResultField(sortModel.getField()));
             });
         }
         // Validate if the fields are valid

@@ -6,6 +6,7 @@
  */
 package org.demoiselle.jee.crud.field;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -94,16 +95,14 @@ public class FieldHelper {
              */
             TreeNodeField<String, Set<String>> fields = null;
             if (drc.getEntityClass() != null) {
-                TreeNodeField<String, Set<String>> searchFields = CrudUtilHelper.extractSearchFieldsFromAnnotation(this.resourceInfo);
                 List<String> queryStringFields = extractQueryStringFieldsFromMap(uriInfo.getQueryParameters());
                 drc.getFieldsContext().setFlatFields(queryStringFields);
                 Class fieldsClass = drc.getResultClass();
                 if (fieldsClass == Object.class || fieldsClass == null) {
                     fieldsClass = drc.getEntityClass();
                 }
-                fields = extractFieldsFromParameter(fieldsClass, queryStringFields, searchFields);
             }
-            drc.getFieldsContext().setFields(fields);
+            drc.getFieldsContext().setAllowedFields(Arrays.asList(drc.getDemoiselleResultAnnotation().filterFields()));
         }
 
     }
@@ -132,7 +131,6 @@ public class FieldHelper {
                                                                                 TreeNodeField<String, Set<String>> searchFields) {
 
 
-        CrudMessage crudMessage = CDI.current().select(CrudMessage.class).get();
         TreeNodeField<String, Set<String>> tnf = new TreeNodeField<>(entityClass.getName(), ConcurrentHashMap.newKeySet(1));
 
         if(!queryStringFields.isEmpty()) {

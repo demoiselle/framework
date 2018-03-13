@@ -21,8 +21,8 @@ public interface CrudMessage {
     @MessageTemplate("{method-find-not-implemented}")
     String methodFindNotImplemented();
     
-    @MessageTemplate("{field-request-does-not-exists-on-search-field}")
-    String fieldRequestDoesNotExistsOnSearchField(String field);
+    @MessageTemplate("{field-request-does-not-exists-on-demoiselle-result-field}")
+    String fieldRequestDoesNotExistsOnDemoiselleResultField(String field);
     
     @MessageTemplate("{field-request-does-not-exists-on-object}")
     String fieldRequestDoesNotExistsOnObject(String field, String className);

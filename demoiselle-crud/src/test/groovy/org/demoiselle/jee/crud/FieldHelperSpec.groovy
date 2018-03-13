@@ -81,7 +81,7 @@ class FieldHelperSpec extends Specification {
         fieldHelper.execute(resourceInfo, uriInfo)
         
         then:
-        1 * crudMessage.fieldRequestDoesNotExistsOnSearchField("newInvalidField")
+        1 * crudMessage.fieldRequestDoesNotExistsOnDemoiselleResultField("newInvalidField")
         thrown(IllegalArgumentException)
         
     }
@@ -294,7 +294,7 @@ class FieldHelperSpec extends Specification {
         
         then:
         thrown(IllegalArgumentException)
-        1 * crudMessage.fieldRequestDoesNotExistsOnSearchField('address(address)')
+        1 * crudMessage.fieldRequestDoesNotExistsOnDemoiselleResultField('address(address)')
     }
     
     def "A request with 'fields' query string with a field and subfield and @Search.fields without subfield should be accept"() {
