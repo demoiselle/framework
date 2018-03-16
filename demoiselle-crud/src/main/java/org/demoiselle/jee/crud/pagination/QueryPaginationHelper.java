@@ -89,7 +89,6 @@ public class QueryPaginationHelper<T> {
 
             result.setCount(count);
         }
-        QueryFieldsHelper.configEntityGraphHints(entityManager, query, entityClass, fieldsContext);
         result.setContent(query.getResultList());
         if (result.getContent() != null && !result.getContent().isEmpty()
                 && paginationContext.isPaginationEnabled()

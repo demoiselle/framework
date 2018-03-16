@@ -67,49 +67,50 @@ class FilterHelperSpec extends Specification {
         !drc.getFilterContext().getFilters().containsKey("range")
         
     }
-    
-    def "A request with filter parameter and the target method annotated with @Search should validate the fields values"(){
-        
-        given:
-        mvmRequest.putSingle("name", "john john")
-        mvmRequest.put("mail", ["john@test.com", "john2@test.com", "john3@test.com"])
 
-        resourceInfo.getResourceClass() >> UserRestForTest.class
-        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
-        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearch")
-        
-        URI uri = new URI("http://localhost:9090/api/users")
-        uriInfo.getRequestUri() >> uri
-        
-        uriInfo.getQueryParameters() >> mvmRequest
-        
-        when:
-        filterHelper.execute(resourceInfo, uriInfo)
-        
-        then:
-        thrown(RuntimeException)
-    }
-    
-    def "A request with filter parameter that has subfield and the target method annotated with @Search should be validade"() {
-        given:
-        mvmRequest.putSingle("name", "john john")
-        mvmRequest.putSingle("address(street,invalidField)", "my street")
-
-        resourceInfo.getResourceClass() >> UserRestForTest.class
-        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
-        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearch")
-        
-        URI uri = new URI("http://localhost:9090/api/users")
-        uriInfo.getRequestUri() >> uri
-        
-        uriInfo.getQueryParameters() >> mvmRequest
-        
-        when:
-        filterHelper.execute(resourceInfo, uriInfo)
-        
-        then:
-        thrown(IllegalArgumentException)
-        1 * crudMessage.fieldRequestDoesNotExistsOnObject('invalidField', 'org.demoiselle.jee.crud.entity.AddressModelForTest')
-    }
+//    TODO: Este teste deve ser feito no DemoiselleCrudHelper
+//    def "A request with filter parameter and the target method annotated with @Search should validate the fields values"(){
+//
+//        given:
+//        mvmRequest.putSingle("name", "john john")
+//        mvmRequest.put("mail", ["john@test.com", "john2@test.com", "john3@test.com"])
+//
+//        resourceInfo.getResourceClass() >> UserRestForTest.class
+//        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
+//        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearch")
+//
+//        URI uri = new URI("http://localhost:9090/api/users")
+//        uriInfo.getRequestUri() >> uri
+//
+//        uriInfo.getQueryParameters() >> mvmRequest
+//
+//        when:
+//        filterHelper.execute(resourceInfo, uriInfo)
+//
+//        then:
+//        thrown(RuntimeException)
+//    }
+//
+//    def "A request with filter parameter that has subfield and the target method annotated with @Search should be validade"() {
+//        given:
+//        mvmRequest.putSingle("name", "john john")
+//        mvmRequest.putSingle("address(street,invalidField)", "my street")
+//
+//        resourceInfo.getResourceClass() >> UserRestForTest.class
+//        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
+//        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearch")
+//
+//        URI uri = new URI("http://localhost:9090/api/users")
+//        uriInfo.getRequestUri() >> uri
+//
+//        uriInfo.getQueryParameters() >> mvmRequest
+//
+//        when:
+//        filterHelper.execute(resourceInfo, uriInfo)
+//
+//        then:
+//        thrown(IllegalArgumentException)
+//        1 * crudMessage.fieldRequestDoesNotExistsOnObject('invalidField', 'org.demoiselle.jee.crud.entity.AddressModelForTest')
+//    }
 
 }

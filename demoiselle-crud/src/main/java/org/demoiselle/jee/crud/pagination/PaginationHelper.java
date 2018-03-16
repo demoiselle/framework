@@ -7,7 +7,6 @@
 package org.demoiselle.jee.crud.pagination;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ResourceInfo;
@@ -174,7 +173,7 @@ public class PaginationHelper {
                     limit = new Integer(setLimit);
 
                     if (offset > limit) {
-                        logInvalidRangeParameters(rangeList.get(0));
+                        logInvalidRangeParameters(message, rangeList.get(0));
                         throw new IllegalArgumentException(message.invalidRangeParameters());
                     }
 
@@ -184,11 +183,11 @@ public class PaginationHelper {
                     }
 
                 } catch (NumberFormatException nfe) {
-                    logInvalidRangeParameters(rangeList.get(0));
+                    logInvalidRangeParameters(message, rangeList.get(0));
                     throw new IllegalArgumentException(message.invalidRangeParameters());
                 }
             } else {
-                logInvalidRangeParameters(rangeList.get(0));
+                logInvalidRangeParameters(message, rangeList.get(0));
                 throw new IllegalArgumentException(message.invalidRangeParameters());
             }
             return new PaginationContext(limit, offset, true);
@@ -233,8 +232,8 @@ public class PaginationHelper {
         return !((limit + 1) >= count);
     }
 
-    private static void logInvalidRangeParameters(String range) {
-        logger.warning(CDI.current().select(PaginationHelperMessage.class).get().invalidRangeParameters() + ", [params: " + range + "]");
+    private static void logInvalidRangeParameters(PaginationHelperMessage paginationHelperMessage, String range) {
+        logger.warning(paginationHelperMessage.invalidRangeParameters() + ", [params: " + range + "]");
     }
 
     /**
@@ -312,7 +311,7 @@ public class PaginationHelper {
      * @return 'Link' entityClass
      */
     private String buildLinkHeader(Result result) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String url = uriInfo.getRequestUri().toString();
         url = url.replaceFirst(".range=([^&]*)", "");
 

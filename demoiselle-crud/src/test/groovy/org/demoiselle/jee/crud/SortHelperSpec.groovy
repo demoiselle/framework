@@ -167,47 +167,48 @@ class SortHelperSpec extends Specification {
         thrown(IllegalArgumentException)
         1 * message.descParameterWithoutSortParameter()
     }
+
+//   TODO: A validação não é mais feita aqui, mas na hora da execução da query. Criar teste específico pra o DemoiselleCrudHelper
+//    def "A request with 'sort' parameter and a invalid value should throw IllegalArgumentException"() {
+//        given:
+//        resourceInfo.getResourceClass() >> UserRestForTest.class
+//        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
+//        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("find")
+//
+//        URI uri = new URI("http://localhost:9090/api/users")
+//
+//        mvmRequest.addAll("sort", ["id", "name", "invalidField"])
+//        uriInfo.getRequestUri() >> uri
+//
+//        uriInfo.getQueryParameters() >> mvmRequest
+//
+//        when:
+//        sortHelper.execute(resourceInfo, uriInfo)
+//
+//        then:
+//        thrown(IllegalArgumentException)
+//    }
     
-    def "A request with 'sort' parameter and a invalid value should throw IllegalArgumentException"() {
-        given:
-        resourceInfo.getResourceClass() >> UserRestForTest.class
-        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
-        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("find")
-        
-        URI uri = new URI("http://localhost:9090/api/users")
-        
-        mvmRequest.addAll("sort", ["id", "name", "invalidField"])
-        uriInfo.getRequestUri() >> uri
-                
-        uriInfo.getQueryParameters() >> mvmRequest
-        
-        when:
-        sortHelper.execute(resourceInfo, uriInfo)
-        
-        then:
-        thrown(IllegalArgumentException)
-    }
-    
-    def "A request with 'sort' parameter and a value that doesn't match @Search.fields should throw RuntimeException"() {
-        given:
-        resourceInfo.getResourceClass() >> UserRestForTest.class
-        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
-        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearchAndFields")
-        
-        URI uri = new URI("http://localhost:9090/api/users")
-        
-        mvmRequest.addAll("sort", ["id", "name", "invalidField"])
-        uriInfo.getRequestUri() >> uri
-                
-        uriInfo.getQueryParameters() >> mvmRequest
-        
-        when:
-        sortHelper.execute(resourceInfo, uriInfo)
-        
-        then:
-        thrown(RuntimeException)
-        1 * crudMessage.fieldRequestDoesNotExistsOnDemoiselleResultField('invalidField')
-    }
+//    def "A request with 'sort' parameter and a value that doesn't match @Search.fields should throw RuntimeException"() {
+//        given:
+//        resourceInfo.getResourceClass() >> UserRestForTest.class
+//        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
+//        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearchAndFields")
+//
+//        URI uri = new URI("http://localhost:9090/api/users")
+//
+//        mvmRequest.addAll("sort", ["id", "name", "invalidField"])
+//        uriInfo.getRequestUri() >> uri
+//
+//        uriInfo.getQueryParameters() >> mvmRequest
+//
+//        when:
+//        sortHelper.execute(resourceInfo, uriInfo)
+//
+//        then:
+//        thrown(RuntimeException)
+//        1 * crudMessage.fieldRequestDoesNotExistsOnDemoiselleResultField('invalidField')
+//    }
     
     def "A request with 'sort' parameters and a 'desc' parameter that doesn't match the 'sort' parameter shold throw RuntimeException"() {
         given:

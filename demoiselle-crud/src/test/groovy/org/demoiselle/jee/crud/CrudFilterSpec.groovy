@@ -84,7 +84,11 @@ class CrudFilterSpec extends Specification{
         
         crudConfig.getDefaultPagination() >> 20
         crudConfig.getIsGlobalEnabled() >> true
-        
+        crudConfig.isPaginationEnabled() >> true
+        crudConfig.isSearchEnabled() >> true
+        crudConfig.isSortEnabled() >> true
+        crudConfig.isFilterFields() >> true
+
         mvmRequest.addAll("sort", ["id", "name"])
         mvmRequest.putSingle("desc", "name")
         mvmRequest.addAll("fields", ["id", "name", "mail", "address(street)"])
@@ -384,7 +388,7 @@ class CrudFilterSpec extends Specification{
         resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
         resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("find")
-        
+
         URI uri = new URI("http://localhost:9090/api/users")
         uriInfo.getRequestUri() >> uri
     }

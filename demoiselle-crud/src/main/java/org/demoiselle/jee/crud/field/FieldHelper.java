@@ -7,10 +7,12 @@
 package org.demoiselle.jee.crud.field;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.CDI;
@@ -19,6 +21,7 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import org.demoiselle.jee.crud.CrudFieldUtils;
 import org.demoiselle.jee.crud.CrudMessage;
 import org.demoiselle.jee.crud.CrudUtilHelper;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
@@ -93,16 +96,17 @@ public class FieldHelper {
              *      It will be parse to ["field1", "field2", "field3(fieldA,fieldB)", "field4"]
              *
              */
-            TreeNodeField<String, Set<String>> fields = null;
-            if (drc.getEntityClass() != null) {
-                List<String> queryStringFields = extractQueryStringFieldsFromMap(uriInfo.getQueryParameters());
-                drc.getFieldsContext().setFlatFields(queryStringFields);
-                Class fieldsClass = drc.getResultClass();
-                if (fieldsClass == Object.class || fieldsClass == null) {
-                    fieldsClass = drc.getEntityClass();
-                }
+            List<String> allowedFields = Arrays.asList("*");
+            if(drc.getDemoiselleResultAnnotation() != null) {
+                allowedFields = Arrays.asList(drc.getDemoiselleResultAnnotation().filterFields());
             }
-            drc.getFieldsContext().setAllowedFields(Arrays.asList(drc.getDemoiselleResultAnnotation().filterFields()));
+            drc.getFieldsContext().setAllowedFields(allowedFields);
+            List<String> flatFields = null;
+            if (drc.getEntityClass() != null) {
+                flatFields = extractQueryStringFieldsFromMap(uriInfo.getQueryParameters(), fieldHelperMessage);
+            }
+            drc.getFieldsContext().setFlatFields(flatFields);
+            CrudUtilHelper.validateFlatFields(flatFields != null ? flatFields : allowedFields, allowedFields, drc.getEntityClass(), crudMessage);
         }
 
     }
@@ -114,12 +118,12 @@ public class FieldHelper {
         return globalFilterFields && (abstractRestRequest || isAnnotationPresent);
     }
 
-    public static List<String> extractQueryStringFieldsFromMap(MultivaluedMap<String, String> parameterMap) {
+    public static List<String> extractQueryStringFieldsFromMap(MultivaluedMap<String, String> parameterMap, FieldHelperMessage fieldHelperMessage) {
         List<String> queryStringFields = new LinkedList<>();
         parameterMap.forEach((key, values) -> {
             if (ReservedKeyWords.DEFAULT_FIELD_KEY.getKey().equalsIgnoreCase(key)) {
                 values.forEach(value -> {
-                    queryStringFields.addAll(extractFields(value));
+                    queryStringFields.addAll(extractFields(value, fieldHelperMessage));
                 });
             }
         });
@@ -159,11 +163,9 @@ public class FieldHelper {
     }
 
 
-    private static List<String> extractFields(String fields){
-
-        FieldHelperMessage fieldHelperMessage = CDI.current().select(FieldHelperMessage.class).get();
+    private static List<String> extractFields(String fields, FieldHelperMessage fieldHelperMessage) {
         try{
-            return CrudUtilHelper.extractFields(fields);
+            return CrudUtilHelper.extractFlatFields(fields);
         }
         catch(IllegalArgumentException e){
             throw new IllegalArgumentException(fieldHelperMessage.fieldRequestMalFormed(ReservedKeyWords.DEFAULT_FIELD_KEY.getKey(), fields));

@@ -6,6 +6,8 @@
  */
 package org.demoiselle.jee.crud;
 
+import javax.persistence.Id;
+import javax.ws.rs.container.ResourceInfo;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,14 +18,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.enterprise.inject.spi.CDI;
-import javax.persistence.Id;
-
-import javax.ws.rs.container.ResourceInfo;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -110,19 +107,19 @@ public class CrudUtilHelper {
      * @throws IllegalArgumentException When the 'field' doesn't exists on
      * 'targetClass'
      */
-    public static void checkIfExistField(Class<?> targetClass, String field) {
+    public static void checkIfExistField(Class<?> targetClass, String field, CrudMessage crudMessage) {
         try {
             checkIfExistProperty(targetClass, field);
         } catch(IllegalArgumentException e) {
-            getInstanceField(targetClass, field);
+            getInstanceField(targetClass, field, crudMessage);
         }
     }
 
-    public static Class<?> getFieldOrPropertyClass(Class<?> targetClass, String fieldOrProperty) {
+    public static Class<?> getFieldOrPropertyClass(Class<?> targetClass, String fieldOrProperty, CrudMessage crudMessage) {
         try {
             return getClassFromType(getPropertyGetter(targetClass, fieldOrProperty).getGenericReturnType());
         } catch(NoSuchMethodException exc) {
-            return getClassFromType(getInstanceField(targetClass, fieldOrProperty).getType());
+            return getClassFromType(getInstanceField(targetClass, fieldOrProperty, crudMessage).getType());
         }
     }
 
@@ -131,17 +128,15 @@ public class CrudUtilHelper {
             ParameterizedType paramType = (ParameterizedType)type;
             if (Collection.class.isAssignableFrom((Class<?>)paramType.getRawType())) {
                 return (Class<?>)paramType.getActualTypeArguments()[0];
-            } else {
-                return ((Class<?>)paramType.getRawType());
             }
         }
         return (Class<?>)type;
     }
 
-    private static Field getInstanceField(Class<?> targetClass, String fieldName) {
+    private static Field getInstanceField(Class<?> targetClass, String fieldName, CrudMessage crudMessage) {
         Field field = FieldUtils.getField(targetClass, fieldName);
         if (field == null) {
-            String message = CDI.current().select(CrudMessage.class).get().fieldRequestDoesNotExistsOnObject(fieldName, targetClass.getName());
+            String message = crudMessage.fieldRequestDoesNotExistsOnObject(fieldName, targetClass.getName());
             throw new IllegalArgumentException(message);
         }
         return field;
@@ -328,14 +323,13 @@ public class CrudUtilHelper {
         return tnfFinded == null ? tnf.addChild(masterField, null) : tnfFinded;
     }
 
-    public static void validateFlatFields(List<String> flatFields, List<String> allowedFields, Class resultClass) {
-        CrudMessage crudMessage = CDI.current().select(CrudMessage.class).get();
+    public static void validateFlatFields(List<String> flatFields, List<String> allowedFields, Class resultClass, CrudMessage crudMessage) {
         for (String fullPath : flatFields) {
             if (!isAllowedField(fullPath, allowedFields)) {
                 String message = crudMessage.fieldRequestDoesNotExistsOnDemoiselleResultField(fullPath);
                 throw new IllegalArgumentException(message);
             }
-            validateFieldPath(fullPath, resultClass, true);
+            validateFieldPath(fullPath, resultClass, true, crudMessage);
         }
     }
 
@@ -348,7 +342,7 @@ public class CrudUtilHelper {
 
     }
 
-    private static void validateFieldPath(String fullPath, Class resultClass, boolean considerWildcards) {
+    private static void validateFieldPath(String fullPath, Class resultClass, boolean considerWildcards, CrudMessage crudMessage) {
         Class currClass = resultClass;
         String pathPart = fullPath;
         while (pathPart.contains(".")) {
@@ -356,11 +350,11 @@ public class CrudUtilHelper {
             if (currField.equalsIgnoreCase("*") && considerWildcards) {
                 return;
             }
-            currClass = getFieldOrPropertyClass(currClass, currField);
+            currClass = getFieldOrPropertyClass(currClass, currField, crudMessage);
             pathPart = pathPart.substring(pathPart.indexOf(".")+1);
         }
         if (!pathPart.equalsIgnoreCase("*") || !considerWildcards) {
-            checkIfExistField(currClass, pathPart);
+            checkIfExistField(currClass, pathPart, crudMessage);
         }
     }
 
@@ -418,7 +412,7 @@ public class CrudUtilHelper {
 
                 leaf.getChildren().forEach((subLeaf) -> {
                     try {
-                        CrudUtilHelper.checkIfExistField(fieldClazz, subLeaf.getKey());
+                        CrudUtilHelper.checkIfExistField(fieldClazz, subLeaf.getKey(), crudMessage);
                     }
                     catch (IllegalArgumentException e) {
                         throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(subLeaf.getKey(), fieldClazz.getName()));
@@ -427,7 +421,7 @@ public class CrudUtilHelper {
             }
             else {
                 try {
-                    CrudUtilHelper.checkIfExistField(targetClass, leaf.getKey());
+                    CrudUtilHelper.checkIfExistField(targetClass, leaf.getKey(), crudMessage);
                 }
                 catch (IllegalArgumentException e) {
                     throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(leaf.getKey(), targetClass.getName()));
@@ -476,5 +470,7 @@ public class CrudUtilHelper {
     }
 
 
-
+    public static List<String> extractFlatFields(String fields) {
+        return CrudFieldUtils.parseFieldList(fields);
+    }
 }

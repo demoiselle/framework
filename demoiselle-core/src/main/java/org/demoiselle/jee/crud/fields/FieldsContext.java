@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.demoiselle.jee.crud.CrudFieldUtils;
 import org.demoiselle.jee.crud.TreeNodeField;
 
 public class FieldsContext {

@@ -2,9 +2,9 @@ package org.demoiselle.jee.crud.field;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.Subgraph;
-import javax.persistence.metamodel.Attribute;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.Metamodel;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,10 +41,11 @@ public class QueryFieldsHelper {
         }
     }
 
-    public static void configEntityGraphHints(EntityManager em, Query query, Class<?> entityClass, FieldsContext fieldsContext) {
+    public static TypedQuery createFilteredQuery(EntityManager em, CriteriaQuery criteriaQuery, Class<?> entityClass, FieldsContext fieldsContext) {
         if (fieldsContext.isFieldsEnabled()) {
-            configEntityGraphHints(em, query, entityClass, excludeNonEntityFields(em.getMetamodel(), entityClass, fieldsContext.getFlatFields()));
+            return createFilteredQuery(em, criteriaQuery, entityClass, excludeNonEntityFields(em.getMetamodel(), entityClass, fieldsContext.getFlatFields()));
         }
+        return em.createQuery(criteriaQuery);
     }
 
     private static List<String> excludeNonEntityFields(Metamodel metaModel, Class<?> entityClass, List<String> flatFields) {
@@ -68,10 +69,13 @@ public class QueryFieldsHelper {
         }
     }
 
-    public static void configEntityGraphHints(EntityManager em, Query query, Class<?> entityClass, Collection<String> fields) {
+    public static TypedQuery createFilteredQuery(EntityManager em, CriteriaQuery criteriaQuery, Class<?> entityClass, Collection<String> fields) {
+
         EntityGraph graph = generateEntityGraphForQuery(em, entityClass, fields);
-        query.setHint("javax.persistence.loadgraph", em)
-                .setHint("javax.persistence.loadgraph", em);
+        TypedQuery query = em.createQuery(criteriaQuery);
+        query.setHint("javax.persistence.loadgraph", graph)
+                .setHint("javax.persistence.loadgraph", graph);
+        return query;
     }
 
     private static EntityGraph generateEntityGraphForQuery(EntityManager em,

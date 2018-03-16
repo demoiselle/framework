@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +25,7 @@ import org.demoiselle.jee.crud.ReservedKeyWords;
 import org.demoiselle.jee.crud.TreeNodeField;
 import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig;
 import org.demoiselle.jee.crud.field.FieldHelper;
+import org.demoiselle.jee.crud.field.FieldHelperMessage;
 import org.demoiselle.jee.crud.field.JsonFilterTransformer;
 import org.demoiselle.jee.crud.field.QueryFieldsHelper;
 import org.demoiselle.jee.crud.fields.FieldsContext;
@@ -40,6 +40,7 @@ import org.demoiselle.jee.crud.pagination.ResultSet;
 import org.demoiselle.jee.crud.sort.QuerySortHelper;
 import org.demoiselle.jee.crud.sort.SortContext;
 import org.demoiselle.jee.crud.sort.SortHelper;
+import org.demoiselle.jee.crud.sort.SortHelperMessage;
 import org.demoiselle.jee.crud.sort.SortModel;
 import org.slf4j.LoggerFactory;
 
@@ -54,12 +55,14 @@ import org.slf4j.LoggerFactory;
 public class DemoiselleCrudHelper<T, V> {
     private final EntityManager em;
     private final Class<T> entityClass;
+    private final SortHelperMessage sortHelperMessage;
     private Class<V> resultClass;
     private final DemoiselleRequestContext drc;
     private final CrudMessage crudMessage;
     private final FieldsContext fieldsContext;
     private final FilterContext filterContext;
     private final PaginationHelperMessage paginationHelperMessage;
+    private final FieldHelperMessage fieldHelperMessage;
     private PaginationContext paginationContext;
     private final SortContext sortContext;
     private Function<T, V> resultTransformer;
@@ -91,7 +94,9 @@ public class DemoiselleCrudHelper<T, V> {
         this.fieldsContext = drc.getFieldsContext().copy();
         this.filterContext = drc.getFilterContext().copy();
         this.sortContext = drc.getSortContext().copy();
+        this.fieldHelperMessage = CDI.current().select(FieldHelperMessage.class).get();
         this.crudMessage = CDI.current().select(CrudMessage.class).get();
+        this.sortHelperMessage = CDI.current().select(SortHelperMessage.class).get();
         this.paginationHelperMessage = CDI.current().select(PaginationHelperMessage.class).get();
         LOG.info("Initializing a DemoiselleCrudHelper instance", this);
     }
@@ -108,19 +113,18 @@ public class DemoiselleCrudHelper<T, V> {
         LOG.debug("Initializing a query");
         addSearchIfEnabled(criteriaQuery, root);
         addSortIfEnabled(criteriaQuery, root);
-        TypedQuery<T> query = em.createQuery(criteriaQuery);
 
         ResultSet resultSet;
+        TypedQuery<T> query = QueryFieldsHelper.createFilteredQuery(em, criteriaQuery, entityClass, fieldsContext);
         if (paginationContext.isPaginationEnabled()) {
             LOG.debug("Paginating the result for criteriaQuery = {}, root = {}", new Object[]{criteriaQuery, root});
             resultSet = QueryPaginationHelper
                     .createFor(em, entityClass, paginationContext, fieldsContext, filterContext)
                     .getPaginatedResult(query);
         } else {
-            Query jpaQuery = em.createQuery(criteriaQuery);
-            QueryFieldsHelper.configEntityGraphHints(em, jpaQuery, entityClass, fieldsContext);
+            Query jpaQuery = QueryFieldsHelper.createFilteredQuery(em, criteriaQuery, entityClass, fieldsContext);
             resultSet = ResultSet.forList(
-                    em.createQuery(criteriaQuery).getResultList(),
+                    jpaQuery.getResultList(),
                     entityClass, paginationContext, fieldsContext);
         }
         if (resultClass != entityClass) {
@@ -141,7 +145,7 @@ public class DemoiselleCrudHelper<T, V> {
     private void validateFilterFieldsIfEnabled() {
         if (fieldsContext.isFieldsEnabled()) {
             LOG.debug("Field filtering is enabled, validating fields...");
-            CrudUtilHelper.validateFlatFields(fieldsContext.getFlatFields(), fieldsContext.getAllowedFields(), resultClass);
+            CrudUtilHelper.validateFlatFields(fieldsContext.getFlatFields(), fieldsContext.getAllowedFields(), resultClass, crudMessage);
         }
     }
 
@@ -306,7 +310,7 @@ public class DemoiselleCrudHelper<T, V> {
         HttpServletRequest servletRequest = CDI.current().select(HttpServletRequest.class).get();
 
         MultivaluedMap<String, String> paramMap = generateMultivalueMapFrom(servletRequest.getParameterMap());
-        List<String> queryStringFields = FieldHelper.extractQueryStringFieldsFromMap(paramMap);
+        List<String> queryStringFields = FieldHelper.extractQueryStringFieldsFromMap(paramMap, fieldHelperMessage);
 
         enableFilterForFields(queryStringFields, allowedFields);
         return this;
@@ -340,7 +344,7 @@ public class DemoiselleCrudHelper<T, V> {
         HttpServletRequest servletRequest = CDI.current().select(HttpServletRequest.class).get();
 
         MultivaluedMap<String, String> paramMap = generateMultivalueMapFrom(servletRequest.getParameterMap());
-        List<SortModel> sorts = SortHelper.extractSortsFromParameterMap(paramMap);
+        List<SortModel> sorts = SortHelper.extractSortsFromParameterMap(paramMap, crudMessage, sortHelperMessage);
         enableSort(sorts);
         return this;
     }

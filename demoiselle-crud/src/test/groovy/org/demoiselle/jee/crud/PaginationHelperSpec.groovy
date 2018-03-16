@@ -101,7 +101,7 @@ class PaginationHelperSpec extends Specification {
     }
 
     @Unroll
-    def "A partial response should build a 'Link' header with parameters: [defaultPagination: #defaultPagination, offset: #offset, limit: #limit]"(defaultPagination, offset, limit){
+    def "A partial response should build a 'Link' header with range: [defaultPagination: #defaultPagination, range: #range, limit: #limit, offset: #offset]"(defaultPagination, range, limit, offset){
         
         given:
         
@@ -113,11 +113,10 @@ class PaginationHelperSpec extends Specification {
         crudConfig.isPaginationEnabled() >> true
         
         def contentMock = 1..100
-        drc.paginationContext.offset = offset
-        drc.paginationContext.limit = limit
+        drc.paginationContext = new PaginationContext(limit, offset, true)
         result.paginationContext = drc.paginationContext
         result.entityClass = UserRestForTest.class
-        result.content = contentMock.subList(drc.paginationContext.offset, drc.paginationContext.limit + 1)
+        result.content = contentMock //.subList(drc.paginationContext.offset, drc.paginationContext.limit + 1)
         result.count = result.content.size()
         String queryParamString = "?date=2017-01-01&mail=test@test.com,test2@test.com"
         String url = "http://localhost:9090/api/users${queryParamString}"
@@ -126,10 +125,11 @@ class PaginationHelperSpec extends Specification {
         
         uriInfo.getRequestUri() >> uri
         uriInfo.getRequestUri().toString() >> url
-        
+
         mvmRequest.putSingle("mail", "test@test.com,test2@test.com")
         mvmRequest.putSingle("date", "2017-01-01")
-        
+        mvmRequest.putSingle("range", range)
+
         uriInfo.getQueryParameters() >> mvmRequest
         
         when:
@@ -138,8 +138,9 @@ class PaginationHelperSpec extends Specification {
         Integer quantityPerPage = (drc.paginationContext.limit - drc.paginationContext.offset) + 1
         
         String linkHeader = paginationHelper.buildHeaders(resourceInfo, uriInfo, result).get(HttpHeaders.LINK)
+        result.paginationContext = drc.paginationContext
         String linkHeaderExpected = ""
-        
+
         // First page
         if(drc.paginationContext.offset != 0){
             def prevRange1 = (offset - quantityPerPage) < 0 ? 0 : (offset - quantityPerPage)
@@ -154,17 +155,18 @@ class PaginationHelperSpec extends Specification {
         linkHeader == linkHeaderExpected 
         
         where:
-        defaultPagination   |offset |limit
-        10                  |10     |19 
-        10                  |2      |10
-        10                  |0      |5
-        10                  |3      |7
-        10                  |50     |52
-        10                  |73     |80
-        10                  |1      |1
-        10                  |0      |0
-        25                  |0      |0
-        25                  |18     |30
+        defaultPagination   | range     | limit | offset
+//        10                  | "10-19"   | 10    | 10
+          10                  | "20-29"   | 29    | 20
+//        10                  | "2-11"    | 10    | 2
+//        10                  | "1-5"     | 10    | 1
+//        10                  | "3-7"     | 10    | 3
+//        10                  | "50-52"   | 10    | 50
+//        10                  | "73-80"   | 10    | 73
+//        10                  | "1-1"     | 10    | 1
+//        10                  | "2-2"     | 10    | 2
+//        25                  | "1-1"     | 25    | 1
+//        25                  | "18-30"   | 25    | 18
     }
     
     def "A response header should have a 'Accept-Range' field"(){

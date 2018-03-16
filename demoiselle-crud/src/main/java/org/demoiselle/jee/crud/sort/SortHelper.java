@@ -88,22 +88,20 @@ public class SortHelper {
         this.resourceInfo = resourceInfo == null ? this.resourceInfo : resourceInfo;
         this.uriInfo = uriInfo == null ? this.uriInfo : uriInfo;
 
-        List<SortModel> sorts = extractSortsFromParameterMap(uriInfo.getQueryParameters());
+        List<SortModel> sorts = extractSortsFromParameterMap(uriInfo.getQueryParameters(), crudMessage, sortHelperMessage);
         drc.getSortContext().setSortEnabled(isSortEnabled());
         drc.getSortContext().setSorts(sorts);
     }
 
 
-    public static List<SortModel> extractSortsFromParameterMap(MultivaluedMap<String, String> map) {
+    public static List<SortModel> extractSortsFromParameterMap(MultivaluedMap<String, String> map, CrudMessage crudMessage, SortHelperMessage sortHelperMessage) {
         List<String> descValues = getValuesFromParameterMap(map, ReservedKeyWords.DEFAULT_SORT_DESC_KEY.getKey());
         List<String> sortValues = getValuesFromParameterMap(map, ReservedKeyWords.DEFAULT_SORT_KEY.getKey());
-        List<SortModel> sorts = getSortsFromParameters(sortValues, descValues);
+        List<SortModel> sorts = getSortsFromParameters(sortValues, descValues, crudMessage, sortHelperMessage);
         return sorts;
     }
 
-    private static List<SortModel> getSortsFromParameters(List<String> sortValues, List<String> descValues) {
-        CrudMessage crudMessage = CDI.current().select(CrudMessage.class).select().get();
-        SortHelperMessage sortHelperMessage = CDI.current().select(SortHelperMessage.class).get();
+    private static List<SortModel> getSortsFromParameters(List<String> sortValues, List<String> descValues, CrudMessage crudMessage, SortHelperMessage sortHelperMessage) {
         Set<String> descList = new LinkedHashSet<>();
         Boolean descAll = Boolean.FALSE;
 
@@ -158,7 +156,7 @@ public class SortHelper {
         }
         // Validate if the fields are valid
         sorts.stream().forEach(sortModel -> {
-            CrudUtilHelper.checkIfExistField(entityClass, sortModel.getField());
+            CrudUtilHelper.checkIfExistField(entityClass, sortModel.getField(), crudMessage);
         });
     }
 
