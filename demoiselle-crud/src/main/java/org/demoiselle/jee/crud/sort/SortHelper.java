@@ -171,6 +171,9 @@ public class SortHelper {
     }
 
     private boolean hasSortParametersInRequest() {
+        if (uriInfo.getQueryParameters() == null) {
+            return false;
+        }
         for (String queryStringKey : uriInfo.getQueryParameters().keySet()) {
             if (ReservedKeyWords.DEFAULT_SORT_KEY.getKey().equalsIgnoreCase(queryStringKey)) {
                 return true;
@@ -180,6 +183,9 @@ public class SortHelper {
     }
 
     private static List<String> getValuesFromParameterMap(MultivaluedMap<String, String> map, String key) {
+        if (map == null) {
+            return null;
+        }
         for (String queryStringKey : map.keySet()) {
             if (key.equalsIgnoreCase(queryStringKey)) {
                 List<String> result = new LinkedList<>();

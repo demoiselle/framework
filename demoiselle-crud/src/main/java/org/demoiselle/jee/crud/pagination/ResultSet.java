@@ -42,7 +42,7 @@ public class ResultSet<T>  implements Result<T> {
         ResultSet resultSet = new ResultSet();
         resultSet.setCount((long) count);
         resultSet.setContent(resultList);
-        resultSet.setEntityClass(entityClass);
+        resultSet.setResultType(entityClass);
         resultSet.setPaginationContext(paginationContext);
         resultSet.setFieldsContext(fieldsContext);
         return resultSet;
@@ -81,7 +81,7 @@ public class ResultSet<T>  implements Result<T> {
         return entityClass;
     }
 
-    public void setEntityClass(Class<T> entityClass) {
+    public void setResultType(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 

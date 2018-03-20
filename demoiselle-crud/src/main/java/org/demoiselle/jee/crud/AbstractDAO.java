@@ -170,8 +170,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
             Root<T> root = criteriaQuery.from(entityClass);
-            return new DemoiselleCrudHelper(getEntityManager(), entityClass)
-                    .executeQuery(criteriaQuery, root);
+            return DemoiselleCrudHelper.createUsingCDI(getEntityManager(), entityClass).executeQuery(criteriaQuery, root);
         } catch (Exception e) {
             logger.severe(e.getMessage());
             throw new DemoiselleCrudException("Não foi possível consultar", e);
@@ -179,7 +178,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     }
 
     public Long count() {
-        return new DemoiselleCrudHelper<>(getEntityManager(), entityClass).getCount();
+        return DemoiselleCrudHelper.createUsingCDI(getEntityManager(), entityClass).getCount();
     }
 
 

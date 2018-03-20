@@ -1,10 +1,12 @@
-/*
+package org.demoiselle.jee.crud.entity;/*
  * Demoiselle Framework
  *
  * License: GNU Lesser General Public License (LGPL), version 3 or later.
  * See the lgpl.txt file in the root directory or <https://www.gnu.org/licenses/lgpl.html>.
  */
-package org.demoiselle.jee.crud.entity;
+
+import org.demoiselle.jee.crud.entity.AddressModelForTest;
+import org.demoiselle.jee.crud.entity.UserType;
 
 /**
  * 
@@ -17,6 +19,7 @@ public class UserModelForTest {
     private String name;
     private String mail;
     private Integer age;
+    private UserType userType;
     private AddressModelForTest address;
     
     public Long getId() {
@@ -59,10 +62,18 @@ public class UserModelForTest {
         this.address = address;
     }
 
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
     @Override
     public String toString() {
         return "UserModelForTest [id=" + id + ", name=" + name + ", mail=" + mail + ", age=" + age + ", address="
-                + address + "]";
+                + address + ", userType = "+userType+"]";
     }
     
 }

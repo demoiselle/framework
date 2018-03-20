@@ -6,7 +6,6 @@
  */
 package org.demoiselle.jee.crud
 
-import org.demoiselle.jee.core.api.crud.Result
 import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig
 import org.demoiselle.jee.crud.entity.UserModelForTest
 import org.demoiselle.jee.crud.pagination.PaginationContext
@@ -39,7 +38,7 @@ class PaginationHelperSpec extends Specification {
     PaginationHelperMessage message = Mock()
     
     DemoiselleRequestContext drc = new DemoiselleRequestContextImpl()
-    Result result = new ResultSet()
+    ResultSet result = new ResultSet()
     DemoiselleCrudConfig crudConfig = Mock()
 
     PaginationHelper paginationHelper = new PaginationHelper(resourceInfo, uriInfo, crudConfig,  drc, message)
@@ -115,7 +114,7 @@ class PaginationHelperSpec extends Specification {
         def contentMock = 1..100
         drc.paginationContext = new PaginationContext(limit, offset, true)
         result.paginationContext = drc.paginationContext
-        result.entityClass = UserRestForTest.class
+        result.resultType = UserRestForTest.class
         result.content = contentMock //.subList(drc.paginationContext.offset, drc.paginationContext.limit + 1)
         result.count = result.content.size()
         String queryParamString = "?date=2017-01-01&mail=test@test.com,test2@test.com"
@@ -186,7 +185,7 @@ class PaginationHelperSpec extends Specification {
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
         resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("find")
 
-        result.entityClass = UserModelForTest.class
+        result.resultType = UserModelForTest.class
 
         String expectedRangeHeader = "usermodelfortest 50"
         
@@ -205,13 +204,13 @@ class PaginationHelperSpec extends Specification {
         acceptRangeHeader == expectedRangeHeader
         
         when: "An entityClass not filled"
-        result.entityClass = null
+        result.resultType = null
         paginationHelper.execute(resourceInfo, uriInfo)
         
         then:
         !paginationHelper.buildHeaders(resourceInfo, uriInfo, result).get("Accept-Range").isEmpty()
         String acceptRangeHeader2 = paginationHelper.buildHeaders(resourceInfo, uriInfo, result).get("Accept-Range")
-        acceptRangeHeader2 == expectedRangeHeader
+        acceptRangeHeader2 == "object 50"
     }
     
     def "A response header should have a 'Content-Range' field"(offset, limit, count){
@@ -236,7 +235,7 @@ class PaginationHelperSpec extends Specification {
         crudConfig.getDefaultPagination() >> 50
         result.paginationContext = new PaginationContext(limit, offset, true)
         drc.paginationContext = result.paginationContext
-        result.entityClass = UserModelForTest.class
+        result.resultType = UserModelForTest.class
         result.count = count
         String expectedContentRangeHeader = "${offset}-${limit}/${count}"
         
@@ -343,7 +342,7 @@ class PaginationHelperSpec extends Specification {
         given:
         crudConfig.isPaginationEnabled() >> true
         crudConfig.getDefaultPagination() >> 50
-        result.entityClass = UserModelForTest.class
+        result.resultType = UserModelForTest.class
         uriInfo.getQueryParameters() >> mvmRequest
         drc.demoiselleResultAnnotation = UserRestForTest.class.getDeclaredMethod("findWithSearchAnnotationAndPaginationDisabled").getAnnotation(DemoiselleResult.class)
         

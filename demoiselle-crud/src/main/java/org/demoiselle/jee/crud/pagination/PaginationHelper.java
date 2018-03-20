@@ -130,7 +130,7 @@ public class PaginationHelper {
      */
     private Boolean isRequestPagination() {
         // Verify if contains 'range' in url
-        if (uriInfo.getQueryParameters().containsKey(ReservedKeyWords.DEFAULT_RANGE_KEY.getKey())) {
+        if (uriInfo.getQueryParameters() != null && uriInfo.getQueryParameters().containsKey(ReservedKeyWords.DEFAULT_RANGE_KEY.getKey())) {
             return Boolean.TRUE;
         }
         return Boolean.FALSE;
@@ -257,16 +257,17 @@ public class PaginationHelper {
     public String buildAcceptRange(Class<?> entityClass) {
         String resource = "";
         String resourceClass = "";
-        if (resourceInfo != null) {
+        if (entityClass == null) {
             Class<?> targetClass = CrudUtilHelper.getEntityClass(resourceInfo);
             if (targetClass != null) {
                 resourceClass = targetClass.getSimpleName().toLowerCase();
             } else {
                 resourceClass = "unknown";
             }
-
-            resource = resourceClass + " " + getQuantityPerPage();
+        } else {
+            resourceClass = entityClass.getSimpleName().toLowerCase();
         }
+        resource = resourceClass + " " + getQuantityPerPage();
 
         return resource;
     }
@@ -368,7 +369,7 @@ public class PaginationHelper {
         if (response != null) {
             Class<?> entityClass = getEntityClassForResponse(response);
             String acceptRangeHeader = buildAcceptRange(entityClass);
-            if (acceptRangeHeader != null) {
+            if (acceptRangeHeader != null && response.getHeaders() != null) {
                 response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_ACCEPT_RANGE.getKey(), acceptRangeHeader);
             }
         }

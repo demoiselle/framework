@@ -39,7 +39,7 @@ class FieldHelperSpec extends Specification {
     
     def "A request with 'fields' query string should populate 'DemoiselleRequestContext.fieldsContext.fields'"(){
         given:
-        resourceInfo.getResourceClass() >> UserModelForTest.class
+        resourceInfo.getResourceClass() >> UserRestForTest.class
         resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
         resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearchAndFields")
         drc.setAbstractRestRequest(true)
@@ -285,7 +285,7 @@ class FieldHelperSpec extends Specification {
 //        resourceInfo.getResourceClass() >> UserRestForTest.class
 //        resourceInfo.getResourceClass().getSuperclass() >> AbstractREST.class
 //        resourceInfo.getResourceMethod() >> UserRestForTest.class.getDeclaredMethod("findWithSearchAndFieldsWithSubFields")
-//        drc.setEntityClass(UserModelForTest.class)
+//        drc.setResultType(UserModelForTest.class)
 //        drc.setAbstractRestRequest(true)
 //
 //        URI uri = new URI("http://localhost:9090/api/users")

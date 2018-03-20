@@ -6,14 +6,16 @@ import org.demoiselle.jee.crud.TreeNodeField;
 import org.demoiselle.jee.crud.pagination.PaginationContext;
 
 public class FilterContext {
-    public static final FilterContext DISABLED_FILTER = new FilterContext(false, null);
+    public static final FilterContext DISABLED_FILTER = new FilterContext(false, null, null);
 
     private boolean filterEnabled;
     TreeNodeField<String, Set<String>> filters;
+    TreeNodeField<String, Set<String>> defaultFilters;
 
-    public FilterContext(boolean filterEnabled, TreeNodeField<String, Set<String>> filters) {
+    public FilterContext(boolean filterEnabled, TreeNodeField<String, Set<String>> filters, TreeNodeField<String, Set<String>> defaultFilters) {
         this.filterEnabled = filterEnabled;
         this.filters = filters;
+        this.defaultFilters = defaultFilters;
     }
 
     public static FilterContext disabledFilter() {
@@ -36,7 +38,15 @@ public class FilterContext {
         this.filters = filters;
     }
 
+    public TreeNodeField<String, Set<String>> getDefaultFilters() {
+        return defaultFilters;
+    }
+
+    public void setDefaultFilters(TreeNodeField<String, Set<String>> defaultFilters) {
+        this.defaultFilters = defaultFilters;
+    }
+
     public FilterContext copy() {
-        return new FilterContext(filterEnabled, filters);
+        return new FilterContext(filterEnabled, filters, defaultFilters);
     }
 }

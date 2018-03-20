@@ -49,10 +49,6 @@
               </executions>
           </plugin>
           <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-compiler-plugin</artifactId>
-          </plugin>
-          <plugin>
               <!-- if including source jars, use the no-fork goals
                    otherwise both the Groovy sources and Java stub sources
                    will get included in your jar -->
@@ -106,7 +102,7 @@
       <dependency>
          <groupId>org.codehaus.groovy</groupId>
          <artifactId>groovy-all</artifactId>
-         <scope>test</scope>
+         <version>2.4.7</version>
       </dependency>
 
       <dependency>
@@ -127,32 +123,10 @@
          <scope>test</scope>
       </dependency>
        <dependency>
-           <groupId>org.spockframework</groupId>
-           <artifactId>spock-core</artifactId>
-           <scope>compile</scope>
-       </dependency>
-       <dependency>
-           <groupId>org.codehaus.groovy</groupId>
-           <artifactId>groovy-all</artifactId>
-       </dependency>
-       <dependency>
-           <groupId>commons-io</groupId>
-           <artifactId>commons-io</artifactId>
-           <version>2.5</version>
-       </dependency>
-       <dependency>
            <groupId>com.monitorjbl</groupId>
            <artifactId>json-view</artifactId>
-           <version>RELEASE</version>
+           <version>0.16</version>
            <scope>compile</scope>
-       </dependency>
-
-       <dependency>
-           <groupId>org.codehaus.groovy</groupId>
-           <artifactId>groovy-all</artifactId>
-           <!-- any version of Groovy \>= 1.8.2 should work here -->
-           <version>2.4.12</version>
-           <scope>test</scope>
        </dependency>
 
    </dependencies>

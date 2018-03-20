@@ -23,7 +23,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -333,8 +332,16 @@ public class CrudUtilHelper {
         }
     }
 
+    private static boolean globMatch(String value, String glob) {
+        return Pattern.compile(
+                "^" + Pattern.quote(glob)
+                        .replace("*", "\\E.*\\Q")
+                        .replace("?", "\\E.\\Q")
+                        + "$").matcher(value).matches();
+    }
+
     private static boolean isAllowedField(String fullPath, List<String> allowedGlobs) {
-        return allowedGlobs.stream().anyMatch(glob -> FilenameUtils.wildcardMatch(fullPath, glob));
+        return allowedGlobs.stream().anyMatch(glob -> globMatch(fullPath, glob));
     }
 
 

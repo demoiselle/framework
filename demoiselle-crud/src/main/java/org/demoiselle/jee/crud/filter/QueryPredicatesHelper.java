@@ -30,7 +30,7 @@ public class QueryPredicatesHelper<T> {
     public Predicate[] buildPredicates(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, Root<T> root) {
         List<Predicate> predicates = new LinkedList<>();
 
-        if (filterContext.getFilters() != null) {
+            if (filterContext.getFilters() != null) {
             filterContext.getFilters().getChildren().stream().forEach(child -> {
 
                 List<Predicate> predicateAndKeys = new LinkedList<>();
@@ -43,45 +43,47 @@ public class QueryPredicatesHelper<T> {
                     child.getChildren().stream().forEach(values -> {
 
                         predicateSameKey.clear();
-
-                        if (!child.getChildren().isEmpty()) {
-
-                            values.getValue().stream().forEach(value -> {
-                                if ("null".equals(value) || value == null) {
-                                    predicateSameKey.add(criteriaBuilder.isNull(join.get(values.getKey())));
-                                } else if (values.getValue().isEmpty()) {
-                                    predicateSameKey.add(criteriaBuilder.isEmpty(join.get(values.getKey())));
-                                } else if (isLikeFilter(values.getKey(), value)) {
-                                    predicateSameKey.add(buildLikePredicate(criteriaBuilder, criteriaQuery, join, values.getKey(), value));
-                                } else if (isEnumFilter(child.getKey(), value)) {
-                                    predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), convertEnumToInt(child.getKey(), value)));
-                                } else {
-                                    predicateSameKey.add(criteriaBuilder.equal(join.get(values.getKey()), value));
-                                }
-                            });
-
-                            predicates.add(criteriaBuilder.or(predicateSameKey.toArray(new Predicate[]{})));
+                        if (values.getValue().isEmpty()) {
+                            predicateSameKey.add(criteriaBuilder.isEmpty(join.get(values.getKey())));
+                        } else {
+                            if (!child.getChildren().isEmpty()) {
+                                values.getValue().stream().forEach(value -> {
+                                    if ("null".equals(value) || value == null) {
+                                        predicateSameKey.add(criteriaBuilder.isNull(join.get(values.getKey())));
+                                    } else if (isLikeFilter(values.getKey(), value)) {
+                                        predicateSameKey.add(buildLikePredicate(criteriaBuilder, criteriaQuery, join, values.getKey(), value));
+                                    } else if (isEnumFilter(child.getKey(), value)) {
+                                        predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), convertEnumToInt(child.getKey(), value)));
+                                    } else {
+                                        predicateSameKey.add(criteriaBuilder.equal(join.get(values.getKey()), value));
+                                    }
+                                });
+                            }
                         }
+                        predicates.add(criteriaBuilder.or(predicateSameKey.toArray(new Predicate[]{})));
+
                     });
                 } else {
                     if (child.getValue() != null) {
-                        child.getValue().stream().forEach(value -> {
-                            if ("null".equals(value) || value == null) {
-                                predicateAndKeys.add(criteriaBuilder.isNull(root.get(child.getKey())));
-                            } else if (child.getValue().isEmpty()) {
-                                predicateAndKeys.add(criteriaBuilder.isEmpty(root.get(child.getKey())));
-                            } else if (isLikeFilter(child.getKey(), value)) {
-                                predicateAndKeys.add(buildLikePredicate(criteriaBuilder, criteriaQuery, root, child.getKey(), value));
-                            } else if (value.equalsIgnoreCase("isTrue")) {
-                                predicateAndKeys.add(criteriaBuilder.isTrue(root.get(child.getKey())));
-                            } else if (value.equalsIgnoreCase("isFalse")) {
-                                predicateAndKeys.add(criteriaBuilder.isFalse(root.get(child.getKey())));
-                            } else if (isEnumFilter(child.getKey(), value)) {
-                                predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), convertEnumToInt(child.getKey(), value)));
-                            } else {
-                                predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), value));
-                            }
-                        });
+                        if (child.getValue().isEmpty()) {
+                            predicateAndKeys.add(criteriaBuilder.isEmpty(root.get(child.getKey())));
+                        } else {
+                            child.getValue().stream().forEach(value -> {
+                                if ("null".equals(value) || value == null) {
+                                    predicateAndKeys.add(criteriaBuilder.isNull(root.get(child.getKey())));
+                                } else if (isLikeFilter(child.getKey(), value)) {
+                                    predicateAndKeys.add(buildLikePredicate(criteriaBuilder, criteriaQuery, root, child.getKey(), value));
+                                } else if (value.equalsIgnoreCase("isTrue")) {
+                                    predicateAndKeys.add(criteriaBuilder.isTrue(root.get(child.getKey())));
+                                } else if (value.equalsIgnoreCase("isFalse")) {
+                                    predicateAndKeys.add(criteriaBuilder.isFalse(root.get(child.getKey())));
+                                } else if (isEnumFilter(child.getKey(), value)) {
+                                    predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), convertEnumToInt(child.getKey(), value)));
+                                } else {
+                                    predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), value));
+                                }
+                            });
+                        }
                     }
 
                     predicates.add(criteriaBuilder.and(predicateAndKeys.toArray(new Predicate[]{})));
@@ -89,8 +91,9 @@ public class QueryPredicatesHelper<T> {
             });
         }
 
-        return predicates.toArray(new Predicate[]{});
+        return predicates.toArray(new Predicate[predicates.size()]);
     }
+
     protected boolean isEnumFilter(String key, String value) {
         Field[] fields = entityClass.getDeclaredFields();
 

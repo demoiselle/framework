@@ -56,11 +56,11 @@ public class QueryFieldsHelper {
 
     private static boolean isEntityField(Metamodel metaModel, Class<?> entityClass, String field) {
         if (!field.contains(".")) {
-            return metaModel.entity(entityClass).getAttributes().stream().anyMatch(attr -> attr.getName().toLowerCase() == field);
+            return metaModel.entity(entityClass).getAttributes().stream().anyMatch(attr -> attr.getName().toLowerCase().equals(field));
         } else {
             Class<?> currClass = entityClass;
             for (String currField : StringUtils.split(field, ".")) {
-                if (!metaModel.entity(currClass).getAttributes().stream().anyMatch(attr -> attr.getName().toLowerCase() == currField)) {
+                if (!metaModel.entity(currClass).getAttributes().stream().anyMatch(attr -> attr.getName().toLowerCase().equals(currField))) {
                     return false;
                 }
                 currClass = metaModel.entity(currClass).getAttribute(currField).getJavaType();
@@ -73,8 +73,8 @@ public class QueryFieldsHelper {
 
         EntityGraph graph = generateEntityGraphForQuery(em, entityClass, fields);
         TypedQuery query = em.createQuery(criteriaQuery);
-        query.setHint("javax.persistence.loadgraph", graph)
-                .setHint("javax.persistence.loadgraph", graph);
+        query.setHint("javax.persistence.loadgraph", graph);
+        query.setHint("javax.persistence.loadgraph", graph);
         return query;
     }
 

@@ -1,15 +1,13 @@
 package org.demoiselle.jee.crud.pagination;
 
-import javax.enterprise.inject.spi.CDI;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig;
-import org.demoiselle.jee.crud.field.QueryFieldsHelper;
+import org.demoiselle.jee.crud.count.QueryCountHelper;
 import org.demoiselle.jee.crud.fields.FieldsContext;
 import org.demoiselle.jee.crud.filter.FilterContext;
-import org.demoiselle.jee.crud.helper.DemoiselleCrudHelper;
 
 /**
  * A Helper class that paginates results based on the PaginationContext and the FilterContext.
@@ -23,6 +21,7 @@ public class QueryPaginationHelper<T> {
      * The pagination context with the current pagination parameters.
      */
     private final PaginationContext paginationContext;
+    private QueryCountHelper<T> queryCountHelper;
 
     /**
      * The global configuration for the Demoiselle CRUD class. Obtained as a RequestScoped bean.
@@ -54,17 +53,18 @@ public class QueryPaginationHelper<T> {
      * @param <T> The entity class type
      * @return A new QueryPaginationHelper instance for the givewn parameters.
      */
-    public static <T> QueryPaginationHelper<T> createFor(EntityManager em, Class<T> entityClass, PaginationContext paginationContext, FieldsContext fieldsContext, FilterContext filterContext) {
-        return new QueryPaginationHelper<>(em, entityClass, paginationContext, fieldsContext, filterContext);
+    public static <T> QueryPaginationHelper<T> createFor(EntityManager em, DemoiselleCrudConfig crudConfig, Class<T> entityClass, PaginationContext paginationContext, FieldsContext fieldsContext, FilterContext filterContext) {
+        return new QueryPaginationHelper<>(em, crudConfig, entityClass, paginationContext, fieldsContext, filterContext, new QueryCountHelper<>(em, entityClass));
     }
 
-    private QueryPaginationHelper(EntityManager entityManager, Class<T> entityClass, PaginationContext paginationContext, FieldsContext fieldsContext, FilterContext filterContext) {
+    public QueryPaginationHelper(EntityManager entityManager, DemoiselleCrudConfig crudConfig, Class<T> entityClass, PaginationContext paginationContext, FieldsContext fieldsContext, FilterContext filterContext, QueryCountHelper<T> queryCountHelper) {
         this.entityManager = entityManager;
         this.entityClass = entityClass;
         this.fieldsContext = fieldsContext;
         this.filterContext = filterContext;
-        this.crudConfig = CDI.current().select(DemoiselleCrudConfig.class).get();
+        this.crudConfig = crudConfig;
         this.paginationContext = paginationContext;
+        this.queryCountHelper = queryCountHelper;
     }
 
     /**
@@ -96,7 +96,7 @@ public class QueryPaginationHelper<T> {
                 && result.getCount() < getMaxResult()) {
             paginationContext.setLimit(result.getCount().intValue());
         }
-        result.setEntityClass(entityClass);
+        result.setResultType(entityClass);
         result.setPaginationContext(paginationContext);
 
         return result;
@@ -111,6 +111,6 @@ public class QueryPaginationHelper<T> {
     }
 
     private Long getResultCount() {
-        return new DemoiselleCrudHelper(entityManager, entityClass).getCount(filterContext);
+        return queryCountHelper.getResultCount(filterContext);
     }
 }

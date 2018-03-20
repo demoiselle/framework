@@ -84,6 +84,10 @@ public class FilterHelper {
                             CrudUtilHelper.getEntityClass(this.resourceInfo),
                             uriInfo.getQueryParameters()
                     ));
+
+            drc.getFilterContext().setDefaultFilters(
+                    CrudUtilHelper.extractSearchFieldsFromAnnotation(drc.getDemoiselleResultAnnotation(),
+                            drc.getEntityClass()));
         }
     }
 

@@ -16,11 +16,21 @@ import javax.ws.rs.GET;
  * @author SERPRO
  *
  */
+@DemoiselleResult(pageSize = 50)
 public class UserRestForTest extends AbstractREST<UserModelForTest, Long> {
 
     @Override
     @GET
     public Result find() {
+        return null;
+    }
+
+    @DemoiselleResult(pageSize = 100)
+    public Result findWithAnnotation() {
+        return null;
+    }
+
+    public Result findWithoutAnnotation() {
         return null;
     }
 
@@ -53,5 +63,17 @@ public class UserRestForTest extends AbstractREST<UserModelForTest, Long> {
     public Result findWithSearchAndAllFields(){
         return null;
     }
-    
+
+    @GET
+    @DemoiselleResult(entityClass = Long.class, resultClass = Integer.class)
+    public Result findAnotherEntityClass(){
+        return null;
+    }
+
+    @GET
+    @DemoiselleResult(entityClass = Long.class, resultClass = Long.class, resultTransformer = PlusOne.class)
+    public Result findResultTransformer(){
+        return null;
+    }
+
 }
