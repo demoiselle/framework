@@ -365,6 +365,17 @@ public class DemoiselleCrudHelper<T, V> {
             return this;
         }
 
+
+        public Builder disableFilterFields() {
+            fieldsContext.setFieldsEnabled(false);
+            return this;
+        }
+
+        public Builder disablePagination() {
+            paginationContext.setPaginationEnabled(false);
+            return this;
+        }
+
         public Builder disableSearch() {
             filterContext.setFilterEnabled(false);
             return this;
