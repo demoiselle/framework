@@ -2,10 +2,13 @@ package org.demoiselle.jee.crud.pagination;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaQuery;
 
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.configuration.DemoiselleCrudConfig;
 import org.demoiselle.jee.crud.count.QueryCountHelper;
+import org.demoiselle.jee.crud.field.QueryFieldsHelper;
 import org.demoiselle.jee.crud.fields.FieldsContext;
 import org.demoiselle.jee.crud.filter.FilterContext;
 
@@ -47,9 +50,11 @@ public class QueryPaginationHelper<T> {
     /**
      * Create a new instance of the Helper for an EntityManager, an entity class and pagination/filter parameters
      * @param em The entity manager that will be used for the query.
+     * @param crudConfig The current CRUD configuration, usually for the request
      * @param entityClass The root entity class of the root query.
      * @param paginationContext The current pagination context/parameters.
-     * @param fieldsContext The current filter context/parameters.
+     * @param fieldsContext The current fields context/parameters
+     * @param filterContext The current filter context/parameters
      * @param <T> The entity class type
      * @return A new QueryPaginationHelper instance for the givewn parameters.
      */
@@ -67,21 +72,22 @@ public class QueryPaginationHelper<T> {
         this.queryCountHelper = queryCountHelper;
     }
 
+
     /**
      * Get the paginated result for the query, considering the current parameters of this specific QueryPaginationHelper instance.
      *
-     * @param query The JPA query that will be paginated
+     * @param criteriaQuery The JPA criteria query that will be paginated
      * @return The result list wrapped in a {@link Result} object, which will contain parameters such as the limit/offset for the pagination and the
      * search parameters.
      */
-    public ResultSet getPaginatedResult(Query query) {
+    public ResultSet getPaginatedResult(CriteriaQuery<T> criteriaQuery) {
         ResultSet result = new ResultSet();
         result.setFieldsContext(fieldsContext);
+        TypedQuery<T> query = QueryFieldsHelper.createFilteredQuery(entityManager, criteriaQuery, entityClass, fieldsContext);
         if (paginationContext.isPaginationEnabled()) {
             Integer firstResult = paginationContext.getOffset() == null ? 0 : paginationContext.getOffset();
             Integer maxResults = getMaxResult();
-            Long count = getResultCount();
-
+            Long count = getResultCount(criteriaQuery);
             if (firstResult < count) {
                 query.setFirstResult(firstResult);
                 query.setMaxResults(maxResults);
@@ -110,7 +116,7 @@ public class QueryPaginationHelper<T> {
         return (paginationContext.getLimit() - paginationContext.getOffset()) + 1;
     }
 
-    private Long getResultCount() {
-        return queryCountHelper.getResultCount(filterContext);
+    private Long getResultCount(CriteriaQuery criteriaQuery) {
+        return queryCountHelper.getResultCount(criteriaQuery, filterContext);
     }
 }

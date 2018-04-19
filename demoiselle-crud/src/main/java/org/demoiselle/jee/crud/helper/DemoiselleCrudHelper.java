@@ -105,12 +105,11 @@ public class DemoiselleCrudHelper<T, V> {
         addSortIfEnabled(criteriaQuery, root);
 
         ResultSet resultSet;
-        TypedQuery<T> query = QueryFieldsHelper.createFilteredQuery(em, criteriaQuery, entityClass, fieldsContext);
         if (paginationContext.isPaginationEnabled()) {
             LOG.debug("Paginating the result for criteriaQuery = {}, root = {}", new Object[]{criteriaQuery, root});
             resultSet = QueryPaginationHelper
                     .createFor(em, crudConfig, entityClass, paginationContext, fieldsContext, filterContext)
-                    .getPaginatedResult(query);
+                    .getPaginatedResult(criteriaQuery);
         } else {
             Query jpaQuery = QueryFieldsHelper.createFilteredQuery(em, criteriaQuery, entityClass, fieldsContext);
             resultSet = ResultSet.forList(
@@ -168,18 +167,20 @@ public class DemoiselleCrudHelper<T, V> {
     /**
      * Add predicates to the criteria, based on the parameters, if any of them have been enabled from the request or explicitly.
      *
-     * @param filterContext
-     * @param entityClass
-     * @param cb
-     * @param criteriaQuery
-     * @param root
+     * @param filterContext The filter context with the search parameters
+     * @param entityClass The root entity class for the query
+     * @param cb The current criteria builder instance
+     * @param criteriaQuery The Criteria query with any given search parameters
+     * @param root The reference to the root object
+     * @param defaultFields The default fields that will be allowed to be returned
      */
     public static void addSearchIfEnabledForQuery(FilterContext filterContext,
                                                    Class<?> entityClass,
                                                    CriteriaBuilder cb,
                                                    CriteriaQuery criteriaQuery,
                                                    Root root,
-                                                   TreeNodeField<String, Set<String>> defaultFields) { LOG.debug("Adding search for query if needed");
+                                                   TreeNodeField<String, Set<String>> defaultFields) {
+        LOG.debug("Adding search for query if needed");
         if (filterContext.isFilterEnabled() && filterContext.getFilters() != null) {
             LOG.debug("Detected that search needs to be enabled for this query");
             CrudMessage crudMessage = CDI.current().select(CrudMessage.class).get();
@@ -190,16 +191,22 @@ public class DemoiselleCrudHelper<T, V> {
     }
 
     public Long getCount() {
-        return getCount(filterContext);
+        return getCount(null, filterContext);
     }
 
-    public Long getCount(FilterContext filterContextArg) {
+    public Long getCount(CriteriaQuery<T> criteriaQuery) {
+        return getCount(criteriaQuery, filterContext);
+    }
+
+    public Long getCount(CriteriaQuery<T> criteriaQuery, FilterContext filterContextArg) {
         LOG.debug("Getting count for the query ");
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> countCriteria = cb.createQuery(Long.class);
         Root<T> entityRoot = countCriteria.from(entityClass);
+        if(criteriaQuery != null && criteriaQuery.getRestriction() != null) {
+            countCriteria.where(criteriaQuery.getRestriction());
+        }
         countCriteria.select(cb.count(entityRoot));
-
         TreeNodeField<String, Set<String>> defaultFields = filterContextArg.getDefaultFilters();
         addSearchIfEnabledForQuery(filterContextArg, entityClass, cb, countCriteria, entityRoot, defaultFields);
         return em.createQuery(countCriteria).getSingleResult();

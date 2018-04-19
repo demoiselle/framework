@@ -102,6 +102,7 @@ public class CrudUtilHelper {
      *
      * @param targetClass The class
      * @param field Field to checked
+     * @param crudMessage The reference to the class that contains the error messages
      *
      * @throws IllegalArgumentException When the 'field' doesn't exists on
      * 'targetClass'

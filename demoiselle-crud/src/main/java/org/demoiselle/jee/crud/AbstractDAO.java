@@ -178,7 +178,9 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     }
 
     public Long count() {
-        return DemoiselleCrudHelper.createUsingCDI(getEntityManager(), entityClass).getCount();
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+        return DemoiselleCrudHelper.createUsingCDI(getEntityManager(), entityClass).getCount(criteriaQuery);
     }
 
 

@@ -22,6 +22,7 @@ import spock.lang.Specification
 import javax.persistence.EntityManager
 import javax.persistence.Query
 import javax.persistence.TypedQuery
+import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Root
 
@@ -33,6 +34,7 @@ import javax.persistence.criteria.Root
 class DemoiselleCrudHelperSpec extends Specification{
     
     EntityManager entityManager = Mock(EntityManager.class)
+    CriteriaBuilder criteriaBuilder = Mock(CriteriaBuilder.class)
     DemoiselleCrudConfig crudConfig = Mock(DemoiselleCrudConfig.class)
     Class entityClass = UserModelForTest.class
     PaginationContext paginationContext = new PaginationContext(null, null, true)
@@ -51,6 +53,7 @@ class DemoiselleCrudHelperSpec extends Specification{
     def startup() {
         crudMessage.fieldRequestDoesNotExistsOnDemoiselleResultField(_) >> "fieldRequestDoesNotExistsOnDemoiselleResultField"
         crudMessage.fieldRequestDoesNotExistsOnObject(_, _) >> "fieldRequestDoesNotExistsOnObject"
+        entityManager.getCriteriaBuilder() >> criteriaBuilder
         entityManager.createQuery(criteriaQuery) >> queryMock
         queryMock.getResultList() >> listMock
     }

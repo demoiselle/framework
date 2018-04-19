@@ -21,9 +21,16 @@ public class QueryCountHelper<T> {
     }
 
     public Long getResultCount(FilterContext filterContext) {
+        return getResultCount(null, filterContext);
+    }
+
+    public Long getResultCount(CriteriaQuery<T> criteriaQuery, FilterContext filterContext) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> countCriteria = cb.createQuery(Long.class);
         Root<T> entityRoot = countCriteria.from(entityClass);
+        if(criteriaQuery != null && criteriaQuery.getRestriction() != null) {
+            countCriteria.where(criteriaQuery.getRestriction());
+        }
         countCriteria.select(cb.count(entityRoot));
 
         TreeNodeField<String, Set<String>> defaultFields = filterContext.getDefaultFilters();
