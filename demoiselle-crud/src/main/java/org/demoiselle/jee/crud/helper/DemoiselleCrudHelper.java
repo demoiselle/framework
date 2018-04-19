@@ -228,11 +228,11 @@ public class DemoiselleCrudHelper<T, V> {
         }
 
         public Builder(boolean useCDI, EntityManager em, Class<T> entityClass) {
+            this.em = em;
+            this.entityClass = entityClass;
             if (useCDI) {
                 initUsingCDI();
             }
-            this.em = em;
-            this.entityClass = entityClass;
         }
 
         public Builder setSortHelperMessage(SortHelperMessage sortHelperMessage) {
@@ -303,7 +303,7 @@ public class DemoiselleCrudHelper<T, V> {
         private void initUsingCDI() {
             this.drc = CDI.current().select(DemoiselleRequestContext.class).get();
             this.drc.setEntityClass(entityClass);
-            if (this.drc.getResultClass() != Object.class) {
+            if (this.drc.getResultClass() != null && this.drc.getResultClass() != Object.class) {
                 this.resultClass = (Class<V>) this.drc.getResultClass();
             } else {
                 this.resultClass = (Class<V>) this.entityClass;
