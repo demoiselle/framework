@@ -8,6 +8,8 @@ package org.demoiselle.jee.rest.exception.treatment;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,8 +28,6 @@ import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 import org.demoiselle.jee.rest.message.DemoiselleRESTMessage;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Default implementation of All Exception Treatments in Demoiselle Framework.
@@ -87,13 +87,23 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
             ConstraintViolationException c = (ConstraintViolationException) exception;
 
             c.getConstraintViolations().stream().forEach((violation) -> {
-                String objectType = violation.getLeafBean().getClass().getSimpleName();
+                Object bean = violation.getLeafBean();
+                String objectType = bean.getClass().getSimpleName();
+                boolean isProxy = objectType.contains("$Proxy$");
+				System.out.println("objectType " + objectType + " is proxy = " + isProxy);
+                // if it's a wrapped proxy object, get the original bean class that is the superclass
+                if(isProxy) {
+					objectType = bean.getClass().getSuperclass().getSimpleName();
+					System.out.println("original objectType: " + objectType);
+				}
 
                 // This is fixed because REST beans validations only accept ONE
                 // parameter
                 String arg = "arg0";
 
                 // Before: pesist.arg0.name / After: pesist.User.name
+                System.out.println("violation.getPropertyPath().toString() = " + violation.getPropertyPath().toString());
+                System.out.println("replaceAll " + arg + " to " + objectType);
                 String pathConverted = violation.getPropertyPath().toString().replaceAll(arg, objectType);
 
                 Map<String, Object> object = new ConcurrentHashMap<>();
