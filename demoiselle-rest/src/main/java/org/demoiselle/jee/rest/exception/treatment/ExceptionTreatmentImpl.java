@@ -90,20 +90,16 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
                 Object bean = violation.getLeafBean();
                 String objectType = bean.getClass().getSimpleName();
                 boolean isProxy = objectType.contains("$Proxy$");
-				System.out.println("objectType " + objectType + " is proxy = " + isProxy);
                 // if it's a wrapped proxy object, get the original bean class that is the superclass
                 if(isProxy) {
-					objectType = bean.getClass().getSuperclass().getSimpleName();
-					System.out.println("original objectType: " + objectType);
-				}
+                   objectType = bean.getClass().getSuperclass().getSimpleName();
+                }
 
                 // This is fixed because REST beans validations only accept ONE
                 // parameter
                 String arg = "arg0";
 
                 // Before: pesist.arg0.name / After: pesist.User.name
-                System.out.println("violation.getPropertyPath().toString() = " + violation.getPropertyPath().toString());
-                System.out.println("replaceAll " + arg + " to " + objectType);
                 String pathConverted = violation.getPropertyPath().toString().replaceAll(arg, objectType);
 
                 Map<String, Object> object = new ConcurrentHashMap<>();
