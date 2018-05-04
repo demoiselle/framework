@@ -75,6 +75,7 @@
         <module>demoiselle-security</module>
         <module>demoiselle-security-token</module>
         <module>demoiselle-security-jwt</module>
+        <module>demoiselle-wrapper-api</module>
     </modules>
 
     <properties>
@@ -91,48 +92,48 @@
     <build>
         <plugins>
 
-<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>wagon-maven-plugin</artifactId>
-				<configuration>
-					<serverId>demoiselle.sourceforge.net</serverId>
-					<url>${upload.url}</url>
-					<fromDir>${project.build.directory}/assembly</fromDir>
-					<toDir>${project.context}/${project.version}</toDir>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>wagon-maven-plugin</artifactId>
+                <configuration>
+                    <serverId>demoiselle.sourceforge.net</serverId>
+                    <url>${upload.url}</url>
+                    <fromDir>${project.build.directory}/assembly</fromDir>
+                    <toDir>${project.context}/${project.version}</toDir>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
 
-<!-- Versão 2.4.2 do maven-release-plugin necessária para gerar a release 
-				da ferramenta -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.4.2</version><!--$NO-MVN-MAN-VER$ -->
-				<configuration>
-					<autoVersionSubmodules>true</autoVersionSubmodules>
-					<preparationGoals>clean install</preparationGoals>
-					<goals>${release.goals}</goals>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven.scm</groupId>
-						<artifactId>maven-scm-provider-gitexe</artifactId>
-						<version>1.8.1</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>false</skip>
-				</configuration>
-			</plugin>
+            <!-- Versão 2.4.2 do maven-release-plugin necessária para gerar a release 
+            da ferramenta -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.4.2</version><!--$NO-MVN-MAN-VER$ -->
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <preparationGoals>clean install</preparationGoals>
+                    <goals>${release.goals}</goals>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-gitexe</artifactId>
+                        <version>1.8.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
 
 
 
@@ -214,7 +215,7 @@
 
     <reporting>
         <plugins>
-	    <!--
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -227,7 +228,7 @@
                     </reportSet>
                 </reportSets>
             </plugin>
-	    -->
+            -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -356,8 +357,8 @@
     </profiles>
 
     <scm>
-		<connection>scm:git:https://github.com/demoiselle/${project.alias}.git</connection>
-		<developerConnection>scm:git:https://github.com/demoiselle/${project.alias}.git</developerConnection>
+        <connection>scm:git:https://github.com/demoiselle/${project.alias}.git</connection>
+        <developerConnection>scm:git:https://github.com/demoiselle/${project.alias}.git</developerConnection>
         <url>http://github.com/demoiselle/${project.alias}</url>
         <tag>3.1.0-SNAPSHOT</tag>
     </scm>
