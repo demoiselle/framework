@@ -15,13 +15,10 @@ import java.util.Iterator;
 import java.util.List;
 import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import static javax.ws.rs.core.HttpHeaders.USER_AGENT;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.demoiselle.jee.core.exception.DemoiselleException;
-import org.demoiselle.jee.crud.exception.DemoiselleCrudException;
 import org.demoiselle.jee.wrapper.security.Authentication;
 import org.demoiselle.jee.wrapper.security.Credentials;
 
@@ -58,7 +55,7 @@ public abstract class AbstractAPIWrapper<T, I> {
         try {
             return new Gson().fromJson(post(isAuthenticated(), resourceApi(), new Gson().toJson(entity)), entityClass);
         } catch (JsonSyntaxException e) {
-            throw new DemoiselleCrudException("Não foi possível salvar", e);
+            throw new DemoiselleException("Não foi possível salvar", e);
         }
     }
 
@@ -66,7 +63,7 @@ public abstract class AbstractAPIWrapper<T, I> {
         try {
             return new Gson().fromJson(get(isAuthenticated(), resourceApi() + id.toString()), entityClass);
         } catch (JsonSyntaxException e) {
-            throw new DemoiselleCrudException("Não foi possível salvar", e);
+            throw new DemoiselleException("Não foi possível salvar", e);
         }
     }
 
@@ -74,7 +71,7 @@ public abstract class AbstractAPIWrapper<T, I> {
         try {
             throw new UnsupportedOperationException("Not supported yet.");
         } catch (final Exception e) {
-            throw new DemoiselleCrudException("Não foi possível salvar", e);
+            throw new DemoiselleException("Não foi possível salvar", e);
         }
     }
 
@@ -82,7 +79,7 @@ public abstract class AbstractAPIWrapper<T, I> {
         try {
             throw new UnsupportedOperationException("Not supported yet.");
         } catch (Exception e) {
-            throw new DemoiselleCrudException("Não foi possível salvar", e);
+            throw new DemoiselleException("Não foi possível salvar", e);
         }
     }
 
@@ -90,7 +87,7 @@ public abstract class AbstractAPIWrapper<T, I> {
         try {
             throw new UnsupportedOperationException("Not supported yet.");
         } catch (Exception e) {
-            throw new DemoiselleCrudException("Não foi possível excluir", e);
+            throw new DemoiselleException("Não foi possível excluir", e);
         }
     }
 
