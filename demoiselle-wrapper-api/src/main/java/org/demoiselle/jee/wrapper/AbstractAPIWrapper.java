@@ -131,7 +131,7 @@ public abstract class AbstractAPIWrapper<T, I> {
                 String key = (String) it.next();
                 sb.append(key)
                         .append("=")
-                        .append(map.get(key))
+                        .append(map.get(key).toString().replace("[", "").replace("]", ""))
                         .append("&");
             }
         }

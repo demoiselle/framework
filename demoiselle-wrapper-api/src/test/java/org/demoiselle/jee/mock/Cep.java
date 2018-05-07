@@ -71,8 +71,8 @@ public class Cep implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 61 * hash + Objects.hashCode(this.id);
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -88,15 +88,11 @@ public class Cep implements Serializable {
             return false;
         }
         final Cep other = (Cep) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     @Override
     public String toString() {
-        return "Cep{" + "id=" + id + ", logradouro=" + logradouro + ", cep=" + cep + ", uf=" + uf + ", cidade=" + cidade + ", bairroIni=" + bairroIni + ", bairroFim=" + bairroFim + '}';
+        return "{" + "id=" + id.floatValue() + ", logradouro=" + logradouro + ", cep=" + cep + ", uf=" + uf + ", cidade=" + cidade + ", bairroIni=" + bairroIni + ", bairroFim=" + bairroFim + '}';
     }
-
 }
