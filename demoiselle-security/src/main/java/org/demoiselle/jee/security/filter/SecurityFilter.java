@@ -52,7 +52,7 @@ public class SecurityFilter implements ContainerRequestFilter {
         if (req.getMethod().equals("OPTIONS")) {
             Response.ResponseBuilder responseBuilder = ok();
             if (config.isCorsEnabled()) {
-                config.getParamsHeaderSecuriry().entrySet().parallelStream().forEach((entry) -> {
+                config.getParamsHeaderSecuriry().entrySet().stream().forEach((entry) -> {
                     responseBuilder.header(entry.getKey(), entry.getValue());
                 });
             }

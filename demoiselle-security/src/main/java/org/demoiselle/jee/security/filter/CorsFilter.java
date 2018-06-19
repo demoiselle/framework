@@ -50,7 +50,7 @@ public class CorsFilter implements ContainerResponseFilter {
 
         res.getHeaders().putSingle("Demoiselle-security", "Enable");
 
-        config.getParamsHeaderSecuriry().entrySet().parallelStream().forEach((entry) -> {
+        config.getParamsHeaderSecuriry().entrySet().stream().forEach((entry) -> {
             res.getHeaders().putSingle(entry.getKey(), entry.getValue());
         });
 
@@ -59,7 +59,7 @@ public class CorsFilter implements ContainerResponseFilter {
         }
 
         if (config.isCorsEnabled() && corsEnable) {
-            config.getParamsHeaderCors().entrySet().parallelStream().forEach((entry) -> {
+            config.getParamsHeaderCors().entrySet().stream().forEach((entry) -> {
                 res.getHeaders().putSingle(entry.getKey(), entry.getValue());
             });
         } else {
