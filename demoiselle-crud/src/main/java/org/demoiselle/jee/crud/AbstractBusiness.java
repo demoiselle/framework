@@ -46,8 +46,4 @@ public abstract class AbstractBusiness<T, I> implements Crud<T, I> {
         return dao.find(id);
     }
 
-    public void cancelar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }
