@@ -8,7 +8,7 @@ package org.demoiselle.jee.crud;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -195,7 +195,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
                                 .map( (child) -> child.getKey())
                                 .collect(Collectors.toSet());
                                 
-                        Arrays.asList(object.getClass().getDeclaredFields())
+                        CrudUtilHelper.getAllFields(new ArrayList<Field>(), object.getClass())
                                 .stream()
                                 .filter( (f) -> searchFields.contains(f.getName()))
                                 .forEach( (field) -> {
@@ -215,7 +215,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
                         leaf.getChildren().stream().forEach( (child) -> {
                             
                             try{
-                                Field field = targetClass.getDeclaredField(leaf.getKey()); 
+                                Field field = CrudUtilHelper.getField(targetClass, leaf.getKey()); 
                                 Class<?> fieldClazz = field.getType();
                                 
                                 
@@ -269,7 +269,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
      */
     private Object getValueFromObjectField(Class<?> targetClass, Field field, Object object) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
         Object result = null;
-        Field actualField = targetClass.getDeclaredField(field.getName());
+        Field actualField = CrudUtilHelper.getField(targetClass, field.getName());
         boolean acessible = actualField.isAccessible();
         actualField.setAccessible(true);
         result = actualField.get(object);

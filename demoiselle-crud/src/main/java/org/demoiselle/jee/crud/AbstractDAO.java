@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -39,7 +41,6 @@ import org.demoiselle.jee.crud.pagination.PaginationHelperConfig;
 import org.demoiselle.jee.crud.pagination.ResultSet;
 import org.demoiselle.jee.crud.sort.CrudSort;
 
-//TODO CLF revisar
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
@@ -76,51 +77,38 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         try {
             final StringBuilder sb = new StringBuilder();
             final Map<String, Object> params = new ConcurrentHashMap<>();
-            //
             sb.append("UPDATE ");
             sb.append(entityClass.getCanonicalName());
             sb.append(" SET ");
-            //
-            for (final Field field : entityClass.getDeclaredFields()) {
+            for (final Field field : getAllFields(entityClass)) {
                 if (!field.isAnnotationPresent(ManyToOne.class)) {
                     final Column column = field.getAnnotation(Column.class);
-                    //
                     if (column == null || !column.updatable()) {
                         continue;
                     }
                 }
-                //
                 field.setAccessible(true);
-                //
                 final String name = field.getName();
                 final Object value = field.get(entity);
-                //
                 if (value != null) {
                     if (!params.isEmpty()) {
                         sb.append(", ");
                     }
-                    //
                     sb.append(name).append(" = :").append(name);
                     params.putIfAbsent(name, value);
                 }
             }
-            //
             if (!params.isEmpty()) {
-                final String idName
-                        = CrudUtilHelper.getMethodAnnotatedWithID(entityClass);
-                //
+                final String idName = CrudUtilHelper.getMethodAnnotatedWithID(entityClass);
                 sb.append(" WHERE ").append(idName).append(" = :").append(idName);
                 params.putIfAbsent(idName, id);
-                //
                 final Query query = getEntityManager().createQuery(sb.toString());
-                //
                 for (final Map.Entry<String, Object> entry : params.entrySet()) {
                     query.setParameter(entry.getKey(), entry.getValue());
                 }
-                //
                 query.executeUpdate();
             }
-            //
+            
             return entity;
         } catch (final Exception e) {
             throw new DemoiselleCrudException("Não foi possível salvar", e);
@@ -132,7 +120,6 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         try {
             return getEntityManager().merge(entity);
         } catch (Exception e) {
-            // TODO: CLF Severe? Pode cair aqui somente por ter violação de Unique
             throw new DemoiselleCrudException("Não foi possível salvar", e);
         }
     }
@@ -234,104 +221,186 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         if (drc.getFilters() != null) {
             drc.getFilters().getChildren().stream().forEach(child -> {
 
-                List<Predicate> predicateAndKeys = new LinkedList<>();
-                List<Predicate> predicateSameKey = new LinkedList<>();
+                List<Predicate> predicatesToBuild = new LinkedList<>();
 
-                // Many parameters for the same key, generate OR clause
-                if (!child.getChildren().isEmpty()) {
-
-                    Join<?, ?> join = root.join(child.getKey());
-                    child.getChildren().stream().forEach(values -> {
-
-                        predicateSameKey.clear();
-
-                        if (!child.getChildren().isEmpty()) {
-
-                            values.getValue().stream().forEach(value -> {
-                                if ("null".equals(value) || value == null) {
-                                    predicateSameKey.add(criteriaBuilder.isNull(join.get(values.getKey())));
-                                } else if (values.getValue().isEmpty()) {
-                                    predicateSameKey.add(criteriaBuilder.isEmpty(join.get(values.getKey())));
-                                } else if (isLikeFilter(values.getKey(), value)) {
-                                    predicateSameKey.add(buildLikePredicate(criteriaBuilder, criteriaQuery, join, values.getKey(), value));
-                                } else if (isEnumFilter(child.getKey(), value)) {
-                                	predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), convertEnumToInt(child.getKey(), value)));
-                                } else {
-                                    predicateSameKey.add(criteriaBuilder.equal(join.get(values.getKey()), value));
-                                }
-                            });
-
-                            predicates.add(criteriaBuilder.or(predicateSameKey.toArray(new Predicate[]{})));
-                        }
-                    });
-                } else {
+                /*
+                 * If the child doesnt child the element is on fist level.
+                 * 
+                 * ?description=test
+                 * 
+                 */
+                if (child.getChildren().isEmpty()) {
+                    
                     child.getValue().stream().forEach(value -> {
-                        if ("null".equals(value) || value == null) {
-                            predicateAndKeys.add(criteriaBuilder.isNull(root.get(child.getKey())));
-                        } else if (child.getValue().isEmpty()) {
-                            predicateAndKeys.add(criteriaBuilder.isEmpty(root.get(child.getKey())));
-                        } else if (isLikeFilter(child.getKey(), value)) {
-                            predicateAndKeys.add(buildLikePredicate(criteriaBuilder, criteriaQuery, root, child.getKey(), value));
-                        } else if (value.equalsIgnoreCase("isTrue")) {
-                            predicateAndKeys.add(criteriaBuilder.isTrue(root.get(child.getKey())));
-                        } else if (value.equalsIgnoreCase("isFalse")) {
-                            predicateAndKeys.add(criteriaBuilder.isFalse(root.get(child.getKey())));
-                        } else if (isEnumFilter(child.getKey(), value)) {
-                        	predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), convertEnumToInt(child.getKey(), value)));
-                        } else {
-                            predicateAndKeys.add(criteriaBuilder.equal(root.get(child.getKey()), value));
-                        }
+                        fillPredicates(predicatesToBuild, root, criteriaBuilder, criteriaQuery, child, value, null);
                     });
-
-                    predicates.add(criteriaBuilder.and(predicateAndKeys.toArray(new Predicate[]{})));
+                    
                 }
+                else{
+
+                    /*
+                     * If the child has child the element has second level
+                     * 
+                     * ?category(description)=test
+                     */
+                    
+                    Join<?, ?> join = root.join(child.getKey());
+                    child.getChildren().stream().forEach( child2ndLevel -> {
+
+                        child2ndLevel.getValue().stream().forEach(value -> {
+                            fillPredicates(predicatesToBuild, join, criteriaBuilder, criteriaQuery, child2ndLevel, value, child);
+                        });
+                    });
+                } 
+                
+                predicates.add(criteriaBuilder.or(predicatesToBuild.toArray(new Predicate[]{})));
             });
         }
 
         return predicates.toArray(new Predicate[]{});
     }
     
-    protected boolean isEnumFilter(String key, String value) {
-		Field[] fields = entityClass.getDeclaredFields();
-
-		for (Field field : fields) {
-			if (key.equalsIgnoreCase(field.getName())) {
+    private void fillPredicates(List<Predicate> predicates, From<?, ?>  from, CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, TreeNodeField<String, Set<String>> child, String value, TreeNodeField<String, Set<String>> parent) {
+        
+        if ("null".equals(value) || value == null) {
+            predicates.add(criteriaBuilder.isNull(from.get(child.getKey())));
+        } else if (child.getValue().isEmpty()) {
+            predicates.add(criteriaBuilder.isEmpty(from.get(child.getKey())));
+        } else if (isLikeFilter(value)) {
+            predicates.add(buildLikePredicate(criteriaBuilder, criteriaQuery, from, child.getKey(), value));
+        } else if ("isTrue".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value)) {
+            predicates.add(criteriaBuilder.isTrue(from.get(child.getKey())));
+        } else if ("isFalse".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
+            predicates.add(criteriaBuilder.isFalse(from.get(child.getKey())));
+        } else if (isEnumFilter(child.getKey(), value, parent)) {
+            predicates.add(criteriaBuilder.equal(from.get(child.getKey()), convertEnumToInt(child.getKey(), value, parent)));
+        } else if (isUUIDFilter(child.getKey(), value, parent)) {
+            predicates.add(criteriaBuilder.equal(from.get(child.getKey()), UUID.fromString(value)));
+        } else {
+            predicates.add(criteriaBuilder.equal(from.get(child.getKey()), value));
+        }
+    }
+    
+    protected Boolean isEnumFilter(String key, String value, TreeNodeField<String, Set<String>> tnf) {
+		for (Field field : getAllFields(entityClass)) {
+		    
+		    if(tnf != null){
+		        
+		        if(field.getName().equalsIgnoreCase(tnf.getKey())){
+		            try{
+    		            Class<?> c = Class.forName(field.getType().getName());
+    		            for(Field field2ndLevel : getAllFields(c)) {
+    		                if (key.equalsIgnoreCase(field2ndLevel.getName())) {
+    		                    return field2ndLevel.getType().isEnum();
+    		                }
+    		            }
+		            }
+		            catch (IllegalArgumentException | ClassNotFoundException | SecurityException e) {
+		                throw new DemoiselleCrudException("Não foi possível verificar se campo é do tipo 'ENUM'", e);
+		            }
+		        }
+		    }
+		    else if (key.equalsIgnoreCase(field.getName())) {
 				return field.getType().isEnum();
-			}
+		    }
 		}
 
-		return false;
+		return Boolean.FALSE;
 	}
+    
+    protected Boolean isUUIDFilter(String key, String value, TreeNodeField<String, Set<String>> tnf) {
+        for (Field field: getAllFields(entityClass)) {
+            
+            if(tnf != null){
+                
+                if(field.getName().equalsIgnoreCase(tnf.getKey())){
+                    try{
+                        Class<?> c = Class.forName(field.getType().getName());
+                        for(Field field2ndLevel : getAllFields(c)) {
+                            if (key.equalsIgnoreCase(field2ndLevel.getName())) {
+                                return field2ndLevel.getType().isAssignableFrom(UUID.class);
+                            }
+                        }
+                    }
+                    catch (IllegalArgumentException | ClassNotFoundException | SecurityException e) {
+                        throw new DemoiselleCrudException("Não foi possível verificar se campo é do tipo 'UUID'", e);
+                    }
+                }
+            }
+            else if (key.equalsIgnoreCase(field.getName())) {
+                return field.getType().isAssignableFrom(UUID.class);
+            }
+        }
+        
+        return Boolean.FALSE;
+    }
 
-	protected int convertEnumToInt(String key, String value) {
-		Field[] fields = entityClass.getDeclaredFields();
-		try {
-
-			for (Field field : fields) {
+	protected Integer convertEnumToInt(String key, String value, TreeNodeField<String, Set<String>> tnf) {
+		for (Field field : getAllFields(entityClass)) {
+		    
+		    if(tnf != null){
+                
+                if(field.getName().equalsIgnoreCase(tnf.getKey())){
+                    try {
+                        Class<?> c = Class.forName(field.getType().getName());
+                        
+                        for(Field field2ndLevel : getAllFields(c)) {
+                            if (key.equalsIgnoreCase(field2ndLevel.getName()) && field2ndLevel.getType().isEnum()) {
+                                Integer enumResult = getEnumOrdinal(field2ndLevel, value);
+                                if(enumResult != null) {
+                                    return enumResult;
+                                }                            
+                            }
+                        }
+                    }
+                    catch (IllegalArgumentException | ClassNotFoundException | SecurityException e) {
+                        throw new DemoiselleCrudException("Não foi possível realizar a conversão de Enum para Integer", e);
+                    }
+                }
+            }
+            else{   
+                
 				if (key.equals(field.getName())) {
 					if (field.getType().isEnum()) {
-						Class<?> c = Class.forName(field.getType().getName());
-						Object[] objects = c.getEnumConstants();
-						for (Object obj : objects) {
-							if (obj.toString().equalsIgnoreCase(value))
-								return ((Enum<?>)obj).ordinal();							
+						Integer enumResult = getEnumOrdinal(field, value);
+						if(enumResult != null) {
+						    return enumResult;
 						}
-					} else {
-						throw new DemoiselleCrudException("Não foi possível consultar");	
+					} 
+					else {
+					    throw new DemoiselleCrudException("Não foi possível verificar se campo é do tipo 'ENUM'");	
 					}
-				}
-			}
-			
-			// If doesnt find any constant throws
-			throw new DemoiselleCrudException("Não foi possível encontrar o valor [%s] nas constantes".replace("%s", value));
-			
-		} catch (IllegalArgumentException | ClassNotFoundException | SecurityException e) {
-			throw new DemoiselleCrudException("Não foi possível consultar", e);
-		}		
+				} 
+            }
+		}
+		
+		// If doesnt find any constant throws
+		throw new DemoiselleCrudException("Não foi possível encontrar o valor [%s] nas constantes".replace("%s", value));
 		
 	}
+	
+	private Integer getEnumOrdinal(Field field, String value) {
+	    
+	    try {
+    	    Class<?> c = Class.forName(field.getType().getName());
+            for (Object obj : c.getEnumConstants()) {
+                if (value.equalsIgnoreCase(obj.toString())){
+                    return ((Enum<?>)obj).ordinal();        
+                }
+            }
+	    } catch (IllegalArgumentException | ClassNotFoundException | SecurityException e) {
+            throw new DemoiselleCrudException("Não foi possível realizar a conversão de Enum para Integer", e);
+        }
+	    
+	    return null;
+	}
+	
+	private List<Field> getAllFields(Class<?> clazz){
+	    List<Field> fields = new ArrayList<>();
+	    return CrudUtilHelper.getAllFields(fields, clazz);
+	}
 
-    protected boolean isLikeFilter(String key, String value) {
+    protected Boolean isLikeFilter(String value) {
         return value.startsWith("*") || value.endsWith("*");
     }
 
@@ -373,4 +442,17 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             CriteriaBuilder criteriaBuilder, Root<T> root) {
         return new Predicate[]{};
     }
+
+    public PaginationHelperConfig getPaginationConfig() {
+        return paginationConfig;
+    }
+
+    public DemoiselleRequestContext getDrc() {
+        return drc;
+    }
+
+    public Class<T> getEntityClass() {
+        return entityClass;
+    }
+        
 }

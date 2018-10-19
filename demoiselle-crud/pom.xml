@@ -29,7 +29,6 @@
                <encoding>UTF-8</encoding>
             </configuration>
          </plugin>
-<!-- 
          <plugin>
             <groupId>org.codehaus.gmavenplus</groupId>
             <artifactId>gmavenplus-plugin</artifactId>
@@ -53,7 +52,6 @@
                </dependency>
             </dependencies>
          </plugin>
- -->
          <!-- Optional -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
