@@ -32,6 +32,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.core.MultivaluedMap;
@@ -43,6 +44,7 @@ import org.demoiselle.jee.crud.exception.DemoiselleCrudException;
 import org.demoiselle.jee.crud.pagination.PaginationHelperConfig;
 import org.demoiselle.jee.crud.pagination.ResultSet;
 import org.demoiselle.jee.crud.sort.CrudSort;
+import org.demoiselle.jee.crud.sort.SortModel;
 
 //TODO CLF revisar
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
@@ -236,16 +238,26 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
             drc.getSorts().stream().forEachOrdered(sortModel -> {
 
-                if (sortModel.getType().equals(CrudSort.ASC)) {
-                    orders.add(criteriaBuilder.asc(root.get(sortModel.getField())));
+            	if (sortModel.getType().equals(CrudSort.ASC)) {
+                    orders.add(criteriaBuilder.asc(buildSortPath(criteriaBuilder, criteriaQuery, root, sortModel)));
                 } else {
-                    orders.add(criteriaBuilder.desc(root.get(sortModel.getField())));
+                    orders.add(criteriaBuilder.desc(buildSortPath(criteriaBuilder, criteriaQuery, root, sortModel)));
                 }
             });
 
             criteriaQuery.orderBy(orders);
         }
 
+    }
+    
+    protected Path<?> buildSortPath(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, Root<T> root, SortModel model) {
+    	if (CrudUtilHelper.hasSubField(model.getField())) {
+    		String[] attrs = model.getField().split("[()]");
+    		//
+    		return root.get(attrs[0]).get(attrs[1]);
+    	} else {
+    		return root.get(model.getField());
+    	}
     }
 
     protected Predicate[] buildPredicates(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, Root<T> root) {
