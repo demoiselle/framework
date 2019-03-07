@@ -40,6 +40,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Extension;
 
+import br.gov.frameworkdemoiselle.context.CustomContext;
 import br.gov.frameworkdemoiselle.context.ConversationContext;
 import br.gov.frameworkdemoiselle.context.RequestContext;
 import br.gov.frameworkdemoiselle.context.SessionContext;
@@ -55,10 +56,10 @@ public class SeBootstrap implements Extension {
 		ViewContext viewContext = Beans.getReference(ViewContext.class);
 		ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
 		
-		requestContext.activate();
-		sessionContext.activate();
-		viewContext.activate();
-		conversationContext.activate();
+		activate(requestContext);
+		activate(sessionContext);
+		activate(viewContext);
+		activate(conversationContext);
 	}
 
 	public void removeContexts(@Observes AfterShutdownProccess event) {
@@ -67,9 +68,21 @@ public class SeBootstrap implements Extension {
 		ViewContext viewContext = Beans.getReference(ViewContext.class);
 		ConversationContext conversationContext = Beans.getReference(ConversationContext.class);
 		
-		requestContext.deactivate();
-		sessionContext.deactivate();
-		viewContext.deactivate();
-		conversationContext.activate();
+		deactivate(requestContext);
+		deactivate(sessionContext);
+		deactivate(viewContext);
+		activate(conversationContext);
+	}
+
+	private void activate(CustomContext context) {
+		if(context != null) {
+			context.activate();
+		}
+	}
+
+	private void deactivate(CustomContext context) {
+		if(context != null) {
+			context.deactivate();
+		}
 	}
 }
