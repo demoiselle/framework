@@ -54,7 +54,8 @@ public class CrudUtilHelper {
     public static void checkIfExistField(Class<?> targetClass, String field) {
         if (targetClass != null) {
             do {
-                Field[] fields = targetClass.getDeclaredFields();
+                List<Field> fields = new ArrayList<>();
+                getAllFields(fields, targetClass);
                 for (Field f : fields) {
                     if (f.getName().equalsIgnoreCase(field)) {
                         return;
@@ -65,6 +66,36 @@ public class CrudUtilHelper {
             throw new IllegalArgumentException();
         }
     }
+    
+    /**
+     * 
+     * Collect all fields from 'type' variable.
+     * 
+     * https://stackoverflow.com/questions/1042798/retrieving-the-inherited-attribute-names-values-using-java-reflection
+     * 
+     * @param fields
+     * @param type
+     * @return
+     */
+    public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
+        fields.addAll(Arrays.asList(type.getDeclaredFields()));
+
+        if (type.getSuperclass() != null) {
+            getAllFields(fields, type.getSuperclass());
+        }
+
+        return fields;
+    }
+    
+    /**
+     * @param targetClass
+     * @param name
+     * @return
+     */
+    public static Field getField(Class<?> targetClass, String name) {
+        return getAllFields(new ArrayList<Field>(), targetClass).stream().filter( it -> it.getName().equals(name)).findAny().orElse(null);
+    }
+
 
     /**
      * Given a string like 'field1,field2(subField1,subField2)' this method will
@@ -316,7 +347,7 @@ public class CrudUtilHelper {
 
     public static String getMethodAnnotatedWithID(Class<?> targetClass) {    	
     	String name = null;
-    	for (Field field :  targetClass.getDeclaredFields() ) {
+    	for (Field field :  getAllFields(new ArrayList<Field>(), targetClass)) {
             if (field.isAnnotationPresent(Id.class)) {
             	name = field.getName();
             	break;
