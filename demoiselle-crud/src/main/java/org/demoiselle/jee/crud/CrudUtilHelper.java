@@ -338,7 +338,7 @@ public class CrudUtilHelper {
 
     }
 
-    private static Boolean hasSubField(String field) {
+    public static Boolean hasSubField(String field) {
         Pattern patternLevels = Pattern.compile("\\([^)]*\\)*");
         Matcher matcher = patternLevels.matcher(field);
 

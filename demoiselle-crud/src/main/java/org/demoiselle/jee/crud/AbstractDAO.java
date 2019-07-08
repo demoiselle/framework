@@ -8,11 +8,15 @@ package org.demoiselle.jee.crud;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -30,16 +34,19 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.exception.DemoiselleCrudException;
 import org.demoiselle.jee.crud.pagination.PaginationHelperConfig;
 import org.demoiselle.jee.crud.pagination.ResultSet;
 import org.demoiselle.jee.crud.sort.CrudSort;
+import org.demoiselle.jee.crud.sort.SortModel;
 
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public abstract class AbstractDAO<T, I> implements Crud<T, I> {
@@ -55,6 +62,12 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     protected abstract EntityManager getEntityManager();
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
+    
+	private static final String ISO8601_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+
+	private static final String ISO8601_UTC_PATTERN = ISO8601_PATTERN + "'Z'";
+
+	private static final TimeZone timeZoneUTC = TimeZone.getTimeZone("UTC");
 
     @SuppressWarnings("unchecked")
     public AbstractDAO() {
@@ -204,15 +217,25 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             drc.getSorts().stream().forEachOrdered(sortModel -> {
 
                 if (sortModel.getType().equals(CrudSort.ASC)) {
-                    orders.add(criteriaBuilder.asc(root.get(sortModel.getField())));
+                	orders.add(criteriaBuilder.asc(buildSortPath(criteriaBuilder, criteriaQuery, root, sortModel)));
                 } else {
-                    orders.add(criteriaBuilder.desc(root.get(sortModel.getField())));
+                	orders.add(criteriaBuilder.desc(buildSortPath(criteriaBuilder, criteriaQuery, root, sortModel)));
                 }
             });
 
             criteriaQuery.orderBy(orders);
         }
 
+    }
+    
+    protected Path<?> buildSortPath(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery, Root<T> root, SortModel model) {
+    	if (CrudUtilHelper.hasSubField(model.getField())) {
+    		String[] attrs = model.getField().split("[()]");
+    		//
+    		return root.get(attrs[0]).get(attrs[1]);
+    	} else {
+    		return root.get(model.getField());
+    	}
     }
 
     protected Predicate[] buildPredicates(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, Root<T> root) {
@@ -268,12 +291,16 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             predicates.add(criteriaBuilder.isEmpty(from.get(child.getKey())));
         } else if (isLikeFilter(value)) {
             predicates.add(buildLikePredicate(criteriaBuilder, criteriaQuery, from, child.getKey(), value));
+        } else if (isRelationalFilter(child.getKey(), value)) {
+        	predicates.add(buildRelationalPredicate(criteriaBuilder, criteriaQuery, from, child.getKey(), value, parent));
         } else if ("isTrue".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value)) {
             predicates.add(criteriaBuilder.isTrue(from.get(child.getKey())));
         } else if ("isFalse".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
             predicates.add(criteriaBuilder.isFalse(from.get(child.getKey())));
         } else if (isEnumFilter(child.getKey(), value, parent)) {
             predicates.add(criteriaBuilder.equal(from.get(child.getKey()), convertEnumToInt(child.getKey(), value, parent)));
+        } else if (isDateFilter(child.getKey(), value)) {
+        	predicates.add(criteriaBuilder.equal(from.get(child.getKey()), convertStringToDate(child.getKey(), value)));            
         } else if (isUUIDFilter(child.getKey(), value, parent)) {
             predicates.add(criteriaBuilder.equal(from.get(child.getKey()), UUID.fromString(value)));
         } else {
@@ -399,9 +426,46 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 	    List<Field> fields = new ArrayList<>();
 	    return CrudUtilHelper.getAllFields(fields, clazz);
 	}
+	
+	protected Date convertStringToDate(String key, String value) {
+		final String pattern = getDatePattern(value);
+		final SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+		//
+		if (ISO8601_UTC_PATTERN.equals(pattern)) {
+			formatter.setTimeZone(timeZoneUTC);
+		}
+		//
+		try {
+			return formatter.parse(value);
+		} catch (final ParseException e) {
+			throw new DemoiselleCrudException(String.format("Não foi possível converter a string (%s) para uma data", value), e);
+		}
+	}
 
     protected Boolean isLikeFilter(String value) {
         return value.startsWith("*") || value.endsWith("*");
+    }
+    
+    protected boolean isRelationalFilter(String key, String value) {
+        return value.startsWith(">") || value.startsWith("<");
+    }
+
+    protected boolean isDateFilter(String key, String value) {
+    	try {
+			DateUtils.parseDate(value, getDatePattern(value));
+			//
+			return true;
+		} catch (final ParseException e) {
+			return false;
+		}
+    }
+
+    protected String getDatePattern(String date) {
+    	if (date.endsWith("Z")) {
+    		return ISO8601_UTC_PATTERN;
+    	} else {
+    		return ISO8601_PATTERN;
+    	}
     }
 
     protected Predicate buildLikePredicate(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, From<?, ?> root, String key, String value) {
@@ -416,6 +480,33 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         //
         return criteriaBuilder.like(criteriaBuilder.lower(root.get(key)), pattern.toLowerCase());
     }
+    
+    @SuppressWarnings("unchecked")
+	protected Predicate buildRelationalPredicate(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, From<?, ?> root, String key, String value, TreeNodeField<String, Set<String>> tnf) {
+		final String pattern = value.trim();
+		//
+		if (pattern.startsWith(">=")) {
+			return criteriaBuilder.greaterThanOrEqualTo(root.get(key), (Comparable<Object>)convertToAppropriateType(key, pattern.substring(2), tnf));
+		} else if (pattern.startsWith("<=")) {
+			return criteriaBuilder.lessThanOrEqualTo(root.get(key), (Comparable<Object>)convertToAppropriateType(key, pattern.substring(2), tnf));
+		} else if (pattern.startsWith(">")) {
+			return criteriaBuilder.greaterThan(root.get(key), (Comparable<Object>)convertToAppropriateType(key, pattern.substring(1), tnf));
+		} else if (pattern.startsWith("<")) {
+			return criteriaBuilder.lessThan(root.get(key), (Comparable<Object>)convertToAppropriateType(key, pattern.substring(1), tnf));
+		} else {
+			throw new DemoiselleCrudException("Operador relacional não encontrado no filtro");
+		}
+	}
+
+	protected Comparable<?> convertToAppropriateType(String key, String value, TreeNodeField<String, Set<String>> tnf) {
+		if (isEnumFilter(key, value, tnf)) {
+			return convertEnumToInt(key, value, tnf);
+		} else if (isDateFilter(key, value)) {
+			return convertStringToDate(key, value);
+		} else {
+			return value;
+		}
+	}
 
     protected Integer getMaxResult() {
         if (drc.getLimit() == null || drc.getOffset() == null) {
