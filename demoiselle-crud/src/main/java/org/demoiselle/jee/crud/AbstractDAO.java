@@ -244,8 +244,6 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         if (drc.getFilters() != null) {
             drc.getFilters().getChildren().stream().forEach(child -> {
 
-                List<Predicate> predicatesToBuild = new LinkedList<>();
-
                 /*
                  * If the child doesnt child the element is on fist level.
                  * 
@@ -253,11 +251,13 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                  * 
                  */
                 if (child.getChildren().isEmpty()) {
+                	List<Predicate> predicatesToBuild = new LinkedList<>();
                     
                     child.getValue().stream().forEach(value -> {
                         fillPredicates(predicatesToBuild, root, criteriaBuilder, criteriaQuery, child, value, null);
                     });
                     
+                    predicates.add(criteriaBuilder.or(predicatesToBuild.toArray(new Predicate[]{})));
                 }
                 else{
 
@@ -269,14 +269,15 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                     
                     Join<?, ?> join = root.join(child.getKey());
                     child.getChildren().stream().forEach( child2ndLevel -> {
+                    	List<Predicate> predicatesToBuild = new LinkedList<>();
 
                         child2ndLevel.getValue().stream().forEach(value -> {
                             fillPredicates(predicatesToBuild, join, criteriaBuilder, criteriaQuery, child2ndLevel, value, child);
                         });
+                        
+                        predicates.add(criteriaBuilder.or(predicatesToBuild.toArray(new Predicate[]{})));
                     });
                 } 
-                
-                predicates.add(criteriaBuilder.or(predicatesToBuild.toArray(new Predicate[]{})));
             });
         }
 
