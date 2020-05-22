@@ -11,6 +11,7 @@ import java.lang.reflect.ParameterizedType;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,12 +32,14 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.commons.lang3.time.DateUtils;
@@ -266,22 +269,53 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                      * 
                      * ?category(description)=test
                      */
-                    
-                    Join<?, ?> join = root.join(child.getKey());
-                    child.getChildren().stream().forEach( child2ndLevel -> {
-                    	List<Predicate> predicatesToBuild = new LinkedList<>();
-
-                        child2ndLevel.getValue().stream().forEach(value -> {
-                            fillPredicates(predicatesToBuild, join, criteriaBuilder, criteriaQuery, child2ndLevel, value, child);
-                        });
-                        
-                        predicates.add(criteriaBuilder.or(predicatesToBuild.toArray(new Predicate[]{})));
-                    });
+                	
+                    if (isCollectionField(child.getKey())) {
+                    	/*
+                    	 * Builds an Exists predicate for filters on entity collections fields. 
+                    	 */
+                    	predicates.add(buildExistsPredicate(criteriaBuilder, criteriaQuery, root, child));
+                    } else {
+                    	Join<?, ?> join = root.join(child.getKey());
+                    	
+                    	child.getChildren().stream().forEach( child2ndLevel -> {
+                    		List<Predicate> predicatesToBuild = new LinkedList<>();
+                    		
+                    		child2ndLevel.getValue().stream().forEach(value -> {
+                    			fillPredicates(predicatesToBuild, join, criteriaBuilder, criteriaQuery, child2ndLevel, value, child);
+                    		});
+                    		
+                    		predicates.add(criteriaBuilder.or(predicatesToBuild.toArray(new Predicate[]{})));
+                    	});
+                    }
                 } 
             });
         }
 
         return predicates.toArray(new Predicate[]{});
+    }
+    
+    @SuppressWarnings({"rawtypes", "unchecked"})
+	private Predicate buildExistsPredicate(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, Root<T> root, TreeNodeField<String, Set<String>> parent) {
+		Subquery<?> subquery = criteriaQuery.subquery(Integer.class);
+		Root<?> subqueryRoot = subquery.correlate(root);
+		Join<?, ?> join = subqueryRoot.join(parent.getKey());
+
+		List<Predicate> subqueryPredicates = new LinkedList<>();
+
+		parent.getChildren().stream().forEach(child2ndLevel -> {
+			List<Predicate> predicatesToBuild = new LinkedList<>();
+
+			child2ndLevel.getValue().stream().forEach(value -> {
+				fillPredicates(predicatesToBuild, join, criteriaBuilder, criteriaQuery, child2ndLevel, value, parent);
+			});
+
+			subqueryPredicates.add(criteriaBuilder.or(predicatesToBuild.toArray(new Predicate[] {})));
+		});
+
+		subquery.select((Expression)criteriaBuilder.literal(1)).where(subqueryPredicates.toArray(new Predicate[] {}));
+
+		return criteriaBuilder.exists(subquery);
     }
     
     private void fillPredicates(List<Predicate> predicates, From<?, ?>  from, CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, TreeNodeField<String, Set<String>> child, String value, TreeNodeField<String, Set<String>> parent) {
@@ -546,5 +580,9 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     public Class<T> getEntityClass() {
         return entityClass;
     }
-        
+    
+    private boolean isCollectionField(String name) {
+    	return getAllFields(getEntityClass()).stream()
+    		.anyMatch(f -> f.getName().equalsIgnoreCase(name) && Collection.class.isAssignableFrom(f.getType()));
+    }
 }

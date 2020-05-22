@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -315,7 +316,13 @@ public class CrudUtilHelper {
                     throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(leaf.getKey(), targetClass.getName()));
                 }
 
-                Class<?> fieldClazz = fieldMaster.getType();
+                Class<?> fieldClazz;
+                
+                if (Collection.class.isAssignableFrom(fieldMaster.getType())) {
+                	fieldClazz = (Class<?>)((ParameterizedType)fieldMaster.getGenericType()).getActualTypeArguments()[0];
+                } else {
+                	fieldClazz = fieldMaster.getType();
+                }
 
                 leaf.getChildren().forEach((subLeaf) -> {
                     try {
