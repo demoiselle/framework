@@ -328,6 +328,8 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             predicates.add(buildLikePredicate(criteriaBuilder, criteriaQuery, from, child.getKey(), value));
         } else if (isRelationalFilter(child.getKey(), value)) {
         	predicates.add(buildRelationalPredicate(criteriaBuilder, criteriaQuery, from, child.getKey(), value, parent));
+        } else if (isIntervalFilter(value)) {
+            predicates.add(buildIntervalPredicate(criteriaBuilder, criteriaQuery, from, child.getKey(), value, parent));
         } else if ("isTrue".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value)) {
             predicates.add(criteriaBuilder.isTrue(from.get(child.getKey())));
         } else if ("isFalse".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
@@ -481,6 +483,10 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         return value.startsWith("*") || value.endsWith("*");
     }
     
+    protected Boolean isIntervalFilter(String value) {
+        return value.matches("^(\\(|\\[).+\\.{3}.+(\\)|\\])$"); //e.g. [2018...2019]
+    }
+    
     protected boolean isRelationalFilter(String key, String value) {
         return value.startsWith(">") || value.startsWith("<");
     }
@@ -514,6 +520,32 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         }
         //
         return criteriaBuilder.like(criteriaBuilder.lower(root.get(key)), pattern.toLowerCase());
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected Predicate buildIntervalPredicate(CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, From<?, ?> root, String key, String value, TreeNodeField<String, Set<String>> tnf) {
+        final String pattern = value.trim();
+        final String op1 = pattern.substring(0, 1);
+        final String op2 = pattern.substring(pattern.length() -1);
+        final String value1 = pattern.substring(1, pattern.indexOf("..."));
+        final String value2 = pattern.substring(pattern.indexOf("...") + 3, pattern.length() -1);
+        //
+        final Predicate p1;
+        final Predicate p2;
+        //
+        if ("[".equals(op1)) {
+        	p1 = criteriaBuilder.greaterThanOrEqualTo(root.get(key), (Comparable<Object>)convertToAppropriateType(key, value1, tnf));
+        } else {
+        	p1 = criteriaBuilder.greaterThan(root.get(key), (Comparable<Object>)convertToAppropriateType(key, value1, tnf));
+        }
+        //
+        if ("]".equals(op2)) {
+        	p2 = criteriaBuilder.lessThanOrEqualTo(root.get(key), (Comparable<Object>)convertToAppropriateType(key, value2, tnf));
+        } else {
+        	p2 = criteriaBuilder.lessThan(root.get(key), (Comparable<Object>)convertToAppropriateType(key, value2, tnf));
+        }
+        //
+        return criteriaBuilder.and(p1, p2);
     }
     
     @SuppressWarnings("unchecked")
