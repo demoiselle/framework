@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -24,6 +25,7 @@ import org.demoiselle.jee.crud.CrudUtilHelper;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
 import org.demoiselle.jee.crud.ReservedKeyWords;
 import org.demoiselle.jee.crud.Search;
+import org.demoiselle.jee.crud.TreeNodeField;
 
 /**
  * Class responsible for managing the 'sort' parameter comes from Url Query
@@ -137,12 +139,17 @@ public class SortHelper {
                 });
             }
         }
-
-        // Validate if the fields are valid
-        drc.getSorts().stream().forEach(sortModel -> {
-            CrudUtilHelper.checkIfExistField(CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()), sortModel.getField());
-        });
-
+        
+        TreeNodeField<String, Set<String>> tnf = new TreeNodeField<>(CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()).getName(), ConcurrentHashMap.newKeySet(1));
+        
+     // Validate if the fields are valid, using same idea for filters validation
+        if (!drc.getSorts().isEmpty()) {
+        	drc.getSorts().stream().forEach( v -> 
+                CrudUtilHelper.fillLeafTreeNodeField(tnf, v.getField(), null)
+            );
+            
+            CrudUtilHelper.validateFields(tnf, this.resourceInfo, this.crudMessage);
+        }
     }
 
     private List<String> getValuesFromQueryString(String key) {
