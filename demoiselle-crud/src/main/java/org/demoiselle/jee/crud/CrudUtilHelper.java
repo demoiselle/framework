@@ -10,11 +10,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import javax.persistence.Id;
 
 import javax.ws.rs.container.ResourceInfo;
@@ -114,13 +117,26 @@ public class CrudUtilHelper {
         int lastComma = 0;
         int lastPosition = 0;
         String subField = "";
+        
+        int escapedCommas = 0;
 
         char fieldsArray[] = fields.toCharArray();
 
         for (int i = 0; i < fieldsArray.length; i++) {
 
             char letter = fieldsArray[i];
-
+            char nextLetter = i + 1 < fieldsArray.length ? fieldsArray[i + 1] : Character.MIN_VALUE;
+            
+            if (letter == ',') {
+            	if (nextLetter == ',' && escapedCommas == 0) {
+            		escapedCommas++;
+            		continue;
+            	} else if (escapedCommas > 0) {
+            		escapedCommas = 0;
+            		continue;
+            	}
+            }
+            
             // Find util the next ',' character
             if (letter == ',') {
                 lastComma = i;
@@ -177,7 +193,7 @@ public class CrudUtilHelper {
             results.add(subField);
         }
 
-        return results;
+        return results.stream().map(s -> s.replace(",,", ",")).collect(Collectors.toList());
     }
     
     /**
@@ -315,7 +331,13 @@ public class CrudUtilHelper {
                     throw new IllegalArgumentException(crudMessage.fieldRequestDoesNotExistsOnObject(leaf.getKey(), targetClass.getName()));
                 }
 
-                Class<?> fieldClazz = fieldMaster.getType();
+                Class<?> fieldClazz;
+                
+                if (Collection.class.isAssignableFrom(fieldMaster.getType())) {
+                	fieldClazz = (Class<?>)((ParameterizedType)fieldMaster.getGenericType()).getActualTypeArguments()[0];
+                } else {
+                	fieldClazz = fieldMaster.getType();
+                }
 
                 leaf.getChildren().forEach((subLeaf) -> {
                     try {
@@ -338,7 +360,7 @@ public class CrudUtilHelper {
 
     }
 
-    private static Boolean hasSubField(String field) {
+    public static Boolean hasSubField(String field) {
         Pattern patternLevels = Pattern.compile("\\([^)]*\\)*");
         Matcher matcher = patternLevels.matcher(field);
 
