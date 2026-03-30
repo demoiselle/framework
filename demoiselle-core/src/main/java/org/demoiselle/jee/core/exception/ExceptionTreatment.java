@@ -6,8 +6,8 @@
  */
 package org.demoiselle.jee.core.exception;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Response;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This interface defines a method to treat @Exception classes in Framework.

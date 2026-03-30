@@ -9,7 +9,7 @@ package org.demoiselle.jee.configuration.extractor.impl;
 import java.lang.reflect.Field;
 import java.net.URL;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 import org.apache.commons.configuration2.Configuration;
 import org.demoiselle.jee.configuration.ConfigurationType;

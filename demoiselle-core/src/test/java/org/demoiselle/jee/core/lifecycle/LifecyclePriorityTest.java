@@ -6,25 +6,28 @@
  */
 package org.demoiselle.jee.core.lifecycle;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
 
-import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.lifecycle.model.PriorityLifecycleModelTest;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddExtensions;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(CdiTestRunner.class)
-public class LifecyclePriorityTest {
+@EnableAutoWeld
+@AddBeanClasses({PriorityLifecycleModelTest.class, org.demoiselle.jee.core.message.DemoiselleMessage.class})
+@AddExtensions({LifecycleBootstrap.class, org.demoiselle.jee.core.message.MessageBundleExtension.class})
+class LifecyclePriorityTest {
 
     @Inject
     private PriorityLifecycleModelTest model;
@@ -37,13 +40,13 @@ public class LifecyclePriorityTest {
     @Initialized(ApplicationScoped.class)
     private Event<Object> eventInitialized;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         this.model.getNumbers().clear();
     }
 
     @Test
-    public void methodWithStartupAnnotationsShouldBeExecutated() {
+    void methodWithStartupAnnotationsShouldBeExecutated() {
 
         this.eventInitialized.fire(new Object());
 
@@ -57,7 +60,7 @@ public class LifecyclePriorityTest {
     }
 
     @Test
-    public void methodWithShutdownAnnotationShouldBeExecutated() {
+    void methodWithShutdownAnnotationShouldBeExecutated() {
 
         this.eventDestroyed.fire(new Object());
 

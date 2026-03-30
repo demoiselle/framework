@@ -6,52 +6,46 @@
  */
 package org.demoiselle.jee.security;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
-import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.demoiselle.jee.configuration.ConfigurationBootstrap;
+import org.demoiselle.jee.configuration.ConfigurationLoader;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddEnabledInterceptors;
+import org.jboss.weld.junit5.auto.AddExtensions;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author SERPRO
  */
-@RunWith(CdiTestRunner.class)
-public class DemoiselleSecurityConfigTest {
+@EnableAutoWeld
+@AddExtensions({
+    ConfigurationBootstrap.class,
+    org.demoiselle.jee.core.message.MessageBundleExtension.class
+})
+@AddEnabledInterceptors(org.demoiselle.jee.configuration.ConfigurationInterceptor.class)
+@AddBeanClasses({
+    DemoiselleSecurityConfig.class,
+    ConfigurationLoader.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationStringValueExtractor.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationPrimitiveOrWrapperValueExtractor.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationMapValueExtractor.class,
+    org.demoiselle.jee.configuration.message.ConfigurationMessage.class
+})
+class DemoiselleSecurityConfigTest {
 
     @Inject
     private DemoiselleSecurityConfig instance;
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    public DemoiselleSecurityConfigTest() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of isCorsEnabled method, of class DemoiselleSecurityConfig.
      */
     @Test
-    public void test11() {
+    void test11() {
         boolean expResult = true;
         boolean result = instance.isCorsEnabled();
         assertEquals(expResult, result);

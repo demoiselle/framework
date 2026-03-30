@@ -6,13 +6,13 @@
  */
 package org.demoiselle.jee.rest.filter;
 
-import javax.annotation.Priority;
-import javax.inject.Inject;
-import static javax.ws.rs.Priorities.HEADER_DECORATOR;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.ext.Provider;
+import jakarta.annotation.Priority;
+import jakarta.inject.Inject;
+import static jakarta.ws.rs.Priorities.HEADER_DECORATOR;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.core.message.DemoiselleMessage;
 

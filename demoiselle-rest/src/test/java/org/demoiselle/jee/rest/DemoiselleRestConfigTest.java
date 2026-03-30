@@ -6,65 +6,56 @@
  */
 package org.demoiselle.jee.rest;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
-import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.demoiselle.jee.configuration.ConfigurationLoader;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddEnabledInterceptors;
+import org.jboss.weld.junit5.auto.AddExtensions;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author SERPRO
  */
-@RunWith(CdiTestRunner.class)
-public class DemoiselleRestConfigTest {
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
+@EnableAutoWeld
+@AddExtensions({
+    org.demoiselle.jee.configuration.ConfigurationBootstrap.class,
+    org.demoiselle.jee.core.message.MessageBundleExtension.class
+})
+@AddEnabledInterceptors(org.demoiselle.jee.configuration.ConfigurationInterceptor.class)
+@AddBeanClasses({
+    DemoiselleRestConfig.class,
+    ConfigurationLoader.class,
+    org.demoiselle.jee.configuration.message.ConfigurationMessage.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationStringValueExtractor.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationPrimitiveOrWrapperValueExtractor.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationMapValueExtractor.class
+})
+class DemoiselleRestConfigTest {
 
     @Inject
     private DemoiselleRestConfig instance;
-
-    public DemoiselleRestConfigTest() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of isErrorDetails method, of class DemoiselleRestConfig.
      */
     @Test
-    public void test1() {
-        
+    void testShowErrorDetailsDefaultIsTrue() {
         boolean expResult = instance.isShowErrorDetails();
-        assertEquals(expResult, true);
-    } 
-    
+        assertEquals(true, expResult);
+    }
+
     /**
-     * Test of setshowErrorDetails method, of class DemoiselleRestConfig.
+     * Test of setShowErrorDetails method, of class DemoiselleRestConfig.
      */
     @Test
-    public void test2() {        
-    	instance.setShowErrorDetails(false);
+    void testSetShowErrorDetails() {
+        instance.setShowErrorDetails(false);
         boolean expResult = instance.isShowErrorDetails();
-        
-        assertEquals(expResult, false);
+        assertEquals(false, expResult);
     }
 }

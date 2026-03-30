@@ -6,7 +6,7 @@
  */
 package org.demoiselle.jee.crud;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;

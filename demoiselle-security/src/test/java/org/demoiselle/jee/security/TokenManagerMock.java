@@ -7,13 +7,13 @@
 package org.demoiselle.jee.security;
 
 import static java.util.UUID.randomUUID;
-import static javax.ws.rs.Priorities.AUTHENTICATION;
+import static jakarta.ws.rs.Priorities.AUTHENTICATION;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
@@ -33,10 +33,6 @@ public class TokenManagerMock implements TokenManager {
     @Inject
     private Token token;
 
-    /**
-     *
-     * @return
-     */
     @Override
     public DemoiselleUser getUser() {
         if (token.getKey() != null && !token.getKey().isEmpty()) {
@@ -45,10 +41,6 @@ public class TokenManagerMock implements TokenManager {
         return null;
     }
 
-    /**
-     *
-     * @param user
-     */
     @Override
     public void setUser(DemoiselleUser user) {
         token.setKey(null);
@@ -66,10 +58,6 @@ public class TokenManagerMock implements TokenManager {
         token.setType(TokenType.TOKEN);
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public void setUser(DemoiselleUser user, String issuer, String audience) {
         user.addParam("issuer", issuer);

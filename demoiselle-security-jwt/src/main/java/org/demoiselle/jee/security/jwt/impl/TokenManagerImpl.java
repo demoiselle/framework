@@ -6,24 +6,14 @@
  */
 package org.demoiselle.jee.security.jwt.impl;
 
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Priority;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import static javax.ws.rs.Priorities.AUTHORIZATION;
-import javax.ws.rs.core.Response;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import static jakarta.ws.rs.Priorities.AUTHORIZATION;
+import jakarta.ws.rs.core.Response;
 
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
@@ -36,7 +26,6 @@ import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
-import org.jose4j.keys.RsaKeyUtil;
 import org.jose4j.lang.JoseException;
 
 /**
@@ -52,10 +41,8 @@ import org.jose4j.lang.JoseException;
 @Priority(AUTHORIZATION)
 public class TokenManagerImpl implements TokenManager {
 
-    private static PublicKey publicKey;
-    private static PrivateKey privateKey;
-
-    private static final Logger logger = Logger.getLogger(TokenManagerImpl.class.getName());
+    @Inject
+    private KeyPairHolder keyPairHolder;
 
     @Inject
     private Token token;
@@ -68,44 +55,6 @@ public class TokenManagerImpl implements TokenManager {
 
     @Inject
     private DemoiselleSecurityJWTMessages bundle;
-
-    /**
-     * Starts keys that are on file demoiselle.properties that should be in the
-     * resource of your project
-     */
-    @PostConstruct
-    public void init() {
-        if (publicKey == null) {
-
-            try {
-
-                if (config.getType() == null) {
-                    throw new DemoiselleSecurityException(bundle.chooseType(), Response.Status.UNAUTHORIZED.getStatusCode());
-                }
-
-                if (!config.getType().equalsIgnoreCase(bundle.slave()) && !config.getType().equalsIgnoreCase(bundle.master())) {
-                    throw new DemoiselleSecurityException(bundle.notType(), Response.Status.UNAUTHORIZED.getStatusCode());
-                }
-
-                if (config.getType().equalsIgnoreCase(bundle.slave())) {
-                    if (config.getPublicKey() == null || config.getPublicKey().isEmpty()) {
-                        throw new DemoiselleSecurityException(bundle.putKey(), Response.Status.UNAUTHORIZED.getStatusCode());
-                    } else {
-                        publicKey = getPublic();
-                    }
-                }
-
-                if (config.getType().equalsIgnoreCase(bundle.master())) {
-                    privateKey = getPrivate();
-                    publicKey = getPublic();
-                }
-
-            } catch (JoseException | InvalidKeySpecException | NoSuchAlgorithmException ex) {
-                throw new DemoiselleSecurityException(bundle.general(), Response.Status.UNAUTHORIZED.getStatusCode(), ex);
-            }
-
-        }
-    }
 
     /**
      * Pick up the token that is in the request scope and draws the user into
@@ -135,7 +84,7 @@ public class TokenManagerImpl implements TokenManager {
                         .setExpectedIssuer(issuer != null ? issuer : config.getIssuer())
                         .setExpectedAudience(audience != null ? audience : config.getAudience())
                         .setEvaluationTime(org.jose4j.jwt.NumericDate.now())
-                        .setVerificationKey(publicKey)
+                        .setVerificationKey(keyPairHolder.getPublicKey())
                         .build();
                 JwtClaims jwtClaims = jwtConsumer.processToClaims(token.getKey());
                 loggedUser.setIdentity((String) jwtClaims.getClaimValue("identity"));
@@ -193,7 +142,7 @@ public class TokenManagerImpl implements TokenManager {
 
             JsonWebSignature jws = new JsonWebSignature();
             jws.setPayload(claims.toJson());
-            jws.setKey(privateKey);
+            jws.setKey(keyPairHolder.getPrivateKey());
             jws.setKeyIdHeaderValue("demoiselle-security-jwt");
             jws.setAlgorithmHeaderValue(config.getAlgorithmIdentifiers());
             token.setKey(jws.getCompactSerialization());
@@ -215,41 +164,19 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     /**
+     * Clears the JWT token from the request scope.
+     * <p>
+     * Note: JWT tokens are stateless — this method only removes the token
+     * reference from the current request-scoped {@link Token} bean. It does
+     * NOT invalidate the token on the server side. For true revocation,
+     * a server-side token blacklist (e.g., database or cache) is required.
+     * </p>
      *
-     * This method creates public and private keys, RSA 2048bits. When it is not
-     * found in demoiselle.properties the pair is created and written in the
-     * server log to be copied and placed in demoiselle.properties
-     *
-     * @return Private key
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeySpecException
+     * @param user the user to remove (not used directly; the request-scoped token is cleared)
      */
-    private PrivateKey getPrivate() throws NoSuchAlgorithmException, InvalidKeySpecException {
-
-        if (config.getPrivateKey() == null) {
-            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance("RSA");
-            keyGenerator.initialize(2_048);
-            KeyPair kp = keyGenerator.genKeyPair();
-            publicKey = kp.getPublic();
-            privateKey = kp.getPrivate();
-            logger.warning("privateKey=Generated");
-            logger.warning("publicKey=Generated");
-            throw new DemoiselleSecurityException(bundle.putKey(), Response.Status.UNAUTHORIZED.getStatusCode());
-        }
-        byte[] keyBytes = java.util.Base64.getDecoder().decode(config.getPrivateKey().replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", ""));
-        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
-        return kf.generatePrivate(spec);
-    }
-
-    private PublicKey getPublic() throws JoseException, InvalidKeySpecException {
-        RsaKeyUtil rsaKeyUtil = new RsaKeyUtil();
-        return rsaKeyUtil.fromPemEncoded(config.getPublicKey());
-    }
-
     @Override
     public void removeUser(DemoiselleUser user) {
-        throw new UnsupportedOperationException(bundle.notJwt());
+        token.setKey(null);
     }
 
 }

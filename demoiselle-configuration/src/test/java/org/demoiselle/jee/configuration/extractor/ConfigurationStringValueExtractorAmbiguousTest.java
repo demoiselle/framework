@@ -8,7 +8,7 @@ package org.demoiselle.jee.configuration.extractor;
 
 import java.lang.reflect.Field;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 import org.apache.commons.configuration2.Configuration;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;

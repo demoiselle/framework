@@ -6,7 +6,7 @@
  */
 package org.demoiselle.jee.core.lifecycle;
 
-import javax.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
 
 import org.demoiselle.jee.core.lifecycle.annotation.DemoiselleLifecyclePriority;
 

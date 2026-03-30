@@ -6,26 +6,39 @@
  */
 package org.demoiselle.jee.security.token.impl;
 
-import static java.lang.System.out;
-import javax.inject.Inject;
-import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
+import org.demoiselle.jee.security.impl.DemoiselleUserImpl;
+import org.demoiselle.jee.security.impl.TokenImpl;
+import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
+import org.jboss.weld.junit5.auto.ActivateScopes;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddExtensions;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author SERPRO
  */
-@RunWith(CdiTestRunner.class)
-public class TokenManagerImplTest {
+@EnableAutoWeld
+@ActivateScopes(RequestScoped.class)
+@AddExtensions(org.demoiselle.jee.core.message.MessageBundleExtension.class)
+@AddBeanClasses({
+    TokenManagerImpl.class,
+    DemoiselleUserImpl.class,
+    TokenImpl.class,
+    DemoiselleSecurityMessages.class
+})
+class TokenManagerImplTest {
 
     @Inject
     private DemoiselleUser dml;
@@ -33,52 +46,14 @@ public class TokenManagerImplTest {
     @Inject
     private Token token;
 
-    private static String localtoken;
-
     @Inject
     private TokenManager instance;
-
-    /**
-     *
-     */
-    public TokenManagerImplTest() {
-    }
-
-    /**
-     *
-     */
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    /**
-     *
-     */
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    /**
-     *
-     */
-    @Before
-    public void setUp() {
-
-    }
-
-    /**
-     *
-     */
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of setUser method, of class TokenManagerImpl.
      */
     @Test
-    public void test20() {
-        out.println("setUser");
+    void test20() {
         token.setKey("");
         dml.setName("Teste");
         dml.setIdentity("1");
@@ -87,7 +62,6 @@ public class TokenManagerImplTest {
         dml.addPermission("Produto", "Alterar");
         dml.addPermission("Categoria", "Consultar");
         instance.setUser(dml);
-        localtoken = token.getKey();
         assertNotEquals("", token.getKey());
     }
 
@@ -95,26 +69,8 @@ public class TokenManagerImplTest {
      * Test of getUser method, of class TokenManagerImpl.
      */
     @Test
-    public void test21() {
-        out.println("getUser");
-        token.setKey(localtoken);
-        dml.setName("Teste");
-        dml.setIdentity("1");
-        dml.addRole("ADMINISTRATOR");
-        dml.addRole("MANAGER");
-        dml.addPermission("Produto", "Alterar");
-        dml.addPermission("Categoria", "Consultar");
-        String expResult = dml.getIdentity();
-        String result = instance.getUser().getIdentity();
-        assertEquals(expResult, result);
-    }
-
-    /**
-     *
-     */
-    @Test
-    public void test22() {
-        out.println("setUser já existente");
+    void test21() {
+        token.setKey("");
         dml.setName("Teste");
         dml.setIdentity("1");
         dml.addRole("ADMINISTRATOR");
@@ -122,7 +78,27 @@ public class TokenManagerImplTest {
         dml.addPermission("Produto", "Alterar");
         dml.addPermission("Categoria", "Consultar");
         instance.setUser(dml);
-        localtoken = token.getKey();
+        String localtoken = token.getKey();
+
+        token.setKey(localtoken);
+        String expResult = dml.getIdentity();
+        String result = instance.getUser().getIdentity();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of setUser for existing user.
+     */
+    @Test
+    void test22() {
+        dml.setName("Teste");
+        dml.setIdentity("1");
+        dml.addRole("ADMINISTRATOR");
+        dml.addRole("MANAGER");
+        dml.addPermission("Produto", "Alterar");
+        dml.addPermission("Categoria", "Consultar");
+        instance.setUser(dml);
+        String localtoken = token.getKey();
         instance.setUser(dml);
         assertEquals(localtoken, token.getKey());
     }
@@ -131,60 +107,42 @@ public class TokenManagerImplTest {
      * Test of validate method, of class TokenManagerImpl.
      */
     @Test
-    public void test23() {
-        out.println("validate");
-        token.setKey(localtoken);
-        boolean expResult = true;
-        boolean result = instance.validate();
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of getUser method, of class TokenManagerImpl.
-     */
-    @Test
-    public void test24() {
-        out.println("getUserError");
-        dml.setName("Teste2");
-        dml.setIdentity("2");
+    void test23() {
+        dml.setName("Teste");
+        dml.setIdentity("1");
         dml.addRole("ADMINISTRATOR");
-        dml.addRole("MANAGER");
-        dml.addPermission("Produto", "Alterar");
-        dml.addPermission("Categoria", "Consultar");
         instance.setUser(dml);
-        token.setKey(localtoken);
-        DemoiselleUser expResult = dml;
-        DemoiselleUser result = instance.getUser();
-        assertNotEquals(expResult, result);
-    }
-
-    /**
-     * Test of validate method, of class TokenManagerImpl.
-     */
-    @Test
-    public void test25() {
-        out.println("validateError");
-        boolean expResult = false;
         boolean result = instance.validate();
-        assertEquals(expResult, result);
+        assertEquals(true, result);
     }
 
     /**
-     * Test of validate method, of class TokenManagerImpl.
+     * Test of validate method with empty token.
      */
     @Test
-    public void test26() {
-        out.println("remove token");
-        token.setKey(localtoken);
+    void test25() {
+        token.setKey("");
+        boolean result = instance.validate();
+        assertEquals(false, result);
+    }
+
+    /**
+     * Test of removeToken method.
+     */
+    @Test
+    void test26() {
+        dml.setName("Teste");
+        dml.setIdentity("1");
+        instance.setUser(dml);
         ((TokenManagerImpl) instance).removeToken();
+        assertNull(token.getKey());
     }
 
     /**
-     *
+     * Test of removeUser method.
      */
     @Test
-    public void test27() {
-        out.println("remove user");
+    void test27() {
         dml.setName("Teste2");
         dml.setIdentity("2");
         dml.addRole("ADMINISTRATOR");
@@ -193,8 +151,8 @@ public class TokenManagerImplTest {
         dml.addPermission("Categoria", "Consultar");
         instance.setUser(dml);
         ((TokenManagerImpl) instance).removeUser(dml);
-        dml = instance.getUser();
-        assertNull(dml);
+        DemoiselleUser result = instance.getUser();
+        assertNull(result);
     }
 
 }

@@ -6,30 +6,52 @@
  */
 package org.demoiselle.jee.security.jwt.impl;
 
-import static java.lang.System.out;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import javax.inject.Inject;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 
-import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
 import org.demoiselle.jee.core.api.security.TokenType;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertNotEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.demoiselle.jee.security.impl.DemoiselleUserImpl;
+import org.demoiselle.jee.security.impl.TokenImpl;
+import org.demoiselle.jee.security.message.DemoiselleSecurityJWTMessages;
+import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
+import org.jboss.weld.junit5.auto.ActivateScopes;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddEnabledInterceptors;
+import org.jboss.weld.junit5.auto.AddExtensions;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author 70744416353
  */
-@RunWith(CdiTestRunner.class)
-public class TokenManagerImplMasterTest {
+@EnableAutoWeld
+@ActivateScopes(RequestScoped.class)
+@AddExtensions({
+    org.demoiselle.jee.configuration.ConfigurationBootstrap.class,
+    org.demoiselle.jee.core.message.MessageBundleExtension.class
+})
+@AddEnabledInterceptors(org.demoiselle.jee.configuration.ConfigurationInterceptor.class)
+@AddBeanClasses({
+    TokenManagerImpl.class,
+    KeyPairHolder.class,
+    DemoiselleSecurityJWTConfig.class,
+    DemoiselleUserImpl.class,
+    TokenImpl.class,
+    DemoiselleSecurityJWTMessages.class,
+    DemoiselleSecurityMessages.class,
+    org.demoiselle.jee.configuration.ConfigurationLoader.class,
+    org.demoiselle.jee.configuration.message.ConfigurationMessage.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationStringValueExtractor.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationPrimitiveOrWrapperValueExtractor.class
+})
+class TokenManagerImplMasterTest {
 
     @Inject
     private DemoiselleUser dml;
@@ -37,57 +59,11 @@ public class TokenManagerImplMasterTest {
     @Inject
     private Token token;
 
-    private static String localtoken;
-
     @Inject
     private TokenManager instance;
 
-    /**
-     *
-     */
-    public TokenManagerImplMasterTest() {
-    }
-
-    /**
-     *
-     */
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    /**
-     *
-     */
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    /**
-     *
-     */
-    @Before
-    public void setUp() {
-    }
-
-    /**
-     *
-     */
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of setUser method, of class TokensManagerImpl.
-     */
-//     @Test
-//    public void test11() {
-//        out.println("Init");
-//        token.setKey("");
-//        assertNotEquals("", token.getKey());
-//    }
     @Test
-    public void test20() {
-        out.println("setUser");
+    void test20() {
         token.setKey("");
         token.setType(TokenType.JWT);
         dml.setName("Teste");
@@ -105,17 +81,12 @@ public class TokenManagerImplMasterTest {
         dml.addParam("endereco", "rua carlos pioli, 133");
         dml.addParam("fone", "4135938000");
         instance.setUser(dml);
-        localtoken = token.getKey();
         assertNotEquals("", token.getKey());
     }
 
-    /**
-     * Test of getUser method, of class TokensManagerImpl.
-     */
     @Test
-    public void test21() {
-        out.println("getUser");
-        token.setKey(localtoken);
+    void test21() {
+        token.setKey("");
         token.setType(TokenType.JWT);
         dml.setName("Teste");
         dml.setIdentity("1");
@@ -131,48 +102,49 @@ public class TokenManagerImplMasterTest {
         dml.addParam("email", "user@demoiselle.org");
         dml.addParam("endereco", "rua carlos pioli, 133");
         dml.addParam("fone", "4135938000");
-        DemoiselleUser expResult = dml;
-        DemoiselleUser result = instance.getUser();
-        assertEquals(expResult, result);
-    }
+        instance.setUser(dml);
+        String localtoken = token.getKey();
 
-    /**
-     * Test of validate method, of class TokensManagerImpl.
-     */
-    @Test
-    public void test22() {
-        out.println("validate");
         token.setKey(localtoken);
         token.setType(TokenType.JWT);
-        boolean expResult = true;
-        boolean result = instance.validate();
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of getUser method, of class TokensManagerImpl.
-     */
-    @Test
-    public void test23() {
-        out.println("getUserError");
-        instance.setUser(dml);
-        token.setKey("");
-        token.setType(TokenType.JWT);
-        DemoiselleUser expResult = dml;
         DemoiselleUser result = instance.getUser();
-        assertNotEquals(expResult, result);
+        assertEquals(dml.getIdentity(), result.getIdentity());
+        assertEquals(dml.getName(), result.getName());
     }
 
-    /**
-     * Test of validate method, of class TokensManagerImpl.
-     */
     @Test
-    public void test24() {
-        out.println("validateError");
+    void test22() {
         token.setKey("");
         token.setType(TokenType.JWT);
-        boolean expResult = false;
+        dml.setName("Teste");
+        dml.setIdentity("1");
+        dml.addRole("ADMINISTRATOR");
+        dml.addRole("MANAGER");
+        dml.addPermission("Produto", "Alterar");
+        instance.setUser(dml);
+        String localtoken = token.getKey();
+
+        token.setKey(localtoken);
+        token.setType(TokenType.JWT);
         boolean result = instance.validate();
-        assertEquals(expResult, result);
+        assertEquals(true, result);
+    }
+
+    @Test
+    void test23() {
+        token.setKey("");
+        token.setType(TokenType.JWT);
+        DemoiselleUser result = instance.getUser();
+        // Empty token should return null user
+        assertEquals(null, result);
+    }
+
+    @Test
+    void test24() {
+        token.setKey("");
+        token.setType(TokenType.JWT);
+        boolean result = instance.validate();
+        assertEquals(false, result);
     }
 }
+

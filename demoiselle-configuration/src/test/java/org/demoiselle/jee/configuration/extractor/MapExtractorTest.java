@@ -6,8 +6,8 @@
  */
 package org.demoiselle.jee.configuration.extractor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -21,15 +21,15 @@ import org.demoiselle.jee.configuration.extractor.impl.ConfigurationMapValueExtr
 import org.demoiselle.jee.configuration.model.ConfigMapModel;
 import org.demoiselle.jee.configuration.model.ConfigModel;
 import org.demoiselle.jee.configuration.util.UtilTest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author SERPRO
  *
  */
-public class MapExtractorTest extends AbstractConfigurationTest {
+class MapExtractorTest extends AbstractConfigurationTest {
 
     private ConfigurationMapValueExtractor conf = new ConfigurationMapValueExtractor();
     private ConfigModel configModel = new ConfigModel();
@@ -39,8 +39,8 @@ public class MapExtractorTest extends AbstractConfigurationTest {
     private String keyProtocol = "";
     private String keyWithHifen = "";
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         keyIp = UtilTest.CONFIG_MAP_FIELD_IP.replaceAll(UtilTest.CONFIG_MAP_FIELD + ".", "");
         keyPort = UtilTest.CONFIG_MAP_FIELD_PORT.replaceAll(UtilTest.CONFIG_MAP_FIELD + ".", "");
         keyProtocol = UtilTest.CONFIG_MAP_FIELD_PROTOCOL.replaceAll(UtilTest.CONFIG_MAP_FIELD + ".", "");
@@ -48,7 +48,7 @@ public class MapExtractorTest extends AbstractConfigurationTest {
     }
 
     @Test
-    public void extractMapFromProperties() throws Exception {
+    void extractMapFromProperties() throws Exception {
         Configuration configuration = utilTest.buildConfiguration(PropertiesConfiguration.class, utilTest.createPropertiesFile(FILE_PREFIX));
 
         Field field = configModel.getClass().getDeclaredField(UtilTest.CONFIG_MAP_FIELD);
@@ -63,7 +63,7 @@ public class MapExtractorTest extends AbstractConfigurationTest {
     }
 
     @Test
-    public void extractMapFromXML() throws Exception {
+    void extractMapFromXML() throws Exception {
         Configuration configuration = utilTest.buildConfiguration(XMLConfiguration.class, utilTest.createXMLFile(FILE_PREFIX));
 
         Field field = configModel.getClass().getDeclaredField(UtilTest.CONFIG_MAP_FIELD);
@@ -78,7 +78,7 @@ public class MapExtractorTest extends AbstractConfigurationTest {
     }
 
     @Test
-    public void extractMapFromSystem() throws Exception {
+    void extractMapFromSystem() throws Exception {
         utilTest.createSystemVariables();
         BasicConfigurationBuilder<? extends Configuration> builder = new BasicConfigurationBuilder<>(SystemConfiguration.class);
 
@@ -94,7 +94,7 @@ public class MapExtractorTest extends AbstractConfigurationTest {
     }
 
     @Test
-    public void extractMapFromPropertiesWithPrefixAndSuffixAndHifen() throws Exception {
+    void extractMapFromPropertiesWithPrefixAndSuffixAndHifen() throws Exception {
         Configuration configuration = utilTest.buildConfiguration(PropertiesConfiguration.class, utilTest.createPropertiesFile(FILE_PREFIX));
 
         ConfigMapModel configMapModel = new ConfigMapModel();
@@ -108,7 +108,7 @@ public class MapExtractorTest extends AbstractConfigurationTest {
     }
 
     @Test
-    public void extractMapFromXMLWithPrefixAndSuffixAndHifen() throws Exception {
+    void extractMapFromXMLWithPrefixAndSuffixAndHifen() throws Exception {
         Configuration configuration = utilTest.buildConfiguration(XMLConfiguration.class, utilTest.createXMLFile(FILE_PREFIX));
 
         ConfigMapModel configMapModel = new ConfigMapModel();
@@ -122,7 +122,7 @@ public class MapExtractorTest extends AbstractConfigurationTest {
     }
 
     @Test
-    public void extractMapFromSystemWithPrefixAndSuffixAndHifen() throws Exception {
+    void extractMapFromSystemWithPrefixAndSuffixAndHifen() throws Exception {
         utilTest.createSystemVariables();
         BasicConfigurationBuilder<? extends Configuration> builder = new BasicConfigurationBuilder<>(SystemConfiguration.class);
 
@@ -137,7 +137,7 @@ public class MapExtractorTest extends AbstractConfigurationTest {
     }
 
     @Test
-    public void extractorShouldBeSupportMap() throws NoSuchFieldException, SecurityException {
+    void extractorShouldBeSupportMap() throws NoSuchFieldException, SecurityException {
         assertTrue(conf.isSupported(configModel.getClass().getDeclaredField(UtilTest.CONFIG_MAP_FIELD)));
     }
 

@@ -8,8 +8,8 @@ package org.demoiselle.jee.security.impl;
 
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.SecurityContext;
@@ -33,6 +33,7 @@ public class SecurityContextImpl implements SecurityContext {
 
     @Override
     public boolean hasPermission(String resource, String operation) {
+        if (getUser() == null) return false;
 
         List<String> list = getUser().getPermissions().get(resource);
 
@@ -45,16 +46,23 @@ public class SecurityContextImpl implements SecurityContext {
 
     @Override
     public boolean hasRole(String role) {
+        if (getUser() == null) return false;
         return getUser().getRoles().contains(role);
     }
 
     @Override
     public boolean isLoggedIn() {
-        return tm.validate();
+        try {
+            if (tm == null) return false;
+            return tm.validate();
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 
     @Override
     public DemoiselleUser getUser() {
+        if (tm == null) return null;
         return tm.getUser();
     }
 

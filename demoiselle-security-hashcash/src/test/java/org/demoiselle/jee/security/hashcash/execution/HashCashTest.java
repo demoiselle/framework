@@ -6,51 +6,48 @@
  */
 package org.demoiselle.jee.security.hashcash.execution;
 
-import javax.inject.Inject;
-import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+
+import org.demoiselle.jee.configuration.ConfigurationLoader;
+import org.demoiselle.jee.security.hashcash.DemoiselleSecurityHashCashConfig;
+import org.jboss.weld.junit5.auto.ActivateScopes;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddEnabledInterceptors;
+import org.jboss.weld.junit5.auto.AddExtensions;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author SERPRO
  */
-@RunWith(CdiTestRunner.class)
-public class HashCashTest {
+@EnableAutoWeld
+@ActivateScopes(RequestScoped.class)
+@AddExtensions({
+    org.demoiselle.jee.configuration.ConfigurationBootstrap.class,
+    org.demoiselle.jee.core.message.MessageBundleExtension.class
+})
+@AddEnabledInterceptors(org.demoiselle.jee.configuration.ConfigurationInterceptor.class)
+@AddBeanClasses({
+    Generator.class,
+    DemoiselleSecurityHashCashConfig.class,
+    ConfigurationLoader.class,
+    org.demoiselle.jee.configuration.message.ConfigurationMessage.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationStringValueExtractor.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationPrimitiveOrWrapperValueExtractor.class
+})
+class HashCashTest {
 
     @Inject
     private Generator gera;
 
-    public HashCashTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     @Test
-    public void testMintCash_String_int() throws Exception {
-        System.out.println("mintCash");
-        System.out.println(gera.token());
-
-        assertEquals(" ", " ");
+    void testMintCash_String_int() throws Exception {
+        String token = gera.token();
+        assertNotNull(token);
     }
 
 }

@@ -9,7 +9,7 @@ package org.demoiselle.jee.core.lifecycle.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.demoiselle.jee.core.lifecycle.annotation.DemoiselleLifecyclePriority;
 import org.demoiselle.jee.core.lifecycle.annotation.Shutdown;

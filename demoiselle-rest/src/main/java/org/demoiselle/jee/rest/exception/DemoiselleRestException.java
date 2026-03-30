@@ -8,7 +8,7 @@ package org.demoiselle.jee.rest.exception;
 
 import java.util.HashSet;
 
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.demoiselle.jee.core.exception.DemoiselleException;
 

@@ -6,26 +6,24 @@
  */
 package org.demoiselle.jee.configuration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
-import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.configuration.annotation.Configuration;
 import org.demoiselle.jee.configuration.annotation.ConfigurationName;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationException;
@@ -38,17 +36,36 @@ import org.demoiselle.jee.configuration.model.ConfigWithValidationModel;
 import org.demoiselle.jee.configuration.model.ConfigWithoutExtractorModel;
 import org.demoiselle.jee.configuration.util.UtilTest;
 import org.hamcrest.CoreMatchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddExtensions;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
  * @author SERPRO
  *
  */
-@RunWith(CdiTestRunner.class)
-public class ConfigurationLoaderTest extends AbstractConfigurationTest {
+@EnableAutoWeld
+@AddBeanClasses({
+    ConfigurationLoader.class,
+    org.demoiselle.jee.configuration.message.ConfigurationMessage.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationStringValueExtractor.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationPrimitiveOrWrapperValueExtractor.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationArrayValueExtractor.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationMapValueExtractor.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationEnumValueExtractor.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationClassValueExtractor.class,
+    org.demoiselle.jee.configuration.extractor.ConfigurationStringValueExtractorAmbiguousTest.class,
+    org.demoiselle.jee.configuration.extractor.ConfigurationStringValueExtractorAmbiguousTest2.class
+})
+@AddExtensions({
+    ConfigurationBootstrap.class,
+    org.demoiselle.jee.core.message.MessageBundleExtension.class
+})
+class ConfigurationLoaderTest extends AbstractConfigurationTest {
 
 	@Inject
 	private ConfigurationLoader configLoader;
@@ -58,15 +75,33 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 
 	private ConfigModel configModel = new ConfigModel();
 
-	@Before
-	public void setUp() throws IOException, Exception {
+	private ClassLoader originalClassLoader;
+
+	@BeforeEach
+	void setUp() throws IOException, Exception {
+		originalClassLoader = Thread.currentThread().getContextClassLoader();
 		Locale.setDefault(new Locale("pt", "BR"));
 		makeConfigurationRuntime(ConfigModel.class, ConfigurationType.PROPERTIES,
 				utilTest.createPropertiesFile("test"));
 	}
 
+	@Override
+	@AfterEach
+	public void destroy() throws IOException {
+		// Close the custom URLClassLoader before file cleanup to release file locks (Windows)
+		if (originalClassLoader != null) {
+			ClassLoader current = Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(originalClassLoader);
+			if (current instanceof URLClassLoader) {
+				((URLClassLoader) current).close();
+			}
+		}
+		// Now delegate to parent's file cleanup
+		super.destroy();
+	}
+
 	@Test
-	public void shouldPopulateObject() throws IOException {
+	void shouldPopulateObject() throws IOException {
 
 		Class<?> baseClass = configModel.getClass();
 		assertNull(configModel.getConfigString());
@@ -100,7 +135,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 	}
 
 	@Test
-	public void shouldPopulateObjectWithNameAnnotation() {
+	void shouldPopulateObjectWithNameAnnotation() {
 		Class<?> baseClass = configModel.getClass();
 		assertNull(configModel.getConfigString());
 		configLoader.load(configModel, baseClass);
@@ -109,18 +144,17 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 		assertEquals(UtilTest.CONFIG_STRING_NAME_ANNOTATION_VALUE, configModel.getConfigStringWithName());
 	}
 
-	@Test(expected = DemoiselleConfigurationException.class)
-	public void objectWithNoMatchExtractorShouldThrowException() {
-
-		ConfigWithoutExtractorModel model = new ConfigWithoutExtractorModel();
-
-		Class<?> baseClass = model.getClass();
-
-		configLoader.load(model, baseClass);
+	@Test
+	void objectWithNoMatchExtractorShouldThrowException() {
+		assertThrows(DemoiselleConfigurationException.class, () -> {
+			ConfigWithoutExtractorModel model = new ConfigWithoutExtractorModel();
+			Class<?> baseClass = model.getClass();
+			configLoader.load(model, baseClass);
+		});
 	}
 
-	@Test(expected = DemoiselleConfigurationException.class)
-	public void objectWithIncompatibleTypeShoutThrowConfigurationException() throws IOException, Exception {
+	@Test
+	void objectWithIncompatibleTypeShoutThrowConfigurationException() throws IOException, Exception {
 
 		Properties properties = new Properties();
 		properties.put("configBooleanIncompatible", "7");
@@ -132,33 +166,35 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 
 		Class<?> baseClass = model.getClass();
 
-		configLoader.load(model, baseClass);
-
-		assertNull(model.getConfigBooleanIncompatible());
+		assertThrows(DemoiselleConfigurationException.class, () -> {
+			configLoader.load(model, baseClass);
+		});
 	}
 
 	@Test
-	public void fieldWithIgnoreAnnotationShouldntLoad() {
+	void fieldWithIgnoreAnnotationShouldntLoad() {
 		Class<?> baseClass = configModel.getClass();
 		assertNull(configModel.getConfigFieldWithIgnore());
 		configLoader.load(configModel, baseClass);
 		assertNull(configModel.getConfigFieldWithIgnore());
 	}
 
-	@Test(expected = DemoiselleConfigurationException.class)
-	public void modelInvalidValuesWithBeanValidationShouldThrowConfigurationException() {
-		ConfigWithValidationModel model = new ConfigWithValidationModel();
-		Class<?> baseClass = model.getClass();
-		configLoader.load(model, baseClass);
+	@Test
+	void modelInvalidValuesWithBeanValidationShouldThrowConfigurationException() {
+		assertThrows(DemoiselleConfigurationException.class, () -> {
+			ConfigWithValidationModel model = new ConfigWithValidationModel();
+			Class<?> baseClass = model.getClass();
+			configLoader.load(model, baseClass);
+		});
 	}
 
 	@Test
-	public void modelInvalidValueWithBeanValidationShouldShowError()
+	void modelInvalidValueWithBeanValidationShouldShowError()
 			throws NoSuchFieldException, IllegalAccessException {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(
-				"private java.lang.String org.demoiselle.jee.configuration.model.ConfigWithValidationModel.configString não pode ser nulo\n");
+				"private java.lang.String org.demoiselle.jee.configuration.model.ConfigWithValidationModel.configString não deve ser nulo\n");
 
 		try {
 			ConfigWithValidationModel model = new ConfigWithValidationModel();
@@ -172,7 +208,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 	}
 
 	@Test
-	public void twoExtractorValueThatSupportTheSameTypeShouldThrowConfigurationException()
+	void twoExtractorValueThatSupportTheSameTypeShouldThrowConfigurationException()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 
 		try {
@@ -189,7 +225,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 	}
 
 	@Test
-	public void configurationWithInvalidResourceShouldThrowConfigurationException() throws IOException, Exception {
+	void configurationWithInvalidResourceShouldThrowConfigurationException() throws IOException, Exception {
 
 		makeConfigurationRuntime(ConfigModel.class, ConfigurationType.PROPERTIES, "file-not-found");
 
@@ -205,7 +241,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 	}
 
 	@Test
-	public void modelWithEmptyNameAnnotationShouldThrowException() {
+	void modelWithEmptyNameAnnotationShouldThrowException() {
 		ConfigWithNameAnnotationEmptyModel model = new ConfigWithNameAnnotationEmptyModel();
 		Class<?> baseClass = model.getClass();
 
@@ -218,7 +254,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 	}
 
 	@Test
-	public void configurationLoaderShouldLoadConfigurationXML() throws FileNotFoundException, IOException, Exception {
+	void configurationLoaderShouldLoadConfigurationXML() throws Exception {
 		makeConfigurationRuntime(ConfigModel.class, ConfigurationType.XML, utilTest.createXMLFile("test"));
 
 		Class<?> baseClass = configModel.getClass();
@@ -230,8 +266,7 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 	}
 
 	@Test
-	public void configurationLoaderShouldLoadConfigurationSystem()
-			throws FileNotFoundException, IOException, Exception {
+	void configurationLoaderShouldLoadConfigurationSystem() throws Exception {
 		utilTest.createSystemVariables();
 		makeConfigurationRuntime(ConfigModel.class, ConfigurationType.SYSTEM, null);
 
@@ -295,11 +330,17 @@ public class ConfigurationLoaderTest extends AbstractConfigurationTest {
 
 		annotations.put(Configuration.class, configuration);
 
-		URLClassLoader ucl = (URLClassLoader) Thread.currentThread().getContextClassLoader();
-		Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-		method.setAccessible(true);
+		// Close any previously created URLClassLoader before creating a new one
+		ClassLoader current = Thread.currentThread().getContextClassLoader();
+		if (current instanceof URLClassLoader && current != originalClassLoader) {
+			((URLClassLoader) current).close();
+			Thread.currentThread().setContextClassLoader(originalClassLoader);
+		}
 
-		method.invoke(ucl, utilTest.getDirectoryTemp().toUri().toURL());
+		URLClassLoader ucl = new URLClassLoader(
+				new URL[]{utilTest.getDirectoryTemp().toUri().toURL()},
+				Thread.currentThread().getContextClassLoader());
+		Thread.currentThread().setContextClassLoader(ucl);
 
 	}
 

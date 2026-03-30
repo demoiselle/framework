@@ -8,12 +8,12 @@ package org.demoiselle.jee.security.interceptor;
 
 import java.io.Serializable;
 
-import javax.annotation.Priority;
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
-import static javax.ws.rs.core.Response.Status.FORBIDDEN;
+import jakarta.annotation.Priority;
+import jakarta.inject.Inject;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
+import static jakarta.ws.rs.core.Response.Status.FORBIDDEN;
 
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.annotation.Authenticated;

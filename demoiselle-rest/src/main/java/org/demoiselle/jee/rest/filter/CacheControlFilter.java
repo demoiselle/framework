@@ -8,14 +8,14 @@ package org.demoiselle.jee.rest.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import javax.annotation.Priority;
-import static javax.ws.rs.Priorities.HEADER_DECORATOR;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.ext.Provider;
+import jakarta.annotation.Priority;
+import static jakarta.ws.rs.Priorities.HEADER_DECORATOR;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.ext.Provider;
 import org.demoiselle.jee.rest.annotation.CacheControl;
 
 /**

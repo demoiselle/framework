@@ -8,7 +8,6 @@ package org.demoiselle.jee.crud;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -17,21 +16,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.GET;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.ext.Provider;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.field.FieldHelper;
@@ -82,12 +80,21 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 
     @Inject
     private FieldHelper fieldHelper;
+
+    @Inject
+    private ReflectionCache reflectionCache;
     
     private static final Logger logger = Logger.getLogger(CrudFilter.class.getName());
 
+    /**
+     * Default maximum depth for recursive field projection.
+     * Configurable via {@code demoiselle.crud.field.maxDepth}.
+     */
+    static final int DEFAULT_MAX_FIELD_DEPTH = 10;
+
     public CrudFilter() {}
 
-    public CrudFilter(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, PaginationHelper paginationHelper, SortHelper sortHelper, FilterHelper filterHelper, FieldHelper fieldHelper) {
+    public CrudFilter(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, PaginationHelper paginationHelper, SortHelper sortHelper, FilterHelper filterHelper, FieldHelper fieldHelper, ReflectionCache reflectionCache) {
         this.resourceInfo = resourceInfo;
         this.uriInfo = uriInfo;
         this.drc = drc;
@@ -95,6 +102,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         this.sortHelper = sortHelper;
         this.filterHelper = filterHelper;
         this.fieldHelper = fieldHelper;
+        this.reflectionCache = reflectionCache;
     }
 
     @Override
@@ -183,99 +191,71 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
             
             while(it.hasNext()){
                 Object object = it.next();
-                Map<String, Object> keyValue = new LinkedHashMap<>();
-                
-                fields.getChildren().stream().forEach((leaf) -> {
-                    
-                    // 1st level
-                    if(leaf.getChildren().isEmpty()){
-                        Set<String> searchFields = fields.getChildren()
-                                .stream()
-                                .filter( (child) -> child.getChildren().isEmpty())
-                                .map( (child) -> child.getKey())
-                                .collect(Collectors.toSet());
-                                
-                        CrudUtilHelper.getAllFields(new ArrayList<Field>(), object.getClass())
-                                .stream()
-                                .filter( (f) -> searchFields.contains(f.getName()))
-                                .forEach( (field) -> {
-                                    try{
-                                        keyValue.put(field.getName(), getValueFromObjectField(targetClass, field, object));
-                                    } 
-                                    catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-                                        logger.log(Level.SEVERE, e.getMessage(), e);
-                                    }
-                                });
-                        
-                    }
-                    else{
-                        //2nd level
-                        Map<String, Object> keyValueSecond = new LinkedHashMap<>();
-                        
-                        leaf.getChildren().stream().forEach( (child) -> {
-                            
-                            try{
-                                Field field = CrudUtilHelper.getField(targetClass, leaf.getKey()); 
-                                Class<?> fieldClazz = field.getType();
-                                
-                                
-                                Field secondField = fieldClazz.getDeclaredField(child.getKey());
-                                  
-                                boolean acessible = field.isAccessible();
-                                boolean acessibleSecond = secondField.isAccessible();
-                                  
-                                field.setAccessible(true);  
-                                secondField.setAccessible(true);
-                                Object secondObject = (Object) field.get(object);
-                                if (secondObject != null) {
-                                    keyValueSecond.put(secondField.getName(), secondField.get(secondObject));
-                                }
-                                  
-                                secondField.setAccessible(acessibleSecond);
-                                field.setAccessible(acessible);
-                            }
-                            catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-                                logger.log(Level.SEVERE, e.getMessage(), e);
-                            }
-                            
-                        });
-                        
-                        keyValue.put(leaf.getKey(), keyValueSecond);
-                    }
-                    
-                });
-                
-                content.add(keyValue);
+                content.add(resolveFields(object, fields, targetClass, DEFAULT_MAX_FIELD_DEPTH));
             }
-
         }
         return content;
-        
     }
-    
+
     /**
-     * Invoke the field to get the value from the object
-     * 
-     * @param targetClass Class that represent the object
-     * @param field Field that will be invoked
-     * @param object The actual object that has the value
-     * 
-     * @return Value from field 
-     * 
-     * @throws NoSuchFieldException
-     * @throws SecurityException
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
+     * Recursively resolves field projections from the given object based on the
+     * tree of requested fields.
+     *
+     * <p>Leaf nodes (no children) extract the direct field value.
+     * Intermediate nodes recurse into the nested object up to {@code maxDepth} levels.</p>
+     *
+     * @param object      the source object to extract values from
+     * @param node        the current tree node describing requested fields
+     * @param targetClass the class used for reflection lookups
+     * @param maxDepth    remaining recursion depth (0 = stop recursing)
+     * @return a map of field name → value (or nested map for intermediate nodes)
      */
-    private Object getValueFromObjectField(Class<?> targetClass, Field field, Object object) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
-        Object result = null;
-        Field actualField = CrudUtilHelper.getField(targetClass, field.getName());
-        boolean acessible = actualField.isAccessible();
-        actualField.setAccessible(true);
-        result = actualField.get(object);
-        actualField.setAccessible(acessible);
-        
+    Map<String, Object> resolveFields(Object object, TreeNodeField<String, Set<String>> node, Class<?> targetClass, int maxDepth) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        for (TreeNodeField<String, Set<String>> child : node.getChildren()) {
+            if (child.getChildren().isEmpty()) {
+                // Leaf: extract direct value
+                Object value = getFieldValue(object, child.getKey(), targetClass);
+                if (value != null) {
+                    result.put(child.getKey(), value);
+                }
+            } else if (maxDepth > 0) {
+                // Intermediate node: recurse into nested object
+                Object nestedObject = getFieldValue(object, child.getKey(), targetClass);
+                if (nestedObject != null) {
+                    Class<?> nestedClass = nestedObject.getClass();
+                    result.put(child.getKey(), resolveFields(nestedObject, child, nestedClass, maxDepth - 1));
+                }
+            }
+        }
         return result;
+    }
+
+    /**
+     * Extracts the value of a named field from the given object using the
+     * {@link ReflectionCache}.
+     *
+     * @param object      the object to read the field from
+     * @param fieldName   the name of the field
+     * @param targetClass the class used for cached field lookup
+     * @return the field value, or {@code null} if the field does not exist or an error occurs
+     */
+    private Object getFieldValue(Object object, String fieldName, Class<?> targetClass) {
+        try {
+            Map<String, Field> cachedFields = reflectionCache.getFields(targetClass);
+            Field field = cachedFields.get(fieldName);
+            if (field == null) {
+                return null;
+            }
+            boolean accessible = field.isAccessible();
+            field.setAccessible(true);
+            Object value = field.get(object);
+            field.setAccessible(accessible);
+            return value;
+        } catch (IllegalAccessException | SecurityException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            return null;
+        }
     }
 
     /**

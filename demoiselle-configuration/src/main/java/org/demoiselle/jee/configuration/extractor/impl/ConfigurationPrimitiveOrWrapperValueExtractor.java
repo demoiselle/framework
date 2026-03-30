@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
+import jakarta.enterprise.context.Dependent;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.DataConfiguration;

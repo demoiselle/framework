@@ -6,8 +6,8 @@
  */
 package org.demoiselle.jee.crud;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.core.Response;
 
 import org.demoiselle.jee.core.api.crud.Result;
 

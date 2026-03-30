@@ -1,0 +1,2 @@
+org.demoiselle.jee.core.lifecycle.LifecycleBootstrap
+org.demoiselle.jee.core.message.MessageBundleExtension

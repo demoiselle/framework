@@ -14,20 +14,21 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.demoiselle.jee.core.exception.DemoiselleLifecycleException;
 import org.demoiselle.jee.core.lifecycle.annotation.Shutdown;
 import org.demoiselle.jee.core.lifecycle.annotation.Startup;
 import org.demoiselle.jee.core.message.DemoiselleMessage;
+import org.demoiselle.jee.core.message.MessageBundleLiteral;
 
 /**
  * This class is responsible for managing the execution of methods annotated
@@ -106,6 +107,9 @@ public class LifecycleBootstrap implements Extension {
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 					logger.severe(e.getMessage());
 					throw new DemoiselleLifecycleException(e);
+				} catch (IllegalStateException e) {
+					// CDI container may not be available during shutdown in SE environments
+					logger.warning("CDI container not available, skipping lifecycle method: " + amp.getAnnotatedMethod().toString());
 				}
 			}
 		});
@@ -135,7 +139,7 @@ public class LifecycleBootstrap implements Extension {
 
 	private DemoiselleMessage getMessage() {
 		if (this.message == null) {
-			this.message = CDI.current().select(DemoiselleMessage.class).get();
+			this.message = CDI.current().select(DemoiselleMessage.class, new MessageBundleLiteral()).get();
 		}
 
 		return this.message;

@@ -13,12 +13,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.core.Response;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Response;
 
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
+import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
 /**
  * <p>
@@ -33,6 +35,9 @@ import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
  */
 @RequestScoped
 public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
+
+    @Inject
+    private DemoiselleSecurityMessages bundle;
 
     private String identity;
     private String name;
@@ -177,7 +182,7 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
         try {
             return (DemoiselleUser) super.clone();
         } catch (CloneNotSupportedException ex) {
-            throw new DemoiselleSecurityException("Erro ao clonar", Response.Status.UNAUTHORIZED.getStatusCode(), ex);
+            throw new DemoiselleSecurityException(bundle != null ? bundle.cloneError() : "Clone error", Response.Status.UNAUTHORIZED.getStatusCode(), ex);
         }
 
     }

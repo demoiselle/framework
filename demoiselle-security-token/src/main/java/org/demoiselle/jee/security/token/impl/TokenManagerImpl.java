@@ -8,10 +8,10 @@ package org.demoiselle.jee.security.token.impl;
 
 import static java.util.UUID.randomUUID;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.Priority;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import static javax.ws.rs.Priorities.AUTHENTICATION;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import static jakarta.ws.rs.Priorities.AUTHENTICATION;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;

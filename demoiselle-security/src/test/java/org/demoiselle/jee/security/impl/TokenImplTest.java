@@ -6,87 +6,67 @@
  */
 package org.demoiselle.jee.security.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 
-import org.apache.deltaspike.testcontrol.api.TestControl;
-import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenType;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.jboss.weld.junit5.auto.ActivateScopes;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author SERPRO
  */
-@RunWith(CdiTestRunner.class)
-@TestControl(startScopes = RequestScoped.class)
-public class TokenImplTest {
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
+@EnableAutoWeld
+@ActivateScopes(RequestScoped.class)
+@AddBeanClasses(TokenImpl.class)
+class TokenImplTest {
 
     @Inject
     private Token instance;
 
-    public TokenImplTest() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     @Test
-    public void test11() {
+    void test11() {
         String key = "123456789";
         instance.setKey(key);
     }
 
     @Test
-    public void test12() {
+    void test12() {
+        instance.setKey("123456789");
         String expResult = "123456789";
         String result = instance.getKey();
         assertEquals(expResult, result);
     }
 
     @Test
-    public void test13() {
+    void test13() {
         instance.setType(TokenType.JWT);
     }
 
     @Test
-    public void test14() {
+    void test14() {
+        instance.setType(TokenType.JWT);
         TokenType expResult = TokenType.JWT;
         TokenType result = instance.getType();
         assertEquals(expResult, result);
     }
 
     @Test
-    public void test15() {
-        int expResult = 0;
+    void test15() {
+        instance.setKey("123456789");
         int result = instance.hashCode();
-        assertNotEquals(expResult, result);
+        assertNotEquals(0, result);
     }
 
     @Test
-    public void test16() {
+    void test16() {
         Object obj = null;
         boolean expResult = false;
         boolean result = instance.equals(obj);
@@ -94,7 +74,9 @@ public class TokenImplTest {
     }
 
     @Test
-    public void test17() {
+    void test17() {
+        instance.setKey("123456789");
+        instance.setType(TokenType.JWT);
         String expResult = "{\"key\":\"123456789\", \"type\":\"JWT\"}";
         String result = instance.toString();
         assertEquals(expResult, result);

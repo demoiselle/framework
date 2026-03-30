@@ -6,7 +6,7 @@
  */
 package org.demoiselle.jee.security.exception;
 
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 

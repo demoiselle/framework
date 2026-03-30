@@ -27,58 +27,48 @@
     <parent>
         <groupId>org.demoiselle.jee</groupId>
         <artifactId>demoiselle-build</artifactId>
-        <version>3.0.6-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
 
     <properties>
         <!-- General -->
-        <demoiselle.version>3.0.6-SNAPSHOT</demoiselle.version>
+        <demoiselle.version>4.0.0-SNAPSHOT</demoiselle.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Dependencies versions -->
-        <javaee.version>7.0</javaee.version>
-        <cdi.version>1.2</cdi.version>
-        <validation.version>1.1.0.Final</validation.version>
-        <transaction.version>1.2</transaction.version>
-        <jstl.version>1.2</jstl.version>
-        <el.version>3.0.0</el.version>
-        <servlet.version>3.1.0</servlet.version>
-        <persistence.version>1.0.2</persistence.version>
-        <rest.version>2.0</rest.version>
-        <concurrent.version>1.0</concurrent.version>
-        <jaxrs.version>2.0.1</jaxrs.version>
-        <javaee.version>7.0</javaee.version>
-        <deltaspike.version>1.7.1</deltaspike.version>
-        <ejb.version>3.2</ejb.version>
-        <cache.version>1.0.0</cache.version>
-        <swagger.version>1.5.12</swagger.version>
-        <json-api.version>1.0</json-api.version>
-        <commons-configuration2.version>2.0</commons-configuration2.version>
-        <commons-beanutils.version>1.9.2</commons-beanutils.version>
-        <commons-lang3.version>3.3.2</commons-lang3.version>
-        <hibernate-validator.version>5.3.0.Final</hibernate-validator.version>
-        <jose4j.version>0.5.2</jose4j.version>
+        <!-- Dependencies versions - Jakarta EE 10 -->
+        <jakartaee.version>10.0.0</jakartaee.version>
+        <jakarta.cdi.version>4.0.1</jakarta.cdi.version>
+        <jakarta.validation.version>3.0.2</jakarta.validation.version>
+        <jakarta.transaction.version>2.0.1</jakarta.transaction.version>
+        <expressly.version>5.0.0</expressly.version>
+        <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
+        <jakarta.persistence.version>3.1.0</jakarta.persistence.version>
+        <jakarta.jaxrs.version>3.1.0</jakarta.jaxrs.version>
+        <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
+        <cache.version>1.1.1</cache.version>
+        <jakarta.json.version>2.1.3</jakarta.json.version>
+        <microprofile-openapi.version>3.1.1</microprofile-openapi.version>
+        <commons-configuration2.version>2.10.1</commons-configuration2.version>
+        <commons-beanutils.version>1.9.4</commons-beanutils.version>
+        <commons-lang3.version>3.14.0</commons-lang3.version>
+        <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
+        <jose4j.version>0.9.6</jose4j.version>
         <objenesis.version>2.4</objenesis.version>
-        <cglib-nodep.version>3.2.0</cglib-nodep.version>        
-        <spock-core.version>1.0-groovy-2.4</spock-core.version>
-        <groovy-all.version>2.4.7</groovy-all.version>
-
-        <!--Microcontainers -->
-        <wildfly-swarm.version>2017.2.0</wildfly-swarm.version>
+        <cglib-nodep.version>3.2.0</cglib-nodep.version>
+        <groovy-all.version>4.0.21</groovy-all.version>
 
         <!--Test -->
-        <version.arquillian>1.0.2.Final</version.arquillian>
-        <version.arquillian.container>1.0.0.CR3</version.arquillian.container>
-        <junit.version>4.12</junit.version>
-        <version.specs>3.0.1.Final</version.specs>
-        <weld-se-core.version>2.4.0.Final</weld-se-core.version>
-        <hamcrest-core.version>1.3</hamcrest-core.version>
+        <junit-jupiter.version>5.10.3</junit-jupiter.version>
+        <hamcrest.version>2.2</hamcrest.version>
+        <jqwik.version>1.9.0</jqwik.version>
+        <weld-junit5.version>4.0.3.Final</weld-junit5.version>
+        <mockito.version>5.12.0</mockito.version>
 
         <!-- Maven plugin versions -->
         <maven.compiler.plugin.version>3.6.0</maven.compiler.plugin.version>
         <maven.war.plugin.version>3.0.0</maven.war.plugin.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
 
     </properties>
 
@@ -135,76 +125,63 @@
                 <version>${demoiselle.version}</version>
             </dependency>
 
-            <!-- jsr-299 api -->
+            <!-- Jakarta CDI API -->
             <dependency>
-                <groupId>javax.enterprise</groupId>
-                <artifactId>cdi-api</artifactId>
+                <groupId>jakarta.enterprise</groupId>
+                <artifactId>jakarta.enterprise.cdi-api</artifactId>
                 <scope>provided</scope>
-                <version>${cdi.version}</version>
+                <version>${jakarta.cdi.version}</version>
             </dependency>
 
-            <!-- jsr-349 api -->
+            <!-- Jakarta Validation API -->
             <dependency>
-                <artifactId>validation-api</artifactId>
-                <groupId>javax.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <groupId>jakarta.validation</groupId>
                 <scope>provided</scope>
-                <version>${validation.version}</version>
+                <version>${jakarta.validation.version}</version>
             </dependency>
 
-            <!-- jsr-341 api and impl -->
+            <!-- Expression Language (Expressly) -->
             <dependency>
-                <groupId>org.glassfish</groupId>
-                <artifactId>javax.el</artifactId>
+                <groupId>org.glassfish.expressly</groupId>
+                <artifactId>expressly</artifactId>
                 <scope>provided</scope>
-                <version>${el.version}</version>
+                <version>${expressly.version}</version>
             </dependency>
 
-            <!-- jsr-342 api -->
+            <!-- Jakarta EE Platform API -->
             <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-api</artifactId>
+                <groupId>jakarta.platform</groupId>
+                <artifactId>jakarta.jakartaee-api</artifactId>
                 <scope>provided</scope>
-                <version>${javaee.version}</version>
+                <version>${jakartaee.version}</version>
             </dependency>
 
-            <!-- jsr-340 api -->
+            <!-- Jakarta Servlet API -->
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
                 <scope>provided</scope>
-                <version>${servlet.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>jstl</artifactId>
-                <scope>provided</scope>
-                <version>${jstl.version}</version>
+                <version>${jakarta.servlet.version}</version>
             </dependency>
 
-            <!-- jsr-339 api -->
+            <!-- Jakarta JAX-RS API -->
             <dependency>
-                <groupId>javax.ws.rs</groupId>
-                <artifactId>javax.ws.rs-api</artifactId>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
                 <scope>provided</scope>
-                <version>${jaxrs.version}</version>
+                <version>${jakarta.jaxrs.version}</version>
             </dependency>
 
-            <!-- jsr-342 api -->
+            <!-- Jakarta EJB API -->
             <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-web-api</artifactId>
-                <version>${javaee.version}</version>
-            </dependency>
-
-            <!-- jsr-318 api -->
-            <dependency>
-                <groupId>javax.ejb</groupId>
-                <artifactId>javax.ejb-api</artifactId>
-                <version>${ejb.version}</version>
+                <groupId>jakarta.ejb</groupId>
+                <artifactId>jakarta.ejb-api</artifactId>
+                <version>${jakarta.ejb.version}</version>
                 <scope>provided</scope>
             </dependency>
 
-            <!-- jsr-107 api -->
+            <!-- JCache API (stays javax) -->
             <dependency>
                 <groupId>javax.cache</groupId>
                 <artifactId>cache-api</artifactId>
@@ -212,42 +189,29 @@
                 <version>${cache.version}</version>
             </dependency>
 
-            <!-- jsr-107 api -->
+            <!-- Jakarta Persistence API -->
             <dependency>
-                <groupId>javax.persistence</groupId>
-                <artifactId>persistence-api</artifactId>
+                <groupId>jakarta.persistence</groupId>
+                <artifactId>jakarta.persistence-api</artifactId>
                 <scope>provided</scope>
-                <version>${persistence.version}</version>
+                <version>${jakarta.persistence.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>javax.transaction</groupId>
-                <artifactId>javax.transaction-api</artifactId>
+                <groupId>jakarta.transaction</groupId>
+                <artifactId>jakarta.transaction-api</artifactId>
                 <scope>provided</scope>
-                <version>${transaction.version}</version>
+                <version>${jakarta.transaction.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>javax.json</groupId>
-                <artifactId>javax.json-api</artifactId>
+                <groupId>jakarta.json</groupId>
+                <artifactId>jakarta.json-api</artifactId>
                 <scope>provided</scope>
-                <version>${json-api.version}</version>
+                <version>${jakarta.json.version}</version>
             </dependency>
 
-            <!-- configuration e messages -->
-            <dependency>
-                <groupId>org.apache.deltaspike.core</groupId>
-                <artifactId>deltaspike-core-api</artifactId>
-                <scope>compile</scope>
-                <version>${deltaspike.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.deltaspike.core</groupId>
-                <artifactId>deltaspike-core-impl</artifactId>
-                <scope>runtime</scope>
-                <version>${deltaspike.version}</version>
-            </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-configuration2</artifactId>
@@ -267,72 +231,72 @@
             </dependency>
             
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>${hibernate-validator.version}</version>
             </dependency>
 
-            <!-- Swagger -->
+            <!-- OpenAPI 3.0 (MicroProfile) -->
             <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-jaxrs</artifactId>
-                <version>${swagger.version}</version>
+                <groupId>org.eclipse.microprofile.openapi</groupId>
+                <artifactId>microprofile-openapi-api</artifactId>
+                <version>${microprofile-openapi.version}</version>
             </dependency>
 
             <!-- test -->
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit-jupiter.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-core</artifactId>
-                <version>${hamcrest-core.version}</version>
+                <artifactId>hamcrest</artifactId>
+                <version>${hamcrest.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.deltaspike.modules</groupId>
-                <artifactId>deltaspike-test-control-module-api</artifactId>
-                <version>${deltaspike.version}</version>
+                <groupId>net.jqwik</groupId>
+                <artifactId>jqwik</artifactId>
+                <version>${jqwik.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.deltaspike.modules</groupId>
-                <artifactId>deltaspike-test-control-module-impl</artifactId>
-                <version>${deltaspike.version}</version>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-junit5</artifactId>
+                <version>${weld-junit5.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.deltaspike.cdictrl</groupId>
-                <artifactId>deltaspike-cdictrl-weld</artifactId>
-                <version>${deltaspike.version}</version>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.weld.se</groupId>
-                <artifactId>weld-se-core</artifactId>
-                <version>${weld-se-core.version}</version>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>${mockito.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>${groovy-all.version}</version>
+                <type>pom</type>
             </dependency>
 
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-all</artifactId>
-                <version>${groovy-all.version}</version>                
-            </dependency>
-
-            <dependency>
-                <groupId>org.spockframework</groupId>
-                <artifactId>spock-core</artifactId>
-                <version>${spock-core.version}</version>
-                <scope>test</scope>
+                <version>${groovy-all.version}</version>
             </dependency>
 
             <dependency>
@@ -354,15 +318,6 @@
                 <groupId>org.bitbucket.b_c</groupId>
                 <artifactId>jose4j</artifactId>
                 <version>${jose4j.version}</version>
-            </dependency>
-
-            <!-- swarm -->
-            <dependency>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>bom-all</artifactId>
-                <version>${wildfly-swarm.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
             </dependency>
 
         </dependencies>

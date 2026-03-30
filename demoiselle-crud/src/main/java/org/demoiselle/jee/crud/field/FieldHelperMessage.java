@@ -6,8 +6,8 @@
  */
 package org.demoiselle.jee.crud.field;
 
-import org.apache.deltaspike.core.api.message.MessageBundle;
-import org.apache.deltaspike.core.api.message.MessageTemplate;
+import org.demoiselle.jee.core.annotation.MessageBundle;
+import org.demoiselle.jee.core.annotation.MessageTemplate;
 
 /**
  * Messages used to inform user about Field feature

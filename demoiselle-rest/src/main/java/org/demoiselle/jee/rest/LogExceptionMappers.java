@@ -8,10 +8,10 @@ package org.demoiselle.jee.rest;
 
 import java.util.logging.Logger;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.ws.rs.ext.ExceptionMapper;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.ws.rs.ext.ExceptionMapper;
 
 /**
  * 
@@ -32,7 +32,7 @@ public class LogExceptionMappers implements Extension {
 	 */
 	public void processAnnotatedType(@Observes final ProcessAnnotatedType<? extends ExceptionMapper<?>> pat) {
 		Class<? extends ExceptionMapper<?>> pcsClass = pat.getAnnotatedType().getJavaClass();
-		if (pcsClass.isAnnotationPresent(javax.ws.rs.ext.Provider.class)) {
+		if (pcsClass.isAnnotationPresent(jakarta.ws.rs.ext.Provider.class)) {
 			logger.warning(pcsClass.getCanonicalName());
 		}
 	}

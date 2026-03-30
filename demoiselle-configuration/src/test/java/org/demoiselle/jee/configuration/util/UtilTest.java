@@ -296,7 +296,13 @@ public class UtilTest {
 
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    Files.delete(file);
+                    try {
+                        Files.deleteIfExists(file);
+                    } catch (IOException e) {
+                        // On Windows, files may still be locked by classloaders or
+                        // commons-configuration2; schedule for deletion on JVM exit
+                        file.toFile().deleteOnExit();
+                    }
                     return FileVisitResult.CONTINUE;
                 }
 
@@ -307,7 +313,11 @@ public class UtilTest {
 
                 @Override
                 public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    Files.delete(dir);
+                    try {
+                        Files.deleteIfExists(dir);
+                    } catch (IOException e) {
+                        dir.toFile().deleteOnExit();
+                    }
                     return FileVisitResult.CONTINUE;
                 }
 

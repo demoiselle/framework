@@ -6,175 +6,162 @@
  */
 package org.demoiselle.jee.script.test;
 
-import javax.inject.Inject;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import javax.script.Bindings;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
-import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.demoiselle.jee.script.DynamicManager;
+import org.demoiselle.jee.script.DynamicManagerCache;
 import org.demoiselle.jee.script.exception.DemoiselleScriptException;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.demoiselle.jee.script.message.DemoiselleScriptMessage;
+import org.jboss.weld.junit5.auto.ActivateScopes;
+import org.jboss.weld.junit5.auto.AddBeanClasses;
+import org.jboss.weld.junit5.auto.AddExtensions;
+import org.jboss.weld.junit5.auto.EnableAutoWeld;
+import org.junit.jupiter.api.Test;
 
-@RunWith(CdiTestRunner.class)
-public class DynamicManagerTest {
+import static org.junit.jupiter.api.Assertions.*;
 
-	@Rule
-	public ExpectedException expectedEx = ExpectedException.none();
-	    
-    @Inject DynamicManager dm = new DynamicManager();
-         
+@EnableAutoWeld
+@ActivateScopes(RequestScoped.class)
+@AddBeanClasses({ DynamicManager.class, DynamicManagerCache.class, DemoiselleScriptMessage.class })
+@AddExtensions({ org.demoiselle.jee.core.message.MessageBundleExtension.class })
+class DynamicManagerTest {
+
+    private static final String ENGINE = "groovy";
+
+    @Inject
+    DynamicManager dm;
+
     @Test
-    public void testloadEngine() throws ScriptException  {        
-        Assert.assertNotNull(dm.loadEngine("nashorn"));
+    void testLoadEngine() throws ScriptException {
+        assertNotNull(dm.loadEngine(ENGINE));
     }
-    
+
     @Test
-    public void testUnloadEngine() throws ScriptException  {
-    	expectedEx.expect(DemoiselleScriptException.class);    	
-    	dm.loadEngine("nashorn");
-    	dm.unloadEngine("nashorn");
-    	dm.clearCache("nashorn");    	       
+    void testUnloadEngine() throws ScriptException {
+        dm.loadEngine(ENGINE);
+        dm.unloadEngine(ENGINE);
+        assertThrows(DemoiselleScriptException.class, () -> dm.clearCache(ENGINE));
     }
-    
+
     @Test
-    public void testloadEngineNotvalid() throws ScriptException  {    	
-    	expectedEx.expect(DemoiselleScriptException.class);    	
-        dm.loadEngine("randomEngine");        
+    void testLoadEngineNotValid() {
+        assertThrows(DemoiselleScriptException.class, () -> dm.loadEngine("randomEngine"));
     }
-       
+
     @Test
-    public void testloadScriptAlreadyInCache() throws ScriptException  {            	         	
-    	String javaScriptSource = "var a= X;  X=1 ; ";
-    	         
-    	dm.loadScript("nashorn","test", javaScriptSource);
-        Assert.assertEquals( false , dm.loadScript("nashorn", "test", javaScriptSource) );
+    void testLoadScriptAlreadyInCache() throws ScriptException {
+        String groovySource = "def a = X; X = 1";
+        dm.loadScript(ENGINE, "test", groovySource);
+        assertFalse(dm.loadScript(ENGINE, "test", groovySource));
     }
-    
+
     @Test
-    public void testloadScript() throws ScriptException  {        
-    	String javaScriptSource = "var a= X;  X=1 ; ";
-    	dm.loadEngine("nashorn");                 		                                         
-        Assert.assertEquals( true , dm.loadScript("nashorn","testJS", javaScriptSource));
+    void testLoadScript() throws ScriptException {
+        String groovySource = "def a = X; X = 1";
+        dm.loadEngine(ENGINE);
+        assertTrue(dm.loadScript(ENGINE, "testGroovy", groovySource));
     }
-     
+
     @Test
-    public void testCacheSize() throws ScriptException  {        
-    	dm.loadEngine("nashorn");   
-    	dm.clearCache("nashorn");
-    	
-        Assert.assertEquals(0,dm.getCacheSize("nashorn"));
+    void testCacheSize() throws ScriptException {
+        dm.loadEngine(ENGINE);
+        dm.clearCache(ENGINE);
+        assertEquals(0, dm.getCacheSize(ENGINE));
     }
-    
+
     @Test
-    public void testCacheSizeNotLoadEngine()  throws ScriptException  {     
-    	expectedEx.expect(DemoiselleScriptException.class);    
-    	dm.getCacheSize("invalidEngine");    	
+    void testCacheSizeNotLoadEngine() {
+        assertThrows(DemoiselleScriptException.class, () -> dm.getCacheSize("invalidEngine"));
     }
-    
+
     @Test
-    public void testClearCacheNotLoadEngine()  throws ScriptException  {     
-    	expectedEx.expect(DemoiselleScriptException.class);    
-    	dm.clearCache("invalidEngine");    	
+    void testClearCacheNotLoadEngine() {
+        assertThrows(DemoiselleScriptException.class, () -> dm.clearCache("invalidEngine"));
     }
-    
+
     @Test
-    public void compile() throws ScriptException {
-    	String javaScriptSource = "var a= X;  X=1 ; ";                      
-        Assert.assertNotNull(dm.compile("nashorn", javaScriptSource) );
+    void testCompile() throws ScriptException {
+        String groovySource = "def a = X; X = 1";
+        assertNotNull(dm.compile(ENGINE, groovySource));
     }
-     
+
     @Test
-    public void testGetScript() throws ScriptException {
-    	String javaScriptSource = "var a= X;  X=1 ; ";
-             
-        dm.loadScript("nashorn","test1", javaScriptSource);
-        dm.getScript("nashorn","test1");   
-        Assert.assertNotNull(dm.getScript("nashorn","test1") );
+    void testGetScript() throws ScriptException {
+        String groovySource = "def a = X; X = 1";
+        dm.loadScript(ENGINE, "test1", groovySource);
+        assertNotNull(dm.getScript(ENGINE, "test1"));
     }
-    
+
     @Test
-    public void testGetScriptNotLoadEngine()  throws ScriptException  {     
-    	expectedEx.expect(DemoiselleScriptException.class);    
-    	dm.getScript("invalidEngine","invalidScript");    	
+    void testGetScriptNotLoadEngine() {
+        assertThrows(DemoiselleScriptException.class, () -> dm.getScript("invalidEngine", "invalidScript"));
     }
-      
+
     @Test
-    public void testRemoveScript() throws ScriptException {
-    	String javaScriptSource = "var a= X;  X=1 ; ";
-             
-        dm.loadScript("nashorn","test2", javaScriptSource);
-        dm.removeScript("nashorn","test2");
-               
-        Assert.assertNull(dm.getScript("nashorn","test2"));
+    void testRemoveScript() throws ScriptException {
+        String groovySource = "def a = X; X = 1";
+        dm.loadScript(ENGINE, "test2", groovySource);
+        dm.removeScript(ENGINE, "test2");
+        assertNull(dm.getScript(ENGINE, "test2"));
     }
-    
+
     @Test
-    public void testRemoveScriptNotLoadEngine()  throws ScriptException  {     
-    	expectedEx.expect(DemoiselleScriptException.class);    
-    	dm.removeScript("invalidEngine","invalidScript");    	
+    void testRemoveScriptNotLoadEngine() {
+        assertThrows(DemoiselleScriptException.class, () -> dm.removeScript("invalidEngine", "invalidScript"));
     }
-        
+
     @Test
-    public void testEvalNotLoadEngine()  throws ScriptException  {     
-    	expectedEx.expect(DemoiselleScriptException.class);                     
-        dm.eval("invalidEngine","teste3", null);    	    	
+    void testEvalNotLoadEngine() {
+        assertThrows(DemoiselleScriptException.class, () -> dm.eval("invalidEngine", "teste3", null));
     }
-        
+
     @Test
-    public void testEvalContext() throws ScriptException {           	
-    	String javaScriptSource = "var a= X;  X=1 ; ";           
-        dm.loadScript("nashorn", "teste3", javaScriptSource);
-        
-        Bindings contexto = new SimpleBindings();  
+    void testEvalContext() throws ScriptException {
+        String groovySource = "def a = X; X = 1";
+        dm.loadScript(ENGINE, "teste3", groovySource);
+
+        Bindings contexto = new SimpleBindings();
         contexto.put("X", 1);
-        dm.eval("nashorn","teste3", contexto);
-       
-        Assert.assertEquals( 1 , contexto.get("X"));
+        dm.eval(ENGINE, "teste3", contexto);
+
+        assertEquals(1, contexto.get("X"));
     }
-     
+
     @Test
-    public void testEvalContextNoCache() throws ScriptException {           	
-    	String javaScriptSource = "var str= 'test' +X; str ; ";           
-        dm.loadScript("nashorn", "teste3", javaScriptSource);
-        
-        SimpleBindings contexto = new SimpleBindings();  
-        contexto.put("X", 1);  
-        
-        Assert.assertEquals( "test1", dm.evalSource("nashorn",javaScriptSource, contexto));
+    void testEvalContextNoCache() throws ScriptException {
+        String groovySource = "'test' + X";
+
+        SimpleBindings contexto = new SimpleBindings();
+        contexto.put("X", 1);
+
+        assertEquals("test1", dm.evalSource(ENGINE, groovySource, contexto));
     }
-    
+
     @Test
-    public void testEvalNoContextNoCache() throws ScriptException {           	
-    	String javaScriptSource = "var a= 1;  a ; ";           
-        dm.loadScript("nashorn", "teste3", javaScriptSource);                
-        dm.evalSource("nashorn",javaScriptSource, null);
-       
-        Assert.assertEquals( 1 ,  dm.evalSource("nashorn",javaScriptSource, null));
+    void testEvalNoContextNoCache() throws ScriptException {
+        String groovySource = "def a = 1; a";
+        assertEquals(1, dm.evalSource(ENGINE, groovySource, null));
     }
-    
+
     @Test
-    public void testEvalNoContext() throws ScriptException {           	    	
-    	String javaScriptSource = "var a=1;  a; ";            	     
-        dm.loadScript("nashorn","teste77", javaScriptSource);                      
-        Assert.assertEquals( 1 , dm.eval("nashorn","teste77", null));
+    void testEvalNoContext() throws ScriptException {
+        String groovySource = "def a = 1; a";
+        dm.loadScript(ENGINE, "teste77", groovySource);
+        assertEquals(1, dm.eval(ENGINE, "teste77", null));
     }
-     
+
     @Test
-    public void testEvalScriptNotValid() throws ScriptException {           	   	    	
-        dm.loadEngine("nashorn");        
-        expectedEx.expect(DemoiselleScriptException.class);
-                      
-        dm.eval("nashorn","teste555", null);
+    void testEvalScriptNotValid() throws ScriptException {
+        dm.loadEngine(ENGINE);
+        assertThrows(DemoiselleScriptException.class, () -> dm.eval(ENGINE, "teste555", null));
     }
-            
+
     @Test
-    public void testListEngines() throws ScriptException {         
-    	Assert.assertTrue(  dm.listEngines().size() > 0);                                      
+    void testListEngines() {
+        assertTrue(dm.listEngines().size() > 0);
     }
-           
 }

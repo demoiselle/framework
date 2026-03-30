@@ -6,27 +6,25 @@
  */
 package org.demoiselle.jee.crud;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response.Status;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.rest.exception.DemoiselleRestException;
-
-import io.swagger.annotations.ApiOperation;
-import io.swagger.jaxrs.PATCH;
 
 /**
  * TODO CLF JAVADOC
@@ -46,7 +44,6 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 
     @POST
     @Transactional
-    @ApiOperation(value = "persist entity")
     @Override
     public T persist(@Valid T entity) {
         return bc.persist(entity);
@@ -54,7 +51,6 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
 
     @PUT
     @Transactional
-    @ApiOperation(value = "full update entity")
     @Override
     public T mergeFull(@Valid T entity) {
         return bc.mergeFull(entity);
@@ -63,7 +59,6 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @PATCH
     @Path("{id}")
     @Transactional
-    @ApiOperation(value = "partial update entity")
     @Override
     public T mergeHalf(@PathParam("id") final I id, T entity) {
 	return bc.mergeHalf(id, entity);
@@ -72,7 +67,6 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @DELETE
     @Path("{id}")
     @Transactional
-    @ApiOperation(value = "remove entity")
     @Override
     public void remove(@PathParam("id") final I id) {
         bc.remove(id);
@@ -81,7 +75,6 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @GET
     @Path("{id}")
     @Transactional
-    @ApiOperation(value = "find by ID")
     @Override
     public T find(@PathParam("id") final I id) {
         return bc.find(id);

@@ -8,16 +8,16 @@ package org.demoiselle.jee.security.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 
-import javax.inject.Inject;
-import static javax.ws.rs.Priorities.AUTHORIZATION;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.ext.Provider;
+import jakarta.inject.Inject;
+import static jakarta.ws.rs.Priorities.AUTHORIZATION;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.security.DemoiselleSecurityConfig;
 import org.demoiselle.jee.security.annotation.Cors;

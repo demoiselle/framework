@@ -8,7 +8,7 @@ package org.demoiselle.jee.security.impl;
 
 import java.util.Objects;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenType;

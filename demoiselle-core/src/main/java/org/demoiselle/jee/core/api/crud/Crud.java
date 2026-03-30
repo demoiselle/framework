@@ -6,7 +6,7 @@
  */
 package org.demoiselle.jee.core.api.crud;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  *

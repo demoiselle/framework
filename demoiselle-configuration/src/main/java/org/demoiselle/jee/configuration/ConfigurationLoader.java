@@ -23,16 +23,16 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.AmbiguousResolutionException;
-import javax.enterprise.inject.spi.CDI;
-import javax.inject.Inject;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.AmbiguousResolutionException;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
@@ -371,7 +371,7 @@ public class ConfigurationLoader implements Serializable {
         } catch (DemoiselleConfigurationValueExtractorException cause) {
             throw new DemoiselleConfigurationException(
                     message.configurationNotConversion(prefix + getKey(field), field.getType().toString()), cause);
-        } catch (Exception cause) {
+        } catch (IllegalStateException | IllegalArgumentException cause) {
             throw new DemoiselleConfigurationException(message.configurationGenericExtractionError(
                     field.getType().toString(), getValueExtractor(field).getClass().getCanonicalName()), cause);
         }
@@ -520,7 +520,7 @@ public class ConfigurationLoader implements Serializable {
             result = (T) field.get(object);
             field.setAccessible(acessible);
 
-        } catch (Exception e) {
+        } catch (IllegalAccessException | IllegalArgumentException e) {
             throw new DemoiselleConfigurationException(
                     message.configurationErrorGetValue(field.getName(), object.getClass().getCanonicalName()), e);
         }
@@ -535,7 +535,7 @@ public class ConfigurationLoader implements Serializable {
             field.set(object, value);
             field.setAccessible(acessible);
 
-        } catch (Exception e) {
+        } catch (IllegalAccessException | IllegalArgumentException e) {
             throw new DemoiselleConfigurationException(
                     message.configurationErrorSetValue(value, field.getName(), object.getClass().getCanonicalName()),
                     e);

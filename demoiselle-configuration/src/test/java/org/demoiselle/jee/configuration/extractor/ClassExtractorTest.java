@@ -6,8 +6,8 @@
  */
 package org.demoiselle.jee.configuration.extractor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Method;
 
@@ -18,25 +18,24 @@ import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.builder.BasicConfigurationBuilder;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
-import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 import org.demoiselle.jee.configuration.extractor.impl.ConfigurationClassValueExtractor;
 import org.demoiselle.jee.configuration.model.ConfigModel;
 import org.demoiselle.jee.configuration.util.UtilTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
  * @author SERPRO
  *
  */
-public class ClassExtractorTest extends AbstractConfigurationTest {
+class ClassExtractorTest extends AbstractConfigurationTest {
 
     private ConfigModel configModel = new ConfigModel();
 
     private ConfigurationValueExtractor conf = new ConfigurationClassValueExtractor();
 
     @Test
-    public void extractClassFromProperties() throws Exception {
+    void extractClassFromProperties() throws Exception {
         Configuration configuration = utilTest.buildConfiguration(PropertiesConfiguration.class,
                 utilTest.createPropertiesFile(FILE_PREFIX));
 
@@ -48,7 +47,7 @@ public class ClassExtractorTest extends AbstractConfigurationTest {
     }
 
     @Test
-    public void extractClassFromXML() throws Exception {
+    void extractClassFromXML() throws Exception {
         Configuration configuration = utilTest.buildConfiguration(XMLConfiguration.class,
                 utilTest.createXMLFile(FILE_PREFIX));
 
@@ -60,7 +59,7 @@ public class ClassExtractorTest extends AbstractConfigurationTest {
     }
 
     @Test
-    public void extractClassFromSystemVariable() throws ConfigurationException, Exception {
+    void extractClassFromSystemVariable() throws ConfigurationException, Exception {
         utilTest.createSystemVariables();
         BasicConfigurationBuilder<? extends Configuration> builder = new BasicConfigurationBuilder<>(
                 SystemConfiguration.class);
@@ -73,7 +72,7 @@ public class ClassExtractorTest extends AbstractConfigurationTest {
     }
 
     @Test
-    public void extractClassShouldBeSupportString()
+    void extractClassShouldBeSupportString()
             throws NoSuchFieldException, SecurityException, NoSuchMethodException {
         final Method method = configModel.getClass()
                 .getDeclaredMethod("get" + StringUtils.capitalize(UtilTest.CONFIG_CLASS_TYPED_FIELD));

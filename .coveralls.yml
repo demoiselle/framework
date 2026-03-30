@@ -1,2 +1,2 @@
-COVERALLS_SERVICE_NAME=travis-ci
-COVERALLS_REPO_TOKEN=1KLSPMQ8fgROKnkrUq8DbUZ2kux9jdg7C
+COVERALLS_SERVICE_NAME=github-actions
+# Token should be provided via COVERALLS_REPO_TOKEN environment variable in CI secrets

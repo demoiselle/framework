@@ -10,7 +10,7 @@ import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.AbstractREST;
 import org.demoiselle.jee.crud.entity.UserModelForTest;
 
-import javax.ws.rs.GET;
+import jakarta.ws.rs.GET;
 
 /**
  * 

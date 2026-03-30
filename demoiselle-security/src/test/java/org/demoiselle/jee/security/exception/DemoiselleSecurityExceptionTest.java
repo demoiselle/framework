@@ -6,49 +6,32 @@
  */
 package org.demoiselle.jee.security.exception;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashSet;
 
 import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author SERPRO
  */
-public class DemoiselleSecurityExceptionTest {
+class DemoiselleSecurityExceptionTest {
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
     private DemoiselleSecurityException instance;
 
-    public DemoiselleSecurityExceptionTest() {
-    }
-
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         instance = new DemoiselleSecurityException("Teste");
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**
      * Test of getStatusCode method, of class DemoiselleSecurityException.
      */
     @Test
-    public void testGetStatusCode() {
+    void testGetStatusCode() {
         int expResult = 500;
         int result = instance.getStatusCode();
         assertEquals(expResult, result);
@@ -58,7 +41,7 @@ public class DemoiselleSecurityExceptionTest {
      * Test of addMessage method, of class DemoiselleSecurityException.
      */
     @Test
-    public void testAddMessage() {
+    void testAddMessage() {
         instance = new DemoiselleSecurityException("Teste", 500);
         String field = "Teste";
         String msg = "Teste";
@@ -69,7 +52,7 @@ public class DemoiselleSecurityExceptionTest {
      * Test of getMessages method, of class DemoiselleSecurityException.
      */
     @Test
-    public void testGetMessages() {
+    void testGetMessages() {
         HashSet<DemoiselleRestExceptionMessage> expResult = new HashSet<>();
         HashSet<DemoiselleRestExceptionMessage> result = instance.getMessages();
         assertEquals(expResult, result);

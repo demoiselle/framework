@@ -17,26 +17,28 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import javax.persistence.Column;
-import javax.persistence.EntityManager;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.From;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
+import jakarta.inject.Inject;
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.From;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.exception.DemoiselleCrudException;
+import org.demoiselle.jee.crud.message.DemoiselleCrudMessage;
 import org.demoiselle.jee.crud.pagination.PaginationHelperConfig;
 import org.demoiselle.jee.crud.pagination.ResultSet;
 import org.demoiselle.jee.crud.sort.CrudSort;
@@ -50,11 +52,25 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     @Inject
     private DemoiselleRequestContext drc;
 
+    @Inject
+    private DemoiselleCrudMessage bundle;
+
     private final Class<T> entityClass;
 
     protected abstract EntityManager getEntityManager();
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
+
+    /**
+     * Returns the message from the bundle, or the fallback if the bundle is null
+     * (e.g. when AbstractDAO is instantiated outside a CDI container).
+     */
+    private String msg(java.util.function.Supplier<String> bundleCall, String fallback) {
+        if (bundle != null) {
+            return bundleCall.get();
+        }
+        return fallback;
+    }
 
     @SuppressWarnings("unchecked")
     public AbstractDAO() {
@@ -67,8 +83,8 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         try {
             getEntityManager().persist(entity);
             return entity;
-        } catch (Exception e) {
-            throw new DemoiselleCrudException("Não foi possível salvar", e);
+        } catch (PersistenceException e) {
+            throw new DemoiselleCrudException(msg(() -> bundle.persistError(), "Não foi possível salvar"), e);
         }
     }
 
@@ -110,8 +126,8 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             }
             
             return entity;
-        } catch (final Exception e) {
-            throw new DemoiselleCrudException("Não foi possível salvar", e);
+        } catch (final PersistenceException | IllegalAccessException e) {
+            throw new DemoiselleCrudException(msg(() -> bundle.mergeError(), "Não foi possível salvar"), e);
         }
     }
 
@@ -119,8 +135,8 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     public T mergeFull(T entity) {
         try {
             return getEntityManager().merge(entity);
-        } catch (Exception e) {
-            throw new DemoiselleCrudException("Não foi possível salvar", e);
+        } catch (PersistenceException e) {
+            throw new DemoiselleCrudException(msg(() -> bundle.mergeError(), "Não foi possível salvar"), e);
         }
     }
 
@@ -128,8 +144,8 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     public void remove(I id) {
         try {
             getEntityManager().remove(getEntityManager().find(entityClass, id));
-        } catch (Exception e) {
-            throw new DemoiselleCrudException("Não foi possível excluir", e);
+        } catch (PersistenceException e) {
+            throw new DemoiselleCrudException(msg(() -> bundle.removeError(), "Não foi possível excluir"), e);
         }
     }
 
@@ -137,8 +153,8 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     public T find(I id) {
         try {
             return getEntityManager().find(entityClass, id);
-        } catch (Exception e) {
-            throw new DemoiselleCrudException("Não foi possível consultar", e);
+        } catch (PersistenceException e) {
+            throw new DemoiselleCrudException(msg(() -> bundle.findError(), "Não foi possível consultar"), e);
         }
 
     }
@@ -181,9 +197,9 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
             return result;
 
-        } catch (Exception e) {
+        } catch (PersistenceException e) {
             logger.severe(e.getMessage());
-            throw new DemoiselleCrudException("Não foi possível consultar", e);
+            throw new DemoiselleCrudException(msg(() -> bundle.findError(), "Não foi possível consultar"), e);
         }
     }
 
@@ -296,7 +312,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     		            }
 		            }
 		            catch (IllegalArgumentException | ClassNotFoundException | SecurityException e) {
-		                throw new DemoiselleCrudException("Não foi possível verificar se campo é do tipo 'ENUM'", e);
+		                throw new DemoiselleCrudException(msg(() -> bundle.enumTypeCheckError(), "Não foi possível verificar se campo é do tipo 'ENUM'"), e);
 		            }
 		        }
 		    }
@@ -323,7 +339,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                         }
                     }
                     catch (IllegalArgumentException | ClassNotFoundException | SecurityException e) {
-                        throw new DemoiselleCrudException("Não foi possível verificar se campo é do tipo 'UUID'", e);
+                        throw new DemoiselleCrudException(msg(() -> bundle.uuidTypeCheckError(), "Não foi possível verificar se campo é do tipo 'UUID'"), e);
                     }
                 }
             }
@@ -354,7 +370,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                         }
                     }
                     catch (IllegalArgumentException | ClassNotFoundException | SecurityException e) {
-                        throw new DemoiselleCrudException("Não foi possível realizar a conversão de Enum para Integer", e);
+                        throw new DemoiselleCrudException(msg(() -> bundle.enumConversionError(), "Não foi possível realizar a conversão de Enum para Integer"), e);
                     }
                 }
             }
@@ -368,14 +384,14 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 						}
 					} 
 					else {
-					    throw new DemoiselleCrudException("Não foi possível verificar se campo é do tipo 'ENUM'");	
+					    throw new DemoiselleCrudException(msg(() -> bundle.enumTypeCheckError(), "Não foi possível verificar se campo é do tipo 'ENUM'"));	
 					}
 				} 
             }
 		}
 		
 		// If doesnt find any constant throws
-		throw new DemoiselleCrudException("Não foi possível encontrar o valor [%s] nas constantes".replace("%s", value));
+		throw new DemoiselleCrudException(msg(() -> bundle.enumValueNotFound(value), "Não foi possível encontrar o valor [" + value + "] nas constantes"));
 		
 	}
 	
@@ -389,7 +405,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                 }
             }
 	    } catch (IllegalArgumentException | ClassNotFoundException | SecurityException e) {
-            throw new DemoiselleCrudException("Não foi possível realizar a conversão de Enum para Integer", e);
+            throw new DemoiselleCrudException(msg(() -> bundle.enumConversionError(), "Não foi possível realizar a conversão de Enum para Integer"), e);
         }
 	    
 	    return null;

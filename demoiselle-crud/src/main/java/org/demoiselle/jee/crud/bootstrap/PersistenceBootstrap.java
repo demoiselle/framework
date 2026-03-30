@@ -6,10 +6,10 @@
  */
 package org.demoiselle.jee.crud.bootstrap;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.persistence.Entity;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.persistence.Entity;
 
 /**
  *
@@ -23,7 +23,7 @@ import javax.persistence.Entity;
  * @author SERPRO
  *
  */
-public class PersistenceBootstrap implements javax.enterprise.inject.spi.Extension {
+public class PersistenceBootstrap implements jakarta.enterprise.inject.spi.Extension {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void processAnnotatedType(@Observes final ProcessAnnotatedType pat) {

@@ -6,8 +6,8 @@
  */
 package org.demoiselle.jee.core.message;
 
-import org.apache.deltaspike.core.api.message.MessageBundle;
-import org.apache.deltaspike.core.api.message.MessageTemplate;
+import org.demoiselle.jee.core.annotation.MessageBundle;
+import org.demoiselle.jee.core.annotation.MessageTemplate;
 
 /**
  * Message class intended to be used by all framework.

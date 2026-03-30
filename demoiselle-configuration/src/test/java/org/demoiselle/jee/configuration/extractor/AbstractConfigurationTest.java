@@ -9,7 +9,7 @@ package org.demoiselle.jee.configuration.extractor;
 import java.io.IOException;
 
 import org.demoiselle.jee.configuration.util.UtilTest;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 /**
  * 
@@ -22,7 +22,7 @@ public abstract class AbstractConfigurationTest {
     protected String PREFIX = "";
     protected UtilTest utilTest = new UtilTest();
 
-    @After
+    @AfterEach
     public void destroy() throws IOException {
         utilTest.deleteFilesAfterTest();
     }
