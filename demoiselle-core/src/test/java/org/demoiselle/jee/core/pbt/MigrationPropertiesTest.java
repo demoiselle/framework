@@ -55,7 +55,7 @@ class MigrationPropertiesTest {
             Pattern.compile("^import\\s+org\\.junit\\.runner\\.RunWith\\b")
     );
 
-    private static final String EXPECTED_VERSION = "4.0.0-SNAPSHOT";
+    private static final String EXPECTED_VERSION = "4.0.0";
 
     private static final List<String> MODULE_DIRS = List.of(
             "demoiselle-core",
