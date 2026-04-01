@@ -1,1 +1,4 @@
 theme: jekyll-theme-slate
+title: Demoiselle Framework v4
+description: Modernização Jakarta EE 10 — Records, Sealed Classes, CDI 4.0 Lite, Virtual Threads
+baseurl: ""

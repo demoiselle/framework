@@ -52,8 +52,8 @@ public class DemoiselleRestException extends DemoiselleException {
 		messages.add(new DemoiselleRestExceptionMessage(field, msg, null));
 	}
 
-	public void addMessage(String error, String error_description, String error_link) {
-		messages.add(new DemoiselleRestExceptionMessage(error, error_description, error_link));
+	public void addMessage(String error, String errorDescription, String errorLink) {
+		messages.add(new DemoiselleRestExceptionMessage(error, errorDescription, errorLink));
 	}
 
 	public HashSet<DemoiselleRestExceptionMessage> getMessages() {

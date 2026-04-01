@@ -26,6 +26,19 @@ A versão 4 do Demoiselle Framework traz as seguintes mudanças principais:
 - **Remoção do WildFly Swarm**: Framework agnóstico de runtime (compatível com WildFly 27+, Quarkus, Open Liberty)
 - **Remoção do DeltaSpike**: Substituído por implementação própria baseada em CDI 4.0
 
+### Modernização Jakarta EE 10
+
+A versão 4 inclui modernizações que aproveitam plenamente Java 17 e Jakarta EE 10:
+
+- **Java 17 Records** para DTOs imutáveis (`SortModel`, `DemoiselleRestExceptionMessage`, `ResultSet`)
+- **Sealed Classes + Pattern Matching** para filtros CRUD type-safe (`FilterOp`)
+- **CDI 4.0 Lite Build-Compatible Extensions** compatíveis com GraalVM native image
+- **Coleções imutáveis** com cópias defensivas via `List.copyOf()` / `Map.copyOf()`
+- **Preparação para Virtual Threads** com `ReentrantReadWriteLock` e eliminação de campos estáticos mutáveis
+- **JPA 3.1 CriteriaUpdate** type-safe e suporte a `EntityGraph` no `AbstractDAO`
+
+📖 [Documentação completa com exemplos](docs/index.md)
+
 O nome Demoiselle é uma homenagem à série de aeroplanos construídos
 por Santos Dummont entre 1907 e 1909. Também conhecido como Libellule,
 as Demoiselles foram os melhores, menores e mais baratos aviões da sua
@@ -42,7 +55,8 @@ Links úteis
 -----------
 
 * [Portal](http://demoiselle.io): Central de acesso as informações do Demoiselle
-* [Documentação](https://demoiselle.gitbooks.io/documentacao-jee/content): Aprenda sobre o Demoiselle seguindo os vários módulos
+* [Documentação Jakarta EE 10](docs/index.md): Funcionalidades modernizadas com exemplos de código
+* [Documentação Legada](https://demoiselle.gitbooks.io/documentacao-jee/content): Documentação dos módulos (versões anteriores)
 * [Fórum/Tracker](https://github.com/demoiselle/framework/issues): Fóruns de discussão e Submissão/acompanhamento de Bugs, Improvements e New Features
 * [Lista de discussão](https://lists.sourceforge.net/lists/listinfo/demoiselle-users): Comunicação e troca de experiências entre os usuários do projeto.
 

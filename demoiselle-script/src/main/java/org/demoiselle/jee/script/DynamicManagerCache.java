@@ -22,6 +22,14 @@ public class DynamicManagerCache implements Serializable {
 
     private static final long serialVersionUID = 2305168056315491913L;
 
-    static Map<String, ConcurrentHashMap<String, Object>> scriptCache = new ConcurrentHashMap<String, ConcurrentHashMap<String, Object>>();
-    static Map<String, Object> engineList = new ConcurrentHashMap<String, Object>();
+    private final Map<String, ConcurrentHashMap<String, Object>> scriptCache = new ConcurrentHashMap<>();
+    private final Map<String, Object> engineList = new ConcurrentHashMap<>();
+
+    public Map<String, ConcurrentHashMap<String, Object>> getScriptCache() {
+        return scriptCache;
+    }
+
+    public Map<String, Object> getEngineList() {
+        return engineList;
+    }
 }

@@ -163,12 +163,12 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 
             e.getMessages().stream().map((message) -> {
                 Map<String, Object> object = new ConcurrentHashMap<>();
-                object.putIfAbsent(FIELDNAME_ERROR, message.getError());
+                object.putIfAbsent(FIELDNAME_ERROR, message.error());
                 if (isShowErrorDetails) {
-                    object.putIfAbsent(FIELDNAME_ERROR_DESCRIPTION, message.getError_description());
+                    object.putIfAbsent(FIELDNAME_ERROR_DESCRIPTION, message.errorDescription());
                 }
-                if (message.getError_link() != null && !message.getError_link().isEmpty()) {
-                    object.putIfAbsent(FIELDNAME_ERROR_LINK, message.getError_link());
+                if (message.errorLink() != null && !message.errorLink().isEmpty()) {
+                    object.putIfAbsent(FIELDNAME_ERROR_LINK, message.errorLink());
                 }
                 return object;
             }).forEachOrdered((object) -> {

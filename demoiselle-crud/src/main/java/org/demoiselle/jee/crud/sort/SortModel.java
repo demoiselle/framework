@@ -6,33 +6,23 @@
  */
 package org.demoiselle.jee.crud.sort;
 
+import java.util.Objects;
+
 /**
- * This class helps the Sort feature to hold the type for sort ({@link CrudSort#ASC} or {@link CrudSort#DESC}) 
- * and the field that will be used to sort
- * 
+ * Modelo imutável para ordenação de consultas CRUD.
+ *
+ * @param type direção da ordenação (ASC ou DESC)
+ * @param field nome do campo para ordenação
+ *
  * @author SERPRO
  */
-public class SortModel {
-    
-    private CrudSort type;
-    private String field;
-    
-    public SortModel(CrudSort type, String field){
-        this.type = type;
-        this.field = field;
-    }
+public record SortModel(CrudSort type, String field) {
 
-    public CrudSort getType() {
-        return type;
+    public SortModel {
+        Objects.requireNonNull(type, "tipo de ordenação não pode ser nulo");
+        Objects.requireNonNull(field, "campo de ordenação não pode ser nulo");
+        if (field.isBlank()) {
+            throw new IllegalArgumentException("campo de ordenação não pode ser vazio");
+        }
     }
-
-    public String getField() {
-        return field;
-    }
-
-    @Override
-    public String toString() {
-        return "SortModel [type=" + type + ", field=" + field + "]";
-    }
-
 }

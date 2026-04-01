@@ -8,7 +8,6 @@ package org.demoiselle.jee.crud;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,6 +48,6 @@ public class ReflectionCache {
         for (Field field : CrudUtilHelper.getAllFields(new ArrayList<>(), clazz)) {
             fieldMap.putIfAbsent(field.getName(), field);
         }
-        return Collections.unmodifiableMap(fieldMap);
+        return Map.copyOf(fieldMap);
     }
 }

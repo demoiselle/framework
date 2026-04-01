@@ -68,10 +68,10 @@ class SortHelperTest {
 
         assertNotNull(drc.getSorts());
         assertEquals(2, drc.getSorts().size());
-        assertEquals("id", drc.getSorts().get(0).getField());
-        assertEquals(CrudSort.ASC, drc.getSorts().get(0).getType());
-        assertEquals("name", drc.getSorts().get(1).getField());
-        assertEquals(CrudSort.ASC, drc.getSorts().get(1).getType());
+        assertEquals("id", drc.getSorts().get(0).field());
+        assertEquals(CrudSort.ASC, drc.getSorts().get(0).type());
+        assertEquals("name", drc.getSorts().get(1).field());
+        assertEquals(CrudSort.ASC, drc.getSorts().get(1).type());
     }
 
     @Test
@@ -84,10 +84,10 @@ class SortHelperTest {
 
         assertNotNull(drc.getSorts());
         assertEquals(2, drc.getSorts().size());
-        assertEquals("id", drc.getSorts().get(0).getField());
-        assertEquals(CrudSort.DESC, drc.getSorts().get(0).getType());
-        assertEquals("name", drc.getSorts().get(1).getField());
-        assertEquals(CrudSort.DESC, drc.getSorts().get(1).getType());
+        assertEquals("id", drc.getSorts().get(0).field());
+        assertEquals(CrudSort.DESC, drc.getSorts().get(0).type());
+        assertEquals("name", drc.getSorts().get(1).field());
+        assertEquals(CrudSort.DESC, drc.getSorts().get(1).type());
     }
 
     @Test
@@ -100,10 +100,10 @@ class SortHelperTest {
 
         assertNotNull(drc.getSorts());
         assertEquals(2, drc.getSorts().size());
-        assertEquals("id", drc.getSorts().get(0).getField());
-        assertEquals(CrudSort.ASC, drc.getSorts().get(0).getType());
-        assertEquals("name", drc.getSorts().get(1).getField());
-        assertEquals(CrudSort.DESC, drc.getSorts().get(1).getType());
+        assertEquals("id", drc.getSorts().get(0).field());
+        assertEquals(CrudSort.ASC, drc.getSorts().get(0).type());
+        assertEquals("name", drc.getSorts().get(1).field());
+        assertEquals(CrudSort.DESC, drc.getSorts().get(1).type());
     }
 
     @Test
@@ -115,12 +115,12 @@ class SortHelperTest {
         sortHelper.execute(resourceInfo, uriInfo);
 
         assertNotNull(drc.getSorts());
-        assertEquals(CrudSort.ASC, drc.getSorts().get(0).getType());
-        assertEquals("id", drc.getSorts().get(0).getField());
-        assertEquals(CrudSort.DESC, drc.getSorts().get(1).getType());
-        assertEquals("name", drc.getSorts().get(1).getField());
-        assertEquals(CrudSort.DESC, drc.getSorts().get(2).getType());
-        assertEquals("mail", drc.getSorts().get(2).getField());
+        assertEquals(CrudSort.ASC, drc.getSorts().get(0).type());
+        assertEquals("id", drc.getSorts().get(0).field());
+        assertEquals(CrudSort.DESC, drc.getSorts().get(1).type());
+        assertEquals("name", drc.getSorts().get(1).field());
+        assertEquals(CrudSort.DESC, drc.getSorts().get(2).type());
+        assertEquals("mail", drc.getSorts().get(2).field());
     }
 
     @Test

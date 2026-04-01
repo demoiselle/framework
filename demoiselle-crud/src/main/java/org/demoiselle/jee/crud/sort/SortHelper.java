@@ -132,15 +132,15 @@ public class SortHelper {
             Search search = this.resourceInfo.getResourceMethod().getAnnotation(Search.class);
             List<String> searchFields = Arrays.asList(search.fields());
             if (searchFields.get(0) != null && !searchFields.get(0).equals("*")) {
-                drc.getSorts().stream().filter((sortModel) -> (!searchFields.contains(sortModel.getField()))).forEachOrdered((sortModel) -> {
-                    throw new BadRequestException(crudMessage.fieldRequestDoesNotExistsOnSearchField(sortModel.getField()));
+                drc.getSorts().stream().filter((sortModel) -> (!searchFields.contains(sortModel.field()))).forEachOrdered((sortModel) -> {
+                    throw new BadRequestException(crudMessage.fieldRequestDoesNotExistsOnSearchField(sortModel.field()));
                 });
             }
         }
 
         // Validate if the fields are valid
         drc.getSorts().stream().forEach(sortModel -> {
-            CrudUtilHelper.checkIfExistField(CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()), sortModel.getField());
+            CrudUtilHelper.checkIfExistField(CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()), sortModel.field());
         });
 
     }

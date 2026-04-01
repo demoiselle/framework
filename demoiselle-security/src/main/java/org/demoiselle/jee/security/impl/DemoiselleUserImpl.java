@@ -7,11 +7,11 @@
 package org.demoiselle.jee.security.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
@@ -77,21 +77,26 @@ public class DemoiselleUserImpl implements DemoiselleUser, Cloneable {
 
     @Override
     public List<String> getRoles() {
-        return Collections.unmodifiableList(roles);
+        return List.copyOf(roles);
     }
 
     @Override
     public Map<String, List<String>> getPermissions() {
-        return Collections.unmodifiableMap(permissions);
+        return permissions.entrySet().stream()
+            .collect(Collectors.toUnmodifiableMap(
+                Map.Entry::getKey,
+                e -> List.copyOf(e.getValue())
+            ));
     }
 
     @Override
     public Map<String, String> getParams() {
-        return Collections.unmodifiableMap(params);
+        return Map.copyOf(params);
     }
 
     @Override
     public void addRole(String role) {
+        Objects.requireNonNull(role, "role cannot be null");
         if (!this.roles.contains(role)) {
             this.roles.add(role);
         }

@@ -40,6 +40,9 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
     @Inject
     private DemoiselleScriptMessage bundle;
 
+    @Inject
+    private DynamicManagerCache cache;
+
     /**
      * Load a JSR-223 Script engine.
      *
@@ -49,7 +52,7 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      * implemented by engine
      */
     public ScriptEngine loadEngine(String engineName) throws DemoiselleScriptException {
-        ScriptEngine engine = (ScriptEngine) DynamicManagerCache.engineList.get(engineName);
+        ScriptEngine engine = (ScriptEngine) cache.getEngineList().get(engineName);
 
         if (engine == null) {
             engine = new ScriptEngineManager().getEngineByName(engineName);
@@ -59,8 +62,8 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
             }
 
             if (engine instanceof Compilable) {
-                DynamicManagerCache.engineList.put(engineName, engine);
-                DynamicManagerCache.scriptCache.put(engineName, new ConcurrentHashMap<String, Object>());
+                cache.getEngineList().put(engineName, engine);
+                cache.getScriptCache().put(engineName, new ConcurrentHashMap<String, Object>());
 
                 return engine;
             } else {
@@ -92,8 +95,8 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      */
     public void unloadEngine(String engineName) {
         this.clearCache(engineName);
-        DynamicManagerCache.engineList.remove(engineName);
-        DynamicManagerCache.scriptCache.remove(engineName);
+        cache.getEngineList().remove(engineName);
+        cache.getScriptCache().remove(engineName);
     }
 
     /**
@@ -102,13 +105,13 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      * @param engineName engineName
      */
     public void clearCache(String engineName) {
-        ScriptEngine engine = (ScriptEngine) DynamicManagerCache.engineList.get(engineName);
+        ScriptEngine engine = (ScriptEngine) cache.getEngineList().get(engineName);
 
         if (engine == null) {
             throw new DemoiselleScriptException(bundle.engineNotLoaded());
         }
 
-        DynamicManagerCache.scriptCache.get(engineName).clear();
+        cache.getScriptCache().get(engineName).clear();
     }
 
     /**
@@ -128,12 +131,12 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
         CompiledScript script = null;
         Object result = null;
 
-        if (DynamicManagerCache.scriptCache.get(engineName) == null) {
+        if (cache.getScriptCache().get(engineName) == null) {
             throw new DemoiselleScriptException(bundle.engineNotLoaded());
         }
 
-        if (DynamicManagerCache.scriptCache.get(engineName).get(scriptName) != null) {
-            script = (CompiledScript) DynamicManagerCache.scriptCache.get(engineName).get(scriptName);
+        if (cache.getScriptCache().get(engineName).get(scriptName) != null) {
+            script = (CompiledScript) cache.getScriptCache().get(engineName).get(scriptName);
 
             if (context != null) {
                 result = script.eval(context);
@@ -160,7 +163,7 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
         Compilable engine = (Compilable) engineObj;
         CompiledScript compiled = engine.compile(source);
 
-        DynamicManagerCache.scriptCache.get(engineName).put(scriptName, compiled);
+        cache.getScriptCache().get(engineName).put(scriptName, compiled);
 
         return true;
     }
@@ -189,7 +192,7 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      * @throws ScriptException when engine not loaded
      */
     public Boolean loadScript(String engineName, String scriptName, String source) throws ScriptException {
-        ScriptEngine engineObj = (ScriptEngine) DynamicManagerCache.engineList.get(engineName);
+        ScriptEngine engineObj = (ScriptEngine) cache.getEngineList().get(engineName);
 
         if (engineObj == null) {
             engineObj = this.loadEngine(engineName);
@@ -209,10 +212,10 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      * @return Set all scripts ids
      */
     public Set<String> listScriptCache(String engineName) {
-        if (DynamicManagerCache.scriptCache.get(engineName) == null) {
+        if (cache.getScriptCache().get(engineName) == null) {
             throw new DemoiselleScriptException(bundle.engineNotLoaded());
         }
-        return DynamicManagerCache.scriptCache.get(engineName).keySet();
+        return cache.getScriptCache().get(engineName).keySet();
     }
 
     /**
@@ -225,7 +228,7 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      * @throws ScriptException when engine not loaded
      */
     public Boolean updateScript(String engineName, String scriptName, String source) throws ScriptException {
-        ScriptEngine engineObj = (ScriptEngine) DynamicManagerCache.engineList.get(engineName);
+        ScriptEngine engineObj = (ScriptEngine) cache.getEngineList().get(engineName);
 
         if (engineObj == null) {
             engineObj = this.loadEngine(engineName);
@@ -247,11 +250,11 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      */
     public synchronized void removeScript(String engineName, String scriptId) {
 
-        if (DynamicManagerCache.scriptCache.get(engineName) == null) {
+        if (cache.getScriptCache().get(engineName) == null) {
             throw new DemoiselleScriptException(bundle.engineNotLoaded());
         }
 
-        DynamicManagerCache.scriptCache.get(engineName).remove(scriptId);
+        cache.getScriptCache().get(engineName).remove(scriptId);
     }
 
     /**
@@ -263,11 +266,11 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      */
     public synchronized Object getScript(String engineName, String scriptId) {
 
-        if (DynamicManagerCache.scriptCache.get(engineName) == null) {
+        if (cache.getScriptCache().get(engineName) == null) {
             throw new DemoiselleScriptException(bundle.engineNotLoaded());
         }
 
-        return DynamicManagerCache.scriptCache.get(engineName).get(scriptId);
+        return cache.getScriptCache().get(engineName).get(scriptId);
     }
 
     /**
@@ -277,10 +280,10 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      */
     public int getCacheSize(String engineName) {
 
-        if (DynamicManagerCache.scriptCache.get(engineName) == null) {
+        if (cache.getScriptCache().get(engineName) == null) {
             throw new DemoiselleScriptException(bundle.engineNotLoaded());
         }
-        return DynamicManagerCache.scriptCache.get(engineName).size();
+        return cache.getScriptCache().get(engineName).size();
     }
 
     /**

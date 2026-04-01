@@ -6,47 +6,23 @@
  */
 package org.demoiselle.jee.rest.exception;
 
+import java.util.Objects;
+
 /**
- * Message Exception class intended to be used by REST DemoiselleFramework
- * exceptions.
- * 
+ * Mensagem de exceção REST imutável.
+ *
+ * @param error identificador do erro
+ * @param errorDescription descrição do erro
+ * @param errorLink link para documentação do erro (pode ser null)
+ *
  * @author SERPRO
  */
-public class DemoiselleRestExceptionMessage {
-
-	private String error;
-	private String error_description;
-
-	private String error_link;
-
-	public DemoiselleRestExceptionMessage(String error, String error_description, String error_link) {
-		this.error = error;
-		this.error_description = error_description;
-		this.error_link = error_link;
-	}
-
-	public String getError() {
-		return error;
-	}
-
-	public void setError(String error) {
-		this.error = error;
-	}
-
-	public String getError_description() {
-		return error_description;
-	}
-
-	public void setError_description(String error_description) {
-		this.error_description = error_description;
-	}
-
-	public String getError_link() {
-		return error_link;
-	}
-
-	public void setError_link(String error_link) {
-		this.error_link = error_link;
-	}
-
+public record DemoiselleRestExceptionMessage(
+    String error,
+    String errorDescription,
+    String errorLink
+) {
+    public DemoiselleRestExceptionMessage {
+        Objects.requireNonNull(error, "error não pode ser nulo");
+    }
 }

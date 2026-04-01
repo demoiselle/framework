@@ -11,23 +11,22 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import jakarta.persistence.Column;
+import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PersistenceException;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Order;
@@ -38,6 +37,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.exception.DemoiselleCrudException;
+import org.demoiselle.jee.crud.filter.FilterOp;
 import org.demoiselle.jee.crud.message.DemoiselleCrudMessage;
 import org.demoiselle.jee.crud.pagination.PaginationHelperConfig;
 import org.demoiselle.jee.crud.pagination.ResultSet;
@@ -91,11 +91,12 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     @Override
     public T mergeHalf(I id, T entity) {
         try {
-            final StringBuilder sb = new StringBuilder();
-            final Map<String, Object> params = new ConcurrentHashMap<>();
-            sb.append("UPDATE ");
-            sb.append(entityClass.getCanonicalName());
-            sb.append(" SET ");
+            CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+            CriteriaUpdate<T> update = cb.createCriteriaUpdate(entityClass);
+            Root<T> root = update.from(entityClass);
+
+            boolean hasUpdates = false;
+
             for (final Field field : getAllFields(entityClass)) {
                 if (!field.isAnnotationPresent(ManyToOne.class)) {
                     final Column column = field.getAnnotation(Column.class);
@@ -104,30 +105,23 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                     }
                 }
                 field.setAccessible(true);
-                final String name = field.getName();
                 final Object value = field.get(entity);
                 if (value != null) {
-                    if (!params.isEmpty()) {
-                        sb.append(", ");
-                    }
-                    sb.append(name).append(" = :").append(name);
-                    params.putIfAbsent(name, value);
+                    update.set(root.get(field.getName()), value);
+                    hasUpdates = true;
                 }
             }
-            if (!params.isEmpty()) {
-                final String idName = CrudUtilHelper.getMethodAnnotatedWithID(entityClass);
-                sb.append(" WHERE ").append(idName).append(" = :").append(idName);
-                params.putIfAbsent(idName, id);
-                final Query query = getEntityManager().createQuery(sb.toString());
-                for (final Map.Entry<String, Object> entry : params.entrySet()) {
-                    query.setParameter(entry.getKey(), entry.getValue());
-                }
-                query.executeUpdate();
+
+            if (hasUpdates) {
+                String idName = CrudUtilHelper.getMethodAnnotatedWithID(entityClass);
+                update.where(cb.equal(root.get(idName), id));
+                getEntityManager().createQuery(update).executeUpdate();
             }
-            
+
             return entity;
         } catch (final PersistenceException | IllegalAccessException e) {
-            throw new DemoiselleCrudException(msg(() -> bundle.mergeError(), "Não foi possível salvar"), e);
+            throw new DemoiselleCrudException(
+                msg(() -> bundle.mergeError(), "Não foi possível salvar"), e);
         }
     }
 
@@ -173,6 +167,11 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
             TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
 
+            EntityGraph<T> graph = getEntityGraph();
+            if (graph != null) {
+                query.setHint("jakarta.persistence.fetchgraph", graph);
+            }
+
             if (drc.isPaginationEnabled()) {
                 Integer firstResult = drc.getOffset() == null ? 0 : drc.getOffset();
                 Integer maxResults = getMaxResult();
@@ -203,6 +202,17 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         }
     }
 
+    /**
+     * Returns the EntityGraph to apply as a fetch graph hint on find() queries.
+     * Subclasses can override this to provide a custom EntityGraph for controlling
+     * the fetch strategy of relationships.
+     *
+     * @return the EntityGraph to use, or null to use default fetch strategy
+     */
+    protected EntityGraph<T> getEntityGraph() {
+        return null;
+    }
+
     protected void configureCriteriaQuery(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery) {
         Root<T> from = criteriaQuery.from(entityClass);
         if (drc.getFilters() != null) {
@@ -219,10 +229,10 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
             drc.getSorts().stream().forEachOrdered(sortModel -> {
 
-                if (sortModel.getType().equals(CrudSort.ASC)) {
-                    orders.add(criteriaBuilder.asc(root.get(sortModel.getField())));
+                if (sortModel.type().equals(CrudSort.ASC)) {
+                    orders.add(criteriaBuilder.asc(root.get(sortModel.field())));
                 } else {
-                    orders.add(criteriaBuilder.desc(root.get(sortModel.getField())));
+                    orders.add(criteriaBuilder.desc(root.get(sortModel.field())));
                 }
             });
 
@@ -278,23 +288,73 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     
     private void fillPredicates(List<Predicate> predicates, From<?, ?>  from, CriteriaBuilder criteriaBuilder, CriteriaQuery<?> criteriaQuery, TreeNodeField<String, Set<String>> child, String value, TreeNodeField<String, Set<String>> parent) {
         
-        if ("null".equals(value) || value == null) {
-            predicates.add(criteriaBuilder.isNull(from.get(child.getKey())));
-        } else if (child.getValue().isEmpty()) {
+        if (child.getValue().isEmpty()) {
             predicates.add(criteriaBuilder.isEmpty(from.get(child.getKey())));
-        } else if (isLikeFilter(value)) {
-            predicates.add(buildLikePredicate(criteriaBuilder, criteriaQuery, from, child.getKey(), value));
-        } else if ("isTrue".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value)) {
-            predicates.add(criteriaBuilder.isTrue(from.get(child.getKey())));
-        } else if ("isFalse".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
-            predicates.add(criteriaBuilder.isFalse(from.get(child.getKey())));
-        } else if (isEnumFilter(child.getKey(), value, parent)) {
-            predicates.add(criteriaBuilder.equal(from.get(child.getKey()), convertEnumToInt(child.getKey(), value, parent)));
-        } else if (isUUIDFilter(child.getKey(), value, parent)) {
-            predicates.add(criteriaBuilder.equal(from.get(child.getKey()), UUID.fromString(value)));
         } else {
-            predicates.add(criteriaBuilder.equal(from.get(child.getKey()), value));
+            FilterOp op = resolveFilterOp(child.getKey(), value, parent);
+            predicates.add(buildPredicate(op, from, criteriaBuilder, criteriaQuery));
         }
+    }
+
+    /**
+     * Resolves the filter operation type based on the value and context.
+     *
+     * @param key    the field name
+     * @param value  the filter value
+     * @param parent the parent tree node (null for first-level filters)
+     * @return a FilterOp instance representing the resolved filter operation
+     */
+    protected FilterOp resolveFilterOp(String key, String value, TreeNodeField<String, Set<String>> parent) {
+        if ("null".equals(value) || value == null) {
+            return new FilterOp.IsNull(key);
+        }
+        if (isLikeFilter(value)) {
+            return new FilterOp.Like(key, value);
+        }
+        if ("isTrue".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value)) {
+            return new FilterOp.IsTrue(key);
+        }
+        if ("isFalse".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
+            return new FilterOp.IsFalse(key);
+        }
+        if (isEnumFilter(key, value, parent)) {
+            return new FilterOp.EnumFilter(key, value, convertEnumToInt(key, value, parent));
+        }
+        if (isUUIDFilter(key, value, parent)) {
+            return new FilterOp.UUIDFilter(key, UUID.fromString(value));
+        }
+        return new FilterOp.Equals(key, value);
+    }
+
+    /**
+     * Builds a JPA Predicate from a FilterOp using exhaustive instanceof checks.
+     * All 7 variants of the sealed interface are handled without a default clause.
+     *
+     * @param op   the filter operation
+     * @param from the JPA From (Root or Join)
+     * @param cb   the CriteriaBuilder
+     * @param cq   the CriteriaQuery
+     * @return the corresponding JPA Predicate
+     */
+    protected Predicate buildPredicate(FilterOp op, From<?, ?> from, CriteriaBuilder cb, CriteriaQuery<?> cq) {
+        if (op instanceof FilterOp.IsNull isNull) {
+            return cb.isNull(from.get(isNull.key()));
+        } else if (op instanceof FilterOp.Like like) {
+            return buildLikePredicate(cb, cq, from, like.key(), like.pattern());
+        } else if (op instanceof FilterOp.IsTrue isTrue) {
+            return cb.isTrue(from.get(isTrue.key()));
+        } else if (op instanceof FilterOp.IsFalse isFalse) {
+            return cb.isFalse(from.get(isFalse.key()));
+        } else if (op instanceof FilterOp.EnumFilter enumFilter) {
+            return cb.equal(from.get(enumFilter.key()), enumFilter.ordinal());
+        } else if (op instanceof FilterOp.UUIDFilter uuidFilter) {
+            return cb.equal(from.get(uuidFilter.key()), uuidFilter.value());
+        } else if (op instanceof FilterOp.Equals equals) {
+            return cb.equal(from.get(equals.key()), equals.value());
+        }
+        // This is unreachable because FilterOp is a sealed interface with exactly 7 variants,
+        // all handled above. Included only to satisfy the compiler.
+        throw new AssertionError("Unhandled FilterOp variant: " + op.getClass().getName());
     }
     
     protected Boolean isEnumFilter(String key, String value, TreeNodeField<String, Set<String>> tnf) {

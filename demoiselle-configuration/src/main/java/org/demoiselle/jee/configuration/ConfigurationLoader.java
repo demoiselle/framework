@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
 
 import jakarta.annotation.PostConstruct;
@@ -65,23 +67,47 @@ public class ConfigurationLoader implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Internal metadata record for configuration field information.
+     *
+     * @param key the configuration key for this field
+     * @param field the reflected field
+     * @param ignored whether the field is annotated with @ConfigurationIgnore
+     * @param suppressLog whether the field is annotated with @ConfigurationSuppressLogger
+     */
+    record ConfigFieldMeta(String key, Field field, boolean ignored, boolean suppressLog) {
+        ConfigFieldMeta {
+            Objects.requireNonNull(key);
+            Objects.requireNonNull(field);
+        }
+    }
+
+    /**
+     * Internal metadata record for configuration source information.
+     *
+     * @param type the configuration type (PROPERTIES, XML, SYSTEM)
+     * @param resource the resource file name
+     * @param prefix the configuration key prefix
+     */
+    record ConfigSourceMeta(ConfigurationType type, String resource, String prefix) {
+        ConfigSourceMeta {
+            Objects.requireNonNull(type);
+            Objects.requireNonNull(resource);
+        }
+    }
+
     @Inject
     private ConfigurationMessage message;
 
     private static final Logger logger = Logger.getLogger(ConfigurationLoader.class.getName());
+
+    private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
     // Object annotated with @Configuration
     private transient Object targetObject;
 
     // Class type of object annotated with @Configuration
     private Class<?> targetBaseClass;
-
-    // Type of source
-    private ConfigurationType configurationType;
-
-    private String resource;
-
-    private String prefix;
 
     // Apache configuration
     private transient List<Configuration> configurations = null;
@@ -112,17 +138,34 @@ public class ConfigurationLoader implements Serializable {
      * @throws DemoiselleConfigurationException When there is a problem in the
      * process
      */
-    public synchronized void load(final Object object, Class<?> baseClass) {
-        Boolean isLoaded = loadedCache.get(object);
-
-        if (isLoaded == null || !isLoaded) {
-            try {
-                processConfiguration(object, baseClass);
-                loadedCache.putIfAbsent(object, true);
-            } catch (DemoiselleConfigurationException c) {
-                loadedCache.putIfAbsent(object, false);
-                throw c;
+    public void load(final Object object, Class<?> baseClass) {
+        // Fast read path — multiple threads can read simultaneously
+        rwLock.readLock().lock();
+        try {
+            Boolean isLoaded = loadedCache.get(object);
+            if (isLoaded != null && isLoaded) {
+                return;  // already loaded, exit fast
             }
+        } finally {
+            rwLock.readLock().unlock();
+        }
+
+        // Write path — only one thread at a time
+        rwLock.writeLock().lock();
+        try {
+            // Double-check after acquiring write lock
+            Boolean isLoaded = loadedCache.get(object);
+            if (isLoaded == null || !isLoaded) {
+                try {
+                    processConfiguration(object, baseClass);
+                    loadedCache.put(object, true);
+                } catch (DemoiselleConfigurationException c) {
+                    loadedCache.put(object, false);
+                    throw c;
+                }
+            }
+        } finally {
+            rwLock.writeLock().unlock();
         }
     }
 
@@ -149,38 +192,44 @@ public class ConfigurationLoader implements Serializable {
         loadFieldsFromTargetObject();
         validateFieldsFromTargetObject();
 
-        identifyConfigurationType();
-        identifyResourceName();
-        loadConfigurationType();
+        ConfigSourceMeta sourceMeta = identifySource();
+        loadConfigurationType(sourceMeta);
 
         if (configurations != null && !configurations.isEmpty()) {
-            identifyPrefix();
-            fillTargetObjectWithValues();
+            String prefix = identifyPrefix(sourceMeta);
+            fillTargetObjectWithValues(prefix);
+
+            // Validate values using JavaBeans Validation
+            validateValues();
+
+            printConfiguration(prefix);
+        } else {
+            // Validate values using JavaBeans Validation
+            validateValues();
+
+            printConfiguration("");
         }
-
-        // Validate values using JavaBeans Validation
-        validateValues();
-
-        printConfiguration();
     }
 
     /**
      * Log all configurations
      */
-    private void printConfiguration() {
+    private void printConfiguration(String prefix) {
 
         Boolean suppressAllFields = hasSuppressLogger();
 
-        fields.stream().forEach(field -> {
+        List<ConfigFieldMeta> fieldMetas = buildFieldMetas(prefix);
 
-            if (!hasIgnoreAnnotation(field)) {
-                Object obj = getFieldValueFromObject(field, targetObject);
+        fieldMetas.stream().forEach(meta -> {
 
-                String strMessage = message.configurationFieldLoaded(prefix + getKey(field), obj);
+            if (!meta.ignored()) {
+                Object obj = getFieldValueFromObject(meta.field(), targetObject);
+
+                String strMessage = message.configurationFieldLoaded(prefix + meta.key(), obj);
 
                 // Check if the field has @SuppressLogger
-                if (suppressAllFields || hasSuppressLogger(field)) {
-                    strMessage = message.configurationFieldSuppress(prefix + getKey(field),
+                if (suppressAllFields || meta.suppressLog()) {
+                    strMessage = message.configurationFieldSuppress(prefix + meta.key(),
                             ConfigurationSuppressLogger.class.getSimpleName());
                 }
 
@@ -197,6 +246,29 @@ public class ConfigurationLoader implements Serializable {
 
     private Boolean hasSuppressLogger(Field field) {
         return field.getAnnotation(ConfigurationSuppressLogger.class) == null ? Boolean.FALSE : Boolean.TRUE;
+    }
+
+    /**
+     * Build a ConfigFieldMeta for a single field.
+     */
+    private ConfigFieldMeta buildFieldMeta(Field field) {
+        return new ConfigFieldMeta(
+                getKey(field),
+                field,
+                hasIgnoreAnnotation(field),
+                hasSuppressLogger(field)
+        );
+    }
+
+    /**
+     * Build ConfigFieldMeta list for all fields (used by printConfiguration).
+     */
+    private List<ConfigFieldMeta> buildFieldMetas(String prefix) {
+        List<ConfigFieldMeta> metas = new ArrayList<>();
+        for (Field field : fields) {
+            metas.add(buildFieldMeta(field));
+        }
+        return metas;
     }
 
     private void loadFieldsFromTargetObject() {
@@ -223,23 +295,29 @@ public class ConfigurationLoader implements Serializable {
         }
     }
 
-    private void identifyConfigurationType() {
-        configurationType = targetBaseClass
-                .getAnnotation(org.demoiselle.jee.configuration.annotation.Configuration.class).type();
-    }
-
     /**
-     * Load the name of resource that contains the values to fill object. Unless
-     * with the type of configuration is SYSTEM type.
+     * Identify the configuration source metadata from the @Configuration annotation.
+     *
+     * @return a ConfigSourceMeta with type, resource and a raw prefix
      */
-    private void identifyResourceName() {
-        if (configurationType != ConfigurationType.SYSTEM) {
-            String name = targetBaseClass.getAnnotation(org.demoiselle.jee.configuration.annotation.Configuration.class)
-                    .resource();
-            String extension = configurationType.toString().toLowerCase();
+    private ConfigSourceMeta identifySource() {
+        org.demoiselle.jee.configuration.annotation.Configuration annotation =
+                targetBaseClass.getAnnotation(org.demoiselle.jee.configuration.annotation.Configuration.class);
 
+        ConfigurationType type = annotation.type();
+
+        String resource;
+        if (type != ConfigurationType.SYSTEM) {
+            String name = annotation.resource();
+            String extension = type.toString().toLowerCase();
             resource = name + "." + extension;
+        } else {
+            resource = "";
         }
+
+        String prefix = annotation.prefix();
+
+        return new ConfigSourceMeta(type, resource, prefix);
     }
 
     /**
@@ -247,21 +325,21 @@ public class ConfigurationLoader implements Serializable {
      * {@link ConfigurationType}
      *
      */
-    private void loadConfigurationType() {
-        BasicConfigurationBuilder<? extends Configuration> builder = createConfiguration();
+    private void loadConfigurationType(ConfigSourceMeta sourceMeta) {
+        BasicConfigurationBuilder<? extends Configuration> builder = createConfiguration(sourceMeta.type());
 
         configurations.clear();
 
         try {
             if (builder instanceof FileBasedConfigurationBuilder) {
 
-                Enumeration<URL> urlResources = getResourceAsURL(resource);
+                Enumeration<URL> urlResources = getResourceAsURL(sourceMeta.resource());
 
                 if (urlResources == null) {
-                    throw new DemoiselleConfigurationException(message.fileNotFound(resource));
+                    throw new DemoiselleConfigurationException(message.fileNotFound(sourceMeta.resource()));
                 }
 
-                configureFileBuilder(urlResources);
+                configureFileBuilder(urlResources, sourceMeta.type());
 
             } else {
                 configurations.add(builder.getConfiguration());
@@ -271,12 +349,12 @@ public class ConfigurationLoader implements Serializable {
         }
     }
 
-    private void configureFileBuilder(Enumeration<URL> urlResources) {
+    private void configureFileBuilder(Enumeration<URL> urlResources, ConfigurationType configurationType) {
 
         Parameters params = new Parameters();
 
         while (urlResources.hasMoreElements()) {
-            BasicConfigurationBuilder<? extends Configuration> builder = createConfiguration();
+            BasicConfigurationBuilder<? extends Configuration> builder = createConfiguration(configurationType);
 
             URL url = urlResources.nextElement();
 
@@ -291,7 +369,7 @@ public class ConfigurationLoader implements Serializable {
 
     }
 
-    private BasicConfigurationBuilder<? extends Configuration> createConfiguration() {
+    private BasicConfigurationBuilder<? extends Configuration> createConfiguration(ConfigurationType configurationType) {
         BasicConfigurationBuilder<? extends Configuration> builder;
 
         switch (configurationType) {
@@ -310,21 +388,20 @@ public class ConfigurationLoader implements Serializable {
         return builder;
     }
 
-    private void identifyPrefix() {
-        String prefixValue = targetBaseClass
-                .getAnnotation(org.demoiselle.jee.configuration.annotation.Configuration.class).prefix();
+    private String identifyPrefix(ConfigSourceMeta sourceMeta) {
+        String prefixValue = sourceMeta.prefix();
 
         if (prefixValue.endsWith(".")) {
-            logger.warning(message.configurationDotAfterPrefix(resource));
+            logger.warning(message.configurationDotAfterPrefix(sourceMeta.resource()));
         } else if (!prefixValue.isEmpty()) {
             prefixValue += ".";
         }
 
-        prefix = prefixValue;
+        return prefixValue;
     }
 
-    private void fillTargetObjectWithValues() {
-        fields.stream().forEach(this::fillFieldWithValue);
+    private void fillTargetObjectWithValues(String prefix) {
+        fields.stream().forEach(field -> fillFieldWithValue(field, prefix));
     }
 
     /**
@@ -337,25 +414,28 @@ public class ConfigurationLoader implements Serializable {
      * selected and the default value is ignored
      *
      * @param field Current field from targetObject
+     * @param prefix The configuration key prefix
      */
-    private void fillFieldWithValue(Field field) {
-        if (hasIgnoreAnnotation(field)) {
+    private void fillFieldWithValue(Field field, String prefix) {
+        ConfigFieldMeta meta = buildFieldMeta(field);
+
+        if (meta.ignored()) {
             return;
         }
 
         Object defaultValue = getFieldValueFromObject(field, targetObject);
-        Object loadedValue = getValueFromSource(field, getKey(field));
+        Object loadedValue = getValueFromSource(field, meta.key(), prefix);
         Object finalValue = loadedValue == null ? defaultValue : loadedValue;
 
         if (loadedValue == null) {
-            logger.info(message.configurationKeyNotFoud(prefix + getKey(field)));
+            logger.info(message.configurationKeyNotFoud(prefix + meta.key()));
         }
 
         setFieldValue(field, targetObject, finalValue);
 
     }
 
-    private Object getValueFromSource(Field field, String key) {
+    private Object getValueFromSource(Field field, String key, String prefix) {
         Object value = null;
 
         try {

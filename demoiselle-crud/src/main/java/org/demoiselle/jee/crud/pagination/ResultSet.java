@@ -6,7 +6,6 @@
  */
 package org.demoiselle.jee.crud.pagination;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.demoiselle.jee.core.api.crud.Result;
@@ -19,7 +18,7 @@ import org.demoiselle.jee.crud.AbstractDAO;
  */
 public class ResultSet implements Result{
 	
-	private List<?> content = new LinkedList<>();
+	private List<?> content = List.of();
 	
 	@Override
 	public List<?> getContent() {
@@ -28,7 +27,7 @@ public class ResultSet implements Result{
 
     @Override
 	public void setContent(List<?> content) {
-		this.content = (List<?>) content;
+		this.content = content == null ? List.of() : List.copyOf(content);
 	}
 
 }
