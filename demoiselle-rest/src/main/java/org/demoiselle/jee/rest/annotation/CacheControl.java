@@ -26,5 +26,23 @@ import jakarta.interceptor.InterceptorBinding;
 public @interface CacheControl {
 
     @Nonbinding
-    String value() default "max-age=0";
+    String value() default "";
+
+    @Nonbinding
+    int maxAge() default -1;
+
+    @Nonbinding
+    int sMaxAge() default -1;
+
+    @Nonbinding
+    boolean noCache() default false;
+
+    @Nonbinding
+    boolean noStore() default false;
+
+    @Nonbinding
+    boolean mustRevalidate() default false;
+
+    @Nonbinding
+    boolean isPrivate() default false;
 }

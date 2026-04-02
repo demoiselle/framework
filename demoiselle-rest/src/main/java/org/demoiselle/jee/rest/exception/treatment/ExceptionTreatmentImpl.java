@@ -26,6 +26,8 @@ import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 import org.demoiselle.jee.rest.message.DemoiselleRESTMessage;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -61,6 +63,113 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
     }
 
     public Response getFormatedError(Throwable exception, HttpServletRequest request) {
+        if (config.isRfc9457()) {
+            return getFormatedErrorRfc9457(exception, request);
+        }
+        return getFormatedErrorLegacy(exception, request);
+    }
+
+    // ── RFC 9457 format ────────────────────────────────────────────
+
+    private static final String PROBLEM_JSON = "application/problem+json";
+
+    Response getFormatedErrorRfc9457(Throwable exception, HttpServletRequest request) {
+        final boolean isShowErrorDetails = config.isShowErrorDetails();
+
+        // Unwrap DemoiselleRestException from cause chain
+        if (exception.getCause() != null && exception.getCause() instanceof DemoiselleRestException) {
+            exception = (Exception) exception.getCause();
+        }
+
+        ProblemDetail pd = new ProblemDetail();
+
+        // instance is always filled with request URI when request is not null
+        if (request != null) {
+            pd.setInstance(request.getRequestURI());
+        }
+
+        if (exception instanceof ConstraintViolationException) {
+            ConstraintViolationException c = (ConstraintViolationException) exception;
+            pd.setTitle("Validation Failed");
+            pd.setStatus(412);
+
+            List<Map<String, String>> violations = new ArrayList<>();
+            c.getConstraintViolations().forEach(violation -> {
+                Map<String, String> v = new LinkedHashMap<>();
+                String objectType = violation.getLeafBean().getClass().getSimpleName();
+                String arg = "arg0";
+                String pathConverted = violation.getPropertyPath().toString().replaceAll(arg, objectType);
+                v.put("field", pathConverted);
+                v.put("message", violation.getMessage());
+                violations.add(v);
+            });
+            pd.extension("violations", violations);
+
+        } else if (getSQLExceptionInException(exception) != null) {
+            SQLException sqlException = getSQLExceptionInException(exception);
+            pd.setTitle("Database Error");
+            pd.setStatus(500);
+            if (isShowErrorDetails && sqlException.getMessage() != null) {
+                pd.setDetail(sqlException.getMessage());
+            }
+
+        } else if (exception instanceof DemoiselleRestException) {
+            DemoiselleRestException e = (DemoiselleRestException) exception;
+            pd.setTitle(e.getMessage());
+            pd.setStatus(e.getStatusCode() != 0 ? e.getStatusCode() : 412);
+            if (isShowErrorDetails && e.getMessage() != null) {
+                pd.setDetail(e.getMessage());
+            }
+            // Add additional messages as extensions
+            if (!e.getMessages().isEmpty()) {
+                List<Map<String, String>> msgs = new ArrayList<>();
+                e.getMessages().forEach(msg -> {
+                    Map<String, String> m = new LinkedHashMap<>();
+                    m.put("error", msg.error());
+                    if (isShowErrorDetails && msg.errorDescription() != null) {
+                        m.put("error_description", msg.errorDescription());
+                    }
+                    if (msg.errorLink() != null && !msg.errorLink().isEmpty()) {
+                        m.put("error_link", msg.errorLink());
+                    }
+                    msgs.add(m);
+                });
+                pd.extension("messages", msgs);
+            }
+
+        } else if (exception instanceof InvalidFormatException) {
+            pd.setTitle("Malformed Input");
+            pd.setStatus(400);
+            if (isShowErrorDetails && exception.getMessage() != null) {
+                pd.setDetail(exception.getMessage());
+            }
+
+        } else if (exception instanceof ClientErrorException) {
+            ClientErrorException exClient = (ClientErrorException) exception;
+            pd.setTitle("HTTP Error");
+            pd.setStatus(exClient.getResponse().getStatus());
+            if (isShowErrorDetails && exception.getMessage() != null) {
+                pd.setDetail(exception.getMessage());
+            }
+
+        } else {
+            // Generic exception
+            pd.setTitle("Internal Server Error");
+            pd.setStatus(500);
+            if (isShowErrorDetails && exception.getMessage() != null) {
+                pd.setDetail(exception.getMessage());
+            }
+        }
+
+        return Response.status(pd.getStatus())
+                .entity(pd)
+                .type(PROBLEM_JSON)
+                .build();
+    }
+
+    // ── Legacy format ──────────────────────────────────────────────
+
+    Response getFormatedErrorLegacy(Throwable exception, HttpServletRequest request) {
 
         // Variable to enable to show datails of errors
         final boolean isShowErrorDetails = config.isShowErrorDetails();

@@ -28,6 +28,8 @@ public class DemoiselleRestConfig {
 	
 	private boolean showErrorDetails = true;
 
+	private String errorFormat = "legacy";
+
 	/**
 	 * Return true or false if the detailed errors should return to user.
 	 * 
@@ -62,6 +64,37 @@ public class DemoiselleRestConfig {
 	 */	
 	public Map<String, String> getSqlError() {
 		return  this.sqlError;
+	}
+
+	/**
+	 * Return the error format configuration.
+	 * 
+	 * @return "legacy" or "rfc9457"
+	 */
+	public String getErrorFormat() {
+		return errorFormat;
+	}
+
+	/**
+	 * Set the error format. Any value other than "rfc9457" is normalized to "legacy".
+	 * 
+	 * @param errorFormat the desired error format
+	 */
+	public void setErrorFormat(String errorFormat) {
+		if ("rfc9457".equals(errorFormat)) {
+			this.errorFormat = errorFormat;
+		} else {
+			this.errorFormat = "legacy";
+		}
+	}
+
+	/**
+	 * Return true if the error format is RFC 9457.
+	 * 
+	 * @return true if errorFormat is "rfc9457"
+	 */
+	public boolean isRfc9457() {
+		return "rfc9457".equals(errorFormat);
 	}
 
 }

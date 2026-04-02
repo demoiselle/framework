@@ -31,14 +31,27 @@ public class CacheControlFilter implements ContainerResponseFilter {
 
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
-        if (req.getMethod().equals("GET")) {
-            Method method = info.getResourceMethod();
-            if (method != null) {
-                CacheControl max = method.getAnnotation(CacheControl.class);
-                if (max != null) {
-                    res.getHeaders().putSingle("Cache-Control", max.value());
-                }
+        if (!"GET".equals(req.getMethod())) {
+            return;
+        }
+        CacheControl cc = resolveCacheControl();
+        if (cc != null) {
+            res.getHeaders().putSingle("Cache-Control", CacheControlBuilder.build(cc));
+        }
+    }
+
+    private CacheControl resolveCacheControl() {
+        Method method = info.getResourceMethod();
+        if (method != null) {
+            CacheControl methodLevel = method.getAnnotation(CacheControl.class);
+            if (methodLevel != null) {
+                return methodLevel;
             }
         }
+        Class<?> resourceClass = info.getResourceClass();
+        if (resourceClass != null) {
+            return resourceClass.getAnnotation(CacheControl.class);
+        }
+        return null;
     }
 }
