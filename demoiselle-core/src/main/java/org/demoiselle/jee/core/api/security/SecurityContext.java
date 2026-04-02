@@ -70,4 +70,32 @@ public interface SecurityContext {
      */
     void removeUser(DemoiselleUser loggedUser);
 
+    /**
+     * Checks if the user has at least one of the given roles.
+     *
+     * @param roles Role names to check
+     * @return {@code true} if the user has at least one role, {@code false} otherwise
+     */
+    default boolean hasAnyRole(String... roles) {
+        if (roles == null || roles.length == 0) return false;
+        for (String role : roles) {
+            if (hasRole(role)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the user has all of the given roles.
+     *
+     * @param roles Role names to check
+     * @return {@code true} if the user has all roles, {@code false} otherwise
+     */
+    default boolean hasAllRoles(String... roles) {
+        if (roles == null || roles.length == 0) return false;
+        for (String role : roles) {
+            if (!hasRole(role)) return false;
+        }
+        return true;
+    }
+
 }

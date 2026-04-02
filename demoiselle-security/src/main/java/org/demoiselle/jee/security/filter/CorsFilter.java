@@ -8,8 +8,9 @@ package org.demoiselle.jee.security.filter;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import jakarta.annotation.Priority;
+import java.util.List;
 
+import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import static jakarta.ws.rs.Priorities.AUTHORIZATION;
 import jakarta.ws.rs.container.ContainerRequestContext;
@@ -44,29 +45,50 @@ public class CorsFilter implements ContainerResponseFilter {
 
     @Override
     public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
+        // Security headers (always applied)
+        res.getHeaders().putSingle("Demoiselle-security", "Enable");
+        config.getParamsHeaderSecuriry().entrySet().forEach(entry ->
+            res.getHeaders().putSingle(entry.getKey(), entry.getValue()));
+
+        // Check if CORS is enabled (@Cors annotation takes precedence)
+        boolean corsEnable = config.isCorsEnabled();
         Method method = info.getResourceMethod();
         Class<?> classe = info.getResourceClass();
-        boolean corsEnable = config.isCorsEnabled();
-
-        res.getHeaders().putSingle("Demoiselle-security", "Enable");
-
-        config.getParamsHeaderSecuriry().entrySet().stream().forEach((entry) -> {
-            res.getHeaders().putSingle(entry.getKey(), entry.getValue());
-        });
-
         if (method != null && classe != null && method.getAnnotation(Cors.class) != null) {
             corsEnable = method.getAnnotation(Cors.class).enable();
         }
 
-        if (config.isCorsEnabled() && corsEnable) {
-            config.getParamsHeaderCors().entrySet().stream().forEach((entry) -> {
-                res.getHeaders().putSingle(entry.getKey(), entry.getValue());
-            });
-        } else {
+        if (!corsEnable) {
             res.getHeaders().remove("Access-Control-Allow-Origin");
             res.getHeaders().remove("Access-Control-Allow-Methods");
+            return;
         }
 
+        // Typed CORS properties (if configured)
+        List<String> allowedOrigins = config.getCorsAllowedOrigins();
+        if (allowedOrigins != null && !allowedOrigins.isEmpty()) {
+            String origin = req.getHeaderString("Origin");
+            if (origin != null) {
+                if (allowedOrigins.contains("*")) {
+                    res.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
+                } else if (allowedOrigins.contains(origin)) {
+                    res.getHeaders().putSingle("Access-Control-Allow-Origin", origin);
+                } else {
+                    // Origin not allowed — omit CORS headers
+                    return;
+                }
+            }
+            res.getHeaders().putSingle("Access-Control-Allow-Methods",
+                String.join(", ", config.getCorsAllowedMethods()));
+            res.getHeaders().putSingle("Access-Control-Allow-Headers",
+                String.join(", ", config.getCorsAllowedHeaders()));
+            res.getHeaders().putSingle("Access-Control-Max-Age",
+                String.valueOf(config.getCorsMaxAge()));
+        } else {
+            // Fallback to legacy behavior
+            config.getParamsHeaderCors().entrySet().forEach(entry ->
+                res.getHeaders().putSingle(entry.getKey(), entry.getValue()));
+        }
     }
 
 }

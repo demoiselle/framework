@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.annotation.Priority;
+import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
@@ -24,6 +25,7 @@ import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.annotation.Authenticated;
 import org.demoiselle.jee.security.annotation.RequiredRole;
+import org.demoiselle.jee.security.event.AuthorizationEvent;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
@@ -46,6 +48,9 @@ public class RequiredRoleInterceptor implements Serializable {
 
     @Inject
     private DemoiselleSecurityMessages bundle;
+
+    @Inject
+    private Event<AuthorizationEvent> authzEvent;
 
     /**
      * <p>
@@ -82,6 +87,8 @@ public class RequiredRoleInterceptor implements Serializable {
         });
 
         if (userRoles.isEmpty()) {
+            authzEvent.fire(new AuthorizationEvent(
+                securityContext.getUser(), null, null, roles));
             throw new DemoiselleSecurityException(bundle.doesNotHaveRole(roles.toString()), FORBIDDEN.getStatusCode());
         }
 

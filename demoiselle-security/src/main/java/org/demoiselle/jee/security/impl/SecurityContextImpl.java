@@ -9,11 +9,13 @@ package org.demoiselle.jee.security.impl;
 import java.util.List;
 
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.core.api.security.TokenManager;
+import org.demoiselle.jee.security.event.AuthenticationEvent;
 
 /**
  * <p>
@@ -30,6 +32,9 @@ public class SecurityContextImpl implements SecurityContext {
 
     @Inject
     private TokenManager tm;
+
+    @Inject
+    private Event<AuthenticationEvent> authEvent;
 
     @Override
     public boolean hasPermission(String resource, String operation) {
@@ -69,6 +74,7 @@ public class SecurityContextImpl implements SecurityContext {
     @Override
     public void setUser(DemoiselleUser loggedUser) {
         tm.setUser(loggedUser);
+        authEvent.fire(new AuthenticationEvent(loggedUser, AuthenticationEvent.Action.LOGIN));
     }
 
     @Override
@@ -79,11 +85,33 @@ public class SecurityContextImpl implements SecurityContext {
     @Override
     public void setUser(DemoiselleUser loggedUser, String issuer, String audience) {
         tm.setUser(loggedUser, issuer, audience);
+        authEvent.fire(new AuthenticationEvent(loggedUser, AuthenticationEvent.Action.LOGIN));
     }
 
     @Override
     public void removeUser(DemoiselleUser loggedUser) {
         tm.removeUser(loggedUser);
+        authEvent.fire(new AuthenticationEvent(loggedUser, AuthenticationEvent.Action.LOGOUT));
+    }
+
+    @Override
+    public boolean hasAnyRole(String... roles) {
+        if (roles == null || roles.length == 0) return false;
+        if (getUser() == null) return false;
+        for (String role : roles) {
+            if (hasRole(role)) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean hasAllRoles(String... roles) {
+        if (roles == null || roles.length == 0) return false;
+        if (getUser() == null) return false;
+        for (String role : roles) {
+            if (!hasRole(role)) return false;
+        }
+        return true;
     }
 
 }

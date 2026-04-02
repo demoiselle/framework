@@ -9,6 +9,7 @@ package org.demoiselle.jee.security.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -135,6 +136,68 @@ class SecurityContextImplTest {
     void getUserReturnsNullWhenNoUserSet() {
         // No user set — getUser() should return null without NPE
         assertNull(instance.getUser());
+    }
+
+    // --- hasAnyRole tests ---
+
+    @Test
+    void hasAnyRoleReturnsTrueWhenUserHasOneOfTheRoles() {
+        instance.setUser(dml);
+        assertTrue(instance.hasAnyRole("Role1", "NonExistent"));
+    }
+
+    @Test
+    void hasAnyRoleReturnsFalseWhenUserHasNoneOfTheRoles() {
+        instance.setUser(dml);
+        assertFalse(instance.hasAnyRole("NonExistent1", "NonExistent2"));
+    }
+
+    @Test
+    void hasAnyRoleReturnsFalseWhenUserIsNull() {
+        assertFalse(instance.hasAnyRole("Role1"));
+    }
+
+    @Test
+    void hasAnyRoleReturnsFalseForNullArgument() {
+        instance.setUser(dml);
+        assertFalse(instance.hasAnyRole((String[]) null));
+    }
+
+    @Test
+    void hasAnyRoleReturnsFalseForEmptyArgument() {
+        instance.setUser(dml);
+        assertFalse(instance.hasAnyRole());
+    }
+
+    // --- hasAllRoles tests ---
+
+    @Test
+    void hasAllRolesReturnsTrueWhenUserHasAllRoles() {
+        instance.setUser(dml);
+        assertTrue(instance.hasAllRoles("Role1", "Role2"));
+    }
+
+    @Test
+    void hasAllRolesReturnsFalseWhenUserMissesOneRole() {
+        instance.setUser(dml);
+        assertFalse(instance.hasAllRoles("Role1", "NonExistent"));
+    }
+
+    @Test
+    void hasAllRolesReturnsFalseWhenUserIsNull() {
+        assertFalse(instance.hasAllRoles("Role1"));
+    }
+
+    @Test
+    void hasAllRolesReturnsFalseForNullArgument() {
+        instance.setUser(dml);
+        assertFalse(instance.hasAllRoles((String[]) null));
+    }
+
+    @Test
+    void hasAllRolesReturnsFalseForEmptyArgument() {
+        instance.setUser(dml);
+        assertFalse(instance.hasAllRoles());
     }
 
 }

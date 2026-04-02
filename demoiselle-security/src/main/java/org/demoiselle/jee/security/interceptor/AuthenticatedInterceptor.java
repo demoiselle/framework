@@ -9,6 +9,7 @@ package org.demoiselle.jee.security.interceptor;
 import java.io.Serializable;
 
 import jakarta.annotation.Priority;
+import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
@@ -17,6 +18,7 @@ import static jakarta.ws.rs.core.Response.Status.FORBIDDEN;
 
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.security.annotation.Authenticated;
+import org.demoiselle.jee.security.event.AuthenticationEvent;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
@@ -40,6 +42,9 @@ public class AuthenticatedInterceptor implements Serializable {
     @Inject
     private DemoiselleSecurityMessages bundle;
 
+    @Inject
+    private Event<AuthenticationEvent> authEvent;
+
     @AroundInvoke
     public Object manage(final InvocationContext ic) throws Exception {
         Authenticated logged = ic.getMethod().getAnnotation(Authenticated.class);
@@ -49,6 +54,7 @@ public class AuthenticatedInterceptor implements Serializable {
         }
 
         if (!securityContext.isLoggedIn()) {
+            authEvent.fire(new AuthenticationEvent(null, AuthenticationEvent.Action.FAILURE));
             throw new DemoiselleSecurityException(bundle.userNotAuthenticated(), FORBIDDEN.getStatusCode());
         }
 
