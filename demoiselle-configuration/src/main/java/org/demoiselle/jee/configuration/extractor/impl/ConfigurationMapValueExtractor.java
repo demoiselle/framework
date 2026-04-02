@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,13 +64,15 @@ import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 @Dependent
 public class ConfigurationMapValueExtractor implements ConfigurationValueExtractor {
 
+    private final ConcurrentHashMap<String, Pattern> patternCache = new ConcurrentHashMap<>();
+
     @Override
     public Object getValue(String prefix, String key, Field field, Configuration configuration) throws DemoiselleConfigurationValueExtractorException {
         try {
             Map<String, Object> value = null;
 
             String regexp = "^(" + prefix + ")(" + key + ")(\\.([^=]*))?$";
-            Pattern pattern = Pattern.compile(regexp);
+            Pattern pattern = patternCache.computeIfAbsent(regexp, Pattern::compile);
 
             for (Iterator<String> iter = configuration.getKeys(); iter.hasNext();) {
                 String iterKey = iter.next();

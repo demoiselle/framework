@@ -90,6 +90,9 @@ class ConfigurationLoaderConcurrencyTest {
         @Override public String failOnCreateApacheConfiguration(String message) { return "fail: " + message; }
         @Override public String configurationFieldSuppress(String key, String annotationName) { return "suppress"; }
         @Override public String cdiNotAlready() { return "CDI not ready"; }
+        @Override public String profileResourceLoaded(String resource, String profile) { return "profile loaded: " + resource; }
+        @Override public String profileResourceNotFound(String resource) { return "profile not found: " + resource; }
+        @Override public String defaultValueConversionError(String fieldName, String value, String targetType) { return "conversion error"; }
     }
 
     @BeforeEach

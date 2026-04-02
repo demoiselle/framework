@@ -61,6 +61,15 @@ public interface ConfigurationMessage {
     String configurationFieldSuppress(String key, String annotationName);
 
     @MessageTemplate("{cdi-not-already}")
-    String cdiNotAlready();    
+    String cdiNotAlready();
+
+    @MessageTemplate("{profile-resource-loaded}")
+    String profileResourceLoaded(String resource, String profile);
+
+    @MessageTemplate("{profile-resource-not-found}")
+    String profileResourceNotFound(String resource);
+
+    @MessageTemplate("{default-value-conversion-error}")
+    String defaultValueConversionError(String fieldName, String value, String targetType);
 
 }

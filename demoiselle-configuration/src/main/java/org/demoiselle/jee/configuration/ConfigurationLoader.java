@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,6 +25,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.AmbiguousResolutionException;
 import jakarta.enterprise.inject.spi.CDI;
@@ -47,6 +47,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.demoiselle.jee.configuration.annotation.ConfigurationIgnore;
 import org.demoiselle.jee.configuration.annotation.ConfigurationName;
 import org.demoiselle.jee.configuration.annotation.ConfigurationSuppressLogger;
+import org.demoiselle.jee.configuration.annotation.DefaultValue;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationException;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
@@ -117,10 +118,20 @@ public class ConfigurationLoader implements Serializable {
 
     private transient Map<Object, Boolean> loadedCache = null;
 
+    private transient ValidatorFactory validatorFactory;
+
     @PostConstruct
     private void init() {
         configurations = new ArrayList<>();
         loadedCache = new ConcurrentHashMap<>();
+        validatorFactory = Validation.buildDefaultValidatorFactory();
+    }
+
+    @PreDestroy
+    private void destroy() {
+        if (validatorFactory != null) {
+            validatorFactory.close();
+        }
     }
 
     /**
@@ -216,11 +227,11 @@ public class ConfigurationLoader implements Serializable {
      */
     private void printConfiguration(String prefix) {
 
-        Boolean suppressAllFields = hasSuppressLogger();
+        boolean suppressAllFields = hasSuppressLogger();
 
         List<ConfigFieldMeta> fieldMetas = buildFieldMetas(prefix);
 
-        fieldMetas.stream().forEach(meta -> {
+        fieldMetas.forEach(meta -> {
 
             if (!meta.ignored()) {
                 Object obj = getFieldValueFromObject(meta.field(), targetObject);
@@ -239,9 +250,8 @@ public class ConfigurationLoader implements Serializable {
 
     }
 
-    private Boolean hasSuppressLogger() {
-        return targetObject.getClass().getAnnotation(ConfigurationSuppressLogger.class) == null ? Boolean.FALSE
-                : Boolean.TRUE;
+    private boolean hasSuppressLogger() {
+        return targetObject.getClass().getAnnotation(ConfigurationSuppressLogger.class) != null;
     }
 
     private Boolean hasSuppressLogger(Field field) {
@@ -276,7 +286,7 @@ public class ConfigurationLoader implements Serializable {
     }
 
     private void validateFieldsFromTargetObject() {
-        fields.stream().forEach(this::validateField);
+        fields.forEach(this::validateField);
     }
 
     /**
@@ -333,6 +343,25 @@ public class ConfigurationLoader implements Serializable {
         try {
             if (builder instanceof FileBasedConfigurationBuilder) {
 
+                // Profile resolution for PROPERTIES and XML types
+                if (sourceMeta.type() != ConfigurationType.SYSTEM) {
+                    String profile = resolveProfile();
+                    if (profile != null) {
+                        String profileResource = buildProfileResource(sourceMeta.resource(), profile, sourceMeta.type());
+                        try {
+                            Enumeration<URL> profileUrls = getResourceAsURL(profileResource);
+                            if (profileUrls != null && profileUrls.hasMoreElements()) {
+                                configureFileBuilder(profileUrls, sourceMeta.type());
+                                logger.info(message.profileResourceLoaded(profileResource, profile));
+                            } else {
+                                logger.info(message.profileResourceNotFound(profileResource));
+                            }
+                        } catch (IOException e) {
+                            logger.info(message.profileResourceNotFound(profileResource));
+                        }
+                    }
+                }
+
                 Enumeration<URL> urlResources = getResourceAsURL(sourceMeta.resource());
 
                 if (urlResources == null) {
@@ -370,22 +399,47 @@ public class ConfigurationLoader implements Serializable {
     }
 
     private BasicConfigurationBuilder<? extends Configuration> createConfiguration(ConfigurationType configurationType) {
-        BasicConfigurationBuilder<? extends Configuration> builder;
+        return switch (configurationType) {
+            case XML -> new FileBasedConfigurationBuilder<>(XMLConfiguration.class);
+            case SYSTEM -> new BasicConfigurationBuilder<>(SystemConfiguration.class);
+            case PROPERTIES -> new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class);
+        };
+    }
 
-        switch (configurationType) {
-            case XML:
-                builder = new FileBasedConfigurationBuilder<>(XMLConfiguration.class);
-                break;
-
-            case SYSTEM:
-                builder = new BasicConfigurationBuilder<>(SystemConfiguration.class);
-                break;
-
-            default:
-                builder = new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class);
+    /**
+     * Resolve the active configuration profile.
+     * System property {@code demoiselle.profile} takes precedence over
+     * environment variable {@code DEMOISELLE_PROFILE}.
+     *
+     * @return the active profile name, or {@code null} if none is defined
+     */
+    private String resolveProfile() {
+        String profile = System.getProperty("demoiselle.profile");
+        if (profile == null || profile.isBlank()) {
+            profile = System.getenv("DEMOISELLE_PROFILE");
         }
+        return (profile != null && !profile.isBlank()) ? profile.strip() : null;
+    }
 
-        return builder;
+    /**
+     * Build the profile-specific resource file name from the base resource,
+     * profile name and configuration type.
+     * <p>
+     * For example, given {@code baseResource="demoiselle.properties"},
+     * {@code profile="dev"} and {@code type=PROPERTIES}, the result is
+     * {@code "demoiselle-dev.properties"}.
+     *
+     * @param baseResource the base resource file name (e.g. "demoiselle.properties")
+     * @param profile      the active profile name (e.g. "dev")
+     * @param type         the configuration type (PROPERTIES or XML)
+     * @return the profile resource file name
+     */
+    private String buildProfileResource(String baseResource, String profile, ConfigurationType type) {
+        String extension = "." + type.toString().toLowerCase();
+        String baseName = baseResource.endsWith(extension)
+                ? baseResource.substring(0, baseResource.length() - extension.length())
+                : baseResource;
+        return baseName + "-" + profile + extension;
     }
 
     private String identifyPrefix(ConfigSourceMeta sourceMeta) {
@@ -401,7 +455,7 @@ public class ConfigurationLoader implements Serializable {
     }
 
     private void fillTargetObjectWithValues(String prefix) {
-        fields.stream().forEach(field -> fillFieldWithValue(field, prefix));
+        fields.forEach(field -> fillFieldWithValue(field, prefix));
     }
 
     /**
@@ -429,6 +483,18 @@ public class ConfigurationLoader implements Serializable {
 
         if (loadedValue == null) {
             logger.info(message.configurationKeyNotFoud(prefix + meta.key()));
+        }
+
+        // Apply @DefaultValue annotation when both loadedValue and defaultValue are null
+        if (loadedValue == null && defaultValue == null && field.isAnnotationPresent(DefaultValue.class)) {
+            DefaultValue annotation = field.getAnnotation(DefaultValue.class);
+            try {
+                finalValue = DefaultValueConverter.convert(annotation.value(), field.getType());
+            } catch (Exception e) {
+                throw new DemoiselleConfigurationException(
+                        message.defaultValueConversionError(field.getName(),
+                                annotation.value(), field.getType().getName()), e);
+            }
         }
 
         setFieldValue(field, targetObject, finalValue);
@@ -462,7 +528,7 @@ public class ConfigurationLoader implements Serializable {
     private ConfigurationValueExtractor getValueExtractor(Field field) {
         Set<ConfigurationValueExtractor> candidates = new HashSet<>();
 
-        getExtractors().stream().forEach(extractorClass -> {
+        getExtractors().forEach(extractorClass -> {
             ConfigurationValueExtractor extractor = CDI.current().select(extractorClass).get();
             if (extractor.isSupported(field)) {
                 candidates.add(extractor);
@@ -480,17 +546,30 @@ public class ConfigurationLoader implements Serializable {
     }
 
     private Set<Class<? extends ConfigurationValueExtractor>> getExtractors() {
-        Set<Class<? extends ConfigurationValueExtractor>> cache = new HashSet<>();
+        Set<Class<? extends ConfigurationValueExtractor>> result = new HashSet<>();
 
+        // Try ConfigurationBootstrap (portable extension)
         try {
             ConfigurationBootstrap bootstrap = CDI.current().select(ConfigurationBootstrap.class).get();
-            cache = bootstrap.getCache();
-        } catch (IllegalStateException e) {
-            // CDI is not already
+            result.addAll(bootstrap.getCache());
+        } catch (IllegalStateException | jakarta.enterprise.inject.UnsatisfiedResolutionException e) {
+            logger.finest("ConfigurationBootstrap not available: " + e.getMessage());
+        }
+
+        // Try ExtractorRegistry (Build Compatible Extension) as additional/fallback source
+        try {
+            ConfigurationBuildCompatibleExtension.ExtractorRegistry registry =
+                    CDI.current().select(ConfigurationBuildCompatibleExtension.ExtractorRegistry.class).get();
+            result.addAll(registry.getCache());
+        } catch (IllegalStateException | jakarta.enterprise.inject.UnsatisfiedResolutionException e) {
+            logger.finest("ExtractorRegistry not available: " + e.getMessage());
+        }
+
+        if (result.isEmpty()) {
             logger.finest(message.cdiNotAlready());
         }
 
-        return cache;
+        return result;
     }
 
     private String getKey(Field field) {
@@ -510,24 +589,20 @@ public class ConfigurationLoader implements Serializable {
     }
 
     private void validateValues() {
-        fields.stream().forEach((field) -> {
+        fields.forEach(field -> {
             validateValue(field);
         });
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     private void validateValue(Field field) {
-        ValidatorFactory dfv = Validation.buildDefaultValidatorFactory();
-        Validator validator = dfv.getValidator();
+        Validator validator = validatorFactory.getValidator();
 
-        Set violations = validator.validateProperty(targetObject, field.getName());
-
-        StringBuilder messageConstraint = new StringBuilder();
+        Set<ConstraintViolation<Object>> violations = validator.validateProperty(targetObject, field.getName());
 
         if (!violations.isEmpty()) {
-            for (Iterator iter = violations.iterator(); iter.hasNext();) {
-                ConstraintViolation violation = (ConstraintViolation) iter.next();
-                messageConstraint.append(field.toGenericString() + " " + violation.getMessage() + "\n");
+            StringBuilder messageConstraint = new StringBuilder();
+            for (ConstraintViolation<Object> violation : violations) {
+                messageConstraint.append(field.toGenericString()).append(" ").append(violation.getMessage()).append("\n");
             }
 
             throw new DemoiselleConfigurationException(messageConstraint.toString(),
