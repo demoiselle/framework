@@ -61,4 +61,16 @@ public interface DemoiselleSecurityJWTMessages {
     @MessageTemplate("{audience}")
     String audience(String text);
 
+    @MessageTemplate("{token-blacklisted}")
+    String tokenBlacklisted();
+
+    @MessageTemplate("{algorithm-not-allowed}")
+    String algorithmNotAllowed();
+
+    @MessageTemplate("{kid-not-found}")
+    String kidNotFound();
+
+    @MessageTemplate("{refresh-token-invalid}")
+    String refreshTokenInvalid();
+
 }

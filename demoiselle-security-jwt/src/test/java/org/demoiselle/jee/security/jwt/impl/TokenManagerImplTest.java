@@ -42,6 +42,8 @@ import org.junit.jupiter.api.Test;
 @AddBeanClasses({
     TokenManagerImpl.class,
     KeyPairHolder.class,
+    KeyRotationManager.class,
+    TokenBlacklist.class,
     DemoiselleSecurityJWTConfig.class,
     DemoiselleUserImpl.class,
     TokenImpl.class,

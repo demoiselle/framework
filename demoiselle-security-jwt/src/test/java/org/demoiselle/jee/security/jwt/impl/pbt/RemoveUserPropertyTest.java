@@ -122,6 +122,11 @@ class RemoveUserPropertyTest {
         tokenField.setAccessible(true);
         tokenField.set(tokenManager, token);
 
+        // Inject a TokenBlacklist via reflection
+        java.lang.reflect.Field blacklistField = TokenManagerImpl.class.getDeclaredField("tokenBlacklist");
+        blacklistField.setAccessible(true);
+        blacklistField.set(tokenManager, new org.demoiselle.jee.security.jwt.impl.TokenBlacklist());
+
         // removeUser must not throw UnsupportedOperationException
         assertDoesNotThrow(() -> tokenManager.removeUser(user),
                 "removeUser() should not throw for user: " + user.getName());

@@ -7,6 +7,10 @@
 package org.demoiselle.jee.security.jwt.impl;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.demoiselle.jee.configuration.annotation.Configuration;
 import org.demoiselle.jee.configuration.annotation.ConfigurationSuppressLogger;
 
@@ -34,6 +38,14 @@ public class DemoiselleSecurityJWTConfig implements Serializable {
 
     private String algorithmIdentifiers;
 
+    private Long refreshTokenTtlMilliseconds;
+
+    private String allowedAlgorithms;
+
+    private Integer clockSkewSeconds;
+
+    private String activeKeyId;
+
     public String getType() {
         return type;
     }
@@ -60,6 +72,41 @@ public class DemoiselleSecurityJWTConfig implements Serializable {
 
     public String getAlgorithmIdentifiers() {
         return algorithmIdentifiers;
+    }
+
+    public Long getRefreshTokenTtlMilliseconds() {
+        return refreshTokenTtlMilliseconds != null ? refreshTokenTtlMilliseconds : 86400000L;
+    }
+
+    public String getAllowedAlgorithms() {
+        return allowedAlgorithms != null ? allowedAlgorithms : algorithmIdentifiers;
+    }
+
+    public Integer getClockSkewSeconds() {
+        int value = clockSkewSeconds != null ? clockSkewSeconds : 60;
+        if (value < 0) {
+            return 60;
+        }
+        return value;
+    }
+
+    public String getActiveKeyId() {
+        return activeKeyId;
+    }
+
+    /**
+     * Returns the allowed algorithms as a List of Strings.
+     * Falls back to algorithmIdentifiers if allowedAlgorithms is not configured.
+     */
+    public List<String> getAllowedAlgorithmsList() {
+        String algorithms = getAllowedAlgorithms();
+        if (algorithms == null || algorithms.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(algorithms.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
     }
 
 }
