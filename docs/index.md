@@ -1931,19 +1931,373 @@ void modifyingOriginalListDoesNotAffectGetContent(
 
 ---
 
-## Compatibilidade
+## Guia de Migração — Demoiselle v3 → v4
 
-- **Java 17+** (records, sealed classes, pattern matching)
-- **Jakarta EE 10** (CDI 4.0, JPA 3.1, JAX-RS 3.1)
-- **Retrocompatível** com aplicações Demoiselle v4 existentes
-- Cada prioridade pode ser adotada independentemente
+### Pré-requisitos
 
-## Requisitos Mínimos
-
-| Componente | Versão |
+| Componente | Versão Mínima |
 |---|---|
-| Java | 17+ |
+| Java | 17+ (LTS) |
+| Maven | 3.9+ |
 | Jakarta EE | 10 |
 | CDI | 4.0 |
 | JPA | 3.1 |
+| JAX-RS | 3.1 |
 | Weld (referência CDI) | 5.x |
+| Servidor de Aplicação | WildFly 27+, Quarkus ou Open Liberty |
+
+### Parte I — Migração do Build
+
+#### 1. Atualizar o POM
+
+```xml
+<parent>
+    <groupId>org.demoiselle.jee</groupId>
+    <artifactId>demoiselle-parent</artifactId>
+    <version>4.0.0-SNAPSHOT</version>
+</parent>
+```
+
+Configurar Java 17 no compiler plugin:
+
+```xml
+<plugin>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.13.0</version>
+    <configuration>
+        <release>17</release>
+    </configuration>
+</plugin>
+```
+
+#### 2. Namespace Jakarta
+
+Todas as importações `javax.*` devem ser substituídas por `jakarta.*`:
+
+```java
+// Antes
+import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.Entity;
+import javax.ws.rs.GET;
+
+// Depois
+import jakarta.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.Entity;
+import jakarta.ws.rs.GET;
+```
+
+| Antigo | Novo |
+|---|---|
+| `javax.enterprise.*` | `jakarta.enterprise.*` |
+| `javax.inject.*` | `jakarta.inject.*` |
+| `javax.ws.rs.*` | `jakarta.ws.rs.*` |
+| `javax.persistence.*` | `jakarta.persistence.*` |
+| `javax.validation.*` | `jakarta.validation.*` |
+| `javax.servlet.*` | `jakarta.servlet.*` |
+| `javax.annotation.*` | `jakarta.annotation.*` |
+| `javax.json.*` | `jakarta.json.*` |
+
+`javax.script.*` (API do JDK) **não** deve ser alterado.
+
+#### 3. Atualizar beans.xml
+
+```xml
+<!-- Antes -->
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+       xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+       http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
+       bean-discovery-mode="all">
+
+<!-- Depois -->
+<beans xmlns="https://jakarta.ee/xml/ns/jakartaee"
+       xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+       https://jakarta.ee/xml/ns/jakartaee/beans_4_0.xsd"
+       version="4.0" bean-discovery-mode="all">
+```
+
+#### 4. Renomear Arquivos SPI
+
+```
+# Antes
+META-INF/services/javax.enterprise.inject.spi.Extension
+
+# Depois
+META-INF/services/jakarta.enterprise.inject.spi.Extension
+```
+
+#### 5. Remover DeltaSpike
+
+O Demoiselle 4 não depende mais do Apache DeltaSpike:
+- `@MessageBundle` / `@MessageTemplate` → use as anotações do Demoiselle em `org.demoiselle.jee.core.annotation`
+- `CdiTestRunner` → substitua por Weld JUnit 5 (`@EnableAutoWeld`)
+
+#### 6. Migrar Testes para JUnit 5
+
+| JUnit 4 | JUnit 5 |
+|---|---|
+| `@org.junit.Test` | `@org.junit.jupiter.api.Test` |
+| `@Before` / `@After` | `@BeforeEach` / `@AfterEach` |
+| `@BeforeClass` / `@AfterClass` | `@BeforeAll` / `@AfterAll` |
+| `@Ignore` | `@Disabled` |
+| `@RunWith(CdiTestRunner.class)` | `@EnableAutoWeld` |
+| `Assert.assertEquals(...)` | `Assertions.assertEquals(...)` |
+
+#### 7. Remover WildFly Swarm
+
+O profile `wildfly-swarm` foi removido. Para runtimes embarcados, use WildFly 27+ (Galleon), Quarkus ou Open Liberty.
+
+#### 8. Migrar Swagger → OpenAPI
+
+| Swagger 1.x | OpenAPI 3.0 (MicroProfile) |
+|---|---|
+| `@Api` | `@Tag` |
+| `@ApiOperation` | `@Operation` |
+| `@ApiParam` | `@Parameter` |
+| `io.swagger:swagger-jaxrs` | `org.eclipse.microprofile.openapi:microprofile-openapi-api` |
+
+#### 9. Atualizar Groovy (se aplicável)
+
+```xml
+<!-- Antes -->
+<dependency>
+    <groupId>org.codehaus.groovy</groupId>
+    <artifactId>groovy-all</artifactId>
+</dependency>
+
+<!-- Depois -->
+<dependency>
+    <groupId>org.apache.groovy</groupId>
+    <artifactId>groovy-all</artifactId>
+    <type>pom</type>
+</dependency>
+```
+
+### Parte II — Mudanças de API e Comportamento
+
+#### 10. Records — DTOs e Mensagens
+
+| Classe | Antes | Depois |
+|---|---|---|
+| `SortModel` | Classe mutável | Record imutável |
+| `DemoiselleRestExceptionMessage` | Classe com getters | Record (`error()`, `errorDescription()`, `errorLink()`) |
+| `ResultSet` | `setContent(null)` → NPE | `setContent(null)` → lista vazia |
+| `PageResult` | Não existia | Record com metadados de paginação |
+| `TokenEntry` | `DemoiselleUser` direto no mapa | Record `TokenEntry(user, expiresAt)` |
+
+```java
+// Antes: getError(), getErrorDescription(), getErrorLink()
+msg.getError();
+
+// Depois: error(), errorDescription(), errorLink()
+msg.error();
+```
+
+#### 11. Sealed Classes — FilterOp
+
+```java
+// Antes: strings e if-else no DAO
+if (value == null) { /* isNull */ }
+else if (value.contains("*")) { /* like */ }
+
+// Depois: pattern matching exaustivo
+return switch (op) {
+    case FilterOp.IsNull(var key)   -> cb.isNull(from.get(key));
+    case FilterOp.Like(var key, var p) -> buildLikePredicate(cb, cq, from, key, p);
+    // ... compilador garante exaustividade
+};
+```
+
+Novos operadores de comparação via query string (`gt:`, `lt:`, `gte:`, `lte:`, `between:`, `in:`) — sem alteração necessária em código existente.
+
+#### 12. Coleções Imutáveis — Segurança
+
+```java
+// Antes: Collections.unmodifiableList() — view mutável
+List<String> roles = user.getRoles(); // view
+user.addRole("admin");
+roles.contains("admin"); // true (!)
+
+// Depois: List.copyOf() — cópia defensiva
+List<String> roles = user.getRoles(); // cópia independente
+user.addRole("admin");
+roles.contains("admin"); // false
+```
+
+Se seu código dependia de views mutáveis, ajuste para re-obter a lista após modificações.
+
+#### 13. Result Tipado
+
+```java
+// Antes: raw type, cast necessário
+Result result = dao.find();
+List<?> content = result.getContent();
+
+// Depois: genérico, type-safe
+Result<Produto> result = dao.find();
+List<Produto> content = result.getContent();
+```
+
+Código existente com raw type continua compilando (apenas warnings).
+
+#### 14. Formato de Erro REST — RFC 9457
+
+Nenhuma alteração necessária por padrão. O formato legado é mantido:
+
+```properties
+# demoiselle.properties — padrão (sem alteração)
+# demoiselle.rest.errorFormat=legacy
+
+# Para ativar RFC 9457 (opt-in)
+demoiselle.rest.errorFormat=rfc9457
+```
+
+Se seu frontend parseia os campos `error`, `error_description`, `error_link`, ele continua funcionando. Para migrar para RFC 9457, ajuste o parser para os campos `type`, `title`, `status`, `detail`, `instance`.
+
+#### 15. Headers de Paginação — RFC 8288
+
+O header `Link` é adicionado automaticamente. Headers customizados (`X-Total-Count`, etc.) continuam presentes. Nenhuma alteração necessária.
+
+Se seu frontend já usa os headers `X-*`, nada muda. Para adotar o padrão RFC 8288, passe a usar o header `Link` com as relações `next`, `prev`, `first`, `last`.
+
+#### 16. Rate Limiting — HTTP 429
+
+```java
+// Antes: DemoiselleSecurityException genérica
+catch (DemoiselleSecurityException e) { /* status 429 */ }
+
+// Depois: Response JAX-RS direta com Retry-After
+// O interceptor retorna Response 429 diretamente
+// Se seu código capturava a exceção, ajuste para tratar a resposta HTTP
+```
+
+O header `Retry-After` agora é incluído automaticamente. Clientes podem implementar backoff baseado nesse valor.
+
+#### 17. JWT — Novas Funcionalidades
+
+Todas as novas funcionalidades JWT são opt-in:
+
+```properties
+# Refresh token (opt-in)
+demoiselle.security.jwt.refreshTokenTtlMilliseconds=86400000
+
+# Key rotation (opt-in)
+demoiselle.security.jwt.activeKeyId=key-2024
+demoiselle.security.jwt.keys.key-2024.privateKey=...
+demoiselle.security.jwt.keys.key-2024.publicKey=...
+
+# Múltiplos algoritmos (opt-in)
+demoiselle.security.jwt.allowedAlgorithms=RS256,RS384,RS512
+
+# Clock skew (opt-in, padrão 30s)
+demoiselle.security.jwt.clockSkewSeconds=30
+```
+
+Sem configuração adicional, o comportamento é idêntico ao v3.
+
+### 10. Token Imutável
+
+```java
+// Antes: TokenImpl mutável
+token.setKey("abc");
+token.setType(TokenType.TOKEN);
+
+// Depois: TokenRecord imutável
+// setKey() e setType() lançam UnsupportedOperationException
+// Use o producer CDI para criar tokens
+```
+
+### 11. Security Token — validate(issuer, audience)
+
+O método `validate(issuer, audience)` agora verifica efetivamente os parâmetros. Se seu código dependia do comportamento anterior (parâmetros ignorados), ajuste os params do `DemoiselleUser` para incluir `issuer` e `audience`.
+
+### 12. Configuração — Perfis e @DefaultValue
+
+Funcionalidades opt-in. Sem configuração de perfil, o comportamento é idêntico ao anterior:
+
+```bash
+# Ativar perfil (opt-in)
+java -Ddemoiselle.profile=dev -jar app.jar
+# ou
+export DEMOISELLE_PROFILE=prod
+```
+
+### 13. @CacheControl Tipado
+
+```java
+// Antes (continua funcionando)
+@CacheControl("max-age=3600, no-store")
+
+// Depois (nova opção)
+@CacheControl(maxAge = 3600, noStore = true)
+```
+
+O atributo `value()` tem precedência quando preenchido — código existente não quebra.
+
+### 14. CORS via Properties
+
+```properties
+# Opt-in — sem configuração, comportamento anterior mantido
+demoiselle.security.cors.allowedOrigins=https://app.example.com
+demoiselle.security.cors.allowedMethods=GET,POST,PUT,DELETE
+demoiselle.security.cors.allowedHeaders=Authorization,Content-Type
+demoiselle.security.cors.maxAge=3600
+```
+
+### 15. Novas Anotações de Segurança
+
+Aditivas — não afetam código existente:
+
+```java
+@RequiredAnyRole({"admin", "manager"})     // OR — nova
+@RequiredAllPermissions({...})              // AND — nova
+@RequiredRole("admin")                      // existente — inalterada
+@RequiredPermission(resource="x", op="y")  // existente — inalterada
+```
+
+### 16. Observabilidade e OpenAPI
+
+Módulos opcionais. Basta adicionar a dependência ao `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>org.demoiselle.jee</groupId>
+    <artifactId>demoiselle-observability</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.demoiselle.jee</groupId>
+    <artifactId>demoiselle-openapi</artifactId>
+</dependency>
+```
+
+Sem a dependência, nenhum comportamento muda.
+
+### Resumo de Breaking Changes
+
+| Mudança | Impacto | Ação |
+|---|---|---|
+| `javax.*` → `jakarta.*` | Alto | Substituir imports |
+| Record accessors (`error()` vs `getError()`) | Médio | Atualizar chamadas |
+| `List.copyOf()` em coleções de segurança | Baixo | Re-obter lista após mutação |
+| `Token` imutável (`setKey()` → UnsupportedOp) | Médio | Usar producer CDI |
+| `validate(issuer, audience)` corrigido | Baixo | Verificar params do user |
+| Rate limit retorna Response (não exceção) | Baixo | Ajustar catch se aplicável |
+
+### Resumo de Funcionalidades Opt-in (sem breaking change)
+
+| Funcionalidade | Configuração |
+|---|---|
+| RFC 9457 Problem Details | `demoiselle.rest.errorFormat=rfc9457` |
+| RFC 8288 Link headers | Automático (aditivo) |
+| JWT Refresh Token | `demoiselle.security.jwt.refreshTokenTtlMilliseconds` |
+| JWT Key Rotation | `demoiselle.security.jwt.activeKeyId` |
+| JWT Múltiplos Algoritmos | `demoiselle.security.jwt.allowedAlgorithms` |
+| Perfis de Configuração | `-Ddemoiselle.profile=dev` |
+| @DefaultValue | Anotação em campos `@Configuration` |
+| CORS via Properties | `demoiselle.security.cors.*` |
+| @CacheControl tipado | Atributos na anotação |
+| @RequiredAnyRole | Nova anotação |
+| @RequiredAllPermissions | Nova anotação |
+| Observabilidade | Dependência Maven |
+| OpenAPI | Dependência Maven |
