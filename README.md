@@ -37,6 +37,18 @@ A versão 4 inclui modernizações que aproveitam plenamente Java 17 e Jakarta E
 - **Preparação para Virtual Threads** com `ReentrantReadWriteLock` e eliminação de campos estáticos mutáveis
 - **JPA 3.1 CriteriaUpdate** type-safe e suporte a `EntityGraph` no `AbstractDAO`
 
+### Melhorias no Módulo CRUD
+
+O módulo `demoiselle-crud` recebeu 7 novas funcionalidades:
+
+- **Soft Delete** — exclusão lógica declarativa via `@SoftDeletable` com suporte a `LocalDateTime`, `Boolean` e `Instant`
+- **Auditoria Automática** — preenchimento automático de `@CreatedAt`, `@UpdatedAt`, `@CreatedBy`, `@UpdatedBy` via JPA EntityListener
+- **Specification Pattern** — composição declarativa de consultas JPA com `and()`, `or()`, `not()`
+- **Operações em Batch** — `persistAll()`, `removeAll()`, `updateAll()` com flush/clear automático
+- **PageResult\<T\>** — record imutável com metadados de paginação (`totalPages`, `currentPage`, `hasNext`, `hasPrevious`)
+- **Operadores de Comparação** — `gt:`, `lt:`, `gte:`, `lte:`, `between:`, `in:` via query string
+- **Cache de Consultas** — `@Cacheable` com invalidação automática via eventos CDI
+
 📖 [Documentação completa com exemplos](docs/index.md)
 
 O nome Demoiselle é uma homenagem à série de aeroplanos construídos

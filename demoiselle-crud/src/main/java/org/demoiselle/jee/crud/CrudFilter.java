@@ -8,6 +8,7 @@ package org.demoiselle.jee.crud;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -32,8 +33,11 @@ import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.core.api.crud.Result;
+import org.demoiselle.jee.crud.cache.Cacheable;
+import org.demoiselle.jee.crud.cache.QueryCacheStore;
 import org.demoiselle.jee.crud.field.FieldHelper;
 import org.demoiselle.jee.crud.filter.FilterHelper;
+import org.demoiselle.jee.crud.pagination.PageResult;
 import org.demoiselle.jee.crud.pagination.PaginationHelper;
 import org.demoiselle.jee.crud.sort.SortHelper;
 
@@ -83,8 +87,23 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 
     @Inject
     private ReflectionCache reflectionCache;
+
+    @Inject
+    private QueryCacheStore queryCacheStore;
     
     private static final Logger logger = Logger.getLogger(CrudFilter.class.getName());
+
+    /**
+     * HTTP header indicating whether the response was served from cache.
+     * Values: {@code HIT} (served from cache) or {@code MISS} (freshly computed).
+     */
+    static final String HTTP_HEADER_X_CACHE = "X-Cache";
+
+    /**
+     * Request context property key used to pass a cached result from the
+     * request filter to the response filter.
+     */
+    static final String CACHE_HIT_PROPERTY = "demoiselle.crud.cache.hit";
 
     /**
      * Default maximum depth for recursive field projection.
@@ -94,7 +113,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 
     public CrudFilter() {}
 
-    public CrudFilter(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, PaginationHelper paginationHelper, SortHelper sortHelper, FilterHelper filterHelper, FieldHelper fieldHelper, ReflectionCache reflectionCache) {
+    public CrudFilter(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, PaginationHelper paginationHelper, SortHelper sortHelper, FilterHelper filterHelper, FieldHelper fieldHelper, ReflectionCache reflectionCache, QueryCacheStore queryCacheStore) {
         this.resourceInfo = resourceInfo;
         this.uriInfo = uriInfo;
         this.drc = drc;
@@ -103,6 +122,7 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         this.filterHelper = filterHelper;
         this.fieldHelper = fieldHelper;
         this.reflectionCache = reflectionCache;
+        this.queryCacheStore = queryCacheStore;
     }
 
     @Override
@@ -113,6 +133,18 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
                 sortHelper.execute(resourceInfo, uriInfo);
                 filterHelper.execute(resourceInfo, uriInfo);
                 fieldHelper.execute(resourceInfo, uriInfo);
+
+                // Check cache for @Cacheable GET methods
+                Cacheable cacheable = findCacheableAnnotation();
+                if (cacheable != null && queryCacheStore != null) {
+                    String cacheKey = buildFilterCacheKey();
+                    Object cached = queryCacheStore.get(cacheKey);
+                    if (cached != null) {
+                        logger.log(Level.FINE, "Cache HIT for key: {0}", cacheKey);
+                        // Store cached result in request context for the response filter
+                        requestContext.setProperty(CACHE_HIT_PROPERTY, cached);
+                    }
+                }
             } 
             catch (IllegalArgumentException e) {
                 throw new BadRequestException(e.getMessage());
@@ -125,9 +157,29 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
 
         if (response.getEntity() instanceof Result) {
 
+            // Check if the request filter found a cache HIT
+            Object cachedResult = req.getProperty(CACHE_HIT_PROPERTY);
+            if (cachedResult != null) {
+                response.setEntity(cachedResult);
+                response.getHeaders().putSingle(HTTP_HEADER_X_CACHE, "HIT");
+                response.setStatus(Status.OK.getStatusCode());
+                logger.log(Level.FINE, "Serving cached result for request");
+                return;
+            }
+
             buildHeaders(response);
             
-            response.setEntity(buildContentBody(response));
+            Object body = buildContentBody(response);
+            response.setEntity(body);
+
+            // Cache the response body for @Cacheable methods
+            Cacheable cacheable = findCacheableAnnotation();
+            if (cacheable != null && queryCacheStore != null) {
+                String cacheKey = buildFilterCacheKey();
+                queryCacheStore.put(cacheKey, body, cacheable.ttl());
+                response.getHeaders().putSingle(HTTP_HEADER_X_CACHE, "MISS");
+                logger.log(Level.FINE, "Cache MISS — stored result for key: {0}", cacheKey);
+            }
 
             if (!paginationHelper.isPartialContentResponse()) {
                 response.setStatus(Status.OK.getStatusCode());
@@ -150,6 +202,24 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
      */
     private void buildHeaders(ContainerResponseContext response) {
         String exposeHeaders = ReservedHTTPHeaders.HTTP_HEADER_ACCEPT_RANGE.getKey() + ", " + ReservedHTTPHeaders.HTTP_HEADER_CONTENT_RANGE.getKey() + ", " + HttpHeaders.LINK;
+
+        // Add PageResult metadata headers when the entity is a PageResult
+        if (response.getEntity() instanceof PageResult<?> pageResult) {
+            response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_TOTAL_COUNT.getKey(), pageResult.totalElements());
+            response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_TOTAL_PAGES.getKey(), pageResult.totalPages());
+            response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_CURRENT_PAGE.getKey(), pageResult.currentPage());
+            response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_PAGE_SIZE.getKey(), pageResult.pageSize());
+            response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_HAS_NEXT.getKey(), pageResult.hasNext());
+            response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_HAS_PREVIOUS.getKey(), pageResult.hasPrevious());
+
+            exposeHeaders += ", " + ReservedHTTPHeaders.HTTP_HEADER_TOTAL_COUNT.getKey()
+                    + ", " + ReservedHTTPHeaders.HTTP_HEADER_TOTAL_PAGES.getKey()
+                    + ", " + ReservedHTTPHeaders.HTTP_HEADER_CURRENT_PAGE.getKey()
+                    + ", " + ReservedHTTPHeaders.HTTP_HEADER_PAGE_SIZE.getKey()
+                    + ", " + ReservedHTTPHeaders.HTTP_HEADER_HAS_NEXT.getKey()
+                    + ", " + ReservedHTTPHeaders.HTTP_HEADER_HAS_PREVIOUS.getKey();
+        }
+
         response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_ACCESS_CONTROL_EXPOSE_HEADERS.getKey(), exposeHeaders);
         paginationHelper.buildHeaders(resourceInfo, uriInfo).forEach((k, v) -> response.getHeaders().putSingle(k, v));
     }
@@ -271,6 +341,33 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
         
         return CrudUtilHelper.extractFieldsFromSearchAnnotation(resourceInfo);
 
+    }
+
+    /**
+     * Checks whether the current resource method is annotated with {@link Cacheable}.
+     *
+     * @return the {@link Cacheable} annotation if present, or {@code null}
+     */
+    private Cacheable findCacheableAnnotation() {
+        if (resourceInfo == null || resourceInfo.getResourceMethod() == null) {
+            return null;
+        }
+        Method method = resourceInfo.getResourceMethod();
+        return method.getAnnotation(Cacheable.class);
+    }
+
+    /**
+     * Builds a cache key for the current request based on the entity class
+     * and the full request URI (including query parameters).
+     *
+     * <p>Key format: {@code entityClassName:requestURI}</p>
+     *
+     * @return the cache key string
+     */
+    private String buildFilterCacheKey() {
+        String entityClassName = CrudUtilHelper.getTargetClass(resourceInfo.getResourceClass()).getName();
+        String requestUri = uriInfo.getRequestUri().toString();
+        return entityClassName + ":filter:" + requestUri;
     }
 
 }

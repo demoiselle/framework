@@ -29,7 +29,7 @@ class CrudFilterResolveFieldsTest {
     @BeforeEach
     void setUp() {
         reflectionCache = new ReflectionCache();
-        crudFilter = new CrudFilter(null, null, null, null, null, null, null, reflectionCache);
+        crudFilter = new CrudFilter(null, null, null, null, null, null, null, reflectionCache, null);
     }
 
     private UserModelForTest buildUser() {

@@ -8,15 +8,20 @@ package org.demoiselle.jee.crud;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
+import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityGraph;
@@ -36,12 +41,18 @@ import jakarta.ws.rs.core.MultivaluedMap;
 
 import org.demoiselle.jee.core.api.crud.Crud;
 import org.demoiselle.jee.core.api.crud.Result;
+import org.demoiselle.jee.crud.annotation.SoftDeletable;
+import org.demoiselle.jee.crud.batch.BatchConfig;
+import org.demoiselle.jee.crud.cache.EntityModifiedEvent;
 import org.demoiselle.jee.crud.exception.DemoiselleCrudException;
 import org.demoiselle.jee.crud.filter.FilterOp;
 import org.demoiselle.jee.crud.message.DemoiselleCrudMessage;
+import org.demoiselle.jee.crud.pagination.PageResult;
 import org.demoiselle.jee.crud.pagination.PaginationHelperConfig;
 import org.demoiselle.jee.crud.pagination.ResultSet;
+import org.demoiselle.jee.crud.softdelete.SoftDeleteMeta;
 import org.demoiselle.jee.crud.sort.CrudSort;
+import org.demoiselle.jee.crud.specification.Specification;
 
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
 public abstract class AbstractDAO<T, I> implements Crud<T, I> {
@@ -55,7 +66,15 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     @Inject
     private DemoiselleCrudMessage bundle;
 
+    @Inject
+    private BatchConfig batchConfig;
+
+    @Inject
+    private Event<EntityModifiedEvent<?>> entityModifiedEvent;
+
     private final Class<T> entityClass;
+
+    private final SoftDeleteMeta softDeleteMeta;
 
     protected abstract EntityManager getEntityManager();
 
@@ -76,16 +95,160 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     public AbstractDAO() {
         this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass())
                 .getActualTypeArguments()[0];
+        this.softDeleteMeta = resolveSoftDeleteMeta(this.entityClass);
+    }
+
+    /**
+     * Resolves soft delete metadata from the {@link SoftDeletable} annotation
+     * on the entity class. Validates that the specified field exists and that
+     * the configured type is supported (LocalDateTime, Boolean, Instant).
+     *
+     * @param entityClass the entity class to inspect
+     * @return a SoftDeleteMeta if the annotation is present, or null otherwise
+     * @throws DemoiselleCrudException if the field does not exist or the type is unsupported
+     */
+    private SoftDeleteMeta resolveSoftDeleteMeta(Class<T> entityClass) {
+        SoftDeletable annotation = entityClass.getAnnotation(SoftDeletable.class);
+        if (annotation == null) {
+            return null;
+        }
+
+        String fieldName = annotation.field();
+        Class<?> fieldType = annotation.type();
+
+        // Validate that the specified field exists in the entity
+        boolean fieldExists = CrudUtilHelper.getAllFields(new ArrayList<>(), entityClass)
+                .stream()
+                .anyMatch(f -> f.getName().equals(fieldName));
+
+        if (!fieldExists) {
+            throw new DemoiselleCrudException(
+                    "Soft delete field '" + fieldName + "' not found in entity " + entityClass.getSimpleName());
+        }
+
+        // Validate that the type is supported
+        if (fieldType != LocalDateTime.class && fieldType != Boolean.class
+                && fieldType != boolean.class && fieldType != Instant.class) {
+            throw new DemoiselleCrudException(
+                    "Unsupported soft delete field type: " + fieldType.getSimpleName()
+                            + ". Supported types: LocalDateTime, Boolean, Instant");
+        }
+
+        return new SoftDeleteMeta(fieldName, fieldType);
+    }
+
+    /**
+     * Builds a predicate that filters out soft-deleted records.
+     * For Boolean types: {@code field = false OR field IS NULL}.
+     * For temporal types (LocalDateTime, Instant): {@code field IS NULL}.
+     *
+     * @param cb   the CriteriaBuilder
+     * @param root the Root of the query
+     * @return a Predicate that excludes soft-deleted records
+     */
+    protected Predicate softDeletePredicate(CriteriaBuilder cb, Root<T> root) {
+        if (softDeleteMeta.isBoolean()) {
+            return cb.or(
+                    cb.isFalse(root.get(softDeleteMeta.fieldName())),
+                    cb.isNull(root.get(softDeleteMeta.fieldName()))
+            );
+        }
+        return cb.isNull(root.get(softDeleteMeta.fieldName()));
+    }
+
+    /**
+     * Returns the soft delete metadata for this DAO's entity class,
+     * or null if the entity is not annotated with {@link SoftDeletable}.
+     *
+     * @return the SoftDeleteMeta, or null
+     */
+    protected SoftDeleteMeta getSoftDeleteMeta() {
+        return softDeleteMeta;
+    }
+
+    /**
+     * Fires an {@link EntityModifiedEvent} if the CDI event injection is available.
+     * Safely handles the case where the DAO is used outside a CDI container (e.g., in unit tests).
+     *
+     * @param action the type of modification
+     * @param payload the entity or ID involved
+     */
+    @SuppressWarnings("unchecked")
+    private void fireEntityModifiedEvent(EntityModifiedEvent.Action action, Object payload) {
+        if (entityModifiedEvent != null) {
+            entityModifiedEvent.fire(new EntityModifiedEvent<>(
+                    (Class<Object>) (Class<?>) entityClass, action, payload));
+        }
     }
 
     @Override
     public T persist(T entity) {
         try {
             getEntityManager().persist(entity);
+            fireEntityModifiedEvent(EntityModifiedEvent.Action.PERSIST, entity);
             return entity;
         } catch (PersistenceException e) {
             throw new DemoiselleCrudException(msg(() -> bundle.persistError(), "Não foi possível salvar"), e);
         }
+    }
+
+    /**
+     * Persists all entities in the given list using batch processing.
+     * Flushes and clears the EntityManager every N records (configured via BatchConfig).
+     *
+     * @param entities the list of entities to persist
+     * @return the list of persisted entities
+     * @throws DemoiselleCrudException if a PersistenceException occurs, including the index of the failing entity
+     */
+    public List<T> persistAll(List<T> entities) {
+        int batchSize = batchConfig.getSize();
+        List<T> result = new ArrayList<>(entities.size());
+        for (int i = 0; i < entities.size(); i++) {
+            try {
+                getEntityManager().persist(entities.get(i));
+                result.add(entities.get(i));
+            } catch (PersistenceException e) {
+                throw new DemoiselleCrudException(
+                    "Erro ao persistir entidade no índice " + i, e);
+            }
+            if ((i + 1) % batchSize == 0) {
+                getEntityManager().flush();
+                getEntityManager().clear();
+            }
+        }
+        getEntityManager().flush();
+        getEntityManager().clear();
+        return result;
+    }
+
+    public int removeAll(List<I> ids) {
+        int batchSize = batchConfig.getSize();
+        int removed = 0;
+        for (int i = 0; i < ids.size(); i++) {
+            remove(ids.get(i));
+            removed++;
+            if ((i + 1) % batchSize == 0) {
+                getEntityManager().flush();
+                getEntityManager().clear();
+            }
+        }
+        getEntityManager().flush();
+        getEntityManager().clear();
+        return removed;
+    }
+
+    public int updateAll(Specification<T> spec, Map<String, Object> updates) {
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaUpdate<T> cu = cb.createCriteriaUpdate(entityClass);
+        Root<T> root = cu.from(entityClass);
+
+        updates.forEach((field, value) -> cu.set(root.get(field), value));
+
+        if (spec != null) {
+            cu.where(spec.toPredicate(root, null, cb));
+        }
+
+        return getEntityManager().createQuery(cu).executeUpdate();
     }
 
     @Override
@@ -118,6 +281,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                 getEntityManager().createQuery(update).executeUpdate();
             }
 
+            fireEntityModifiedEvent(EntityModifiedEvent.Action.MERGE, entity);
             return entity;
         } catch (final PersistenceException | IllegalAccessException e) {
             throw new DemoiselleCrudException(
@@ -128,7 +292,9 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     @Override
     public T mergeFull(T entity) {
         try {
-            return getEntityManager().merge(entity);
+            T result = getEntityManager().merge(entity);
+            fireEntityModifiedEvent(EntityModifiedEvent.Action.MERGE, result);
+            return result;
         } catch (PersistenceException e) {
             throw new DemoiselleCrudException(msg(() -> bundle.mergeError(), "Não foi possível salvar"), e);
         }
@@ -137,7 +303,30 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     @Override
     public void remove(I id) {
         try {
-            getEntityManager().remove(getEntityManager().find(entityClass, id));
+            if (softDeleteMeta != null) {
+                CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+                CriteriaUpdate<T> update = cb.createCriteriaUpdate(entityClass);
+                Root<T> root = update.from(entityClass);
+
+                Object deleteValue;
+                Class<?> fieldType = softDeleteMeta.fieldType();
+                if (softDeleteMeta.isBoolean()) {
+                    deleteValue = Boolean.TRUE;
+                } else if (fieldType == Instant.class) {
+                    deleteValue = Instant.now();
+                } else {
+                    deleteValue = LocalDateTime.now();
+                }
+
+                update.set(root.get(softDeleteMeta.fieldName()), deleteValue);
+
+                String idFieldName = CrudUtilHelper.getMethodAnnotatedWithID(entityClass);
+                update.where(cb.equal(root.get(idFieldName), id));
+                getEntityManager().createQuery(update).executeUpdate();
+            } else {
+                getEntityManager().remove(getEntityManager().find(entityClass, id));
+            }
+            fireEntityModifiedEvent(EntityModifiedEvent.Action.REMOVE, id);
         } catch (PersistenceException e) {
             throw new DemoiselleCrudException(msg(() -> bundle.removeError(), "Não foi possível excluir"), e);
         }
@@ -146,19 +335,31 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     @Override
     public T find(I id) {
         try {
+            if (softDeleteMeta != null) {
+                CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+                CriteriaQuery<T> cq = cb.createQuery(entityClass);
+                Root<T> root = cq.from(entityClass);
+
+                String idFieldName = CrudUtilHelper.getMethodAnnotatedWithID(entityClass);
+
+                cq.select(root).where(
+                        cb.equal(root.get(idFieldName), id),
+                        softDeletePredicate(cb, root)
+                );
+
+                List<T> results = getEntityManager().createQuery(cq).getResultList();
+                return results.isEmpty() ? null : results.get(0);
+            }
             return getEntityManager().find(entityClass, id);
         } catch (PersistenceException e) {
             throw new DemoiselleCrudException(msg(() -> bundle.findError(), "Não foi possível consultar"), e);
         }
-
     }
 
     @Override
     public Result find() {
 
         try {
-
-            Result result = new ResultSet();
 
             CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
@@ -172,6 +373,8 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                 query.setHint("jakarta.persistence.fetchgraph", graph);
             }
 
+            Result result;
+
             if (drc.isPaginationEnabled()) {
                 Integer firstResult = drc.getOffset() == null ? 0 : drc.getOffset();
                 Integer maxResults = getMaxResult();
@@ -183,9 +386,14 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                 }
 
                 drc.setCount(count);
+
+                result = PageResult.of(query.getResultList(), count, firstResult, maxResults);
+            } else {
+                ResultSet rs = new ResultSet();
+                rs.setContent(query.getResultList());
+                result = rs;
             }
 
-            result.setContent(query.getResultList());
             if (result.getContent() != null && !result.getContent().isEmpty()
                     && drc.isPaginationEnabled()
                     && result.getContent().size() <= drc.getCount() && drc.getCount() < getMaxResult()) {
@@ -203,6 +411,223 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     }
 
     /**
+     * Finds all entities including those marked as soft-deleted.
+     * Applies DRC filters, pagination, ordering, and entity graph hints,
+     * but does NOT apply the soft delete predicate.
+     *
+     * @return a Result (PageResult when pagination is enabled, ResultSet otherwise)
+     */
+    public Result findIncludingDeleted() {
+
+        try {
+
+            CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+            Root<T> from = criteriaQuery.from(entityClass);
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (drc.getFilters() != null) {
+                predicates.addAll(Arrays.asList(buildPredicates(criteriaBuilder, criteriaQuery, from)));
+            }
+
+            // Intentionally skip softDeletePredicate
+
+            if (!predicates.isEmpty()) {
+                criteriaQuery.select(from).where(predicates.toArray(new Predicate[0]));
+            } else {
+                criteriaQuery.select(from);
+            }
+
+            configureOrder(criteriaBuilder, criteriaQuery, from);
+
+            TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
+
+            EntityGraph<T> graph = getEntityGraph();
+            if (graph != null) {
+                query.setHint("jakarta.persistence.fetchgraph", graph);
+            }
+
+            Result result;
+
+            if (drc.isPaginationEnabled()) {
+                Integer firstResult = drc.getOffset() == null ? 0 : drc.getOffset();
+                Integer maxResults = getMaxResult();
+                Long count = countIncludingDeleted();
+
+                if (firstResult < count) {
+                    query.setFirstResult(firstResult);
+                    query.setMaxResults(maxResults);
+                }
+
+                drc.setCount(count);
+
+                result = PageResult.of(query.getResultList(), count, firstResult, maxResults);
+            } else {
+                ResultSet rs = new ResultSet();
+                rs.setContent(query.getResultList());
+                result = rs;
+            }
+
+            if (result.getContent() != null && !result.getContent().isEmpty()
+                    && drc.isPaginationEnabled()
+                    && result.getContent().size() <= drc.getCount() && drc.getCount() < getMaxResult()) {
+                drc.setLimit(drc.getCount().intValue());
+            }
+
+            drc.setEntityClass(entityClass);
+
+            return result;
+
+        } catch (PersistenceException e) {
+            logger.severe(e.getMessage());
+            throw new DemoiselleCrudException(msg(() -> bundle.findError(), "Não foi possível consultar"), e);
+        }
+    }
+
+    /**
+     * Counts all entities including those marked as soft-deleted.
+     * Applies DRC filters but does NOT apply the soft delete predicate.
+     *
+     * @return the total count including soft-deleted records
+     */
+    private Long countIncludingDeleted() {
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> countCriteria = criteriaBuilder.createQuery(Long.class);
+        Root<T> entityRoot = countCriteria.from(entityClass);
+        countCriteria.select(criteriaBuilder.count(entityRoot));
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (drc.getFilters() != null) {
+            predicates.addAll(Arrays.asList(buildPredicates(criteriaBuilder, countCriteria, entityRoot)));
+        }
+
+        // Intentionally skip softDeletePredicate
+
+        if (!predicates.isEmpty()) {
+            countCriteria.where(predicates.toArray(new Predicate[0]));
+        }
+
+        return getEntityManager().createQuery(countCriteria).getSingleResult();
+    }
+
+    /**
+     * Finds entities matching the given Specification, combined with any filters
+     * from the DemoiselleRequestContext using AND. Applies pagination when enabled.
+     * If {@code spec} is null, behaves like the standard {@link #find()}.
+     *
+     * @param spec the Specification to apply, or null for no additional predicate
+     * @return a Result (PageResult when pagination is enabled, ResultSet otherwise)
+     */
+    public Result find(Specification<T> spec) {
+
+        if (spec == null) {
+            return find();
+        }
+
+        try {
+
+            CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+            Root<T> root = criteriaQuery.from(entityClass);
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Specification predicate
+            predicates.add(spec.toPredicate(root, criteriaQuery, criteriaBuilder));
+
+            // Existing filter predicates from DemoiselleRequestContext
+            if (drc.getFilters() != null) {
+                predicates.addAll(Arrays.asList(buildPredicates(criteriaBuilder, criteriaQuery, root)));
+            }
+
+            // Soft delete predicate
+            if (softDeleteMeta != null) {
+                predicates.add(softDeletePredicate(criteriaBuilder, root));
+            }
+
+            criteriaQuery.select(root).where(predicates.toArray(new Predicate[0]));
+            configureOrder(criteriaBuilder, criteriaQuery, root);
+
+            TypedQuery<T> query = getEntityManager().createQuery(criteriaQuery);
+
+            EntityGraph<T> graph = getEntityGraph();
+            if (graph != null) {
+                query.setHint("jakarta.persistence.fetchgraph", graph);
+            }
+
+            Result result;
+
+            if (drc.isPaginationEnabled()) {
+                Integer firstResult = drc.getOffset() == null ? 0 : drc.getOffset();
+                Integer maxResults = getMaxResult();
+                Long count = countWithSpecification(spec);
+
+                if (firstResult < count) {
+                    query.setFirstResult(firstResult);
+                    query.setMaxResults(maxResults);
+                }
+
+                drc.setCount(count);
+
+                result = PageResult.of(query.getResultList(), count, firstResult, maxResults);
+            } else {
+                ResultSet rs = new ResultSet();
+                rs.setContent(query.getResultList());
+                result = rs;
+            }
+
+            if (result.getContent() != null && !result.getContent().isEmpty()
+                    && drc.isPaginationEnabled()
+                    && result.getContent().size() <= drc.getCount() && drc.getCount() < getMaxResult()) {
+                drc.setLimit(drc.getCount().intValue());
+            }
+
+            drc.setEntityClass(entityClass);
+
+            return result;
+
+        } catch (PersistenceException e) {
+            logger.severe(e.getMessage());
+            throw new DemoiselleCrudException(msg(() -> bundle.findError(), "Não foi possível consultar"), e);
+        }
+    }
+
+    /**
+     * Counts entities matching the given Specification combined with DRC filters.
+     *
+     * @param spec the Specification to apply
+     * @return the count of matching entities
+     */
+    private Long countWithSpecification(Specification<T> spec) {
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> countCriteria = criteriaBuilder.createQuery(Long.class);
+        Root<T> entityRoot = countCriteria.from(entityClass);
+        countCriteria.select(criteriaBuilder.count(entityRoot));
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (spec != null) {
+            predicates.add(spec.toPredicate(entityRoot, countCriteria, criteriaBuilder));
+        }
+
+        if (drc.getFilters() != null) {
+            predicates.addAll(Arrays.asList(buildPredicates(criteriaBuilder, countCriteria, entityRoot)));
+        }
+
+        if (softDeleteMeta != null) {
+            predicates.add(softDeletePredicate(criteriaBuilder, entityRoot));
+        }
+
+        if (!predicates.isEmpty()) {
+            countCriteria.where(predicates.toArray(new Predicate[0]));
+        }
+
+        return getEntityManager().createQuery(countCriteria).getSingleResult();
+    }
+
+    /**
      * Returns the EntityGraph to apply as a fetch graph hint on find() queries.
      * Subclasses can override this to provide a custom EntityGraph for controlling
      * the fetch strategy of relationships.
@@ -215,8 +640,21 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
 
     protected void configureCriteriaQuery(CriteriaBuilder criteriaBuilder, CriteriaQuery<T> criteriaQuery) {
         Root<T> from = criteriaQuery.from(entityClass);
+
+        List<Predicate> predicates = new ArrayList<>();
+
         if (drc.getFilters() != null) {
-            criteriaQuery.select(from).where(buildPredicates(criteriaBuilder, criteriaQuery, from));
+            predicates.addAll(Arrays.asList(buildPredicates(criteriaBuilder, criteriaQuery, from)));
+        }
+
+        if (softDeleteMeta != null) {
+            predicates.add(softDeletePredicate(criteriaBuilder, from));
+        }
+
+        if (!predicates.isEmpty()) {
+            criteriaQuery.select(from).where(predicates.toArray(new Predicate[0]));
+        } else {
+            criteriaQuery.select(from);
         }
 
         configureOrder(criteriaBuilder, criteriaQuery, from);
@@ -308,6 +746,34 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         if ("null".equals(value) || value == null) {
             return new FilterOp.IsNull(key);
         }
+
+        // Operator prefixes (precedence over existing filters)
+        if (value.startsWith("gt:")) {
+            return new FilterOp.GreaterThan(key, value.substring(3));
+        }
+        if (value.startsWith("lt:")) {
+            return new FilterOp.LessThan(key, value.substring(3));
+        }
+        if (value.startsWith("gte:")) {
+            return new FilterOp.GreaterThanOrEqual(key, value.substring(4));
+        }
+        if (value.startsWith("lte:")) {
+            return new FilterOp.LessThanOrEqual(key, value.substring(4));
+        }
+        if (value.startsWith("between:")) {
+            String[] parts = value.substring(8).split(",", -1);
+            if (parts.length != 2) {
+                throw new IllegalArgumentException("between: requer exatamente 2 valores separados por vírgula");
+            }
+            return new FilterOp.Between(key, parts[0].trim(), parts[1].trim());
+        }
+        if (value.startsWith("in:")) {
+            List<String> vals = Arrays.stream(value.substring(3).split(","))
+                .map(String::trim).toList();
+            return new FilterOp.In(key, vals);
+        }
+
+        // Existing filters (Like, IsNull, IsTrue, IsFalse, Enum, UUID, Equals)
         if (isLikeFilter(value)) {
             return new FilterOp.Like(key, value);
         }
@@ -351,9 +817,21 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
             return cb.equal(from.get(uuidFilter.key()), uuidFilter.value());
         } else if (op instanceof FilterOp.Equals equals) {
             return cb.equal(from.get(equals.key()), equals.value());
+        } else if (op instanceof FilterOp.GreaterThan gt) {
+            return cb.greaterThan(from.get(gt.key()), gt.value());
+        } else if (op instanceof FilterOp.LessThan lt) {
+            return cb.lessThan(from.get(lt.key()), lt.value());
+        } else if (op instanceof FilterOp.GreaterThanOrEqual gte) {
+            return cb.greaterThanOrEqualTo(from.get(gte.key()), gte.value());
+        } else if (op instanceof FilterOp.LessThanOrEqual lte) {
+            return cb.lessThanOrEqualTo(from.get(lte.key()), lte.value());
+        } else if (op instanceof FilterOp.Between btw) {
+            return cb.between(from.get(btw.key()), btw.lower(), btw.upper());
+        } else if (op instanceof FilterOp.In in) {
+            return from.get(in.key()).in(in.values());
         }
-        // This is unreachable because FilterOp is a sealed interface with exactly 7 variants,
-        // all handled above. Included only to satisfy the compiler.
+        // This is unreachable because FilterOp is a sealed interface and all variants
+        // are handled above. Included only to satisfy the compiler.
         throw new AssertionError("Unhandled FilterOp variant: " + op.getClass().getName());
     }
     
@@ -507,8 +985,18 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         Root<T> entityRoot = countCriteria.from(entityClass);
         countCriteria.select(criteriaBuilder.count(entityRoot));
 
+        List<Predicate> predicates = new ArrayList<>();
+
         if (drc.getFilters() != null) {
-            countCriteria.where(buildPredicates(criteriaBuilder, countCriteria, entityRoot));
+            predicates.addAll(Arrays.asList(buildPredicates(criteriaBuilder, countCriteria, entityRoot)));
+        }
+
+        if (softDeleteMeta != null) {
+            predicates.add(softDeletePredicate(criteriaBuilder, entityRoot));
+        }
+
+        if (!predicates.isEmpty()) {
+            countCriteria.where(predicates.toArray(new Predicate[0]));
         }
 
         return getEntityManager().createQuery(countCriteria).getSingleResult();

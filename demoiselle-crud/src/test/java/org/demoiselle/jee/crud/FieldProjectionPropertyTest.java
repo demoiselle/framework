@@ -117,7 +117,7 @@ class FieldProjectionPropertyTest {
         level4Node.addChild("deepValue", new HashSet<>());
 
         ReflectionCache reflectionCache = new ReflectionCache();
-        CrudFilter filter = new CrudFilter(null, null, null, null, null, null, null, reflectionCache);
+        CrudFilter filter = new CrudFilter(null, null, null, null, null, null, null, reflectionCache, null);
 
         Map<String, Object> result = filter.resolveFields(root, rootNode, Level1.class, 10);
 
@@ -158,7 +158,7 @@ class FieldProjectionPropertyTest {
         level3Node.addChild("l3Name", new HashSet<>());
 
         ReflectionCache reflectionCache = new ReflectionCache();
-        CrudFilter filter = new CrudFilter(null, null, null, null, null, null, null, reflectionCache);
+        CrudFilter filter = new CrudFilter(null, null, null, null, null, null, null, reflectionCache, null);
 
         Map<String, Object> result = filter.resolveFields(root, rootNode, Level1.class, 10);
 

@@ -6,6 +6,7 @@
  */
 package org.demoiselle.jee.crud.filter;
 
+import java.util.List;
 import java.util.UUID;
 
 import net.jqwik.api.*;
@@ -41,7 +42,13 @@ class FilterOpNullSafetyPropertyTest {
                 isTrueOps(),
                 isFalseOps(),
                 enumFilterOps(),
-                uuidFilterOps()
+                uuidFilterOps(),
+                greaterThanOps(),
+                lessThanOps(),
+                greaterThanOrEqualOps(),
+                lessThanOrEqualOps(),
+                betweenOps(),
+                inOps()
         );
     }
 
@@ -75,6 +82,36 @@ class FilterOpNullSafetyPropertyTest {
     private Arbitrary<FilterOp> uuidFilterOps() {
         return Combinators.combine(nonNullKeys(), validUUIDs())
                 .as(FilterOp.UUIDFilter::new);
+    }
+
+    private Arbitrary<FilterOp> greaterThanOps() {
+        return Combinators.combine(nonNullKeys(), nonNullStrings())
+                .as(FilterOp.GreaterThan::new);
+    }
+
+    private Arbitrary<FilterOp> lessThanOps() {
+        return Combinators.combine(nonNullKeys(), nonNullStrings())
+                .as(FilterOp.LessThan::new);
+    }
+
+    private Arbitrary<FilterOp> greaterThanOrEqualOps() {
+        return Combinators.combine(nonNullKeys(), nonNullStrings())
+                .as(FilterOp.GreaterThanOrEqual::new);
+    }
+
+    private Arbitrary<FilterOp> lessThanOrEqualOps() {
+        return Combinators.combine(nonNullKeys(), nonNullStrings())
+                .as(FilterOp.LessThanOrEqual::new);
+    }
+
+    private Arbitrary<FilterOp> betweenOps() {
+        return Combinators.combine(nonNullKeys(), nonNullStrings(), nonNullStrings())
+                .as(FilterOp.Between::new);
+    }
+
+    private Arbitrary<FilterOp> inOps() {
+        return Combinators.combine(nonNullKeys(), nonNullStrings().list().ofMinSize(1).ofMaxSize(10))
+                .as(FilterOp.In::new);
     }
 
     private Arbitrary<String> nonNullKeys() {

@@ -8,6 +8,7 @@ package org.demoiselle.jee.crud;
 
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.AbstractREST;
+import org.demoiselle.jee.crud.cache.Cacheable;
 import org.demoiselle.jee.crud.entity.UserModelForTest;
 
 import jakarta.ws.rs.GET;
@@ -52,6 +53,13 @@ public class UserRestForTest extends AbstractREST<UserModelForTest, Long> {
     @GET
     @Search(fields={"*"})
     public Result findWithSearchAndAllFields(){
+        return null;
+    }
+
+    @GET
+    @Cacheable(ttl = 60)
+    @Search(fields={"id", "name"}, quantityPerPage = 10, withPagination = true)
+    public Result findWithCacheable() {
         return null;
     }
     

@@ -24,9 +24,11 @@ import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.entity.AddressModelForTest;
 import org.demoiselle.jee.crud.entity.CountryModelForTest;
 import org.demoiselle.jee.crud.entity.UserModelForTest;
+import org.demoiselle.jee.crud.cache.QueryCacheStore;
 import org.demoiselle.jee.crud.field.FieldHelper;
 import org.demoiselle.jee.crud.field.FieldHelperMessage;
 import org.demoiselle.jee.crud.filter.FilterHelper;
+import org.demoiselle.jee.crud.pagination.PageResult;
 import org.demoiselle.jee.crud.pagination.PaginationHelper;
 import org.demoiselle.jee.crud.pagination.PaginationHelperConfig;
 import org.demoiselle.jee.crud.pagination.PaginationHelperMessage;
@@ -68,6 +70,7 @@ class CrudFilterTest {
     MultivaluedMap<String, Object> mvmResponse;
     DemoiselleRequestContext drc;
     ReflectionCache reflectionCache;
+    QueryCacheStore queryCacheStore;
 
     SortHelper sortHelper;
     PaginationHelper paginationHelper;
@@ -81,12 +84,13 @@ class CrudFilterTest {
         mvmResponse = new MultivaluedHashMap<>();
         drc = new DemoiselleRequestContextImpl();
         reflectionCache = new ReflectionCache();
+        queryCacheStore = new QueryCacheStore();
 
         sortHelper = new SortHelper(resourceInfo, uriInfo, drc, sortHelperMessage, crudMessage);
         paginationHelper = new PaginationHelper(resourceInfo, uriInfo, dpc, drc, paginationMessage);
         filterHelper = new FilterHelper(resourceInfo, uriInfo, drc, crudMessage);
         fieldHelper = new FieldHelper(resourceInfo, uriInfo, drc, fieldHelperMessage, crudMessage);
-        crudFilter = new CrudFilter(resourceInfo, uriInfo, drc, paginationHelper, sortHelper, filterHelper, fieldHelper, reflectionCache);
+        crudFilter = new CrudFilter(resourceInfo, uriInfo, drc, paginationHelper, sortHelper, filterHelper, fieldHelper, reflectionCache, queryCacheStore);
     }
 
     private void configureRequestForCrud() throws Exception {
@@ -341,5 +345,223 @@ class CrudFilterTest {
 
         // With @Search(fields={"*"}), all fields should be returned as-is (the original list)
         verify(responseContext).setEntity(users);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void responseWithPageResultShouldIncludeMetadataHeaders() throws Exception {
+        when(dpc.getDefaultPagination()).thenReturn(20);
+        when(dpc.getIsGlobalEnabled()).thenReturn(true);
+        drc.setCount(100L);
+
+        mvmRequest.putSingle("range", "0-9");
+        when(uriInfo.getQueryParameters()).thenReturn(mvmRequest);
+        when(responseContext.getHeaders()).thenReturn(mvmResponse);
+
+        List<UserModelForTest> users = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            UserModelForTest user = new UserModelForTest();
+            user.setId((long) i);
+            user.setName("John" + i);
+            user.setMail("john" + i + "@test.com");
+            users.add(user);
+        }
+
+        PageResult<UserModelForTest> pageResult = PageResult.of(users, 100L, 0, 10);
+        when(responseContext.getEntity()).thenReturn(pageResult);
+        configureRequestForCrud();
+
+        crudFilter.filter(requestContext);
+        crudFilter.filter(requestContext, responseContext);
+
+        // Existing headers should still be present
+        assertTrue(mvmResponse.containsKey("Content-Range"));
+        assertTrue(mvmResponse.containsKey("Accept-Range"));
+        assertTrue(mvmResponse.containsKey("Access-Control-Expose-Headers"));
+
+        // PageResult metadata headers should be present
+        assertTrue(mvmResponse.containsKey("X-Total-Count"));
+        assertTrue(mvmResponse.containsKey("X-Total-Pages"));
+        assertTrue(mvmResponse.containsKey("X-Current-Page"));
+        assertTrue(mvmResponse.containsKey("X-Page-Size"));
+        assertTrue(mvmResponse.containsKey("X-Has-Next"));
+        assertTrue(mvmResponse.containsKey("X-Has-Previous"));
+
+        // Verify metadata values
+        assertEquals(100L, mvmResponse.getFirst("X-Total-Count"));
+        assertEquals(10, mvmResponse.getFirst("X-Total-Pages"));
+        assertEquals(0, mvmResponse.getFirst("X-Current-Page"));
+        assertEquals(10, mvmResponse.getFirst("X-Page-Size"));
+        assertEquals(true, mvmResponse.getFirst("X-Has-Next"));
+        assertEquals(false, mvmResponse.getFirst("X-Has-Previous"));
+
+        // Expose headers should include PageResult metadata
+        String exposeHeaders = (String) mvmResponse.getFirst("Access-Control-Expose-Headers");
+        assertTrue(exposeHeaders.contains("X-Total-Count"));
+        assertTrue(exposeHeaders.contains("X-Total-Pages"));
+        assertTrue(exposeHeaders.contains("X-Current-Page"));
+        assertTrue(exposeHeaders.contains("X-Page-Size"));
+        assertTrue(exposeHeaders.contains("X-Has-Next"));
+        assertTrue(exposeHeaders.contains("X-Has-Previous"));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void responseWithResultSetShouldNotIncludePageResultHeaders() throws Exception {
+        when(dpc.getDefaultPagination()).thenReturn(20);
+        when(dpc.getIsGlobalEnabled()).thenReturn(true);
+        drc.setCount(10L);
+
+        when(uriInfo.getQueryParameters()).thenReturn(mvmRequest);
+        when(responseContext.getHeaders()).thenReturn(mvmResponse);
+
+        List<UserModelForTest> users = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            UserModelForTest user = new UserModelForTest();
+            user.setId((long) i);
+            user.setName("John" + i);
+            user.setMail("john" + i + "@test.com");
+            users.add(user);
+        }
+
+        ResultSet result = new ResultSet();
+        result.setContent(users);
+        when(responseContext.getEntity()).thenReturn(result);
+        configureRequestForCrud();
+
+        crudFilter.filter(requestContext);
+        crudFilter.filter(requestContext, responseContext);
+
+        // Existing headers should still be present
+        assertTrue(mvmResponse.containsKey("Access-Control-Expose-Headers"));
+
+        // PageResult metadata headers should NOT be present
+        assertFalse(mvmResponse.containsKey("X-Total-Count"));
+        assertFalse(mvmResponse.containsKey("X-Total-Pages"));
+        assertFalse(mvmResponse.containsKey("X-Current-Page"));
+        assertFalse(mvmResponse.containsKey("X-Page-Size"));
+        assertFalse(mvmResponse.containsKey("X-Has-Next"));
+        assertFalse(mvmResponse.containsKey("X-Has-Previous"));
+
+        // Expose headers should NOT include PageResult metadata
+        String exposeHeaders = (String) mvmResponse.getFirst("Access-Control-Expose-Headers");
+        assertFalse(exposeHeaders.contains("X-Total-Count"));
+    }
+
+    // --- Cache integration tests ---
+
+    private void configureRequestForCacheableMethod() throws Exception {
+        lenient().when(resourceInfo.getResourceClass()).thenReturn((Class) UserRestForTest.class);
+        lenient().when(resourceInfo.getResourceMethod()).thenReturn(UserRestForTest.class.getDeclaredMethod("findWithCacheable"));
+        URI uri = new URI("http://localhost:9090/api/users");
+        lenient().when(uriInfo.getRequestUri()).thenReturn(uri);
+    }
+
+    @Test
+    void cacheableGetRequestShouldSetCacheHitPropertyOnHit() throws Exception {
+        when(dpc.getDefaultPagination()).thenReturn(20);
+        when(dpc.getIsGlobalEnabled()).thenReturn(true);
+        when(uriInfo.getQueryParameters()).thenReturn(mvmRequest);
+        configureRequestForCacheableMethod();
+
+        // Pre-populate cache with a known value
+        String entityClassName = UserModelForTest.class.getName();
+        String cacheKey = entityClassName + ":filter:http://localhost:9090/api/users";
+        List<String> cachedData = List.of("cached-item-1", "cached-item-2");
+        queryCacheStore.put(cacheKey, cachedData, 60);
+
+        crudFilter.filter(requestContext);
+
+        // The request filter should set the cache hit property
+        verify(requestContext).setProperty(CrudFilter.CACHE_HIT_PROPERTY, cachedData);
+    }
+
+    @Test
+    void cacheableGetRequestShouldNotSetPropertyOnCacheMiss() throws Exception {
+        when(dpc.getDefaultPagination()).thenReturn(20);
+        when(dpc.getIsGlobalEnabled()).thenReturn(true);
+        when(uriInfo.getQueryParameters()).thenReturn(mvmRequest);
+        configureRequestForCacheableMethod();
+
+        // No cache entry — should proceed normally without setting property
+        crudFilter.filter(requestContext);
+
+        verify(requestContext, never()).setProperty(eq(CrudFilter.CACHE_HIT_PROPERTY), any());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void cacheableResponseShouldStoreResultAndSetMissHeader() throws Exception {
+        when(dpc.getDefaultPagination()).thenReturn(20);
+        when(dpc.getIsGlobalEnabled()).thenReturn(true);
+        drc.setCount(10L);
+
+        when(uriInfo.getQueryParameters()).thenReturn(mvmRequest);
+        when(responseContext.getHeaders()).thenReturn(mvmResponse);
+        configureRequestForCacheableMethod();
+
+        List<UserModelForTest> users = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            UserModelForTest user = new UserModelForTest();
+            user.setId((long) i);
+            user.setName("John" + i);
+            users.add(user);
+        }
+
+        ResultSet result = new ResultSet();
+        result.setContent(users);
+        when(responseContext.getEntity()).thenReturn(result);
+
+        crudFilter.filter(requestContext);
+        crudFilter.filter(requestContext, responseContext);
+
+        // X-Cache header should be MISS
+        assertEquals("MISS", mvmResponse.getFirst("X-Cache"));
+
+        // Cache should now contain the result
+        String entityClassName = UserModelForTest.class.getName();
+        String cacheKey = entityClassName + ":filter:http://localhost:9090/api/users";
+        assertNotNull(queryCacheStore.get(cacheKey));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void cacheHitResponseShouldReturnCachedEntityAndHitHeader() throws Exception {
+        when(dpc.getDefaultPagination()).thenReturn(20);
+        when(dpc.getIsGlobalEnabled()).thenReturn(true);
+        drc.setCount(10L);
+
+        when(uriInfo.getQueryParameters()).thenReturn(mvmRequest);
+        when(responseContext.getHeaders()).thenReturn(mvmResponse);
+        configureRequestForCacheableMethod();
+
+        // Simulate a cache HIT by setting the property on the request context
+        List<String> cachedData = List.of("cached-item-1", "cached-item-2");
+        when(requestContext.getProperty(CrudFilter.CACHE_HIT_PROPERTY)).thenReturn(cachedData);
+
+        ResultSet result = new ResultSet();
+        result.setContent(List.of());
+        when(responseContext.getEntity()).thenReturn(result);
+
+        crudFilter.filter(requestContext, responseContext);
+
+        // Should set the cached entity and HIT header
+        verify(responseContext).setEntity(cachedData);
+        assertEquals("HIT", mvmResponse.getFirst("X-Cache"));
+        verify(responseContext).setStatus(200);
+    }
+
+    @Test
+    void nonCacheableGetRequestShouldNotInteractWithCache() throws Exception {
+        when(dpc.getDefaultPagination()).thenReturn(20);
+        when(dpc.getIsGlobalEnabled()).thenReturn(true);
+        when(uriInfo.getQueryParameters()).thenReturn(mvmRequest);
+        configureRequestForCrud();
+
+        // The standard find() method is NOT @Cacheable
+        crudFilter.filter(requestContext);
+
+        // Should not set cache property
+        verify(requestContext, never()).setProperty(eq(CrudFilter.CACHE_HIT_PROPERTY), any());
     }
 }

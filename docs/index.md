@@ -17,6 +17,13 @@ O Demoiselle Framework v4 foi modernizado para aproveitar plenamente os recursos
 | P4 | [Coleções Imutáveis no Módulo de Segurança](#p4--coleções-imutáveis-no-módulo-de-segurança) | security, crud |
 | P5 | [Preparação para Virtual Threads](#p5--preparação-para-virtual-threads) | configuration, script |
 | P6 | [Melhorias na Criteria API do JPA 3.1](#p6--melhorias-na-criteria-api-do-jpa-31) | crud |
+| P7 | [Soft Delete com @SoftDeletable](#p7--soft-delete-com-softdeletable) | crud |
+| P8 | [Auditoria Automática](#p8--auditoria-automática) | crud |
+| P9 | [Specification Pattern](#p9--specification-pattern) | crud |
+| P10 | [Operações em Batch](#p10--operações-em-batch) | crud |
+| P11 | [PageResult Tipado](#p11--pageresult-tipado) | crud |
+| P12 | [Operadores de Comparação no FilterOp](#p12--operadores-de-comparação-no-filterop) | crud |
+| P13 | [Cache de Consultas com Eventos CDI](#p13--cache-de-consultas-com-eventos-cdi) | crud |
 
 ---
 
@@ -479,9 +486,517 @@ if (graph != null) {
 
 ---
 
+## P7 — Soft Delete com @SoftDeletable
+
+Exclusão lógica declarativa via anotação. Em vez de `DELETE` físico, o framework executa um `UPDATE` marcando o registro como excluído.
+
+### Configuração na Entidade
+
+```java
+@Entity
+@SoftDeletable(field = "deletedAt")
+public class Produto {
+
+    @Id @GeneratedValue
+    private Long id;
+
+    private String nome;
+
+    private LocalDateTime deletedAt; // campo de soft delete
+
+    // getters e setters
+}
+```
+
+### Tipos Suportados
+
+```java
+// LocalDateTime (padrão)
+@SoftDeletable(field = "deletedAt")
+
+// Boolean
+@SoftDeletable(field = "deleted", type = Boolean.class)
+
+// Instant
+@SoftDeletable(field = "deletedInstant", type = Instant.class)
+```
+
+### Comportamento Automático no AbstractDAO
+
+```java
+// remove() executa UPDATE em vez de DELETE
+dao.remove(42L);
+// SQL gerado: UPDATE produto SET deleted_at = '2026-04-01T10:30:00' WHERE id = 42
+
+// find() exclui registros soft-deleted automaticamente
+Result result = dao.find();
+// SQL gerado: SELECT ... FROM produto WHERE deleted_at IS NULL
+
+// find(id) retorna null para registros soft-deleted
+Produto p = dao.find(42L); // → null (registro marcado como excluído)
+
+// count() exclui registros soft-deleted
+Long total = dao.count();
+// SQL gerado: SELECT COUNT(*) FROM produto WHERE deleted_at IS NULL
+
+// findIncludingDeleted() retorna TODOS os registros
+Result todos = dao.findIncludingDeleted();
+// SQL gerado: SELECT ... FROM produto (sem filtro de soft delete)
+```
+
+### Filtro para Boolean
+
+Quando o tipo é `Boolean`, o filtro é `WHERE deleted = false OR deleted IS NULL`:
+
+```java
+@SoftDeletable(field = "deleted", type = Boolean.class)
+public class Tarefa {
+    private Boolean deleted;
+}
+
+// remove() → UPDATE tarefa SET deleted = true WHERE id = ?
+// find()   → SELECT ... WHERE (deleted = false OR deleted IS NULL)
+```
+
+### Validação na Inicialização
+
+```java
+// Campo inexistente → DemoiselleCrudException na inicialização do DAO
+@SoftDeletable(field = "campoInexistente")
+public class Invalida { }
+
+// Tipo não suportado → DemoiselleCrudException
+@SoftDeletable(field = "nome", type = String.class)
+public class TipoInvalido { }
+```
+
+---
+
+## P8 — Auditoria Automática
+
+Preenchimento automático de campos de auditoria via JPA EntityListener, sem código manual em cada entidade.
+
+### Anotações Disponíveis
+
+| Anotação | Evento | Valor |
+|---|---|---|
+| `@CreatedAt` | `@PrePersist` | `LocalDateTime.now()` |
+| `@CreatedBy` | `@PrePersist` | `DemoiselleUser.getIdentity()` |
+| `@UpdatedAt` | `@PreUpdate` | `LocalDateTime.now()` |
+| `@UpdatedBy` | `@PreUpdate` | `DemoiselleUser.getIdentity()` |
+
+### Configuração na Entidade
+
+```java
+@Entity
+@EntityListeners(AuditEntityListener.class)
+public class Pedido {
+
+    @Id @GeneratedValue
+    private Long id;
+
+    private String descricao;
+
+    @CreatedAt
+    private LocalDateTime criadoEm;
+
+    @CreatedBy
+    private String criadoPor;
+
+    @UpdatedAt
+    private LocalDateTime atualizadoEm;
+
+    @UpdatedBy
+    private String atualizadoPor;
+
+    // getters e setters
+}
+```
+
+### Comportamento
+
+```java
+// Ao persistir: preenche apenas @CreatedAt e @CreatedBy
+entityManager.persist(pedido);
+// pedido.criadoEm    → 2026-04-01T10:30:00
+// pedido.criadoPor   → "admin"
+// pedido.atualizadoEm → null
+// pedido.atualizadoPor → null
+
+// Ao atualizar: preenche apenas @UpdatedAt e @UpdatedBy
+entityManager.merge(pedido);
+// pedido.criadoEm    → (inalterado)
+// pedido.criadoPor   → (inalterado)
+// pedido.atualizadoEm → 2026-04-01T11:00:00
+// pedido.atualizadoPor → "editor"
+```
+
+### Fallback sem Contexto de Usuário
+
+Quando `DemoiselleUser` não está disponível (ex.: operações em batch sem requisição HTTP), o valor de `@CreatedBy`/`@UpdatedBy` é `"system"`.
+
+---
+
+## P9 — Specification Pattern
+
+Composição declarativa de consultas JPA complexas sem escrever `CriteriaQuery` manualmente.
+
+### Interface Funcional
+
+```java
+@FunctionalInterface
+public interface Specification<T> {
+    Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb);
+
+    // Métodos default para composição
+    default Specification<T> and(Specification<T> other) { ... }
+    default Specification<T> or(Specification<T> other)  { ... }
+    default Specification<T> not()                        { ... }
+}
+```
+
+### Criando Specifications
+
+```java
+// Specification simples
+Specification<Produto> precoMaior100 = (root, query, cb) ->
+    cb.greaterThan(root.get("preco"), 100.0);
+
+Specification<Produto> categoriaEletronicos = (root, query, cb) ->
+    cb.equal(root.get("categoria"), "ELETRONICOS");
+
+Specification<Produto> emEstoque = (root, query, cb) ->
+    cb.greaterThan(root.get("estoque"), 0);
+```
+
+### Composição
+
+```java
+// AND: produtos eletrônicos com preço > 100
+Specification<Produto> filtro = categoriaEletronicos.and(precoMaior100);
+
+// OR: eletrônicos OU preço > 100
+Specification<Produto> filtroOu = categoriaEletronicos.or(precoMaior100);
+
+// NOT: produtos que NÃO são eletrônicos
+Specification<Produto> naoEletronicos = categoriaEletronicos.not();
+
+// Composição complexa: eletrônicos em estoque OU preço > 100
+Specification<Produto> complexo = categoriaEletronicos.and(emEstoque)
+                                                       .or(precoMaior100);
+```
+
+### Uso no AbstractDAO
+
+```java
+// find(spec) combina Specification com filtros do DemoiselleRequestContext
+Result result = dao.find(precoMaior100.and(emEstoque));
+
+// Paginação é aplicada automaticamente quando habilitada
+// Retorna PageResult com metadados quando paginação está ativa
+
+// find(null) equivale a find() padrão
+Result result = dao.find(null); // mesmo que dao.find()
+```
+
+---
+
+## P10 — Operações em Batch
+
+Processamento eficiente de grandes volumes com flush/clear automático para evitar estouro de memória.
+
+### Configuração
+
+```properties
+# demoiselle.properties
+demoiselle.crud.batch.size=100
+```
+
+Valor padrão: `50` registros por batch.
+
+### persistAll
+
+```java
+List<Produto> produtos = List.of(
+    new Produto("Notebook", 3500.0),
+    new Produto("Mouse", 89.90),
+    new Produto("Teclado", 199.90)
+);
+
+// Persiste todos com flush/clear a cada N registros
+List<Produto> persistidos = dao.persistAll(produtos);
+// persistidos.size() == 3
+```
+
+Em caso de erro, a exceção inclui o índice da entidade que falhou:
+
+```java
+try {
+    dao.persistAll(entidades);
+} catch (DemoiselleCrudException e) {
+    // "Erro ao persistir entidade no índice 42"
+    e.getMessage();
+    e.getCause(); // PersistenceException original
+}
+```
+
+### removeAll
+
+```java
+List<Long> ids = List.of(1L, 2L, 3L, 4L, 5L);
+
+// Remove todos (respeita @SoftDeletable quando presente)
+int removidos = dao.removeAll(ids);
+// removidos == 5
+```
+
+### updateAll
+
+```java
+// Atualiza todos os produtos da categoria "ELETRONICOS" com desconto
+Specification<Produto> eletronicos = (root, query, cb) ->
+    cb.equal(root.get("categoria"), "ELETRONICOS");
+
+Map<String, Object> updates = Map.of(
+    "desconto", 0.15,
+    "emPromocao", true
+);
+
+int atualizados = dao.updateAll(eletronicos, updates);
+// SQL: UPDATE produto SET desconto = 0.15, em_promocao = true
+//      WHERE categoria = 'ELETRONICOS'
+```
+
+---
+
+## P11 — PageResult Tipado
+
+Record imutável com metadados completos de paginação, eliminando cálculos manuais no frontend.
+
+### Estrutura
+
+```java
+public record PageResult<T>(
+    List<T> content,       // conteúdo da página
+    long totalElements,    // total de elementos em todas as páginas
+    int totalPages,        // total de páginas
+    int currentPage,       // página atual (0-indexed)
+    int pageSize,          // tamanho da página
+    boolean hasNext,       // existe próxima página?
+    boolean hasPrevious    // existe página anterior?
+) implements Result { }
+```
+
+### Uso Automático
+
+O `AbstractDAO.find()` retorna `PageResult` automaticamente quando a paginação está habilitada:
+
+```java
+// Com paginação habilitada → PageResult
+Result result = dao.find();
+if (result instanceof PageResult<?> page) {
+    page.totalElements(); // 150
+    page.totalPages();    // 15
+    page.currentPage();   // 0
+    page.pageSize();      // 10
+    page.hasNext();       // true
+    page.hasPrevious();   // false
+    page.content();       // List<Produto> (10 itens)
+}
+
+// Sem paginação → ResultSet (comportamento anterior mantido)
+```
+
+### Factory Method
+
+```java
+// Criação manual com cálculos automáticos de metadados
+PageResult<Produto> page = PageResult.of(
+    produtos,        // conteúdo
+    150L,            // totalElements
+    20,              // offset
+    10               // pageSize
+);
+// totalPages = 15, currentPage = 2, hasNext = true, hasPrevious = true
+```
+
+### Headers HTTP
+
+Quando a resposta contém `PageResult`, o `CrudFilter` inclui headers automaticamente:
+
+```
+HTTP/1.1 200 OK
+X-Total-Count: 150
+X-Total-Pages: 15
+X-Current-Page: 0
+X-Page-Size: 10
+X-Has-Next: true
+X-Has-Previous: false
+Content-Range: ...
+Access-Control-Expose-Headers: ..., X-Total-Count, X-Total-Pages, ...
+```
+
+---
+
+## P12 — Operadores de Comparação no FilterOp
+
+6 novos operadores de comparação via query string, sem necessidade de endpoints customizados.
+
+### Novos Operadores
+
+| Prefixo | Operador | Exemplo Query String | FilterOp |
+|---|---|---|---|
+| `gt:` | Maior que | `?preco=gt:100` | `GreaterThan` |
+| `lt:` | Menor que | `?preco=lt:50` | `LessThan` |
+| `gte:` | Maior ou igual | `?idade=gte:18` | `GreaterThanOrEqual` |
+| `lte:` | Menor ou igual | `?estoque=lte:10` | `LessThanOrEqual` |
+| `between:` | Entre dois valores | `?preco=between:10,100` | `Between` |
+| `in:` | Lista de valores | `?status=in:ATIVO,PENDENTE` | `In` |
+
+### Exemplos de Uso via API REST
+
+```
+GET /api/produtos?preco=gt:100
+GET /api/produtos?preco=between:50,200
+GET /api/produtos?categoria=in:ELETRONICOS,INFORMATICA,GAMES
+GET /api/produtos?estoque=lte:5
+GET /api/produtos?dataCriacao=gte:2026-01-01
+```
+
+### Precedência
+
+Prefixos de operador têm precedência sobre filtros existentes. Um valor como `gt:*texto*` é interpretado como `GreaterThan` (não `Like`):
+
+```
+?campo=gt:true    → GreaterThan (não IsTrue)
+?campo=lt:*abc*   → LessThan (não Like)
+?campo=in:null    → In com valor "null" (não IsNull)
+```
+
+### Validação
+
+```
+# between: requer exatamente 2 valores
+?preco=between:10        → IllegalArgumentException
+?preco=between:10,20,30  → IllegalArgumentException
+?preco=between:10,20     → OK (Between com lower=10, upper=20)
+```
+
+### Hierarquia Completa do FilterOp (13 variantes)
+
+```java
+public sealed interface FilterOp {
+    // Originais (7)
+    record Equals(String key, String value)                    implements FilterOp {}
+    record Like(String key, String pattern)                    implements FilterOp {}
+    record IsNull(String key)                                  implements FilterOp {}
+    record IsTrue(String key)                                  implements FilterOp {}
+    record IsFalse(String key)                                 implements FilterOp {}
+    record EnumFilter(String key, String value, int ordinal)   implements FilterOp {}
+    record UUIDFilter(String key, UUID value)                  implements FilterOp {}
+
+    // Novos operadores de comparação (6)
+    record GreaterThan(String key, String value)               implements FilterOp {}
+    record LessThan(String key, String value)                  implements FilterOp {}
+    record GreaterThanOrEqual(String key, String value)        implements FilterOp {}
+    record LessThanOrEqual(String key, String value)           implements FilterOp {}
+    record Between(String key, String lower, String upper)     implements FilterOp {}
+    record In(String key, List<String> values)                 implements FilterOp {}
+}
+```
+
+---
+
+## P13 — Cache de Consultas com Eventos CDI
+
+Cache automático de resultados de consultas com invalidação reativa via eventos CDI.
+
+### Habilitando Cache em um Método
+
+```java
+public class ProdutoREST extends AbstractREST<Produto, Long> {
+
+    @GET
+    @Cacheable(ttl = 60) // cache por 60 segundos
+    public Result find() {
+        return super.find();
+    }
+
+    @GET
+    @Path("/destaque")
+    @Cacheable // TTL padrão: 300 segundos (5 minutos)
+    public Result findDestaques() {
+        // consulta customizada
+    }
+}
+```
+
+### Como Funciona
+
+1. Requisição GET chega ao endpoint `@Cacheable`
+2. `CacheInterceptor` verifica se existe resultado em cache para a chave `entityClass:method:paramsHash`
+3. Cache hit → retorna resultado imediatamente (header `X-Cache: HIT`)
+4. Cache miss → executa o método, armazena resultado no cache (header `X-Cache: MISS`)
+
+### Invalidação Automática
+
+Operações de escrita no `AbstractDAO` disparam `EntityModifiedEvent` automaticamente:
+
+```java
+// persist() → EntityModifiedEvent(Produto.class, PERSIST, entity)
+// mergeFull() / mergeHalf() → EntityModifiedEvent(Produto.class, MERGE, entity)
+// remove() → EntityModifiedEvent(Produto.class, REMOVE, id)
+```
+
+O `CacheInvalidationListener` observa esses eventos e invalida todas as entradas de cache da classe afetada:
+
+```java
+// Ao persistir um Produto, TODAS as consultas cacheadas de Produto são invalidadas
+// Consultas cacheadas de outras entidades (Pedido, Cliente) permanecem intactas
+```
+
+### Headers de Cache na Resposta
+
+```
+# Cache miss (primeira requisição)
+HTTP/1.1 200 OK
+X-Cache: MISS
+
+# Cache hit (requisições subsequentes dentro do TTL)
+HTTP/1.1 200 OK
+X-Cache: HIT
+```
+
+### Arquitetura do Cache
+
+```
+┌─────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│  CrudFilter │────▶│  CacheInterceptor │────▶│ QueryCacheStore  │
+│  (JAX-RS)   │     │  (CDI Interceptor)│     │ (ConcurrentMap)  │
+└─────────────┘     └──────────────────┘     └─────────────────┘
+                                                       ▲
+                                                       │ invalidate
+                                              ┌────────┴────────┐
+                                              │ CacheInvalidation│
+                                              │    Listener      │
+                                              └────────┬────────┘
+                                                       │ @Observes
+                                              ┌────────┴────────┐
+                                              │EntityModifiedEvent│
+                                              └────────┬────────┘
+                                                       │ fire()
+                                              ┌────────┴────────┐
+                                              │   AbstractDAO    │
+                                              │ persist/merge/   │
+                                              │    remove        │
+                                              └─────────────────┘
+```
+
+---
+
 ## Testes Baseados em Propriedades (jqwik)
 
-O framework inclui **9 property-based tests** usando [jqwik](https://jqwik.net/) que validam propriedades universais de corretude:
+O framework inclui **30 property-based tests** usando [jqwik](https://jqwik.net/) que validam propriedades universais de corretude:
 
 | # | Propriedade | Módulo |
 |:---:|---|---|
@@ -490,10 +1005,31 @@ O framework inclui **9 property-based tests** usando [jqwik](https://jqwik.net/)
 | 3 | Round-trip JSON do DemoiselleRestExceptionMessage | rest |
 | 4 | Independência de cópia defensiva no ResultSet | crud |
 | 5 | Cópias defensivas no DemoiselleUserImpl | security |
-| 6 | Null-safety do FilterOp.key() | crud |
+| 6 | Null-safety do FilterOp.key() (13 variantes) | crud |
 | 7 | resolveFilterOp() sempre retorna FilterOp válido | crud |
 | 8 | Wildcard resolve para Like | crud |
 | 9 | Exclusão correta de campos no CriteriaUpdate | crud |
+| 10 | Soft delete marca registro em vez de remover | crud |
+| 11 | Consultas excluem registros soft-deleted | crud |
+| 12 | findIncludingDeleted retorna todos os registros | crud |
+| 13 | Persist preenche apenas campos de criação | crud |
+| 14 | Merge preenche apenas campos de atualização | crud |
+| 15 | Specification.and() retorna interseção | crud |
+| 16 | Specification.or() retorna união | crud |
+| 17 | Specification.not() retorna complemento | crud |
+| 18 | find(Specification) combina spec com filtros DRC | crud |
+| 19 | find(Specification) aplica paginação | crud |
+| 20 | persistAll retorna lista de mesmo tamanho | crud |
+| 21 | removeAll retorna contagem correta | crud |
+| 22 | updateAll aplica updates e Specification | crud |
+| 23 | PageResult tipo correto baseado em paginação | crud |
+| 24 | PageResult calcula metadados corretamente | crud |
+| 25 | PageResult cópia defensiva | crud |
+| 26 | resolveFilterOp resolve prefixos de operador | crud |
+| 27 | Prefixos de operador têm precedência | crud |
+| 28 | Cache round-trip (hit/miss com TTL) | crud |
+| 29 | Operações de escrita disparam EntityModifiedEvent | crud |
+| 30 | Invalidação de cache por entityClass | crud |
 
 **Exemplo — Property test de cópia defensiva:**
 
