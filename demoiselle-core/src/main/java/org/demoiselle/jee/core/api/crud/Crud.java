@@ -6,6 +6,8 @@
  */
 package org.demoiselle.jee.core.api.crud;
 
+import java.util.List;
+
 import jakarta.validation.Valid;
 
 /**
@@ -22,8 +24,30 @@ public interface Crud<T, I> {
 
     public void remove(I id);
 
-    public Result find();
+    public Result<T> find();
 
     public T find(I id);
+
+    default boolean exists(I id) {
+        return find(id) != null;
+    }
+
+    default long count() {
+        Result<T> result = find();
+        if (result == null) {
+            return 0L;
+        }
+        List<T> content = result.getContent();
+        return content == null ? 0L : content.size();
+    }
+
+    default List<T> findAll() {
+        Result<T> result = find();
+        if (result == null) {
+            return List.of();
+        }
+        List<T> content = result.getContent();
+        return content == null ? List.of() : content;
+    }
 
 }

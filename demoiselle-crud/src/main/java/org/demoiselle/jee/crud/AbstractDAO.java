@@ -357,7 +357,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
     }
 
     @Override
-    public Result find() {
+    public Result<T> find() {
 
         try {
 
@@ -373,7 +373,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
                 query.setHint("jakarta.persistence.fetchgraph", graph);
             }
 
-            Result result;
+            Result<T> result;
 
             if (drc.isPaginationEnabled()) {
                 Integer firstResult = drc.getOffset() == null ? 0 : drc.getOffset();

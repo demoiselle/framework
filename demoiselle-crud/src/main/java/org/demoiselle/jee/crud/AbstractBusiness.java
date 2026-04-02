@@ -37,7 +37,7 @@ public abstract class AbstractBusiness<T, I> implements Crud<T, I> {
     }
 
     @Override
-    public Result find() {
+    public Result<T> find() {
         return dao.find();
     }
 

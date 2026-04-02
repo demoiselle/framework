@@ -22,44 +22,44 @@ public class UserRestForTest extends AbstractREST<UserModelForTest, Long> {
 
     @Override
     @GET
-    public Result find() {
+    public Result<UserModelForTest> find() {
         return null;
     }
 
     @GET
     @Search(fields={"name", "address"}, quantityPerPage = 10, withPagination = true)
-    public Result findWithSearch() {
+    public Result<UserModelForTest> findWithSearch() {
         return null;
     }
     
     @GET
     @Search(fields={"name"}, withPagination = false)
-    public Result findWithSearchAnnotationAndPaginationDisabled(){
+    public Result<UserModelForTest> findWithSearchAnnotationAndPaginationDisabled(){
         return null;
     }
     
     @GET
     @Search(fields={"id", "name", "mail"})
-    public Result findWithSearchAndFields(){
+    public Result<UserModelForTest> findWithSearchAndFields(){
         return null;
     }
     
     @GET
     @Search(fields={"id", "name", "address(street)"})
-    public Result findWithSearchAndFieldsWithSubFields(){
+    public Result<UserModelForTest> findWithSearchAndFieldsWithSubFields(){
         return null;
     }
     
     @GET
     @Search(fields={"*"})
-    public Result findWithSearchAndAllFields(){
+    public Result<UserModelForTest> findWithSearchAndAllFields(){
         return null;
     }
 
     @GET
     @Cacheable(ttl = 60)
     @Search(fields={"id", "name"}, quantityPerPage = 10, withPagination = true)
-    public Result findWithCacheable() {
+    public Result<UserModelForTest> findWithCacheable() {
         return null;
     }
     

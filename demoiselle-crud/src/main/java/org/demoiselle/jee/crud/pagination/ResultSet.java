@@ -16,17 +16,17 @@ import org.demoiselle.jee.crud.AbstractDAO;
  * 
  * @author SERPRO
  */
-public class ResultSet implements Result{
+public class ResultSet<T> implements Result<T>{
 	
-	private List<?> content = List.of();
+	private List<T> content = List.of();
 	
 	@Override
-	public List<?> getContent() {
+	public List<T> getContent() {
         return content;
     }
 
     @Override
-	public void setContent(List<?> content) {
+	public void setContent(List<T> content) {
 		this.content = content == null ? List.of() : List.copyOf(content);
 	}
 

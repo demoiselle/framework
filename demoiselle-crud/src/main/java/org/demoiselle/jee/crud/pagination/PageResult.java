@@ -26,7 +26,7 @@ public record PageResult<T>(
     int pageSize,
     boolean hasNext,
     boolean hasPrevious
-) implements Result {
+) implements Result<T> {
 
     /**
      * Compact constructor — defensive copy of content.
@@ -54,12 +54,12 @@ public record PageResult<T>(
     }
 
     @Override
-    public List<?> getContent() {
+    public List<T> getContent() {
         return content;
     }
 
     @Override
-    public void setContent(List<?> content) {
+    public void setContent(List<T> content) {
         throw new UnsupportedOperationException("PageResult é imutável");
     }
 }

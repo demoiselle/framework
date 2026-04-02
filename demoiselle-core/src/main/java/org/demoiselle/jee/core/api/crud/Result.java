@@ -13,9 +13,9 @@ import java.util.List;
  * @author SERPRO
  *
  */
-public interface Result {
+public interface Result<T> {
 
-	public List<?> getContent();
-	public void setContent(List<?> content);
+	public List<T> getContent();
+	public void setContent(List<T> content);
 
 }

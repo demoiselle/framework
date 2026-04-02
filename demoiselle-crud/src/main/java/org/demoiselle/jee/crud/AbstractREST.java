@@ -83,7 +83,7 @@ public abstract class AbstractREST<T, I> implements Crud<T, I> {
     @GET
     @Transactional
     @Override
-    public Result find() {
+    public Result<T> find() {
         /*
 	     * For security reasons we opted to throw the exception below so that the developer who is 
 	     * extending this class overrides its own find() method using the @Search annotation (...) 
