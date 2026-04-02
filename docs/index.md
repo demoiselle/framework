@@ -2196,7 +2196,7 @@ demoiselle.security.jwt.clockSkewSeconds=30
 
 Sem configuração adicional, o comportamento é idêntico ao v3.
 
-### 10. Token Imutável
+#### 18. Token Imutável
 
 ```java
 // Antes: TokenImpl mutável
@@ -2208,11 +2208,11 @@ token.setType(TokenType.TOKEN);
 // Use o producer CDI para criar tokens
 ```
 
-### 11. Security Token — validate(issuer, audience)
+#### 19. Security Token — validate(issuer, audience)
 
 O método `validate(issuer, audience)` agora verifica efetivamente os parâmetros. Se seu código dependia do comportamento anterior (parâmetros ignorados), ajuste os params do `DemoiselleUser` para incluir `issuer` e `audience`.
 
-### 12. Configuração — Perfis e @DefaultValue
+#### 20. Configuração — Perfis e @DefaultValue
 
 Funcionalidades opt-in. Sem configuração de perfil, o comportamento é idêntico ao anterior:
 
@@ -2223,7 +2223,7 @@ java -Ddemoiselle.profile=dev -jar app.jar
 export DEMOISELLE_PROFILE=prod
 ```
 
-### 13. @CacheControl Tipado
+#### 21. @CacheControl Tipado
 
 ```java
 // Antes (continua funcionando)
@@ -2235,7 +2235,7 @@ export DEMOISELLE_PROFILE=prod
 
 O atributo `value()` tem precedência quando preenchido — código existente não quebra.
 
-### 14. CORS via Properties
+#### 22. CORS via Properties
 
 ```properties
 # Opt-in — sem configuração, comportamento anterior mantido
@@ -2245,7 +2245,7 @@ demoiselle.security.cors.allowedHeaders=Authorization,Content-Type
 demoiselle.security.cors.maxAge=3600
 ```
 
-### 15. Novas Anotações de Segurança
+#### 23. Novas Anotações de Segurança
 
 Aditivas — não afetam código existente:
 
@@ -2256,7 +2256,7 @@ Aditivas — não afetam código existente:
 @RequiredPermission(resource="x", op="y")  // existente — inalterada
 ```
 
-### 16. Observabilidade e OpenAPI
+#### 24. Observabilidade e OpenAPI
 
 Módulos opcionais. Basta adicionar a dependência ao `pom.xml`:
 
@@ -2272,6 +2272,33 @@ Módulos opcionais. Basta adicionar a dependência ao `pom.xml`:
 ```
 
 Sem a dependência, nenhum comportamento muda.
+
+### Parte III — Mudanças de Comportamento
+
+| Componente | Antes (v3) | Depois (v4) |
+|---|---|---|
+| `SecurityContextImpl` | `hasPermission()`/`hasRole()` → NPE sem usuário | Retorna `false` |
+| `TokenManagerImpl` | `removeUser()` → `UnsupportedOperationException` | Limpa token do request scope |
+| `KeyPairHolder` | Campos `static` | `@ApplicationScoped` CDI bean |
+| `AbstractDAO` | Mensagens hardcoded, `Exception` genérica | Message bundles, exceções específicas |
+| `CrudFilter` | Projeção limitada a 2 níveis | Profundidade arbitrária + `ReflectionCache` |
+
+### Checklist de Migração
+
+- [ ] Atualizar versão do parent POM para 4.0.0
+- [ ] Configurar Java 17 no maven-compiler-plugin
+- [ ] Substituir imports `javax.*` por `jakarta.*`
+- [ ] Atualizar `beans.xml` para namespace Jakarta EE
+- [ ] Renomear arquivos `META-INF/services/javax.*` para `jakarta.*`
+- [ ] Remover dependências DeltaSpike
+- [ ] Migrar testes de JUnit 4 para JUnit 5
+- [ ] Remover configurações WildFly Swarm
+- [ ] Migrar anotações Swagger para OpenAPI (se aplicável)
+- [ ] Atualizar Groovy para `org.apache.groovy` (se aplicável)
+- [ ] Atualizar servidor de aplicação para Jakarta EE 10
+- [ ] Ajustar accessors de records (`getError()` → `error()`)
+- [ ] Verificar código que depende de views mutáveis de coleções
+- [ ] Testar a aplicação completa
 
 ### Resumo de Breaking Changes
 
