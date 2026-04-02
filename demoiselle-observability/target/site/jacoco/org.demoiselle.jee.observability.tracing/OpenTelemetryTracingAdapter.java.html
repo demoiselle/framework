@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OpenTelemetryTracingAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demoiselle JEE Observability</a> &gt; <a href="index.source.html" class="el_package">org.demoiselle.jee.observability.tracing</a> &gt; <span class="el_source">OpenTelemetryTracingAdapter.java</span></div><h1>OpenTelemetryTracingAdapter.java</h1><pre class="source lang-java linenums">package org.demoiselle.jee.observability.tracing;
+
+import jakarta.enterprise.context.ApplicationScoped;
+
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.common.AttributeKey;
+import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.api.trace.Tracer;
+
+/**
+ * Implementação real que cria spans OpenTelemetry com atributos do módulo Demoiselle.
+ * Registrada condicionalmente pela ObservabilityExtension quando OpenTelemetry está no classpath.
+ * Respeita o sampling configurado no SDK — não força amostragem própria.
+ */
+@ApplicationScoped
+<span class="nc" id="L18">public class OpenTelemetryTracingAdapter implements TracingAdapter {</span>
+
+<span class="nc" id="L20">    private static final AttributeKey&lt;String&gt; DEMOISELLE_MODULE = AttributeKey.stringKey(&quot;demoiselle.module&quot;);</span>
+<span class="nc" id="L21">    private static final AttributeKey&lt;String&gt; DEMOISELLE_OPERATION = AttributeKey.stringKey(&quot;demoiselle.operation&quot;);</span>
+
+    private Tracer getTracer() {
+<span class="nc" id="L24">        return GlobalOpenTelemetry.getTracer(&quot;demoiselle-observability&quot;);</span>
+    }
+
+    @Override
+    public &lt;T&gt; T executeInSpan(String module, String operation, SpanCallable&lt;T&gt; callable) throws Exception {
+<span class="nc" id="L29">        Span span = getTracer()</span>
+<span class="nc" id="L30">                .spanBuilder(module + &quot;.&quot; + operation)</span>
+<span class="nc" id="L31">                .setAllAttributes(Attributes.of(</span>
+                        DEMOISELLE_MODULE, module,
+                        DEMOISELLE_OPERATION, operation
+                ))
+<span class="nc" id="L35">                .startSpan();</span>
+
+        try {
+<span class="nc" id="L38">            T result = callable.call();</span>
+<span class="nc" id="L39">            span.setStatus(StatusCode.OK);</span>
+<span class="nc" id="L40">            return result;</span>
+<span class="nc" id="L41">        } catch (Exception e) {</span>
+<span class="nc" id="L42">            span.setStatus(StatusCode.ERROR, e.getMessage());</span>
+<span class="nc" id="L43">            span.recordException(e);</span>
+<span class="nc" id="L44">            throw e;</span>
+        } finally {
+<span class="nc" id="L46">            span.end();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

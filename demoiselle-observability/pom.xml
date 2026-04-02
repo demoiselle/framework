@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>demoiselle-observability</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Demoiselle JEE Observability</name>
+    <description>
+        Módulo de observabilidade do Demoiselle Framework com suporte a métricas (MicroProfile Metrics),
+        health checks (MicroProfile Health) e tracing (OpenTelemetry) via CDI interceptors.
+    </description>
+    <url>http://demoiselle.io</url>
+
+    <parent>
+        <groupId>org.demoiselle.jee</groupId>
+        <artifactId>demoiselle-parent</artifactId>
+        <version>4.1.0-SNAPSHOT</version>
+        <relativePath>../demoiselle-parent</relativePath>
+    </parent>
+
+    <dependencies>
+
+        <!-- Demoiselle Core -->
+        <dependency>
+            <groupId>org.demoiselle.jee</groupId>
+            <artifactId>demoiselle-core</artifactId>
+        </dependency>
+
+        <!-- Jakarta EE Platform API -->
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+        </dependency>
+
+        <!-- MicroProfile Metrics API (optional) -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.metrics</groupId>
+            <artifactId>microprofile-metrics-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- MicroProfile Health API (optional) -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.health</groupId>
+            <artifactId>microprofile-health-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- OpenTelemetry API (optional) -->
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Test: jqwik for property-based testing -->
+        <dependency>
+            <groupId>net.jqwik</groupId>
+            <artifactId>jqwik</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>

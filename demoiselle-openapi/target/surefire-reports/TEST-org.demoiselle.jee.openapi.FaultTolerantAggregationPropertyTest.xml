@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.1" name="org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest" time="0.754" tests="1" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="23"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.class.path" value="D:\framework\demoiselle-openapi\target\test-classes;D:\framework\demoiselle-openapi\target\classes;D:\.m2\repository\org\demoiselle\jee\demoiselle-core\4.1.0-SNAPSHOT\demoiselle-core-4.1.0-SNAPSHOT.jar;D:\.m2\repository\org\demoiselle\jee\demoiselle-rest\4.1.0-SNAPSHOT\demoiselle-rest-4.1.0-SNAPSHOT.jar;D:\.m2\repository\org\demoiselle\jee\demoiselle-configuration\4.1.0-SNAPSHOT\demoiselle-configuration-4.1.0-SNAPSHOT.jar;D:\.m2\repository\org\apache\commons\commons-configuration2\2.10.1\commons-configuration2-2.10.1.jar;D:\.m2\repository\org\apache\commons\commons-lang3\3.14.0\commons-lang3-3.14.0.jar;D:\.m2\repository\org\apache\commons\commons-text\1.11.0\commons-text-1.11.0.jar;D:\.m2\repository\commons-logging\commons-logging\1.3.0\commons-logging-1.3.0.jar;D:\.m2\repository\commons-beanutils\commons-beanutils\1.9.4\commons-beanutils-1.9.4.jar;D:\.m2\repository\commons-collections\commons-collections\3.2.2\commons-collections-3.2.2.jar;D:\.m2\repository\org\hibernate\validator\hibernate-validator\8.0.1.Final\hibernate-validator-8.0.1.Final.jar;D:\.m2\repository\jakarta\validation\jakarta.validation-api\3.0.2\jakarta.validation-api-3.0.2.jar;D:\.m2\repository\com\fasterxml\classmate\1.5.1\classmate-1.5.1.jar;D:\.m2\repository\org\eclipse\microprofile\openapi\microprofile-openapi-api\3.1.1\microprofile-openapi-api-3.1.1.jar;D:\.m2\repository\org\demoiselle\jee\demoiselle-observability\4.1.0-SNAPSHOT\demoiselle-observability-4.1.0-SNAPSHOT.jar;D:\.m2\repository\net\jqwik\jqwik\1.9.0\jqwik-1.9.0.jar;D:\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;D:\.m2\repository\net\jqwik\jqwik-api\1.9.0\jqwik-api-1.9.0.jar;D:\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;D:\.m2\repository\org\junit\platform\junit-platform-commons\1.10.3\junit-platform-commons-1.10.3.jar;D:\.m2\repository\net\jqwik\jqwik-web\1.9.0\jqwik-web-1.9.0.jar;D:\.m2\repository\net\jqwik\jqwik-time\1.9.0\jqwik-time-1.9.0.jar;D:\.m2\repository\net\jqwik\jqwik-engine\1.9.0\jqwik-engine-1.9.0.jar;D:\.m2\repository\org\junit\platform\junit-platform-engine\1.10.3\junit-platform-engine-1.10.3.jar;D:\.m2\repository\io\smallrye\smallrye-open-api-core\3.11.0\smallrye-open-api-core-3.11.0.jar;D:\.m2\repository\org\eclipse\microprofile\config\microprofile-config-api\3.0.3\microprofile-config-api-3.0.3.jar;D:\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.17.1\jackson-core-2.17.1.jar;D:\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.17.1\jackson-databind-2.17.1.jar;D:\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.17.1\jackson-annotations-2.17.1.jar;D:\.m2\repository\com\fasterxml\jackson\dataformat\jackson-dataformat-yaml\2.17.1\jackson-dataformat-yaml-2.17.1.jar;D:\.m2\repository\org\yaml\snakeyaml\2.2\snakeyaml-2.2.jar;D:\.m2\repository\io\smallrye\jandex\3.2.0\jandex-3.2.0.jar;D:\.m2\repository\org\jboss\logging\jboss-logging\3.6.0.Final\jboss-logging-3.6.0.Final.jar;D:\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.3\junit-jupiter-5.10.3.jar;D:\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.3\junit-jupiter-api-5.10.3.jar;D:\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.3\junit-jupiter-params-5.10.3.jar;D:\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.3\junit-jupiter-engine-5.10.3.jar;D:\.m2\repository\org\hamcrest\hamcrest\2.2\hamcrest-2.2.jar;D:\.m2\repository\org\jboss\weld\weld-junit5\4.0.3.Final\weld-junit5-4.0.3.Final.jar;D:\.m2\repository\org\jboss\weld\se\weld-se-core\5.1.2.Final\weld-se-core-5.1.2.Final.jar;D:\.m2\repository\org\jboss\weld\environment\weld-environment-common\5.1.2.Final\weld-environment-common-5.1.2.Final.jar;D:\.m2\repository\org\jboss\weld\weld-core-impl\5.1.2.Final\weld-core-impl-5.1.2.Final.jar;D:\.m2\repository\org\jboss\weld\weld-api\5.0.SP3\weld-api-5.0.SP3.jar;D:\.m2\repository\org\jboss\weld\weld-spi\5.0.SP3\weld-spi-5.0.SP3.jar;D:\.m2\repository\jakarta\el\jakarta.el-api\5.0.1\jakarta.el-api-5.0.1.jar;D:\.m2\repository\org\jboss\weld\weld-lite-extension-translator\5.1.2.Final\weld-lite-extension-translator-5.1.2.Final.jar;D:\.m2\repository\jakarta\interceptor\jakarta.interceptor-api\2.1.0\jakarta.interceptor-api-2.1.0.jar;D:\.m2\repository\org\jboss\logging\jboss-logging-processor\2.2.1.Final\jboss-logging-processor-2.2.1.Final.jar;D:\.m2\repository\org\jboss\logging\jboss-logging-annotations\2.2.1.Final\jboss-logging-annotations-2.2.1.Final.jar;D:\.m2\repository\org\jboss\jdeparser\jdeparser\2.0.3.Final\jdeparser-2.0.3.Final.jar;D:\.m2\repository\jakarta\enterprise\jakarta.enterprise.cdi-api\4.0.1\jakarta.enterprise.cdi-api-4.0.1.jar;D:\.m2\repository\jakarta\enterprise\jakarta.enterprise.lang-model\4.0.1\jakarta.enterprise.lang-model-4.0.1.jar;D:\.m2\repository\jakarta\annotation\jakarta.annotation-api\2.1.0\jakarta.annotation-api-2.1.0.jar;D:\.m2\repository\jakarta\inject\jakarta.inject-api\2.0.1\jakarta.inject-api-2.0.1.jar;D:\.m2\repository\org\jboss\classfilewriter\jboss-classfilewriter\1.3.0.Final\jboss-classfilewriter-1.3.0.Final.jar;D:\.m2\repository\org\jboss\weld\weld-junit-common\4.0.3.Final\weld-junit-common-4.0.3.Final.jar;D:\.m2\repository\jakarta\persistence\jakarta.persistence-api\3.1.0\jakarta.persistence-api-3.1.0.jar;D:\.m2\repository\com\github\spotbugs\spotbugs-annotations\4.8.3\spotbugs-annotations-4.8.3.jar;D:\.m2\repository\com\google\code\findbugs\jsr305\3.0.2\jsr305-3.0.2.jar;D:\.m2\repository\org\mockito\mockito-core\5.12.0\mockito-core-5.12.0.jar;D:\.m2\repository\net\bytebuddy\byte-buddy\1.14.15\byte-buddy-1.14.15.jar;D:\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.15\byte-buddy-agent-1.14.15.jar;D:\.m2\repository\org\objenesis\objenesis\2.4\objenesis-2.4.jar;D:\.m2\repository\org\mockito\mockito-junit-jupiter\5.12.0\mockito-junit-jupiter-5.12.0.jar;"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="user.variant" value=""/>
+    <property name="java.vendor.url" value="https://java.oracle.com/"/>
+    <property name="user.timezone" value="America/Sao_Paulo"/>
+    <property name="os.name" value="Windows 11"/>
+    <property name="java.vm.specification.version" value="23"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="BR"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-23\bin"/>
+    <property name="sun.java.command" value="C:\Users\paulo\AppData\Local\Temp\surefire13568735049788581477\surefirebooter-20260402120315535_3.jar C:\Users\paulo\AppData\Local\Temp\surefire13568735049788581477 2026-04-02T12-03-15_418-jvmRun1 surefire-20260402120315535_1tmp surefire_0-20260402120315535_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="test" value="FaultTolerantAggregationPropertyTest"/>
+    <property name="surefire.test.class.path" value="D:\framework\demoiselle-openapi\target\test-classes;D:\framework\demoiselle-openapi\target\classes;D:\.m2\repository\org\demoiselle\jee\demoiselle-core\4.1.0-SNAPSHOT\demoiselle-core-4.1.0-SNAPSHOT.jar;D:\.m2\repository\org\demoiselle\jee\demoiselle-rest\4.1.0-SNAPSHOT\demoiselle-rest-4.1.0-SNAPSHOT.jar;D:\.m2\repository\org\demoiselle\jee\demoiselle-configuration\4.1.0-SNAPSHOT\demoiselle-configuration-4.1.0-SNAPSHOT.jar;D:\.m2\repository\org\apache\commons\commons-configuration2\2.10.1\commons-configuration2-2.10.1.jar;D:\.m2\repository\org\apache\commons\commons-lang3\3.14.0\commons-lang3-3.14.0.jar;D:\.m2\repository\org\apache\commons\commons-text\1.11.0\commons-text-1.11.0.jar;D:\.m2\repository\commons-logging\commons-logging\1.3.0\commons-logging-1.3.0.jar;D:\.m2\repository\commons-beanutils\commons-beanutils\1.9.4\commons-beanutils-1.9.4.jar;D:\.m2\repository\commons-collections\commons-collections\3.2.2\commons-collections-3.2.2.jar;D:\.m2\repository\org\hibernate\validator\hibernate-validator\8.0.1.Final\hibernate-validator-8.0.1.Final.jar;D:\.m2\repository\jakarta\validation\jakarta.validation-api\3.0.2\jakarta.validation-api-3.0.2.jar;D:\.m2\repository\com\fasterxml\classmate\1.5.1\classmate-1.5.1.jar;D:\.m2\repository\org\eclipse\microprofile\openapi\microprofile-openapi-api\3.1.1\microprofile-openapi-api-3.1.1.jar;D:\.m2\repository\org\demoiselle\jee\demoiselle-observability\4.1.0-SNAPSHOT\demoiselle-observability-4.1.0-SNAPSHOT.jar;D:\.m2\repository\net\jqwik\jqwik\1.9.0\jqwik-1.9.0.jar;D:\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;D:\.m2\repository\net\jqwik\jqwik-api\1.9.0\jqwik-api-1.9.0.jar;D:\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;D:\.m2\repository\org\junit\platform\junit-platform-commons\1.10.3\junit-platform-commons-1.10.3.jar;D:\.m2\repository\net\jqwik\jqwik-web\1.9.0\jqwik-web-1.9.0.jar;D:\.m2\repository\net\jqwik\jqwik-time\1.9.0\jqwik-time-1.9.0.jar;D:\.m2\repository\net\jqwik\jqwik-engine\1.9.0\jqwik-engine-1.9.0.jar;D:\.m2\repository\org\junit\platform\junit-platform-engine\1.10.3\junit-platform-engine-1.10.3.jar;D:\.m2\repository\io\smallrye\smallrye-open-api-core\3.11.0\smallrye-open-api-core-3.11.0.jar;D:\.m2\repository\org\eclipse\microprofile\config\microprofile-config-api\3.0.3\microprofile-config-api-3.0.3.jar;D:\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.17.1\jackson-core-2.17.1.jar;D:\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.17.1\jackson-databind-2.17.1.jar;D:\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.17.1\jackson-annotations-2.17.1.jar;D:\.m2\repository\com\fasterxml\jackson\dataformat\jackson-dataformat-yaml\2.17.1\jackson-dataformat-yaml-2.17.1.jar;D:\.m2\repository\org\yaml\snakeyaml\2.2\snakeyaml-2.2.jar;D:\.m2\repository\io\smallrye\jandex\3.2.0\jandex-3.2.0.jar;D:\.m2\repository\org\jboss\logging\jboss-logging\3.6.0.Final\jboss-logging-3.6.0.Final.jar;D:\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.3\junit-jupiter-5.10.3.jar;D:\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.3\junit-jupiter-api-5.10.3.jar;D:\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.3\junit-jupiter-params-5.10.3.jar;D:\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.3\junit-jupiter-engine-5.10.3.jar;D:\.m2\repository\org\hamcrest\hamcrest\2.2\hamcrest-2.2.jar;D:\.m2\repository\org\jboss\weld\weld-junit5\4.0.3.Final\weld-junit5-4.0.3.Final.jar;D:\.m2\repository\org\jboss\weld\se\weld-se-core\5.1.2.Final\weld-se-core-5.1.2.Final.jar;D:\.m2\repository\org\jboss\weld\environment\weld-environment-common\5.1.2.Final\weld-environment-common-5.1.2.Final.jar;D:\.m2\repository\org\jboss\weld\weld-core-impl\5.1.2.Final\weld-core-impl-5.1.2.Final.jar;D:\.m2\repository\org\jboss\weld\weld-api\5.0.SP3\weld-api-5.0.SP3.jar;D:\.m2\repository\org\jboss\weld\weld-spi\5.0.SP3\weld-spi-5.0.SP3.jar;D:\.m2\repository\jakarta\el\jakarta.el-api\5.0.1\jakarta.el-api-5.0.1.jar;D:\.m2\repository\org\jboss\weld\weld-lite-extension-translator\5.1.2.Final\weld-lite-extension-translator-5.1.2.Final.jar;D:\.m2\repository\jakarta\interceptor\jakarta.interceptor-api\2.1.0\jakarta.interceptor-api-2.1.0.jar;D:\.m2\repository\org\jboss\logging\jboss-logging-processor\2.2.1.Final\jboss-logging-processor-2.2.1.Final.jar;D:\.m2\repository\org\jboss\logging\jboss-logging-annotations\2.2.1.Final\jboss-logging-annotations-2.2.1.Final.jar;D:\.m2\repository\org\jboss\jdeparser\jdeparser\2.0.3.Final\jdeparser-2.0.3.Final.jar;D:\.m2\repository\jakarta\enterprise\jakarta.enterprise.cdi-api\4.0.1\jakarta.enterprise.cdi-api-4.0.1.jar;D:\.m2\repository\jakarta\enterprise\jakarta.enterprise.lang-model\4.0.1\jakarta.enterprise.lang-model-4.0.1.jar;D:\.m2\repository\jakarta\annotation\jakarta.annotation-api\2.1.0\jakarta.annotation-api-2.1.0.jar;D:\.m2\repository\jakarta\inject\jakarta.inject-api\2.0.1\jakarta.inject-api-2.0.1.jar;D:\.m2\repository\org\jboss\classfilewriter\jboss-classfilewriter\1.3.0.Final\jboss-classfilewriter-1.3.0.Final.jar;D:\.m2\repository\org\jboss\weld\weld-junit-common\4.0.3.Final\weld-junit-common-4.0.3.Final.jar;D:\.m2\repository\jakarta\persistence\jakarta.persistence-api\3.1.0\jakarta.persistence-api-3.1.0.jar;D:\.m2\repository\com\github\spotbugs\spotbugs-annotations\4.8.3\spotbugs-annotations-4.8.3.jar;D:\.m2\repository\com\google\code\findbugs\jsr305\3.0.2\jsr305-3.0.2.jar;D:\.m2\repository\org\mockito\mockito-core\5.12.0\mockito-core-5.12.0.jar;D:\.m2\repository\net\bytebuddy\byte-buddy\1.14.15\byte-buddy-1.14.15.jar;D:\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.15\byte-buddy-agent-1.14.15.jar;D:\.m2\repository\org\objenesis\objenesis\2.4\objenesis-2.4.jar;D:\.m2\repository\org\mockito\mockito-junit-jupiter\5.12.0\mockito-junit-jupiter-5.12.0.jar;"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="C:\Users\paulo"/>
+    <property name="user.language" value="pt"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="surefire.useFile" value="false"/>
+    <property name="java.version.date" value="2024-10-15"/>
+    <property name="java.home" value="C:\Program Files\Java\jdk-23"/>
+    <property name="file.separator" value="\"/>
+    <property name="basedir" value="D:\framework\demoiselle-openapi"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="surefire.real.class.path" value="C:\Users\paulo\AppData\Local\Temp\surefire13568735049788581477\surefirebooter-20260402120315535_3.jar"/>
+    <property name="user.script" value=""/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="23.0.1+11-39"/>
+    <property name="user.name" value="paulo"/>
+    <property name="stdout.encoding" value="Cp1252"/>
+    <property name="path.separator" value=";"/>
+    <property name="os.version" value="10.0"/>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="localRepository" value="D:\.m2\repository"/>
+    <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
+    <property name="java.io.tmpdir" value="C:\Users\paulo\AppData\Local\Temp\"/>
+    <property name="java.version" value="23.0.1"/>
+    <property name="user.dir" value="D:\framework\demoiselle-openapi"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="native.encoding" value="Cp1252"/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk-23\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\PowerShell\7;C:\Program Files\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Users\paulo\AppData\Roaming\nvm;C:\Users\Public\nodejs;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Users\paulo\AppData\Local\flutter\bin;C:\Users\paulo\AppData\Local\Android\sdk\tools;C:\Program Files\NVIDIA Corporation\NVIDIA app\NvDLISR;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\PowerShell\7\;C:\Users\paulo\AppData\Local\Programs\Python\Python310\Scripts\;C:\Users\paulo\AppData\Local\Programs\Python\Python310\;C:\Users\paulo\AppData\Local\Microsoft\WindowsApps;C:\Users\paulo\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\paulo\AppData\Roaming\nvm;C:\Users\Public\nodejs;C:\Users\paulo\Downloads\flutter\bin;C:\Users\paulo\flutter\flutter\bin;C:\Users\paulo\flutter\bin;C:\Users\paulo\.dotnet\tools;C:\Users\paulo\AppData\Local\Pub\Cache\bin;;C:\Users\paulo\AppData\Local\Programs\Ollama;C:\Users\paulo\AppData\Local\Programs\Antigravity\bin;C:\Users\paulo\AppData\Local\Programs\Kiro\bin;C:\Program Files\NetBeans-21\netbeans\java\maven\bin\mvn.cmd;C:\Program Files\NetBeans-21\netbeans\java\maven\bin;C:\Program Files\Apache NetBeans\java\maven\bin;."/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="Cp1252"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="java.vm.version" value="23.0.1+11-39"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="67.0"/>
+  </properties>
+  <testcase name="healthyContributorPathsPresentDespiteFaultyOnes" classname="org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest" time="0.731">
+    <system-out><![CDATA[timestamp = 2026-04-02T12:03:17.295496600, [cross-cutting-improvements, property-5-fault-tolerant-aggregation] FaultTolerantAggregationPropertyTest:healthyContributorPathsPresentDespiteFaultyOnes = 
+                              |-----------------------jqwik-----------------------
+tries = 100                   | # of calls to property
+checks = 100                  | # of not rejected calls
+generation = RANDOMIZED       | parameters are randomly generated
+after-failure = SAMPLE_FIRST  | try previously failed sample, then previous seed
+when-fixed-seed = ALLOW       | fixing the random seed is allowed
+edge-cases#mode = MIXIN       | edge cases are mixed in
+edge-cases#total = 20         | # of all combined edge cases
+edge-cases#tried = 12         | # of edge cases tried in current run
+seed = -7880264085744525252   | random seed to reproduce generated values
+
+
+]]></system-out>
+    <system-err><![CDATA[abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #4
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #4
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #4
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #4
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #4
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #4
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #4
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #4
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #4
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #4
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #4
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #3
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #2
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #1
+abr. 02, 2026 12:03:17 PM org.demoiselle.jee.openapi.FaultTolerantAggregationPropertyTest aggregateWithFaultTolerance
+WARNING: Error processing OpenAPIContributor: Simulated failure from contributor #0
+]]></system-err>
+  </testcase>
+</testsuite>

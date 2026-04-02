@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ObservabilityExtension.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demoiselle JEE Observability</a> &gt; <a href="index.source.html" class="el_package">org.demoiselle.jee.observability</a> &gt; <span class="el_source">ObservabilityExtension.java</span></div><h1>ObservabilityExtension.java</h1><pre class="source lang-java linenums">package org.demoiselle.jee.observability;
+
+import java.util.logging.Logger;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Extension;
+
+import org.demoiselle.jee.observability.metrics.MetricsAdapter;
+import org.demoiselle.jee.observability.metrics.NoopMetricsAdapter;
+import org.demoiselle.jee.observability.tracing.NoopTracingAdapter;
+import org.demoiselle.jee.observability.tracing.TracingAdapter;
+
+/**
+ * CDI Extension that detects the presence of MicroProfile Metrics, MicroProfile Health
+ * and OpenTelemetry on the classpath and conditionally registers the appropriate adapter beans.
+ * &lt;p&gt;
+ * When an optional API is not available, a noop adapter is registered so that interceptors
+ * degrade gracefully without errors. An informational log message is emitted for each
+ * unavailable API.
+ * &lt;p&gt;
+ * Registered via {@code META-INF/services/jakarta.enterprise.inject.spi.Extension}.
+ */
+<span class="nc" id="L26">public class ObservabilityExtension implements Extension {</span>
+
+<span class="nc" id="L28">    private static final Logger LOG = Logger.getLogger(ObservabilityExtension.class.getName());</span>
+
+    private boolean metricsAvailable;
+    private boolean healthAvailable;
+    private boolean otelAvailable;
+
+    /**
+     * Observes {@link AfterBeanDiscovery} to detect optional APIs on the classpath
+     * and register the appropriate CDI beans.
+     *
+     * @param abd the AfterBeanDiscovery event
+     * @param bm  the BeanManager
+     */
+    void detectApis(@Observes AfterBeanDiscovery abd, BeanManager bm) {
+<span class="nc" id="L42">        ClassLoader cl = Thread.currentThread().getContextClassLoader();</span>
+
+<span class="nc" id="L44">        metricsAvailable = isClassAvailable(&quot;org.eclipse.microprofile.metrics.MetricRegistry&quot;, cl);</span>
+<span class="nc" id="L45">        healthAvailable = isClassAvailable(&quot;org.eclipse.microprofile.health.HealthCheck&quot;, cl);</span>
+<span class="nc" id="L46">        otelAvailable = isClassAvailable(&quot;io.opentelemetry.api.trace.Tracer&quot;, cl);</span>
+
+<span class="nc" id="L48">        registerMetricsAdapter(abd);</span>
+<span class="nc" id="L49">        registerTracingAdapter(abd);</span>
+<span class="nc" id="L50">        registerHealthCheckProducer(abd);</span>
+<span class="nc" id="L51">    }</span>
+
+    private void registerMetricsAdapter(AfterBeanDiscovery abd) {
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (metricsAvailable) {</span>
+<span class="nc" id="L55">            LOG.info(&quot;MicroProfile Metrics detected — registering MicroProfileMetricsAdapter&quot;);</span>
+            try {
+<span class="nc" id="L57">                Class&lt;?&gt; adapterClass = Class.forName(</span>
+                        &quot;org.demoiselle.jee.observability.metrics.MicroProfileMetricsAdapter&quot;,
+                        true,
+<span class="nc" id="L60">                        Thread.currentThread().getContextClassLoader());</span>
+<span class="nc" id="L61">                abd.addBean()</span>
+<span class="nc" id="L62">                        .beanClass(adapterClass)</span>
+<span class="nc" id="L63">                        .types(MetricsAdapter.class, adapterClass, Object.class)</span>
+<span class="nc" id="L64">                        .scope(ApplicationScoped.class)</span>
+<span class="nc" id="L65">                        .createWith(ctx -&gt; {</span>
+                            try {
+<span class="nc" id="L67">                                return adapterClass.getDeclaredConstructor().newInstance();</span>
+<span class="nc" id="L68">                            } catch (Exception e) {</span>
+<span class="nc" id="L69">                                throw new RuntimeException(&quot;Failed to create MicroProfileMetricsAdapter&quot;, e);</span>
+                            }
+                        });
+<span class="nc" id="L72">            } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L73">                LOG.warning(&quot;MicroProfileMetricsAdapter class not found — falling back to NoopMetricsAdapter&quot;);</span>
+<span class="nc" id="L74">                registerNoopMetrics(abd);</span>
+<span class="nc" id="L75">            }</span>
+        } else {
+<span class="nc" id="L77">            LOG.info(&quot;MicroProfile Metrics não disponível — métricas desativadas&quot;);</span>
+<span class="nc" id="L78">            registerNoopMetrics(abd);</span>
+        }
+<span class="nc" id="L80">    }</span>
+
+    private void registerNoopMetrics(AfterBeanDiscovery abd) {
+<span class="nc" id="L83">        abd.addBean()</span>
+<span class="nc" id="L84">                .beanClass(NoopMetricsAdapter.class)</span>
+<span class="nc" id="L85">                .types(MetricsAdapter.class, NoopMetricsAdapter.class, Object.class)</span>
+<span class="nc" id="L86">                .scope(ApplicationScoped.class)</span>
+<span class="nc" id="L87">                .createWith(ctx -&gt; new NoopMetricsAdapter());</span>
+<span class="nc" id="L88">    }</span>
+
+    private void registerTracingAdapter(AfterBeanDiscovery abd) {
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (otelAvailable) {</span>
+<span class="nc" id="L92">            LOG.info(&quot;OpenTelemetry detected — registering OpenTelemetryTracingAdapter&quot;);</span>
+            try {
+<span class="nc" id="L94">                Class&lt;?&gt; adapterClass = Class.forName(</span>
+                        &quot;org.demoiselle.jee.observability.tracing.OpenTelemetryTracingAdapter&quot;,
+                        true,
+<span class="nc" id="L97">                        Thread.currentThread().getContextClassLoader());</span>
+<span class="nc" id="L98">                abd.addBean()</span>
+<span class="nc" id="L99">                        .beanClass(adapterClass)</span>
+<span class="nc" id="L100">                        .types(TracingAdapter.class, adapterClass, Object.class)</span>
+<span class="nc" id="L101">                        .scope(ApplicationScoped.class)</span>
+<span class="nc" id="L102">                        .createWith(ctx -&gt; {</span>
+                            try {
+<span class="nc" id="L104">                                return adapterClass.getDeclaredConstructor().newInstance();</span>
+<span class="nc" id="L105">                            } catch (Exception e) {</span>
+<span class="nc" id="L106">                                throw new RuntimeException(&quot;Failed to create OpenTelemetryTracingAdapter&quot;, e);</span>
+                            }
+                        });
+<span class="nc" id="L109">            } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L110">                LOG.warning(&quot;OpenTelemetryTracingAdapter class not found — falling back to NoopTracingAdapter&quot;);</span>
+<span class="nc" id="L111">                registerNoopTracing(abd);</span>
+<span class="nc" id="L112">            }</span>
+        } else {
+<span class="nc" id="L114">            LOG.info(&quot;OpenTelemetry não disponível — tracing desativado&quot;);</span>
+<span class="nc" id="L115">            registerNoopTracing(abd);</span>
+        }
+<span class="nc" id="L117">    }</span>
+
+    private void registerNoopTracing(AfterBeanDiscovery abd) {
+<span class="nc" id="L120">        abd.addBean()</span>
+<span class="nc" id="L121">                .beanClass(NoopTracingAdapter.class)</span>
+<span class="nc" id="L122">                .types(TracingAdapter.class, NoopTracingAdapter.class, Object.class)</span>
+<span class="nc" id="L123">                .scope(ApplicationScoped.class)</span>
+<span class="nc" id="L124">                .createWith(ctx -&gt; new NoopTracingAdapter());</span>
+<span class="nc" id="L125">    }</span>
+
+    private void registerHealthCheckProducer(AfterBeanDiscovery abd) {
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        if (healthAvailable) {</span>
+<span class="nc" id="L129">            LOG.info(&quot;MicroProfile Health detected — registering HealthCheckProducer&quot;);</span>
+            try {
+<span class="nc" id="L131">                Class&lt;?&gt; producerClass = Class.forName(</span>
+                        &quot;org.demoiselle.jee.observability.health.HealthCheckProducer&quot;,
+                        true,
+<span class="nc" id="L134">                        Thread.currentThread().getContextClassLoader());</span>
+<span class="nc" id="L135">                abd.addBean()</span>
+<span class="nc" id="L136">                        .beanClass(producerClass)</span>
+<span class="nc" id="L137">                        .types(producerClass, Object.class)</span>
+<span class="nc" id="L138">                        .scope(ApplicationScoped.class)</span>
+<span class="nc" id="L139">                        .createWith(ctx -&gt; {</span>
+                            try {
+<span class="nc" id="L141">                                return producerClass.getDeclaredConstructor().newInstance();</span>
+<span class="nc" id="L142">                            } catch (Exception e) {</span>
+<span class="nc" id="L143">                                throw new RuntimeException(&quot;Failed to create HealthCheckProducer&quot;, e);</span>
+                            }
+                        });
+<span class="nc" id="L146">            } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L147">                LOG.warning(&quot;HealthCheckProducer class not found — health checks will not be registered&quot;);</span>
+<span class="nc" id="L148">            }</span>
+        } else {
+<span class="nc" id="L150">            LOG.info(&quot;MicroProfile Health não disponível — health checks desativados&quot;);</span>
+        }
+<span class="nc" id="L152">    }</span>
+
+    private boolean isClassAvailable(String className, ClassLoader cl) {
+        try {
+<span class="nc" id="L156">            Class.forName(className, false, cl);</span>
+<span class="nc" id="L157">            return true;</span>
+<span class="nc" id="L158">        } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L159">            return false;</span>
+        }
+    }
+
+    /**
+     * @return {@code true} if MicroProfile Metrics API is available on the classpath
+     */
+    public boolean isMetricsAvailable() {
+<span class="nc" id="L167">        return metricsAvailable;</span>
+    }
+
+    /**
+     * @return {@code true} if MicroProfile Health API is available on the classpath
+     */
+    public boolean isHealthAvailable() {
+<span class="nc" id="L174">        return healthAvailable;</span>
+    }
+
+    /**
+     * @return {@code true} if OpenTelemetry API is available on the classpath
+     */
+    public boolean isOtelAvailable() {
+<span class="nc" id="L181">        return otelAvailable;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

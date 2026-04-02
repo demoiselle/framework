@@ -1,23 +1,114 @@
 name: CI
+
 on:
   push:
-    branches: [master, main]
+    branches: [main, master]
   pull_request:
-    branches: [master, main]
+    branches: [main, master]
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java-version: ['17', '21']
+
+    name: Build (Java ${{ matrix.java-version }})
+
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build and Test
+        run: mvn clean verify -B
+
+      - name: Upload JaCoCo Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report-java-${{ matrix.java-version }}
+          path: '**/target/site/jacoco/'
+
+  coverage-summary:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    name: Coverage Summary
+
+    steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
-      - name: Build and Test
-        run: mvn clean install -Pjacoco
-      - name: Upload JaCoCo Report
-        uses: actions/upload-artifact@v4
+
+      - name: Generate Aggregate Report
+        run: mvn verify jacoco:report-aggregate -B
+
+      - name: Post Coverage Summary
+        uses: actions/github-script@v7
         with:
-          name: jacoco-report
-          path: '**/target/site/jacoco/'
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const glob = require('@actions/glob');
+
+            let summary = '## 📊 JaCoCo Coverage Summary\n\n';
+            summary += '| Module | Instruction | Branch | Line | Method |\n';
+            summary += '|--------|------------|--------|------|--------|\n';
+
+            const globber = await glob.create('**/target/site/jacoco/jacoco.csv');
+            const files = await globber.glob();
+
+            for (const file of files) {
+              const content = fs.readFileSync(file, 'utf8');
+              const lines = content.trim().split('\n');
+              if (lines.length < 2) continue;
+
+              const modulePath = path.relative(process.env.GITHUB_WORKSPACE, file);
+              const moduleName = modulePath.split(path.sep)[0] || 'root';
+
+              let totalInsMissed = 0, totalInsCovered = 0;
+              let totalBrMissed = 0, totalBrCovered = 0;
+              let totalLineMissed = 0, totalLineCovered = 0;
+              let totalMethodMissed = 0, totalMethodCovered = 0;
+
+              for (let i = 1; i < lines.length; i++) {
+                const cols = lines[i].split(',');
+                if (cols.length < 12) continue;
+                totalInsMissed += parseInt(cols[3]) || 0;
+                totalInsCovered += parseInt(cols[4]) || 0;
+                totalBrMissed += parseInt(cols[5]) || 0;
+                totalBrCovered += parseInt(cols[6]) || 0;
+                totalLineMissed += parseInt(cols[7]) || 0;
+                totalLineCovered += parseInt(cols[8]) || 0;
+                totalMethodMissed += parseInt(cols[11]) || 0;
+                totalMethodCovered += parseInt(cols[12]) || 0;
+              }
+
+              const pct = (covered, missed) => {
+                const total = covered + missed;
+                return total === 0 ? 'N/A' : `${((covered / total) * 100).toFixed(1)}%`;
+              };
+
+              summary += `| ${moduleName} `;
+              summary += `| ${pct(totalInsCovered, totalInsMissed)} `;
+              summary += `| ${pct(totalBrCovered, totalBrMissed)} `;
+              summary += `| ${pct(totalLineCovered, totalLineMissed)} `;
+              summary += `| ${pct(totalMethodCovered, totalMethodMissed)} |\n`;
+            }
+
+            if (files.length === 0) {
+              summary += '| _No coverage data found_ | - | - | - | - |\n';
+            }
+
+            await core.summary.addRaw(summary).write();

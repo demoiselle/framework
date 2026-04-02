@@ -1,0 +1,9 @@
+org\demoiselle\jee\observability\tracing\TracedSpanAttributesPropertyTest$RecordingTracingAdapter.class
+org\demoiselle\jee\observability\health\TestHealthCheckResponseProvider$TestResponseBuilder.class
+org\demoiselle\jee\observability\health\TestHealthCheckResponseProvider.class
+org\demoiselle\jee\observability\metrics\NoopAdapterSafetyPropertyTest.class
+org\demoiselle\jee\observability\tracing\TracedSpanAttributesPropertyTest.class
+org\demoiselle\jee\observability\metrics\CountedMonotonicPropertyTest$InMemoryMetricsAdapter.class
+org\demoiselle\jee\observability\metrics\CountedMonotonicPropertyTest.class
+org\demoiselle\jee\observability\health\HealthCheckProducerTest.class
+org\demoiselle\jee\observability\health\TestHealthCheckResponseProvider$TestHealthCheckResponse.class

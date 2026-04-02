@@ -1,0 +1,9 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Demoiselle JEE Observability,org.demoiselle.jee.observability.tracing,OpenTelemetryTracingAdapter,53,0,0,0,16,0,4,0,4,0
+Demoiselle JEE Observability,org.demoiselle.jee.observability.tracing,NoopTracingAdapter,6,0,0,0,2,0,2,0,2,0
+Demoiselle JEE Observability,org.demoiselle.jee.observability.metrics,NoopMetricsAdapter,0,6,0,0,0,3,0,3,0,3
+Demoiselle JEE Observability,org.demoiselle.jee.observability.metrics,MicroProfileMetricsAdapter,19,0,0,0,6,0,3,0,3,0
+Demoiselle JEE Observability,org.demoiselle.jee.observability.interceptor,CountedInterceptor,47,0,4,0,10,0,5,0,3,0
+Demoiselle JEE Observability,org.demoiselle.jee.observability.interceptor,TracedInterceptor,58,0,6,0,12,0,6,0,3,0
+Demoiselle JEE Observability,org.demoiselle.jee.observability.health,HealthCheckProducer,136,62,19,1,28,26,11,10,1,10
+Demoiselle JEE Observability,org.demoiselle.jee.observability,ObservabilityExtension,310,0,6,0,84,0,20,0,17,0

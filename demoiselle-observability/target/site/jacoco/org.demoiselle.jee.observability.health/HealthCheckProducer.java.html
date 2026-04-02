@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HealthCheckProducer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demoiselle JEE Observability</a> &gt; <a href="index.source.html" class="el_package">org.demoiselle.jee.observability.health</a> &gt; <span class="el_source">HealthCheckProducer.java</span></div><h1>HealthCheckProducer.java</h1><pre class="source lang-java linenums">package org.demoiselle.jee.observability.health;
+
+import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.CDI;
+
+import org.eclipse.microprofile.health.HealthCheck;
+import org.eclipse.microprofile.health.HealthCheckResponse;
+import org.eclipse.microprofile.health.Liveness;
+import org.eclipse.microprofile.health.Readiness;
+
+/**
+ * CDI producer for MicroProfile Health checks.
+ * &lt;p&gt;
+ * Produces a liveness check that verifies the CDI container is active,
+ * a readiness check that verifies the configuration module has been loaded,
+ * and a readiness check that verifies JWT cryptographic keys are available
+ * when {@code demoiselle-security-jwt} is on the classpath.
+ * &lt;p&gt;
+ * This producer is registered conditionally by {@code ObservabilityExtension}
+ * only when MicroProfile Health is available on the classpath.
+ */
+@ApplicationScoped
+<span class="fc" id="L28">public class HealthCheckProducer {</span>
+
+    /**
+     * Produces a liveness health check named &quot;demoiselle-cdi&quot;.
+     * If this code executes, the CDI container is active — so the check always returns UP.
+     *
+     * @return a {@link HealthCheck} that reports CDI container liveness
+     */
+    @Produces
+    @Liveness
+    public HealthCheck cdiLivenessCheck() {
+<span class="fc" id="L39">        return () -&gt; HealthCheckResponse.named(&quot;demoiselle-cdi&quot;)</span>
+<span class="fc" id="L40">                .status(true)</span>
+<span class="fc" id="L41">                .build();</span>
+    }
+
+    /**
+     * Produces a readiness health check named &quot;demoiselle-configuration&quot;.
+     * Verifies that the Demoiselle configuration module has been loaded
+     * by checking whether its CDI bean is resolvable in the container.
+     *
+     * @return a {@link HealthCheck} that reports configuration readiness
+     */
+    @Produces
+    @Readiness
+    public HealthCheck configurationReadinessCheck() {
+<span class="fc" id="L54">        return () -&gt; {</span>
+<span class="fc" id="L55">            boolean configLoaded = isConfigurationLoaded();</span>
+<span class="fc" id="L56">            return HealthCheckResponse.named(&quot;demoiselle-configuration&quot;)</span>
+<span class="fc" id="L57">                    .status(configLoaded)</span>
+<span class="fc" id="L58">                    .withData(&quot;module&quot;, &quot;demoiselle-configuration&quot;)</span>
+<span class="fc" id="L59">                    .build();</span>
+        };
+    }
+
+    /**
+     * Produces a readiness health check named &quot;demoiselle-security-jwt-keys&quot;.
+     * When {@code demoiselle-security-jwt} is on the classpath, verifies that
+     * the JWT cryptographic keys (public key at minimum) are available.
+     * When the module is not on the classpath, reports UP with a note.
+     *
+     * @return a {@link HealthCheck} that reports JWT key readiness
+     */
+    @Produces
+    @Readiness
+    public HealthCheck jwtKeysReadinessCheck() {
+<span class="fc" id="L74">        return () -&gt; {</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">            if (!isSecurityJwtOnClasspath()) {</span>
+<span class="fc" id="L76">                return HealthCheckResponse.named(&quot;demoiselle-security-jwt-keys&quot;)</span>
+<span class="fc" id="L77">                        .status(true)</span>
+<span class="fc" id="L78">                        .withData(&quot;module&quot;, &quot;demoiselle-security-jwt&quot;)</span>
+<span class="fc" id="L79">                        .withData(&quot;reason&quot;, &quot;module not on classpath&quot;)</span>
+<span class="fc" id="L80">                        .build();</span>
+            }
+<span class="nc" id="L82">            return checkJwtKeysAvailability();</span>
+        };
+    }
+
+    /**
+     * Checks whether the Demoiselle configuration module is available and loaded.
+     * Uses {@code Class.forName} to avoid a hard compile-time dependency on
+     * {@code demoiselle-configuration}, then verifies the bean is resolvable via CDI.
+     */
+    private boolean isConfigurationLoaded() {
+        try {
+<span class="pc" id="L93">            Class&lt;?&gt; loaderClass = Class.forName(</span>
+                    &quot;org.demoiselle.jee.configuration.ConfigurationLoader&quot;,
+                    false,
+<span class="fc" id="L96">                    Thread.currentThread().getContextClassLoader());</span>
+            // If the class is on the classpath, check that CDI can resolve it
+<span class="nc bnc" id="L98" title="All 2 branches missed.">            return !CDI.current().select(loaderClass).isUnsatisfied();</span>
+<span class="fc" id="L99">        } catch (ClassNotFoundException e) {</span>
+            // Configuration module not on classpath — report as not ready
+<span class="fc" id="L101">            return false;</span>
+<span class="nc" id="L102">        } catch (IllegalStateException e) {</span>
+            // CDI container not running
+<span class="nc" id="L104">            return false;</span>
+        }
+    }
+
+    /**
+     * Checks whether {@code demoiselle-security-jwt} is on the classpath
+     * by probing for the {@code DemoiselleSecurityJWTConfig} class.
+     */
+    static boolean isSecurityJwtOnClasspath() {
+        try {
+<span class="pc" id="L114">            Class.forName(</span>
+                    &quot;org.demoiselle.jee.security.jwt.impl.DemoiselleSecurityJWTConfig&quot;,
+                    false,
+<span class="fc" id="L117">                    Thread.currentThread().getContextClassLoader());</span>
+<span class="nc" id="L118">            return true;</span>
+<span class="fc" id="L119">        } catch (ClassNotFoundException e) {</span>
+<span class="fc" id="L120">            return false;</span>
+        }
+    }
+
+    /**
+     * Verifies JWT key availability by resolving the config bean via CDI
+     * and checking that at least the public key is configured.
+     * Uses reflection to avoid a compile-time dependency on {@code demoiselle-security-jwt}.
+     */
+    private HealthCheckResponse checkJwtKeysAvailability() {
+        try {
+<span class="nc" id="L131">            Class&lt;?&gt; configClass = Class.forName(</span>
+                    &quot;org.demoiselle.jee.security.jwt.impl.DemoiselleSecurityJWTConfig&quot;,
+                    false,
+<span class="nc" id="L134">                    Thread.currentThread().getContextClassLoader());</span>
+
+<span class="nc" id="L136">            Object configBean = CDI.current().select(configClass).get();</span>
+
+<span class="nc" id="L138">            Method getPublicKey = configClass.getMethod(&quot;getPublicKey&quot;);</span>
+<span class="nc" id="L139">            Method getType = configClass.getMethod(&quot;getType&quot;);</span>
+
+<span class="nc" id="L141">            Object publicKey = getPublicKey.invoke(configBean);</span>
+<span class="nc" id="L142">            Object type = getType.invoke(configBean);</span>
+
+<span class="nc bnc" id="L144" title="All 4 branches missed.">            boolean hasPublicKey = publicKey != null &amp;&amp; !publicKey.toString().trim().isEmpty();</span>
+<span class="nc bnc" id="L145" title="All 4 branches missed.">            boolean hasType = type != null &amp;&amp; !type.toString().trim().isEmpty();</span>
+<span class="nc bnc" id="L146" title="All 4 branches missed.">            boolean keysAvailable = hasType &amp;&amp; hasPublicKey;</span>
+
+<span class="nc" id="L148">            return HealthCheckResponse.named(&quot;demoiselle-security-jwt-keys&quot;)</span>
+<span class="nc" id="L149">                    .status(keysAvailable)</span>
+<span class="nc" id="L150">                    .withData(&quot;module&quot;, &quot;demoiselle-security-jwt&quot;)</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">                    .withData(&quot;type&quot;, hasType ? type.toString() : &quot;not configured&quot;)</span>
+<span class="nc" id="L152">                    .withData(&quot;publicKeyConfigured&quot;, hasPublicKey)</span>
+<span class="nc" id="L153">                    .build();</span>
+
+<span class="nc" id="L155">        } catch (Exception e) {</span>
+<span class="nc" id="L156">            LOG.log(Level.WARNING, &quot;Failed to verify JWT key availability&quot;, e);</span>
+<span class="nc" id="L157">            return HealthCheckResponse.named(&quot;demoiselle-security-jwt-keys&quot;)</span>
+<span class="nc" id="L158">                    .status(false)</span>
+<span class="nc" id="L159">                    .withData(&quot;module&quot;, &quot;demoiselle-security-jwt&quot;)</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">                    .withData(&quot;error&quot;, e.getMessage() != null ? e.getMessage() : e.getClass().getName())</span>
+<span class="nc" id="L161">                    .build();</span>
+        }
+    }
+
+<span class="fc" id="L165">    private static final Logger LOG = Logger.getLogger(HealthCheckProducer.class.getName());</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
