@@ -16,3 +16,4 @@
 /.idea
 **.iml
 target/
+.jqwik-database

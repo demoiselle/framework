@@ -5,7 +5,19 @@ title: Demoiselle Framework v4 — Modernização Jakarta EE 10
 
 # Demoiselle Framework v4 — Modernização Jakarta EE 10
 
-O Demoiselle Framework v4 foi modernizado para aproveitar plenamente os recursos do **Jakarta EE 10**, **CDI 4.0** e **Java 17**. Esta documentação cobre todas as funcionalidades introduzidas, organizadas em 17 áreas de implementação.
+O Demoiselle Framework v4 foi modernizado para aproveitar plenamente os recursos do **Jakarta EE 10**, **CDI 4.0** e **Java 17**. Esta documentação cobre todas as funcionalidades introduzidas, organizadas em 30 áreas de implementação.
+
+## 🌐 Conformidade com Padrões IETF
+
+O framework v4 implementa conformidade com três RFCs, garantindo interoperabilidade com qualquer cliente HTTP que siga os padrões:
+
+| RFC | Padrão | Módulo | Seção |
+|:---:|---|---|:---:|
+| [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) | Problem Details for HTTP APIs | rest | [P18](#p18--conformidade-rfc-9457--problem-details-for-http-apis) |
+| [RFC 8288](https://www.rfc-editor.org/rfc/rfc8288) | Web Linking (paginação) | crud | [P19](#p19--rfc-8288--header-link-para-paginação) |
+| [RFC 6585](https://www.rfc-editor.org/rfc/rfc6585) / [RFC 7231](https://www.rfc-editor.org/rfc/rfc7231) | HTTP 429 + Retry-After | security | [P20](#p20--rfc-65857231--rate-limiting-com-http-429) |
+
+Respostas de erro padronizadas (`application/problem+json`), headers `Link` para navegação de páginas, e respostas `429 Too Many Requests` com `Retry-After` — tudo configurável e retrocompatível com o formato legado.
 
 ## Visão Geral das Mudanças
 
@@ -28,6 +40,19 @@ O Demoiselle Framework v4 foi modernizado para aproveitar plenamente os recursos
 | P15 | [Módulo OpenAPI](#p15--módulo-openapi-demoiselle-openapi) | openapi |
 | P16 | [CI/CD com GitHub Actions](#p16--cicd-com-github-actions) | ci/cd |
 | P17 | [Testes de Integração entre Módulos](#p17--módulo-de-testes-de-integração-demoiselle-integration-tests) | integration-tests |
+| P18 | [🌐 RFC 9457 — Problem Details](#p18--conformidade-rfc-9457--problem-details-for-http-apis) | rest |
+| P19 | [🌐 RFC 8288 — Header Link para Paginação](#p19--rfc-8288--header-link-para-paginação) | crud |
+| P20 | [🌐 RFC 6585/7231 — Rate Limiting HTTP 429](#p20--rfc-65857231--rate-limiting-com-http-429) | security |
+| P21 | [JWT Refresh Tokens e Blacklist](#p21--jwt-refresh-tokens-e-blacklist) | security-jwt |
+| P22 | [JWT Key Rotation e Múltiplos Algoritmos](#p22--jwt-key-rotation-e-múltiplos-algoritmos) | security-jwt |
+| P23 | [Claims Customizados via ClaimsEnricher](#p23--claims-customizados-via-claimsenricher) | security-jwt |
+| P24 | [Eventos de Segurança via CDI](#p24--eventos-de-segurança-via-cdi) | security |
+| P25 | [@RequiredAnyRole e @RequiredAllPermissions](#p25--requiredanyrole-e-requiredallpermissions) | security |
+| P26 | [Configuração CORS via Properties](#p26--configuração-cors-via-properties) | security |
+| P27 | [@CacheControl com Atributos Tipados](#p27--cachecontrol-com-atributos-tipados) | rest |
+| P28 | [Perfis de Configuração e @DefaultValue](#p28--perfis-de-configuração-e-defaultvalue) | configuration |
+| P29 | [Core API: Result Tipado e Conveniência](#p29--core-api-result-tipado-e-métodos-de-conveniência) | core |
+| P30 | [Security Token: Correções e Modernização](#p30--security-token-correções-e-modernização) | security-token |
 
 ---
 
@@ -1371,9 +1396,459 @@ Quando o módulo não está no classpath, os testes são ignorados automaticamen
 
 ---
 
+## P18 — Conformidade RFC 9457 — Problem Details for HTTP APIs
+
+> 🌐 **Padrão IETF** — [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) — Respostas de erro padronizadas com `application/problem+json`
+
+Respostas de erro padronizadas conforme [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) com media type `application/problem+json`.
+
+### Ativação
+
+```properties
+# demoiselle.properties
+demoiselle.rest.errorFormat=rfc9457
+```
+
+Valor padrão: `"legacy"` — formato anterior mantido para retrocompatibilidade. Qualquer valor diferente de `"rfc9457"` é normalizado para `"legacy"`.
+
+### Formato da Resposta
+
+```json
+{
+  "type": "about:blank",
+  "title": "Not Found",
+  "status": 404,
+  "detail": "Recurso /api/items/42 não encontrado",
+  "instance": "/api/items/42"
+}
+```
+
+Campos `null` são omitidos do JSON. Campos de extensão aparecem no nível raiz:
+
+```json
+{
+  "type": "urn:demoiselle:validation-error",
+  "title": "Validation Failed",
+  "status": 412,
+  "instance": "/api/users",
+  "violations": [
+    {"field": "User.nome", "message": "não pode ser vazio"}
+  ]
+}
+```
+
+### Mapeamento de Exceções
+
+| Exceção | Status | Title |
+|---|---|---|
+| `ConstraintViolationException` | 412 | Validation Failed |
+| `SQLException` | 500 | Database Error |
+| `DemoiselleRestException` | statusCode da exceção | Primeira mensagem |
+| `InvalidFormatException` | 400 | Malformed Input |
+| `ClientErrorException` | status do cliente | HTTP Error |
+| Exceção genérica | 500 | Internal Server Error |
+
+### About:blank Automático (RFC 9457 §4.2)
+
+Quando `type` é `"about:blank"` e `title` é `null`, o framework preenche `title` automaticamente com a frase-razão HTTP:
+
+```java
+ProblemDetail pd = new ProblemDetail();
+pd.setStatus(404);
+pd.applyAboutBlankDefaults();
+pd.getTitle(); // → "Not Found"
+```
+
+### Mapeamento DemoiselleRestExceptionMessage → ProblemDetail
+
+```
+DemoiselleRestExceptionMessage          ProblemDetail
+├── error ─────────────────────────→ title
+├── errorDescription ──────────────→ detail
+└── errorLink (não vazio) ─────────→ type
+```
+
+Quando múltiplas mensagens estão presentes, todas são incluídas como extensão `"messages"`.
+
+### Controle de Detalhes
+
+```properties
+# Omitir campo "detail" das respostas (produção)
+demoiselle.rest.showErrorDetails=false
+```
+
+---
+
+## P19 — RFC 8288 — Header Link para Paginação
+
+> 🌐 **Padrão IETF** — [RFC 8288](https://www.rfc-editor.org/rfc/rfc8288) — Web Linking para navegação de páginas via header `Link`
+
+Headers `Link` padronizados conforme [RFC 8288](https://www.rfc-editor.org/rfc/rfc8288) nas respostas paginadas, complementando os headers customizados existentes.
+
+### Resposta Paginada
+
+```
+HTTP/1.1 200 OK
+X-Total-Count: 150
+X-Total-Pages: 15
+X-Current-Page: 1
+X-Page-Size: 10
+X-Has-Next: true
+X-Has-Previous: true
+Link: </api/resource?range=0-9>; rel="first",
+      </api/resource?range=0-9>; rel="prev",
+      </api/resource?range=20-29>; rel="next",
+      </api/resource?range=140-149>; rel="last"
+Access-Control-Expose-Headers: ..., Link
+```
+
+### Regras de Geração
+
+| Relação | Condição |
+|---|---|
+| `rel="first"` | Sempre presente quando `totalPages > 1` |
+| `rel="last"` | Sempre presente quando `totalPages > 1` |
+| `rel="next"` | Presente quando `hasNext == true` |
+| `rel="prev"` | Presente quando `hasPrevious == true` |
+
+Quando `totalPages <= 1`, nenhum header `Link` é emitido.
+
+### LinkHeaderBuilder
+
+Classe utilitária para gerar headers Link a partir de `PageResult`:
+
+```java
+String link = LinkHeaderBuilder.build("/api/resource?filter=active", pageResult);
+// Preserva query parameters existentes:
+// </api/resource?filter=active&range=10-19>; rel="next", ...
+```
+
+### Retrocompatibilidade
+
+Todos os headers customizados (`X-Total-Count`, `X-Total-Pages`, `X-Current-Page`, `X-Page-Size`, `X-Has-Next`, `X-Has-Previous`) continuam presentes. O header `Link` é adicionado em complemento.
+
+---
+
+## P20 — RFC 6585/7231 — Rate Limiting com HTTP 429
+
+> 🌐 **Padrão IETF** — [RFC 6585](https://www.rfc-editor.org/rfc/rfc6585) / [RFC 7231](https://www.rfc-editor.org/rfc/rfc7231) — Respostas 429 Too Many Requests com header `Retry-After`
+
+O `RateLimitInterceptor` agora retorna respostas HTTP 429 com header `Retry-After` conforme as RFCs 6585 e 7231, em vez de lançar exceções genéricas.
+
+### Resposta 429 (formato RFC 9457)
+
+```
+HTTP/1.1 429 Too Many Requests
+Retry-After: 5
+Content-Type: application/problem+json
+
+{
+  "type": "urn:demoiselle:rate-limit-exceeded",
+  "title": "Too Many Requests",
+  "status": 429,
+  "detail": "Retry after 5 seconds"
+}
+```
+
+### Resposta 429 (formato legado)
+
+```
+HTTP/1.1 429 Too Many Requests
+Retry-After: 5
+Content-Type: application/json
+
+{
+  "error": "Rate limit exceeded. Retry after 5 seconds"
+}
+```
+
+O formato é selecionado automaticamente com base na configuração `errorFormat`. Quando o módulo REST não está presente, o formato legado é usado como fallback.
+
+### Retry-After
+
+O valor do header `Retry-After` é calculado pelo `SlidingWindowCounter` com base no registro mais antigo na janela deslizante. O valor é sempre `>= 1` e `<= windowSeconds`.
+
+---
+
+## P21 — JWT Refresh Tokens e Blacklist
+
+### Refresh Token
+
+O `RefreshTokenManager` gera pares access token / refresh token:
+
+```java
+@Inject
+RefreshTokenManager refreshTokenManager;
+
+// Gerar par de tokens
+TokenPair pair = refreshTokenManager.issueTokenPair(user);
+pair.accessToken();  // JWT de curta duração
+pair.refreshToken(); // JWT de longa duração (apenas sub, jti, exp)
+
+// Renovar access token
+String newAccessToken = refreshTokenManager.refresh(pair.refreshToken());
+```
+
+```properties
+# demoiselle.properties
+demoiselle.security.jwt.refreshTokenTtlMilliseconds=86400000  # 24h (padrão)
+```
+
+### Token Blacklist
+
+Revogação de tokens antes da expiração via JTI:
+
+```java
+// removeUser() automaticamente adiciona o JTI à blacklist
+tokenManager.removeUser(user);
+
+// Tokens revogados são rejeitados na validação
+tokenManager.getUser(); // → DemoiselleSecurityException (401)
+```
+
+A blacklist é `@ApplicationScoped` e remove automaticamente entradas expiradas.
+
+---
+
+## P22 — JWT Key Rotation e Múltiplos Algoritmos
+
+### Rotação de Chaves
+
+```properties
+# demoiselle.properties
+demoiselle.security.jwt.activeKeyId=key-2024
+demoiselle.security.jwt.keys.key-2024.privateKey=...
+demoiselle.security.jwt.keys.key-2024.publicKey=...
+demoiselle.security.jwt.keys.key-2023.publicKey=...  # chave antiga (apenas validação)
+```
+
+Novos tokens são assinados com `activeKeyId`. Tokens existentes são validados pela chave correspondente ao `kid` no header JWT.
+
+### Múltiplos Algoritmos
+
+```properties
+demoiselle.security.jwt.allowedAlgorithms=RS256,RS384,RS512
+```
+
+Tokens com algoritmo fora da lista são rejeitados (proteção contra ataques de confusão de algoritmo).
+
+### Clock Skew
+
+```properties
+demoiselle.security.jwt.clockSkewSeconds=30  # tolerância de 30s (padrão)
+```
+
+---
+
+## P23 — Claims Customizados via ClaimsEnricher
+
+Interface CDI para injetar claims customizados durante criação/validação de tokens:
+
+```java
+@ApplicationScoped
+public class TenantClaimsEnricher implements ClaimsEnricher {
+
+    @Override
+    public void enrich(JwtClaims claims, DemoiselleUser user) {
+        claims.setClaim("tenant_id", resolveTenantId(user));
+    }
+
+    @Override
+    public void extract(JwtClaims claims, DemoiselleUser user) {
+        String tenantId = claims.getStringClaimValue("tenant_id");
+        user.getParams().put("tenant_id", tenantId);
+    }
+}
+```
+
+Múltiplas implementações são suportadas simultaneamente. Quando nenhuma está registrada, o comportamento é idêntico ao anterior.
+
+---
+
+## P24 — Eventos de Segurança via CDI
+
+Records Java para eventos de autenticação e autorização:
+
+```java
+// Observar login/logout/falha
+public void onAuth(@Observes AuthenticationEvent event) {
+    log.info("{} {} at {}", event.action(), event.user().getIdentity(), event.timestamp());
+}
+
+// Observar negação de autorização
+public void onDenied(@Observes AuthorizationEvent event) {
+    log.warn("Acesso negado: {} tentou acessar {}/{}", 
+        event.user().getIdentity(), event.resource(), event.operation());
+}
+```
+
+| Evento | Ação | Disparado por |
+|---|---|---|
+| `AuthenticationEvent` | `LOGIN` | `SecurityContext.setUser()` |
+| `AuthenticationEvent` | `LOGOUT` | `SecurityContext.removeUser()` |
+| `AuthenticationEvent` | `FAILURE` | `AuthenticatedInterceptor` |
+| `AuthorizationEvent` | — | `RequiredRoleInterceptor`, `RequiredPermissionInterceptor` |
+
+---
+
+## P25 — @RequiredAnyRole e @RequiredAllPermissions
+
+Anotações com lógica AND/OR explícita para autorização:
+
+```java
+// OR: usuário precisa de pelo menos UMA das roles
+@RequiredAnyRole({"admin", "manager", "supervisor"})
+public void aprovarPedido(Long id) { ... }
+
+// AND: usuário precisa de TODAS as permissões
+@RequiredAllPermissions({
+    @Permission(resource = "pedido", operation = "aprovar"),
+    @Permission(resource = "financeiro", operation = "consultar")
+})
+public void aprovarPedidoFinanceiro(Long id) { ... }
+```
+
+Usuário não autenticado → 401. Usuário sem roles/permissões → 403.
+
+---
+
+## P26 — Configuração CORS via Properties
+
+```properties
+# demoiselle.properties
+demoiselle.security.cors.allowedOrigins=https://app.example.com,https://admin.example.com
+demoiselle.security.cors.allowedMethods=GET,POST,PUT,DELETE,OPTIONS
+demoiselle.security.cors.allowedHeaders=Authorization,Content-Type,X-Requested-With
+demoiselle.security.cors.maxAge=3600
+```
+
+Quando `allowedOrigins` contém `*`, qualquer origem é permitida. Sem configuração, o comportamento anterior é mantido.
+
+---
+
+## P27 — @CacheControl com Atributos Tipados
+
+```java
+// Antes (string bruta, propenso a erros de digitação)
+@CacheControl("max-age=3600, no-store")
+
+// Depois (atributos tipados com validação em compilação)
+@CacheControl(maxAge = 3600, noStore = true)
+
+// Combinação de atributos
+@CacheControl(maxAge = 86400, mustRevalidate = true, isPrivate = true)
+
+// Modo legado mantido para retrocompatibilidade
+@CacheControl("no-cache, no-store, must-revalidate")
+```
+
+Quando `value()` está vazio, os atributos tipados são usados. Quando `value()` está preenchido, ele prevalece (modo legado).
+
+---
+
+## P28 — Perfis de Configuração e @DefaultValue
+
+### Perfis
+
+```bash
+# Via propriedade de sistema
+java -Ddemoiselle.profile=dev -jar app.jar
+
+# Via variável de ambiente
+export DEMOISELLE_PROFILE=prod
+```
+
+O framework resolve automaticamente `demoiselle-dev.properties` (ou `demoiselle-prod.properties`) com fallback para `demoiselle.properties`:
+
+```
+demoiselle-dev.properties   → chaves específicas do perfil
+demoiselle.properties       → fallback para chaves ausentes
+```
+
+### @DefaultValue
+
+```java
+@Configuration(prefix = "app")
+public class AppConfig {
+
+    @DefaultValue("8080")
+    private int port;
+
+    @DefaultValue("localhost")
+    private String host;
+
+    @DefaultValue("INFO")
+    private LogLevel logLevel;  // enums suportados
+}
+```
+
+Quando a chave não existe no arquivo de configuração, o valor da anotação é usado. Quando a chave existe, o valor do arquivo prevalece.
+
+---
+
+## P29 — Core API: Result Tipado e Métodos de Conveniência
+
+### Result&lt;T&gt;
+
+```java
+// Antes: cast necessário
+List<?> content = result.getContent();
+List<Produto> produtos = (List<Produto>) content;
+
+// Depois: type-safe
+Result<Produto> result = dao.find();
+List<Produto> produtos = result.getContent(); // sem cast
+```
+
+### Métodos Default no Crud
+
+```java
+// Novos métodos com implementação default
+boolean exists = dao.exists(42L);       // delega para find(id) != null
+long total = dao.count();               // delega para find().getContent().size()
+List<Produto> all = dao.findAll();      // delega para find().getContent()
+```
+
+### DemoiselleException com Error Code
+
+```java
+throw new DemoiselleRestException("Token expirado", "DEMOISELLE-SEC-001");
+
+// toString() inclui o código
+// "DemoiselleRestException[DEMOISELLE-SEC-001]: Token expirado"
+```
+
+Formato: `DEMOISELLE-<MÓDULO>-<NÚMERO>` (ex: `DEMOISELLE-SEC-001`, `DEMOISELLE-CFG-002`).
+
+---
+
+## P30 — Security Token: Correções e Modernização
+
+### Correção do validate(issuer, audience)
+
+O método agora verifica efetivamente os parâmetros issuer e audience do usuário armazenado (antes eram ignorados).
+
+### TTL e Eviction
+
+```java
+// Entradas expiradas são removidas automaticamente
+// TTL padrão: 3600 segundos (1 hora)
+// Limpeza executada a cada chamada de setUser()
+```
+
+### TokenEntry Record
+
+```java
+// Antes: DemoiselleUser armazenado diretamente
+// Depois: record com timestamp de expiração
+record TokenEntry(DemoiselleUser user, Instant expiresAt) {}
+```
+
+---
+
 ## Testes Baseados em Propriedades (jqwik)
 
-O framework inclui **39 property-based tests** usando [jqwik](https://jqwik.net/) que validam propriedades universais de corretude:
+O framework inclui **55+ property-based tests** usando [jqwik](https://jqwik.net/) que validam propriedades universais de corretude:
 
 | # | Propriedade | Módulo |
 |:---:|---|---|
@@ -1416,6 +1891,22 @@ O framework inclui **39 property-based tests** usando [jqwik](https://jqwik.net/
 | 37 | Round-trip de configuração | integration-tests |
 | 38 | Round-trip de claims JWT | integration-tests |
 | 39 | Invariante do rate limiter | integration-tests |
+| 40 | Round-trip serialização ProblemDetail (RFC 9457) | rest |
+| 41 | Validação de chaves de extensão do ProblemDetail | rest |
+| 42 | About:blank preenche title com frase-razão HTTP | rest |
+| 43 | Round-trip mapeamento ExceptionMessage → ProblemDetail | rest |
+| 44 | Múltiplas mensagens incluídas como extensão | rest |
+| 45 | Invariante status-consistente nas respostas RFC 9457 | rest |
+| 46 | Media type application/problem+json no formato RFC 9457 | rest |
+| 47 | Omissão de detail quando showErrorDetails é false | rest |
+| 48 | Instance preenchido com URI da requisição | rest |
+| 49 | Normalização de errorFormat desconhecido para legacy | rest |
+| 50 | Relações do header Link metamórficas com PageResult | crud |
+| 51 | Invariante offset-limit consistente nas URIs do Link | crud |
+| 52 | Preservação de query parameters no LinkHeaderBuilder | crud |
+| 53 | Headers customizados consistentes com PageResult e Link | crud |
+| 54 | Rate limiter rejeita (N+1)-ésima requisição com Retry-After | security |
+| 55 | Resposta 429 contém Retry-After consistente | security |
 
 **Exemplo — Property test de cópia defensiva:**
 

@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.demoiselle.jee.integration.ConfigSecurityRestIT
--------------------------------------------------------------------------------
-Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.505 s -- in org.demoiselle.jee.integration.ConfigSecurityRestIT

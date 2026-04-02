@@ -1,3 +1,4 @@
 /.settings/
 /.project
 /target/
+.jqwik-database

@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.demoiselle.jee.openapi.OpenAPIContributorAggregationPropertyTest
--------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.093 s -- in org.demoiselle.jee.openapi.OpenAPIContributorAggregationPropertyTest
