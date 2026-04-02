@@ -5,7 +5,7 @@ title: Demoiselle Framework v4 — Modernização Jakarta EE 10
 
 # Demoiselle Framework v4 — Modernização Jakarta EE 10
 
-O Demoiselle Framework v4 foi modernizado para aproveitar plenamente os recursos do **Jakarta EE 10**, **CDI 4.0** e **Java 17**. Esta documentação cobre todas as funcionalidades introduzidas, organizadas em 6 prioridades de implementação.
+O Demoiselle Framework v4 foi modernizado para aproveitar plenamente os recursos do **Jakarta EE 10**, **CDI 4.0** e **Java 17**. Esta documentação cobre todas as funcionalidades introduzidas, organizadas em 17 áreas de implementação.
 
 ## Visão Geral das Mudanças
 
@@ -24,6 +24,10 @@ O Demoiselle Framework v4 foi modernizado para aproveitar plenamente os recursos
 | P11 | [PageResult Tipado](#p11--pageresult-tipado) | crud |
 | P12 | [Operadores de Comparação no FilterOp](#p12--operadores-de-comparação-no-filterop) | crud |
 | P13 | [Cache de Consultas com Eventos CDI](#p13--cache-de-consultas-com-eventos-cdi) | crud |
+| P14 | [Módulo de Observabilidade](#p14--módulo-de-observabilidade-demoiselle-observability) | observability |
+| P15 | [Módulo OpenAPI](#p15--módulo-openapi-demoiselle-openapi) | openapi |
+| P16 | [CI/CD com GitHub Actions](#p16--cicd-com-github-actions) | ci/cd |
+| P17 | [Testes de Integração entre Módulos](#p17--módulo-de-testes-de-integração-demoiselle-integration-tests) | integration-tests |
 
 ---
 
@@ -994,9 +998,382 @@ X-Cache: HIT
 
 ---
 
+## P14 — Módulo de Observabilidade (`demoiselle-observability`)
+
+Módulo transversal que fornece métricas, health checks e tracing distribuído para os demais módulos do framework. Todas as dependências externas (MicroProfile Metrics, MicroProfile Health, OpenTelemetry) são opcionais — quando ausentes, o módulo degrada graciosamente para implementações noop sem erro.
+
+### Dependência Maven
+
+```xml
+<dependency>
+    <groupId>org.demoiselle.jee</groupId>
+    <artifactId>demoiselle-observability</artifactId>
+</dependency>
+```
+
+### @Counted — Métricas via CDI Interceptor
+
+Incrementa automaticamente um contador MicroProfile Metrics a cada invocação do método anotado.
+
+```java
+import org.demoiselle.jee.observability.annotation.Counted;
+
+@ApplicationScoped
+public class TokenService {
+
+    @Counted("demoiselle.jwt.tokens.issued")
+    public String issueToken(DemoiselleUser user) {
+        // lógica de emissão de token
+        return jwt;
+    }
+
+    @Counted // nome automático: "TokenService.validateToken"
+    public DemoiselleUser validateToken(String jwt) {
+        // lógica de validação
+        return user;
+    }
+}
+```
+
+Contadores pré-definidos do framework:
+
+| Módulo | Operação | Contador |
+|---|---|---|
+| security-jwt | Token emitido | `demoiselle.jwt.tokens.issued` |
+| security-jwt | Token validado | `demoiselle.jwt.tokens.validated` |
+| rest | Rate limit rejeitado | `demoiselle.rest.ratelimit.rejected` |
+| configuration | Configuração carregada | `demoiselle.configuration.loaded` |
+| script | Script executado | `demoiselle.script.executed` |
+
+Quando `value()` está vazio, o nome é gerado automaticamente no formato `Classe.metodo`.
+
+### @Traced — Tracing OpenTelemetry via CDI Interceptor
+
+Cria spans OpenTelemetry automaticamente com atributos `demoiselle.module` e `demoiselle.operation`.
+
+```java
+import org.demoiselle.jee.observability.annotation.Traced;
+
+@ApplicationScoped
+public class PedidoService {
+
+    @Traced(module = "pedido", operation = "criar")
+    public Pedido criarPedido(PedidoDTO dto) {
+        // lógica de criação
+        return pedido;
+    }
+
+    @Traced // module = "PedidoService", operation = "buscarPorId"
+    public Pedido buscarPorId(Long id) {
+        return pedido;
+    }
+}
+```
+
+Quando `module()` ou `operation()` estão vazios, os valores são derivados do nome da classe e do método.
+
+### MetricsAdapter — Abstração para Degradação Graceful
+
+```java
+// Interface
+public interface MetricsAdapter {
+    void increment(String counterName);
+    long getCount(String counterName);
+}
+
+// Quando MicroProfile Metrics está no classpath:
+//   → MicroProfileMetricsAdapter (delega para MetricRegistry)
+
+// Quando MicroProfile Metrics NÃO está no classpath:
+//   → NoopMetricsAdapter (increment() não faz nada, getCount() retorna 0)
+```
+
+### TracingAdapter — Abstração para Degradação Graceful
+
+```java
+public interface TracingAdapter {
+    <T> T executeInSpan(String module, String operation, SpanCallable<T> callable) throws Exception;
+
+    @FunctionalInterface
+    interface SpanCallable<T> {
+        T call() throws Exception;
+    }
+}
+
+// Quando OpenTelemetry está no classpath:
+//   → OpenTelemetryTracingAdapter (cria spans com atributos)
+
+// Quando OpenTelemetry NÃO está no classpath:
+//   → NoopTracingAdapter (executa callable diretamente)
+```
+
+### Health Checks — MicroProfile Health
+
+O módulo registra automaticamente health checks quando MicroProfile Health está no classpath:
+
+```
+GET /health/live
+{
+  "status": "UP",
+  "checks": [
+    { "name": "demoiselle-cdi", "status": "UP" }
+  ]
+}
+
+GET /health/ready
+{
+  "status": "UP",
+  "checks": [
+    { "name": "demoiselle-configuration", "status": "UP", "data": { "module": "demoiselle-configuration" } },
+    { "name": "demoiselle-security-jwt-keys", "status": "UP", "data": { "type": "master", "publicKeyConfigured": true } }
+  ]
+}
+```
+
+Health checks registrados:
+
+| Nome | Tipo | Verifica |
+|---|---|---|
+| `demoiselle-cdi` | Liveness | CDI container ativo |
+| `demoiselle-configuration` | Readiness | Configuração carregada |
+| `demoiselle-security-jwt-keys` | Readiness | Chaves JWT disponíveis (quando `demoiselle-security-jwt` no classpath) |
+
+### ObservabilityExtension — Detecção Automática de APIs
+
+A CDI Extension detecta automaticamente quais APIs estão no classpath e registra os beans apropriados:
+
+```
+[INFO] MicroProfile Metrics detected — registering MicroProfileMetricsAdapter
+[INFO] MicroProfile Health detected — registering HealthCheckProducer
+[INFO] OpenTelemetry não disponível — tracing desativado
+```
+
+Nenhuma configuração manual é necessária. Basta adicionar a dependência da API desejada ao `pom.xml`:
+
+```xml
+<!-- Para métricas -->
+<dependency>
+    <groupId>org.eclipse.microprofile.metrics</groupId>
+    <artifactId>microprofile-metrics-api</artifactId>
+</dependency>
+
+<!-- Para health checks -->
+<dependency>
+    <groupId>org.eclipse.microprofile.health</groupId>
+    <artifactId>microprofile-health-api</artifactId>
+</dependency>
+
+<!-- Para tracing -->
+<dependency>
+    <groupId>io.opentelemetry</groupId>
+    <artifactId>opentelemetry-api</artifactId>
+</dependency>
+```
+
+---
+
+## P15 — Módulo OpenAPI (`demoiselle-openapi`)
+
+Geração automática de documentação OpenAPI para endpoints do framework via MicroProfile OpenAPI.
+
+### Dependência Maven
+
+```xml
+<dependency>
+    <groupId>org.demoiselle.jee</groupId>
+    <artifactId>demoiselle-openapi</artifactId>
+</dependency>
+```
+
+### OpenAPIContributor — Interface para Contribuições Modulares
+
+Cada módulo do framework pode contribuir definições OpenAPI parciais implementando esta interface:
+
+```java
+import org.demoiselle.jee.openapi.OpenAPIContributor;
+import org.eclipse.microprofile.openapi.OASFactory;
+import org.eclipse.microprofile.openapi.models.OpenAPI;
+
+@ApplicationScoped
+public class MeuModuloOpenAPIContributor implements OpenAPIContributor {
+
+    @Override
+    public OpenAPI contribute() {
+        OpenAPI partial = OASFactory.createOpenAPI();
+        partial.paths(OASFactory.createPaths()
+            .addPathItem("/api/meu-recurso", OASFactory.createPathItem()
+                .GET(OASFactory.createOperation()
+                    .summary("Lista recursos")
+                    .operationId("listarRecursos"))));
+        return partial;
+    }
+}
+```
+
+### DemoiselleOASModelReader — Agregação Automática
+
+O `DemoiselleOASModelReader` descobre todos os `OpenAPIContributor` via CDI e agrega suas contribuições:
+
+- Paths de múltiplos contributors são mesclados no documento final
+- Em caso de sobreposição, o primeiro contributor processado prevalece (first-wins)
+- Se um contributor lançar exceção, o erro é logado e os demais continuam normalmente
+
+### Configuração de Ativação
+
+```properties
+# demoiselle.properties
+# Desativar documentação OpenAPI automática (default: true)
+demoiselle.openapi.enabled=false
+```
+
+Quando desativado, `DemoiselleOASModelReader.buildModel()` retorna um documento OpenAPI vazio.
+
+---
+
+## P16 — CI/CD com GitHub Actions
+
+O pipeline de CI/CD foi migrado do Travis CI para GitHub Actions com build matrix multi-versão.
+
+### Build Matrix Java 17/21
+
+O workflow executa build e testes em Java 17 e 21 simultaneamente:
+
+```yaml
+# .github/workflows/ci.yml
+strategy:
+  fail-fast: false
+  matrix:
+    java-version: ['17', '21']
+```
+
+- `fail-fast: false` — falha em uma versão não cancela a outra
+- Cache Maven via `actions/setup-java` com `cache: 'maven'`
+- Relatórios JaCoCo como artefatos separados por versão de Java
+
+### Relatórios de Cobertura em PRs
+
+Em pull requests, um job separado gera relatório agregado de cobertura e posta um resumo no PR:
+
+```
+📊 JaCoCo Coverage Summary
+
+| Module                  | Instruction | Branch | Line  | Method |
+|-------------------------|------------|--------|-------|--------|
+| demoiselle-core         | 85.2%      | 72.1%  | 83.4% | 90.1%  |
+| demoiselle-configuration| 78.5%      | 65.3%  | 76.2% | 85.7%  |
+| demoiselle-security     | 91.0%      | 80.4%  | 89.1% | 93.2%  |
+```
+
+### Limiar de Cobertura Configurável
+
+```xml
+<!-- pom.xml raiz -->
+<properties>
+    <jacoco.minimum.coverage>0.00</jacoco.minimum.coverage>
+</properties>
+```
+
+O build falha quando a cobertura de um módulo cai abaixo do limiar:
+
+```
+Rule violated for bundle demoiselle-core: instructions covered ratio is 0.71,
+but expected minimum is 0.80
+```
+
+Pode ser sobrescrito via linha de comando: `mvn verify -Djacoco.minimum.coverage=0.80`
+
+---
+
+## P17 — Módulo de Testes de Integração (`demoiselle-integration-tests`)
+
+Módulo dedicado a testes de integração que validam fluxos completos entre múltiplos módulos do framework.
+
+### Estrutura
+
+- Executado na fase `verify` do Maven via `maven-failsafe-plugin`
+- Testes unitários (`surefire`) são desabilitados neste módulo
+- Módulos opcionais são tratados com `@EnabledIf` do JUnit 5
+
+### Fluxo Configuração → Segurança → REST
+
+```java
+@EnabledIf("isSecurityJwtAvailable")
+class ConfigSecurityRestIT {
+
+    @Test
+    void fullFlow_configLoadAndTokenIssueAndValidate() {
+        // 1. Carregar configuração de segurança
+        // 2. Emitir token JWT com claims
+        // 3. Validar token em novo TokenManager
+        // 4. Verificar que claims são preservados
+    }
+
+    @Test
+    void requiredRole_acceptsValidTokenWithCorrectRole() {
+        // Token com role "admin" → interceptor permite execução
+    }
+
+    @Test
+    void requiredRole_rejectsTokenWithWrongRole() {
+        // Token com role "viewer" → interceptor rejeita com 403
+    }
+
+    @Test
+    void expiredToken_isRejectedWithUnauthorized() {
+        // Token expirado → interceptor rejeita com 401
+    }
+
+    @Test
+    void corsFilter_appliesConfiguredHeaders() {
+        // Filtro CORS aplica headers configurados
+    }
+}
+```
+
+### Fluxo Configuração → Script
+
+```java
+@EnabledIf("isScriptAvailable")
+class ConfigScriptIT {
+
+    @Test
+    void loadEngineAndExecuteScriptWithParameters() {
+        // 1. Carregar engine Groovy
+        // 2. Cachear script com parâmetros
+        // 3. Executar e verificar resultado
+    }
+
+    @Test
+    void fullFlow_loadCacheUpdateAndReExecute() {
+        // Carregar → cachear → atualizar → re-executar
+    }
+}
+```
+
+### Tratamento de Módulos Opcionais
+
+```java
+@EnabledIf("isSecurityJwtAvailable")
+class SecurityJwtIntegrationIT {
+
+    static boolean isSecurityJwtAvailable() {
+        try {
+            Class.forName("org.demoiselle.jee.security.jwt.impl.TokenManagerImpl");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+}
+```
+
+Quando o módulo não está no classpath, os testes são ignorados automaticamente (não falham).
+
+---
+
 ## Testes Baseados em Propriedades (jqwik)
 
-O framework inclui **30 property-based tests** usando [jqwik](https://jqwik.net/) que validam propriedades universais de corretude:
+O framework inclui **39 property-based tests** usando [jqwik](https://jqwik.net/) que validam propriedades universais de corretude:
 
 | # | Propriedade | Módulo |
 |:---:|---|---|
@@ -1030,6 +1407,15 @@ O framework inclui **30 property-based tests** usando [jqwik](https://jqwik.net/
 | 28 | Cache round-trip (hit/miss com TTL) | crud |
 | 29 | Operações de escrita disparam EntityModifiedEvent | crud |
 | 30 | Invalidação de cache por entityClass | crud |
+| 31 | Contagem monotônica do @Counted | observability |
+| 32 | Segurança dos adapters noop | observability |
+| 33 | Span do @Traced contém atributos corretos | observability |
+| 34 | Agregação de OpenAPIContributors preserva paths | openapi |
+| 35 | Tolerância a falhas na agregação OpenAPI | openapi |
+| 36 | Interceptor de segurança aceita tokens válidos e rejeita inválidos | integration-tests |
+| 37 | Round-trip de configuração | integration-tests |
+| 38 | Round-trip de claims JWT | integration-tests |
+| 39 | Invariante do rate limiter | integration-tests |
 
 **Exemplo — Property test de cópia defensiva:**
 

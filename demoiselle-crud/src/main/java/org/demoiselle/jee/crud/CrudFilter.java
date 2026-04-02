@@ -37,6 +37,7 @@ import org.demoiselle.jee.crud.cache.Cacheable;
 import org.demoiselle.jee.crud.cache.QueryCacheStore;
 import org.demoiselle.jee.crud.field.FieldHelper;
 import org.demoiselle.jee.crud.filter.FilterHelper;
+import org.demoiselle.jee.crud.pagination.LinkHeaderBuilder;
 import org.demoiselle.jee.crud.pagination.PageResult;
 import org.demoiselle.jee.crud.pagination.PaginationHelper;
 import org.demoiselle.jee.crud.sort.SortHelper;
@@ -212,12 +213,20 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
             response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_HAS_NEXT.getKey(), pageResult.hasNext());
             response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_HAS_PREVIOUS.getKey(), pageResult.hasPrevious());
 
+            // Build RFC 8288 Link header from PageResult metadata
+            String baseUri = uriInfo.getRequestUri().toString().replaceFirst("[?&]range=[^&]*", "");
+            String linkHeader = LinkHeaderBuilder.build(baseUri, pageResult);
+            if (!linkHeader.isEmpty()) {
+                response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_LINK.getKey(), linkHeader);
+            }
+
             exposeHeaders += ", " + ReservedHTTPHeaders.HTTP_HEADER_TOTAL_COUNT.getKey()
                     + ", " + ReservedHTTPHeaders.HTTP_HEADER_TOTAL_PAGES.getKey()
                     + ", " + ReservedHTTPHeaders.HTTP_HEADER_CURRENT_PAGE.getKey()
                     + ", " + ReservedHTTPHeaders.HTTP_HEADER_PAGE_SIZE.getKey()
                     + ", " + ReservedHTTPHeaders.HTTP_HEADER_HAS_NEXT.getKey()
-                    + ", " + ReservedHTTPHeaders.HTTP_HEADER_HAS_PREVIOUS.getKey();
+                    + ", " + ReservedHTTPHeaders.HTTP_HEADER_HAS_PREVIOUS.getKey()
+                    + ", " + ReservedHTTPHeaders.HTTP_HEADER_LINK.getKey();
         }
 
         response.getHeaders().putSingle(ReservedHTTPHeaders.HTTP_HEADER_ACCESS_CONTROL_EXPOSE_HEADERS.getKey(), exposeHeaders);

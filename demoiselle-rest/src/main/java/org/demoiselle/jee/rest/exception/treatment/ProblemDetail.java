@@ -15,6 +15,8 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import jakarta.ws.rs.core.Response;
+
 /**
  * Represents an RFC 9457 Problem Details response.
  *
@@ -88,6 +90,30 @@ public class ProblemDetail {
 
     public void setInstance(String instance) {
         this.instance = instance;
+    }
+
+    // ── RFC 9457 §4.2 helpers ──────────────────────────────────────
+
+    /**
+     * Returns the standard HTTP reason phrase for the given status code.
+     *
+     * @param status HTTP status code
+     * @return the reason phrase, or {@code "Unknown Status"} if not recognized
+     */
+    public static String reasonPhrase(int status) {
+        Response.Status s = Response.Status.fromStatusCode(status);
+        return s != null ? s.getReasonPhrase() : "Unknown Status";
+    }
+
+    /**
+     * When {@code type} is {@code "about:blank"} and {@code title} is
+     * {@code null}, fills {@code title} with the standard HTTP reason
+     * phrase for the current {@code status} (RFC 9457 §4.2).
+     */
+    public void applyAboutBlankDefaults() {
+        if ("about:blank".equals(this.type) && this.title == null && this.status != 0) {
+            this.title = reasonPhrase(this.status);
+        }
     }
 
     // ── Extensions ─────────────────────────────────────────────────

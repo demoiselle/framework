@@ -39,7 +39,7 @@ public class SlidingWindowCounter {
             // Calcula Retry-After baseado no registro mais antigo na janela
             long oldestInWindow = timestamps.peekFirst();
             int retryAfter = (int) ((oldestInWindow + (windowSeconds * 1000L) - now) / 1000) + 1;
-            return Math.max(retryAfter, 1);
+            return Math.min(Math.max(retryAfter, 1), windowSeconds);
         }
 
         timestamps.addLast(now);

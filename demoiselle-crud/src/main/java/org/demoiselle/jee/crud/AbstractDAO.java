@@ -979,7 +979,7 @@ public abstract class AbstractDAO<T, I> implements Crud<T, I> {
         return (drc.getLimit() - drc.getOffset()) + 1;
     }
 
-    public Long count() {
+    public long count() {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> countCriteria = criteriaBuilder.createQuery(Long.class);
         Root<T> entityRoot = countCriteria.from(entityClass);

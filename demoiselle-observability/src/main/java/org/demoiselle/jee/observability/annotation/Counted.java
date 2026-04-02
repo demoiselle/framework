@@ -20,6 +20,6 @@ import jakarta.interceptor.InterceptorBinding;
 @Target({METHOD, TYPE})
 @Retention(RUNTIME)
 public @interface Counted {
-    /** Nome do contador no formato "demoiselle.<modulo>.<operacao>" */
+    /** Nome do contador no formato {@code "demoiselle.<modulo>.<operacao>"}. */
     @Nonbinding String value() default "";
 }

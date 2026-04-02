@@ -251,6 +251,65 @@ class ProblemDetailTest {
         assertEquals(original, deserialized);
     }
 
+    // ── reasonPhrase ──────────────────────────────────────────────
+
+    @Test
+    void reasonPhraseReturnsNotFoundFor404() {
+        assertEquals("Not Found", ProblemDetail.reasonPhrase(404));
+    }
+
+    @Test
+    void reasonPhraseReturnsOKFor200() {
+        assertEquals("OK", ProblemDetail.reasonPhrase(200));
+    }
+
+    @Test
+    void reasonPhraseReturnsInternalServerErrorFor500() {
+        assertEquals("Internal Server Error", ProblemDetail.reasonPhrase(500));
+    }
+
+    @Test
+    void reasonPhraseReturnsUnknownStatusForUnrecognizedCode() {
+        assertEquals("Unknown Status", ProblemDetail.reasonPhrase(999));
+    }
+
+    // ── applyAboutBlankDefaults ────────────────────────────────────
+
+    @Test
+    void applyAboutBlankDefaultsFillsTitleWhenAboutBlankAndTitleNull() {
+        ProblemDetail pd = new ProblemDetail();
+        pd.setStatus(404);
+        // type defaults to "about:blank", title defaults to null
+        pd.applyAboutBlankDefaults();
+        assertEquals("Not Found", pd.getTitle());
+    }
+
+    @Test
+    void applyAboutBlankDefaultsDoesNotOverrideExistingTitle() {
+        ProblemDetail pd = new ProblemDetail();
+        pd.setStatus(404);
+        pd.setTitle("Custom Title");
+        pd.applyAboutBlankDefaults();
+        assertEquals("Custom Title", pd.getTitle());
+    }
+
+    @Test
+    void applyAboutBlankDefaultsDoesNothingWhenTypeIsNotAboutBlank() {
+        ProblemDetail pd = new ProblemDetail();
+        pd.setType("urn:example:custom");
+        pd.setStatus(404);
+        pd.applyAboutBlankDefaults();
+        assertNull(pd.getTitle());
+    }
+
+    @Test
+    void applyAboutBlankDefaultsDoesNothingWhenStatusIsZero() {
+        ProblemDetail pd = new ProblemDetail();
+        // type is "about:blank", title is null, status is 0
+        pd.applyAboutBlankDefaults();
+        assertNull(pd.getTitle());
+    }
+
     // ── Helper ─────────────────────────────────────────────────────
 
     private ProblemDetail createSample() {

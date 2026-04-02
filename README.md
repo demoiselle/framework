@@ -22,7 +22,7 @@ A versão 4 do Demoiselle Framework traz as seguintes mudanças principais:
 - **CDI 4.0**: Atualização para Jakarta Contexts and Dependency Injection 4.0
 - **JUnit 5**: Migração completa dos testes para JUnit Jupiter
 - **OpenAPI 3.0**: Substituição do Swagger 1.x por MicroProfile OpenAPI
-- **GitHub Actions**: Pipeline de CI/CD migrado do Travis CI para GitHub Actions
+- **GitHub Actions**: Pipeline de CI/CD migrado do Travis CI para GitHub Actions com build matrix Java 17/21
 - **Remoção do WildFly Swarm**: Framework agnóstico de runtime (compatível com WildFly 27+, Quarkus, Open Liberty)
 - **Remoção do DeltaSpike**: Substituído por implementação própria baseada em CDI 4.0
 
@@ -48,6 +48,33 @@ O módulo `demoiselle-crud` recebeu 7 novas funcionalidades:
 - **PageResult\<T\>** — record imutável com metadados de paginação (`totalPages`, `currentPage`, `hasNext`, `hasPrevious`)
 - **Operadores de Comparação** — `gt:`, `lt:`, `gte:`, `lte:`, `between:`, `in:` via query string
 - **Cache de Consultas** — `@Cacheable` com invalidação automática via eventos CDI
+
+📖 [Documentação completa com exemplos](docs/index.md)
+
+### Módulo de Observabilidade (`demoiselle-observability`)
+
+Módulo transversal com métricas, health checks e tracing distribuído:
+
+- **@Counted** — CDI interceptor que incrementa contadores MicroProfile Metrics automaticamente
+- **@Traced** — CDI interceptor que cria spans OpenTelemetry com atributos do módulo
+- **Health Checks** — Liveness (CDI ativo) e Readiness (configuração carregada, chaves JWT disponíveis)
+- **Degradação Graceful** — Quando MicroProfile Metrics, Health ou OpenTelemetry não estão no classpath, o módulo usa implementações noop sem erro
+
+### Módulo OpenAPI (`demoiselle-openapi`)
+
+Geração automática de documentação OpenAPI para endpoints do framework:
+
+- **OpenAPIContributor** — Interface para módulos contribuírem definições OpenAPI parciais
+- **DemoiselleOASModelReader** — Agrega contribuições via CDI com tolerância a falhas
+- **Configurável** — Ativação/desativação via `demoiselle.openapi.enabled`
+
+### Testes de Integração (`demoiselle-integration-tests`)
+
+Módulo dedicado a testes de integração entre módulos:
+
+- **ConfigSecurityRestIT** — Fluxo completo configuração → segurança JWT → REST
+- **ConfigScriptIT** — Fluxo configuração → execução de scripts
+- **9 Property-Based Tests** — Validação de propriedades de corretude com jqwik
 
 📖 [Documentação completa com exemplos](docs/index.md)
 

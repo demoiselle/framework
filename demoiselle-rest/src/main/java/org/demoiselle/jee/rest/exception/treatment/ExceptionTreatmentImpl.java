@@ -26,10 +26,13 @@ import org.demoiselle.jee.rest.exception.DemoiselleRestException;
 import org.demoiselle.jee.rest.message.DemoiselleRESTMessage;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.demoiselle.jee.rest.exception.DemoiselleRestExceptionMessage;
 
 /**
  * Default implementation of All Exception Treatments in Demoiselle Framework.
@@ -115,26 +118,9 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
 
         } else if (exception instanceof DemoiselleRestException) {
             DemoiselleRestException e = (DemoiselleRestException) exception;
-            pd.setTitle(e.getMessage());
-            pd.setStatus(e.getStatusCode() != 0 ? e.getStatusCode() : 412);
-            if (isShowErrorDetails && e.getMessage() != null) {
-                pd.setDetail(e.getMessage());
-            }
-            // Add additional messages as extensions
-            if (!e.getMessages().isEmpty()) {
-                List<Map<String, String>> msgs = new ArrayList<>();
-                e.getMessages().forEach(msg -> {
-                    Map<String, String> m = new LinkedHashMap<>();
-                    m.put("error", msg.error());
-                    if (isShowErrorDetails && msg.errorDescription() != null) {
-                        m.put("error_description", msg.errorDescription());
-                    }
-                    if (msg.errorLink() != null && !msg.errorLink().isEmpty()) {
-                        m.put("error_link", msg.errorLink());
-                    }
-                    msgs.add(m);
-                });
-                pd.extension("messages", msgs);
+            pd = mapToProblemDetail(e, isShowErrorDetails);
+            if (request != null) {
+                pd.setInstance(request.getRequestURI());
             }
 
         } else if (exception instanceof InvalidFormatException) {
@@ -161,10 +147,72 @@ public class ExceptionTreatmentImpl implements ExceptionTreatment {
             }
         }
 
+        pd.applyAboutBlankDefaults();
+
         return Response.status(pd.getStatus())
                 .entity(pd)
                 .type(PROBLEM_JSON)
                 .build();
+    }
+
+    // ── DemoiselleRestException → ProblemDetail mapping ────────────
+
+    /**
+     * Maps a {@link DemoiselleRestException} to a {@link ProblemDetail}.
+     *
+     * <p>The first message's {@code error} → {@code title},
+     * {@code errorDescription} → {@code detail} (when {@code showDetails} is true),
+     * and non-empty {@code errorLink} → {@code type}.
+     * All messages are included as the {@code "messages"} extension.</p>
+     *
+     * @param e           the exception to map
+     * @param showDetails whether to include detail information
+     * @return a populated ProblemDetail (without instance; caller sets it)
+     */
+    ProblemDetail mapToProblemDetail(DemoiselleRestException e, boolean showDetails) {
+        ProblemDetail pd = new ProblemDetail();
+        pd.setStatus(e.getStatusCode() != 0 ? e.getStatusCode() : 500);
+
+        if (!e.getMessages().isEmpty()) {
+            var first = e.getMessages().iterator().next();
+            pd.setTitle(first.error());
+            if (showDetails) {
+                pd.setDetail(first.errorDescription());
+            }
+            if (first.errorLink() != null && !first.errorLink().isBlank()) {
+                pd.setType(first.errorLink());
+            }
+            pd.extension("messages", mapMessages(e.getMessages(), showDetails));
+        } else {
+            pd.setTitle(e.getMessage());
+            if (showDetails) {
+                pd.setDetail(e.getMessage());
+            }
+        }
+
+        pd.applyAboutBlankDefaults();
+        return pd;
+    }
+
+    /**
+     * Converts a collection of {@link DemoiselleRestExceptionMessage} to a list
+     * of maps suitable for the {@code "messages"} extension in ProblemDetail.
+     */
+    private List<Map<String, String>> mapMessages(
+            Collection<DemoiselleRestExceptionMessage> messages, boolean showDetails) {
+        List<Map<String, String>> result = new ArrayList<>();
+        for (DemoiselleRestExceptionMessage msg : messages) {
+            Map<String, String> m = new LinkedHashMap<>();
+            m.put("error", msg.error());
+            if (showDetails && msg.errorDescription() != null) {
+                m.put("error_description", msg.errorDescription());
+            }
+            if (msg.errorLink() != null && !msg.errorLink().isEmpty()) {
+                m.put("error_link", msg.errorLink());
+            }
+            result.add(m);
+        }
+        return result;
     }
 
     // ── Legacy format ──────────────────────────────────────────────

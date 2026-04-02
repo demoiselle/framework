@@ -1,6 +1,0 @@
-org.demoiselle.jee.observability.annotation
-org.demoiselle.jee.observability.health
-org.demoiselle.jee.observability.interceptor
-org.demoiselle.jee.observability.metrics
-org.demoiselle.jee.observability
-org.demoiselle.jee.observability.tracing

@@ -1,14 +1,6 @@
 /nbactions.xml
-/persistence/target/
-/core/target/
-/ws/target/
-/security/target/
 /.project
 /.settings/
-/basic/target/
-/basic (cópia)/target/
-/jwt/target/
-/target/
 /demoiselle-security-jwt/nbproject/
 /demoiselle-security-token/nbproject/
 /demoiselle-security/nbproject/
@@ -16,10 +8,11 @@
 /demoiselle-rest/nbproject/
 /demoiselle-crud/nbproject/
 /demoiselle-multitenancy-hibernate/
-/.DS_Store
-/.idea
-**.iml
-/demoiselle-security-token (cópia)/nbproject/
+/demoiselle-security-token/nbproject/
 /demoiselle-security-pow/nbproject/
 /demoiselle-security-hashcash/nbproject/
 /.kiro
+/.DS_Store
+/.idea
+**.iml
+target/

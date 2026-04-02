@@ -25,7 +25,10 @@ public enum ReservedHTTPHeaders {
     HTTP_HEADER_CURRENT_PAGE("X-Current-Page"),
     HTTP_HEADER_PAGE_SIZE("X-Page-Size"),
     HTTP_HEADER_HAS_NEXT("X-Has-Next"),
-    HTTP_HEADER_HAS_PREVIOUS("X-Has-Previous");
+    HTTP_HEADER_HAS_PREVIOUS("X-Has-Previous"),
+
+    // Link header (RFC 8288)
+    HTTP_HEADER_LINK("Link");
     
     private final String key;
 
