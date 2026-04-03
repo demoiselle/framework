@@ -6,6 +6,8 @@
  */
 package org.demoiselle.jee.mcp.integration;
 
+import jakarta.enterprise.inject.Vetoed;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +16,9 @@ import java.util.Map;
  * {@link ErrorFormatter} implementation that produces ProblemDetail (RFC 9457)
  * formatted error responses as Map representations.
  *
- * <p>This formatter is registered conditionally by {@code McpBootstrapExtension}
- * when {@code demoiselle-rest} is on the classpath. It does <b>not</b> directly
- * import ProblemDetail classes to avoid hard dependencies on the optional module.</p>
+ * <p>This formatter is NOT a CDI bean ({@code @Vetoed}) to avoid ambiguity with
+ * {@link PlainTextErrorFormatter}. It is instantiated directly by the
+ * {@code McpJsonRpcHandler} when {@code demoiselle-rest} is on the classpath.</p>
  *
  * <p>Mapping rules:</p>
  * <ul>
@@ -25,6 +27,7 @@ import java.util.Map;
  *   <li>All other exceptions → status 500, title "Internal Server Error"</li>
  * </ul>
  */
+@Vetoed
 public class ProblemDetailErrorFormatter implements ErrorFormatter {
 
     private static final String VALIDATION_EXCEPTION_CLASS = "jakarta.validation.ValidationException";
