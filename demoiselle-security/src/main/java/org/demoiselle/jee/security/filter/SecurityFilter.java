@@ -28,7 +28,7 @@ import org.demoiselle.jee.core.api.security.TokenManager;
 import org.demoiselle.jee.core.api.security.TokenType;
 import org.demoiselle.jee.security.DemoiselleSecurityConfig;
 import org.demoiselle.jee.security.bruteforce.BruteForceGuard;
-import org.demoiselle.jee.security.impl.TokenRecord;
+import org.demoiselle.jee.security.impl.TokenImpl;
 
 /**
  * <p>
@@ -60,12 +60,16 @@ public class SecurityFilter implements ContainerRequestFilter {
     @Inject
     private HttpServletRequest httpServletRequest;
 
-    private TokenRecord currentToken;
+    private TokenImpl currentToken;
 
     @Produces
     @RequestScoped
+    @SuppressWarnings("deprecation")
     public Token produceToken() {
-        return currentToken != null ? currentToken : new TokenRecord(null, null);
+        if (currentToken != null) {
+            return currentToken;
+        }
+        return new TokenImpl();
     }
 
     @Override
@@ -99,7 +103,9 @@ public class SecurityFilter implements ContainerRequestFilter {
                 if (!chave.isEmpty()) {
                     TokenType tokenType = TokenType.valueOf(chave.split(" ")[0].toUpperCase());
                     String tokenKey = chave.split(" ")[1];
-                    currentToken = new TokenRecord(tokenKey, tokenType);
+                    currentToken = new TokenImpl();
+                    currentToken.setKey(tokenKey);
+                    currentToken.setType(tokenType);
 
                     // Valida token e atualiza brute force guard
                     if (tokenManager.validate()) {
@@ -115,7 +121,7 @@ public class SecurityFilter implements ContainerRequestFilter {
         }
 
         if (currentToken == null) {
-            currentToken = new TokenRecord(null, null);
+            currentToken = new TokenImpl();
         }
     }
 }

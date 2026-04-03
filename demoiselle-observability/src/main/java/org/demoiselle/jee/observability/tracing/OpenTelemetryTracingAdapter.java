@@ -1,5 +1,7 @@
 package org.demoiselle.jee.observability.tracing;
 
+import jakarta.enterprise.inject.Vetoed;
+
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
@@ -12,9 +14,11 @@ import io.opentelemetry.api.trace.Tracer;
  * <p>
  * Registrada programaticamente pela {@code ObservabilityExtension} via
  * {@code AfterBeanDiscovery.addBean()} quando OpenTelemetry está no classpath.
- * Não possui anotação de escopo CDI para evitar ambiguidade (WELD-001409)
+ * Marcada como {@code @Vetoed} para impedir descoberta automática pelo Weld
+ * com {@code bean-discovery-mode="all"}, evitando ambiguidade (WELD-001409)
  * com o bean sintético. Respeita o sampling configurado no SDK.
  */
+@Vetoed
 public class OpenTelemetryTracingAdapter implements TracingAdapter {
 
     private static final AttributeKey<String> DEMOISELLE_MODULE = AttributeKey.stringKey("demoiselle.module");

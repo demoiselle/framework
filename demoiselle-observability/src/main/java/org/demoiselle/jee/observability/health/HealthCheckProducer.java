@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Vetoed;
 import jakarta.enterprise.inject.spi.CDI;
 
 import org.eclipse.microprofile.health.HealthCheck;
@@ -22,9 +23,11 @@ import org.eclipse.microprofile.health.Readiness;
  * <p>
  * This producer is registered conditionally by {@code ObservabilityExtension}
  * only when MicroProfile Health is available on the classpath.
- * Does not carry a CDI scope annotation to avoid ambiguity (WELD-001409)
- * with the synthetic bean registered by the extension.
+ * Marcada como {@code @Vetoed} para impedir descoberta automática pelo Weld
+ * com {@code bean-discovery-mode="all"}, evitando ambiguidade (WELD-001409)
+ * com o bean sintético registrado pela extensão.
  */
+@Vetoed
 public class HealthCheckProducer {
 
     /**
