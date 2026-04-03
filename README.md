@@ -68,6 +68,18 @@ Geração automática de documentação OpenAPI para endpoints do framework:
 - **DemoiselleOASModelReader** — Agrega contribuições via CDI com tolerância a falhas
 - **Configurável** — Ativação/desativação via `demoiselle.openapi.enabled`
 
+### Módulo MCP (`demoiselle-mcp`)
+
+Suporte a servidores [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) para integração com clientes de IA:
+
+- **@McpTool** — Expõe métodos CDI como ferramentas MCP com geração automática de JSON Schema
+- **@McpResource** — Expõe dados como recursos MCP (arquivos, configurações, registros)
+- **@McpPrompt** — Expõe templates de prompt MCP com argumentos tipados
+- **Transporte SSE** — Comunicação HTTP via Server-Sent Events (JAX-RS)
+- **Transporte stdio** — Comunicação local entre processos via stdin/stdout
+- **Integrações opcionais** — ProblemDetail (RFC 9457), JWT, PageResult, @RateLimit, @Counted
+- **Degradação Graceful** — Funciona com dependências mínimas (`demoiselle-core` + `demoiselle-configuration`)
+
 ### Testes de Integração (`demoiselle-integration-tests`)
 
 Módulo dedicado a testes de integração entre módulos:

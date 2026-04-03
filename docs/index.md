@@ -5,7 +5,7 @@ title: Demoiselle Framework v4 — Modernização Jakarta EE 10
 
 # Demoiselle Framework v4 — Modernização Jakarta EE 10
 
-O Demoiselle Framework v4 foi modernizado para aproveitar plenamente os recursos do **Jakarta EE 10**, **CDI 4.0** e **Java 17**. Esta documentação cobre todas as funcionalidades introduzidas, organizadas em 30 áreas de implementação.
+O Demoiselle Framework v4 foi modernizado para aproveitar plenamente os recursos do **Jakarta EE 10**, **CDI 4.0** e **Java 17**. Esta documentação cobre todas as funcionalidades introduzidas, organizadas em 31 áreas de implementação.
 
 ## 🌐 Conformidade com Padrões IETF
 
@@ -53,6 +53,7 @@ Respostas de erro padronizadas (`application/problem+json`), headers `Link` para
 | P28 | [Perfis de Configuração e @DefaultValue](#p28--perfis-de-configuração-e-defaultvalue) | configuration |
 | P29 | [Core API: Result Tipado e Conveniência](#p29--core-api-result-tipado-e-métodos-de-conveniência) | core |
 | P30 | [Security Token: Correções e Modernização](#p30--security-token-correções-e-modernização) | security-token |
+| P31 | [Módulo MCP (Model Context Protocol)](#p31--módulo-mcp-demoiselle-mcp) | mcp |
 
 ---
 
@@ -1846,9 +1847,180 @@ record TokenEntry(DemoiselleUser user, Instant expiresAt) {}
 
 ---
 
+## P31 — Módulo MCP (`demoiselle-mcp`)
+
+Módulo para construção de servidores [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) com o Demoiselle Framework. Permite expor beans CDI como ferramentas, recursos e prompts MCP via anotações declarativas, sem escrever código de infraestrutura de protocolo.
+
+O módulo utiliza JSON-RPC 2.0 como formato de mensagens e suporta dois transportes: SSE (Server-Sent Events) via JAX-RS e stdio para comunicação local entre processos.
+
+### Dependências
+
+Apenas `demoiselle-core` e `demoiselle-configuration` são obrigatórias. Integrações com `demoiselle-rest` (ProblemDetail), `demoiselle-security` (JWT, @RateLimit), `demoiselle-crud` (PageResult, Specification) e `demoiselle-observability` (@Counted) são opcionais — o módulo degrada graciosamente quando ausentes.
+
+```xml
+<dependency>
+    <groupId>org.demoiselle.jee</groupId>
+    <artifactId>demoiselle-mcp</artifactId>
+    <version>4.1.0-SNAPSHOT</version>
+</dependency>
+```
+
+### Anotações
+
+#### @McpTool — Expor métodos como ferramentas MCP
+
+```java
+@ApplicationScoped
+public class CalculatorService {
+
+    @McpTool(description = "Soma dois números inteiros")
+    public int add(@McpParam(name = "a", description = "Primeiro operando") int a,
+                   @McpParam(name = "b", description = "Segundo operando") int b) {
+        return a + b;
+    }
+}
+```
+
+O `inputSchema` (JSON Schema) é gerado automaticamente a partir dos parâmetros do método. Use `@McpParam` para personalizar nome, descrição e obrigatoriedade:
+
+```java
+@McpTool(name = "buscar-produtos", description = "Busca produtos por filtro")
+public List<Produto> buscar(
+        @McpParam(name = "categoria", description = "Categoria do produto") String categoria,
+        @McpParam(name = "precoMax", description = "Preço máximo", required = false) Double precoMax) {
+    // ...
+}
+```
+
+#### @McpResource — Expor dados como recursos MCP
+
+```java
+@McpResource(uri = "config://app", name = "App Config",
+             description = "Configuração da aplicação", mimeType = "application/json")
+public String readConfig() {
+    return "{ \"version\": \"1.0\" }";
+}
+```
+
+#### @McpPrompt — Expor templates de prompt MCP
+
+```java
+@McpPrompt(name = "code-review", description = "Revisa código fonte")
+public List<Map<String, Object>> codeReview(
+        @McpParam(name = "code", description = "Código a revisar") String code) {
+    return List.of(Map.of(
+        "role", "user",
+        "content", Map.of("type", "text", "text", "Revise este código: " + code)
+    ));
+}
+```
+
+### Mapeamento de Tipos Java → JSON Schema
+
+| Tipo Java | JSON Schema |
+|---|---|
+| `String` | `{"type": "string"}` |
+| `int`/`Integer`/`long`/`Long` | `{"type": "integer"}` |
+| `double`/`Double`/`float`/`Float` | `{"type": "number"}` |
+| `boolean`/`Boolean` | `{"type": "boolean"}` |
+| `List<T>`/`T[]` | `{"type": "array", "items": {...}}` |
+| POJO | `{"type": "object", "properties": {...}}` |
+
+### Configuração via demoiselle.properties
+
+```properties
+# Nome e versão do servidor MCP
+demoiselle.mcp.server.name=minha-aplicacao
+demoiselle.mcp.server.version=2.0.0
+
+# Transporte: "sse" (padrão) ou "stdio"
+demoiselle.mcp.transport=sse
+
+# Autenticação JWT no transporte SSE
+demoiselle.mcp.security.enabled=false
+
+# Desabilitar ferramentas específicas sem remover código
+demoiselle.mcp.tools.disabled=ferramenta-debug, ferramenta-teste
+```
+
+### Transporte SSE
+
+O transporte SSE expõe dois endpoints JAX-RS:
+
+- `GET /mcp/sse` — estabelece conexão SSE, retorna evento `endpoint` com a URI do POST
+- `POST /mcp/messages?sessionId=...` — recebe mensagens JSON-RPC, retorna respostas via SSE
+
+```
+Cliente MCP                          Servidor
+    │                                    │
+    │── GET /mcp/sse ──────────────────>│
+    │<── event: endpoint ───────────────│  (URI do POST)
+    │                                    │
+    │── POST /mcp/messages ────────────>│  (initialize)
+    │<── event: message ────────────────│  (capabilities)
+    │                                    │
+    │── POST /mcp/messages ────────────>│  (tools/call)
+    │<── event: message ────────────────│  (resultado)
+```
+
+### Transporte stdio
+
+Para comunicação local entre processos (ex.: integração com IDEs):
+
+```bash
+java -cp app.jar org.demoiselle.jee.mcp.transport.McpStdioTransport
+```
+
+Lê JSON-RPC de `stdin` (uma mensagem por linha), escreve respostas em `stdout`. Logs vão para `stderr`.
+
+### Segurança JWT (opcional)
+
+Quando `demoiselle.mcp.security.enabled=true` e `demoiselle-security` está no classpath:
+
+- Conexões SSE exigem token JWT válido no header `Authorization: Bearer <token>`
+- Token ausente/inválido → HTTP 401
+- Token expirado → HTTP 401 com detail "Token expired"
+- O transporte stdio ignora configurações de segurança (contexto local confiável)
+
+### Integrações Opcionais
+
+| Módulo | Integração | Comportamento sem o módulo |
+|---|---|---|
+| `demoiselle-rest` | Erros formatados como ProblemDetail (RFC 9457) | Erros como texto simples |
+| `demoiselle-security` | Autenticação JWT, `@RateLimit` por ferramenta | Sem autenticação, sem rate limit |
+| `demoiselle-crud` | `PageResult` com metadados de paginação, `SpecificationBuilder` | PageResult tratado como POJO |
+| `demoiselle-observability` | Contadores `@Counted` por ferramenta | Sem métricas |
+
+### Protocolo JSON-RPC 2.0
+
+O handler central valida e roteia mensagens conforme a especificação MCP:
+
+| Método | Descrição |
+|---|---|
+| `initialize` | Negociação de capacidades (tools, resources, prompts) |
+| `notifications/initialized` | Marca sessão como ativa |
+| `tools/list` | Lista ferramentas registradas com inputSchema |
+| `tools/call` | Invoca ferramenta por nome com argumentos JSON |
+| `resources/list` | Lista recursos registrados |
+| `resources/read` | Lê conteúdo de um recurso por URI |
+| `prompts/list` | Lista prompts registrados com argumentos |
+| `prompts/get` | Executa prompt por nome com argumentos |
+
+Códigos de erro JSON-RPC:
+
+| Código | Significado |
+|---|---|
+| `-32600` | Requisição inválida (jsonrpc ≠ "2.0" ou sessão não inicializada) |
+| `-32601` | Método desconhecido |
+| `-32602` | Ferramenta/recurso/prompt inexistente |
+| `-32603` | Erro interno do servidor |
+| `-32700` | JSON malformado |
+
+---
+
 ## Testes Baseados em Propriedades (jqwik)
 
-O framework inclui **55+ property-based tests** usando [jqwik](https://jqwik.net/) que validam propriedades universais de corretude:
+O framework inclui **81+ property-based tests** usando [jqwik](https://jqwik.net/) que validam propriedades universais de corretude:
 
 | # | Propriedade | Módulo |
 |:---:|---|---|
@@ -1907,6 +2079,32 @@ O framework inclui **55+ property-based tests** usando [jqwik](https://jqwik.net
 | 53 | Headers customizados consistentes com PageResult e Link | crud |
 | 54 | Rate limiter rejeita (N+1)-ésima requisição com Retry-After | security |
 | 55 | Resposta 429 contém Retry-After consistente | security |
+| 56 | Invariante de schema válido para @McpTool | mcp |
+| 57 | Mapeamento correto de tipos Java → JSON Schema | mcp |
+| 58 | Metadados de parâmetros (required e description) | mcp |
+| 59 | Rejeição de nomes/URIs duplicados nos registros | mcp |
+| 60 | Consistência entre registros e respostas de listagem | mcp |
+| 61 | Lookup por nome/URI inexistente retorna -32602 | mcp |
+| 62 | isError reflete exceção do método CDI | mcp |
+| 63 | Round-trip de serialização de argumentos e resultados | mcp |
+| 64 | Round-trip do transporte stdio | mcp |
+| 65 | Capabilities refletem estado dos registros | mcp |
+| 66 | Requisições pré-handshake rejeitadas com -32600 | mcp |
+| 67 | Validação JSON-RPC e consistência de id | mcp |
+| 68 | Método desconhecido retorna -32601 | mcp |
+| 69 | Notificações não produzem resposta | mcp |
+| 70 | Formatação de erros condicional ao classpath | mcp |
+| 71 | Mapeamento de tipo de exceção para status ProblemDetail | mcp |
+| 72 | Serialização de PageResult com metadados de paginação | mcp |
+| 73 | Resposta de rate limit | mcp |
+| 74 | Contadores de métricas auto-registrados | mcp |
+| 75 | Filtragem de ferramentas desabilitadas | mcp |
+| 76 | Round-trip de serialização JsonRpcMessage | mcp |
+| 77 | Campos null omitidos na serialização | mcp |
+| 78 | Exclusividade mútua entre error e result | mcp |
+| 79 | SpecificationBuilder suporta todos os operadores | mcp |
+| 80 | PageResult como objeto simples sem demoiselle-crud | mcp |
+| 81 | Geração de argumentos de prompt a partir de parâmetros | mcp |
 
 **Exemplo — Property test de cópia defensiva:**
 
@@ -2328,3 +2526,4 @@ Sem a dependência, nenhum comportamento muda.
 | @RequiredAllPermissions | Nova anotação |
 | Observabilidade | Dependência Maven |
 | OpenAPI | Dependência Maven |
+| MCP (Model Context Protocol) | Dependência Maven + `demoiselle.mcp.*` |
