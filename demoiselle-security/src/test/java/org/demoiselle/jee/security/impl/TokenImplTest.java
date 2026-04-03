@@ -14,6 +14,7 @@ import jakarta.inject.Inject;
 
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenType;
+import org.demoiselle.jee.security.test.TestTokenProducer;
 import org.jboss.weld.junit5.auto.ActivateScopes;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.EnableAutoWeld;
@@ -25,7 +26,7 @@ import org.junit.jupiter.api.Test;
  */
 @EnableAutoWeld
 @ActivateScopes(RequestScoped.class)
-@AddBeanClasses(TokenImpl.class)
+@AddBeanClasses(TestTokenProducer.class)
 class TokenImplTest {
 
     @Inject

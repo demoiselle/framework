@@ -1,6 +1,5 @@
 package org.demoiselle.jee.observability.metrics;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import org.eclipse.microprofile.metrics.Counter;
@@ -8,9 +7,11 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 
 /**
  * Implementação real que delega para MicroProfile Metrics.
- * Registrada condicionalmente pela ObservabilityExtension.
+ * <p>
+ * Registrada programaticamente pela {@code ObservabilityExtension} via
+ * {@code AfterBeanDiscovery.addBean()}. Não possui anotação de escopo CDI
+ * para evitar ambiguidade (WELD-001409) com o bean sintético.
  */
-@ApplicationScoped
 public class MicroProfileMetricsAdapter implements MetricsAdapter {
 
     @Inject

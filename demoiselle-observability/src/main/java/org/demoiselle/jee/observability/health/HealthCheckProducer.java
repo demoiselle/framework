@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.CDI;
 
@@ -23,8 +22,9 @@ import org.eclipse.microprofile.health.Readiness;
  * <p>
  * This producer is registered conditionally by {@code ObservabilityExtension}
  * only when MicroProfile Health is available on the classpath.
+ * Does not carry a CDI scope annotation to avoid ambiguity (WELD-001409)
+ * with the synthetic bean registered by the extension.
  */
-@ApplicationScoped
 public class HealthCheckProducer {
 
     /**

@@ -8,7 +8,7 @@ package org.demoiselle.jee.security.impl;
 
 import java.util.Objects;
 
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Vetoed;
 
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenType;
@@ -22,8 +22,13 @@ import org.demoiselle.jee.core.api.security.TokenType;
  * <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/security.html">Documentation</a>
  *
  * @author SERPRO
+ *
+ * @deprecated Mantido apenas para compatibilidade. O Token request-scoped é produzido
+ * pelo producer em {@code SecurityFilter}. Esta classe é {@code @Vetoed} para evitar
+ * ambiguidade CDI (WELD-001409).
  */
-@RequestScoped
+@Vetoed
+@Deprecated
 public class TokenImpl implements Token {
 
     private String key;

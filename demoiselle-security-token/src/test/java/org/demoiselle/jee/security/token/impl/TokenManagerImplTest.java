@@ -17,8 +17,8 @@ import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
 import org.demoiselle.jee.security.impl.DemoiselleUserImpl;
-import org.demoiselle.jee.security.impl.TokenImpl;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
+import org.demoiselle.jee.security.token.test.TestTokenProducer;
 import org.jboss.weld.junit5.auto.ActivateScopes;
 import org.jboss.weld.junit5.auto.AddBeanClasses;
 import org.jboss.weld.junit5.auto.AddExtensions;
@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 @AddBeanClasses({
     TokenManagerImpl.class,
     DemoiselleUserImpl.class,
-    TokenImpl.class,
+    TestTokenProducer.class,
     DemoiselleSecurityMessages.class
 })
 class TokenManagerImplTest {

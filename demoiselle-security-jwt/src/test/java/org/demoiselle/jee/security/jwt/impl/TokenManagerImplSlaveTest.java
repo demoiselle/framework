@@ -19,7 +19,7 @@ import org.demoiselle.jee.core.api.security.TokenManager;
 import org.demoiselle.jee.core.api.security.TokenType;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.impl.DemoiselleUserImpl;
-import org.demoiselle.jee.security.impl.TokenImpl;
+import org.demoiselle.jee.security.jwt.test.TestTokenProducer;
 import org.demoiselle.jee.security.message.DemoiselleSecurityJWTMessages;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 import org.jboss.weld.junit5.auto.ActivateScopes;
@@ -47,7 +47,7 @@ import org.junit.jupiter.api.Test;
     TokenBlacklist.class,
     DemoiselleSecurityJWTConfig.class,
     DemoiselleUserImpl.class,
-    TokenImpl.class,
+    TestTokenProducer.class,
     DemoiselleSecurityJWTMessages.class,
     DemoiselleSecurityMessages.class,
     org.demoiselle.jee.configuration.ConfigurationLoader.class,

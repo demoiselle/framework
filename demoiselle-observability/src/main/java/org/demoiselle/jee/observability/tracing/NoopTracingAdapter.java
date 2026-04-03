@@ -1,12 +1,13 @@
 package org.demoiselle.jee.observability.tracing;
 
-import jakarta.enterprise.context.ApplicationScoped;
-
 /**
  * Implementação noop usada quando OpenTelemetry não está no classpath.
  * Executa o callable diretamente sem criar spans.
+ * <p>
+ * Registrada programaticamente pela {@code ObservabilityExtension} via
+ * {@code AfterBeanDiscovery.addBean()}. Não possui anotação de escopo CDI
+ * para evitar ambiguidade (WELD-001409) com o bean sintético.
  */
-@ApplicationScoped
 public class NoopTracingAdapter implements TracingAdapter {
 
     @Override
