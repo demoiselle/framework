@@ -105,7 +105,11 @@ public class MessageBundleBuildCompatibleExtension implements BuildCompatibleExt
     /**
      * Synthetic bean creator that produces dynamic proxy instances for @MessageBundle interfaces.
      * This creator is invoked by the CDI container when a synthetic bean instance is needed.
+     * <p>
+     * Marcada como {@code @Vetoed} para impedir descoberta automática pelo Weld
+     * com {@code bean-discovery-mode="all"}.
      */
+    @jakarta.enterprise.inject.Vetoed
     public static class MessageBundleSyntheticCreator implements SyntheticBeanCreator<Object> {
 
         @Override

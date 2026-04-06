@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.build.compatible.spi.Discovery;
@@ -69,7 +69,7 @@ public class ConfigurationBuildCompatibleExtension implements BuildCompatibleExt
     }
 
     /**
-     * Synthesis phase — registers a synthetic ApplicationScoped bean that holds
+     * Synthesis phase — registers a synthetic Dependent bean that holds
      * the {@code Set<Class<? extends ConfigurationValueExtractor>>} cache.
      * This bean is functionally equivalent to the cache maintained by
      * {@link ConfigurationBootstrap}.
@@ -79,7 +79,7 @@ public class ConfigurationBuildCompatibleExtension implements BuildCompatibleExt
         syn.addBean(ExtractorRegistry.class)
             .type(ExtractorRegistry.class)
             .qualifier(Default.class)
-            .scope(ApplicationScoped.class)
+            .scope(Dependent.class)
             .createWith(ExtractorRegistryCreator.class)
             .withParam("classNames", extractorClassNames.toArray(new String[0]));
         logger.fine("Registered synthetic ExtractorRegistry bean via BCE with "
@@ -90,7 +90,12 @@ public class ConfigurationBuildCompatibleExtension implements BuildCompatibleExt
      * Registry bean that holds the set of discovered {@link ConfigurationValueExtractor}
      * implementation classes. Injected by {@link ConfigurationLoader} as an alternative
      * to {@link ConfigurationBootstrap#getCache()}.
+     * <p>
+     * Marcada como {@code @Vetoed} para impedir descoberta automática pelo Weld
+     * com {@code bean-discovery-mode="all"}, evitando ambiguidade (WELD-001409)
+     * com o bean sintético registrado pela extensão BCE.
      */
+    @jakarta.enterprise.inject.Vetoed
     public static class ExtractorRegistry {
 
         private final Set<Class<? extends ConfigurationValueExtractor>> cache;
@@ -109,6 +114,7 @@ public class ConfigurationBuildCompatibleExtension implements BuildCompatibleExt
      * Synthetic bean creator that produces an {@link ExtractorRegistry} instance
      * containing all discovered ConfigurationValueExtractor classes.
      */
+    @jakarta.enterprise.inject.Vetoed
     public static class ExtractorRegistryCreator implements SyntheticBeanCreator<ExtractorRegistry> {
 
         @SuppressWarnings("unchecked")
