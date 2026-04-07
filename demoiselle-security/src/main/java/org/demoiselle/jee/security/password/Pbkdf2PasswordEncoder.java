@@ -83,7 +83,7 @@ public class Pbkdf2PasswordEncoder implements PasswordEncoder {
             byte[] actualHash = pbkdf2(rawPassword, salt, iterations);
 
             return MessageDigest.isEqual(expectedHash, actualHash);
-        } catch (NumberFormatException | IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return false;
         }
     }

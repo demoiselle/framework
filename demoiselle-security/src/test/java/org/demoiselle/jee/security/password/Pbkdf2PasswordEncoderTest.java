@@ -21,7 +21,7 @@ import net.jqwik.api.constraints.*;
  */
 class Pbkdf2PasswordEncoderTest {
 
-    private Pbkdf2PasswordEncoder encoder;
+    private Pbkdf2PasswordEncoder encoder = new Pbkdf2PasswordEncoder();
 
     @BeforeEach
     void setUp() {

@@ -1845,6 +1845,38 @@ O método agora verifica efetivamente os parâmetros issuer e audience do usuár
 record TokenEntry(DemoiselleUser user, Instant expiresAt) {}
 ```
 
+### Resolução de Ambiguidade CDI no Token
+
+O `TokenImpl` foi marcado com `@Vetoed` para evitar ambiguidade CDI (WELD-001409) no WildFly/Weld. O `Token` request-scoped é produzido exclusivamente pelo producer em `SecurityFilter`:
+
+```java
+// SecurityFilter.java — fonte única do Token no container CDI
+@Produces
+@RequestScoped
+public Token produceToken() {
+    if (currentToken != null) {
+        return currentToken;  // TokenImpl mutável com key/type do header
+    }
+    return new TokenImpl();   // TokenImpl vazio (mutável)
+}
+```
+
+O `TokenManagerImpl` do JWT continua usando `token.setKey()` e `token.setType()` normalmente, pois o producer entrega `TokenImpl` (mutável).
+
+O `TokenRecord` (record imutável) permanece disponível para uso externo onde imutabilidade é desejada, mas não é usado como bean CDI.
+
+### Correções de Ambiguidade CDI no Observability
+
+Os adapters do módulo `demoiselle-observability` foram marcados com `@Vetoed` para evitar duplicidade com os beans sintéticos registrados pela `ObservabilityExtension`:
+
+| Classe | Correção |
+|---|---|
+| `NoopTracingAdapter` | `@Vetoed` — registrado via extensão |
+| `OpenTelemetryTracingAdapter` | `@Vetoed` — registrado via extensão |
+| `NoopMetricsAdapter` | `@Vetoed` — registrado via extensão |
+| `MicroProfileMetricsAdapter` | `@Vetoed` — registrado via extensão |
+| `HealthCheckProducer` | `@Vetoed` — registrado via extensão |
+
 ---
 
 ## P31 — Módulo MCP (`demoiselle-mcp`)
@@ -2394,16 +2426,19 @@ demoiselle.security.jwt.clockSkewSeconds=30
 
 Sem configuração adicional, o comportamento é idêntico ao v3.
 
-#### 18. Token Imutável
+#### 18. Token — Resolução de Ambiguidade CDI
 
 ```java
-// Antes: TokenImpl mutável
-token.setKey("abc");
-token.setType(TokenType.TOKEN);
+// Antes: TokenImpl era @RequestScoped (bean CDI normal)
+// Problema: ambiguidade com o producer em SecurityFilter (WELD-001409)
 
-// Depois: TokenRecord imutável
-// setKey() e setType() lançam UnsupportedOperationException
-// Use o producer CDI para criar tokens
+// Depois: TokenImpl é @Vetoed (não é mais bean CDI)
+// O Token request-scoped é produzido exclusivamente pelo SecurityFilter
+// setKey() e setType() continuam funcionando normalmente
+
+// TokenRecord existe como alternativa imutável para uso externo,
+// mas o producer do SecurityFilter entrega TokenImpl (mutável)
+// para compatibilidade com TokenManagerImpl.setUser()
 ```
 
 #### 19. Security Token — validate(issuer, audience)
@@ -2505,7 +2540,7 @@ Sem a dependência, nenhum comportamento muda.
 | `javax.*` → `jakarta.*` | Alto | Substituir imports |
 | Record accessors (`error()` vs `getError()`) | Médio | Atualizar chamadas |
 | `List.copyOf()` em coleções de segurança | Baixo | Re-obter lista após mutação |
-| `Token` imutável (`setKey()` → UnsupportedOp) | Médio | Usar producer CDI |
+| `TokenImpl` agora `@Vetoed` (não é bean CDI) | Baixo | Token vem do producer do SecurityFilter |
 | `validate(issuer, audience)` corrigido | Baixo | Verificar params do user |
 | Rate limit retorna Response (não exceção) | Baixo | Ajustar catch se aplicável |
 
