@@ -11,58 +11,25 @@ import java.lang.reflect.Field;
 import jakarta.enterprise.context.Dependent;
 
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.DataConfiguration;
+import org.demoiselle.jee.configuration.ConfigurationPlaceholderResolver;
 import org.demoiselle.jee.configuration.ConfigurationType;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 
 /**
  * Adds the data extraction capability of a source ({@link ConfigurationType})
- * for the type of {@link Object[]}.
- * 
- * <p>
- * Sample:
- * </p>
- * 
- * <p>
- * For the extraction of an array type of a properties file the statement made
- * in the properties will have the following format:
- * </p>
- * 
- * <pre>
- * demoiselle.intergerArray=-1
- * demoiselle.intergerArray=0
- * demoiselle.intergerArray=1
- * </pre>
- * 
- * And the configuration class will be declared as follows:
- * 
- * <pre>
- * 
- * &#64;Configuration
- * public class MyConfig {
- *     private Integer[] integerArray;
- * 
- *     public Integer[] getIntegerArray() {
- *         return this.integerArray;
- *     }
- * 
- * }
- * 
- * </pre>
- * 
+ * for array fields.
+ *
  * @author SERPRO
- * 
  */
 @Dependent
 public class ConfigurationArrayValueExtractor implements ConfigurationValueExtractor {
 
     @Override
     public Object getValue(String prefix, String key, Field field, Configuration configuration) throws DemoiselleConfigurationValueExtractorException {
-        try{
-            return new DataConfiguration(configuration).getArray(field.getType().getComponentType(), prefix + key);
-        }
-        catch(Exception e){
+        try {
+            return ConfigurationPlaceholderResolver.toArray(configuration.getProperty(prefix + key), field.getType().getComponentType());
+        } catch (Exception e) {
             throw new DemoiselleConfigurationValueExtractorException(e.getMessage(), e);
         }
     }

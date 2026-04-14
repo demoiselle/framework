@@ -13,61 +13,16 @@ import java.util.Set;
 import jakarta.enterprise.context.Dependent;
 
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.DataConfiguration;
-import org.apache.commons.lang3.ClassUtils;
+import org.demoiselle.jee.configuration.ConfigurationPlaceholderResolver;
 import org.demoiselle.jee.configuration.ConfigurationType;
 import org.demoiselle.jee.configuration.exception.DemoiselleConfigurationValueExtractorException;
 import org.demoiselle.jee.configuration.extractor.ConfigurationValueExtractor;
 
 /**
- * 
  * Adds the data extraction capability of a source ({@link ConfigurationType})
- * for the types:
- * 
- * <ul>
- * <li>{@link Boolean}</li>
- * <li>{@link Byte}</li>
- * <li>{@link Character}</li>
- * <li>{@link Short}</li>
- * <li>{@link Integer}</li>
- * <li>{@link Long}</li>
- * <li>{@link Double}</li>
- * <li>{@link Float}</li>
- * <li>{@link Void}</li>
- * </ul>
- * 
- * <p>
- * Sample:
- * </p>
- * 
- * <p>
- * For the extraction of a int type of a properties file the statement made in
- * the properties will have the following format:
- * </p>
- * 
- * <pre>
- * demoiselle.pageSize = 10
- * </pre>
- * 
- * And the configuration class will be declared as follows:
- * 
- * <pre>
- * 
- * &#64;Configuration
- * public class BookmarkConfig {
+ * for primitive and wrapper types.
  *
- *     private int pageSize;
- *
- *     public String getPageSize() {
- *         return pageSize;
- *     }
- *
- * }
- * 
- * </pre>
- * 
  * @author SERPRO
- * 
  */
 @Dependent
 public class ConfigurationPrimitiveOrWrapperValueExtractor implements ConfigurationValueExtractor {
@@ -88,10 +43,9 @@ public class ConfigurationPrimitiveOrWrapperValueExtractor implements Configurat
 
     @Override
     public Object getValue(String prefix, String key, Field field, Configuration configuration) throws DemoiselleConfigurationValueExtractorException {
-        try{
-            return new DataConfiguration(configuration).get(ClassUtils.primitiveToWrapper(field.getType()), prefix + key);
-        }
-        catch(Exception e){
+        try {
+            return ConfigurationPlaceholderResolver.convert(configuration.getString(prefix + key), field.getType());
+        } catch (Exception e) {
             throw new DemoiselleConfigurationValueExtractorException(e.getMessage(), e);
         }
     }
