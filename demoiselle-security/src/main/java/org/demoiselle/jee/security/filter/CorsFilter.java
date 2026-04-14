@@ -24,12 +24,7 @@ import org.demoiselle.jee.security.DemoiselleSecurityConfig;
 import org.demoiselle.jee.security.annotation.Cors;
 
 /**
- * <p>
- * Server cors handling
- * </p>
- *
- * @see
- * <a href="https://demoiselle.gitbooks.io/documentacao-jee/content/cors.html">Documentation</a>
+ * JAX-RS response filter that applies CORS and security headers.
  *
  * @author SERPRO
  */
@@ -47,8 +42,8 @@ public class CorsFilter implements ContainerResponseFilter {
     public void filter(ContainerRequestContext req, ContainerResponseContext res) throws IOException {
         // Security headers (always applied)
         res.getHeaders().putSingle("Demoiselle-security", "Enable");
-        config.getParamsHeaderSecuriry().entrySet().forEach(entry ->
-            res.getHeaders().putSingle(entry.getKey(), entry.getValue()));
+        config.getParamsHeaderSecuriry().forEach((key, value) ->
+            res.getHeaders().putSingle(key, value));
 
         // Check if CORS is enabled (@Cors annotation takes precedence)
         boolean corsEnable = config.isCorsEnabled();
@@ -59,36 +54,87 @@ public class CorsFilter implements ContainerResponseFilter {
         }
 
         if (!corsEnable) {
-            res.getHeaders().remove("Access-Control-Allow-Origin");
-            res.getHeaders().remove("Access-Control-Allow-Methods");
+            removeCorsHeaders(res);
             return;
         }
 
-        // Typed CORS properties (if configured)
         List<String> allowedOrigins = config.getCorsAllowedOrigins();
-        if (allowedOrigins != null && !allowedOrigins.isEmpty()) {
-            String origin = req.getHeaderString("Origin");
-            if (origin != null) {
-                if (allowedOrigins.contains("*")) {
-                    res.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
-                } else if (allowedOrigins.contains(origin)) {
-                    res.getHeaders().putSingle("Access-Control-Allow-Origin", origin);
-                } else {
-                    // Origin not allowed — omit CORS headers
-                    return;
-                }
-            }
-            res.getHeaders().putSingle("Access-Control-Allow-Methods",
-                String.join(", ", config.getCorsAllowedMethods()));
-            res.getHeaders().putSingle("Access-Control-Allow-Headers",
-                String.join(", ", config.getCorsAllowedHeaders()));
-            res.getHeaders().putSingle("Access-Control-Max-Age",
-                String.valueOf(config.getCorsMaxAge()));
-        } else {
-            // Fallback to legacy behavior
-            config.getParamsHeaderCors().entrySet().forEach(entry ->
-                res.getHeaders().putSingle(entry.getKey(), entry.getValue()));
+        if (allowedOrigins == null || allowedOrigins.isEmpty()) {
+            config.getParamsHeaderCors().forEach((key, value) ->
+                res.getHeaders().putSingle(key, value));
+            return;
         }
+
+        String origin = req.getHeaderString("Origin");
+        String resolvedOrigin = resolveAllowedOrigin(origin, allowedOrigins,
+                config.isCorsAllowCredentials());
+        if (origin != null && resolvedOrigin == null) {
+            return;
+        }
+
+        applyCorsHeaders(res, origin, resolvedOrigin);
     }
 
+    private void applyCorsHeaders(ContainerResponseContext res, String origin,
+                                  String resolvedOrigin) {
+        if (resolvedOrigin != null) {
+            res.getHeaders().putSingle("Access-Control-Allow-Origin", resolvedOrigin);
+            if (!"*".equals(resolvedOrigin) && origin != null) {
+                appendVaryOrigin(res);
+            }
+            if (config.isCorsAllowCredentials() && !"*".equals(resolvedOrigin)) {
+                res.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
+            }
+        }
+
+        if (!config.getCorsAllowedMethods().isEmpty()) {
+            res.getHeaders().putSingle("Access-Control-Allow-Methods",
+                    String.join(", ", config.getCorsAllowedMethods()));
+        }
+
+        if (!config.getCorsAllowedHeaders().isEmpty()) {
+            res.getHeaders().putSingle("Access-Control-Allow-Headers",
+                    String.join(", ", config.getCorsAllowedHeaders()));
+        }
+
+        res.getHeaders().putSingle("Access-Control-Max-Age",
+                String.valueOf(config.getCorsMaxAge()));
+    }
+
+    private void appendVaryOrigin(ContainerResponseContext res) {
+        Object current = res.getHeaders().getFirst("Vary");
+        if (current == null) {
+            res.getHeaders().putSingle("Vary", "Origin");
+            return;
+        }
+        String currentValue = current.toString();
+        for (String item : currentValue.split(",")) {
+            if ("Origin".equalsIgnoreCase(item.trim())) {
+                return;
+            }
+        }
+        res.getHeaders().putSingle("Vary", currentValue + ", Origin");
+    }
+
+    private String resolveAllowedOrigin(String origin, List<String> allowedOrigins,
+                                        boolean allowCredentials) {
+        if (allowedOrigins.contains("*")) {
+            if (allowCredentials && origin != null) {
+                return origin;
+            }
+            return "*";
+        }
+        if (origin != null && allowedOrigins.contains(origin)) {
+            return origin;
+        }
+        return null;
+    }
+
+    private void removeCorsHeaders(ContainerResponseContext res) {
+        res.getHeaders().remove("Access-Control-Allow-Origin");
+        res.getHeaders().remove("Access-Control-Allow-Methods");
+        res.getHeaders().remove("Access-Control-Allow-Headers");
+        res.getHeaders().remove("Access-Control-Max-Age");
+        res.getHeaders().remove("Access-Control-Allow-Credentials");
+    }
 }

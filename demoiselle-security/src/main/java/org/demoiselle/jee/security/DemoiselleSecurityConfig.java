@@ -33,6 +33,7 @@ public class DemoiselleSecurityConfig {
     private List<String> corsAllowedMethods = new ArrayList<>(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     @ConfigurationIgnore
     private List<String> corsAllowedHeaders = new ArrayList<>(Arrays.asList("Content-Type", "Authorization"));
+    private boolean corsAllowCredentials;
     private int corsMaxAge = 3600;
 
     private int bruteForceMaxAttempts = 5;
@@ -60,6 +61,10 @@ public class DemoiselleSecurityConfig {
 
     public List<String> getCorsAllowedHeaders() {
         return corsAllowedHeaders;
+    }
+
+    public boolean isCorsAllowCredentials() {
+        return corsAllowCredentials;
     }
 
     public int getCorsMaxAge() {

@@ -9,6 +9,7 @@ package org.demoiselle.jee.security.filter;
 import static jakarta.ws.rs.core.Response.ok;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import jakarta.annotation.Priority;
@@ -77,9 +78,9 @@ public class SecurityFilter implements ContainerRequestFilter {
         if (req.getMethod().equals("OPTIONS")) {
             Response.ResponseBuilder responseBuilder = ok();
             if (config.isCorsEnabled()) {
-                config.getParamsHeaderSecuriry().entrySet().stream().forEach((entry) -> {
-                    responseBuilder.header(entry.getKey(), entry.getValue());
-                });
+                config.getParamsHeaderSecuriry().forEach((key, value) ->
+                    responseBuilder.header(key, value));
+                applyCorsHeaders(req, responseBuilder);
             }
             req.abortWith(responseBuilder.build());
             return;
@@ -123,5 +124,59 @@ public class SecurityFilter implements ContainerRequestFilter {
         if (currentToken == null) {
             currentToken = new TokenImpl();
         }
+    }
+
+    private void applyCorsHeaders(ContainerRequestContext req,
+                                  Response.ResponseBuilder responseBuilder) {
+        List<String> allowedOrigins = config.getCorsAllowedOrigins();
+        if (allowedOrigins == null || allowedOrigins.isEmpty()) {
+            config.getParamsHeaderCors().forEach((key, value) ->
+                responseBuilder.header(key, value));
+            return;
+        }
+
+        String origin = req.getHeaderString("Origin");
+        String resolvedOrigin = resolveAllowedOrigin(origin, allowedOrigins,
+                config.isCorsAllowCredentials());
+        if (origin != null && resolvedOrigin == null) {
+            return;
+        }
+
+        if (resolvedOrigin != null) {
+            responseBuilder.header("Access-Control-Allow-Origin", resolvedOrigin);
+            if (!"*".equals(resolvedOrigin) && origin != null) {
+                responseBuilder.header("Vary", "Origin");
+            }
+            if (config.isCorsAllowCredentials() && !"*".equals(resolvedOrigin)) {
+                responseBuilder.header("Access-Control-Allow-Credentials", "true");
+            }
+        }
+
+        if (!config.getCorsAllowedMethods().isEmpty()) {
+            responseBuilder.header("Access-Control-Allow-Methods",
+                    String.join(", ", config.getCorsAllowedMethods()));
+        }
+
+        if (!config.getCorsAllowedHeaders().isEmpty()) {
+            responseBuilder.header("Access-Control-Allow-Headers",
+                    String.join(", ", config.getCorsAllowedHeaders()));
+        }
+
+        responseBuilder.header("Access-Control-Max-Age",
+                String.valueOf(config.getCorsMaxAge()));
+    }
+
+    private String resolveAllowedOrigin(String origin, List<String> allowedOrigins,
+                                        boolean allowCredentials) {
+        if (allowedOrigins.contains("*")) {
+            if (allowCredentials && origin != null) {
+                return origin;
+            }
+            return "*";
+        }
+        if (origin != null && allowedOrigins.contains(origin)) {
+            return origin;
+        }
+        return null;
     }
 }
