@@ -21,6 +21,7 @@ import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenType;
 import org.demoiselle.jee.security.impl.DemoiselleUserImpl;
 import org.demoiselle.jee.security.jwt.api.ClaimsEnricher;
+import org.demoiselle.jee.security.jwt.impl.JwtTokenValidatorImpl;
 import org.demoiselle.jee.security.message.DemoiselleSecurityJWTMessages;
 import org.jose4j.jwt.JwtClaims;
 import org.junit.jupiter.api.BeforeEach;
@@ -181,6 +182,14 @@ class ClaimsEnricherTest {
         setField(tm, "tokenBlacklist", new TokenBlacklist());
         setField(tm, "loggedUser", loggedUser);
         setField(tm, "claimsEnrichers", enricherInstance);
+
+        JwtTokenValidatorImpl validator = new JwtTokenValidatorImpl();
+        setField(validator, "keyRotationManager", krm);
+        setField(validator, "config", config);
+        setField(validator, "bundle", new StubMessages());
+        setField(validator, "tokenBlacklist", new TokenBlacklist());
+        setField(validator, "claimsEnrichers", enricherInstance);
+        setField(tm, "jwtTokenValidator", validator);
 
         return tm;
     }

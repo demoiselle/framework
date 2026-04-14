@@ -42,6 +42,7 @@ import org.junit.jupiter.api.Test;
 @AddEnabledInterceptors(org.demoiselle.jee.configuration.ConfigurationInterceptor.class)
 @AddBeanClasses({
     TokenManagerImpl.class,
+    JwtTokenValidatorImpl.class,
     KeyPairHolder.class,
     KeyRotationManager.class,
     TokenBlacklist.class,

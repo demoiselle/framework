@@ -7,22 +7,20 @@
 package org.demoiselle.jee.security.jwt.impl;
 
 import java.util.List;
-import java.util.Map;
 
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import static jakarta.ws.rs.Priorities.AUTHORIZATION;
-import jakarta.ws.rs.core.Response;
-
-import org.demoiselle.jee.security.jwt.api.ClaimsEnricher;
 
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenManager;
 import org.demoiselle.jee.core.api.security.TokenType;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
+import org.demoiselle.jee.security.jwt.api.ClaimsEnricher;
+import org.demoiselle.jee.security.jwt.api.JwtTokenValidator;
 import org.demoiselle.jee.security.message.DemoiselleSecurityJWTMessages;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
@@ -72,6 +70,9 @@ public class TokenManagerImpl implements TokenManager {
     @Inject
     private Instance<RefreshTokenManager> refreshTokenManagerInstance;
 
+    @Inject
+    private JwtTokenValidator jwtTokenValidator;
+
     private String lastRefreshToken;
 
     /**
@@ -92,88 +93,19 @@ public class TokenManagerImpl implements TokenManager {
      * @return DemoiselleUser principal
      */
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public DemoiselleUser getUser(String issuer, String audience) {
         if (token.getKey() != null && !token.getKey().isEmpty() && token.getType().equals(TokenType.JWT)) {
             try {
-                // Extract algorithm from JWT header and verify against allowedAlgorithms
-                List<String> allowedAlgs = config.getAllowedAlgorithmsList();
-                if (!allowedAlgs.isEmpty()) {
-                    try {
-                        JsonWebSignature headerJws = new JsonWebSignature();
-                        headerJws.setCompactSerialization(token.getKey());
-                        String tokenAlg = headerJws.getAlgorithmHeaderValue();
-                        if (tokenAlg == null || !allowedAlgs.contains(tokenAlg)) {
-                            throw new DemoiselleSecurityException(bundle.algorithmNotAllowed(), Response.Status.UNAUTHORIZED.getStatusCode());
-                        }
-                    } catch (JoseException e) {
-                        throw new DemoiselleSecurityException(bundle.algorithmNotAllowed(), Response.Status.UNAUTHORIZED.getStatusCode());
-                    }
+                DemoiselleUser validatedUser = jwtTokenValidator.validate(token.getKey(), issuer, audience);
+                if (validatedUser == null) {
+                    return null;
                 }
 
-                // Extract kid from JWT header for key rotation support
-                String kid = null;
-                try {
-                    JsonWebSignature kidJws = new JsonWebSignature();
-                    kidJws.setCompactSerialization(token.getKey());
-                    kid = kidJws.getKeyIdHeaderValue();
-                } catch (JoseException e) {
-                    // If we can't extract kid, proceed with fallback
-                }
-
-                JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                        .setRequireExpirationTime()
-                        .setAllowedClockSkewInSeconds(config.getClockSkewSeconds())
-                        .setExpectedIssuer(issuer != null ? issuer : config.getIssuer())
-                        .setExpectedAudience(audience != null ? audience : config.getAudience())
-                        .setEvaluationTime(org.jose4j.jwt.NumericDate.now())
-                        .setVerificationKey(keyRotationManager.getPublicKey(kid))
-                        .build();
-                JwtClaims jwtClaims = jwtConsumer.processToClaims(token.getKey());
-
-                // Check if the token's JTI is blacklisted (revoked)
-                try {
-                    String jti = jwtClaims.getJwtId();
-                    if (jti != null && tokenBlacklist.isBlacklisted(jti)) {
-                        throw new DemoiselleSecurityException(bundle.tokenBlacklisted(), Response.Status.UNAUTHORIZED.getStatusCode());
-                    }
-                } catch (MalformedClaimException e) {
-                    // JTI claim is malformed; proceed without blacklist check
-                }
-
-                loggedUser.setIdentity((String) jwtClaims.getClaimValue("identity"));
-                loggedUser.setName((String) jwtClaims.getClaimValue("name"));
-                List<String> list = (List<String>) jwtClaims.getClaimValue("roles");
-                list.stream().forEach((string) -> {
-                    loggedUser.addRole(string);
-                });
-
-                Map<String, List<String>> mappermissions = (Map) jwtClaims.getClaimValue("permissions");
-                mappermissions.entrySet().stream().forEach((entry) -> {
-                    String key = entry.getKey();
-                    List<String> value = entry.getValue();
-                    value.stream().forEach((string) -> {
-                        loggedUser.addPermission(key, string);
-                    });
-                });
-
-                Map<String, String> mapparams = (Map) jwtClaims.getClaimValue("params");
-                mapparams.entrySet().stream().forEach((entry) -> {
-                    loggedUser.addParam(entry.getKey(), entry.getValue());
-                });
-
-                // Invoke all registered ClaimsEnricher implementations
-                if (claimsEnrichers != null) {
-                    for (ClaimsEnricher enricher : claimsEnrichers) {
-                        enricher.extract(jwtClaims, loggedUser);
-                    }
-                }
-
+                populateLoggedUser(validatedUser);
                 return loggedUser;
-            } catch (InvalidJwtException ex) {
-                loggedUser = null;
+            } catch (DemoiselleSecurityException ex) {
                 token.setKey(null);
-                throw new DemoiselleSecurityException(bundle.expired(), Response.Status.UNAUTHORIZED.getStatusCode(), ex);
+                throw ex;
             }
         }
         return null;
@@ -230,7 +162,7 @@ public class TokenManagerImpl implements TokenManager {
                 lastRefreshToken = null;
             }
         } catch (JoseException ex) {
-            throw new DemoiselleSecurityException(bundle.general(), Response.Status.UNAUTHORIZED.getStatusCode(), ex);
+            throw new DemoiselleSecurityException(bundle.general(), jakarta.ws.rs.core.Response.Status.UNAUTHORIZED.getStatusCode(), ex);
         }
 
     }
@@ -287,6 +219,19 @@ public class TokenManagerImpl implements TokenManager {
             }
         }
         token.setKey(null);
+    }
+
+    private void populateLoggedUser(DemoiselleUser validatedUser) {
+        loggedUser.setIdentity(validatedUser.getIdentity());
+        loggedUser.setName(validatedUser.getName());
+
+        validatedUser.getRoles().forEach(loggedUser::addRole);
+        validatedUser.getPermissions().forEach((resource, operations) -> {
+            if (operations != null) {
+                operations.forEach(operation -> loggedUser.addPermission(resource, operation));
+            }
+        });
+        validatedUser.getParams().forEach(loggedUser::addParam);
     }
 
 }

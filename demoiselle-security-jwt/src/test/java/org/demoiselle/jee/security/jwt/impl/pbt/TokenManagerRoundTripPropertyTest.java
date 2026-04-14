@@ -31,6 +31,7 @@ import org.demoiselle.jee.security.jwt.impl.KeyPairHolder;
 import org.demoiselle.jee.security.jwt.impl.KeyRotationManager;
 import org.demoiselle.jee.security.jwt.impl.RefreshTokenManager;
 import org.demoiselle.jee.security.jwt.impl.TokenBlacklist;
+import org.demoiselle.jee.security.jwt.impl.JwtTokenValidatorImpl;
 import org.demoiselle.jee.security.jwt.impl.TokenManagerImpl;
 import org.demoiselle.jee.security.message.DemoiselleSecurityJWTMessages;
 
@@ -245,6 +246,14 @@ class TokenManagerRoundTripPropertyTest {
         setField(tm, "loggedUser", loggedUser);
         setField(tm, "claimsEnrichers", new SimpleInstance<ClaimsEnricher>(Collections.emptyList()));
         setField(tm, "refreshTokenManagerInstance", new SimpleInstance<RefreshTokenManager>(Collections.emptyList()));
+
+        JwtTokenValidatorImpl validator = new JwtTokenValidatorImpl();
+        setField(validator, "keyRotationManager", krm);
+        setField(validator, "config", config);
+        setField(validator, "bundle", new StubMessages());
+        setField(validator, "tokenBlacklist", new TokenBlacklist());
+        setField(validator, "claimsEnrichers", new SimpleInstance<ClaimsEnricher>(Collections.emptyList()));
+        setField(tm, "jwtTokenValidator", validator);
 
         return tm;
     }

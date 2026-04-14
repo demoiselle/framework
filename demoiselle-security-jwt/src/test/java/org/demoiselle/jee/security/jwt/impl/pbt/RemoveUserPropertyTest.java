@@ -16,6 +16,7 @@ import net.jqwik.api.*;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.core.api.security.TokenType;
+import org.demoiselle.jee.security.jwt.impl.JwtTokenValidatorImpl;
 import org.demoiselle.jee.security.jwt.impl.TokenManagerImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -126,6 +127,12 @@ class RemoveUserPropertyTest {
         java.lang.reflect.Field blacklistField = TokenManagerImpl.class.getDeclaredField("tokenBlacklist");
         blacklistField.setAccessible(true);
         blacklistField.set(tokenManager, new org.demoiselle.jee.security.jwt.impl.TokenBlacklist());
+
+        // Inject a JwtTokenValidatorImpl via reflection
+        JwtTokenValidatorImpl validator = new JwtTokenValidatorImpl();
+        java.lang.reflect.Field validatorField = TokenManagerImpl.class.getDeclaredField("jwtTokenValidator");
+        validatorField.setAccessible(true);
+        validatorField.set(tokenManager, validator);
 
         // removeUser must not throw UnsupportedOperationException
         assertDoesNotThrow(() -> tokenManager.removeUser(user),

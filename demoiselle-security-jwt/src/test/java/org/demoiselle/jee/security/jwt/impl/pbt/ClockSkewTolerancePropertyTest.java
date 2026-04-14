@@ -22,6 +22,7 @@ import org.demoiselle.jee.security.jwt.impl.DemoiselleSecurityJWTConfig;
 import org.demoiselle.jee.security.jwt.impl.KeyPairHolder;
 import org.demoiselle.jee.security.jwt.impl.KeyRotationManager;
 import org.demoiselle.jee.security.jwt.impl.TokenBlacklist;
+import org.demoiselle.jee.security.jwt.impl.JwtTokenValidatorImpl;
 import org.demoiselle.jee.security.jwt.impl.TokenManagerImpl;
 import org.demoiselle.jee.security.message.DemoiselleSecurityJWTMessages;
 import org.jose4j.jws.JsonWebSignature;
@@ -159,6 +160,14 @@ class ClockSkewTolerancePropertyTest {
                 new org.demoiselle.jee.security.impl.DemoiselleUserImpl();
         loggedUser.init();
         setField(tokenManager, "loggedUser", loggedUser);
+
+        JwtTokenValidatorImpl validator = new JwtTokenValidatorImpl();
+        setField(validator, "keyRotationManager", keyRotationManager);
+        setField(validator, "config", config);
+        setField(validator, "bundle", new StubMessages());
+        setField(validator, "tokenBlacklist", new TokenBlacklist());
+        setField(validator, "claimsEnrichers", null);
+        setField(tokenManager, "jwtTokenValidator", validator);
 
         return tokenManager;
     }
