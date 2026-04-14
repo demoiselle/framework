@@ -94,7 +94,8 @@ public class TokenManagerImpl implements TokenManager {
      */
     @Override
     public DemoiselleUser getUser(String issuer, String audience) {
-        if (token.getKey() != null && !token.getKey().isEmpty() && token.getType().equals(TokenType.JWT)) {
+        if (token.getKey() != null && !token.getKey().isEmpty()
+                && (token.getType().equals(TokenType.JWT) || token.getType().equals(TokenType.BEARER))) {
             try {
                 DemoiselleUser validatedUser = jwtTokenValidator.validate(token.getKey(), issuer, audience);
                 if (validatedUser == null) {
@@ -200,7 +201,8 @@ public class TokenManagerImpl implements TokenManager {
     @Override
     public void removeUser(DemoiselleUser user) {
         // Extract JTI and exp from the current token and blacklist it
-        if (token.getKey() != null && !token.getKey().isEmpty() && token.getType() != null && token.getType().equals(TokenType.JWT)) {
+        if (token.getKey() != null && !token.getKey().isEmpty() && token.getType() != null
+                && (token.getType().equals(TokenType.JWT) || token.getType().equals(TokenType.BEARER))) {
             try {
                 // Parse the token without validation to extract claims for blacklisting
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
