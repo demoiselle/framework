@@ -23,6 +23,7 @@ import org.demoiselle.jee.security.jwt.impl.DemoiselleSecurityJWTConfig;
 import org.demoiselle.jee.security.jwt.impl.KeyPairHolder;
 import org.demoiselle.jee.security.jwt.impl.KeyRotationManager;
 import org.demoiselle.jee.security.jwt.impl.TokenBlacklist;
+import org.demoiselle.jee.security.jwt.impl.JwtTokenValidatorImpl;
 import org.demoiselle.jee.security.jwt.impl.TokenManagerImpl;
 import org.demoiselle.jee.security.message.DemoiselleSecurityJWTMessages;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
@@ -247,6 +248,14 @@ class SecurityInterceptorPropertyIT {
         setField(tm, "loggedUser", lu);
         setField(tm, "claimsEnrichers", new EmptyInstance<>());
         setField(tm, "refreshTokenManagerInstance", new EmptyInstance<>());
+
+        JwtTokenValidatorImpl validator = new JwtTokenValidatorImpl();
+        setField(validator, "keyRotationManager", krm);
+        setField(validator, "config", cfg);
+        setField(validator, "bundle", new StubJWTMessages());
+        setField(validator, "tokenBlacklist", new TokenBlacklist());
+        setField(validator, "claimsEnrichers", null);
+        setField(tm, "jwtTokenValidator", validator);
 
         return tm;
     }
