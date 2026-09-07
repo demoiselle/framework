@@ -12,7 +12,7 @@
 /demoiselle-security-pow/nbproject/
 /demoiselle-security-hashcash/nbproject/
 /.kiro
-/.DS_Store
+.DS_Store
 /.idea
 **.iml
 target/
