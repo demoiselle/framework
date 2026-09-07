@@ -206,11 +206,11 @@ class ConfigSecurityRestIT {
         DemoiselleSecurityConfig corsConfig = new DemoiselleSecurityConfig();
         setField(corsConfig, "corsEnabled", true);
         setField(corsConfig, "corsAllowedOrigins",
-                new ArrayList<>(List.of("https://example.com")));
+                new String[]{"https://example.com"});
         setField(corsConfig, "corsAllowedMethods",
-                new ArrayList<>(List.of("GET", "POST")));
+                new String[]{"GET", "POST"});
         setField(corsConfig, "corsAllowedHeaders",
-                new ArrayList<>(List.of("Content-Type", "Authorization")));
+                new String[]{"Content-Type", "Authorization"});
         setField(corsConfig, "corsMaxAge", 7200);
 
         CorsFilter filter = new CorsFilter();
@@ -238,7 +238,7 @@ class ConfigSecurityRestIT {
         DemoiselleSecurityConfig corsConfig = new DemoiselleSecurityConfig();
         setField(corsConfig, "corsEnabled", true);
         setField(corsConfig, "corsAllowedOrigins",
-                new ArrayList<>(List.of("https://allowed.com")));
+                new String[]{"https://allowed.com"});
 
         CorsFilter filter = new CorsFilter();
         setField(filter, "config", corsConfig);

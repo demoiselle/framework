@@ -6,14 +6,12 @@
  */
 package org.demoiselle.jee.security;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.demoiselle.jee.configuration.annotation.Configuration;
-import org.demoiselle.jee.configuration.annotation.ConfigurationIgnore;
 
 /**
  *
@@ -27,12 +25,9 @@ public class DemoiselleSecurityConfig {
     private final Map<String, String> paramsHeaderSecuriry = new ConcurrentHashMap<>();
     private final Map<String, String> paramsHeaderCors = new ConcurrentHashMap<>();
 
-    @ConfigurationIgnore
-    private List<String> corsAllowedOrigins = new ArrayList<>(Arrays.asList("*"));
-    @ConfigurationIgnore
-    private List<String> corsAllowedMethods = new ArrayList<>(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-    @ConfigurationIgnore
-    private List<String> corsAllowedHeaders = new ArrayList<>(Arrays.asList("Content-Type", "Authorization"));
+    private String[] corsAllowedOrigins = {"*"};
+    private String[] corsAllowedMethods = {"GET", "POST", "PUT", "DELETE", "OPTIONS"};
+    private String[] corsAllowedHeaders = {"Content-Type", "Authorization"};
     private boolean corsAllowCredentials;
     private int corsMaxAge = 3600;
 
@@ -52,15 +47,15 @@ public class DemoiselleSecurityConfig {
     }
 
     public List<String> getCorsAllowedOrigins() {
-        return corsAllowedOrigins;
+        return Arrays.asList(corsAllowedOrigins);
     }
 
     public List<String> getCorsAllowedMethods() {
-        return corsAllowedMethods;
+        return Arrays.asList(corsAllowedMethods);
     }
 
     public List<String> getCorsAllowedHeaders() {
-        return corsAllowedHeaders;
+        return Arrays.asList(corsAllowedHeaders);
     }
 
     public boolean isCorsAllowCredentials() {

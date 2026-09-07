@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
     ConfigurationLoader.class,
     org.demoiselle.jee.configuration.extractor.impl.ConfigurationStringValueExtractor.class,
     org.demoiselle.jee.configuration.extractor.impl.ConfigurationPrimitiveOrWrapperValueExtractor.class,
+    org.demoiselle.jee.configuration.extractor.impl.ConfigurationArrayValueExtractor.class,
     org.demoiselle.jee.configuration.extractor.impl.ConfigurationMapValueExtractor.class,
     org.demoiselle.jee.configuration.message.ConfigurationMessage.class
 })
@@ -56,20 +57,30 @@ class DemoiselleSecurityConfigTest {
 
     @Test
     void corsAllowedOriginsDefaultsToWildcard() {
-        List<String> origins = instance.getCorsAllowedOrigins();
+        List<String> origins = new DemoiselleSecurityConfig().getCorsAllowedOrigins();
         assertEquals(List.of("*"), origins);
     }
 
     @Test
     void corsAllowedMethodsDefaultsToStandardMethods() {
-        List<String> methods = instance.getCorsAllowedMethods();
+        List<String> methods = new DemoiselleSecurityConfig().getCorsAllowedMethods();
         assertEquals(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"), methods);
     }
 
     @Test
     void corsAllowedHeadersDefaultsToContentTypeAndAuthorization() {
-        List<String> headers = instance.getCorsAllowedHeaders();
+        List<String> headers = new DemoiselleSecurityConfig().getCorsAllowedHeaders();
         assertEquals(List.of("Content-Type", "Authorization"), headers);
+    }
+
+    @Test
+    void corsCollectionsAreLoadedFromProperties() {
+        assertEquals(List.of("https://personal.example", "http://localhost:3000"),
+                instance.getCorsAllowedOrigins());
+        assertEquals(List.of("HEAD", "OPTIONS", "GET", "POST", "PATCH"),
+                instance.getCorsAllowedMethods());
+        assertEquals(List.of("Origin", "Content-Type", "Authorization", "X-Client-Platform"),
+                instance.getCorsAllowedHeaders());
     }
 
     @Test
