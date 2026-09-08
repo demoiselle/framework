@@ -1,3 +1,10 @@
+---
+layout: default
+title: Roadmap técnico
+description: Entregas do ciclo de modernização e extensões dependentes do ambiente dos produtos.
+permalink: /docs/roadmap.html
+---
+
 # Roadmap técnico
 
 Este documento registra o resultado da auditoria e da implementação do ciclo de
@@ -92,24 +99,24 @@ modernização do Demoiselle Framework. O baseline permanece **Java 21**, Maven
 ## Extensões dependentes do ambiente
 
 Os itens abaixo não são código obrigatório do framework porque exigem produto,
-credenciais ou runtime escolhidos pela aplicação. Os SPIs necessários já estão
-estáveis para adapters opcionais:
+credenciais, infraestrutura ou runtime escolhidos pela aplicação. Os SPIs e
+gates necessários já estão disponíveis; cabe a cada produto selecionar e operar
+os adapters compatíveis com sua arquitetura.
 
-1. **Estado distribuído:** implementar `SecurityStore`, `CacheBackend` ou
-   `IdempotencyStore` sobre Redis/JCache conforme a topologia da aplicação.
-2. **Chaves e segredos gerenciados:** implementar `JwtKeyProvider` ou
-   `SecretProvider` para JWKS/Vault/AWS/Kubernetes, com a política de rede e
-   autenticação da organização.
-3. **Outbox persistente/broker:** implementar `OutboxStore` transacional e
-   `OutboxPublisher` para JPA/Kafka/AMQP/JMS.
-4. **Matriz executada de runtimes:** a matriz atual distingue suporte declarado
-   de verificação no repositório. Certificação com WildFly, Open Liberty e
-   Quarkus requer jobs/container images mantidos por release.
-5. **Baseline OpenAPI da aplicação:** o framework fornece contributors, não uma
-   API de negócio única. Cada aplicação deve versionar ou gerar sua spec para
-   tornar o gate de breaking changes efetivo.
-6. **Reprodutibilidade por plataforma:** a checagem existe em modo informativo;
-   torná-la bloqueante requer imagens de build herméticas e política de release.
+| Extensão | Integração do produto | Benefício principal |
+|---|---|---|
+| Estado distribuído | `SecurityStore`, `CacheBackend` e `IdempotencyStore` sobre Redis/JCache ou equivalente | Mantém segurança, cache e idempotência consistentes entre réplicas |
+| Chaves e segredos gerenciados | `JwtKeyProvider` e `SecretProvider` para JWKS, Vault, AWS ou Kubernetes | Centraliza rotação, auditoria e controle de acesso a material sensível |
+| Outbox persistente e broker | `OutboxStore` transacional e `OutboxPublisher` para JPA, Kafka, AMQP ou JMS | Evita perda de eventos na janela entre commit e publicação |
+| Matriz executada de runtimes | Jobs com imagens versionadas de WildFly, Open Liberty, Quarkus ou runtime adotado | Produz evidência contínua de portabilidade e compatibilidade |
+| Baseline OpenAPI da aplicação | Spec versionada ou gerada e comparada em cada mudança | Bloqueia quebras de contrato antes que atinjam consumidores |
+| Reprodutibilidade por plataforma | Builds herméticos e comparação bloqueante de artefatos | Reforça auditoria e confiança na supply chain da release |
 
-Essas extensões devem manter os invariantes fail-closed, não introduzir segredos
-padrão e incluir testes de indisponibilidade, concorrência e rotação.
+O guia **[Extensões de produção para produtos Demoiselle](production-extensions.md)**
+explica, para cada ponto, o problema resolvido, os benefícios para produtos
+construídos com o framework, critérios do adapter, estratégia de adoção e testes
+necessários.
+
+Todas as extensões devem preservar os invariantes fail-closed, atomicidade e
+limites do framework, não introduzir segredos padrão e incluir testes de
+indisponibilidade, concorrência, retry, rollback e rotação.

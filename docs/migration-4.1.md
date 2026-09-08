@@ -1,7 +1,14 @@
+---
+layout: default
+title: Migração para 4.1
+description: Compatibilidade, defaults e contratos alterados no Demoiselle Framework 4.1.
+permalink: /docs/migration-4.1.html
+---
+
 # Migração para os contratos de segurança e dados da versão 4.1
 
-Este guia complementa a migração Jakarta EE 10 existente em
-[`docs/index.md`](index.md). As mudanças preservam compatibilidade onde seguro;
+Este guia complementa a migração Jakarta EE 10 existente no
+[guia técnico]({{ '/docs/' | relative_url }}). As mudanças preservam compatibilidade onde seguro;
 defaults de autenticação e segredos são fail-closed.
 
 ## `Result` e `MutableResult`

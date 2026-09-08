@@ -165,6 +165,12 @@ def t_fingerprint_compare_ok_and_mismatch():
             expect_code=1)
 
 
+# ---- GitHub Pages portal ----
+def t_portal_source():
+    p = run([str(HERE / "portal_check.py")])
+    assert "PORTAL_CHECK: OK" in p.stdout
+
+
 check("module_inventory json", t_inventory_json)
 check("module_inventory markdown", t_inventory_markdown)
 check("runtime_matrix markdown", t_runtime_matrix_md)
@@ -173,6 +179,7 @@ check("openapi gate: no break", t_openapi_no_break)
 check("openapi gate: removed path", t_openapi_break_removed_path)
 check("openapi gate: new required param", t_openapi_break_new_required_param)
 check("jar fingerprint compare ok+mismatch", t_fingerprint_compare_ok_and_mismatch)
+check("GitHub Pages portal source", t_portal_source)
 
 failed = [r for r in results if not r[1]]
 print()

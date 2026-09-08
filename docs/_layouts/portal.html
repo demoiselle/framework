@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="{{ page.lang | default: site.lang | default: 'pt-BR' }}">
+<head>
+  {% include head.html %}
+</head>
+<body class="portal-page">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  {% include site-header.html %}
+  <main id="conteudo">
+    {{ content }}
+  </main>
+  {% include footer.html %}
+</body>
+</html>

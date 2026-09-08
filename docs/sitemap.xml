@@ -1,0 +1,12 @@
+---
+layout: null
+permalink: /sitemap.xml
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>{{ site.url }}{{ site.baseurl }}/</loc><priority>1.0</priority></url>
+  <url><loc>{{ site.url }}{{ site.baseurl }}/docs/</loc><priority>0.9</priority></url>
+  <url><loc>{{ site.url }}{{ site.baseurl }}/docs/migration-4.1.html</loc><priority>0.7</priority></url>
+  <url><loc>{{ site.url }}{{ site.baseurl }}/docs/production-extensions.html</loc><priority>0.8</priority></url>
+  <url><loc>{{ site.url }}{{ site.baseurl }}/docs/roadmap.html</loc><priority>0.6</priority></url>
+</urlset>

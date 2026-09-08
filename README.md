@@ -49,7 +49,7 @@ Pré-requisitos: **Java 21+**, **Maven 3.9+** e um runtime compatível com
 
 Snapshots exigem o [repositório Sonatype OSS](#repositório-maven). Para detalhes
 de configuração, exemplos CRUD e segurança, consulte o
-[guia completo](docs/index.md).
+[guia completo](docs/guide.md).
 
 ## Versão 4.1.0-SNAPSHOT
 
@@ -89,7 +89,7 @@ O módulo `demoiselle-crud` inclui funcionalidades modernas de persistência e p
 - **Cache de Consultas** — `@Cacheable` com invalidação automática via eventos CDI
 - **Limites contra abuso** — teto global de paginação, filtros, valores e campos de ordenação
 
-📖 [Documentação completa com exemplos](docs/index.md)
+📖 [Documentação completa com exemplos](docs/guide.md)
 
 ### Segurança por padrão
 
@@ -108,7 +108,9 @@ O módulo `demoiselle-crud` inclui funcionalidades modernas de persistência e p
 - **Contratos seguros** — separação entre `Result` e `MutableResult` e locking compartilhado por engine no módulo Script.
 
 Consulte o [guia de migração 4.1](docs/migration-4.1.md), o
-[roadmap com status das entregas](docs/roadmap.md) e o
+[roadmap com status das entregas](docs/roadmap.md), o
+[guia das extensões de produção](docs/production-extensions.md) — com benefícios
+e critérios de adoção para produtos Demoiselle — e o
 [inventário dinâmico do reactor](docs/generated/module-inventory.md).
 
 ### Módulo de Observabilidade (`demoiselle-observability`)
@@ -148,7 +150,7 @@ Módulo dedicado a testes de integração entre módulos:
 - **ConfigScriptIT** — Fluxo configuração → execução de scripts
 - **Testes Baseados em Propriedades** — Invariantes de segurança, configuração, CRUD e integração validados com jqwik
 
-📖 [Documentação completa com exemplos](docs/index.md)
+📖 [Documentação completa com exemplos](docs/guide.md)
 
 O nome Demoiselle é uma homenagem à série de aeroplanos construídos
 por Santos Dummont entre 1907 e 1909. Também conhecido como Libellule,
@@ -159,14 +161,14 @@ qualquer pessoa que se interessasse.
 
 O framework Demoiselle usa a mesma filosofia do "Pai da Aviação",
 tendo sido disponibilizado como software livre em abril de 2009, sob a
-licença livre LGPL version 3. Mais informações no [portal](http://demoiselle.io).
+licença livre LGPL version 3. Mais informações no [portal](docs/index.md).
 
 
 Links úteis
 -----------
 
-* [Portal](http://demoiselle.io): Central de acesso as informações do Demoiselle
-* [Documentação Jakarta EE 10](docs/index.md): Funcionalidades modernizadas com exemplos de código
+* [Portal](docs/index.md): Central de acesso as informações do Demoiselle
+* [Documentação Jakarta EE 10](docs/guide.md): Funcionalidades modernizadas com exemplos de código
 * [Roadmap técnico sugerido](docs/roadmap.md): Evoluções priorizadas a partir da auditoria
 * [Documentação Legada](https://demoiselle.gitbooks.io/documentacao-jee/content): Documentação dos módulos (versões anteriores)
 * [Fórum/Tracker](https://github.com/demoiselle/framework/issues): Fóruns de discussão e Submissão/acompanhamento de Bugs, Improvements e New Features

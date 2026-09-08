@@ -1,0 +1,35 @@
+<footer class="site-footer">
+  <div class="shell footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="{{ '/' | relative_url }}">
+        {% include brand-mark.html %}
+        <span class="brand-copy"><strong>Demoiselle</strong><small>Framework</small></span>
+      </a>
+      <p>Engenharia Java com padrões abertos, segurança consistente e liberdade de runtime.</p>
+    </div>
+
+    <nav aria-label="Documentação">
+      <strong>Documentação</strong>
+      <a href="{{ '/docs/' | relative_url }}">Guia técnico</a>
+      <a href="{{ '/docs/migration-4.1.html' | relative_url }}">Migração 4.1</a>
+      <a href="{{ '/docs/production-extensions.html' | relative_url }}">Extensões de produção</a>
+      <a href="{{ '/docs/roadmap.html' | relative_url }}">Roadmap</a>
+    </nav>
+
+    <nav aria-label="Projeto">
+      <strong>Projeto</strong>
+      <a href="{{ site.github_url }}">Código-fonte</a>
+      <a href="https://github.com/demoiselle">Organização GitHub</a>
+      <a href="{{ site.github_url }}/issues">Issues</a>
+      <a href="https://www.frameworkdemoiselle.gov.br/">Portal institucional</a>
+      <a href="{{ site.github_url }}/actions">Integração contínua</a>
+      <a href="{{ site.github_url }}/blob/master/lgpl.txt">LGPL v3+</a>
+    </nav>
+  </div>
+
+  <div class="shell footer-bottom">
+    <p>© <span data-current-year>{{ 'now' | date: '%Y' }}</span> Demoiselle. Software livre inspirado na visão aberta de Santos-Dumont.</p>
+    <p>Java 21 · Jakarta EE 10 · CDI 4.0</p>
+  </div>
+</footer>
+<div class="sr-only" aria-live="polite" data-live-region></div>

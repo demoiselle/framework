@@ -1,0 +1,9 @@
+# GitHub Pages: built from ./docs by .github/workflows/static.yml.
+theme: jekyll-theme-slate
+title: Demoiselle Framework
+description: Framework integrador para produtos Java 21 e Jakarta EE 10 seguros, consistentes e observáveis.
+lang: pt-BR
+url: "https://demoiselle.github.io"
+baseurl: "/framework"
+repository: demoiselle/framework
+github_url: https://github.com/demoiselle/framework

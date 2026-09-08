@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="{{ page.lang | default: site.lang | default: 'pt-BR' }}">
+<head>
+  {% include head.html %}
+</head>
+<body class="docs-page">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  {% include site-header.html %}
+
+  <div class="shell docs-layout">
+    <aside class="docs-sidebar" aria-label="Navegação da documentação">
+      <a class="docs-home" href="{{ '/' | relative_url }}"><span aria-hidden="true">←</span> Voltar ao portal</a>
+      <nav>
+        <strong>Documentação</strong>
+        <a href="{{ '/docs/' | relative_url }}">Guia técnico</a>
+        <a href="{{ '/docs/migration-4.1.html' | relative_url }}">Migração 4.1</a>
+        <a href="{{ '/docs/production-extensions.html' | relative_url }}">Extensões de produção</a>
+        <a href="{{ '/docs/roadmap.html' | relative_url }}">Roadmap</a>
+      </nav>
+      <nav>
+        <strong>Referência</strong>
+        <a href="{{ site.github_url }}/blob/master/docs/generated/module-inventory.md">Inventário de módulos</a>
+        <a href="{{ site.github_url }}/blob/master/docs/generated/runtime-matrix.md">Matriz de runtimes</a>
+        <a href="{{ site.github_url }}">Repositório</a>
+      </nav>
+    </aside>
+
+    <main id="conteudo" class="docs-content">
+      <article class="prose">
+        {{ content }}
+      </article>
+    </main>
+  </div>
+
+  {% include footer.html %}
+</body>
+</html>
