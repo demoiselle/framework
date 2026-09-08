@@ -172,6 +172,49 @@ class CacheInterceptorTest {
         assertEquals("result", result);
     }
 
+    @Test
+    void intercept_entityOwnedEntryIsInvalidatedByEntityEvent() throws Exception {
+        SampleService target = new SampleService();
+        Method method = SampleService.class.getMethod("findEntity", String.class);
+        Object[] params = new Object[]{"42"};
+
+        assertEquals("cached", interceptor.intercept(
+                new StubInvocationContext(target, method, params, "cached")));
+
+        cacheStore.invalidateByEntityClass(SampleEntity.class);
+
+        StubInvocationContext afterInvalidation =
+                new StubInvocationContext(target, method, params, "fresh");
+        assertEquals("fresh", interceptor.intercept(afterInvalidation));
+        assertTrue(afterInvalidation.proceeded);
+    }
+
+    @Test
+    void intercept_classLevelAnnotationIsResolved() throws Exception {
+        ClassLevelService target = new ClassLevelService();
+        Method method = ClassLevelService.class.getMethod("find", String.class);
+
+        assertEquals("first", interceptor.intercept(
+                new StubInvocationContext(target, method, new Object[]{"x"}, "first")));
+        StubInvocationContext hit =
+                new StubInvocationContext(target, method, new Object[]{"x"}, "second");
+        assertEquals("first", interceptor.intercept(hit));
+        assertFalse(hit.proceeded);
+    }
+
+    @Test
+    void intercept_nullResultsAreNotCached() throws Exception {
+        SampleService target = new SampleService();
+        Method method = SampleService.class.getMethod("findById", String.class);
+
+        assertNull(interceptor.intercept(
+                new StubInvocationContext(target, method, new Object[]{"missing"}, null)));
+        StubInvocationContext next = new StubInvocationContext(
+                target, method, new Object[]{"missing"}, "now-present");
+        assertEquals("now-present", interceptor.intercept(next));
+        assertTrue(next.proceeded);
+    }
+
     // ========== Test helpers ==========
 
     /**
@@ -197,6 +240,21 @@ class CacheInterceptorTest {
         @Cacheable
         public String findNoArgs() {
             return "real-no-args";
+        }
+
+        @Cacheable(entityClass = SampleEntity.class)
+        public String findEntity(String id) {
+            return "real-entity-" + id;
+        }
+    }
+
+    private static class SampleEntity {
+    }
+
+    @Cacheable
+    static class ClassLevelService {
+        public String find(String id) {
+            return "real-" + id;
         }
     }
 

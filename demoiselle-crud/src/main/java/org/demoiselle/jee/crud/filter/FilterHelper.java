@@ -16,6 +16,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.UriInfo;
 
+import org.demoiselle.jee.crud.CrudLimitsConfig;
 import org.demoiselle.jee.crud.CrudMessage;
 import org.demoiselle.jee.crud.CrudUtilHelper;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
@@ -49,14 +50,22 @@ public class FilterHelper {
     
     @Inject
     private CrudMessage crudMessage;
+
+    @Inject
+    private CrudLimitsConfig limitsConfig;
     
     public FilterHelper(){}
     
     public FilterHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, CrudMessage crudMessage){
+        this(resourceInfo, uriInfo, drc, crudMessage, new CrudLimitsConfig());
+    }
+
+    public FilterHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, CrudMessage crudMessage, CrudLimitsConfig limitsConfig){
         this.uriInfo = uriInfo;
         this.resourceInfo = resourceInfo;
         this.drc = drc;
         this.crudMessage = crudMessage;
+        this.limitsConfig = limitsConfig;
     }
     
     /**
@@ -83,6 +92,8 @@ public class FilterHelper {
                 filters.putIfAbsent(key, paramValues);
             }
         });
+
+        enforceLimits(filters);
         
         TreeNodeField<String, Set<String>> tnf = new TreeNodeField<>(CrudUtilHelper.getTargetClass(this.resourceInfo.getResourceClass()).getName(), ConcurrentHashMap.newKeySet(1));
         
@@ -103,5 +114,43 @@ public class FilterHelper {
                 || key.equalsIgnoreCase(ReservedKeyWords.DEFAULT_SORT_DESC_KEY.getKey()) 
                 || key.equalsIgnoreCase(ReservedKeyWords.DEFAULT_SORT_KEY.getKey())
                 || key.equalsIgnoreCase(ReservedKeyWords.DEFAULT_FIELD_KEY.getKey());
+    }
+
+    /**
+     * Reject requests that exceed the configured CRUD limits for filters:
+     * the number of distinct filters, the total number of filter values and
+     * the length of any individual filter value.
+     *
+     * @param filters the collected filters map
+     * @throws IllegalArgumentException when any configured limit is exceeded
+     */
+    private void enforceLimits(Map<String, Set<String>> filters) {
+        CrudLimitsConfig limits = limits();
+
+        int maxFilters = limits.getMaxFilters();
+        if (filters.size() > maxFilters) {
+            throw new IllegalArgumentException(crudMessage.filterLimitExceeded(maxFilters));
+        }
+
+        int maxFilterValues = limits.getMaxFilterValues();
+        int maxFilterValueLength = limits.getMaxFilterValueLength();
+        int totalValues = 0;
+
+        for (Set<String> values : filters.values()) {
+            totalValues += values.size();
+            for (String value : values) {
+                if (value != null && value.length() > maxFilterValueLength) {
+                    throw new IllegalArgumentException(crudMessage.filterValueLengthExceeded(maxFilterValueLength));
+                }
+            }
+        }
+
+        if (totalValues > maxFilterValues) {
+            throw new IllegalArgumentException(crudMessage.filterValuesLimitExceeded(maxFilterValues));
+        }
+    }
+
+    private CrudLimitsConfig limits() {
+        return limitsConfig == null ? new CrudLimitsConfig() : limitsConfig;
     }
 }

@@ -129,6 +129,12 @@ public class TokenManagerImpl implements TokenManager {
             claims.setIssuedAtToNow();
             claims.setNotBeforeMinutesInThePast(1);
 
+            // Emit subject (sub) when a user identity is available, so tokens
+            // remain valid under recommended/strict profiles.
+            if (user.getIdentity() != null) {
+                claims.setSubject(user.getIdentity());
+            }
+
             claims.setClaim("identity", (user.getIdentity()));
             claims.setClaim("name", (user.getName()));
             claims.setClaim("roles", (user.getRoles()));
@@ -146,6 +152,14 @@ public class TokenManagerImpl implements TokenManager {
             jws.setPayload(claims.toJson());
             jws.setKey(keyRotationManager.getActivePrivateKey());
             jws.setKeyIdHeaderValue(keyRotationManager.getActiveKeyId());
+
+            // Emit the JWT "typ" header when an expected type is configured
+            // (recommended/strict profiles default this to "JWT").
+            String expectedType = config.getExpectedType();
+            if (expectedType != null && !expectedType.isBlank()) {
+                jws.setHeader(org.jose4j.jwx.HeaderParameterNames.TYPE, expectedType);
+            }
+
             // Use first algorithm from allowedAlgorithms, falling back to algorithmIdentifiers
             List<String> allowedAlgs = config.getAllowedAlgorithmsList();
             String signingAlgorithm = (!allowedAlgs.isEmpty()) ? allowedAlgs.get(0) : config.getAlgorithmIdentifiers();

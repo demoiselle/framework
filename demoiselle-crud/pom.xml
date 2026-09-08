@@ -24,7 +24,7 @@
             <version>3.13.0</version>
             <configuration>
                <showDeprecation>true</showDeprecation>
-               <release>17</release>
+               <release>${maven.compiler.release}</release>
                <encoding>UTF-8</encoding>
             </configuration>
          </plugin>

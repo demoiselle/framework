@@ -5,7 +5,47 @@ title: Demoiselle Framework v4 — Modernização Jakarta EE 10
 
 # Demoiselle Framework v4 — Modernização Jakarta EE 10
 
-O Demoiselle Framework v4 foi modernizado para aproveitar plenamente os recursos do **Jakarta EE 10**, **CDI 4.0** e **Java 17**. Esta documentação cobre todas as funcionalidades introduzidas, organizadas em 31 áreas de implementação.
+O Demoiselle Framework v4 foi modernizado para aproveitar plenamente os recursos do **Jakarta EE 10**, **CDI 4.0** e **Java 21**. Esta documentação cobre as funcionalidades atuais e as orientações de migração.
+
+## Início rápido
+
+Requisitos: Java 21+, Maven 3.9+ e um runtime Jakarta EE 10. Em aplicações,
+prefira importar o BOM em vez de repetir versões por módulo:
+
+```xml
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.demoiselle.jee</groupId>
+      <artifactId>demoiselle-parent-bom</artifactId>
+      <version>4.1.0-SNAPSHOT</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+
+<dependencies>
+  <dependency>
+    <groupId>org.demoiselle.jee</groupId>
+    <artifactId>demoiselle-core</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>org.demoiselle.jee</groupId>
+    <artifactId>demoiselle-rest</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>org.demoiselle.jee</groupId>
+    <artifactId>demoiselle-crud</artifactId>
+  </dependency>
+</dependencies>
+```
+
+Para snapshots, use o repositório Sonatype OSS documentado no
+[README](../README.md#repositório-maven). O runtime fornece as APIs Jakarta EE;
+não empacote uma implementação completa da plataforma dentro da aplicação.
+Evoluções ainda não implementadas estão priorizadas no
+[roadmap técnico](roadmap.md).
 
 ## 🌐 Conformidade com Padrões IETF
 
@@ -23,7 +63,7 @@ Respostas de erro padronizadas (`application/problem+json`), headers `Link` para
 
 | Prioridade | Funcionalidade | Módulos |
 |:---:|---|---|
-| P1 | [Java 17 Records para DTOs](#p1--java-17-records-para-dtos) | crud, rest, configuration |
+| P1 | [Java 21 Records para DTOs](#p1--java-17-records-para-dtos) | crud, rest, configuration |
 | P2 | [Sealed Classes para Filtros CRUD](#p2--sealed-classes-para-filtros-crud) | crud |
 | P3 | [CDI 4.0 Lite Build-Compatible Extensions](#p3--cdi-40-lite-build-compatible-extensions) | core, configuration |
 | P4 | [Coleções Imutáveis no Módulo de Segurança](#p4--coleções-imutáveis-no-módulo-de-segurança) | security, crud |
@@ -44,7 +84,7 @@ Respostas de erro padronizadas (`application/problem+json`), headers `Link` para
 | P19 | [🌐 RFC 8288 — Header Link para Paginação](#p19--rfc-8288--header-link-para-paginação) | crud |
 | P20 | [🌐 RFC 6585/7231 — Rate Limiting HTTP 429](#p20--rfc-65857231--rate-limiting-com-http-429) | security |
 | P21 | [JWT Refresh Tokens e Blacklist](#p21--jwt-refresh-tokens-e-blacklist) | security-jwt |
-| P22 | [JWT Key Rotation e Múltiplos Algoritmos](#p22--jwt-key-rotation-e-múltiplos-algoritmos) | security-jwt |
+| P22 | [Identificação de Chave e Algoritmos JWT](#p22--identificação-de-chave-e-algoritmos-jwt) | security-jwt |
 | P23 | [Claims Customizados via ClaimsEnricher](#p23--claims-customizados-via-claimsenricher) | security-jwt |
 | P24 | [Eventos de Segurança via CDI](#p24--eventos-de-segurança-via-cdi) | security |
 | P25 | [@RequiredAnyRole e @RequiredAllPermissions](#p25--requiredanyrole-e-requiredallpermissions) | security |
@@ -54,14 +94,17 @@ Respostas de erro padronizadas (`application/problem+json`), headers `Link` para
 | P29 | [Core API: Result Tipado e Conveniência](#p29--core-api-result-tipado-e-métodos-de-conveniência) | core |
 | P30 | [Security Token: Correções e Modernização](#p30--security-token-correções-e-modernização) | security-token |
 | P31 | [Módulo MCP (Model Context Protocol)](#p31--módulo-mcp-demoiselle-mcp) | mcp |
+| P32 | [Headers REST seguros](#p32--headers-rest-seguros) | rest |
+| P33 | [Limites de requisição CRUD](#p33--limites-de-requisição-crud) | crud |
+| P34 | [Perfis avançados JWT](#p34--perfis-avançados-jwt) | security-jwt |
 
 ---
 
-## P1 — Java 17 Records para DTOs
+## P1 — Java 21 Records para DTOs
 
 ### SortModel
 
-O `SortModel` agora é um **record Java 17** imutável com validação no construtor compacto.
+O `SortModel` agora é um **record Java 21** imutável com validação no construtor compacto.
 
 ```java
 // Antes (classe mutável com boilerplate)
@@ -742,7 +785,9 @@ Processamento eficiente de grandes volumes com flush/clear automático para evit
 demoiselle.crud.batch.size=100
 ```
 
-Valor padrão: `50` registros por batch.
+Valor padrão: `50` registros por batch. O valor deve ser maior que zero;
+configurações `0` ou negativas falham imediatamente com uma mensagem clara,
+antes de iniciar a operação.
 
 ### persistAll
 
@@ -984,6 +1029,20 @@ O `CacheInvalidationListener` observa esses eventos e invalida todas as entradas
 // Ao persistir um Produto, TODAS as consultas cacheadas de Produto são invalidadas
 // Consultas cacheadas de outras entidades (Pedido, Cliente) permanecem intactas
 ```
+
+Em recursos que estendem `AbstractREST<Produto, ...>`, o `CrudFilter` resolve
+`Produto` automaticamente. Em outros beans CDI, declare a entidade para que a
+chave criada pelo interceptor use o mesmo namespace do evento:
+
+```java
+@Cacheable(entityClass = Produto.class, ttl = 60)
+public List<Produto> consultarDestaques() {
+    // ...
+}
+```
+
+Resultados `null` não são armazenados. A anotação também pode ser aplicada à
+classe; a configuração do método tem precedência.
 
 ### Headers de Cache na Resposta
 
@@ -1258,23 +1317,32 @@ Quando desativado, `DemoiselleOASModelReader.buildModel()` retorna um documento 
 
 ## P16 — CI/CD com GitHub Actions
 
-O pipeline de CI/CD foi migrado do Travis CI para GitHub Actions com build matrix multi-versão.
+O pipeline de CI/CD usa Java 21, o mesmo baseline exigido pelo build Maven.
 
-### Build Matrix Java 17/21
-
-O workflow executa build e testes em Java 17 e 21 simultaneamente:
+### Build Java 21 e supply chain
 
 ```yaml
 # .github/workflows/ci.yml
-strategy:
-  fail-fast: false
-  matrix:
-    java-version: ['17', '21']
+permissions:
+  contents: read
+
+steps:
+  - uses: actions/checkout@v4
+    with:
+      persist-credentials: false
+  - uses: actions/setup-java@v4
+    with:
+      java-version: '21'
+      distribution: temurin
+      cache: maven
+  - run: mvn clean verify -B
 ```
 
-- `fail-fast: false` — falha em uma versão não cancela a outra
-- Cache Maven via `actions/setup-java` com `cache: 'maven'`
-- Relatórios JaCoCo como artefatos separados por versão de Java
+- O Maven Enforcer exige Java 21+ e Maven 3.9+ já na fase `validate`.
+- Plugins Maven usados pelo reactor têm versões explícitas.
+- O CycloneDX gera `target/bom.json` e `target/bom.xml` agregados na fase `package`.
+- O checkout não mantém credenciais e o workflow recebe somente `contents: read`.
+- Relatórios JaCoCo são publicados como artefatos do build Java 21.
 
 ### Relatórios de Cobertura em PRs
 
@@ -1299,14 +1367,15 @@ Em pull requests, um job separado gera relatório agregado de cobertura e posta 
 </properties>
 ```
 
-O build falha quando a cobertura de um módulo cai abaixo do limiar:
+A regra é avaliada por **bundle Maven** e usa cobertura de instruções. O valor
+padrão `0.00` apenas gera o relatório e não bloqueia o build. Para ativar um
+gate, informe explicitamente o limiar, por exemplo:
 
-```
-Rule violated for bundle demoiselle-core: instructions covered ratio is 0.71,
-but expected minimum is 0.80
+```shell
+mvn verify -Djacoco.minimum.coverage=0.80
 ```
 
-Pode ser sobrescrito via linha de comando: `mvn verify -Djacoco.minimum.coverage=0.80`
+Nesse exemplo, cada bundle verificado deve atingir 80% de instruções cobertas.
 
 ---
 
@@ -1473,9 +1542,44 @@ Quando múltiplas mensagens estão presentes, todas são incluídas como extens�
 
 ### Controle de Detalhes
 
+Detalhes internos são **omitidos por padrão** para não expor mensagens de banco,
+stack traces ou implementação. Só habilite a opção durante diagnóstico em
+ambiente controlado:
+
 ```properties
-# Omitir campo "detail" das respostas (produção)
-demoiselle.rest.showErrorDetails=false
+# Opt-in temporário; não recomendado em produção
+demoiselle.rest.showErrorDetails=true
+```
+
+---
+
+## P32 — Headers REST seguros
+
+O módulo REST adiciona por padrão os headers abaixo, sem sobrescrever valores
+já definidos pela aplicação:
+
+```http
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Referrer-Policy: no-referrer
+Permissions-Policy: camera=(), microphone=(), geolocation=()
+```
+
+HSTS e CSP não são enviados automaticamente porque dependem do uso efetivo de
+HTTPS e da política de conteúdo da aplicação. Para substituir o mapa ou desligar
+o filtro:
+
+```properties
+demoiselle.rest.securityHeadersEnabled=true
+demoiselle.rest.securityHeaders.X-Content-Type-Options=nosniff
+demoiselle.rest.securityHeaders.X-Frame-Options=SAMEORIGIN
+```
+
+Por redução de fingerprinting, `Demoiselle-Version` fica oculto por padrão. A
+compatibilidade pode ser reativada explicitamente:
+
+```properties
+demoiselle.rest.exposeFrameworkVersion=true
 ```
 
 ---
@@ -1527,6 +1631,27 @@ String link = LinkHeaderBuilder.build("/api/resource?filter=active", pageResult)
 ### Retrocompatibilidade
 
 Todos os headers customizados (`X-Total-Count`, `X-Total-Pages`, `X-Current-Page`, `X-Page-Size`, `X-Has-Next`, `X-Has-Previous`) continuam presentes. O header `Link` é adicionado em complemento.
+
+---
+
+## P33 — Limites de requisição CRUD
+
+O CRUD aplica tetos globais antes de construir consultas, reduzindo risco de
+consumo excessivo de memória e banco. Os defaults são:
+
+```properties
+demoiselle.crud.pagination.maxPagination=100
+demoiselle.crud.limits.maxFilters=20
+demoiselle.crud.limits.maxFilterValues=100
+demoiselle.crud.limits.maxFilterValueLength=1024
+demoiselle.crud.limits.maxSortFields=10
+```
+
+O tamanho efetivo da página é o menor valor entre o default global ou
+`@Search.quantityPerPage` e `maxPagination`. Requisições que excedem os demais
+limites são rejeitadas como entrada inválida antes da validação dos campos.
+Valores nulos ou não positivos nas propriedades de `limits` retornam aos
+defaults seguros; configure valores positivos para ampliar ou reduzir os tetos.
 
 ---
 
@@ -1611,33 +1736,73 @@ A blacklist é `@ApplicationScoped` e remove automaticamente entradas expiradas.
 
 ---
 
-## P22 — JWT Key Rotation e Múltiplos Algoritmos
+## P22 — Identificação de Chave e Algoritmos JWT
 
-### Rotação de Chaves
+### Identificador da Chave Ativa
 
 ```properties
 # demoiselle.properties
+# A chave pública/privada continua sendo configurada pelas propriedades do módulo.
 demoiselle.security.jwt.activeKeyId=key-2024
-demoiselle.security.jwt.keys.key-2024.privateKey=...
-demoiselle.security.jwt.keys.key-2024.publicKey=...
-demoiselle.security.jwt.keys.key-2023.publicKey=...  # chave antiga (apenas validação)
+demoiselle.security.jwt.privateKey=...
+demoiselle.security.jwt.publicKey=...
 ```
 
-Novos tokens são assinados com `activeKeyId`. Tokens existentes são validados pela chave correspondente ao `kid` no header JWT.
+Novos tokens recebem `activeKeyId` no header `kid`. Na validação, um `kid`
+explícito e desconhecido é rejeitado com HTTP 401; a chave fallback só pode ser
+usada quando o token omite `kid` (compatibilidade) ou informa o identificador
+ativo. Um provedor configurável de múltiplas chaves é uma evolução planejada,
+não devendo ser simulado com propriedades aninhadas não suportadas.
 
-### Múltiplos Algoritmos
+### Algoritmos Permitidos
 
 ```properties
+# Opcional; RS256 é o default seguro
 demoiselle.security.jwt.allowedAlgorithms=RS256,RS384,RS512
 ```
 
-Tokens com algoritmo fora da lista são rejeitados (proteção contra ataques de confusão de algoritmo).
+A lista nunca fica aberta: sem configuração explícita, somente `RS256` é
+permitido. Tokens sem algoritmo ou com algoritmo fora da allowlist são
+rejeitados.
 
 ### Clock Skew
 
 ```properties
-demoiselle.security.jwt.clockSkewSeconds=30  # tolerância de 30s (padrão)
+demoiselle.security.jwt.clockSkewSeconds=60  # tolerância em segundos (padrão)
 ```
+
+---
+
+## P34 — Perfis avançados JWT
+
+A validação possui três perfis. O default `compat` preserva tokens existentes;
+`recommended` e `strict` são opt-in e falham se `issuer` ou `audience` não
+estiverem configurados ou forem omitidos da chamada explícita de validação.
+
+| Perfil | Requisitos adicionais |
+|---|---|
+| `compat` | Mantém `exp`, assinatura, allowlist de algoritmo e seleção segura de `kid` |
+| `recommended` | `iss`, `aud`, header `typ` (`JWT`), `iat`, `jti` e idade máxima |
+| `strict` | Tudo de `recommended` mais `sub` |
+
+```properties
+demoiselle.security.jwt.validationProfile=recommended
+demoiselle.security.jwt.issuer=https://auth.example.gov.br
+demoiselle.security.jwt.audience=api-demoiselle
+demoiselle.security.jwt.expectedType=JWT
+demoiselle.security.jwt.maxTokenAgeSeconds=900
+```
+
+Quando `maxTokenAgeSeconds` não é informado, os perfis avançados usam
+`timetoLiveMilliseconds` convertido para segundos. Overrides booleanos
+`requireIssuer`, `requireAudience`, `requireIssuedAt`, `requireJwtId` e
+`requireSubject` podem reforçar `compat`, mas `false` nunca enfraquece os pisos
+de `recommended` ou `strict`. Um nome de perfil desconhecido é rejeitado para
+evitar downgrade por erro de digitação.
+
+Tokens emitidos pelo framework incluem `typ` quando o perfil o exige e usam a
+identidade como `sub`. A tolerância de `clockSkewSeconds` continua sendo aplicada
+à expiração e à idade baseada em `iat`.
 
 ---
 
@@ -2052,7 +2217,7 @@ Códigos de erro JSON-RPC:
 
 ## Testes Baseados em Propriedades (jqwik)
 
-O framework inclui **81+ property-based tests** usando [jqwik](https://jqwik.net/) que validam propriedades universais de corretude:
+O framework usa [jqwik](https://jqwik.net/) em uma suíte ampla de property-based tests que validam propriedades universais de corretude. A quantidade evolui com a suíte; os relatórios Surefire/Failsafe do build são a fonte de verdade:
 
 | # | Propriedade | Módulo |
 |:---:|---|---|
@@ -2184,18 +2349,18 @@ void modifyingOriginalListDoesNotAffectGetContent(
 <parent>
     <groupId>org.demoiselle.jee</groupId>
     <artifactId>demoiselle-parent</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.1.0-SNAPSHOT</version>
 </parent>
 ```
 
-Configurar Java 17 no compiler plugin:
+Configurar Java 21 no compiler plugin:
 
 ```xml
 <plugin>
     <artifactId>maven-compiler-plugin</artifactId>
     <version>3.13.0</version>
     <configuration>
-        <release>17</release>
+        <release>21</release>
     </configuration>
 </plugin>
 ```
@@ -2404,27 +2569,29 @@ catch (DemoiselleSecurityException e) { /* status 429 */ }
 
 O header `Retry-After` agora é incluído automaticamente. Clientes podem implementar backoff baseado nesse valor.
 
-#### 17. JWT — Novas Funcionalidades
-
-Todas as novas funcionalidades JWT são opt-in:
+#### 17. JWT — Novas Funcionalidades e Defaults Seguros
 
 ```properties
 # Refresh token (opt-in)
 demoiselle.security.jwt.refreshTokenTtlMilliseconds=86400000
 
-# Key rotation (opt-in)
+# Identificador da chave configurada
 demoiselle.security.jwt.activeKeyId=key-2024
-demoiselle.security.jwt.keys.key-2024.privateKey=...
-demoiselle.security.jwt.keys.key-2024.publicKey=...
+demoiselle.security.jwt.privateKey=...
+demoiselle.security.jwt.publicKey=...
 
-# Múltiplos algoritmos (opt-in)
+# Allowlist opcional; sem a propriedade, somente RS256 é aceito
 demoiselle.security.jwt.allowedAlgorithms=RS256,RS384,RS512
 
-# Clock skew (opt-in, padrão 30s)
-demoiselle.security.jwt.clockSkewSeconds=30
+# Clock skew (padrão 60s)
+demoiselle.security.jwt.clockSkewSeconds=60
 ```
 
-Sem configuração adicional, o comportamento é idêntico ao v3.
+> **Atenção na migração:** a validação agora é fail-closed para algoritmo e
+> `kid`. Tokens com `kid` explícito diferente de `activeKeyId` (ou de uma chave
+> conhecida por um provedor futuro) recebem 401. Valide emissores legados antes
+> de atualizar. Propriedades aninhadas `keys.<kid>.*` não são suportadas nesta
+> versão.
 
 #### 18. Token — Resolução de Ambiguidade CDI
 
@@ -2518,8 +2685,8 @@ Sem a dependência, nenhum comportamento muda.
 
 ### Checklist de Migração
 
-- [ ] Atualizar versão do parent POM para 4.0.0
-- [ ] Configurar Java 17 no maven-compiler-plugin
+- [ ] Atualizar versão do parent POM para 4.1.0-SNAPSHOT
+- [ ] Configurar Java 21 no maven-compiler-plugin
 - [ ] Substituir imports `javax.*` por `jakarta.*`
 - [ ] Atualizar `beans.xml` para namespace Jakarta EE
 - [ ] Renomear arquivos `META-INF/services/javax.*` para `jakarta.*`
@@ -2537,7 +2704,10 @@ Sem a dependência, nenhum comportamento muda.
 
 | Mudança | Impacto | Ação |
 |---|---|---|
+| Baseline Java 21 | Alto | Atualizar JDK local, CI e imagens de runtime |
 | `javax.*` → `jakarta.*` | Alto | Substituir imports |
+| `Demoiselle-Version` oculto | Baixo | Ativar `demoiselle.rest.exposeFrameworkVersion=true` somente se necessário |
+| Limites CRUD globais | Médio | Ajustar propriedades se a API aceita páginas/filtros maiores |
 | Record accessors (`error()` vs `getError()`) | Médio | Atualizar chamadas |
 | `List.copyOf()` em coleções de segurança | Baixo | Re-obter lista após mutação |
 | `TokenImpl` agora `@Vetoed` (não é bean CDI) | Baixo | Token vem do producer do SecurityFilter |
@@ -2553,6 +2723,7 @@ Sem a dependência, nenhum comportamento muda.
 | JWT Refresh Token | `demoiselle.security.jwt.refreshTokenTtlMilliseconds` |
 | JWT Key Rotation | `demoiselle.security.jwt.activeKeyId` |
 | JWT Múltiplos Algoritmos | `demoiselle.security.jwt.allowedAlgorithms` |
+| JWT Validation Profiles | `demoiselle.security.jwt.validationProfile=recommended` ou `strict` |
 | Perfis de Configuração | `-Ddemoiselle.profile=dev` |
 | @DefaultValue | Anotação em campos `@Configuration` |
 | CORS via Properties | `demoiselle.security.cors.*` |

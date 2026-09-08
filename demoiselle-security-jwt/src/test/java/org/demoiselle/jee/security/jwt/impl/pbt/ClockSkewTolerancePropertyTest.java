@@ -99,6 +99,7 @@ class ClockSkewTolerancePropertyTest {
         setField(config, "audience", "web");
         setField(config, "timetoLiveMilliseconds", 9999999999L);
         setField(config, "type", "master");
+        setField(config, "activeKeyId", "test-key");
         setField(config, "clockSkewSeconds", clockSkew);
         return config;
     }

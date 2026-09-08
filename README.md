@@ -13,24 +13,63 @@ Disponibiliza mecanismos reusáveis voltados as funcionalidades mais
 comuns de uma aplicação (arquitetura, segurança, transação, mensagem,
 configuração, tratamento de exceções, etc).
 
-## Versão 4.0.0
+## Primeiros passos
+
+Pré-requisitos: **Java 21+**, **Maven 3.9+** e um runtime compatível com
+**Jakarta EE 10**. Importe o BOM para manter todos os módulos na mesma versão:
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.demoiselle.jee</groupId>
+            <artifactId>demoiselle-parent-bom</artifactId>
+            <version>4.1.0-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+<dependencies>
+    <dependency>
+        <groupId>org.demoiselle.jee</groupId>
+        <artifactId>demoiselle-core</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.demoiselle.jee</groupId>
+        <artifactId>demoiselle-rest</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.demoiselle.jee</groupId>
+        <artifactId>demoiselle-crud</artifactId>
+    </dependency>
+</dependencies>
+```
+
+Snapshots exigem o [repositório Sonatype OSS](#repositório-maven). Para detalhes
+de configuração, exemplos CRUD e segurança, consulte o
+[guia completo](docs/index.md).
+
+## Versão 4.1.0-SNAPSHOT
 
 A versão 4 do Demoiselle Framework traz as seguintes mudanças principais:
 
 - **Jakarta EE 10**: Migração completa do namespace `javax.*` para `jakarta.*`
-- **Java 17**: Versão mínima do Java atualizada para 17 (LTS)
+- **Java 21**: baseline mínimo LTS, verificado pelo Maven Enforcer
 - **CDI 4.0**: Atualização para Jakarta Contexts and Dependency Injection 4.0
 - **JUnit 5**: Migração completa dos testes para JUnit Jupiter
 - **OpenAPI 3.0**: Substituição do Swagger 1.x por MicroProfile OpenAPI
-- **GitHub Actions**: Pipeline de CI/CD migrado do Travis CI para GitHub Actions com build matrix Java 17/21
+- **GitHub Actions**: Pipeline CI em Java 21 com build completo, cobertura e credenciais de checkout desabilitadas
+- **Supply chain**: plugins Maven com versões explícitas e SBOM agregado CycloneDX em JSON/XML
 - **Remoção do WildFly Swarm**: Framework agnóstico de runtime (compatível com WildFly 27+, Quarkus, Open Liberty)
 - **Remoção do DeltaSpike**: Substituído por implementação própria baseada em CDI 4.0
 
 ### Modernização Jakarta EE 10
 
-A versão 4 inclui modernizações que aproveitam plenamente Java 17 e Jakarta EE 10:
+A versão 4 inclui modernizações que aproveitam plenamente Java 21 e Jakarta EE 10:
 
-- **Java 17 Records** para DTOs imutáveis (`SortModel`, `DemoiselleRestExceptionMessage`, `ResultSet`)
+- **Records** para DTOs imutáveis (`SortModel`, `DemoiselleRestExceptionMessage`, `ResultSet`)
 - **Sealed Classes + Pattern Matching** para filtros CRUD type-safe (`FilterOp`)
 - **CDI 4.0 Lite Build-Compatible Extensions** compatíveis com GraalVM native image
 - **Coleções imutáveis** com cópias defensivas via `List.copyOf()` / `Map.copyOf()`
@@ -39,7 +78,7 @@ A versão 4 inclui modernizações que aproveitam plenamente Java 17 e Jakarta E
 
 ### Melhorias no Módulo CRUD
 
-O módulo `demoiselle-crud` recebeu 7 novas funcionalidades:
+O módulo `demoiselle-crud` inclui funcionalidades modernas de persistência e proteção:
 
 - **Soft Delete** — exclusão lógica declarativa via `@SoftDeletable` com suporte a `LocalDateTime`, `Boolean` e `Instant`
 - **Auditoria Automática** — preenchimento automático de `@CreatedAt`, `@UpdatedAt`, `@CreatedBy`, `@UpdatedBy` via JPA EntityListener
@@ -48,8 +87,16 @@ O módulo `demoiselle-crud` recebeu 7 novas funcionalidades:
 - **PageResult\<T\>** — record imutável com metadados de paginação (`totalPages`, `currentPage`, `hasNext`, `hasPrevious`)
 - **Operadores de Comparação** — `gt:`, `lt:`, `gte:`, `lte:`, `between:`, `in:` via query string
 - **Cache de Consultas** — `@Cacheable` com invalidação automática via eventos CDI
+- **Limites contra abuso** — teto global de paginação, filtros, valores e campos de ordenação
 
 📖 [Documentação completa com exemplos](docs/index.md)
+
+### Segurança por padrão
+
+- Respostas REST incluem headers `nosniff`, `DENY`, `no-referrer` e uma `Permissions-Policy` conservadora sem sobrescrever valores definidos pela aplicação.
+- O header `Demoiselle-Version` fica oculto por padrão e pode ser reativado explicitamente.
+- JWT mantém o perfil `compat` como default e oferece `recommended` e `strict` para exigir `iss`, `aud`, `typ`, `iat`, `jti`, idade máxima e, no modo estrito, `sub`.
+- Algoritmos JWT continuam em allowlist (`RS256` por padrão) e `kid` desconhecido é rejeitado.
 
 ### Módulo de Observabilidade (`demoiselle-observability`)
 
@@ -86,7 +133,7 @@ Módulo dedicado a testes de integração entre módulos:
 
 - **ConfigSecurityRestIT** — Fluxo completo configuração → segurança JWT → REST
 - **ConfigScriptIT** — Fluxo configuração → execução de scripts
-- **9 Property-Based Tests** — Validação de propriedades de corretude com jqwik
+- **Testes Baseados em Propriedades** — Invariantes de segurança, configuração, CRUD e integração validados com jqwik
 
 📖 [Documentação completa com exemplos](docs/index.md)
 
@@ -107,6 +154,7 @@ Links úteis
 
 * [Portal](http://demoiselle.io): Central de acesso as informações do Demoiselle
 * [Documentação Jakarta EE 10](docs/index.md): Funcionalidades modernizadas com exemplos de código
+* [Roadmap técnico sugerido](docs/roadmap.md): Evoluções priorizadas a partir da auditoria
 * [Documentação Legada](https://demoiselle.gitbooks.io/documentacao-jee/content): Documentação dos módulos (versões anteriores)
 * [Fórum/Tracker](https://github.com/demoiselle/framework/issues): Fóruns de discussão e Submissão/acompanhamento de Bugs, Improvements e New Features
 * [Lista de discussão](https://lists.sourceforge.net/lists/listinfo/demoiselle-users): Comunicação e troca de experiências entre os usuários do projeto.
@@ -115,10 +163,21 @@ Links úteis
 Repositório Maven
 -----------
 
-    <repository>
-        <id>central.repository</id>
-        <url>http://repo1.maven.org/maven2</url>
-    </repository>
+Releases publicadas no Maven Central não exigem configuração adicional. Para
+usar versões `SNAPSHOT`, configure explicitamente o repositório Sonatype OSS:
+
+```xml
+<repository>
+    <id>sonatype-oss-snapshots</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    <releases>
+        <enabled>false</enabled>
+    </releases>
+    <snapshots>
+        <enabled>true</enabled>
+    </snapshots>
+</repository>
+```
 
 
 Contribuindo

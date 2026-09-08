@@ -6,6 +6,8 @@
  */
 package org.demoiselle.jee.rest.filter;
 
+import java.util.Map;
+
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import static jakarta.ws.rs.Priorities.HEADER_DECORATOR;
@@ -15,6 +17,7 @@ import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.ext.Provider;
 
 import org.demoiselle.jee.core.message.DemoiselleMessage;
+import org.demoiselle.jee.rest.DemoiselleRestConfig;
 
 /**
  *
@@ -28,8 +31,25 @@ public class RestFilter implements ContainerResponseFilter {
     @Inject
     private DemoiselleMessage demoiselleMessage;
 
+    @Inject
+    private DemoiselleRestConfig config;
+
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
-        responseContext.getHeaders().putSingle("Demoiselle-Version", demoiselleMessage.frameworkName());
+        if (config != null && config.isExposeFrameworkVersion()
+                && !responseContext.getHeaders().containsKey("Demoiselle-Version")) {
+            responseContext.getHeaders().putSingle("Demoiselle-Version", demoiselleMessage.frameworkName());
+        }
+
+        if (config != null && config.isSecurityHeadersEnabled()) {
+            Map<String, String> securityHeaders = config.getSecurityHeaders();
+            if (securityHeaders != null) {
+                securityHeaders.forEach((name, value) -> {
+                    if (name != null && value != null && !responseContext.getHeaders().containsKey(name)) {
+                        responseContext.getHeaders().putSingle(name, value);
+                    }
+                });
+            }
+        }
     }
 }

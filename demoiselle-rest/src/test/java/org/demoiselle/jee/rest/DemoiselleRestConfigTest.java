@@ -46,9 +46,9 @@ class DemoiselleRestConfigTest {
      * Test of isErrorDetails method, of class DemoiselleRestConfig.
      */
     @Test
-    void testShowErrorDetailsDefaultIsTrue() {
+    void testShowErrorDetailsDefaultIsFalse() {
         boolean expResult = instance.isShowErrorDetails();
-        assertEquals(true, expResult);
+        assertEquals(false, expResult);
     }
 
     /**
@@ -105,5 +105,64 @@ class DemoiselleRestConfigTest {
     @Test
     void testIsRfc9457ReturnsFalseByDefault() {
         assertFalse(new DemoiselleRestConfig().isRfc9457());
+    }
+
+    @Test
+    void testSecurityHeadersEnabledDefaultIsTrue() {
+        assertTrue(new DemoiselleRestConfig().isSecurityHeadersEnabled());
+    }
+
+    @Test
+    void testExposeFrameworkVersionDefaultIsFalse() {
+        assertFalse(new DemoiselleRestConfig().isExposeFrameworkVersion());
+    }
+
+    @Test
+    void testSecurityHeadersDefaults() {
+        DemoiselleRestConfig config = new DemoiselleRestConfig();
+        java.util.Map<String, String> headers = config.getSecurityHeaders();
+        assertEquals("nosniff", headers.get("X-Content-Type-Options"));
+        assertEquals("DENY", headers.get("X-Frame-Options"));
+        assertEquals("no-referrer", headers.get("Referrer-Policy"));
+        assertEquals("camera=(), microphone=(), geolocation=()", headers.get("Permissions-Policy"));
+    }
+
+    @Test
+    void testSecurityHeadersHasNoHstsOrCspByDefault() {
+        DemoiselleRestConfig config = new DemoiselleRestConfig();
+        java.util.Map<String, String> headers = config.getSecurityHeaders();
+        assertFalse(headers.containsKey("Strict-Transport-Security"));
+        assertFalse(headers.containsKey("Content-Security-Policy"));
+    }
+
+    @Test
+    void testSetSecurityHeadersNullResetsToDefaults() {
+        DemoiselleRestConfig config = new DemoiselleRestConfig();
+        config.setSecurityHeaders(null);
+        assertEquals("nosniff", config.getSecurityHeaders().get("X-Content-Type-Options"));
+    }
+
+    @Test
+    void testSetSecurityHeadersOverridesMap() {
+        DemoiselleRestConfig config = new DemoiselleRestConfig();
+        java.util.Map<String, String> custom = new java.util.HashMap<>();
+        custom.put("X-Frame-Options", "SAMEORIGIN");
+        config.setSecurityHeaders(custom);
+        assertEquals("SAMEORIGIN", config.getSecurityHeaders().get("X-Frame-Options"));
+        assertFalse(config.getSecurityHeaders().containsKey("X-Content-Type-Options"));
+    }
+
+    @Test
+    void testSetSecurityHeadersEnabledFlag() {
+        DemoiselleRestConfig config = new DemoiselleRestConfig();
+        config.setSecurityHeadersEnabled(false);
+        assertFalse(config.isSecurityHeadersEnabled());
+    }
+
+    @Test
+    void testSetExposeFrameworkVersionFlag() {
+        DemoiselleRestConfig config = new DemoiselleRestConfig();
+        config.setExposeFrameworkVersion(true);
+        assertTrue(config.isExposeFrameworkVersion());
     }
 }

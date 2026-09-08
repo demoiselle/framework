@@ -93,7 +93,7 @@ public class PaginationHelper {
 
             if (hasSearchAnnotation() && !isRequestPagination()) {
                 drc.setLimit(getDefaultNumberPagination() - 1);
-                drc.setOffset(new Integer(0));
+                drc.setOffset(Integer.valueOf(0));
             }
         }
 
@@ -161,8 +161,8 @@ public class PaginationHelper {
                 String limit = range[1];
 
                 try {
-                    drc.setOffset(new Integer(offset));
-                    drc.setLimit(new Integer(limit));
+                    drc.setOffset(Integer.valueOf(offset));
+                    drc.setLimit(Integer.valueOf(limit));
 
                     if (drc.getOffset() > drc.getLimit()) {
                         logInvalidRangeParameters(rangeList.get(0));
@@ -195,12 +195,37 @@ public class PaginationHelper {
      * @return Number per page
      */
     private Integer getDefaultNumberPagination() {
+        Integer requested;
         if (hasSearchAnnotation()) {
             Search searchAnnotation = resourceInfo.getResourceMethod().getAnnotation(Search.class);
-            return searchAnnotation.quantityPerPage();
+            requested = searchAnnotation.quantityPerPage();
+        } else {
+            requested = paginationConfig.getDefaultPagination();
         }
 
-        return paginationConfig.getDefaultPagination();
+        return applyMaxPagination(requested);
+    }
+
+    /**
+     * Apply the configured maximum pagination as a ceiling to the requested page
+     * size. A {@code null} or {@code 0} maximum is treated as "no ceiling" so
+     * existing behaviour (and legacy mocks that do not stub {@code getMaxPagination()})
+     * is preserved.
+     *
+     * @param requested the requested page size (from @Search or default config)
+     * @return the effective page size, capped by the maximum when applicable
+     */
+    private Integer applyMaxPagination(Integer requested) {
+        if (requested == null) {
+            return requested;
+        }
+
+        Integer max = paginationConfig.getMaxPagination();
+        if (max == null || max <= 0) {
+            return requested;
+        }
+
+        return Math.min(requested, max);
     }
 
     private Boolean hasSearchAnnotation() {
@@ -297,7 +322,7 @@ public class PaginationHelper {
         url = url.replaceFirst(".range=([^&]*)", "");
 
         if (drc.getOffset() == null) {
-            drc.setOffset(new Integer(0));
+            drc.setOffset(Integer.valueOf(0));
         }
 
         if (drc.getLimit() == null) {

@@ -83,32 +83,38 @@ public class KeyRotationManager {
 
     /**
      * Returns the public key corresponding to the given kid.
-     * If kid is found in the key map, returns that key.
-     * If kid is not found, falls back to KeyPairHolder.getPublicKey().
-     * If kid is explicitly unknown and no fallback available, throws
-     * DemoiselleSecurityException with 401.
+     * A key registered in the rotation map is selected directly. The fallback
+     * key is used only when {@code kid} is absent or matches the configured
+     * active key ID; any other explicit ID is rejected with HTTP 401.
      *
      * @param kid the key identifier from the JWT header
      * @return the public key for verification
-     * @throws DemoiselleSecurityException if kid not found and no fallback
+     * @throws DemoiselleSecurityException if the kid is unknown or no key exists
      */
     public PublicKey getPublicKey(String kid) {
-        // Check the key map first
         if (kid != null) {
             KeyPair pair = keyPairs.get(kid);
             if (pair != null && pair.getPublic() != null) {
                 return pair.getPublic();
             }
+
+            // The fallback key represents only the configured active key.
+            // A token that names any other kid must never be accepted with it.
+            if (!kid.equals(getActiveKeyId())) {
+                throw kidNotFound();
+            }
         }
 
-        // Fallback to KeyPairHolder
         PublicKey fallback = fallbackKeyPairHolder.getPublicKey();
         if (fallback != null) {
             return fallback;
         }
 
-        // No key found at all
-        throw new DemoiselleSecurityException(
+        throw kidNotFound();
+    }
+
+    private DemoiselleSecurityException kidNotFound() {
+        return new DemoiselleSecurityException(
                 bundle.kidNotFound(),
                 Response.Status.UNAUTHORIZED.getStatusCode());
     }

@@ -24,6 +24,7 @@ import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.entity.AddressModelForTest;
 import org.demoiselle.jee.crud.entity.CountryModelForTest;
 import org.demoiselle.jee.crud.entity.UserModelForTest;
+import org.demoiselle.jee.crud.cache.Cacheable;
 import org.demoiselle.jee.crud.cache.QueryCacheStore;
 import org.demoiselle.jee.crud.field.FieldHelper;
 import org.demoiselle.jee.crud.field.FieldHelperMessage;
@@ -563,5 +564,30 @@ class CrudFilterTest {
 
         // Should not set cache property
         verify(requestContext, never()).setProperty(eq(CrudFilter.CACHE_HIT_PROPERTY), any());
+    }
+
+    @Test
+    void classLevelCacheableShouldSetCacheHitProperty() throws Exception {
+        when(dpc.getDefaultPagination()).thenReturn(20);
+        when(dpc.getIsGlobalEnabled()).thenReturn(true);
+        when(uriInfo.getQueryParameters()).thenReturn(mvmRequest);
+        when(resourceInfo.getResourceClass()).thenReturn((Class) ClassCacheableRest.class);
+        when(resourceInfo.getResourceMethod()).thenReturn(
+                ClassCacheableRest.class.getMethod("find"));
+        when(uriInfo.getRequestUri()).thenReturn(
+                new URI("http://localhost:9090/api/class-cache"));
+
+        List<String> cachedData = List.of("class-level-cache");
+        String cacheKey = UserModelForTest.class.getName()
+                + ":filter:http://localhost:9090/api/class-cache";
+        queryCacheStore.put(cacheKey, cachedData, 60);
+
+        crudFilter.filter(requestContext);
+
+        verify(requestContext).setProperty(CrudFilter.CACHE_HIT_PROPERTY, cachedData);
+    }
+
+    @Cacheable
+    static class ClassCacheableRest extends AbstractREST<UserModelForTest, Long> {
     }
 }

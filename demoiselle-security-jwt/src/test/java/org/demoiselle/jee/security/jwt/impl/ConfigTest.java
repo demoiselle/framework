@@ -76,4 +76,11 @@ class ConfigTest {
     void testGetAlgorithmIdentifiers() {
         assertEquals("RS256", instance.getAlgorithmIdentifiers());
     }
+
+    @Test
+    void allowedAlgorithmsDefaultsToRs256() {
+        DemoiselleSecurityJWTConfig config = new DemoiselleSecurityJWTConfig();
+
+        assertEquals(java.util.List.of("RS256"), config.getAllowedAlgorithmsList());
+    }
 }

@@ -23,6 +23,10 @@ public class BatchConfig {
     private int size = 50;
 
     public int getSize() {
+        if (size <= 0) {
+            throw new IllegalStateException(
+                    "demoiselle.crud.batch.size must be greater than zero");
+        }
         return size;
     }
 

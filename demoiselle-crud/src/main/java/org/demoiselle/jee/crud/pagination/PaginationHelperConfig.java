@@ -17,10 +17,15 @@ import org.demoiselle.jee.configuration.annotation.Configuration;
 public class PaginationHelperConfig {
 	
     private Boolean isGlobalEnabled = Boolean.TRUE;
-	private Integer defaultPagination = new Integer(20);
+	private Integer defaultPagination = 20;
+	private Integer maxPagination = 100;
 
 	public Integer getDefaultPagination() {
 		return defaultPagination;
+	}
+
+	public Integer getMaxPagination() {
+		return maxPagination;
 	}
 
     public Boolean getIsGlobalEnabled() {

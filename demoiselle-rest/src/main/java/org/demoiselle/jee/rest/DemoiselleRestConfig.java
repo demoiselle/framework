@@ -26,9 +26,35 @@ public class DemoiselleRestConfig {
 	
 	private Map<String, String> sqlError = new HashMap<String,String>();	
 	
-	private boolean showErrorDetails = true;
+	private boolean showErrorDetails = false;
 
 	private String errorFormat = "legacy";
+
+	/**
+	 * Whether security response headers should be applied. Enabled by default.
+	 */
+	private boolean securityHeadersEnabled = true;
+
+	/**
+	 * Whether the {@code Demoiselle-Version} header should be exposed on responses.
+	 * Disabled by default to avoid leaking framework version information.
+	 */
+	private boolean exposeFrameworkVersion = false;
+
+	/**
+	 * Configurable map of security headers applied to responses. Populated with
+	 * conservative defaults; no HSTS or Content-Security-Policy is set by default.
+	 */
+	private Map<String, String> securityHeaders = defaultSecurityHeaders();
+
+	private static Map<String, String> defaultSecurityHeaders() {
+		Map<String, String> headers = new HashMap<>();
+		headers.put("X-Content-Type-Options", "nosniff");
+		headers.put("X-Frame-Options", "DENY");
+		headers.put("Referrer-Policy", "no-referrer");
+		headers.put("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+		return headers;
+	}
 
 	/**
 	 * Return true or false if the detailed errors should return to user.
@@ -95,6 +121,61 @@ public class DemoiselleRestConfig {
 	 */
 	public boolean isRfc9457() {
 		return "rfc9457".equals(errorFormat);
+	}
+
+	/**
+	 * Return whether security response headers should be applied.
+	 *
+	 * @return true if security headers are enabled
+	 */
+	public boolean isSecurityHeadersEnabled() {
+		return securityHeadersEnabled;
+	}
+
+	/**
+	 * Set whether security response headers should be applied.
+	 *
+	 * @param securityHeadersEnabled the flag value
+	 */
+	public void setSecurityHeadersEnabled(boolean securityHeadersEnabled) {
+		this.securityHeadersEnabled = securityHeadersEnabled;
+	}
+
+	/**
+	 * Return whether the {@code Demoiselle-Version} header should be exposed.
+	 *
+	 * @return true if the framework version should be exposed
+	 */
+	public boolean isExposeFrameworkVersion() {
+		return exposeFrameworkVersion;
+	}
+
+	/**
+	 * Set whether the {@code Demoiselle-Version} header should be exposed.
+	 *
+	 * @param exposeFrameworkVersion the flag value
+	 */
+	public void setExposeFrameworkVersion(boolean exposeFrameworkVersion) {
+		this.exposeFrameworkVersion = exposeFrameworkVersion;
+	}
+
+	/**
+	 * Return the configurable map of security headers. Never {@code null}.
+	 *
+	 * @return the security headers map
+	 */
+	public Map<String, String> getSecurityHeaders() {
+		return securityHeaders;
+	}
+
+	/**
+	 * Set the map of security headers. A {@code null} value resets the map to
+	 * the conservative defaults so callers always observe a usable configuration.
+	 *
+	 * @param securityHeaders the security headers map
+	 */
+	public void setSecurityHeaders(Map<String, String> securityHeaders) {
+		this.securityHeaders = securityHeaders == null ? defaultSecurityHeaders() : securityHeaders;
 	}
 
 }

@@ -84,9 +84,8 @@
     <properties>
         <license.header>./licence-lgpl</license.header>
         <project.alias>framework</project.alias>
-        <java.version>17</java.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <java.version>21</java.version>
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <release.goals>deploy</release.goals>
         <jacoco.minimum.coverage>0.00</jacoco.minimum.coverage>
@@ -99,6 +98,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>wagon-maven-plugin</artifactId>
+                <version>3.0.0</version>
                 <configuration>
                     <serverId>demoiselle.sourceforge.net</serverId>
                     <url>${upload.url}</url>
@@ -130,10 +130,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.8.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.1.4</version>
                 <configuration>
                     <skip>false</skip>
                 </configuration>
@@ -148,11 +150,16 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.4.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
                     <showDeprecation>true</showDeprecation>
-                    <release>17</release>
+                    <release>${maven.compiler.release}</release>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -237,6 +244,63 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.3.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.6.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.6.3</version>
+                <executions>
+                    <execution>
+                        <id>enforce-java-and-maven</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[21,)</version>
+                                </requireJavaVersion>
+                                <requireMavenVersion>
+                                    <version>[3.9,)</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <version>2.9.3</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>cyclonedx-aggregate-json</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>makeAggregateBom</goal>
+                        </goals>
+                        <configuration>
+                            <outputFormat>json</outputFormat>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>cyclonedx-aggregate-xml</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>makeAggregateBom</goal>
+                        </goals>
+                        <configuration>
+                            <outputFormat>xml</outputFormat>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
         

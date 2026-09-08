@@ -12,17 +12,18 @@ import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * CDI interceptor that caches method results annotated with {@link Cacheable}.
  *
- * <p>On invocation, the interceptor builds a cache key from the target class name,
- * method name, and a hash of the parameters. If a valid (non-expired) entry exists
- * in the {@link QueryCacheStore}, it is returned immediately (cache hit). Otherwise,
- * the method proceeds normally and its result is stored in the cache with the
- * configured TTL (cache miss).</p>
+ * <p>On invocation, the interceptor builds a cache key from the configured
+ * entity/owner class, method signature, and a deep hash of the parameters. If
+ * a valid (non-expired) entry exists in the {@link QueryCacheStore}, it is
+ * returned immediately. Otherwise, the method proceeds normally and a
+ * non-null result is stored with the configured TTL.</p>
  *
- * <p>Cache key format: {@code entityClass:methodName:hashOfParameters}</p>
+ * <p>Cache key format: {@code ownerClass:methodSignature:parametersHash}</p>
  *
  * <p>Validates: Requirements 7.2, 7.3</p>
  */
@@ -44,8 +45,8 @@ public class CacheInterceptor {
      */
     @AroundInvoke
     public Object intercept(InvocationContext ctx) throws Exception {
-        Cacheable cacheable = ctx.getMethod().getAnnotation(Cacheable.class);
-        String cacheKey = buildCacheKey(ctx);
+        Cacheable cacheable = resolveCacheable(ctx);
+        String cacheKey = buildCacheKey(ctx, cacheable);
 
         Object cached = cacheStore.get(cacheKey);
         if (cached != null) {
@@ -53,21 +54,38 @@ public class CacheInterceptor {
         }
 
         Object result = ctx.proceed();
-        cacheStore.put(cacheKey, result, cacheable.ttl());
+        if (result != null) {
+            cacheStore.put(cacheKey, result, cacheable.ttl());
+        }
         return result;
     }
 
+    private Cacheable resolveCacheable(InvocationContext ctx) {
+        Cacheable cacheable = ctx.getMethod().getAnnotation(Cacheable.class);
+        if (cacheable == null) {
+            cacheable = ctx.getMethod().getDeclaringClass().getAnnotation(Cacheable.class);
+        }
+        if (cacheable == null && ctx.getTarget() != null) {
+            Class<?> type = ctx.getTarget().getClass();
+            while (cacheable == null && type != null) {
+                cacheable = type.getAnnotation(Cacheable.class);
+                type = type.getSuperclass();
+            }
+        }
+        return Objects.requireNonNull(cacheable,
+                "CacheInterceptor invoked without @Cacheable binding");
+    }
+
     /**
-     * Builds a cache key from the target's superclass name (to get the actual
-     * bean class rather than the CDI proxy), the method name, and a hash of
-     * the method parameters.
-     *
-     * @param ctx the invocation context
-     * @return the composite cache key
+     * Builds a key namespaced by the explicitly configured entity class, or
+     * by the method's declaring class for backwards compatibility.
      */
-    private String buildCacheKey(InvocationContext ctx) {
-        return ctx.getTarget().getClass().getSuperclass().getName() + ":"
-             + ctx.getMethod().getName() + ":"
-             + Arrays.hashCode(ctx.getParameters());
+    private String buildCacheKey(InvocationContext ctx, Cacheable cacheable) {
+        Class<?> owner = cacheable.entityClass() == Void.class
+                ? ctx.getMethod().getDeclaringClass()
+                : cacheable.entityClass();
+        return owner.getName() + ":"
+             + ctx.getMethod().toGenericString() + ":"
+             + Arrays.deepHashCode(ctx.getParameters());
     }
 }

@@ -27,4 +27,16 @@ public interface CrudMessage {
     @MessageTemplate("{field-request-does-not-exists-on-object}")
     String fieldRequestDoesNotExistsOnObject(String field, String className);
 
+    @MessageTemplate("{filter-limit-exceeded}")
+    String filterLimitExceeded(Integer max);
+
+    @MessageTemplate("{filter-values-limit-exceeded}")
+    String filterValuesLimitExceeded(Integer max);
+
+    @MessageTemplate("{filter-value-length-exceeded}")
+    String filterValueLengthExceeded(Integer max);
+
+    @MessageTemplate("{sort-fields-limit-exceeded}")
+    String sortFieldsLimitExceeded(Integer max);
+
 }

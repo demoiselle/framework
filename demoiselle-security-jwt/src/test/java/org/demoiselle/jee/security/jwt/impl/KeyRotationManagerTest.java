@@ -49,9 +49,10 @@ class KeyRotationManagerTest {
     void fallbackToKeyPairHolderWhenNoKeysConfigured() throws Exception {
         KeyRotationManager krm = createManager(config, fallbackHolder, new ConcurrentHashMap<>());
 
-        // Should fall back to KeyPairHolder
+        // The fallback key represents the active default kid.
         assertSame(fallbackKeyPair.getPrivate(), krm.getActivePrivateKey());
-        assertSame(fallbackKeyPair.getPublic(), krm.getPublicKey("any-kid"));
+        assertSame(fallbackKeyPair.getPublic(),
+                krm.getPublicKey("demoiselle-security-jwt"));
     }
 
     @Test
@@ -101,15 +102,16 @@ class KeyRotationManagerTest {
     }
 
     @Test
-    void unknownKidFallsBackToKeyPairHolder() throws Exception {
+    void unknownKidThrowsEvenWhenFallbackIsAvailable() throws Exception {
         ConcurrentHashMap<String, KeyPair> keys = new ConcurrentHashMap<>();
         keys.put("known-kid", rotatedKeyPair);
 
         KeyRotationManager krm = createManager(config, fallbackHolder, keys);
 
-        // Unknown kid should fall back to KeyPairHolder
-        PublicKey result = krm.getPublicKey("unknown-kid");
-        assertSame(fallbackKeyPair.getPublic(), result);
+        DemoiselleSecurityException ex = assertThrows(
+                DemoiselleSecurityException.class,
+                () -> krm.getPublicKey("unknown-kid"));
+        assertEquals(401, ex.getStatusCode());
     }
 
     @Test

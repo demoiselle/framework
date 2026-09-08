@@ -6,22 +6,23 @@ on:
   pull_request:
     branches: [main, master]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        java-version: ['17', '21']
 
-    name: Build (Java ${{ matrix.java-version }})
+    name: Build (Java 21)
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-java@v4
         with:
-          java-version: ${{ matrix.java-version }}
+          java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
 
@@ -32,7 +33,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: jacoco-report-java-${{ matrix.java-version }}
+          name: jacoco-report-java-21
           path: '**/target/site/jacoco/'
 
   coverage-summary:
@@ -44,10 +45,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
 

@@ -10,6 +10,8 @@ import static jakarta.ws.rs.core.Response.ok;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jakarta.annotation.Priority;
@@ -97,33 +99,64 @@ public class SecurityFilter implements ContainerRequestFilter {
             return;
         }
 
+        String authorization = req.getHeaderString("Authorization");
         try {
-            if (req.getHeaders().containsKey("Authorization")) {
-                String chave = req.getHeaders().get("Authorization").toString()
-                    .replace("[", "").replace("]", "");
-                if (!chave.isEmpty()) {
-                    TokenType tokenType = TokenType.valueOf(chave.split(" ")[0].toUpperCase());
-                    String tokenKey = chave.split(" ")[1];
-                    currentToken = new TokenImpl();
-                    currentToken.setKey(tokenKey);
-                    currentToken.setType(tokenType);
+            TokenImpl parsedToken = parseAuthorizationHeader(authorization);
+            if (parsedToken != null) {
+                currentToken = parsedToken;
 
-                    // Valida token e atualiza brute force guard
-                    if (tokenManager.validate()) {
-                        bruteForceGuard.resetAttempts(ip);
-                    } else {
-                        bruteForceGuard.recordFailedAttempt(ip);
-                    }
+                // Only a syntactically valid credential that fails validation
+                // counts as a brute-force attempt.
+                if (tokenManager.validate()) {
+                    bruteForceGuard.resetAttempts(ip);
+                } else {
+                    bruteForceGuard.recordFailedAttempt(ip);
                 }
             }
+        } catch (IllegalArgumentException e) {
+            logger.log(Level.FINE, "Ignoring malformed Authorization header: {0}",
+                    e.getMessage());
         } catch (Exception e) {
             bruteForceGuard.recordFailedAttempt(ip);
-            logger.severe(e.getMessage());
+            logger.log(Level.WARNING, "Token validation failed", e);
         }
 
         if (currentToken == null) {
             currentToken = new TokenImpl();
         }
+    }
+
+    /**
+     * Parses a single HTTP Authorization credential using the
+     * {@code scheme SP credentials} grammar.
+     *
+     * @param authorization header value, or {@code null}
+     * @return a token, or {@code null} when the header is absent/blank
+     * @throws IllegalArgumentException when the value is malformed or the
+     *         authentication scheme is unsupported
+     */
+    static TokenImpl parseAuthorizationHeader(String authorization) {
+        if (authorization == null || authorization.isBlank()) {
+            return null;
+        }
+
+        String[] parts = authorization.trim().split("\\s+");
+        if (parts.length != 2 || parts[1].isBlank()) {
+            throw new IllegalArgumentException(
+                    "Authorization must use '<scheme> <credentials>'");
+        }
+
+        final TokenType tokenType;
+        try {
+            tokenType = TokenType.valueOf(parts[0].toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Unsupported authorization scheme", e);
+        }
+
+        TokenImpl parsed = new TokenImpl();
+        parsed.setType(tokenType);
+        parsed.setKey(parts[1]);
+        return parsed;
     }
 
     private void applyCorsHeaders(ContainerRequestContext req,

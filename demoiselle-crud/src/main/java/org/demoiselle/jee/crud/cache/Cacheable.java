@@ -34,4 +34,18 @@ public @interface Cacheable {
      */
     @Nonbinding
     long ttl() default 300;
+
+    /**
+     * Entity type that owns the cached query. Declaring it allows write events
+     * for that entity to invalidate entries created by the CDI interceptor.
+     *
+     * <p>REST resources extending {@code AbstractREST} are associated with
+     * their generic entity automatically by {@code CrudFilter}. Other CDI
+     * beans should set this attribute explicitly when automatic invalidation
+     * is required.</p>
+     *
+     * @return the entity type, or {@link Void} when no explicit owner is set
+     */
+    @Nonbinding
+    Class<?> entityClass() default Void.class;
 }

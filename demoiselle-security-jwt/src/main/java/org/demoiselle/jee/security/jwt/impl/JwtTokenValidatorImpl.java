@@ -20,6 +20,7 @@ import org.demoiselle.jee.security.impl.DemoiselleUserImpl;
 import org.demoiselle.jee.security.jwt.api.ClaimsEnricher;
 import org.demoiselle.jee.security.jwt.api.JwtTokenValidator;
 import org.demoiselle.jee.security.message.DemoiselleSecurityJWTMessages;
+import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
@@ -63,38 +64,77 @@ public class JwtTokenValidatorImpl implements JwtTokenValidator {
             return null;
         }
 
+        String effectiveIssuer = issuer != null ? issuer : config.getIssuer();
+        String effectiveAudience = audience != null ? audience : config.getAudience();
+        config.validateProfileConfiguration(effectiveIssuer, effectiveAudience);
+
         try {
             List<String> allowedAlgs = config.getAllowedAlgorithmsList();
-            if (!allowedAlgs.isEmpty()) {
-                try {
-                    JsonWebSignature headerJws = new JsonWebSignature();
-                    headerJws.setCompactSerialization(token);
-                    String tokenAlg = headerJws.getAlgorithmHeaderValue();
-                    if (tokenAlg == null || !allowedAlgs.contains(tokenAlg)) {
-                        throw new DemoiselleSecurityException(bundle.algorithmNotAllowed(), Response.Status.UNAUTHORIZED.getStatusCode());
-                    }
-                } catch (JoseException e) {
+
+            // Single JsonWebSignature parse for both alg and kid headers.
+            String tokenAlg = null;
+            String kid = null;
+            try {
+                JsonWebSignature headerJws = new JsonWebSignature();
+                headerJws.setCompactSerialization(token);
+                tokenAlg = headerJws.getAlgorithmHeaderValue();
+                kid = headerJws.getKeyIdHeaderValue();
+            } catch (JoseException e) {
+                if (!allowedAlgs.isEmpty()) {
                     throw new DemoiselleSecurityException(bundle.algorithmNotAllowed(), Response.Status.UNAUTHORIZED.getStatusCode());
                 }
             }
 
-            String kid = null;
-            try {
-                JsonWebSignature kidJws = new JsonWebSignature();
-                kidJws.setCompactSerialization(token);
-                kid = kidJws.getKeyIdHeaderValue();
-            } catch (JoseException e) {
-                kid = null;
+            if (!allowedAlgs.isEmpty() && (tokenAlg == null || !allowedAlgs.contains(tokenAlg))) {
+                throw new DemoiselleSecurityException(bundle.algorithmNotAllowed(), Response.Status.UNAUTHORIZED.getStatusCode());
             }
 
-            JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+            JwtConsumerBuilder builder = new JwtConsumerBuilder()
                     .setRequireExpirationTime()
                     .setAllowedClockSkewInSeconds(config.getClockSkewSeconds())
-                    .setExpectedIssuer(issuer != null ? issuer : config.getIssuer())
-                    .setExpectedAudience(audience != null ? audience : config.getAudience())
                     .setEvaluationTime(org.jose4j.jwt.NumericDate.now())
-                    .setVerificationKey(keyRotationManager.getPublicKey(kid))
-                    .build();
+                    .setJwsAlgorithmConstraints(new AlgorithmConstraints(
+                            AlgorithmConstraints.ConstraintType.PERMIT,
+                            allowedAlgs.toArray(String[]::new)))
+                    .setVerificationKey(keyRotationManager.getPublicKey(kid));
+
+            // Issuer: require (validate + presence) or best-effort validate for compat.
+            if (config.isIssuerRequired()) {
+                builder.setExpectedIssuer(true, effectiveIssuer);
+            } else {
+                builder.setExpectedIssuer(effectiveIssuer);
+            }
+
+            // Audience: require (validate + presence) or best-effort validate for compat.
+            if (config.isAudienceRequired()) {
+                builder.setExpectedAudience(true, effectiveAudience);
+            } else {
+                builder.setExpectedAudience(effectiveAudience);
+            }
+
+            if (config.isExpectedTypeRequired()) {
+                builder.setExpectedType(true, config.getExpectedType());
+            }
+
+            if (config.isJwtIdRequired()) {
+                builder.setRequireJwtId();
+            }
+
+            if (config.isSubjectRequired()) {
+                builder.setRequireSubject();
+            }
+
+            if (config.isIssuedAtRequired()) {
+                builder.setRequireIssuedAt();
+                Long maxAge = config.getMaxTokenAgeSeconds();
+                if (maxAge != null && maxAge > 0) {
+                    int clockSkew = config.getClockSkewSeconds();
+                    int maxPastValidity = (int) Math.min(Integer.MAX_VALUE, maxAge + clockSkew);
+                    builder.setIssuedAtRestrictions(clockSkew, maxPastValidity);
+                }
+            }
+
+            JwtConsumer jwtConsumer = builder.build();
             JwtClaims jwtClaims = jwtConsumer.processToClaims(token);
 
             try {

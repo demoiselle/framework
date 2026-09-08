@@ -353,16 +353,21 @@ public class CrudFilter implements ContainerResponseFilter, ContainerRequestFilt
     }
 
     /**
-     * Checks whether the current resource method is annotated with {@link Cacheable}.
+     * Resolves {@link Cacheable} from the resource method first and then from
+     * the resource class.
      *
-     * @return the {@link Cacheable} annotation if present, or {@code null}
+     * @return the effective {@link Cacheable} annotation, or {@code null}
      */
     private Cacheable findCacheableAnnotation() {
         if (resourceInfo == null || resourceInfo.getResourceMethod() == null) {
             return null;
         }
         Method method = resourceInfo.getResourceMethod();
-        return method.getAnnotation(Cacheable.class);
+        Cacheable cacheable = method.getAnnotation(Cacheable.class);
+        if (cacheable == null && resourceInfo.getResourceClass() != null) {
+            cacheable = resourceInfo.getResourceClass().getAnnotation(Cacheable.class);
+        }
+        return cacheable;
     }
 
     /**

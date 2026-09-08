@@ -19,6 +19,7 @@ import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.UriInfo;
 
 import org.demoiselle.jee.crud.AbstractDAO;
+import org.demoiselle.jee.crud.CrudLimitsConfig;
 import org.demoiselle.jee.crud.CrudMessage;
 import org.demoiselle.jee.crud.CrudUtilHelper;
 import org.demoiselle.jee.crud.DemoiselleRequestContext;
@@ -60,15 +61,23 @@ public class SortHelper {
     @Inject
     private CrudMessage crudMessage;
 
+    @Inject
+    private CrudLimitsConfig limitsConfig;
+
     public SortHelper() {
     }
 
     public SortHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, SortHelperMessage sortHelperMessage, CrudMessage crudMessage) {
+        this(resourceInfo, uriInfo, drc, sortHelperMessage, crudMessage, new CrudLimitsConfig());
+    }
+
+    public SortHelper(ResourceInfo resourceInfo, UriInfo uriInfo, DemoiselleRequestContext drc, SortHelperMessage sortHelperMessage, CrudMessage crudMessage, CrudLimitsConfig limitsConfig) {
         this.resourceInfo = resourceInfo;
         this.uriInfo = uriInfo;
         this.drc = drc;
         this.sortHelperMessage = sortHelperMessage;
         this.crudMessage = crudMessage;
+        this.limitsConfig = limitsConfig;
     }
 
     /**
@@ -91,6 +100,13 @@ public class SortHelper {
         // 'desc' parameter was filled and 'sort' parameter not
         if (descValues != null && sortValues == null) {
             throw new IllegalArgumentException(sortHelperMessage.descParameterWithoutSortParameter());
+        }
+
+        if (sortValues != null) {
+            int maxSortFields = limits().getMaxSortFields();
+            if (sortValues.size() > maxSortFields) {
+                throw new IllegalArgumentException(crudMessage.sortFieldsLimitExceeded(maxSortFields));
+            }
         }
 
         if (descValues != null) {
@@ -157,5 +173,9 @@ public class SortHelper {
             }
         }
         return null;
+    }
+
+    private CrudLimitsConfig limits() {
+        return limitsConfig == null ? new CrudLimitsConfig() : limitsConfig;
     }
 }
