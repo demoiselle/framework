@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import jakarta.enterprise.inject.Vetoed;
+
 /**
  * JDK-only, in-process {@link CacheBackend} with:
  * <ul>
@@ -28,6 +30,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @author SERPRO
  */
+@Vetoed
 public class LocalBoundedCacheBackend implements CacheBackend {
 
     /** System property controlling the maximum number of live entries. */
