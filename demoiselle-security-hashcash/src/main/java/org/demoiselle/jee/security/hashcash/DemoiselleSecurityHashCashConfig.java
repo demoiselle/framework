@@ -22,12 +22,18 @@ public class DemoiselleSecurityHashCashConfig implements Serializable {
 
     private Long timetoLiveMilliseconds;
 
+    private Integer difficultyBits;
+
     public String getHashcashKey() {
         return hashcashKey;
     }
 
     public Long getTimetoLiveMilliseconds() {
         return timetoLiveMilliseconds;
+    }
+
+    public Integer getDifficultyBits() {
+        return difficultyBits;
     }
 
 }

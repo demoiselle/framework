@@ -9,19 +9,19 @@ package org.demoiselle.jee.mcp.integration;
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**
- * Default no-op JWT validator used when {@code demoiselle-security} is not
- * on the classpath.
+ * Fallback JWT validator used when no real JWT integration is available.
  *
- * <p>Always returns a successful validation result, effectively disabling
- * token verification. When the security module is present, it should provide
- * a higher-priority {@link JwtValidator} implementation that performs real
- * JWT validation.</p>
+ * <p>This implementation is deliberately <strong>fail-closed</strong>: enabling
+ * MCP security without {@code demoiselle-security-jwt} (or another specialized
+ * validator) rejects every token instead of silently accepting it. The
+ * framework-provided {@link DemoiselleJwtValidator} specializes this bean when
+ * CDI can resolve the standard Demoiselle JWT validator.</p>
  */
 @ApplicationScoped
 public class NoOpJwtValidator implements JwtValidator {
 
     @Override
     public JwtValidationResult validate(String token) {
-        return JwtValidationResult.ok();
+        return JwtValidationResult.invalid("JWT validator unavailable");
     }
 }

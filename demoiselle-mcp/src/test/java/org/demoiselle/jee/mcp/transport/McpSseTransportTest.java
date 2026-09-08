@@ -151,7 +151,8 @@ class McpSseTransportTest {
     void connect_securityEnabled_validToken_allowsConnection() {
         config.setSecurityEnabled(true);
         headers.authorizationHeader = "Bearer valid.jwt.token";
-        setField(transport, "jwtValidator", new NoOpJwtValidator());
+        setField(transport, "jwtValidator", (org.demoiselle.jee.mcp.integration.JwtValidator)
+                token -> JwtValidationResult.ok("alice"));
 
         transport.connect(sink, sse, headers);
 
@@ -160,15 +161,15 @@ class McpSseTransportTest {
         assertEquals(1, getSessionCount());
     }
 
-    // --- NoOpJwtValidator always returns valid ---
+    // --- Fallback validator is fail-closed ---
 
     @Test
-    void noOpJwtValidator_alwaysReturnsValid() {
+    void noOpJwtValidator_rejectsWhenRealValidatorIsUnavailable() {
         NoOpJwtValidator validator = new NoOpJwtValidator();
         JwtValidationResult result = validator.validate("any-token");
-        assertTrue(result.valid());
+        assertFalse(result.valid());
         assertFalse(result.expired());
-        assertNull(result.detail());
+        assertEquals("JWT validator unavailable", result.detail());
     }
 
     // --- JwtValidationResult factory methods ---

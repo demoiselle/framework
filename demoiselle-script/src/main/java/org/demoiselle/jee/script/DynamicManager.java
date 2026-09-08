@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReadWriteLock;
+
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import javax.script.Bindings;
@@ -28,7 +30,25 @@ import org.demoiselle.jee.core.api.script.DynamicManagerInterface;
 
 /**
  * Dynamic Manager - Responsible for Managing Scripts, its compilation and
- * execution
+ * execution.
+ *
+ * <p>
+ * Thread-safety is provided by a {@link ReadWriteLock} <em>per engine</em>, held
+ * in the application-scoped {@link DynamicManagerCache}. Mutating operations
+ * ({@code loadEngine}, {@code unloadEngine}, {@code clearCache},
+ * {@code loadScript}, {@code updateScript}, {@code removeScript}) acquire the
+ * write lock, while read operations ({@code eval}, {@code getScript},
+ * {@code listScriptCache}, {@code getCacheSize}) acquire the read lock. This
+ * makes each operation atomic with respect to the shared cache and prevents the
+ * {@code NullPointerException}/corruption that previously occurred when a
+ * concurrent {@code unloadEngine}/{@code clearCache} removed the per-engine map
+ * between a null-check and a subsequent access.
+ * </p>
+ *
+ * <p>
+ * Because different engines use different locks, operations on unrelated engines
+ * still run concurrently.
+ * </p>
  *
  * @author SERPRO
  */
@@ -52,25 +72,31 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      * implemented by engine
      */
     public ScriptEngine loadEngine(String engineName) throws DemoiselleScriptException {
-        ScriptEngine engine = (ScriptEngine) cache.getEngineList().get(engineName);
-
-        if (engine == null) {
-            engine = new ScriptEngineManager().getEngineByName(engineName);
+        ReadWriteLock lock = cache.lockFor(engineName);
+        lock.writeLock().lock();
+        try {
+            ScriptEngine engine = (ScriptEngine) cache.getEngineList().get(engineName);
 
             if (engine == null) {
-                throw new DemoiselleScriptException(bundle.cannotLoadEngine(engineName));
-            }
+                engine = new ScriptEngineManager().getEngineByName(engineName);
 
-            if (engine instanceof Compilable) {
-                cache.getEngineList().put(engineName, engine);
-                cache.getScriptCache().put(engineName, new ConcurrentHashMap<String, Object>());
+                if (engine == null) {
+                    throw new DemoiselleScriptException(bundle.cannotLoadEngine(engineName));
+                }
 
-                return engine;
-            } else {
-                throw new DemoiselleScriptException(bundle.engineNotCompilable());
+                if (engine instanceof Compilable) {
+                    cache.getEngineList().put(engineName, engine);
+                    cache.getScriptCache().put(engineName, new ConcurrentHashMap<String, Object>());
+
+                    return engine;
+                } else {
+                    throw new DemoiselleScriptException(bundle.engineNotCompilable());
+                }
             }
+            return engine;
+        } finally {
+            lock.writeLock().unlock();
         }
-        return engine;
     }
 
     /**
@@ -90,28 +116,34 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
 
     /**
      * Force the unLoad a JSR-223 Script engine and clear the script cache.
+     * Atomic with respect to the engine.
      *
      * @param engineName engineName
      */
     public void unloadEngine(String engineName) {
-        this.clearCache(engineName);
-        cache.getEngineList().remove(engineName);
-        cache.getScriptCache().remove(engineName);
+        cache.withWriteLock(engineName, () -> {
+            ConcurrentHashMap<String, Object> scripts = cache.getScriptCache().get(engineName);
+            if (scripts != null) {
+                scripts.clear();
+            }
+            cache.getEngineList().remove(engineName);
+            cache.getScriptCache().remove(engineName);
+        });
     }
 
     /**
-     * Clear the script cache.
+     * Clear the script cache. Atomic with respect to the engine.
      *
      * @param engineName engineName
      */
     public void clearCache(String engineName) {
-        ScriptEngine engine = (ScriptEngine) cache.getEngineList().get(engineName);
-
-        if (engine == null) {
-            throw new DemoiselleScriptException(bundle.engineNotLoaded());
-        }
-
-        cache.getScriptCache().get(engineName).clear();
+        cache.withWriteLock(engineName, () -> {
+            ConcurrentHashMap<String, Object> scripts = cache.getScriptCache().get(engineName);
+            if (scripts == null) {
+                throw new DemoiselleScriptException(bundle.engineNotLoaded());
+            }
+            scripts.clear();
+        });
     }
 
     /**
@@ -128,30 +160,31 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      * @throws ScriptException when script not loaded
      */
     public Object eval(String engineName, String scriptName, Bindings context) throws ScriptException {
-        CompiledScript script = null;
-        Object result = null;
-
-        if (cache.getScriptCache().get(engineName) == null) {
-            throw new DemoiselleScriptException(bundle.engineNotLoaded());
-        }
-
-        if (cache.getScriptCache().get(engineName).get(scriptName) != null) {
-            script = (CompiledScript) cache.getScriptCache().get(engineName).get(scriptName);
-
-            if (context != null) {
-                result = script.eval(context);
-            } else {
-                result = script.eval();
+        ReadWriteLock lock = cache.lockFor(engineName);
+        lock.readLock().lock();
+        try {
+            ConcurrentHashMap<String, Object> scripts = cache.getScriptCache().get(engineName);
+            if (scripts == null) {
+                throw new DemoiselleScriptException(bundle.engineNotLoaded());
             }
 
-            return result;
-        } else {
-            throw new DemoiselleScriptException(bundle.scriptNotLoaded(scriptName));
+            CompiledScript script = (CompiledScript) scripts.get(scriptName);
+            if (script == null) {
+                throw new DemoiselleScriptException(bundle.scriptNotLoaded(scriptName));
+            }
+
+            if (context != null) {
+                return script.eval(context);
+            }
+            return script.eval();
+        } finally {
+            lock.readLock().unlock();
         }
     }
 
     /**
-     * Load ,compile and put script in cache.
+     * Load, compile and put script in cache. Caller must already hold the write
+     * lock for {@code engineName}.
      *
      * @param engineName engineName
      * @param scriptName script name
@@ -159,11 +192,15 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      * @return Boolean compilation ok or not
      * @throws ScriptException compile error
      */
-    private synchronized boolean load(String engineName, ScriptEngine engineObj, String scriptName, String source) throws ScriptException {
+    private boolean load(String engineName, ScriptEngine engineObj, String scriptName, String source) throws ScriptException {
         Compilable engine = (Compilable) engineObj;
         CompiledScript compiled = engine.compile(source);
 
-        cache.getScriptCache().get(engineName).put(scriptName, compiled);
+        ConcurrentHashMap<String, Object> scripts = cache.getScriptCache().get(engineName);
+        if (scripts == null) {
+            throw new DemoiselleScriptException(bundle.engineNotLoaded());
+        }
+        scripts.put(scriptName, compiled);
 
         return true;
     }
@@ -183,7 +220,7 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
     }
 
     /**
-     * Load ,compile and put script in cache.
+     * Load, compile and put script in cache. Atomic with respect to the engine.
      *
      * @param engineName engineName
      * @param scriptName script name
@@ -192,17 +229,27 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      * @throws ScriptException when engine not loaded
      */
     public Boolean loadScript(String engineName, String scriptName, String source) throws ScriptException {
-        ScriptEngine engineObj = (ScriptEngine) cache.getEngineList().get(engineName);
+        ReadWriteLock lock = cache.lockFor(engineName);
+        lock.writeLock().lock();
+        try {
+            if (cache.getEngineList().get(engineName) == null) {
+                // Reentrant write lock: engine creation and cache initialization
+                // remain in the same critical section as script compilation.
+                this.loadEngine(engineName);
+            }
+            ScriptEngine engineObj = (ScriptEngine) cache.getEngineList().get(engineName);
+            if (engineObj == null) {
+                throw new DemoiselleScriptException(bundle.engineNotLoaded());
+            }
 
-        if (engineObj == null) {
-            engineObj = this.loadEngine(engineName);
-        }
-
-        if (this.getScript(engineName, scriptName) == null) {
+            ConcurrentHashMap<String, Object> scripts = cache.getScriptCache().get(engineName);
+            if (scripts != null && scripts.get(scriptName) != null) {
+                return false;
+            }
             return load(engineName, engineObj, scriptName, source);
+        } finally {
+            lock.writeLock().unlock();
         }
-
-        return false;
     }
 
     /**
@@ -212,14 +259,21 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      * @return Set all scripts ids
      */
     public Set<String> listScriptCache(String engineName) {
-        if (cache.getScriptCache().get(engineName) == null) {
-            throw new DemoiselleScriptException(bundle.engineNotLoaded());
+        ReadWriteLock lock = cache.lockFor(engineName);
+        lock.readLock().lock();
+        try {
+            ConcurrentHashMap<String, Object> scripts = cache.getScriptCache().get(engineName);
+            if (scripts == null) {
+                throw new DemoiselleScriptException(bundle.engineNotLoaded());
+            }
+            return scripts.keySet();
+        } finally {
+            lock.readLock().unlock();
         }
-        return cache.getScriptCache().get(engineName).keySet();
     }
 
     /**
-     * Update the script in cache.
+     * Update the script in cache. Atomic with respect to the engine.
      *
      * @param engineName engineName
      * @param scriptName script name
@@ -228,33 +282,41 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      * @throws ScriptException when engine not loaded
      */
     public Boolean updateScript(String engineName, String scriptName, String source) throws ScriptException {
-        ScriptEngine engineObj = (ScriptEngine) cache.getEngineList().get(engineName);
+        ReadWriteLock lock = cache.lockFor(engineName);
+        lock.writeLock().lock();
+        try {
+            if (cache.getEngineList().get(engineName) == null) {
+                this.loadEngine(engineName);
+            }
+            ScriptEngine engineObj = (ScriptEngine) cache.getEngineList().get(engineName);
+            if (engineObj == null) {
+                throw new DemoiselleScriptException(bundle.engineNotLoaded());
+            }
 
-        if (engineObj == null) {
-            engineObj = this.loadEngine(engineName);
-        }
-
-        if (this.getScript(engineName, scriptName) == null) {
-            throw new DemoiselleScriptException(bundle.scriptNotLoaded(scriptName));
-        } else {
+            ConcurrentHashMap<String, Object> scripts = cache.getScriptCache().get(engineName);
+            if (scripts == null || scripts.get(scriptName) == null) {
+                throw new DemoiselleScriptException(bundle.scriptNotLoaded(scriptName));
+            }
             return load(engineName, engineObj, scriptName, source);
+        } finally {
+            lock.writeLock().unlock();
         }
-
     }
 
     /**
-     * Delete the script from cache.
+     * Delete the script from cache. Atomic with respect to the engine.
      *
      * @param engineName engineName
      * @param scriptId script name
      */
-    public synchronized void removeScript(String engineName, String scriptId) {
-
-        if (cache.getScriptCache().get(engineName) == null) {
-            throw new DemoiselleScriptException(bundle.engineNotLoaded());
-        }
-
-        cache.getScriptCache().get(engineName).remove(scriptId);
+    public void removeScript(String engineName, String scriptId) {
+        cache.withWriteLock(engineName, () -> {
+            ConcurrentHashMap<String, Object> scripts = cache.getScriptCache().get(engineName);
+            if (scripts == null) {
+                throw new DemoiselleScriptException(bundle.engineNotLoaded());
+            }
+            scripts.remove(scriptId);
+        });
     }
 
     /**
@@ -264,13 +326,14 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      * @param scriptId script
      * @return Script
      */
-    public synchronized Object getScript(String engineName, String scriptId) {
-
-        if (cache.getScriptCache().get(engineName) == null) {
-            throw new DemoiselleScriptException(bundle.engineNotLoaded());
-        }
-
-        return cache.getScriptCache().get(engineName).get(scriptId);
+    public Object getScript(String engineName, String scriptId) {
+        return cache.withReadLock(engineName, () -> {
+            ConcurrentHashMap<String, Object> scripts = cache.getScriptCache().get(engineName);
+            if (scripts == null) {
+                throw new DemoiselleScriptException(bundle.engineNotLoaded());
+            }
+            return scripts.get(scriptId);
+        });
     }
 
     /**
@@ -279,11 +342,13 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      * @return number of scripts cached.
      */
     public int getCacheSize(String engineName) {
-
-        if (cache.getScriptCache().get(engineName) == null) {
-            throw new DemoiselleScriptException(bundle.engineNotLoaded());
-        }
-        return cache.getScriptCache().get(engineName).size();
+        return cache.withReadLock(engineName, () -> {
+            ConcurrentHashMap<String, Object> scripts = cache.getScriptCache().get(engineName);
+            if (scripts == null) {
+                throw new DemoiselleScriptException(bundle.engineNotLoaded());
+            }
+            return scripts.size();
+        });
     }
 
     /**
@@ -296,18 +361,12 @@ public class DynamicManager implements Serializable, DynamicManagerInterface {
      * @throws ScriptException
      */
     public Object evalSource(String engineName, String source, SimpleBindings context) throws ScriptException {
-        CompiledScript script = null;
-        Object result = null;
-
-        script = compile(engineName, source);
+        CompiledScript script = compile(engineName, source);
 
         if (context != null) {
-            result = script.eval(context);
-        } else {
-            result = script.eval();
+            return script.eval(context);
         }
-
-        return result;
+        return script.eval();
     }
 
 }

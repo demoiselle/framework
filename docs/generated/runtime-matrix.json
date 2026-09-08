@@ -1,0 +1,58 @@
+{
+  "baseline": {
+    "java_min": "21",
+    "jakarta_ee": "10",
+    "cdi": "4.0",
+    "maven_min": "3.9"
+  },
+  "runtimes": [
+    {
+      "name": "Open Liberty",
+      "min_version": "23.x",
+      "kind": "application-server",
+      "status": "declared",
+      "note": "Jakarta EE 10 feature set"
+    },
+    {
+      "name": "Quarkus",
+      "min_version": "3.x",
+      "kind": "cloud-native",
+      "status": "declared",
+      "note": "CDI 4.0 / Arc; native image via Lite extensions"
+    },
+    {
+      "name": "WildFly",
+      "min_version": "27",
+      "kind": "application-server",
+      "status": "declared",
+      "note": "Jakarta EE 10 full/web profile"
+    }
+  ],
+  "verified_facts": {
+    "java_version_property": "21",
+    "compiler_release_property": "21",
+    "enforcer_require_java": "[21,)",
+    "enforcer_require_maven": "[3.9,)"
+  },
+  "consistency_checks": [
+    {
+      "check": "java.version property matches declared baseline",
+      "expected": "21",
+      "actual": "21",
+      "ok": true
+    },
+    {
+      "check": "enforcer requireJavaVersion lower bound matches baseline",
+      "expected": "[21,)",
+      "actual": "[21,)",
+      "ok": true
+    },
+    {
+      "check": "enforcer requireMavenVersion lower bound matches baseline",
+      "expected": "[3.9,)",
+      "actual": "[3.9,)",
+      "ok": true
+    }
+  ],
+  "all_checks_ok": true
+}

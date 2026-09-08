@@ -22,7 +22,10 @@ import jakarta.ws.rs.core.Response;
 
 import org.demoiselle.jee.rest.DemoiselleRestConfig;
 import org.demoiselle.jee.rest.exception.treatment.ProblemDetail;
+import org.demoiselle.jee.core.api.security.SecurityContext;
+import org.demoiselle.jee.security.DemoiselleSecurityConfig;
 import org.demoiselle.jee.security.annotation.RateLimit;
+import org.demoiselle.jee.security.ratelimit.ClientKeyResolver;
 import org.demoiselle.jee.security.ratelimit.SlidingWindowCounter;
 
 /**
@@ -57,6 +60,12 @@ public class RateLimitInterceptor implements Serializable {
     @Inject
     private Instance<DemoiselleRestConfig> restConfig;
 
+    @Inject
+    private Instance<SecurityContext> securityContext;
+
+    @Inject
+    private Instance<DemoiselleSecurityConfig> securityConfig;
+
     /**
      * <p>
      * Intercepts the method invocation, extracts the client IP, and checks
@@ -72,7 +81,7 @@ public class RateLimitInterceptor implements Serializable {
     @AroundInvoke
     public Object manage(InvocationContext ic) throws Exception {
         RateLimit rateLimit = resolveAnnotation(ic);
-        String clientKey = request.getRemoteAddr();
+        String clientKey = resolveClientKey();
 
         int retryAfter = counter.recordAndCheck(clientKey, rateLimit.requests(), rateLimit.window());
         if (retryAfter > 0) {
@@ -80,6 +89,20 @@ public class RateLimitInterceptor implements Serializable {
         }
 
         return ic.proceed();
+    }
+
+    /**
+     * Resolves the throttling key, preferring the authenticated principal and
+     * falling back to a proxy-safe client IP.
+     *
+     * @return a stable, non-null key
+     */
+    private String resolveClientKey() {
+        SecurityContext ctx = (securityContext != null && securityContext.isResolvable())
+                ? securityContext.get() : null;
+        DemoiselleSecurityConfig cfg = (securityConfig != null && securityConfig.isResolvable())
+                ? securityConfig.get() : null;
+        return ClientKeyResolver.resolve(request, ctx, cfg);
     }
 
     /**

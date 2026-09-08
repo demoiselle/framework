@@ -155,6 +155,13 @@ public final class ConfigurationPlaceholderResolver {
         }
 
         String expression = trimmed.substring(2, trimmed.length() - 1).trim();
+        if (expression.regionMatches(true, 0, "secret:", 0, 7)) {
+            // Secret references are fail-closed: resolution never falls back to a
+            // default value. Any failure propagates as SecretResolutionException.
+            return org.demoiselle.jee.configuration.secret.SecretResolver
+                    .getInstance()
+                    .resolve(trimmed);
+        }
         if (expression.startsWith("env:")) {
             return resolveLookup(expression.substring(4), true, depth + 1);
         }

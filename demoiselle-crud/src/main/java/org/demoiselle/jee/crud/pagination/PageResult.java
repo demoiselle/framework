@@ -58,8 +58,9 @@ public record PageResult<T>(
         return content;
     }
 
-    @Override
-    public void setContent(List<T> content) {
-        throw new UnsupportedOperationException("PageResult é imutável");
-    }
+    // Intentionally does NOT override setContent(List): PageResult is immutable
+    // and only implements the read-only Result contract. The deprecated
+    // Result.setContent bridge (default) throws UnsupportedOperationException,
+    // and PageResult does not implement MutableResult, so a MutableResult
+    // reference can never point to a PageResult. This preserves LSP.
 }

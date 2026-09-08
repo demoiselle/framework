@@ -97,6 +97,7 @@ Respostas de erro padronizadas (`application/problem+json`), headers `Link` para
 | P32 | [Headers REST seguros](#p32--headers-rest-seguros) | rest |
 | P33 | [Limites de requisição CRUD](#p33--limites-de-requisição-crud) | crud |
 | P34 | [Perfis avançados JWT](#p34--perfis-avançados-jwt) | security-jwt |
+| P35 | [Segurança, SPIs e contratos operacionais](#p35--segurança-spis-e-contratos-operacionais) | core, configuration, crud, rest, security, jwt, hashcash, script, mcp |
 
 ---
 
@@ -1363,19 +1364,14 @@ Em pull requests, um job separado gera relatório agregado de cobertura e posta 
 ```xml
 <!-- pom.xml raiz -->
 <properties>
-    <jacoco.minimum.coverage>0.00</jacoco.minimum.coverage>
+    <jacoco.minimum.instruction.coverage>0.05</jacoco.minimum.instruction.coverage>
+    <jacoco.minimum.branch.coverage>0.01</jacoco.minimum.branch.coverage>
 </properties>
 ```
 
-A regra é avaliada por **bundle Maven** e usa cobertura de instruções. O valor
-padrão `0.00` apenas gera o relatório e não bloqueia o build. Para ativar um
-gate, informe explicitamente o limiar, por exemplo:
-
-```shell
-mvn verify -Djacoco.minimum.coverage=0.80
-```
-
-Nesse exemplo, cada bundle verificado deve atingir 80% de instruções cobertas.
+A regra é avaliada por **bundle Maven** e bloqueia regressões abaixo dos gates
+iniciais de 5% de instruções e 1% de branches. Os limites devem crescer de forma
+gradual conforme a cobertura dos módulos aumenta.
 
 ---
 
@@ -1843,7 +1839,7 @@ public void onAuth(@Observes AuthenticationEvent event) {
 
 // Observar negação de autorização
 public void onDenied(@Observes AuthorizationEvent event) {
-    log.warn("Acesso negado: {} tentou acessar {}/{}", 
+    log.warn("Acesso negado: {} tentou acessar {}/{}",
         event.user().getIdentity(), event.resource(), event.operation());
 }
 ```
@@ -2212,6 +2208,85 @@ Códigos de erro JSON-RPC:
 | `-32602` | Ferramenta/recurso/prompt inexistente |
 | `-32603` | Erro interno do servidor |
 | `-32700` | JSON malformado |
+
+---
+
+## P35 — Segurança, SPIs e contratos operacionais
+
+Este ciclo fecha os itens de hardening e operação identificados na auditoria.
+O [guia de migração 4.1](migration-4.1.md) contém exemplos completos e impactos
+de compatibilidade.
+
+### Segurança atômica e proxies
+
+`SecurityStore` abstrai contadores atômicos com TTL. O backend local é limitado
+e usado por rate limit, brute force e proteção de replay. A identidade
+autenticada é a chave preferencial; `X-Forwarded-For` só é lido quando o peer
+imediato está em `demoiselle.security.trustedProxies`.
+
+### MCP
+
+Quando a segurança está ativa, GET e POST exigem Bearer JWT e a sessão permanece
+vinculada ao mesmo principal. Ausência do módulo JWT falha fechado. TTL absoluto,
+idle timeout, teto de sessões e limite de tools são configuráveis:
+
+```properties
+demoiselle.mcp.security.enabled=true
+demoiselle.mcp.sessionTtlMillis=1800000
+demoiselle.mcp.sessionIdleMillis=300000
+demoiselle.mcp.maxSessions=10000
+demoiselle.mcp.toolRateLimitRequests=60
+demoiselle.mcp.toolRateLimitWindowSeconds=60
+```
+
+### HashCash e rotação JWT
+
+O módulo `demoiselle-security-hashcash` está no BOM/reactor e exige segredo de
+pelo menos 32 bytes. Seus desafios são assinados, vinculados a recurso e
+protegidos contra replay. JWT oferece `JwtKeyProvider`; o provider local suporta
+múltiplos `kid`, refresh e janela de rotação, rejeitando identificadores
+desconhecidos sem fallback.
+
+### Cache e segredos
+
+`CacheBackend` permite substituir o cache CRUD; o backend local é LRU limitado,
+com TTL e métricas. `SecretProvider` é descoberto via ServiceLoader e inclui os
+schemes `env`, `sys` e `file`:
+
+```properties
+app.password=${secret:env:APP_PASSWORD}
+app.token=${secret:sys:app.token}
+app.key=${secret:file:/run/secrets/app-key}
+```
+
+Falhas não são cacheadas e nunca retornam segredo default.
+
+### Idempotência, outbox, cursor e lifecycle
+
+- `@Idempotent` oferece aquisição atômica, conflito durante processamento e
+  replay byte-for-byte/JSON de respostas 2xx.
+- `OutboxService` publica em `AFTER_SUCCESS`; stores e publishers externos
+  implementam `OutboxStore`/`OutboxPublisher`.
+- `CursorCodec` assina cursores HMAC-SHA256 e `KeysetPagination` constrói a
+  comparação lexicográfica ASC/DESC, BEFORE/AFTER. Inclua chave única como
+  último sort.
+- `@ApiLifecycle` adiciona `Deprecation`, `Sunset` e links sem sobrescrever
+  headers da aplicação.
+
+### `Result` e Script
+
+`Result<T>` é leitura; mutação pertence a `MutableResult<T>`. `ResultSet`
+implementa o contrato mutável e `PageResult` permanece imutável. No módulo
+Script, um `ReadWriteLock` por engine protege todo o ciclo de vida e o cache
+compartilhado.
+
+### CI e inventário
+
+O reactor contém 16 módulos. Inventário/testes e matriz de runtimes são gerados
+por scripts padrão-library-only; `module_inventory.py --check` bloqueia drift.
+SBOM CycloneDX 1.6, checksums/proveniência, actions pinadas e smoke tests fazem
+parte da CI. O gate OpenAPI entra em ação quando o projeto possui uma spec
+versionada ou gerada.
 
 ---
 

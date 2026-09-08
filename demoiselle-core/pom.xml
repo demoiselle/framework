@@ -12,8 +12,7 @@
 	<url>http://demoiselle.io</url>
 
 	<properties>
-		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
-		<buildNumber>${maven.build.timestamp}</buildNumber>
+		<buildNumber>${project.build.outputTimestamp}</buildNumber>
 	</properties>
 
 	<parent>

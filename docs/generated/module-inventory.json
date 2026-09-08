@@ -1,0 +1,140 @@
+{
+  "repo_root": "/home/s707444163/sistemas/framework",
+  "declared_module_count": 16,
+  "modules": [
+    {
+      "module": "demoiselle-parent-bom",
+      "artifact_id": "demoiselle-parent-bom",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 0,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-parent",
+      "artifact_id": "demoiselle-parent",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 0,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-parent-rest",
+      "artifact_id": "demoiselle-parent-rest",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 0,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-core",
+      "artifact_id": "demoiselle-core",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 22,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-configuration",
+      "artifact_id": "demoiselle-configuration",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 28,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-crud",
+      "artifact_id": "demoiselle-crud",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 61,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-rest",
+      "artifact_id": "demoiselle-rest",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 26,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-script",
+      "artifact_id": "demoiselle-script",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 3,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-security",
+      "artifact_id": "demoiselle-security",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 39,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-security-token",
+      "artifact_id": "demoiselle-security-token",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 1,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-security-jwt",
+      "artifact_id": "demoiselle-security-jwt",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 26,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-security-hashcash",
+      "artifact_id": "demoiselle-security-hashcash",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 2,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-observability",
+      "artifact_id": "demoiselle-observability",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 4,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-openapi",
+      "artifact_id": "demoiselle-openapi",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 3,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-mcp",
+      "artifact_id": "demoiselle-mcp",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 26,
+      "integration_tests": 0
+    },
+    {
+      "module": "demoiselle-integration-tests",
+      "artifact_id": "demoiselle-integration-tests",
+      "exists": true,
+      "has_pom": true,
+      "unit_tests": 0,
+      "integration_tests": 6
+    }
+  ],
+  "undeclared_modules_with_pom": [],
+  "totals": {
+    "unit_tests": 241,
+    "integration_tests": 6,
+    "all_tests": 247
+  }
+}

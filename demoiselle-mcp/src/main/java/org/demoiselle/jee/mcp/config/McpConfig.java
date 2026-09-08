@@ -33,6 +33,21 @@ public class McpConfig {
     private boolean securityEnabled = false;
     private String toolsDisabled = "";
 
+    /** Absolute session lifetime in milliseconds (0 disables). Default 30 min. */
+    private long sessionTtlMillis = 1_800_000L;
+
+    /** Idle session timeout in milliseconds (0 disables). Default 5 min. */
+    private long sessionIdleMillis = 300_000L;
+
+    /** Maximum number of concurrent SSE sessions. Default 10000. */
+    private int maxSessions = 10_000;
+
+    /** Max tool invocations per session within {@link #toolRateLimitWindowSeconds}. */
+    private int toolRateLimitRequests = 60;
+
+    /** Tool rate-limit sliding window, in seconds. */
+    private int toolRateLimitWindowSeconds = 60;
+
     public McpConfig() {
     }
 
@@ -79,6 +94,46 @@ public class McpConfig {
 
     public void setToolsDisabled(String toolsDisabled) {
         this.toolsDisabled = toolsDisabled;
+    }
+
+    public long getSessionTtlMillis() {
+        return sessionTtlMillis;
+    }
+
+    public void setSessionTtlMillis(long sessionTtlMillis) {
+        this.sessionTtlMillis = sessionTtlMillis;
+    }
+
+    public long getSessionIdleMillis() {
+        return sessionIdleMillis;
+    }
+
+    public void setSessionIdleMillis(long sessionIdleMillis) {
+        this.sessionIdleMillis = sessionIdleMillis;
+    }
+
+    public int getMaxSessions() {
+        return maxSessions > 0 ? maxSessions : 10_000;
+    }
+
+    public void setMaxSessions(int maxSessions) {
+        this.maxSessions = maxSessions;
+    }
+
+    public int getToolRateLimitRequests() {
+        return toolRateLimitRequests > 0 ? toolRateLimitRequests : 60;
+    }
+
+    public void setToolRateLimitRequests(int toolRateLimitRequests) {
+        this.toolRateLimitRequests = toolRateLimitRequests;
+    }
+
+    public int getToolRateLimitWindowSeconds() {
+        return toolRateLimitWindowSeconds > 0 ? toolRateLimitWindowSeconds : 60;
+    }
+
+    public void setToolRateLimitWindowSeconds(int toolRateLimitWindowSeconds) {
+        this.toolRateLimitWindowSeconds = toolRateLimitWindowSeconds;
     }
 
     /**

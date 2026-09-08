@@ -75,6 +75,7 @@
         <module>demoiselle-security</module>
         <module>demoiselle-security-token</module>
         <module>demoiselle-security-jwt</module>
+        <module>demoiselle-security-hashcash</module>
         <module>demoiselle-observability</module>
         <module>demoiselle-openapi</module>
         <module>demoiselle-mcp</module>
@@ -87,8 +88,10 @@
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.outputTimestamp>2026-09-08T00:00:00Z</project.build.outputTimestamp>
         <release.goals>deploy</release.goals>
-        <jacoco.minimum.coverage>0.00</jacoco.minimum.coverage>
+        <jacoco.minimum.instruction.coverage>0.05</jacoco.minimum.instruction.coverage>
+        <jacoco.minimum.branch.coverage>0.01</jacoco.minimum.branch.coverage>
     </properties>
 
 
@@ -108,7 +111,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Versão 2.4.2 do maven-release-plugin necessária para gerar a release 
+            <!-- Versão 2.4.2 do maven-release-plugin necessária para gerar a release
             da ferramenta -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -155,6 +158,14 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
@@ -163,7 +174,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -193,7 +204,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
+                <version>0.8.15</version>
                 <configuration>
                     <destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
                     <dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
@@ -226,7 +237,12 @@
                                         <limit>
                                             <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>${jacoco.minimum.coverage}</minimum>
+                                            <minimum>${jacoco.minimum.instruction.coverage}</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.minimum.branch.coverage}</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
@@ -287,6 +303,7 @@
                             <goal>makeAggregateBom</goal>
                         </goals>
                         <configuration>
+                            <schemaVersion>1.6</schemaVersion>
                             <outputFormat>json</outputFormat>
                         </configuration>
                     </execution>
@@ -297,13 +314,14 @@
                             <goal>makeAggregateBom</goal>
                         </goals>
                         <configuration>
+                            <schemaVersion>1.6</schemaVersion>
                             <outputFormat>xml</outputFormat>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
-        
+
     </build>
 
     <reporting>
@@ -387,7 +405,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
-                        <version>2.8.2</version>
+                        <version>3.1.4</version>
                         <configuration>
                             <skip>true</skip>
                         </configuration>
@@ -395,7 +413,10 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
+                        <version>3.2.8</version>
+                        <configuration>
+                            <bestPractices>true</bestPractices>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>

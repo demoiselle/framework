@@ -11,7 +11,6 @@ import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -46,7 +45,7 @@ public class CacheInterceptor {
     @AroundInvoke
     public Object intercept(InvocationContext ctx) throws Exception {
         Cacheable cacheable = resolveCacheable(ctx);
-        String cacheKey = buildCacheKey(ctx, cacheable);
+        CacheKey cacheKey = buildCacheKey(ctx, cacheable);
 
         Object cached = cacheStore.get(cacheKey);
         if (cached != null) {
@@ -77,15 +76,18 @@ public class CacheInterceptor {
     }
 
     /**
-     * Builds a key namespaced by the explicitly configured entity class, or
-     * by the method's declaring class for backwards compatibility.
+     * Builds a structured key namespaced by the explicitly configured entity
+     * class, or by the method's declaring class for backwards compatibility. The
+     * discriminator is the method's generic signature and the parameters are
+     * captured with a collision-resistant structured signature.
      */
-    private String buildCacheKey(InvocationContext ctx, Cacheable cacheable) {
+    private CacheKey buildCacheKey(InvocationContext ctx, Cacheable cacheable) {
         Class<?> owner = cacheable.entityClass() == Void.class
                 ? ctx.getMethod().getDeclaringClass()
                 : cacheable.entityClass();
-        return owner.getName() + ":"
-             + ctx.getMethod().toGenericString() + ":"
-             + Arrays.deepHashCode(ctx.getParameters());
+        return CacheKey.of(
+                owner.getName(),
+                ctx.getMethod().toGenericString(),
+                ctx.getParameters());
     }
 }

@@ -88,7 +88,8 @@ public class SecurityFilter implements ContainerRequestFilter {
             return;
         }
 
-        String ip = httpServletRequest.getRemoteAddr();
+        String ip = org.demoiselle.jee.security.ratelimit.ClientKeyResolver
+                .resolveClientIp(httpServletRequest, config);
 
         // Verifica bloqueio por brute force
         int retryAfter = bruteForceGuard.isBlocked(ip);

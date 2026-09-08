@@ -117,6 +117,12 @@
 
             <dependency>
                 <groupId>org.demoiselle.jee</groupId>
+                <artifactId>demoiselle-security-hashcash</artifactId>
+                <version>${demoiselle.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.demoiselle.jee</groupId>
                 <artifactId>demoiselle-crud</artifactId>
                 <version>${demoiselle.version}</version>
             </dependency>

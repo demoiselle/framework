@@ -46,6 +46,30 @@ public class DemoiselleSecurityJWTConfig implements Serializable {
 
     private String activeKeyId;
 
+    /**
+     * Compact multi-key definition for local key rotation. Each entry is
+     * {@code kid:publicKeyBase64Der[:privateKeyBase64Der[:validUntilEpochMillis]]}
+     * and entries are separated by {@code ;}. The public/private material is the
+     * base64 of the DER encoding (X.509 SubjectPublicKeyInfo / PKCS#8), i.e. a
+     * PEM body without the {@code -----BEGIN...-----} envelope and without line
+     * breaks. Private material may be omitted for verification-only (slave) keys.
+     */
+    @ConfigurationSuppressLogger
+    private String keys;
+
+    /**
+     * How long (in seconds) the local key provider caches the parsed key set
+     * before reloading from configuration. {@code 0} disables the refresh cache.
+     */
+    private Long keyRefreshSeconds;
+
+    /**
+     * Rotation window (in seconds) after a key's {@code validUntil} during which
+     * it is still accepted for verification (never for signing). Lets tokens
+     * signed with an outgoing key remain valid until they expire.
+     */
+    private Long keyRotationWindowSeconds;
+
     private String validationProfile;
 
     private String expectedType;
@@ -132,6 +156,27 @@ public class DemoiselleSecurityJWTConfig implements Serializable {
 
     public String getActiveKeyId() {
         return activeKeyId;
+    }
+
+    /**
+     * @return the raw compact multi-key definition, or {@code null} when not configured
+     */
+    public String getKeys() {
+        return keys;
+    }
+
+    /**
+     * @return the local key cache refresh interval in seconds (default 300, {@code 0} disables caching)
+     */
+    public long getKeyRefreshSeconds() {
+        return keyRefreshSeconds != null && keyRefreshSeconds >= 0 ? keyRefreshSeconds : 300L;
+    }
+
+    /**
+     * @return the rotation window in seconds during which an expired key still verifies (default 0)
+     */
+    public long getKeyRotationWindowSeconds() {
+        return keyRotationWindowSeconds != null && keyRotationWindowSeconds >= 0 ? keyRotationWindowSeconds : 0L;
     }
 
     /**

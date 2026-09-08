@@ -9,9 +9,10 @@ package org.demoiselle.jee.core.api.crud;
 import java.util.List;
 
 /**
- * Simple stub implementation of {@link Result} for testing Crud default methods.
+ * Simple mutable stub implementation of {@link MutableResult} for testing Crud
+ * default methods.
  */
-class StubResult<T> implements Result<T> {
+class StubResult<T> implements MutableResult<T> {
 
     private List<T> content;
 

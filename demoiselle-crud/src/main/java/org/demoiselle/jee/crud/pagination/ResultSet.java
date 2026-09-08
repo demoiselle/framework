@@ -8,24 +8,31 @@ package org.demoiselle.jee.crud.pagination;
 
 import java.util.List;
 
-import org.demoiselle.jee.core.api.crud.Result;
+import org.demoiselle.jee.core.api.crud.MutableResult;
 import org.demoiselle.jee.crud.AbstractDAO;
 
 /**
- * This classes implements {@link org.demoiselle.jee.core.api.crud.Result} to hold the results came from {@link AbstractDAO}
- * 
+ * Mutable {@link org.demoiselle.jee.core.api.crud.Result} implementation used to
+ * hold the results produced by {@link AbstractDAO}.
+ *
+ * <p>
+ * Because population happens after construction, this class implements
+ * {@link MutableResult}. Callers that only read the result should depend on the
+ * read-only {@link org.demoiselle.jee.core.api.crud.Result} super-type.
+ * </p>
+ *
  * @author SERPRO
  */
-public class ResultSet<T> implements Result<T>{
-	
+public class ResultSet<T> implements MutableResult<T> {
+
 	private List<T> content = List.of();
-	
+
 	@Override
 	public List<T> getContent() {
-        return content;
-    }
+		return content;
+	}
 
-    @Override
+	@Override
 	public void setContent(List<T> content) {
 		this.content = content == null ? List.of() : List.copyOf(content);
 	}

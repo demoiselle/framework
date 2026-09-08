@@ -34,6 +34,19 @@ public class DemoiselleSecurityConfig {
     private int bruteForceMaxAttempts = 5;
     private int bruteForceLockoutDuration = 300; // segundos
 
+    /**
+     * Immediate peers (reverse proxies / load balancers) whose forwarded
+     * headers may be trusted. Empty by default: forwarded headers are ignored
+     * and the client IP is taken from the transport peer address.
+     */
+    private String[] trustedProxies = {};
+
+    /**
+     * Global cap on the number of entries kept by the in-memory security store.
+     * Bounds memory against key-space flooding.
+     */
+    private int storeMaxEntries = 100_000;
+
     public boolean isCorsEnabled() {
         return corsEnabled;
     }
@@ -72,6 +85,26 @@ public class DemoiselleSecurityConfig {
 
     public int getBruteForceLockoutDuration() {
         return bruteForceLockoutDuration;
+    }
+
+    /**
+     * Returns the list of trusted immediate proxies. Empty means "trust no
+     * forwarded headers" (the safe default).
+     *
+     * @return an immutable list of trusted proxy addresses
+     */
+    public List<String> getTrustedProxies() {
+        return trustedProxies == null ? List.of() : List.copyOf(Arrays.asList(trustedProxies));
+    }
+
+    /**
+     * Returns the maximum number of entries the in-memory security store may
+     * hold before eviction kicks in.
+     *
+     * @return the cap (defaults to {@code 100000} when unset/invalid)
+     */
+    public int getStoreMaxEntries() {
+        return storeMaxEntries > 0 ? storeMaxEntries : 100_000;
     }
 
 }

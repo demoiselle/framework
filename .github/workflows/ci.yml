@@ -6,59 +6,290 @@ on:
   pull_request:
     branches: [main, master]
 
+# Least-privilege by default.
 permissions:
   contents: read
 
+# Cancel superseded runs on the same ref to save resources.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  MAVEN_ARGS: "-B -ntp"
+
 jobs:
+  # ---------------------------------------------------------------------------
+  # Full reactor build + tests + coverage + SBOM. Publishes the dynamic module/
+  # test inventory and the runtime matrix into the GitHub step summary, and
+  # uploads the CycloneDX SBOM and JaCoCo reports as artifacts.
+  # ---------------------------------------------------------------------------
   build:
+    name: Build & Test (Java 21)
     runs-on: ubuntu-latest
-
-    name: Build (Java 21)
-
+    timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
 
-      - uses: actions/setup-java@v4
+      - name: Set up Java 21 (Temurin)
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build and Test
-        run: mvn clean verify -B
+      # Dynamic module/test inventory into the run summary (no hard-coded lists).
+      - name: Module & test inventory
+        run: |
+          python3 scripts/ci/module_inventory.py --repo-root "$GITHUB_WORKSPACE" \
+            --format markdown --out inventory.md
+          cat inventory.md >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/ci/module_inventory.py --repo-root "$GITHUB_WORKSPACE" \
+            --format json --out inventory.json --check
 
-      - name: Upload JaCoCo Reports
+      # Generated, verified runtime matrix into the run summary + fail on drift.
+      - name: Runtime matrix (declared + verified)
+        run: |
+          python3 scripts/ci/runtime_matrix.py --repo-root "$GITHUB_WORKSPACE" \
+            --format markdown --out runtime-matrix.md
+          cat runtime-matrix.md >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/ci/runtime_matrix.py --repo-root "$GITHUB_WORKSPACE" \
+            --format json --out runtime-matrix.json --check
+
+      # verify runs unit tests, integration/contract tests (failsafe), JaCoCo
+      # and the aggregate CycloneDX SBOM (bound to package in the root pom).
+      - name: Build, test & SBOM (mvn verify)
+        run: mvn ${MAVEN_ARGS} clean verify
+
+      - name: Locate aggregate SBOM
+        id: sbom
+        run: |
+          set -e
+          found=""
+          for f in target/bom.json target/bom.xml; do
+            [ -f "$f" ] && found="yes"
+          done
+          if [ -z "$found" ]; then
+            echo "No aggregate SBOM found under target/." >&2
+            echo "sbom_present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "sbom_present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload SBOM (CycloneDX)
+        if: steps.sbom.outputs.sbom_present == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: sbom-cyclonedx
+          path: |
+            target/bom.json
+            target/bom.xml
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload generated reports (inventory, matrix)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ci-generated-reports
+          path: |
+            inventory.json
+            inventory.md
+            runtime-matrix.json
+            runtime-matrix.md
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload JaCoCo reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: jacoco-report-java-21
           path: '**/target/site/jacoco/'
+          if-no-files-found: warn
+          retention-days: 14
 
-  coverage-summary:
+  # ---------------------------------------------------------------------------
+  # Provenance & checksums: rebuild the reactor, hash all produced artifacts +
+  # SBOM, emit an in-toto/SLSA-style provenance document, and publish them.
+  # Kept as a separate job so its output is an independent, auditable artifact.
+  # ---------------------------------------------------------------------------
+  provenance:
+    name: Provenance & Checksums
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-
-    name: Coverage Summary
-
+    timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
 
-      - uses: actions/setup-java@v4
+      - name: Set up Java 21 (Temurin)
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Generate Aggregate Report
-        run: mvn verify jacoco:report-aggregate -B
+      - name: Build artifacts + SBOM (skip tests, already verified)
+        run: mvn ${MAVEN_ARGS} -DskipTests clean package
 
-      - name: Post Coverage Summary
-        uses: actions/github-script@v7
+      - name: Generate checksums & provenance
+        run: sh scripts/ci/checksums.sh "$GITHUB_WORKSPACE" "$GITHUB_WORKSPACE/provenance-out"
+
+      - name: Provenance summary
+        if: always()
+        run: |
+          {
+            echo "## 🔏 Provenance & Checksums";
+            echo "";
+            echo '```';
+            head -n 200 provenance-out/SHA256SUMS || true;
+            echo '```';
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload provenance & checksums
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: provenance-checksums
+          path: provenance-out/
+          if-no-files-found: error
+          retention-days: 90
+
+  # ---------------------------------------------------------------------------
+  # Pragmatic reproducibility: build twice and compare normalized JAR contents
+  # (entry timestamps and volatile manifest keys ignored). Non-blocking signal
+  # by default to avoid flakiness; surfaces mismatches in the summary.
+  # ---------------------------------------------------------------------------
+  reproducibility:
+    name: Reproducibility (pragmatic)
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Java 21 (Temurin)
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Verify normalized reproducibility
+        run: sh scripts/ci/verify_reproducibility.sh "$GITHUB_WORKSPACE"
+
+  # ---------------------------------------------------------------------------
+  # OpenAPI breaking-change gate. Regenerates the OpenAPI spec on the PR branch
+  # and on the base branch and diffs them. Skipped gracefully when no spec is
+  # produced by the current reactor (the framework ships contributors, not a
+  # single fixed spec), so the gate never produces false negatives.
+  # ---------------------------------------------------------------------------
+  openapi-gate:
+    name: OpenAPI Breaking-Change Gate
+    needs: build
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout (full history for base comparison)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Set up Java 21 (Temurin)
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Discover OpenAPI specs (candidate)
+        id: cand
+        run: |
+          # Collect any generated/committed OpenAPI documents in the tree.
+          specs=$(find . -type f \
+            \( -name 'openapi.json' -o -name 'openapi.yaml' -o -name 'openapi.yml' \) \
+            -not -path '*/node_modules/*' 2>/dev/null | sort)
+          if [ -z "$specs" ]; then
+            echo "No OpenAPI spec found; gate is a no-op for this reactor." >> "$GITHUB_STEP_SUMMARY"
+            echo "has_spec=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_spec=true" >> "$GITHUB_OUTPUT"
+            printf '%s\n' "$specs" | head -1 | { read -r first; echo "spec_path=$first" >> "$GITHUB_OUTPUT"; }
+          fi
+
+      - name: Fetch base spec & run gate
+        if: steps.cand.outputs.has_spec == 'true'
+        run: |
+          set -e
+          SPEC="${{ steps.cand.outputs.spec_path }}"
+          mkdir -p .openapi-gate
+          cp "$SPEC" .openapi-gate/candidate.spec
+          BASE="${{ github.event.pull_request.base.sha }}"
+          if git cat-file -e "$BASE:$SPEC" 2>/dev/null; then
+            git show "$BASE:$SPEC" > .openapi-gate/baseline.spec
+            python3 scripts/ci/openapi_breaking_change.py \
+              .openapi-gate/baseline.spec .openapi-gate/candidate.spec \
+              --format text --out .openapi-gate/report.txt
+            cat .openapi-gate/report.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Spec $SPEC is new on this branch; no baseline to compare." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  # ---------------------------------------------------------------------------
+  # CI helper self-tests. Fast; validates the Python/POSIX tooling itself so a
+  # broken helper cannot silently pass the pipeline.
+  # ---------------------------------------------------------------------------
+  ci-selftest:
+    name: CI Tooling Self-Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Run smoke tests
+        run: python3 scripts/ci/smoke_test.py
+
+  # ---------------------------------------------------------------------------
+  # Coverage summary on PRs (retained from the original workflow, SHA-pinned).
+  # ---------------------------------------------------------------------------
+  coverage-summary:
+    name: Coverage Summary
+    needs: build
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Java 21 (Temurin)
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Generate aggregate report
+        run: mvn ${MAVEN_ARGS} verify jacoco:report-aggregate
+
+      - name: Post coverage summary
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
           script: |
             const fs = require('fs');

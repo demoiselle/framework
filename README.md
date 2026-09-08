@@ -98,6 +98,19 @@ O módulo `demoiselle-crud` inclui funcionalidades modernas de persistência e p
 - JWT mantém o perfil `compat` como default e oferece `recommended` e `strict` para exigir `iss`, `aud`, `typ`, `iat`, `jti`, idade máxima e, no modo estrito, `sub`.
 - Algoritmos JWT continuam em allowlist (`RS256` por padrão) e `kid` desconhecido é rejeitado.
 
+### Segurança e contratos operacionais
+
+- **MCP fail-closed** — sessões vinculadas ao principal, revalidação Bearer no POST, expiração, teto de sessões e rate limit de tools.
+- **Rate limit e brute force atômicos** — `SecurityStore` com TTL/teto e forwarded headers confiáveis somente para proxies configurados.
+- **HashCash mantido** — módulo no reactor/BOM, desafio assinado e vinculado ao recurso, segredo obrigatório e proteção contra replay.
+- **SPIs extensíveis** — `JwtKeyProvider`, `CacheBackend` e `SecretProvider`, com providers locais limitados e sem infraestrutura externa obrigatória.
+- **Dados resilientes** — `@Idempotent`, Transactional Outbox após commit, cursor/keyset assinado e headers de lifecycle/depreciação.
+- **Contratos seguros** — separação entre `Result` e `MutableResult` e locking compartilhado por engine no módulo Script.
+
+Consulte o [guia de migração 4.1](docs/migration-4.1.md), o
+[roadmap com status das entregas](docs/roadmap.md) e o
+[inventário dinâmico do reactor](docs/generated/module-inventory.md).
+
 ### Módulo de Observabilidade (`demoiselle-observability`)
 
 Módulo transversal com métricas, health checks e tracing distribuído:
