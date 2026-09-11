@@ -7,6 +7,7 @@ the GitHub Pages Jekyll build remains the rendering authority.
 """
 from __future__ import annotations
 
+import json
 import re
 import sys
 from html.parser import HTMLParser
@@ -26,9 +27,20 @@ REQUIRED_FILES = (
     "_includes/site-header.html",
     "_includes/footer.html",
     "_includes/brand-mark.html",
+    "_includes/icon.html",
     "assets/css/portal.css",
     "assets/js/portal.js",
     "assets/img/favicon.svg",
+    "assets/img/favicon-32.png",
+    "assets/img/apple-touch-icon.png",
+    "assets/img/icon-192.png",
+    "assets/img/icon-512.png",
+    "assets/img/icon-maskable-512.png",
+    "assets/img/og-cover.png",
+    "assets/img/demoiselle-symbol.svg",
+    "assets/img/demoiselle-logo.svg",
+    "assets/img/demoiselle-logo-inverse.svg",
+    "site.webmanifest",
     "robots.txt",
     "sitemap.xml",
     "migration-4.1.md",
@@ -161,6 +173,47 @@ def main() -> int:
             if route_target(route) is None:
                 fail(f"{display(source)}: unresolved local route {route}")
 
+    # Brand assets and icon set wiring
+    head = (PORTAL_ROOT / "_includes/head.html").read_text(encoding="utf-8")
+    for needle in (
+        "rel=\"icon\"",
+        "rel=\"apple-touch-icon\"",
+        "rel=\"manifest\"",
+        "og:image",
+        "twitter:card",
+    ):
+        if needle not in head:
+            fail(f"docs/_includes/head.html must declare {needle}")
+
+    manifest_path = PORTAL_ROOT / "site.webmanifest"
+    front_matter(manifest_path)  # Jekyll only renders Liquid in files with front matter
+    manifest_body = re.sub(
+        r"^---\s*\n.*?\n---\s*\n", "", manifest_path.read_text(encoding="utf-8"),
+        count=1, flags=re.S,
+    )
+    rendered = re.sub(r"{{[^}]*\|\s*jsonify\s*}}", '"x"', manifest_body)
+    rendered = re.sub(r"{{[^}]*}}", "/x", rendered)
+    try:
+        manifest = json.loads(rendered)
+    except json.JSONDecodeError as exc:
+        fail(f"docs/site.webmanifest is not valid JSON after Liquid rendering: {exc}")
+    if not manifest.get("icons"):
+        fail("docs/site.webmanifest must declare icons")
+    if not any(icon.get("purpose") == "maskable" for icon in manifest["icons"]):
+        fail("docs/site.webmanifest must declare a maskable icon")
+
+    icon_source = (PORTAL_ROOT / "_includes/icon.html").read_text(encoding="utf-8")
+    available_icons = set(re.findall(r"{%-?\s*when\s+'([^']+)'\s*-?%}", icon_source))
+    if not available_icons:
+        fail("docs/_includes/icon.html declares no icons")
+    used_icons = set()
+    for source in source_files:
+        text = source.read_text(encoding="utf-8")
+        used_icons.update(re.findall(r'{%\s*include\s+icon\.html\s+name="([^"]+)"', text))
+    unknown_icons = sorted(used_icons - available_icons)
+    if unknown_icons:
+        fail(f"portal references undefined icons: {', '.join(unknown_icons)}")
+
     portal = (PORTAL_ROOT / "index.md").read_text(encoding="utf-8")
     portal = re.sub(r"^---\s*\n.*?\n---\s*\n", "", portal, count=1, flags=re.S)
     parser = PortalParser()
@@ -191,7 +244,8 @@ def main() -> int:
     print(
         "PORTAL_CHECK: OK "
         f"(source=docs, {len(PAGES)} pages, {include_count} includes, "
-        f"{route_count} local routes, {len(parser.ids)} portal IDs)"
+        f"{route_count} local routes, {len(parser.ids)} portal IDs, "
+        f"{len(used_icons)}/{len(available_icons)} icons used)"
     )
     return 0
 

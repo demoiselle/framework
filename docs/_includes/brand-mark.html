@@ -1,5 +1,2 @@
-<svg class="brand-mark" viewBox="0 0 64 64" role="img" aria-label="Demoiselle">
-  <path d="M31.9 7.5 15.2 26.2l13.4-3.8v13.2L8.5 50.3l23.4-7.1 23.6 7.1-20.2-14.7V22.4l13.5 3.8L31.9 7.5Z" fill="currentColor"/>
-  <path d="M31.9 12.8v34.8" stroke="#f6fbff" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="31.9" cy="51.4" r="3.5" fill="#ffbd66"/>
-</svg>
+<img class="brand-mark {{ include.class }}" src="{{ '/assets/img/demoiselle-symbol.svg' | relative_url }}"
+     width="234" height="96" alt="{{ include.alt | default: '' }}" loading="{{ include.loading | default: 'lazy' }}" decoding="async">

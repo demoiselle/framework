@@ -1,0 +1,38 @@
+---
+layout: null
+permalink: /site.webmanifest
+---
+{
+  "name": "Demoiselle Framework",
+  "short_name": "Demoiselle",
+  "description": {{ site.description | jsonify }},
+  "lang": "pt-BR",
+  "start_url": "{{ '/' | relative_url }}",
+  "scope": "{{ '/' | relative_url }}",
+  "display": "standalone",
+  "background_color": "#100C0B",
+  "theme_color": "#100C0B",
+  "icons": [
+    {
+      "src": "{{ '/assets/img/favicon.svg' | relative_url }}",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "{{ '/assets/img/icon-192.png' | relative_url }}",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "{{ '/assets/img/icon-512.png' | relative_url }}",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "{{ '/assets/img/icon-maskable-512.png' | relative_url }}",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ]
+}

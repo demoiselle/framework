@@ -1,22 +1,35 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#071421">
+<meta name="theme-color" content="#100C0B" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FBF7F4" media="(prefers-color-scheme: light)">
 
 {% assign meta_title = page.title | default: site.title %}
 {% assign meta_description = page.description | default: site.description %}
+{% assign meta_image = '/assets/img/og-cover.png' | absolute_url %}
 <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
 <meta name="description" content="{{ meta_description | strip_html | normalize_whitespace | escape }}">
+<meta property="og:site_name" content="{{ site.title }}">
 <meta property="og:type" content="website">
 <meta property="og:title" content="{{ meta_title | escape }}">
 <meta property="og:description" content="{{ meta_description | strip_html | normalize_whitespace | escape }}">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:url" content="{{ page.url | absolute_url }}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="{{ meta_image }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Marca do Demoiselle Framework sobre fundo escuro">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ meta_title | escape }}">
+<meta name="twitter:description" content="{{ meta_description | strip_html | normalize_whitespace | escape }}">
+<meta name="twitter:image" content="{{ meta_image }}">
 <link rel="canonical" href="{{ page.url | absolute_url }}">
 <link rel="sitemap" type="application/xml" href="{{ '/sitemap.xml' | relative_url }}">
 
 <link rel="icon" href="{{ '/assets/img/favicon.svg' | relative_url }}" type="image/svg+xml">
+<link rel="icon" href="{{ '/assets/img/favicon-32.png' | relative_url }}" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="{{ '/assets/img/apple-touch-icon.png' | relative_url }}" sizes="180x180">
+<link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}">
 <link rel="stylesheet" href="{{ '/assets/css/portal.css' | relative_url }}">
 <script>
   document.documentElement.classList.add('js');

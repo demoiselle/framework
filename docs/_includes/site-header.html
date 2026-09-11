@@ -1,7 +1,8 @@
 <header class="site-header" data-site-header>
+  <div class="scroll-progress" aria-hidden="true"><span data-scroll-progress></span></div>
   <div class="shell header-inner">
     <a class="brand" href="{{ '/' | relative_url }}" aria-label="Demoiselle Framework — início">
-      {% include brand-mark.html %}
+      {% include brand-mark.html loading="eager" %}
       <span class="brand-copy">
         <strong>Demoiselle</strong>
         <small>Framework</small>
@@ -21,7 +22,7 @@
           <a href="{{ '/#ecossistema' | relative_url }}" data-section-link="ecossistema">Ecossistema</a>
           <a href="{{ '/#comecar' | relative_url }}" data-section-link="comecar">Começar</a>
           <a href="{{ '/docs/' | relative_url }}">Documentação</a>
-          <a class="nav-github" href="{{ site.github_url }}">GitHub <span aria-hidden="true">↗</span></a>
+          <a class="nav-github" href="{{ site.github_url }}">GitHub {% include icon.html name="external" class="icon-inline" %}</a>
         </nav>
       </details>
 

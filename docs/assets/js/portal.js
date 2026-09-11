@@ -38,9 +38,18 @@
   });
 
   const header = document.querySelector('[data-site-header]');
-  const updateHeader = () => header?.classList.toggle('is-scrolled', window.scrollY > 12);
+  const progress = document.querySelector('[data-scroll-progress]');
+  const updateHeader = () => {
+    header?.classList.toggle('is-scrolled', window.scrollY > 12);
+    if (progress) {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
+      progress.style.setProperty('--progress', ratio.toFixed(4));
+    }
+  };
   updateHeader();
   window.addEventListener('scroll', updateHeader, { passive: true });
+  window.addEventListener('resize', updateHeader, { passive: true });
 
   const navDisclosure = document.querySelector('[data-nav-disclosure]');
   navDisclosure?.querySelectorAll('a').forEach((link) => {

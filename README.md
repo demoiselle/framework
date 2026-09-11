@@ -1,3 +1,5 @@
+<img src="docs/assets/img/demoiselle-symbol.svg" alt="Demoiselle" width="210">
+
 Demoiselle 4
 -----------
 [![CI](https://github.com/demoiselle/framework/actions/workflows/ci.yml/badge.svg)](https://github.com/demoiselle/framework/actions/workflows/ci.yml) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.demoiselle.jee/demoiselle-core/badge.svg?style=flat-square)](https://maven-badges.herokuapp.com/maven-central/org.demoiselle.jee/demoiselle-core/badge.svg?style=flat-square)

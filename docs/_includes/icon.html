@@ -1,0 +1,51 @@
+{%- comment -%}
+Conjunto de ícones em linha do portal. Traço fino, 24x24, herda currentColor.
+Uso: {% include icon.html name="shield" %}
+{%- endcomment -%}
+<svg class="icon {{ include.class }}" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+     stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+{%- case include.name -%}
+{%- when 'layers' -%}
+  <path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="M2 12l10 5 10-5"/><path d="M2 17l10 5 10-5"/>
+{%- when 'contract' -%}
+  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="m9 15 1.8 1.8L15 12.6"/>
+{%- when 'shield' -%}
+  <path d="M12 22s8-3.8 8-10V5.4L12 2.4 4 5.4V12c0 6.2 8 10 8 10Z"/><path d="m9 12 1.8 1.8L15 9.6"/>
+{%- when 'loop' -%}
+  <path d="M3 12a9 9 0 0 1 15.4-6.3"/><path d="M21 3.6v4.2h-4.2"/><path d="M21 12a9 9 0 0 1-15.4 6.3"/><path d="M3 20.4v-4.2h4.2"/>
+{%- when 'pulse' -%}
+  <path d="M22 12h-4l-2.6 7.4L9.4 4.6 6.8 12H2"/>
+{%- when 'verified' -%}
+  <path d="M12 2.5 14.4 5l3.4-.2.4 3.4 2.6 2.2-1.7 3 1 3.3-3.3 1-1.7 3-3.1-1.4-3.1 1.4-1.7-3-3.3-1 1-3.3-1.7-3L5.8 8.2l.4-3.4L9.6 5Z"/><path d="m9 12 1.8 1.8L15 9.6"/>
+{%- when 'database' -%}
+  <ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13"/><path d="M20 12c0 1.7-3.6 3-8 3s-8-1.3-8-3"/>
+{%- when 'globe' -%}
+  <circle cx="12" cy="12" r="9.2"/><path d="M2.8 12h18.4"/><path d="M12 2.8a15 15 0 0 1 0 18.4 15 15 0 0 1 0-18.4Z"/>
+{%- when 'key' -%}
+  <circle cx="8" cy="15.6" r="3.6"/><path d="m10.6 13 8-8"/><path d="m15.4 5.8 2.6 2.6"/><path d="m18 3.2 2.8 2.8"/>
+{%- when 'sparkle' -%}
+  <path d="M11 3.2l1.7 4.6 4.6 1.7-4.6 1.7L11 15.8 9.3 11.2 4.7 9.5l4.6-1.7Z"/><path d="M18.4 14.6l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8Z"/>
+{%- when 'package' -%}
+  <path d="M21 8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/><path d="m7.5 4.3 9 5.2"/>
+{%- when 'book' -%}
+  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="M9 7h7"/>
+{%- when 'swap' -%}
+  <path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>
+{%- when 'server' -%}
+  <rect x="2.5" y="3" width="19" height="7.5" rx="2"/><rect x="2.5" y="13.5" width="19" height="7.5" rx="2"/><path d="M6.5 6.8h.01"/><path d="M6.5 17.2h.01"/>
+{%- when 'map' -%}
+  <circle cx="6" cy="19" r="2.6"/><circle cx="18" cy="5" r="2.6"/><path d="M8.6 19h8.9a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7h8.9"/>
+{%- when 'pen' -%}
+  <path d="M12.5 18.8 19 12.3l2.7 2.7-6.5 6.5Z"/><path d="M17.6 12.6 16.2 5.5 2.5 2l3.4 13.6 7.1 1.5 4.6-4.5Z"/><path d="m2.5 2 7.4 7.4"/><circle cx="11.3" cy="11.3" r="1.9"/>
+{%- when 'beaker' -%}
+  <path d="M10 2.4v6.9"/><path d="M14 9.3V2.4"/><path d="M8.5 2.4h7"/><path d="M14 9.3a6.4 6.4 0 1 1-4 0"/><path d="M5.6 16.4h12.8"/>
+{%- when 'info' -%}
+  <circle cx="12" cy="12" r="9.2"/><path d="M12 16.4v-4.8"/><path d="M12 8.1h.01"/>
+{%- when 'code' -%}
+  <path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>
+{%- when 'external' -%}
+  <path d="M14 4h6v6"/><path d="m20 4-9 9"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/>
+{%- else -%}
+  <circle cx="12" cy="12" r="9"/>
+{%- endcase -%}
+</svg>
